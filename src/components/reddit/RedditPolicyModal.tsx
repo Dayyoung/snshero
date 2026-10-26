@@ -36,7 +36,7 @@ export const RedditPolicyModal: React.FC<RedditPolicyModalProps> = ({
  )}
  <h2 className="font-extrabold text-base">
  {type === 'rules'
- ? (isKo ? 'SNSHero 커뮤니티 운영 가이드라인' : 'Community Guidelines')
+ ? (isKo ? '눈히어로.com 커뮤니티 운영 가이드라인' : 'SNSHero.com Community Guidelines')
  : (isKo ? '개인정보처리방침 및 데이터 보안' : 'Privacy & Security Policy')}
  </h2>
  </div>
@@ -56,8 +56,8 @@ export const RedditPolicyModal: React.FC<RedditPolicyModalProps> = ({
  <>
  <p className="opacity-80">
  {isKo 
- ? 'SNSHero 커뮤니티는 모든 사용자가 자유롭고 건전하게 지식을 나누고 토론할 수 있는 열린 공간입니다.' 
- : 'SNSHero Community is an open space for everyone to share knowledge and discuss civilly.'}
+ ? '눈히어로.com 커뮤니티는 모든 사용자가 자유롭고 건전하게 지식을 나누고 토론할 수 있는 열린 공간입니다.' 
+ : 'SNSHero.com Community is an open space for everyone to share knowledge and discuss civilly.'}
  </p>
 
  <div className="space-y-3">
@@ -102,8 +102,8 @@ export const RedditPolicyModal: React.FC<RedditPolicyModalProps> = ({
  <>
  <p className="opacity-80">
  {isKo 
- ? 'SNSHero 커뮤니티는 사용자 프라이버시를 최우선으로 보호하며 최신 Zero-DB 클라이언트 아키텍처를 따릅니다.' 
- : 'SNSHero Community prioritizes user privacy using a Zero-DB client architecture.'}
+ ? '눈히어로.com 커뮤니티는 사용자 프라이버시를 최우선으로 보호하며 최신 Zero-DB 클라이언트 아키텍처를 따릅니다.' 
+ : 'SNSHero.com Community prioritizes user privacy using a Zero-DB client architecture.'}
  </p>
 
  <div className="space-y-3">

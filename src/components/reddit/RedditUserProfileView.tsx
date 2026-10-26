@@ -111,7 +111,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
  u/{user.username}
  </h1>
  <p className="text-xs opacity-70 mt-0.5 max-w-lg">
- {user.about || (isKo ? 'SNSHero 커뮤니티의 활발한 멤버입니다.' : 'A curious explorer in the SNSHero community.')}
+ {user.about || (isKo ? '눈히어로.com 커뮤니티의 활발한 멤버입니다.' : 'A curious explorer in the SNSHero.com community.')}
  </p>
  </div>
  </div>

@@ -66,7 +66,7 @@ export const STARTER_DECK_PRESETS: StarterDeckPreset[] = [
 
 const STARTER_I18N: Record<string, Record<string, string>> = {
  ko: {
- modalTitle: '[눈히어로 판타지 // 엘윈 설원 전투 유파 선택]',
+ modalTitle: '[눈히어로.com - 카단의 여정 // 엘윈 설원 전투 유파 선택]',
  badge: '카단 연대기 공식 3대 영웅 유파 덱',
  subtitle: '원작 판타지 소설의 영웅들로 구성된 스타터 덱을 선택하여 엘윈 대륙으로 출격하세요.',
  vanguardTitle: '카단 서리 돌격 유파 (Kadan Vanguard)',

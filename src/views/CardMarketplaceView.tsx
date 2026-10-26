@@ -259,12 +259,12 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
     const shareUrl = `${origin}/?challenge=1-11-31-51-101&ref=market`;
     const dealName = hotBargainListing ? getCardTitle(hotBargainListing.listing.cardId) : 'SSR Legend Card';
     const shareText = language === 'ko'
-      ? `[SNSHero P2P 마켓 특가] ${dealName} 급매물 발견! 지금 무설치 3초 결투장 대결하고 특가 카드를 획득하세요: ${shareUrl}`
-      : `[SNSHero P2P Market Deal] ${dealName} spotted! Join the instant 3s duel and claim the deal: ${shareUrl}`;
+      ? `[눈히어로.com P2P 마켓 특가] ${dealName} 급매물 발견! 지금 무설치 3초 결투장 대결하고 특가 카드를 획득하세요: ${shareUrl}`
+      : `[SNSHero.com P2P Market Deal] ${dealName} spotted! Join the instant 3s duel and claim the deal: ${shareUrl}`;
 
     try {
       if (navigator.share) {
-        await navigator.share({ title: 'SNSHero P2P Market Deal', text: shareText, url: shareUrl });
+        await navigator.share({ title: language === 'ko' ? '눈히어로.com P2P 마켓 특가' : 'SNSHero.com P2P Market Deal', text: shareText, url: shareUrl });
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(shareText);
       }

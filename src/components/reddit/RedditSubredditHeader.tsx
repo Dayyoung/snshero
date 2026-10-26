@@ -34,13 +34,13 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
  if (name === 'popular') {
  return {
  title: isKo ? '인기 피드' : 'Popular',
- desc: isKo ? '현재 SNSHero 전역에서 가장 뜨겁게 화제가 되고 있는 게시물들입니다.' : 'The most active posts from across all of SNSHero right now.',
+ desc: isKo ? '현재 눈히어로.com 전역에서 가장 뜨겁게 화제가 되고 있는 게시물들입니다.' : 'The most active posts from across all of SNSHero.com right now.',
  };
  }
  if (name === 'all') {
  return {
  title: isKo ? '전체 피드' : 'All',
- desc: isKo ? 'SNSHero의 모든 커뮤니티에서 실시간으로 쏟아지는 전체 콘텐츠입니다.' : 'The complete firehose of community content.',
+ desc: isKo ? '눈히어로.com의 모든 커뮤니티에서 실시간으로 쏟아지는 전체 콘텐츠입니다.' : 'The complete firehose of SNSHero.com community content.',
  };
  }
  return {

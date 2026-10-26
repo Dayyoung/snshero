@@ -1,11 +1,12 @@
-# SNSHero Revolution (SNS히어로) - Complete AI Knowledge Base & Technical Specification
+# SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) - Complete AI Knowledge Base & Technical Specification
 
-Welcome to the comprehensive AI Knowledge Base for **SNSHero Revolution** (`https://snshero.com`). This document is fully optimized for Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), and LLM Agents (ChatGPT Search, Perplexity, Claude, Gemini, Copilot).
+Welcome to the comprehensive AI Knowledge Base for **SNSHero.com - Kadan's Journey** (`https://snshero.com`, Korean: **눈히어로.com - 카단의 여정**). This document is fully optimized for Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), and LLM Agents (ChatGPT Search, Perplexity, Claude, Gemini, Copilot).
 
 ---
 
 ## 1. Executive Summary & Core Identity
-- **Product Name**: SNS히어로 (SNSHero Revolution)
+- **Product Name (Korean)**: 눈히어로.com - 카단의 여정 (눈히어로.com)
+- **Product Name (English)**: SNSHero.com - Kadan's Journey (SNSHero.com)
 - **Tagline**: The One-Click AI Web Card Battle & 110-Game Mobile Arcade
 - **Live URL**: https://snshero.com
 - **Core Technology Stack**: React 19 + Vite 6 + TypeScript 5.8 + Tailwind CSS 4.1
@@ -66,12 +67,12 @@ Welcome to the comprehensive AI Knowledge Base for **SNSHero Revolution** (`http
 ## 3. Media, Economy & Social Hubs
 
 ### A. Webtoon & Lore Novels (`/novel`)
-- Season-based official webtoon: "Kadan & Arcane Echoes".
-- AI prompt lore scripts available in 12 languages.
+- Official Web Novel & Webtoon Series: "눈히어로.com - 카단의 여정" (Korean) / "SNSHero.com - Kadan's Journey" (English).
+- AI prompt lore scripts and official Part 1 e-Book PDFs available in 12 languages.
 - Reading completion awards bonus SNS points.
 
-### B. Cinematic Media Lounge (`/movie`)
-- Ambient streaming player for official trailers, animated character cuts, and game music.
+### B. Cinematic Media Lounge (`/movie` & `/cinema`)
+- Official 40-episode Animation series (`/movie`) and 40-episode Cinematic Movie series (`/cinema`) for "눈히어로.com - 카단의 여정 / SNSHero.com - Kadan's Journey".
 
 ### C. Live Prediction Markets (`/prediction`)
 - Real-time sports match and global event outcome prediction.

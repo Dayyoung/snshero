@@ -79,8 +79,8 @@ export const RedditChatDrawer: React.FC<RedditChatDrawerProps> = ({
  id: `msg_bot_${Date.now()}`,
  sender: 'CommunityBot',
  text: isKo 
- ? 'SNSHero 커뮤니티 채팅에 참여해 주셔서 감사합니다! 즐거운 토론 되세요.' 
- : 'Thanks for chatting on SNSHero! Enjoy the discussion.',
+ ? '눈히어로.com 커뮤니티 채팅에 참여해 주셔서 감사합니다! 즐거운 토론 되세요.' 
+ : 'Thanks for chatting on SNSHero.com! Enjoy the discussion.',
  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
  },
  ]);
@@ -132,7 +132,7 @@ export const RedditChatDrawer: React.FC<RedditChatDrawerProps> = ({
  isDark ? 'bg-[#181C1F] text-gray-400' : 'bg-gray-100 text-gray-500'
  }`}>
  <Sparkles className="inline w-3 h-3 text-[#FF4500] mr-1" />
- {isKo ? 'SNSHero 클린 채팅 채널에 오신 것을 환영합니다' : 'Welcome to SNSHero Clean Chat'}
+ {isKo ? '눈히어로.com 클린 채팅 채널에 오신 것을 환영합니다' : 'Welcome to SNSHero.com Clean Chat'}
  </span>
  </div>
 

@@ -51,7 +51,7 @@ export const MallView: React.FC<MallViewProps> = ({
  {/* ── Header ── */}
  <div className="shrink-0 p-3 sm:p-4 border-b border-[rgba(15,0,0,0.12)] bg-white">
  <PageHeader
- title={language === 'ko' ? 'SNSHero 공식 굿즈 몰' : 'SNSHero Official Goods Mall'}
+ title={language === 'ko' ? '눈히어로.com 공식 굿즈 몰' : 'SNSHero.com Official Goods Mall'}
  onBack={() => onNavigate('home')}
  rightAction={
  <div className="flex items-center gap-2">

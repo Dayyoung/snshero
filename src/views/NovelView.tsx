@@ -225,7 +225,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
   // Lightbox Modal state for cartoon full-screen image viewing
   const [lightboxSceneIndex, setLightboxSceneIndex] = useState<number | null>(null);
-  // Official Novel Book Cover Modal state ("눈히어로 - 카단의 여정")
+  // Official Novel Book Cover Modal state ("눈히어로.com - 카단의 여정")
   const [showBookCoverModal, setShowBookCoverModal] = useState<boolean>(false);
 
   // Cartoon layout mode: 'scroll' (vertical webtoon strip) or 'slides' (page-by-page carousel)
@@ -269,7 +269,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
     const epPad = pad2(epNum);
     const scPad = pad2(sceneIdx);
-    const cacheBust = '?v=conquest2009_v4';
+    const cacheBust = '?v=conquest2009_v5';
     if (cartoonArtStyle === 'liveaction') {
       return `/images/cinema/episode_${epPad}/scene_${scPad}.webp${cacheBust}`;
     }
@@ -575,7 +575,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
         if (!clean) continue;
 
         // Skip title headers inside the English TXT file
-        if (clean.startsWith('SNSHero Novel') || clean.startsWith('Episode ')) {
+        if (clean.startsWith('SNSHero') || clean.startsWith('Episode ')) {
           continue;
         }
 
@@ -881,7 +881,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </button>
           <div className="h-4 w-[1px] bg-[rgba(15,0,0,0.12)] mx-1" />
           <span className="font-bold text-xs sm:text-sm tracking-tight text-[#201d1d]">
-            [ NOVEL ARCHIVE : 40 EPISODES ({claimedCount}/40 · {claimedPct}%) ]
+            {language === 'ko'
+              ? `[ 눈히어로.com - 카단의 여정 (${claimedCount}/40 · ${claimedPct}%) ]`
+              : `[ SNSHero.com - Kadan's Journey (${claimedCount}/40 · ${claimedPct}%) ]`}
           </span>
         </div>
 
@@ -1022,7 +1024,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
             onNavigate('cinema');
           }}
           className="min-h-[44px] px-3.5 py-1.5 border border-[#201d1d] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-colors"
-          title={language === 'ko' ? 'SNSHero 공식 무비 (40화) 감상' : 'Watch SNSHero Official Movie'}
+          title={language === 'ko' ? '눈히어로.com - 카단의 여정 공식 무비 (40화) 감상' : "Watch SNSHero.com - Kadan's Journey Official Movie"}
         >
           <Sparkles size={15} className="text-amber-400" />
           <span>{language === 'ko' ? '[무비]' : '[Movie]'}</span>
@@ -1172,7 +1174,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
             readerTab === 'cartoon' && !isPromptMode ? "px-3 sm:px-4" : ""
           )}>
             <div className="flex items-start gap-3.5">
-              {/* Official Novel Book Cover Thumbnail ("눈히어로 - 카단의 여정") */}
+              {/* Official Novel Book Cover Thumbnail ("눈히어로.com - 카단의 여정") */}
               <button
                 type="button"
                 onClick={() => {
@@ -1181,11 +1183,11 @@ export const NovelView: React.FC<NovelViewProps> = ({
                   if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 }}
                 className="group relative shrink-0 w-16 sm:w-20 aspect-[2/3] border border-[#201d1d] rounded-none overflow-hidden bg-[#201d1d] cursor-pointer"
-                title={language === 'ko' ? '《눈히어로 - 카단의 여정》 공식 소설 표지 크게 보기' : "View 'SNSHero : Kadan's Journey' Official Book Cover"}
+                title={language === 'ko' ? '《눈히어로.com - 카단의 여정》 공식 소설 표지 크게 보기' : "View 'SNSHero.com - Kadan's Journey' Official Book Cover"}
               >
                 <img
                   src={getAssetUrl('/book/kadan_novel_cover.jpg')}
-                  alt="눈히어로 - 카단의 여정 소설 표지"
+                  alt={language === 'ko' ? '눈히어로.com - 카단의 여정 소설 표지' : "SNSHero.com - Kadan's Journey Book Cover"}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                 />
                 <span className="absolute bottom-0 inset-x-0 bg-[#201d1d]/85 text-[#fdfcfc] text-[9px] font-bold py-0.5 text-center font-mono">
@@ -1231,7 +1233,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                   )}
                 </div>
                 <p className="text-[11px] font-bold text-[#646262] mb-0.5">
-                  {language === 'ko' ? '눈히어로 - 카단의 여정 (SNSHero : Kadan’s Journey)' : 'SNSHero : Kadan’s Journey — Official Novel'}
+                  {language === 'ko' ? '눈히어로.com - 카단의 여정' : "SNSHero.com - Kadan's Journey"}
                 </p>
                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
                   {parsedContent.title}
@@ -1729,7 +1731,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         sceneIndex={scNum}
                         totalScenes={totalEpisodeScenes}
                         imgUrl={imgUrl}
-                        localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v4` : undefined)}
+                        localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v5` : undefined)}
                         isKeyClimax={imgInfo?.isKeyClimax}
                         narrationText={sentenceText || ''}
                         dialogues={imgInfo?.dialogues}
@@ -1796,7 +1798,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                           sceneIndex={scNum}
                           totalScenes={totalEpisodeScenes}
                           imgUrl={imgUrl}
-                          localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v4` : undefined)}
+                          localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v5` : undefined)}
                           isKeyClimax={imgInfo?.isKeyClimax}
                           narrationText={sentenceText || ''}
                           dialogues={imgInfo?.dialogues}
@@ -1998,7 +2000,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
       {/* Footer info */}
       <footer className="w-full border-t border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] py-4 text-center font-mono text-[11px] text-[#646262]">
-        <p>© 2026 SNSHero Revolution — Official Web Novel /public/book (40 Episodes)</p>
+        <p>{language === 'ko' ? '© 2026 눈히어로.com - 카단의 여정 (40부작 공식 웹소설)' : "© 2026 SNSHero.com - Kadan's Journey (40 Episodes Official Web Novel)"}</p>
       </footer>
 
       {/* ── EPISODE SELECTOR MODAL ── */}
@@ -2407,7 +2409,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
         </button>
       </aside>
 
-      {/* Official Novel Book Cover Modal ("눈히어로 - 카단의 여정") */}
+      {/* Official Novel Book Cover Modal ("눈히어로.com - 카단의 여정") */}
       {showBookCoverModal && (
         <div
           className="fixed inset-0 z-[99999] bg-[#201d1d]/90 flex items-center justify-center p-4 font-mono"
@@ -2420,8 +2422,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
             <div className="px-4 py-3 border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex items-center justify-between">
               <span className="text-xs font-bold tracking-tight">
                 {language === 'ko'
-                  ? '[ OFFICIAL BOOK COVER : 눈히어로 - 카단의 여정 ]'
-                  : '[ OFFICIAL BOOK COVER : SNSHero - Kadan’s Journey ]'}
+                  ? '[ OFFICIAL BOOK COVER : 눈히어로.com - 카단의 여정 ]'
+                  : "[ OFFICIAL BOOK COVER : SNSHero.com - Kadan's Journey ]"}
               </span>
               <button
                 type="button"
@@ -2436,15 +2438,17 @@ export const NovelView: React.FC<NovelViewProps> = ({
             <div className="p-4 bg-[#201d1d] flex items-center justify-center">
               <img
                 src={getAssetUrl('/book/kadan_novel_cover.jpg')}
-                alt="눈히어로 - 카단의 여정 공식 소설책 표지"
+                alt={language === 'ko' ? '눈히어로.com - 카단의 여정 공식 소설책 표지' : "SNSHero.com - Kadan's Journey Official Book Cover"}
                 className="w-full max-h-[68vh] object-contain border border-[#646262]/40 rounded-none"
               />
             </div>
 
             <div className="px-4 py-3 border-t border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-between gap-2">
               <div className="text-[11px] text-[#646262]">
-                <p className="font-bold text-[#201d1d]">눈히어로 : 카단의 여정 (40부작 완결)</p>
-                <p>SNSHero : Kadan’s Journey — Official Fantasy Novel</p>
+                <p className="font-bold text-[#201d1d]">
+                  {language === 'ko' ? '눈히어로.com - 카단의 여정 (40부작 완결)' : "SNSHero.com - Kadan's Journey (40 Episodes Complete)"}
+                </p>
+                <p>{language === 'ko' ? "SNSHero.com - Kadan's Journey — Official Fantasy Novel" : '눈히어로.com - 카단의 여정 — 공식 판타지 웹소설'}</p>
               </div>
               <div className="flex items-center gap-2">
                 <a

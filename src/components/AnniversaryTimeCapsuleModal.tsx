@@ -51,7 +51,7 @@ export const AnniversaryTimeCapsuleModal: React.FC<AnniversaryTimeCapsuleModalPr
  </div>
 
  <div>
- <h4 className="text-sm font-black text-white">SNS히어로와 함께한 {daysActive}일!</h4>
+ <h4 className="text-sm font-black text-white">눈히어로.com과 함께한 {daysActive}일!</h4>
  <div className="text-[11px] text-slate-400 mt-1">
  누적 대전 횟수: <span className="text-amber-400 font-bold">{totalBattles}회</span>
  </div>

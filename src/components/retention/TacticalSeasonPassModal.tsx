@@ -17,7 +17,7 @@ export interface TacticalSeasonPassModalProps {
 
 const PASS_I18N: Record<string, Record<string, string>> = {
  ko: {
- modalTitle: '[눈히어로 시즌 1 // 혹한의 성전 로드맵]',
+ modalTitle: '[눈히어로.com - 카단의 여정 시즌 1 // 혹한의 성전 로드맵]',
  badge: '30일 엘윈 설원 순찰 성전 듀얼 트랙',
  boosterActive: '[성전의 축복: 2X EXP 복귀 부스터 가동 중 48:00:00]',
  standardTrack: '[견습 기사단 트랙 (무료)]',

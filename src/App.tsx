@@ -628,25 +628,26 @@ function AppContent() {
   useEffect(() => {
     if (typeof document === 'undefined') return;
     try {
-      const brandTitle = language === 'ko' ? '눈히어로.com' : 'S&SHero.com';
+      const isKo = language === 'ko';
+      const brandTitle = isKo ? '눈히어로.com' : 'SNSHero.com';
       const viewTitleMap: Record<string, string> = {
-        home: `${brandTitle} - 원클릭 AI 웹 카드 배틀`,
-        mydeck: '마이덱 (My Deck) - 덱 편집 & 카드 육성',
-        shop: '상점 (Shop) - 카드 소환 & 굿즈 몰',
-        ranking: '랭킹대전 (Rank Match) - 명예의 전당',
-        'card-play': '카드 배틀 아레나 (Battle Arena)',
-        novel: '웹소설 라운지 (Web Novel)',
-        webtoon: '웹툰 스튜디오 (Webtoon Studio)',
-        movie: '공식 애니메이션 40화 (Official Animation 40 Episodes)',
-        cinema: '공식 무비 40화 (Official Movie 40 Episodes)',
-        'stock-market': 'SNS 주식 거래소 (Stock Market)',
-        'card-marketplace': '카드 P2P 거래소 (Marketplace)',
-        'prediction-market': '승부 예측 시장 (Prediction Market)',
-        'season-hub': '시즌 허브 (Season Hub)',
-        boost: '부스트 & 행운 복권 (Boost)',
-        god: '신전 판테온 (Pantheon)',
-        community: '히어로 커뮤니티 (Community)',
-        play: '110종 모바일 미션 게임 (Games)'
+        home: isKo ? '눈히어로.com - 카단의 여정 (원클릭 AI 웹 카드 배틀)' : "SNSHero.com - Kadan's Journey (One-Click AI Web Card Battle)",
+        mydeck: isKo ? '마이덱 - 덱 편집 & 카드 육성' : 'My Deck - Deck Builder & Card Growth',
+        shop: isKo ? '상점 - 카드 소환 & 굿즈 몰' : 'Shop - Card Summon & Goods Mall',
+        ranking: isKo ? '랭킹대전 - 명예의 전당' : 'Rank Match - Hall of Fame',
+        'card-play': isKo ? '카드 배틀 아레나' : 'Card Battle Arena',
+        novel: isKo ? '공식 웹소설 (눈히어로.com - 카단의 여정)' : "Official Web Novel (SNSHero.com - Kadan's Journey)",
+        webtoon: isKo ? '공식 웹툰 (눈히어로.com - 카단의 여정)' : "Official Webtoon (SNSHero.com - Kadan's Journey)",
+        movie: isKo ? '공식 애니메이션 40화 (눈히어로.com - 카단의 여정)' : "Official Animation 40 Episodes (SNSHero.com - Kadan's Journey)",
+        cinema: isKo ? '공식 무비 40화 (눈히어로.com - 카단의 여정)' : "Official Movie 40 Episodes (SNSHero.com - Kadan's Journey)",
+        'stock-market': isKo ? 'SNS 주식 거래소' : 'SNS Stock Market',
+        'card-marketplace': isKo ? '카드 P2P 거래소' : 'Card P2P Marketplace',
+        'prediction-market': isKo ? '승부 예측 시장' : 'Prediction Market',
+        'season-hub': isKo ? '시즌 허브' : 'Season Hub',
+        boost: isKo ? '부스트 & 행운 복권' : 'Boost & Lucky Lottery',
+        god: isKo ? '신전 판테온' : 'Pantheon Temple',
+        community: isKo ? '히어로 커뮤니티' : 'Hero Community',
+        play: isKo ? '110종 모바일 미션 게임' : '110 Mobile Mission Games'
       };
       const title = viewTitleMap[view] || `${brandTitle} - ${view}`;
       document.title = `${title} | ${brandTitle}`;
@@ -657,7 +658,9 @@ function AppContent() {
         metaDesc.setAttribute('name', 'description');
         document.head.appendChild(metaDesc);
       }
-      metaDesc.setAttribute('content', `${title} - 원클릭 AI 웹 카드 배틀 & 110종 모바일 게임 ${brandTitle}`);
+      metaDesc.setAttribute('content', isKo
+        ? `${title} - 눈히어로.com - 카단의 여정 원클릭 AI 웹 카드 배틀 & 110종 모바일 게임`
+        : `${title} - SNSHero.com - Kadan's Journey One-Click AI Web Card Battle & 110 Mobile Games`);
     } catch {}
   }, [view, language]);
 
@@ -3213,7 +3216,7 @@ function AppContent() {
     // Trigger typing indicator immediately
     const typingBotLabel = localAiStatus.state === 'ready' 
       ? t('local_ai_bot_name', language) 
-      : (language === 'ko' ? 'SNS히어로 AI' : 'SNSHero AI');
+      : (language === 'ko' ? '눈히어로.com AI' : 'SNSHero.com AI');
     setIsAiTyping(true);
     setAiTypingName(typingBotLabel);
     scrollToBottom();
@@ -6887,11 +6890,11 @@ function AppContent() {
                           window.dispatchEvent(new PopStateEvent('popstate'));
                         }}
                         className="inline-flex items-center shrink-0 cursor-pointer bg-transparent transition-opacity hover:opacity-85"
-                        aria-label={language === 'ko' ? '눈히어로.com 홈으로 이동' : 'Go to S&SHero.com Home'}
+                        aria-label={language === 'ko' ? '눈히어로.com 홈으로 이동' : 'Go to SNSHero.com Home'}
                       >
                         <img
                           src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
-                          alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+                          alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}
                           className="h-8 w-auto object-contain bg-transparent"
                         />
                       </a>
@@ -7238,7 +7241,7 @@ function AppContent() {
                       >
                         <img
                           src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
-                          alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+                          alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}
                           onClick={(e) => {
                             e.stopPropagation();
                             playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -7249,7 +7252,7 @@ function AppContent() {
                           }}
                           className="h-5 w-auto object-contain bg-transparent cursor-pointer"
                         />
-                        <span>{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'} v2.1.0</span>
+                        <span>{language === 'ko' ? '눈히어로.com' : 'SNSHero.com'} v2.1.0</span>
                       </button>
                     </div>
                   </div>

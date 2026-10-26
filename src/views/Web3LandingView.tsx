@@ -13,10 +13,10 @@ interface Web3LandingViewProps {
 
 const helpSlides = (lang: Language) => [
  {
- title: lang === 'ko' ? 'Web3 SNSHero' : 'Web3 SNSHero',
+ title: lang === 'ko' ? 'Web3 눈히어로.com' : 'Web3 SNSHero.com',
  content: lang === 'ko'
- ? 'SNSHero는 블록체인 기반 카드 배틀 게임입니다. 브라우저에서 바로 플레이할 수 있으며, 별도 지갑 연결 없이 시작할 수 있습니다.'
- : 'SNSHero is a blockchain-based card battle game. Play directly in your browser with no wallet connection required.',
+ ? '눈히어로.com은 블록체인 기반 카드 배틀 게임입니다. 브라우저에서 바로 플레이할 수 있으며, 별도 지갑 연결 없이 시작할 수 있습니다.'
+ : 'SNSHero.com is a blockchain-based card battle game. Play directly in your browser with no wallet connection required.',
  },
  {
  title: lang === 'ko' ? '암호화폐 결제' : 'Crypto Payments',
@@ -74,7 +74,7 @@ export const Web3LandingView: React.FC<Web3LandingViewProps> = ({
  <div className="flex items-center gap-2">
  <Sparkles className="w-5 h-5 text-indigo-500" />
  <span className="text-base md:text-lg font-bold text-slate-800 tracking-tight">
- SNSHero
+ {language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}
  </span>
  </div>
  <div className="flex items-center gap-2">

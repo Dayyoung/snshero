@@ -54,7 +54,7 @@ export function getCardSeoTitle(cardId: number, lang: Language): string {
   if (!card) return t('seo_title_wiki_card', lang);
 
   const cardName = lang === 'ko' ? card.title : (card.title_en || card.title);
-  const suffix = lang === 'ko' ? 'SNS히어로 카드 도감' : 'SNSHero Card Encyclopedia';
+  const suffix = lang === 'ko' ? '눈히어로.com - 카단의 여정 카드 도감' : "SNSHero.com - Kadan's Journey Card Encyclopedia";
 
   return `${cardName} - ${suffix}`;
 }
@@ -83,7 +83,7 @@ export function getCardSeoDescription(cardId: number, lang: Language): string {
     if (stats) parts.push(`스탯 ${stats}`);
     if (power) parts.push(power);
     if (card.lore_ko) parts.push(card.lore_ko.slice(0, 80));
-    return parts.join('. ') + ' - SNS히어로 카드 도감에서 확인하세요.';
+    return parts.join('. ') + ' - 눈히어로.com - 카단의 여정 카드 도감에서 확인하세요.';
   }
 
   const parts = [`${cardName} card details`];
@@ -92,7 +92,7 @@ export function getCardSeoDescription(cardId: number, lang: Language): string {
   if (stats) parts.push(`Stats ${stats}`);
   if (power) parts.push(power);
   if (card.lore_en) parts.push(card.lore_en.slice(0, 80));
-  return parts.join('. ') + ' - Browse the SNSHero Card Encyclopedia.';
+  return parts.join('. ') + " - Browse the SNSHero.com - Kadan's Journey Card Encyclopedia.";
 }
 
 /**

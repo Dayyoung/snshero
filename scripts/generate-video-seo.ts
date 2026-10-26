@@ -62,15 +62,17 @@ function generateVideoSitemapXml(episodes: MovieEpisodeMeta[]): string {
     <loc>${BASE_URL}/movie</loc>
     <video:video>
       <video:thumbnail_loc>https://i.ytimg.com/vi/${escapeXml(firstAnimeVid)}/maxresdefault.jpg</video:thumbnail_loc>
-      <video:title>${escapeXml('SNSHero 공식 애니메이션 40화 전편 (카단과 아케인의 메아리) - 무료 시청 & +100 SNS 보상')}</video:title>
-      <video:description>${escapeXml('설치 없이 웹에서 바로 즐기는 AI 웹 카드 배틀 SNSHero(SNS히어로)의 공식 40부작 판타지 애니메이션 시리즈. 매 화 시청 시 +100 SNS 포인트를 즉시 지급합니다.')}</video:description>
+      <video:title>${escapeXml('눈히어로.com - 카단의 여정 공식 애니메이션 40화 전편 (SNSHero.com - Kadan\'s Journey) - 무료 시청 & +100 SNS 보상')}</video:title>
+      <video:description>${escapeXml('설치 없이 웹에서 바로 즐기는 AI 웹 카드 배틀 눈히어로.com (SNSHero.com)의 공식 40부작 판타지 애니메이션 시리즈 《눈히어로.com - 카단의 여정》. 매 화 시청 시 +100 SNS 포인트를 즉시 지급합니다.')}</video:description>
       <video:player_loc allow_embed="yes">https://www.youtube.com/embed/${escapeXml(firstAnimeVid)}?list=${ANIME_PLAYLIST_ID}</video:player_loc>
       <video:duration>360</video:duration>
       <video:publication_date>${pubDate}</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
       <video:live>no</video:live>
-      <video:tag>SNSHero</video:tag>
-      <video:tag>SNS히어로</video:tag>
+      <video:tag>눈히어로.com</video:tag>
+      <video:tag>SNSHero.com</video:tag>
+      <video:tag>눈히어로.com - 카단의 여정</video:tag>
+      <video:tag>SNSHero.com - Kadan&apos;s Journey</video:tag>
       <video:tag>애니메이션</video:tag>
       <video:tag>판타지 애니메이션</video:tag>
       <video:tag>AI 카드 게임</video:tag>
@@ -83,15 +85,17 @@ function generateVideoSitemapXml(episodes: MovieEpisodeMeta[]): string {
     <loc>${BASE_URL}/cinema</loc>
     <video:video>
       <video:thumbnail_loc>https://i.ytimg.com/vi/${escapeXml(firstMovieVid)}/maxresdefault.jpg</video:thumbnail_loc>
-      <video:title>${escapeXml('SNSHero 공식 무비 40화 전편 (Kadan & Arcane Echoes: The Movie) - 무료 감상 & +100 SNS 보상')}</video:title>
-      <video:description>${escapeXml('AI 웹 카드 배틀 SNSHero(SNS히어로)의 공식 40부작 시네마틱 무비 시리즈. 카단과 110여 종 영웅들의 장대한 실사풍 판타지 서사시를 감상하고 회차별 +100 SNS 보상을 획득하세요.')}</video:description>
+      <video:title>${escapeXml('눈히어로.com - 카단의 여정 공식 무비 40화 전편 (SNSHero.com - Kadan\'s Journey) - 무료 감상 & +100 SNS 보상')}</video:title>
+      <video:description>${escapeXml('AI 웹 카드 배틀 눈히어로.com (SNSHero.com)의 공식 40부작 시네마틱 무비 시리즈 《눈히어로.com - 카단의 여정》. 카단과 110여 종 영웅들의 장대한 실사풍 판타지 서사시를 감상하고 회차별 +100 SNS 보상을 획득하세요.')}</video:description>
       <video:player_loc allow_embed="yes">https://www.youtube.com/embed/${escapeXml(firstMovieVid)}?list=${MOVIE_PLAYLIST_ID}</video:player_loc>
       <video:duration>360</video:duration>
       <video:publication_date>${pubDate}</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
       <video:live>no</video:live>
-      <video:tag>SNSHero</video:tag>
-      <video:tag>SNS히어로</video:tag>
+      <video:tag>눈히어로.com</video:tag>
+      <video:tag>SNSHero.com</video:tag>
+      <video:tag>눈히어로.com - 카단의 여정</video:tag>
+      <video:tag>SNSHero.com - Kadan&apos;s Journey</video:tag>
       <video:tag>무비</video:tag>
       <video:tag>판타지 영화</video:tag>
       <video:tag>웹 카드 게임</video:tag>
@@ -102,8 +106,8 @@ function generateVideoSitemapXml(episodes: MovieEpisodeMeta[]): string {
   for (const ep of episodes) {
     const vid = ep.videoId || firstAnimeVid;
     const durationSec = Math.max(180, Math.min(1800, (ep.durationMinutes || 6) * 60));
-    const title = `SNSHero 애니메이션 제${ep.episodeNumber}화: ${ep.titleKo} (${ep.titleEn}) | SNS히어로 공식 애니`;
-    const desc = `[SNSHero 공식 애니메이션 ${ep.episodeNumber}화 - ${ep.arc}] ${ep.synopsisKo} (${ep.synopsisEn}) 등장 영웅: ${ep.keyCharacters.join(', ')}. 시청 완료 시 +100 SNS 포인트 즉시 지급!`;
+    const title = `눈히어로.com - 카단의 여정 애니메이션 제${ep.episodeNumber}화: ${ep.titleKo} (${ep.titleEn}) | SNSHero.com - Kadan's Journey`;
+    const desc = `[눈히어로.com - 카단의 여정 공식 애니메이션 ${ep.episodeNumber}화 - ${ep.arc}] ${ep.synopsisKo} (${ep.synopsisEn}) 등장 영웅: ${ep.keyCharacters.join(', ')}. 시청 완료 시 +100 SNS 포인트 즉시 지급!`;
     urlEntries.push(`  <url>
     <loc>${BASE_URL}/movie/ep-${ep.episodeNumber}</loc>
     <video:video>
@@ -115,8 +119,9 @@ function generateVideoSitemapXml(episodes: MovieEpisodeMeta[]): string {
       <video:publication_date>${pubDate}</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
       <video:live>no</video:live>
-      <video:tag>SNSHero</video:tag>
-      <video:tag>SNS히어로 애니메이션</video:tag>
+      <video:tag>눈히어로.com</video:tag>
+      <video:tag>SNSHero.com</video:tag>
+      <video:tag>눈히어로.com - 카단의 여정</video:tag>
       <video:tag>${escapeXml(ep.titleKo)}</video:tag>
       <video:tag>${escapeXml(ep.titleEn)}</video:tag>
       ${ep.keyCharacters.map((c) => `<video:tag>${escapeXml(c)}</video:tag>`).join('\n      ')}
@@ -128,8 +133,8 @@ function generateVideoSitemapXml(episodes: MovieEpisodeMeta[]): string {
   for (const ep of episodes) {
     const vid = ep.movieVideoId || firstMovieVid;
     const durationSec = Math.max(180, Math.min(1800, (ep.durationMinutes || 6) * 60));
-    const title = `SNSHero 무비 제${ep.episodeNumber}화: ${ep.titleKo} (${ep.titleEn}) | SNS히어로 공식 무비`;
-    const desc = `[SNSHero 공식 무비 ${ep.episodeNumber}화 - ${ep.arc}] ${ep.synopsisKo} (${ep.synopsisEn}) 주요 등장인물: ${ep.keyCharacters.join(', ')}. 감상 완료 시 +100 SNS 포인트 즉시 지급!`;
+    const title = `눈히어로.com - 카단의 여정 무비 제${ep.episodeNumber}화: ${ep.titleKo} (${ep.titleEn}) | SNSHero.com - Kadan's Journey`;
+    const desc = `[눈히어로.com - 카단의 여정 공식 무비 ${ep.episodeNumber}화 - ${ep.arc}] ${ep.synopsisKo} (${ep.synopsisEn}) 주요 등장인물: ${ep.keyCharacters.join(', ')}. 감상 완료 시 +100 SNS 포인트 즉시 지급!`;
     urlEntries.push(`  <url>
     <loc>${BASE_URL}/cinema/ep-${ep.episodeNumber}</loc>
     <video:video>
@@ -141,8 +146,9 @@ function generateVideoSitemapXml(episodes: MovieEpisodeMeta[]): string {
       <video:publication_date>${pubDate}</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
       <video:live>no</video:live>
-      <video:tag>SNSHero</video:tag>
-      <video:tag>SNS히어로 무비</video:tag>
+      <video:tag>눈히어로.com</video:tag>
+      <video:tag>SNSHero.com</video:tag>
+      <video:tag>눈히어로.com - 카단의 여정</video:tag>
       <video:tag>${escapeXml(ep.titleKo)}</video:tag>
       <video:tag>${escapeXml(ep.titleEn)}</video:tag>
       ${ep.keyCharacters.map((c) => `<video:tag>${escapeXml(c)}</video:tag>`).join('\n      ')}
@@ -181,10 +187,10 @@ function buildEpisodeHtml(
   const pubDateIso = '2026-10-12T00:00:00+09:00';
   const durationIso = `PT${ep.durationMinutes || 6}M`;
 
-  const seriesLabelKo = isAnime ? 'SNSHero 공식 애니메이션 40화' : 'SNSHero 공식 무비 40화';
-  const seriesLabelEn = isAnime ? 'SNSHero Official Animation (40 Episodes)' : 'SNSHero Official Movie (40 Episodes)';
+  const seriesLabelKo = isAnime ? '눈히어로.com - 카단의 여정 공식 애니메이션 40화' : '눈히어로.com - 카단의 여정 공식 무비 40화';
+  const seriesLabelEn = isAnime ? "SNSHero.com - Kadan's Journey Official Animation (40 Episodes)" : "SNSHero.com - Kadan's Journey Official Movie (40 Episodes)";
 
-  const pageTitle = `${isAnime ? '애니메이션' : '무비'} 제${ep.episodeNumber}화: ${ep.titleKo} (${ep.titleEn}) | ${seriesLabelKo} - SNS히어로`;
+  const pageTitle = `${isAnime ? '애니메이션' : '무비'} 제${ep.episodeNumber}화: ${ep.titleKo} (${ep.titleEn}) | ${seriesLabelKo} - 눈히어로.com`;
   const pageDesc = `[${seriesLabelKo} 제${ep.episodeNumber}화 - ${ep.titleKo}] ${ep.synopsisKo} 주요 영웅: ${ep.keyCharacters.join(', ')}. 유튜브 무료 스트리밍 시청 시 +100 SNS 게임 재화 즉시 지급! (${ep.synopsisEn})`;
 
   const prevEp = ep.episodeNumber > 1 ? allEpisodes[ep.episodeNumber - 2] : null;
@@ -213,7 +219,7 @@ function buildEpisodeHtml(
         isFamilyFriendly: true,
         publisher: {
           '@type': 'Organization',
-          name: 'SNSHero (SNS히어로)',
+          name: '눈히어로.com (SNSHero.com)',
           url: BASE_URL,
           logo: {
             '@type': 'ImageObject',
@@ -262,7 +268,7 @@ function buildEpisodeHtml(
           {
             '@type': 'ListItem',
             position: 1,
-            name: 'SNSHero 홈',
+            name: '눈히어로.com 홈',
             item: BASE_URL,
           },
           {
@@ -292,7 +298,7 @@ function buildEpisodeHtml(
           },
           {
             '@type': 'Question',
-            name: `SNSHero ${isAnime ? '애니메이션' : '무비'} 제${ep.episodeNumber}화를 시청하면 어떤 보상을 받나요?`,
+            name: `눈히어로.com - 카단의 여정 ${isAnime ? '애니메이션' : '무비'} 제${ep.episodeNumber}화를 시청하면 어떤 보상을 받나요?`,
             acceptedAnswer: {
               '@type': 'Answer',
               text: `https://snshero.com${routePrefix}/ep-${ep.episodeNumber} 에서 제${ep.episodeNumber}화를 감상하고 '시청 완료 보상' 버튼을 누르면 즉시 +100 SNS 포인트가 지급되며, 유튜브 전체 플레이리스트 방문 시 +300 SNS 보너스를 추가로 획득하여 AI 웹 카드 배틀의 영웅 카드를 무료로 소환할 수 있습니다.`,
@@ -307,7 +313,7 @@ function buildEpisodeHtml(
     <main style="max-width: 960px; margin: 0 auto; padding: 24px 16px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: #201d1d; background: #fdfcfc; line-height: 1.7;">
       <nav aria-label="Breadcrumb" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid rgba(32,29,29,0.2); padding-bottom: 12px; margin-bottom: 20px; font-size: 13px;">
         <div>
-          <a href="/" style="color: #201d1d; font-weight: 700; text-decoration: none;">SNSHero 홈</a>
+          <a href="/" style="color: #201d1d; font-weight: 700; text-decoration: none;">눈히어로.com 홈</a>
           <span style="margin: 0 6px;">/</span>
           <a href="${routePrefix}" style="color: #201d1d; font-weight: 700; text-decoration: none;">${escapeHtml(seriesLabelKo)}</a>
           <span style="margin: 0 6px;">/</span>
@@ -399,8 +405,10 @@ function buildEpisodeHtml(
     videoEmbedUrl: youtubeEmbedUrl,
     ogType: 'video.episode',
     keywords: [
-      'SNSHero',
-      'SNS히어로',
+      '눈히어로.com',
+      'SNSHero.com',
+      '눈히어로.com - 카단의 여정',
+      "SNSHero.com - Kadan's Journey",
       seriesLabelKo,
       `제${ep.episodeNumber}화`,
       ep.titleKo,
@@ -434,12 +442,12 @@ function buildSeriesHubHtml(
   const embedUrl = `https://www.youtube.com/embed/${firstVid}?list=${playlistId}&rel=0`;
 
   const title = isAnime
-    ? 'SNSHero 공식 애니메이션 40화 전편 스트리밍 (카단과 아케인의 메아리) | SNS히어로'
-    : 'SNSHero 공식 무비 40화 전편 스트리밍 (Kadan & Arcane Echoes: The Movie) | SNS히어로';
+    ? "눈히어로.com - 카단의 여정 공식 애니메이션 40화 전편 스트리밍 | SNSHero.com - Kadan's Journey"
+    : "눈히어로.com - 카단의 여정 공식 무비 40화 전편 스트리밍 | SNSHero.com - Kadan's Journey";
 
   const description = isAnime
-    ? 'SNSHero(SNS히어로) 공식 40부작 판타지 애니메이션 전편 무료 감상! 카단과 110여 종 영웅들의 서사시를 유튜브 플레이리스트(PLBTRBTakaSNU)로 시청하고 매 화 +100 SNS 게임 보상을 즉시 수령하세요.'
-    : 'SNSHero(SNS히어로) 공식 40부작 시네마틱 무비 전편 무료 감상! 카단과 아케인 대륙의 블록버스터 판타지 무비 시리즈(PLeb-8Xpcho0o)를 시청하고 회차별 +100 SNS 보상을 즉시 획득하세요.';
+    ? '눈히어로.com - 카단의 여정 (SNSHero.com - Kadan\'s Journey) 공식 40부작 판타지 애니메이션 전편 무료 감상! 카단과 110여 종 영웅들의 서사시를 유튜브 플레이리스트(PLBTRBTakaSNU)로 시청하고 매 화 +100 SNS 게임 보상을 즉시 수령하세요.'
+    : '눈히어로.com - 카단의 여정 (SNSHero.com - Kadan\'s Journey) 공식 40부작 시네마틱 무비 전편 무료 감상! 카단과 아케인 대륙의 블록버스터 판타지 무비 시리즈(PLeb-8Xpcho0o)를 시청하고 회차별 +100 SNS 보상을 즉시 획득하세요.';
 
   const jsonLdGraph = {
     '@context': 'https://schema.org',
@@ -457,14 +465,14 @@ function buildSeriesHubHtml(
         genre: ['Fantasy', 'Action', 'Adventure', 'Animation', 'Game Lore'],
         publisher: {
           '@type': 'Organization',
-          name: 'SNSHero (SNS히어로)',
+          name: '눈히어로.com (SNSHero.com)',
           url: BASE_URL,
         },
         sameAs: [playlistUrl],
       },
       {
         '@type': 'ItemList',
-        name: isAnime ? 'SNSHero 공식 애니메이션 40화 전체 에피소드 목록' : 'SNSHero 공식 무비 40화 전체 에피소드 목록',
+        name: isAnime ? '눈히어로.com - 카단의 여정 공식 애니메이션 40화 전체 에피소드 목록' : '눈히어로.com - 카단의 여정 공식 무비 40화 전체 에피소드 목록',
         numberOfItems: episodes.length,
         itemListElement: episodes.map((ep, idx) => {
           const vid = (isAnime ? ep.videoId : ep.movieVideoId) || firstVid;
@@ -491,13 +499,13 @@ function buildSeriesHubHtml(
           {
             '@type': 'Question',
             name: isAnime
-              ? 'SNSHero 공식 애니메이션 40화는 어디서 무료로 볼 수 있나요?'
-              : 'SNSHero 공식 무비 40화는 어디서 무료로 볼 수 있나요?',
+              ? '눈히어로.com - 카단의 여정 공식 애니메이션 40화는 어디서 무료로 볼 수 있나요?'
+              : '눈히어로.com - 카단의 여정 공식 무비 40화는 어디서 무료로 볼 수 있나요?',
             acceptedAnswer: {
               '@type': 'Answer',
               text: isAnime
-                ? `SNSHero 공식 웹사이트(https://snshero.com/movie)와 공식 유튜브 플레이리스트(${ANIME_PLAYLIST_URL})에서 1화부터 40화까지 전편 무료로 시청할 수 있습니다.`
-                : `SNSHero 공식 웹사이트(https://snshero.com/cinema)와 공식 유튜브 플레이리스트(${MOVIE_PLAYLIST_URL})에서 1화부터 40화까지 전편 무료로 감상할 수 있습니다.`,
+                ? `눈히어로.com 공식 웹사이트(https://snshero.com/movie)와 공식 유튜브 플레이리스트(${ANIME_PLAYLIST_URL})에서 1화부터 40화까지 전편 무료로 시청할 수 있습니다.`
+                : `눈히어로.com 공식 웹사이트(https://snshero.com/cinema)와 공식 유튜브 플레이리스트(${MOVIE_PLAYLIST_URL})에서 1화부터 40화까지 전편 무료로 감상할 수 있습니다.`,
             },
           },
           {
@@ -517,9 +525,9 @@ function buildSeriesHubHtml(
     <main style="max-width: 980px; margin: 0 auto; padding: 24px 16px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: #201d1d; background: #fdfcfc; line-height: 1.7;">
       <header style="border-bottom: 2px solid #201d1d; padding-bottom: 16px; margin-bottom: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
         <div>
-          <div style="font-size: 12px; font-weight: 800; color: #646262;">SNSHero Official Transmedia Universe</div>
+          <div style="font-size: 12px; font-weight: 800; color: #646262;">SNSHero.com - Kadan's Journey Transmedia Universe</div>
           <h1 style="font-size: 26px; font-weight: 900; margin: 4px 0 6px 0;">
-            ${isAnime ? '📺 SNSHero 공식 애니메이션 40화 전편 (Animation Series)' : '🎬 SNSHero 공식 무비 40화 전편 (Official Movie Series)'}
+            ${isAnime ? "📺 눈히어로.com - 카단의 여정 공식 애니메이션 40화 전편 (SNSHero.com - Kadan's Journey)" : "🎬 눈히어로.com - 카단의 여정 공식 무비 40화 전편 (SNSHero.com - Kadan's Journey)"}
           </h1>
           <p style="font-size: 14px; color: #646262; margin: 0;">
             ${escapeHtml(description)}
@@ -585,10 +593,13 @@ function buildSeriesHubHtml(
     videoEmbedUrl: embedUrl,
     ogType: 'video.tv_show',
     keywords: [
-      'SNSHero',
-      'SNS히어로',
-      isAnime ? 'SNSHero 애니메이션 40화' : 'SNSHero 무비 40화',
-      '카단과 아케인의 메아리',
+      '눈히어로.com',
+      'SNSHero.com',
+      '눈히어로.com - 카단의 여정',
+      "SNSHero.com - Kadan's Journey",
+      isAnime ? '눈히어로.com 애니메이션 40화' : '눈히어로.com 무비 40화',
+      '카단의 여정',
+      "Kadan's Journey",
       'AI 웹 카드 배틀',
       '판타지 애니메이션',
       '판타지 무비',

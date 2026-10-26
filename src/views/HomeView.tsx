@@ -212,8 +212,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
     {
       title: language === 'ko' ? '공식 웹소설' : 'Official Web Novel',
       body: language === 'ko'
-        ? '눈히어로: 카단과 아케인의 메아리 — 평범하고 우직한 청년 카단이 아케인 대륙의 11개 종족을 모험하며 힘을 일깨우고 위대한 영웅으로 거듭나는 정통 모험 판타지입니다. 매주 새로운 회차가 연재됩니다.'
-        : 'SNSHero: Kadan & Arcane Echoes — a classic adventure fantasy following the simple yet determined youth Kadan as he explores 11 races across the Arcane continent, awakening his power to become a legendary hero. New chapters weekly.',
+        ? '눈히어로.com - 카단의 여정 — 평범하고 우직한 청년 카단이 아케인 대륙의 11개 종족을 모험하며 힘을 일깨우고 위대한 영웅으로 거듭나는 정통 모험 판타지입니다. 매주 새로운 회차가 연재됩니다.'
+        : "SNSHero.com - Kadan's Journey — a classic adventure fantasy following the simple yet determined youth Kadan as he explores 11 races across the Arcane continent, awakening his power to become a legendary hero. New chapters weekly.",
     },
     {
       title: language === 'ko' ? '신원 확인 및 로그인' : 'Identity & Login',
@@ -255,7 +255,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="flex flex-col gap-5 p-4 sm:gap-6 sm:p-6">
             <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[rgba(15,0,0,0.12)] pb-5">
               <div>
-                <p className="mb-2 text-sm text-[#646262]">{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'} / {language === 'ko' ? '덱 미리보기' : 'Deck Preview'}</p>
+                <p className="mb-2 text-sm text-[#646262]">{language === 'ko' ? '눈히어로.com' : 'SNSHero.com'} / {language === 'ko' ? '덱 미리보기' : 'Deck Preview'}</p>
                 <h1 id="main-logo" className="leading-tight tracking-tight flex items-center">
                   <a
                     href="/"
@@ -267,15 +267,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                     className="inline-flex items-center cursor-pointer bg-transparent transition-opacity hover:opacity-85"
-                    aria-label={language === 'ko' ? '눈히어로.com 홈으로 이동' : 'Go to S&SHero.com Home'}
+                    aria-label={language === 'ko' ? '눈히어로.com 홈으로 이동' : 'Go to SNSHero.com Home'}
                   >
                     <img
                       src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
-                      alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+                      alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}
                       className="h-14 sm:h-20 w-auto object-contain bg-transparent"
                     />
                   </a>
-                  <span className="sr-only">{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}</span>
+                  <span className="sr-only">{language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}</span>
                 </h1>
               </div>
               <span className="text-sm text-[#646262]">{language === 'ko' ? '티어: BRONZE I' : 'TIER: BRONZE I'}</span>
@@ -459,7 +459,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     onNavigate('movie');
                   }}
                   className="relative min-h-[44px] px-1.5 sm:px-2 py-2 bg-[#fdfcfc] text-[#201d1d] font-bold text-xs sm:text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 rounded-sm"
-                  title="SNSHero 공식 애니메이션 (40화) - YouTube 스트리밍"
+                  title={language === 'ko' ? '눈히어로.com - 카단의 여정 공식 애니메이션 (40화) - YouTube 스트리밍' : "SNSHero.com - Kadan's Journey Official Animation (40 Eps) - YouTube Streaming"}
                 >
                   <span className="absolute -top-2 right-1 px-1 py-[1px] bg-red-600 text-[#fdfcfc] text-[9px] font-mono font-black leading-none tracking-tight rounded-sm">
                     HIT!
@@ -477,7 +477,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     onNavigate('cinema');
                   }}
                   className="relative min-h-[44px] px-1.5 sm:px-2 py-2 bg-[#fdfcfc] text-[#201d1d] font-bold text-xs sm:text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 rounded-sm"
-                  title="SNSHero 공식 무비 (40화) - YouTube 스트리밍"
+                  title={language === 'ko' ? '눈히어로.com - 카단의 여정 공식 무비 (40화) - YouTube 스트리밍' : "SNSHero.com - Kadan's Journey Official Movie (40 Eps) - YouTube Streaming"}
                 >
                   <span className="absolute -top-2 right-1 px-1 py-[1px] bg-red-600 text-[#fdfcfc] text-[9px] font-mono font-black leading-none tracking-tight rounded-sm">
                     HIT!
@@ -699,10 +699,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
             >
               <img
                 src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
-                alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+                alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}
                 className="h-7 sm:h-8 w-auto object-contain bg-transparent"
               />
-              <span className="font-bold text-[#201d1d]">{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}</span>
+              <span className="font-bold text-[#201d1d]">{language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}</span>
             </a>
             <PingIndicator language={language} className="shrink-0" />
           </div>
@@ -724,7 +724,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               rel="noopener noreferrer"
               onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
               className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
-              title="SNSHero GitHub 소스파일"
+              title={language === 'ko' ? '눈히어로.com GitHub 소스파일' : 'SNSHero.com GitHub Source'}
             >
               <Github size={13} />
               <span>GitHub</span>
@@ -736,10 +736,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
               rel="noopener noreferrer"
               onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
               className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
-              title="바이브코딩 웹게임 개발 강의 (AI Studio)"
+              title={language === 'ko' ? '바이브코딩 웹게임 개발 강의 (AI Studio)' : 'VibeCoding Web Game Course (AI Studio)'}
             >
               <Youtube size={13} />
-              <span>바이브코딩 강의</span>
+              <span>{language === 'ko' ? '바이브코딩 강의' : 'VibeCoding Course'}</span>
             </a>
             <span>•</span>
             <a
@@ -748,10 +748,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
               rel="noopener noreferrer"
               onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
               className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
-              title="SNSHero 공식 유튜브 채널"
+              title={language === 'ko' ? '눈히어로.com 공식 유튜브 채널' : 'SNSHero.com Official YouTube Channel'}
             >
               <Youtube size={13} />
-              <span>공식 유튜브</span>
+              <span>{language === 'ko' ? '공식 유튜브' : 'Official YouTube'}</span>
             </a>
             <span>•</span>
             <a
@@ -760,7 +760,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               rel="noopener noreferrer"
               onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
               className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
-              title="SNSHero AI Studio 앱 프로젝트"
+              title={language === 'ko' ? '눈히어로.com AI Studio 앱 프로젝트' : 'SNSHero.com AI Studio Project'}
             >
               <span>AI Studio</span>
             </a>
@@ -771,9 +771,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
               rel="noopener noreferrer"
               onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
               className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
-              title="SNSHero 개발 프롬프트 명세서"
+              title={language === 'ko' ? '눈히어로.com 개발 프롬프트 명세서' : 'SNSHero.com Dev Prompt Spec'}
             >
-              <span>개발 프롬프트</span>
+              <span>{language === 'ko' ? '개발 프롬프트' : 'Dev Prompt'}</span>
             </a>
           </div>
           <div>© ModooSoft. All rights reserved.</div>
@@ -787,10 +787,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <iframe
               src={
                 isMobilePdfMode
-                  ? (language === 'ko' ? "/snshero_part1_ko_mobile.pdf?v=20261020_mob" : "/snshero_part1_mobile.pdf?v=20261020_mob")
-                  : (language === 'ko' ? "/snshero_part1_ko.pdf?v=20261020_mob" : "/snshero_part1.pdf?v=20261020_mob")
+                  ? (language === 'ko' ? "/snshero_part1_ko_mobile.pdf?v=20261026_kadan" : "/snshero_part1_mobile.pdf?v=20261026_kadan")
+                  : (language === 'ko' ? "/snshero_part1_ko.pdf?v=20261026_kadan" : "/snshero_part1.pdf?v=20261026_kadan")
               }
-              title="SNSHero Part 1 PDF"
+              title={language === 'ko' ? '눈히어로.com - 카단의 여정 (Part 1 PDF)' : "SNSHero.com - Kadan's Journey (Part 1 PDF)"}
               className="w-full h-full border-none"
             />
 

@@ -417,8 +417,8 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
  </div>
  <p className="text-xs text-emerald-800 mb-3 leading-relaxed">
  {language === 'ko'
- ? 'SNSHero 프로젝트의 개발 목표, 상태, 우선순위가 정리된 구글 시트를 사용자의 구글 드라이브에 직접 생성합니다.'
- : 'Generates a pre-formatted Development Goals & Roadmap Google Sheet in your Google Drive.'}
+ ? '눈히어로.com 프로젝트의 개발 목표, 상태, 우선순위가 정리된 구글 시트를 사용자의 구글 드라이브에 직접 생성합니다.'
+ : 'Generates a pre-formatted SNSHero.com Development Goals & Roadmap Google Sheet in your Google Drive.'}
  </p>
 
  <button

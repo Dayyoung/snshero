@@ -1,6 +1,6 @@
 {
-  "name": "SNS히어로 (SNSHero)",
-  "description": "원클릭 AI 웹 카드 배틀 게임 (SNSHero Revolution)",
+  "name": "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)",
+  "description": "원클릭 AI 웹 카드 배틀 게임 눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

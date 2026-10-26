@@ -203,7 +203,7 @@ export const ShareView: React.FC<ShareViewProps> = ({
  }).filter(Boolean).join('\n');
  
  const totalPower = sharedDeck.reduce((acc, c) => acc + (CARD_DATABASE[c.imageIndex || 0]?.power || 0), 0);
- const boastContent = `🔥 [${boasterName}] 헌터님이 소개하는 최강 카드 덱! 🔥\n\n💪 덱 총 전투력(TP): ${totalPower.toLocaleString()}\n\n📋 덱 리스트:\n${cardNames}\n\n#SNSHero #SNS히어로 #카드게임 #덱뽐내기`;
+ const boastContent = `🔥 [${boasterName}] 헌터님이 소개하는 최강 카드 덱! 🔥\n\n💪 덱 총 전투력(TP): ${totalPower.toLocaleString()}\n\n📋 덱 리스트:\n${cardNames}\n\n#눈히어로 #눈히어로닷컴 #SNSHero #카단의여정 #카드게임 #덱뽐내기`;
 
  const boastedImageUrls = sharedDeck.map(c => {
  if (!c) return '';
@@ -285,7 +285,7 @@ export const ShareView: React.FC<ShareViewProps> = ({
  >
  <img
  src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
- alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+ alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}
  className="h-9 sm:h-10 w-auto object-contain bg-transparent"
  />
  </a>

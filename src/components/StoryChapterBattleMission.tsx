@@ -235,7 +235,7 @@ export const StoryChapterBattleMission: React.FC<StoryChapterBattleMissionProps>
  <span className="text-3xl">🧙</span>
  <div>
  <div className="text-xs font-bold">{isKo ? '영웅 사령관' : 'Hero Commander'}</div>
- <div className="text-[10px] text-cyan-700 font-bold">{isKo ? '아케인 에코즈' : 'Arcane Echoes'}</div>
+ <div className="text-[10px] text-cyan-700 font-bold">{isKo ? '눈히어로.com - 카단의 여정' : "SNSHero.com - Kadan's Journey"}</div>
  </div>
  </div>
  <div className="text-right">

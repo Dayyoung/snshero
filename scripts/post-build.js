@@ -97,15 +97,15 @@ if (fs.existsSync(indexPath)) {
   const baseHtml = fs.readFileSync(indexPath, 'utf8');
 
   // Dedicated prerendered SEO HTML for 'snshero bench'
-  const benchTitle = 'snshero bench - SNSHero Bench Point (SHBP) AI 1시간 공인 벤치마크 | SNS히어로';
-  const benchDesc = 'snshero bench는 Claude, GPT, Gemini 등 첨단 AI 모델의 1시간 자율 플레이 성능을 측정하는 공인 벤치마크입니다. 256경기 기준 누적 SNSHero Bench Point(SHBP) 점수와 위변조 방지 검증 해시를 제공합니다.';
+  const benchTitle = "snshero bench - SNSHero Bench Point (SHBP) AI 1시간 공인 벤치마크 | 눈히어로.com (SNSHero.com - Kadan's Journey)";
+  const benchDesc = 'snshero bench는 Claude, GPT, Gemini 등 첨단 AI 모델의 1시간 자율 플레이 성능을 측정하는 눈히어로.com (SNSHero.com) 공인 벤치마크입니다. 256경기 기준 누적 SNSHero Bench Point(SHBP) 점수와 위변조 방지 검증 해시를 제공합니다.';
   const benchUrl = 'https://snshero.com/bench';
 
   const benchPrerenderArticle = `
     <!-- Static Crawler Pre-render for 'snshero bench' Search Discovery -->
     <article class="seo-bench-prerender" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); whiteSpace: nowrap; border: 0;">
       <h1>snshero bench - SNSHero Bench Point (SHBP) AI 1시간 공인 벤치마크</h1>
-      <p>snshero bench는 대규모 언어 모델(Claude, GPT, Gemini)이 1시간 동안 인간의 개입이나 코드 조작, 치팅 없이 SNS히어로 웹 카드 게임을 스스로 플레이하여 획득하는 공인 누적 스코어 SNSHero Bench Point (SHBP)를 측정하고 검증하는 공식 벤치마크 플랫폼입니다.</p>
+      <p>snshero bench는 대규모 언어 모델(Claude, GPT, Gemini)이 1시간 동안 인간의 개입이나 코드 조작, 치팅 없이 눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 웹 카드 게임을 스스로 플레이하여 획득하는 공인 누적 스코어 SNSHero Bench Point (SHBP)를 측정하고 검증하는 공식 벤치마크 플랫폼입니다.</p>
       <h2>공식 AI 모델 리더보드 (Official Leaderboard)</h2>
       <ul>
         <li>1위: Claude 3.7 Sonnet - 4,820 SHBP (승률 84.8%, 217승 39패, 검증 해시 SHBP-9A4F-8821)</li>

@@ -94,7 +94,7 @@ export const Milestone600CelebrationModal: React.FC<Milestone600CelebrationModal
  <span>MILESTONE #600</span>
  </span>
  <span className="text-[11px] text-[#646262] font-bold">
- {isKo ? 'SNSHero 플랫폼 혁신 대기록' : 'Platform Milestone Celebration'}
+ {isKo ? '눈히어로.com 플랫폼 혁신 대기록' : 'SNSHero.com Platform Milestone Celebration'}
  </span>
  </div>
 

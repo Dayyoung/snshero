@@ -287,8 +287,8 @@ export const AttendanceStreakModal: React.FC<AttendanceStreakModalProps> = ({
  </div>
  <p className="text-[11px] text-amber-800 leading-relaxed">
  {isKo
- ? 'SNS히어로 복귀를 진심으로 환영합니다! 3일차 출석 시 SSR 영웅 카드 선택권이 확정 지급됩니다.'
- : 'Welcome back to SNSHero! Day 3 guarantees an SSR Hero Card Selection Ticket.'}
+ ? '눈히어로.com 복귀를 진심으로 환영합니다! 3일차 출석 시 SSR 영웅 카드 선택권이 확정 지급됩니다.'
+ : 'Welcome back to SNSHero.com! Day 3 guarantees an SSR Hero Card Selection Ticket.'}
  </p>
  </div>
 

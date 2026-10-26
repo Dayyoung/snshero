@@ -219,8 +219,8 @@ const buildLiveActionScenes = (epNum: number): LiveActionScene[] => {
 
     return {
       sceneNumber: idx + 1,
-      cinemaImageUrl: `/images/cinema/episode_${padEp}/scene_${padSc}.webp?v=conquest2009_v4`,
-      fallbackImageUrl: `${(img.imageUrl || `/images/webtoon/episode_${padEp}/scene_${padSc}.webp`).split('?')[0]}?v=conquest2009_v4`,
+      cinemaImageUrl: `/images/cinema/episode_${padEp}/scene_${padSc}.webp?v=conquest2009_v5`,
+      fallbackImageUrl: `${(img.imageUrl || `/images/webtoon/episode_${padEp}/scene_${padSc}.webp`).split('?')[0]}?v=conquest2009_v5`,
       narrationKo: textKo,
       narrationEn: textEn,
       characters: img.characters || [],

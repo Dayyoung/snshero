@@ -4639,12 +4639,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
-                      {language === 'ko' ? '전체 소설 (Part 1)' : 'Full Novel (Part 1)'}
+                      {language === 'ko' ? '눈히어로.com - 카단의 여정 (Part 1)' : "SNSHero.com - Kadan's Journey (Part 1)"}
                     </h3>
                     <p className="text-xs text-emerald-700 font-mono font-bold">
                       {language === 'ko'
-                        ? 'PDF e-Book (PC 161p / 모바일 큰글자 327p)'
-                        : 'PDF e-Book (PC 152p / Mobile Large 324p)'}
+                        ? 'PDF e-Book (PC 표준판 / 모바일 큰글자판)'
+                        : 'PDF e-Book (PC Standard / Mobile Large-Print)'}
                     </p>
                   </div>
                 </div>
@@ -4652,7 +4652,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 <ul className="space-y-1.5 text-xs text-slate-600 border-t border-emerald-100 pt-3 font-medium">
                   <li className="flex items-center gap-1.5">
                     <span className="text-emerald-600 font-bold">✓</span>
-                    <span>{language === 'ko' ? '카단 & 아케인 에코즈 40화 전편 수록' : 'Includes full 40-episode Kadan & Arcane Echoes'}</span>
+                    <span>{language === 'ko' ? '눈히어로.com - 카단의 여정 40화 전편 수록' : "Includes full 40-episode SNSHero.com - Kadan's Journey"}</span>
                   </li>
                   <li className="flex items-center gap-1.5">
                     <span className="text-emerald-600 font-bold">✓</span>
@@ -4667,7 +4667,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
                     const pdfFileName = language === 'ko' ? 'snshero_part1_ko_mobile.pdf' : 'snshero_part1_mobile.pdf';
-                    const pdfUrl = `/${pdfFileName}?v=20261020_mob`;
+                    const pdfUrl = `/${pdfFileName}?v=20261026_kadan`;
                     const link = document.createElement('a');
                     link.href = pdfUrl;
                     link.download = pdfFileName;
@@ -4699,7 +4699,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     const pdfFileName = isMobileDevice
                       ? (language === 'ko' ? 'snshero_part1_ko_mobile.pdf' : 'snshero_part1_mobile.pdf')
                       : (language === 'ko' ? 'snshero_part1_ko.pdf' : 'snshero_part1.pdf');
-                    const pdfUrl = `/${pdfFileName}?v=20261020_mob`;
+                    const pdfUrl = `/${pdfFileName}?v=20261026_kadan`;
                     const link = document.createElement('a');
                     link.href = pdfUrl;
                     link.download = pdfFileName;
@@ -4990,7 +4990,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                               }}
                               className="inline-flex items-center bg-transparent cursor-pointer"
                             >
-                              <img src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'} alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'} className="h-3.5 w-auto object-contain bg-transparent" />
+                              <img src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'} alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'} className="h-3.5 w-auto object-contain bg-transparent" />
                             </a>
                           </h1>
                         </div>

@@ -928,7 +928,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                                   }`}>
                                     <span className="flex items-center gap-1.5">
                                       <Sparkles className="w-3 h-3 text-[#FF4500]" />
-                                      <span>{isKo ? '스폰서 프로모션 • SNSHero 공식' : 'Promoted by SNSHero Official'}</span>
+                                      <span>{isKo ? '스폰서 프로모션 • 눈히어로.com 공식' : 'Promoted by SNSHero.com Official'}</span>
                                     </span>
                                     <span className={`px-1.5 py-0.5 rounded-sm text-[9px] font-bold ${
                                       isDark ? 'bg-amber-400/10 text-amber-400' : 'bg-amber-200 text-amber-900'
@@ -941,7 +941,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                                       post={{
                                         ...promotedPost,
                                         flair: {
-                                          text: isKo ? '스폰서 / SNSHero' : 'Sponsored',
+                                          text: isKo ? '스폰서 / 눈히어로.com' : 'Sponsored / SNSHero.com',
                                           bgColor: '#FF4500',
                                           textColor: '#FFFFFF',
                                         },

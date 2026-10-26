@@ -66,7 +66,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
  >
  <img
  src={(typeof window !== 'undefined' && (localStorage.getItem('hero_language') || 'ko') !== 'ko') ? '/logo-en.png' : '/logo-ko.png'}
- alt={(typeof window !== 'undefined' && (localStorage.getItem('hero_language') || 'ko') !== 'ko') ? 'S&SHero.com' : '눈히어로.com'}
+ alt={(typeof window !== 'undefined' && (localStorage.getItem('hero_language') || 'ko') !== 'ko') ? 'SNSHero.com' : '눈히어로.com'}
  className="h-7 sm:h-8 w-auto object-contain shrink-0 bg-transparent"
  />
  </a>

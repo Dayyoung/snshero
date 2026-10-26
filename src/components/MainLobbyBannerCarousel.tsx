@@ -54,8 +54,8 @@ export const MainLobbyBannerCarousel: React.FC<MainLobbyBannerCarouselProps> = (
  {
  id: 'banner-novel',
  badge: 'OFFICIAL NOVEL',
- title: language === 'ko' ? '웹소설 회차 프롬프트 모드 출시' : 'Novel Prompt Mode Released',
- description: language === 'ko' ? '카단과 메아리의 모험 정통 판타지를 경험하세요.' : 'Experience Kadan & Arcane Echoes novel series!',
+ title: language === 'ko' ? '눈히어로.com - 카단의 여정 (40화 완결)' : "SNSHero.com - Kadan's Journey (40 Eps)",
+ description: language === 'ko' ? '눈히어로.com - 카단의 여정 정통 판타지를 경험하세요.' : "Experience SNSHero.com - Kadan's Journey novel series!",
  bgGradient: ' ',
  viewTarget: 'novel',
  actionText: language === 'ko' ? '소설 읽기' : 'Read Novel',

@@ -71,8 +71,8 @@ export const StatusView: React.FC<StatusViewProps> = ({ language, onNavigate, cu
 
  const helpSlides = [
  language === 'ko'
- ? 'SNSHero 전체 사용자 통계 대시보드입니다. 총 사용자 수, 최근 활동, 게임 수, 승률, 평균 전투력 등을 한눈에 확인할 수 있습니다.'
- : 'Overview dashboard for all SNSHero user statistics. View total users, recent activity, game counts, win rates, and average power at a glance.',
+ ? '눈히어로.com 전체 사용자 통계 대시보드입니다. 총 사용자 수, 최근 활동, 게임 수, 승률, 평균 전투력 등을 한눈에 확인할 수 있습니다.'
+ : 'Overview dashboard for all SNSHero.com user statistics. View total users, recent activity, game counts, win rates, and average power at a glance.',
  language === 'ko'
  ? '인기 카드 순위와 언어별 분포를 막대 그래프로 확인할 수 있습니다. Firestore 실시간 데이터를 기반으로 집계됩니다.'
  : 'Check top card rankings and language distribution via bar charts, aggregated from real-time Firestore data.',

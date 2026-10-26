@@ -68,12 +68,12 @@ export const GAME_KNOWLEDGE_ENTRIES: KnowledgeEntry[] = [
   {
     id: 'kadan_rpg',
     category: 'modes',
-    keywordsKo: ['카단', 'kadan', '아케인', 'rpg', '환생', '메인', '스토리', '챕터', '탐험'],
-    keywordsEn: ['kadan', 'arcane', 'rpg', 'reincarnation', 'story', 'chapter', 'explore'],
-    summaryKo: `[카단 & 아케인 에코즈 RPG]
+    keywordsKo: ['카단', 'kadan', '아케인', 'rpg', '환생', '메인', '스토리', '챕터', '탐험', '카단의 여정'],
+    keywordsEn: ['kadan', 'arcane', 'rpg', 'reincarnation', 'story', 'chapter', 'explore', 'kadan\'s journey'],
+    summaryKo: `[눈히어로.com - 카단의 여정 RPG]
 - 주인공 카단이 아케인 대륙의 비밀을 탐험하는 정통 탑뷰/필드 RPG 모드입니다.
 - 필드 탐색, 숨겨진 보물 상자, 강적 인카운터 전투, 환생(Reincarnation) 레벨 시스템을 통해 영구 능력치를 획득합니다.`,
-    summaryEn: `[Kadan & Arcane Echoes RPG]
+    summaryEn: `[SNSHero.com - Kadan's Journey RPG]
 - Story RPG mode following protagonist Kadan across the Arcane Continent.
 - Features field exploration, hidden treasure chests, elite encounters, and permanent Reincarnation stat progression.`
   },
@@ -82,10 +82,10 @@ export const GAME_KNOWLEDGE_ENTRIES: KnowledgeEntry[] = [
     category: 'mall',
     keywordsKo: ['굿즈', '쇼핑몰', '몰', '구매', '결제', '배송', 'paypal', '카드덱', '테이블', '머그컵', '티셔츠', '110장', '달러'],
     keywordsEn: ['mall', 'merch', 'shop', 'buy', 'checkout', 'paypal', 'deck', 'table', 'mug', 'tshirt', 'shipping'],
-    summaryKo: `[SNS히어로 공식 굿즈 몰 (/mall)]
+    summaryKo: `[눈히어로.com 공식 굿즈 몰 (/mall)]
 - 실물 굿즈 4종: 1. 110장 유니크 히어로 카드 덱($30), 2. 전용 게임테이블($30), 3. 히어로 머그컵($10), 4. 히어로 티셔츠($30, S/M/L).
 - 인페이지 PayPal 및 원클릭 즉시 결제를 지원하며, 구매 시 주문 번호가 발급되고 100% 로컬스토리지에 안전하게 기록됩니다.`,
-    summaryEn: `[SNSHero Official Merch Mall (/mall)]
+    summaryEn: `[SNSHero.com Official Merch Mall (/mall)]
 - 4 Physical Merch Items: 1. 110 Unique Heroes Card Deck ($30), 2. Game Table ($30), 3. Hero Mug ($10), 4. Hero T-shirt ($30, S/M/L).
 - Features in-page PayPal and Instant Checkout with permanent local order receipt tracking.`
   },
@@ -132,8 +132,8 @@ export const getRelevantGameKnowledge = (prompt: string, language: string = 'ko'
   if (selected.length === 0) {
     // Return default game overview
     return isEn 
-      ? `[SNSHero Overview]\nSNSHero is an AI-powered one-click web card battle game with 110 unique heroes, 6 attribute counters, Tamagotchi hero care, Tower of Trials, and an official merch mall.`
-      : `[SNS히어로 게임 개요]\nSNS히어로는 110종의 유니크 영웅 카드, 6대 속성 상성 배틀, 다마고치형 영웅 돌봄 육성, 시련의 탑 50층, 카단 RPG, 공식 굿즈 몰(/mall)을 갖춘 차세대 웹 카드 배틀 게임입니다.`;
+      ? `[SNSHero.com Overview]\nSNSHero.com (SNSHero.com - Kadan's Journey) is an AI-powered one-click web card battle game with 110 unique heroes, 6 attribute counters, Tamagotchi hero care, Tower of Trials, and an official merch mall.`
+      : `[눈히어로.com 게임 개요]\n눈히어로.com (눈히어로.com - 카단의 여정)은 110종의 유니크 영웅 카드, 6대 속성 상성 배틀, 다마고치형 영웅 돌봄 육성, 시련의 탑 50층, 카단 RPG, 공식 굿즈 몰(/mall)을 갖춘 차세대 웹 카드 배틀 게임입니다.`;
   }
 
   return selected.map(item => isEn ? item.entry.summaryEn : item.entry.summaryKo).join('\n\n');

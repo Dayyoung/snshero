@@ -381,7 +381,7 @@ HTML_TEMPLATE_KO_MOBILE = f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>SNSHero: 카단 &amp; 아케인 에코즈 (Part 1 · 모바일 큰글자판)</title>
+<title>눈히어로.com - 카단의 여정 (Part 1 · 모바일 큰글자판)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -398,9 +398,9 @@ HTML_TEMPLATE_KO_MOBILE = f"""<!DOCTYPE html>
     <span class="cover-volume">VOLUME 1</span>
   </div>
   <div class="cover-center">
-    <div class="cover-series">SNSHero Official Web Novel Series</div>
-    <div class="cover-title">SNS히어로</div>
-    <div class="cover-subtitle-kadan">카단 &amp; 아케인 에코즈</div>
+    <div class="cover-series">눈히어로.com Official Web Novel Series</div>
+    <div class="cover-title">눈히어로.com</div>
+    <div class="cover-subtitle-kadan">카단의 여정</div>
     <div class="cover-subtitle">Part 1 · 제 1화 ~ 제 40화 완결본 (모바일 큰글자판)</div>
     <div class="cover-divider"></div>
     <p class="cover-desc">
@@ -426,7 +426,7 @@ HTML_TEMPLATE_KO_MOBILE = f"""<!DOCTYPE html>
 <div class="characters-page">
   <div class="section-header">
     <h2 class="section-title">주요 등장인물 (Characters)</h2>
-    <span class="section-subtitle">카단 &amp; 아케인 에코즈 인물 열전</span>
+    <span class="section-subtitle">눈히어로.com - 카단의 여정 인물 열전</span>
   </div>
   <div class="char-grid">
     <div class="char-card">
@@ -489,16 +489,16 @@ HTML_TEMPLATE_KO_MOBILE = f"""<!DOCTYPE html>
 <!-- 판권지 (COLOPHON) -->
 <div class="colophon-page">
   <div class="colophon-box">
-    <div class="colophon-title">SNS히어로: 카단 &amp; 아케인 에코즈 (Part 1)</div>
+    <div class="colophon-title">눈히어로.com - 카단의 여정 (Part 1)</div>
     <div class="colophon-sub">모바일 큰글자 공식 전자책 완결본 (Mobile Large-Print e-Book)</div>
     <table class="colophon-table">
       <tr>
         <td>도서명</td>
-        <td>SNS히어로: 카단 &amp; 아케인 에코즈 (Part 1 · 모바일 큰글자판)</td>
+        <td>눈히어로.com - 카단의 여정 (Part 1 · 모바일 큰글자판)</td>
       </tr>
       <tr>
         <td>저작권자</td>
-        <td>ModooSoft / SNSHero Revolution</td>
+        <td>ModooSoft / 눈히어로.com</td>
       </tr>
       <tr>
         <td>발행일</td>
@@ -514,7 +514,7 @@ HTML_TEMPLATE_KO_MOBILE = f"""<!DOCTYPE html>
       </tr>
       <tr>
         <td>발행처</td>
-        <td>SNSHero Revolution Media Lounge (https://snshero.com)</td>
+        <td>눈히어로.com 미디어 라운지 (https://snshero.com)</td>
       </tr>
     </table>
     <div style="font-size: 11pt; color: #64748b; line-height: 1.7;">
@@ -532,7 +532,7 @@ HTML_TEMPLATE_EN_MOBILE = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SNSHero: Kadan &amp; Arcane Echoes (Part 1 · Mobile Large-Print Edition)</title>
+<title>SNSHero.com - Kadan's Journey (Part 1 · Mobile Large-Print Edition)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -549,9 +549,9 @@ HTML_TEMPLATE_EN_MOBILE = f"""<!DOCTYPE html>
     <span class="cover-volume">VOLUME 1</span>
   </div>
   <div class="cover-center">
-    <div class="cover-series">SNSHero Official Web Novel Series</div>
-    <div class="cover-title">SNSHero</div>
-    <div class="cover-subtitle-kadan">Kadan &amp; Arcane Echoes</div>
+    <div class="cover-series">SNSHero.com Official Web Novel Series</div>
+    <div class="cover-title">SNSHero.com</div>
+    <div class="cover-subtitle-kadan">Kadan's Journey</div>
     <div class="cover-subtitle">Part 1 · Complete Edition (Episodes 1 – 40 · Mobile Large-Print)</div>
     <div class="cover-divider"></div>
     <p class="cover-desc">
@@ -577,7 +577,7 @@ HTML_TEMPLATE_EN_MOBILE = f"""<!DOCTYPE html>
 <div class="characters-page">
   <div class="section-header">
     <h2 class="section-title">Main Characters</h2>
-    <span class="section-subtitle">Kadan &amp; Arcane Echoes Dramatis Personae</span>
+    <span class="section-subtitle">SNSHero.com - Kadan's Journey Dramatis Personae</span>
   </div>
   <div class="char-grid">
     <div class="char-card">
@@ -640,16 +640,16 @@ HTML_TEMPLATE_EN_MOBILE = f"""<!DOCTYPE html>
 <!-- COLOPHON -->
 <div class="colophon-page">
   <div class="colophon-box">
-    <div class="colophon-title">SNSHero: Kadan &amp; Arcane Echoes (Part 1)</div>
+    <div class="colophon-title">SNSHero.com - Kadan's Journey (Part 1)</div>
     <div class="colophon-sub">Mobile Large-Print Official Complete e-Book Edition</div>
     <table class="colophon-table">
       <tr>
         <td>Title</td>
-        <td>SNSHero: Kadan &amp; Arcane Echoes (Part 1 · Mobile Large-Print)</td>
+        <td>SNSHero.com - Kadan's Journey (Part 1 · Mobile Large-Print)</td>
       </tr>
       <tr>
         <td>Copyright</td>
-        <td>ModooSoft / SNSHero Revolution</td>
+        <td>ModooSoft / SNSHero.com</td>
       </tr>
       <tr>
         <td>Publication Date</td>
@@ -665,7 +665,7 @@ HTML_TEMPLATE_EN_MOBILE = f"""<!DOCTYPE html>
       </tr>
       <tr>
         <td>Publisher</td>
-        <td>SNSHero Revolution Media Lounge (https://snshero.com)</td>
+        <td>SNSHero.com Media Lounge (https://snshero.com)</td>
       </tr>
     </table>
     <div style="font-size: 11pt; color: #64748b; line-height: 1.7;">
@@ -726,7 +726,7 @@ def parse_en_episode(file_path):
         clean = block.replace('\r', '').strip()
         if not clean:
             continue
-        if clean.startswith('SNSHero Novel'):
+        if clean.startswith('SNSHero'):
             lines = [l.strip() for l in clean.split('\n') if l.strip()]
             for l in lines:
                 if l.startswith('Episode '):
@@ -752,7 +752,7 @@ def parse_en_episode(file_path):
     return ep_num, ep_title, body_paragraphs
 
 
-async def render_html_to_pdf(browser, html_str, tmp_html_path, out_public, out_dist, header_right_text):
+async def render_html_to_pdf(browser, html_str, tmp_html_path, out_public, out_dist, header_left_text, header_right_text):
     with open(tmp_html_path, 'w', encoding='utf-8') as f:
         f.write(html_str)
 
@@ -768,7 +768,7 @@ async def render_html_to_pdf(browser, html_str, tmp_html_path, out_public, out_d
     """
     header_template = f"""
     <div style="font-size: 9pt; width: 100%; display: flex; justify-content: space-between; padding: 0 10mm; color: #94a3b8; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;">
-      <span>SNSHero: Kadan &amp; Arcane Echoes</span>
+      <span>{header_left_text}</span>
       <span>{header_right_text}</span>
     </div>
     """
@@ -876,6 +876,7 @@ async def main():
             'public/snshero_part1_ko_mobile_temp.html',
             'public/snshero_part1_ko_mobile.pdf',
             'dist/snshero_part1_ko_mobile.pdf',
+            '눈히어로.com - 카단의 여정',
             '모바일 큰글자판 (Part 1)'
         )
         await render_html_to_pdf(
@@ -884,6 +885,7 @@ async def main():
             'public/snshero_part1_en_mobile_temp.html',
             'public/snshero_part1_mobile.pdf',
             'dist/snshero_part1_mobile.pdf',
+            "SNSHero.com - Kadan's Journey",
             'Mobile Large-Print Edition (Part 1)'
         )
         await browser.close()

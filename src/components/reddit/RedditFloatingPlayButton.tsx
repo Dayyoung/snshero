@@ -21,7 +21,7 @@ export const RedditFloatingPlayButton: React.FC<RedditFloatingPlayButtonProps> =
  {/* 툴팁 라벨 */}
  <div className="mr-3 px-3 py-1.5 rounded-sm bg-[#201d1d] text-[#fdfcfc] text-xs font-semibold tracking-wide opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none translate-x-2 group-hover:translate-x-0 hidden sm:flex items-center gap-1.5 border border-white/20">
  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
- <span>{isKo ? 'SNSHero 게임 로비로 이동' : 'SNSHero Game Lobby'}</span>
+ <span>{isKo ? '눈히어로.com 게임 로비로 이동' : 'SNSHero.com Game Lobby'}</span>
  </div>
 
  {/* 대형 플로팅 Play 버튼 */}

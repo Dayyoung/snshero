@@ -36,11 +36,11 @@ export const StoryRivalDuelModal: React.FC<StoryRivalDuelModalProps> = ({
  const shareUrl = getStoryDuelShareUrl(selectedId);
 
  const handleShare = async () => {
- const text = `[SNSHero 소설 결투장] ${currentPreset.titleKo}\n"${currentPreset.quoteKo}"\n3x3 운명의 결투를 받아들여라!`;
+ const text = `[눈히어로.com - 카단의 여정 소설 결투장] ${currentPreset.titleKo}\n"${currentPreset.quoteKo}"\n3x3 운명의 결투를 받아들여라!`;
  if (navigator.share) {
  try {
  await navigator.share({
- title: `[SNSHero] ${currentPreset.titleKo}`,
+ title: `[눈히어로.com] ${currentPreset.titleKo}`,
  text,
  url: shareUrl,
  });

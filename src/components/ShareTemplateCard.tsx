@@ -80,7 +80,7 @@ const safeCardName = (card: DatabaseCard | undefined, language: Language): strin
  return language === 'ko' ? (card.title || card.title_dis) : (card.title_en || card.title_dis);
 };
 
-/** 눈히어로.com / S&SHero.com 브랜드 로고 */
+/** 눈히어로.com / SNSHero.com 브랜드 로고 */
 const BrandLogo: React.FC = () => {
  const isKo = typeof window === 'undefined' || (localStorage.getItem('hero_language') || 'ko') === 'ko';
  return (
@@ -96,10 +96,10 @@ const BrandLogo: React.FC = () => {
  >
  <img
  src={isKo ? '/logo-ko.png' : '/logo-en.png'}
- alt={isKo ? '눈히어로.com' : 'S&SHero.com'}
+ alt={isKo ? '눈히어로.com' : 'SNSHero.com'}
  className="h-4 w-auto object-contain bg-transparent"
  />
- <span>{isKo ? '눈히어로.com' : 'S&SHero.com'}</span>
+ <span>{isKo ? '눈히어로.com' : 'SNSHero.com'}</span>
  </a>
  );
 };

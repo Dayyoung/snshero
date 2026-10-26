@@ -28,8 +28,8 @@ const HELP_STEPS = (language: Language) => [
  {
  title: language === 'ko' ? '정책 문서' : 'Policy Documents',
  body: language === 'ko'
- ? 'SNSHero의 모든 운영 정책을 한눈에 확인할 수 있습니다.\n각 항목을 클릭하면 상세 내용을 펼쳐볼 수 있습니다.'
- : 'View all SNSHero operational policies at a glance.\nClick any item to expand its detailed content.',
+ ? '눈히어로.com의 모든 운영 정책을 한눈에 확인할 수 있습니다.\n각 항목을 클릭하면 상세 내용을 펼쳐볼 수 있습니다.'
+ : 'View all SNSHero.com operational policies at a glance.\nClick any item to expand its detailed content.',
  },
  {
  title: language === 'ko' ? '검토 상태' : 'Review Status',

@@ -541,8 +541,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     captionEn?: string;
     videoId?: string;
   }>({
-    titleKo: '카단과 아케인의 메아리',
-    titleEn: 'Kadan & Arcane Echoes',
+    titleKo: '눈히어로.com - 카단의 여정',
+    titleEn: "SNSHero.com - Kadan's Journey",
     captionKo: '우직한 청년 카단의 모험이 아케인 대륙에서 펼쳐집니다.',
     captionEn: 'The journey of young Kadan begins in the realm of Arcane.'
   });
@@ -821,8 +821,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       const fallbackImg = `/images/webtoon/episode_${pad}/scene_00.webp`;
 
       setRefreshEpisodeData({
-        titleKo: ep ? `카단과 아케인의 메아리 제${ep.episodeNumber}화` : '카단과 아케인의 메아리',
-        titleEn: ep ? `Kadan & Arcane Echoes Ep.${ep.episodeNumber}` : 'Kadan & Arcane Echoes',
+        titleKo: ep ? `눈히어로.com - 카단의 여정 제${ep.episodeNumber}화` : '눈히어로.com - 카단의 여정',
+        titleEn: ep ? `SNSHero.com - Kadan's Journey Ep.${ep.episodeNumber}` : "SNSHero.com - Kadan's Journey",
         imageUrl: panel?.imageUrl || fallbackImg,
         captionKo: panel?.narrationKo || '우직한 청년 카단의 모험이 아케인 대륙에서 펼쳐집니다.',
         captionEn: panel?.narrationEn || 'The journey of young Kadan begins in the realm of Arcane.'

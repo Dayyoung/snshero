@@ -162,7 +162,9 @@ export const MovieView: React.FC<MovieViewProps> = ({
         const meta = MOVIE_EPISODES[currentEpisodeNum];
         const vid = meta?.videoId || playlistVideoIds[currentEpisodeNum - 1] || 'kk-4FB4k8ck';
         if (meta && typeof document !== 'undefined') {
-          document.title = `애니메이션 제${currentEpisodeNum}화: ${meta.titleKo} (${meta.titleEn}) | SNSHero 공식 애니메이션 40화`;
+          document.title = language === 'ko'
+            ? `애니메이션 제${currentEpisodeNum}화: ${meta.titleKo} (${meta.titleEn}) | 눈히어로.com - 카단의 여정 공식 애니메이션 40화`
+            : `Animation Ep.${currentEpisodeNum}: ${meta.titleEn} | SNSHero.com - Kadan's Journey Official Animation 40 Eps`;
           let scriptEl = document.getElementById('snshero-video-schema');
           if (!scriptEl) {
             scriptEl = document.createElement('script');
@@ -173,7 +175,9 @@ export const MovieView: React.FC<MovieViewProps> = ({
           scriptEl.textContent = JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'VideoObject',
-            name: `SNSHero 공식 애니메이션 제${currentEpisodeNum}화: ${meta.titleKo} (${meta.titleEn})`,
+            name: language === 'ko'
+              ? `눈히어로.com - 카단의 여정 공식 애니메이션 제${currentEpisodeNum}화: ${meta.titleKo} (${meta.titleEn})`
+              : `SNSHero.com - Kadan's Journey Official Animation Ep.${currentEpisodeNum}: ${meta.titleEn}`,
             description: `${meta.synopsisKo} (${meta.synopsisEn}) 시청 시 +100 SNS 보상 지급.`,
             thumbnailUrl: [`https://i.ytimg.com/vi/${vid}/maxresdefault.jpg`],
             uploadDate: '2026-10-12T00:00:00+09:00',
@@ -292,7 +296,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
       {/* ── Page Header ── */}
       <div className="px-2 sm:px-4">
         <PageHeader
-          title={language === 'ko' ? 'SNSHero 공식 애니메이션 (40화)' : 'SNSHero Official Animation (40 Episodes)'}
+          title={language === 'ko' ? '눈히어로.com - 카단의 여정 공식 애니메이션 (40화)' : "SNSHero.com - Kadan's Journey Official Animation (40 Eps)"}
           onBack={() => onNavigate('home')}
           rightAction={
             <button
@@ -428,7 +432,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
             <iframe
               key={`anim-yt-ep-${currentEpisodeNum}-${currentVideoId}`}
               src={embedUrl}
-              title={`SNSHero Animation Ep.${currentEpisodeNum}`}
+              title={language === 'ko' ? `눈히어로.com - 카단의 여정 애니메이션 Ep.${currentEpisodeNum}` : `SNSHero.com - Kadan's Journey Animation Ep.${currentEpisodeNum}`}
               className="w-full h-full border-0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen

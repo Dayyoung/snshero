@@ -121,8 +121,8 @@ export const IosPwaInstallGuideModal: React.FC<IosPwaInstallGuideModalProps> = (
  </div>
  <p className="text-[11px] text-[#201d1d]/70 leading-normal">
  {language === 'ko'
- ? '우측 상단 [추가] 후, 홈 화면에 생긴 SNSHero 앱 아이콘을 열어 알림을 받으세요!'
- : 'Tap [Add], then launch the newly created SNSHero app icon to activate push!'}
+ ? '우측 상단 [추가] 후, 홈 화면에 생긴 눈히어로.com 앱 아이콘을 열어 알림을 받으세요!'
+ : 'Tap [Add], then launch the newly created SNSHero.com app icon to activate push!'}
  </p>
  </div>
  </div>

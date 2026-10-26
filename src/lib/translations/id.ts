@@ -2790,7 +2790,7 @@ export const id = {
     seo_desc_wiki_tip: "Master SNSHero with AI strategy analysis, corner placement, baiting tactics, and skill/item usage tips to boost your win rate.",
     // ─── Wiki SEO structured content ───────────────────────────────
     wiki_card_seo_summary_title: 'Card Encyclopedia Guide',
-    wiki_card_seo_summary_ko: "SNS히어로 카드 도감에서는 110종의 모든 캐릭터 카드 정보를 검색하고 비교할 수 있습니다. 세력, 희귀도, 스탯별로 정렬하여 원하는 카드를 찾아보세요. 각 카드는 고유한 능력과 스토리를 가지고 있습니다.",
+    wiki_card_seo_summary_ko: "눈히어로.com 카드 도감에서는 110종의 모든 캐릭터 카드 정보를 검색하고 비교할 수 있습니다. 세력, 희귀도, 스탯별로 정렬하여 원하는 카드를 찾아보세요. 각 카드는 고유한 능력과 스토리를 가지고 있습니다.",
     wiki_card_seo_summary_en: "Browse all 110 SNSHero character cards. Search by name, filter by faction and rarity, and sort by power or index. Each card has unique abilities and lore.",
     wiki_card_faq_q1: 'What information can I see in the card encyclopedia?',
     wiki_card_faq_a1_ko: "각 카드의 이름, 세력, 희귀도, 네 방향 스탯(상/우/하/좌), 전투력(CP), 고유 능력, 배경 스토리를 확인할 수 있습니다. 또한 AR 뷰어와 카드 이미지 저장/인쇄 기능도 제공합니다.",
@@ -2799,7 +2799,7 @@ export const id = {
     wiki_card_faq_a2_ko: "게임 내 상점에서 카드팩을 구매하거나, 배틀 승리 보상, 이벤트 참여, 무료 뽑기(최대 100회)를 통해 획득할 수 있습니다.",
     wiki_card_faq_a2_en: "Obtain cards through in-game shop card packs, battle victory rewards, event participation, and free draws (up to 100 times).",
     wiki_howtoplay_seo_summary_title: 'How to Play Summary',
-    wiki_howtoplay_seo_summary_ko: "SNS히어로는 3x3 보드에서 진행되는 1v1 전술 카드 배틀 게임입니다. 각 카드는 네 방향 스탯을 가지며, 인접한 상대 카드보다 높은 스탯으로 캡처합니다. 보드가 가득 차면 더 많은 카드를 소유한 플레이어가 승리합니다.",
+    wiki_howtoplay_seo_summary_ko: "눈히어로.com은 3x3 보드에서 진행되는 1v1 전술 카드 배틀 게임입니다. 각 카드는 네 방향 스탯을 가지며, 인접한 상대 카드보다 높은 스탯으로 캡처합니다. 보드가 가득 차면 더 많은 카드를 소유한 플레이어가 승리합니다.",
     wiki_howtoplay_seo_summary_en: "SNSHero is a tactical 1v1 card battle game on a 3x3 board. Each card has four-directional stats and captures adjacent opponent cards with higher stats. The player with more cards when the board is full wins.",
     wiki_howtoplay_faq_q1: 'How long does a game take?',
     wiki_howtoplay_faq_a1_ko: "한 판당 약 2~5분 정도 소요됩니다. 총 9턴(선공 5턴, 후공 4턴)으로 진행되며, AI 난이도에 따라 플레이 시간이 달라질 수 있습니다.",
@@ -2839,9 +2839,9 @@ export const id = {
     referral_reward_step3: "Rewards are granted after server verification. (SNS Points + Special Card)",
     referral_reward_notice: "※ Rewards are processed after server verification. Fraudulent activity will be invalidated.",
     referral_invitee_list: "Invited Friends",
-    referral_share_message: "Join me in SNSHero Card Battle!",
+    referral_share_message: "Join me in SNSHero.com - Kadan's Journey Card Battle!",
     referral_share_reward: "Sign up with my referral code and get special rewards!",
-    referral_seo_title: "Referral Program - SNSHero",
+    referral_seo_title: "Referral Program - SNSHero.com",
     referral_seo_desc: "Invite your friends and earn SNS points and special cards!",
 
     // Policy Trust Center
@@ -2887,7 +2887,7 @@ export const id = {
     home_shortcut_webtoon: 'Webtoon',
     home_shortcut_movie: 'Animasi',
     home_shortcut_cinema: 'Film',
-    cinema_title: 'Film Resmi SNSHero (40 Episode)',
+    cinema_title: "Film Resmi SNSHero.com - Kadan's Journey (40 Episode)",
     cinema_subtitle: 'Sinema aksi nyata fantasi gelap fotorealistik dengan gradasi warna anamorfik 70mm.',
     cinema_list: 'Daftar Episode',
 };

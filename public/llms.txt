@@ -1,6 +1,6 @@
-# SNSHero Revolution (SNS히어로) - AI Agent & LLM Integration Guide
+# SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) - AI Agent & LLM Integration Guide
 
-> SNSHero (`https://snshero.com`) is a high-speed, zero-installation AI web card game and 110-game mobile gaming platform. It operates 100% on LocalStorage persistence, requires zero mandatory sign-up, and is optimized for Generative Engine Optimization (GEO) and AI Agent autonomous play.
+> SNSHero.com (`https://snshero.com`, Korean: `눈히어로.com - 카단의 여정`, English: `SNSHero.com - Kadan's Journey`) is a high-speed, zero-installation AI web card game and 110-game mobile gaming platform. It operates 100% on LocalStorage persistence, requires zero mandatory sign-up, and is optimized for Generative Engine Optimization (GEO) and AI Agent autonomous play.
 
 ## 1. Key Platform Capabilities
 - **Instant Browser Access**: One-click play directly in web browsers with 1,000 SNS Points welcome bonus.
@@ -51,9 +51,9 @@ Available via `navigator.modelContext` / `window.WebMCP`:
 - `/mydeck`: 5-card synergy builder, Tamagotchi hero care, and inventory management.
 - `/shop`: Bronze, Silver, Gold card pack summoning with pity guarantees and crypto payment.
 - `/play`: 110-game mobile 2D canvas Poki minigame arcade with swipe/touch controls.
-- `/novel`: Kadan & Arcane Echoes official color webtoons and web novel episodes.
-- `/movie`: SNSHero Official Animation 40-Episode Series (`https://www.youtube.com/watch?v=Av-SEvRvCw8&list=PLK35ZdYm5NNE`, `/movie/ep-1` ~ `/movie/ep-40`) with +100 SNS Watch-to-Earn reward per episode.
-- `/cinema`: SNSHero Official Movie 40-Episode Series (`https://www.youtube.com/watch?v=P5KotZjJiZ8&list=PLMdirwPt_FHU`, `/cinema/ep-1` ~ `/cinema/ep-40`) with +100 SNS Watch-to-Earn reward per episode.
+- `/novel`: SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) official color webtoons and web novel episodes.
+- `/movie`: SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) Official Animation 40-Episode Series (`https://www.youtube.com/watch?v=Av-SEvRvCw8&list=PLK35ZdYm5NNE`, `/movie/ep-1` ~ `/movie/ep-40`) with +100 SNS Watch-to-Earn reward per episode.
+- `/cinema`: SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) Official Movie 40-Episode Series (`https://www.youtube.com/watch?v=P5KotZjJiZ8&list=PLMdirwPt_FHU`, `/cinema/ep-1` ~ `/cinema/ep-40`) with +100 SNS Watch-to-Earn reward per episode.
 - `/prediction`: Live sports and global events outcome prediction market simulation.
 - `/stock`: Simulated virtual equity trading market with portfolio diversification.
 - `/reddit`: Reddit-style player community, deck boasting, guides, and upvote discussions.

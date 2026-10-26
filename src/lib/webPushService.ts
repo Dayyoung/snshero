@@ -297,7 +297,7 @@ export class WebPushService {
    * 웰컴 테스트 알림 발송
    */
   private static triggerWelcomeNotification(reg: ServiceWorkerRegistration | null) {
-    const title = '⚔️ SNS히어로 웹푸시 알림 활성화!';
+    const title = '⚔️ 눈히어로.com 웹푸시 알림 활성화!';
     const options: NotificationOptions = {
       body: '웹푸시 알림 등록이 완료되었습니다. 랭킹 대전 및 새로운 이벤트 소식을 가장 먼저 받아보세요!',
       icon: '/icon-192.png',
@@ -518,7 +518,7 @@ export class WebPushService {
       return false;
     }
 
-    const title = customTitle || '🔔 [테스트] SNS히어로 웹푸시 알림';
+    const title = customTitle || '🔔 [테스트] 눈히어로.com 웹푸시 알림';
     const body = customBody || '웹푸시 알림이 정상적으로 수신되었습니다! (토큰 및 구글 시트 등록 완료)';
 
     try {

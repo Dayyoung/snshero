@@ -125,7 +125,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
  {/* 2. 기존 토픽 대체: /home 화면 핵심 컨텐츠 소개 링크 리스트 */}
  <div>
  <div className="px-3.5 py-1.5 text-[10px] font-bold tracking-wider uppercase opacity-50 flex items-center justify-between">
- <span>{isKo ? 'SNSHero 컨텐츠 라운지' : 'Core Features'}</span>
+ <span>{isKo ? '눈히어로.com 컨텐츠 라운지' : 'SNSHero.com Core Features'}</span>
  <span className="text-[9px] px-1 py-0.2 rounded-sm bg-[#FF4500]/15 text-[#FF4500] font-extrabold">HOME</span>
  </div>
  <div className="space-y-0.5">

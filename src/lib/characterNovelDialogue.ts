@@ -94,7 +94,7 @@ export function getCharacterNovelDialogue(cardId: number, language: Language = '
     characterName: charName,
     speakerTitle: isKo ? elemTitle.ko : elemTitle.en,
     dialogue: novelLineText,
-    sourceNovel: isKo ? '웹소설 《카단 & 아케인 에코즈》' : 'Novel "Kadan & Arcane Echoes"',
+    sourceNovel: isKo ? '웹소설 《눈히어로.com - 카단의 여정》' : 'Novel "SNSHero.com - Kadan\'s Journey"',
     episodeName: novelEpisodeTitle || undefined,
     faction: profile?.faction,
     element: dbCard.element

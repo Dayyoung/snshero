@@ -94,7 +94,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
  // ─── 전체 웹푸시 발송 상태 (Google Sheets Push Broadcast) ───
  const [sheetSubscribers, setSheetSubscribers] = useState<SheetPushSubscriber[]>([]);
  const [isLoadingSubscribers, setIsLoadingSubscribers] = useState(false);
- const [broadcastTitle, setBroadcastTitle] = useState('⚔️ [SNS히어로] 주말 시즌 랭킹 대전 & 보너스 오픈!');
+ const [broadcastTitle, setBroadcastTitle] = useState('⚔️ [눈히어로.com] 주말 시즌 랭킹 대전 & 보너스 오픈!');
  const [broadcastBody, setBroadcastBody] = useState('지금 게임에 접속하여 일일 미션 보상과 한정판 SSR 카드팩을 획득하세요!');
  const [broadcastUrl, setBroadcastUrl] = useState('/?view=card-play');
  const [isBroadcasting, setIsBroadcasting] = useState(false);
@@ -1120,7 +1120,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
  type="text"
  value={broadcastTitle}
  onChange={(e) => setBroadcastTitle(e.target.value)}
- placeholder="⚔️ [SNS히어로] 공지 제목..."
+ placeholder="⚔️ [눈히어로.com] 공지 제목..."
  className="w-full bg-slate-950 border border-slate-800 p-3 rounded-none text-sm font-bold text-white outline-none focus:border-amber-500 transition-colors"
  required
  />

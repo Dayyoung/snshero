@@ -8,7 +8,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SNSHero: Kadan & Arcane Echoes (Part 1)</title>
+<title>SNSHero.com - Kadan's Journey (Part 1)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -389,9 +389,9 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
     <span class="cover-volume">VOLUME 1</span>
   </div>
   <div class="cover-center">
-    <div class="cover-series">SNSHero Official Web Novel Series</div>
-    <div class="cover-title">SNSHero</div>
-    <div class="cover-subtitle-kadan">Kadan &amp; Arcane Echoes</div>
+    <div class="cover-series">SNSHero.com Official Web Novel Series</div>
+    <div class="cover-title">SNSHero.com</div>
+    <div class="cover-subtitle-kadan">Kadan's Journey</div>
     <div class="cover-subtitle">Part 1 · Complete Edition (Episodes 1 – 40)</div>
     <div class="cover-divider"></div>
     <p class="cover-desc">
@@ -416,7 +416,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
 <div class="characters-page">
   <div class="section-header">
     <h2 class="section-title">Main Characters</h2>
-    <span class="section-subtitle">Kadan &amp; Arcane Echoes Dramatis Personae</span>
+    <span class="section-subtitle">SNSHero.com - Kadan's Journey Dramatis Personae</span>
   </div>
   <div class="char-grid">
     <div class="char-card">
@@ -479,16 +479,16 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
 <!-- COLOPHON -->
 <div class="colophon-page">
   <div class="colophon-box">
-    <div class="colophon-title">SNSHero: Kadan &amp; Arcane Echoes (Part 1)</div>
+    <div class="colophon-title">SNSHero.com - Kadan's Journey (Part 1)</div>
     <div class="colophon-sub">Official Complete e-Book Edition</div>
     <table class="colophon-table">
       <tr>
         <td>Title</td>
-        <td>SNSHero: Kadan &amp; Arcane Echoes (Part 1)</td>
+        <td>SNSHero.com - Kadan's Journey (Part 1)</td>
       </tr>
       <tr>
         <td>Copyright</td>
-        <td>ModooSoft / SNSHero Revolution</td>
+        <td>ModooSoft / SNSHero.com</td>
       </tr>
       <tr>
         <td>Publication Date</td>
@@ -504,7 +504,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
       </tr>
       <tr>
         <td>Publisher</td>
-        <td>SNSHero Revolution Media Lounge (https://snshero.com)</td>
+        <td>SNSHero.com Media Lounge (https://snshero.com)</td>
       </tr>
     </table>
     <div style="font-size: 8pt; color: #94a3b8; line-height: 1.6;">
@@ -534,7 +534,7 @@ def parse_en_episode(file_path):
         clean = block.replace('\r', '').strip()
         if not clean:
             continue
-        if clean.startswith('SNSHero Novel'):
+        if clean.startswith('SNSHero'):
             lines = [l.strip() for l in clean.split('\n') if l.strip()]
             for l in lines:
                 if l.startswith('Episode '):
@@ -621,7 +621,7 @@ async def generate_en_pdf():
         """
         header_template = """
         <div style="font-size: 7.5pt; width: 100%; display: flex; justify-content: space-between; padding: 0 18mm; color: #cbd5e1; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
-          <span>SNSHero: Kadan &amp; Arcane Echoes</span>
+          <span>SNSHero.com - Kadan's Journey</span>
           <span>Official Web Novel Complete Edition (Part 1)</span>
         </div>
         """

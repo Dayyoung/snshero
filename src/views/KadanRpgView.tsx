@@ -891,7 +891,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  >
  <img
  src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
- alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+ alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}
  className="h-9 sm:h-10 w-auto object-contain bg-transparent shrink-0"
  />
  </a>

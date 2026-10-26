@@ -53,7 +53,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
  <div className="flex items-center justify-between pb-3 border-b border-inherit/10">
  <span className="font-bold text-sm tracking-tight">
  {['popular', 'all', 'home'].includes(subredditData.name.toLowerCase()) 
- ? (isKo ? 'SNSHero 커뮤니티' : 'About SNSHero') 
+ ? (isKo ? '눈히어로.com 커뮤니티' : 'About SNSHero.com') 
  : `r/${subredditData.name}`}
  </span>
  <span className="text-[10px] font-bold px-2 py-0.5 rounded-sm bg-[#FF4500]/10 text-[#FF4500]">

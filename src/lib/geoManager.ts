@@ -17,24 +17,24 @@ export interface GeoViewConfig {
 export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
   home: {
     title: {
-      ko: 'SNS히어로 (SNSHero) - 원클릭 AI 웹 카드 배틀 & 110종 모바일 게임',
-      en: 'SNSHero - One-Click AI Web Card Battle & 110 Mobile Poki Games',
-      gb: 'SNSHero - One-Click AI Web Card Battle & 110 Mobile Poki Games',
-      ja: 'SNSヒーロー - ワンクリックAIウェブカードバトル & 110種ゲーム',
-      'zh-CN': 'SNS英雄 - 一键式AI网络卡牌对战与110款手机游戏',
-      'zh-TW': 'SNS英雄 - 一鍵式AI網絡卡牌對戰與110款手機遊戲',
-      de: 'SNSHero - Ein-Klick-KI-Web-Kartenspiel & 110 Poki-Spiele',
-      es: 'SNSHero - Batalla de cartas web de IA con un clic y 110 juegos',
-      fr: 'SNSHero - Bataille de cartes Web IA en un clic et 110 jeux',
-      id: 'SNSHero - Pertempuran Kartu Web AI Sekali Klik & 110 Game',
-      ru: 'SNSHero - Веб-карточная битва с ИИ в один клик и 110 игр',
-      th: 'SNSHero - การต่อสู้การ์ดเว็บบนเบราว์เซอร์ AI คลิกเดียวและ 110 เกม',
-      vi: 'SNSHero - Đấu thẻ bài Web AI một cú nhấp chuột & 110 trò chơi'
+      ko: '눈히어로.com - 카단의 여정 | 원클릭 AI 웹 카드 배틀 & 110종 모바일 게임',
+      en: "SNSHero.com - Kadan's Journey | One-Click AI Web Card Battle & 110 Mobile Games",
+      gb: "SNSHero.com - Kadan's Journey | One-Click AI Web Card Battle & 110 Mobile Games",
+      ja: "SNSHero.com - Kadan's Journey | ワンクリックAIウェブカードバトル & 110種ゲーム",
+      'zh-CN': "SNSHero.com - Kadan's Journey | 一键式AI网络卡牌对战与110款手机游戏",
+      'zh-TW': "SNSHero.com - Kadan's Journey | 一鍵式AI網絡卡牌對戰與110款手機遊戲",
+      de: "SNSHero.com - Kadan's Journey | Ein-Klick-KI-Web-Kartenspiel & 110 Spiele",
+      es: "SNSHero.com - Kadan's Journey | Batalla de cartas web de IA con un clic y 110 juegos",
+      fr: "SNSHero.com - Kadan's Journey | Bataille de cartes Web IA en un clic et 110 jeux",
+      id: "SNSHero.com - Kadan's Journey | Pertempuran Kartu Web AI Sekali Klik & 110 Game",
+      ru: "SNSHero.com - Kadan's Journey | Веб-карточная битва с ИИ в один клик и 110 игр",
+      th: "SNSHero.com - Kadan's Journey | การต่อสู้การ์ดเว็บบนเบราว์เซอร์ AI คลิกเดียวและ 110 เกม",
+      vi: "SNSHero.com - Kadan's Journey | Đấu thẻ bài Web AI một cú nhấp chuột & 110 trò chơi"
     },
     description: {
-      ko: '설치 없이 웹 브라우저에서 바로 즐기는 원클릭 AI 카드 배틀! 110여 종의 귀여운 픽셀 카드 수집, 110개 모바일 2D 캔버스 미션 게임, DDA 랭킹 대전, 1,000 SNS 웰컴 포인트 지급.',
-      en: 'Instant one-click AI card battle directly in your browser without installation. 110+ animated hero cards, 110 mobile 2D canvas minigames, DDA ranking matches, and 1,000 SNS points welcome bonus.',
-      gb: 'Instant one-click AI card battle directly in your browser without installation. 110+ animated hero cards, 110 mobile 2D canvas minigames, DDA ranking matches, and 1,000 SNS points welcome bonus.',
+      ko: '눈히어로.com - 카단의 여정! 설치 없이 웹 브라우저에서 바로 즐기는 원클릭 AI 카드 배틀, 40부작 판타지 소설/PDF/애니메이션/무비, 110여 종의 히어로 카드 수집, 110개 모바일 2D 캔버스 미션 게임, 1,000 SNS 웰컴 포인트 지급.',
+      en: "SNSHero.com - Kadan's Journey! Instant one-click AI card battle directly in your browser without installation. 40-episode fantasy novel/PDF/animation/movie, 110+ animated hero cards, 110 mobile 2D canvas minigames, and 1,000 SNS points welcome bonus.",
+      gb: "SNSHero.com - Kadan's Journey! Instant one-click AI card battle directly in your browser without installation. 40-episode fantasy novel/PDF/animation/movie, 110+ animated hero cards, 110 mobile 2D canvas minigames, and 1,000 SNS points welcome bonus.",
       ja: 'インストール不要！ブラウザですぐに遊べるAIカードバトル。110種以上のカード、110種の2Dキャンバスゲーム、1,000 SNSポイントプレゼント。',
       'zh-CN': '无需安装，浏览器即点即玩AI卡牌对战！收集110多种卡牌，畅玩110款手机2D游戏，立享1,000 SNS点数奖励。',
       'zh-TW': '無需安裝，瀏覽器即點即玩AI卡牌對戰！收集110多種卡牌，暢玩110款手機2D遊戲，立享1,000 SNS點數獎勵。',
@@ -51,7 +51,8 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': ['SoftwareApplication', 'VideoGame'],
-      name: 'SNSHero (SNS히어로)',
+      name: lang === 'ko' ? '눈히어로.com - 카단의 여정' : "SNSHero.com - Kadan's Journey",
+      alternateName: ['눈히어로.com', 'SNSHero.com', '눈히어로.com - 카단의 여정', "SNSHero.com - Kadan's Journey"],
       url: 'https://snshero.com/',
       applicationCategory: 'GameApplication',
       operatingSystem: 'Any (Web Browser, PWA)',
@@ -74,19 +75,19 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   'card-play': {
     title: {
-      ko: '랭킹대전 아레나 - SNS히어로 DDA AI 카드 배틀',
-      en: 'Rank Match Arena - SNSHero DDA AI Card Battle',
-      gb: 'Rank Match Arena - SNSHero DDA AI Card Battle',
-      ja: 'ランキング対戦アリーナ - SNSヒーロー AIカードバトル',
-      'zh-CN': '天梯排位赛竞技场 - SNS英雄 AI卡牌对战',
-      'zh-TW': '天梯排位賽競技場 - SNS英雄 AI卡牌對戰',
-      de: 'Ranglisten-Arena - SNSHero KI-Kartenduell',
-      es: 'Arena de Rango - Batalla de cartas de IA SNSHero',
-      fr: 'Arène de Classement - Duel de cartes IA SNSHero',
-      id: 'Arena Pertandingan Peringkat - Pertarungan Kartu AI SNSHero',
-      ru: 'Рейтинговая Арена - Карточная битва с ИИ SNSHero',
-      th: 'อารีน่าจัดอันดับ - ศึกการ์ด AI SNSHero',
-      vi: 'Đấu Trường Xếp Hạng - Trận Chiến Thẻ Bài AI SNSHero'
+      ko: '랭킹대전 아레나 - 눈히어로.com DDA AI 카드 배틀',
+      en: 'Rank Match Arena - SNSHero.com DDA AI Card Battle',
+      gb: 'Rank Match Arena - SNSHero.com DDA AI Card Battle',
+      ja: 'ランキング対戦アリーナ - SNSHero.com AIカードバトル',
+      'zh-CN': '天梯排位赛竞技场 - SNSHero.com AI卡牌对战',
+      'zh-TW': '天梯排位賽競技場 - SNSHero.com AI卡牌對戰',
+      de: 'Ranglisten-Arena - SNSHero.com KI-Kartenduell',
+      es: 'Arena de Rango - Batalla de cartas de IA SNSHero.com',
+      fr: 'Arène de Classement - Duel de cartes IA SNSHero.com',
+      id: 'Arena Pertandingan Peringkat - Pertarungan Kartu AI SNSHero.com',
+      ru: 'Рейтинговая Арена - Карточная битва с ИИ SNSHero.com',
+      th: 'อารีน่าจัดอันดับ - ศึกการ์ด AI SNSHero.com',
+      vi: 'Đấu Trường Xếp Hạng - Trận Chiến Thẻ Bài AI SNSHero.com'
     },
     description: {
       ko: '실시간 전적 기반 동적 난이도 조절(DDA) AI 라이벌 대전! 3x3 그리드 보드에서 펼쳐지는 두뇌 싸움, 승리 시 +30 SNS 지급 및 스마트 상점 소환 루프 연동.',
@@ -108,7 +109,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': ['GameServer', 'VideoGame'],
-      name: 'SNSHero Rank Match Arena (DDA Engine)',
+      name: lang === 'ko' ? '눈히어로.com 랭킹대전 아레나 (DDA Engine)' : 'SNSHero.com Rank Match Arena (DDA Engine)',
       url: 'https://snshero.com/ranking',
       gamePlatform: 'Web Browser',
       inLanguage: lang,
@@ -120,19 +121,19 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   ranking: {
     title: {
-      ko: '명예의 전당 & 실시간 랭킹 - SNS히어로',
-      en: 'Hall of Fame & Live Leaderboard - SNSHero',
-      gb: 'Hall of Fame & Live Leaderboard - SNSHero',
-      ja: '名誉の殿堂 & リアルタイムランキング - SNSヒーロー',
-      'zh-CN': '名人堂与实时排行榜 - SNS英雄',
-      'zh-TW': '名人堂與即時排行榜 - SNS英雄',
-      de: 'Ruhmeshalle & Live-Bestenliste - SNSHero',
-      es: 'Salón de la Fama y Clasificación - SNSHero',
-      fr: 'Temple de la Renommée & Classement - SNSHero',
-      id: 'Hall of Fame & Papan Peringkat - SNSHero',
-      ru: 'Зал Славы и Таблица Лидеров - SNSHero',
-      th: 'หอเกียรติยศและกระดานผู้นำ - SNSHero',
-      vi: 'Đại Sảnh Danh Vọng & Bảng Xếp Hạng - SNSHero'
+      ko: '명예의 전당 & 실시간 랭킹 - 눈히어로.com',
+      en: 'Hall of Fame & Live Leaderboard - SNSHero.com',
+      gb: 'Hall of Fame & Live Leaderboard - SNSHero.com',
+      ja: '名誉の殿堂 & リアルタイムランキング - SNSHero.com',
+      'zh-CN': '名人堂与实时排行榜 - SNSHero.com',
+      'zh-TW': '名人堂與即時排行榜 - SNSHero.com',
+      de: 'Ruhmeshalle & Live-Bestenliste - SNSHero.com',
+      es: 'Salón de la Fama y Clasificación - SNSHero.com',
+      fr: 'Temple de la Renommée & Classement - SNSHero.com',
+      id: 'Hall of Fame & Papan Peringkat - SNSHero.com',
+      ru: 'Зал Славы и Таблица Лидеров - SNSHero.com',
+      th: 'หอเกียรติยศและกระดานผู้นำ - SNSHero.com',
+      vi: 'Đại Sảnh Danh Vọng & Bảng Xếp Hạng - SNSHero.com'
     },
     description: {
       ko: '전 세계 유저들의 승률, 연승 기록, 보유 SNS 포인트 실시간 랭킹 순위표. 최고의 카드 마스터에 도전하세요.',
@@ -154,7 +155,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': 'ItemList',
-      name: 'SNSHero Global Player Leaderboard',
+      name: lang === 'ko' ? '눈히어로.com 글로벌 플레이어 랭킹' : 'SNSHero.com Global Player Leaderboard',
       url: 'https://snshero.com/ranking',
       itemListOrder: 'Descending',
       inLanguage: lang
@@ -163,19 +164,19 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   mydeck: {
     title: {
-      ko: '마이덱 전략 연구소 & 다마고치 돌봄 - SNS히어로',
-      en: 'My Deck Strategy Lab & Tamagotchi Care - SNSHero',
-      gb: 'My Deck Strategy Lab & Tamagotchi Care - SNSHero',
-      ja: 'マイデッキ戦略研究所 & たまごっちケア - SNSヒーロー',
-      'zh-CN': '我的卡组战略研究所与养成 - SNS英雄',
-      'zh-TW': '我的卡組戰略研究所與養成 - SNS英雄',
-      de: 'Mein Deck Strategielabor & Tamagotchi Pflege - SNSHero',
-      es: 'Laboratorio de Mazos y Cuidado Tamagotchi - SNSHero',
-      fr: 'Laboratoire de Stratégie de Deck & Soin Tamagotchi - SNSHero',
-      id: 'Laboratorium Strategi Dek & Perawatan Tamagotchi - SNSHero',
-      ru: 'Лаборатория Колоды и Забота Тамагочи - SNSHero',
-      th: 'ห้องวิจัยเด็คและการดูแลทามาก็อตจิ - SNSHero',
-      vi: 'Phòng Thí Nghiệm Bộ Thẻ & Chăm Sóc Tamagotchi - SNSHero'
+      ko: '마이덱 전략 연구소 & 다마고치 돌봄 - 눈히어로.com',
+      en: 'My Deck Strategy Lab & Tamagotchi Care - SNSHero.com',
+      gb: 'My Deck Strategy Lab & Tamagotchi Care - SNSHero.com',
+      ja: 'マイデッキ戦略研究所 & たまごっちケア - SNSHero.com',
+      'zh-CN': '我的卡组战略研究所与养成 - SNSHero.com',
+      'zh-TW': '我的卡組戰略研究所與養成 - SNSHero.com',
+      de: 'Mein Deck Strategielabor & Tamagotchi Pflege - SNSHero.com',
+      es: 'Laboratorio de Mazos y Cuidado Tamagotchi - SNSHero.com',
+      fr: 'Laboratoire de Stratégie de Deck & Soin Tamagotchi - SNSHero.com',
+      id: 'Laboratorium Strategi Dek & Perawatan Tamagotchi - SNSHero.com',
+      ru: 'Лаборатория Колоды и Забота Тамагочи - SNSHero.com',
+      th: 'ห้องวิจัยเด็คและการดูแลทามาก็อตจิ - SNSHero.com',
+      vi: 'Phòng Thí Nghiệm Bộ Thẻ & Chăm Sóc Tamagotchi - SNSHero.com'
     },
     description: {
       ko: '5장 최적 시너지 덱 구성, 동서남북 스탯 강화, 다마고치식 히어로 돌봄(식사/기분/훈련) 및 장비 아이템 인벤토리 관리.',
@@ -197,7 +198,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': ['CollectionPage', 'ItemPage'],
-      name: 'SNSHero My Deck & Hero Care',
+      name: lang === 'ko' ? '눈히어로.com 마이덱 & 히어로 돌봄' : 'SNSHero.com My Deck & Hero Care',
       url: 'https://snshero.com/mydeck',
       inLanguage: lang,
       description: 'Player deck customization and companion Tamagotchi care.'
@@ -206,19 +207,19 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   shop: {
     title: {
-      ko: '카드 소환 상점 & 장비 마켓 - SNS히어로',
-      en: 'Card Summon Shop & Merch Store - SNSHero',
-      gb: 'Card Summon Shop & Merch Store - SNSHero',
-      ja: 'カード召喚ショップ & アイテムマーケット - SNSヒーロー',
-      'zh-CN': '卡牌召唤商城与道具市场 - SNS英雄',
-      'zh-TW': '卡牌召喚商城與道具市場 - SNS英雄',
-      de: 'Karten-Beschwörungsshop & Ausrüstung - SNSHero',
-      es: 'Tienda de Invocación de Cartas - SNSHero',
-      fr: 'Boutique d’Invocation de Cartes - SNSHero',
-      id: 'Toko Pemanggilan Kartu & Pasar Item - SNSHero',
-      ru: 'Магазин Призыва Карт и Рынок - SNSHero',
-      th: 'ร้านค้าสุ่มการ์ดและตลาดไอเทม - SNSHero',
-      vi: 'Cửa Hàng Triệu Hồi Thẻ & Chợ Trang Bị - SNSHero'
+      ko: '카드 소환 상점 & 장비 마켓 - 눈히어로.com',
+      en: 'Card Summon Shop & Merch Store - SNSHero.com',
+      gb: 'Card Summon Shop & Merch Store - SNSHero.com',
+      ja: 'カード召喚ショップ & アイテムマーケット - SNSHero.com',
+      'zh-CN': '卡牌召唤商城与道具市场 - SNSHero.com',
+      'zh-TW': '卡牌召喚商城與道具市場 - SNSHero.com',
+      de: 'Karten-Beschwörungsshop & Ausrüstung - SNSHero.com',
+      es: 'Tienda de Invocación de Cartas - SNSHero.com',
+      fr: 'Boutique d’Invocation de Cartes - SNSHero.com',
+      id: 'Toko Pemanggilan Kartu & Pasar Item - SNSHero.com',
+      ru: 'Магазин Призыва Карт и Рынок - SNSHero.com',
+      th: 'ร้านค้าสุ่มการ์ดและตลาดไอเทม - SNSHero.com',
+      vi: 'Cửa Hàng Triệu Hồi Thẻ & Chợ Trang Bị - SNSHero.com'
     },
     description: {
       ko: '브론즈/실버/골드 카드팩 소환, 100% 천장 보장 시스템, 매일 1회 무료 소환 및 Web3 결제(BTC, ETH, USDC) 지원 상점.',
@@ -240,7 +241,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': ['Store', 'OfferCatalog'],
-      name: 'SNSHero Card Shop',
+      name: lang === 'ko' ? '눈히어로.com 카드 상점' : 'SNSHero.com Card Shop',
       url: 'https://snshero.com/shop',
       inLanguage: lang,
       currenciesAccepted: 'SNS, BTC, ETH, USDC, USD',
@@ -250,19 +251,19 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   play: {
     title: {
-      ko: '110종 모바일 2D 캔버스 게임 아레나 - SNS히어로',
-      en: '110 Mobile 2D Canvas Games Arena - SNSHero',
-      gb: '110 Mobile 2D Canvas Games Arena - SNSHero',
-      ja: '110種モバイル2Dキャンバスゲームアリーナ - SNSヒーロー',
-      'zh-CN': '110款手机2D Canvas游戏竞技场 - SNS英雄',
-      'zh-TW': '110款手機2D Canvas遊戲競技場 - SNS英雄',
-      de: '110 Mobile 2D Canvas Minispiele Arena - SNSHero',
-      es: 'Arena de 110 Juegos Móviles 2D Canvas - SNSHero',
-      fr: 'Arène de 110 Jeux Mobiles 2D Canvas - SNSHero',
-      id: 'Arena 110 Game Seluler 2D Canvas - SNSHero',
-      ru: 'Арена 110 Мобильных 2D Canvas Игр - SNSHero',
-      th: 'อารีน่า 110 มินิเกม 2D Canvas บนมือถือ - SNSHero',
-      vi: 'Đấu Trường 110 Trò Chơi Di Động 2D Canvas - SNSHero'
+      ko: '110종 모바일 2D 캔버스 게임 아레나 - 눈히어로.com',
+      en: '110 Mobile 2D Canvas Games Arena - SNSHero.com',
+      gb: '110 Mobile 2D Canvas Games Arena - SNSHero.com',
+      ja: '110種モバイル2Dキャンバスゲームアリーナ - SNSHero.com',
+      'zh-CN': '110款手机2D Canvas游戏竞技场 - SNSHero.com',
+      'zh-TW': '110款手機2D Canvas遊戲競技場 - SNSHero.com',
+      de: '110 Mobile 2D Canvas Minispiele Arena - SNSHero.com',
+      es: 'Arena de 110 Juegos Móviles 2D Canvas - SNSHero.com',
+      fr: 'Arène de 110 Jeux Mobiles 2D Canvas - SNSHero.com',
+      id: 'Arena 110 Game Seluler 2D Canvas - SNSHero.com',
+      ru: 'Арена 110 Мобильных 2D Canvas Игр - SNSHero.com',
+      th: 'อารีน่า 110 มินิเกม 2D Canvas บนมือถือ - SNSHero.com',
+      vi: 'Đấu Trường 110 Trò Chơi Di Động 2D Canvas - SNSHero.com'
     },
     description: {
       ko: 'WebGL이나 무거운 설치 없이 HTML5 2D Canvas로 즉시 실행되는 110종 글로벌 Poki 스타일 미션 게임! 스와이프/탭 퓨어 터치 조작으로 즐기고 영웅 카드를 획득하세요.',
@@ -270,7 +271,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
       gb: '110 global Poki-style games running instantly on HTML5 2D Canvas without heavy 3D WebGL lag. One-thumb pure touch controls and hero card rewards.',
       ja: '3D不要！HTML5 2Dキャンバスで快適に遊べる110種類のグローバルPokiゲーム。スマホ片手操作でクリアしてカード報酬をゲット。',
       'zh-CN': '无需下载安装，HTML5 2D Canvas极速运行的110款Poki风格精选游戏！单手手势操控，赢取丰厚英雄卡牌奖励。',
-      'zh-TW': '無需下載安裝，HTML5 2D Canvas極速運行的110款Poki風格精選遊戲！單手手勢操控，贏取豐厚英雄卡牌獎勵。',
+      'zh-TW': '無需下載安裝，HTML5 2D Canvas極速運行的110款Poki風格精選遊戲！單手手势操控，贏取豐厚英雄卡牌獎勵。',
       de: '110 browserbasierte 2D Canvas Poki-Minispiele ohne Download. Reines Touch-Gameplay mit Kartenbelohnungen.',
       es: '110 juegos estilo Poki en Canvas 2D sin descargas. Controles táctiles puros y recompensas de cartas.',
       fr: '110 jeux style Poki en 2D Canvas sans téléchargement. Commandes tactiles pures et récompenses de cartes.',
@@ -284,7 +285,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': ['ItemList', 'Game'],
-      name: 'SNSHero 110 Poki-Style 2D Canvas Games Pool',
+      name: lang === 'ko' ? '눈히어로.com 110종 2D 캔버스 게임 풀' : 'SNSHero.com 110 Poki-Style 2D Canvas Games Pool',
       url: 'https://snshero.com/play',
       inLanguage: lang,
       numberOfItems: 110,
@@ -294,41 +295,41 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   novel: {
     title: {
-      ko: '카단 & 아케인 에코즈 웹툰 & 소설 라운지 - SNS히어로',
-      en: 'Kadan & Arcane Echoes Webtoon & Novel Lounge - SNSHero',
-      gb: 'Kadan & Arcane Echoes Webtoon & Novel Lounge - SNSHero',
-      ja: 'カダン & アーケインエコーズ ウェブトゥーン & 小説 - SNSヒーロー',
-      'zh-CN': '卡丹与奥术回响 网络漫画与小说中心 - SNS英雄',
-      'zh-TW': '卡丹與奧術迴響 網絡漫畫與小說中心 - SNS英雄',
-      de: 'Kadan & Arcane Echoes Webtoon & Roman Lounge - SNSHero',
-      es: 'Lounge de Webtoon y Novela Kadan & Arcane Echoes - SNSHero',
-      fr: 'Salon Webtoon & Roman Kadan & Arcane Echoes - SNSHero',
-      id: 'Lounge Webtoon & Novel Kadan & Arcane Echoes - SNSHero',
-      ru: 'Лаунж Вебтунов и Новелл Kadan & Arcane Echoes - SNSHero',
-      th: 'ห้องอ่านเว็บตูนและนิยาย Kadan & Arcane Echoes - SNSHero',
-      vi: 'Phòng Đọc Webtoon & Tiểu Thuyết Kadan & Arcane Echoes - SNSHero'
+      ko: '눈히어로.com - 카단의 여정 | 공식 웹소설 & 웹툰 라운지',
+      en: "SNSHero.com - Kadan's Journey | Official Webtoon & Novel Lounge",
+      gb: "SNSHero.com - Kadan's Journey | Official Webtoon & Novel Lounge",
+      ja: "SNSHero.com - Kadan's Journey | 公式ウェブトゥーン & 小説ラウンジ",
+      'zh-CN': "SNSHero.com - Kadan's Journey | 官方网络漫画与小说中心",
+      'zh-TW': "SNSHero.com - Kadan's Journey | 官方網絡漫畫與小說中心",
+      de: "SNSHero.com - Kadan's Journey | Webtoon & Roman Lounge",
+      es: "SNSHero.com - Kadan's Journey | Lounge de Webtoon y Novela",
+      fr: "SNSHero.com - Kadan's Journey | Salon Webtoon & Roman",
+      id: "SNSHero.com - Kadan's Journey | Lounge Webtoon & Novel",
+      ru: "SNSHero.com - Kadan's Journey | Лаунж Вебтунов и Новелл",
+      th: "SNSHero.com - Kadan's Journey | ห้องอ่านเว็บตูนและนิยาย",
+      vi: "SNSHero.com - Kadan's Journey | Phòng Đọc Webtoon & Tiểu Thuyết"
     },
     description: {
-      ko: 'SNS히어로 공식 오리지널 스토리! 카단의 모험을 다룬 시즌제 컬러 웹툰과 AI 프롬프트 기반 웹소설을 감상하고 SNS 포인트를 획득하세요.',
-      en: 'Official SNSHero story universe! Enjoy seasonal color webtoons and lore novels following hero Kadan while earning SNS points.',
-      gb: 'Official SNSHero story universe! Enjoy seasonal color webtoons and lore novels following hero Kadan while earning SNS points.',
+      ko: '눈히어로.com - 카단의 여정 공식 오리지널 스토리! 40부작 판타지 소설, PDF e-Book, 시즌제 컬러 웹툰을 감상하고 SNS 포인트를 획득하세요.',
+      en: "SNSHero.com - Kadan's Journey official story universe! Enjoy the 40-episode fantasy novel, PDF e-Book, and seasonal color webtoons while earning SNS points.",
+      gb: "SNSHero.com - Kadan's Journey official story universe! Enjoy the 40-episode fantasy novel, PDF e-Book, and seasonal color webtoons while earning SNS points.",
       ja: 'カダンの冒険を描いた公式ウェブトゥーン＆AI小説。ストーリーを読んでSNSポイントを獲得しよう。',
       'zh-CN': 'SNS英雄官方原创剧情！阅读卡丹冒险系列条漫与网文，轻松获得SNS点数奖励。',
       'zh-TW': 'SNS英雄官方原創劇情！閱讀卡丹冒險系列條漫與網文，輕鬆獲得SNS點數獎勵。',
-      de: 'Offizielle SNSHero-Geschichte! Erlebe Webtoons und Romane und verdiene SNS-Punkte.',
-      es: '¡Universo oficial de SNSHero! Disfruta de webtoons y novelas mientras ganas puntos SNS.',
-      fr: 'Univers officiel de SNSHero ! Lisez des webtoons et des romans tout en gagnant des points SNS.',
-      id: 'Semesta cerita resmi SNSHero! Nikmati webtoon dan novel sambil mendapatkan poin SNS.',
-      ru: 'Официальная вселенная SNSHero! Читайте вебтуны и новеллы, зарабатывая очки SNS.',
-      th: 'จักรวาลเรื่องราวทางการของ SNSHero! เพลิดเพลินกับเว็บตูนและนิยายพร้อมรับคะแนน SNS',
-      vi: 'Vũ trụ câu chuyện chính thức của SNSHero! Thưởng thức webtoon và tiểu thuyết để kiếm điểm SNS.'
+      de: 'Offizielle SNSHero.com-Geschichte! Erlebe Webtoons und Romane und verdiene SNS-Punkte.',
+      es: '¡Universo oficial de SNSHero.com! Disfruta de webtoons y novelas mientras ganas puntos SNS.',
+      fr: 'Univers officiel de SNSHero.com ! Lisez des webtoons et des romans tout en gagnant des points SNS.',
+      id: 'Semesta cerita resmi SNSHero.com! Nikmati webtoon dan novel sambil mendapatkan poin SNS.',
+      ru: 'Официальная вселенная SNSHero.com! Читайте вебтуны и новеллы, зарабатывая очки SNS.',
+      th: 'จักรวาลเรื่องราวทางการของ SNSHero.com! เพลิดเพลินกับเว็บตูนและนิยายพร้อมรับคะแนน SNS',
+      vi: 'Vũ trụ câu chuyện chính thức của SNSHero.com! Thưởng thức webtoon và tiểu thuyết để kiếm điểm SNS.'
     },
     canonicalPath: '/novel',
     schemaType: 'CreativeWorkSeries',
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
-      '@type': ['CreativeWorkSeries', 'ComicSeries'],
-      name: 'SNSHero Kadan & Arcane Echoes Webtoon & Lore',
+      '@type': ['CreativeWorkSeries', 'BookSeries'],
+      name: lang === 'ko' ? '눈히어로.com - 카단의 여정' : "SNSHero.com - Kadan's Journey",
       url: 'https://snshero.com/novel',
       inLanguage: lang,
       genre: 'Fantasy / Adventure / Sci-Fi'
@@ -337,19 +338,19 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   prediction: {
     title: {
-      ko: '실시간 예측 시장 (Prediction Market) - SNS히어로',
-      en: 'Live Prediction Market - SNSHero',
-      gb: 'Live Prediction Market - SNSHero',
-      ja: 'リアルタイム予測市場 - SNSヒーロー',
-      'zh-CN': '实时预测市场 - SNS英雄',
-      'zh-TW': '即時預測市場 - SNS英雄',
-      de: 'Live Prognosemarkt - SNSHero',
-      es: 'Mercado de Predicciones en Vivo - SNSHero',
-      fr: 'Marché de Prédiction en Direct - SNSHero',
-      id: 'Pasar Prediksi Langsung - SNSHero',
-      ru: 'Рынок Прогнозов в Реальном Времени - SNSHero',
-      th: 'ตลาดพยากรณ์สด - SNSHero',
-      vi: 'Thị Trường Dự Đoán Trực Tiếp - SNSHero'
+      ko: '실시간 예측 시장 (Prediction Market) - 눈히어로.com',
+      en: 'Live Prediction Market - SNSHero.com',
+      gb: 'Live Prediction Market - SNSHero.com',
+      ja: 'リアルタイム予測市場 - SNSHero.com',
+      'zh-CN': '实时预测市场 - SNSHero.com',
+      'zh-TW': '即時預測市場 - SNSHero.com',
+      de: 'Live Prognosemarkt - SNSHero.com',
+      es: 'Mercado de Predicciones en Vivo - SNSHero.com',
+      fr: 'Marché de Prédiction en Direct - SNSHero.com',
+      id: 'Pasar Prediksi Langsung - SNSHero.com',
+      ru: 'Рынок Прогнозов в Реальном Времени - SNSHero.com',
+      th: 'ตลาดพยากรณ์สด - SNSHero.com',
+      vi: 'Thị Trường Dự Đoán Trực Tiếp - SNSHero.com'
     },
     description: {
       ko: 'SNS 포인트를 활용한 스포츠 경기 및 글로벌 이벤트 승부 예측 시뮬레이션! 통찰력으로 배당 수익을 달성하세요.',
@@ -371,7 +372,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': ['FinancialProduct', 'SoftwareApplication'],
-      name: 'SNSHero Prediction Market Simulation',
+      name: lang === 'ko' ? '눈히어로.com 예측 시장 시뮬레이션' : 'SNSHero.com Prediction Market Simulation',
       url: 'https://snshero.com/prediction',
       inLanguage: lang,
       description: 'Sports and event outcome prediction market powered by in-game SNS points.'
@@ -380,19 +381,19 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   stock: {
     title: {
-      ko: '히어로 가상 증권 거래소 (Stock Market) - SNS히어로',
-      en: 'Hero Virtual Stock Exchange - SNSHero',
-      gb: 'Hero Virtual Stock Exchange - SNSHero',
-      ja: 'ヒーロー仮想証券取引所 - SNSヒーロー',
-      'zh-CN': '英雄虚拟股票交易所 - SNS英雄',
-      'zh-TW': '英雄虛擬股票交易所 - SNS英雄',
-      de: 'Virtuelle Helden-Börse - SNSHero',
-      es: 'Bolsa Virtual de Héroes - SNSHero',
-      fr: 'Bourse Virtuelle des Héros - SNSHero',
-      id: 'Bursa Efek Virtual Pahlawan - SNSHero',
-      ru: 'Виртуальная Биржа Героев - SNSHero',
-      th: 'ตลาดหลักทรัพย์จำลองฮีโร่ - SNSHero',
-      vi: 'Sàn Giao Dịch Chứng Khoán Ảo - SNSHero'
+      ko: '히어로 가상 증권 거래소 (Stock Market) - 눈히어로.com',
+      en: 'Hero Virtual Stock Exchange - SNSHero.com',
+      gb: 'Hero Virtual Stock Exchange - SNSHero.com',
+      ja: 'ヒーロー仮想証券取引所 - SNSHero.com',
+      'zh-CN': '英雄虚拟股票交易所 - SNSHero.com',
+      'zh-TW': '英雄虛擬股票交易所 - SNSHero.com',
+      de: 'Virtuelle Helden-Börse - SNSHero.com',
+      es: 'Bolsa Virtual de Héroes - SNSHero.com',
+      fr: 'Bourse Virtuelle des Héros - SNSHero.com',
+      id: 'Bursa Efek Virtual Pahlawan - SNSHero.com',
+      ru: 'Виртуальная Биржа Героев - SNSHero.com',
+      th: 'ตลาดหลักทรัพย์จำลองฮีโร่ - SNSHero.com',
+      vi: 'Sàn Giao Dịch Chứng Khoán Ảo - SNSHero.com'
     },
     description: {
       ko: '게임 내 가상 기업들의 주식을 매매하고 차익을 실현하는 모의 투자 시스템. 분산 투자와 포트폴리오 전략을 시험해 보세요.',
@@ -414,7 +415,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': ['FinancialService', 'SoftwareApplication'],
-      name: 'SNSHero Virtual Stock Market',
+      name: lang === 'ko' ? '눈히어로.com 가상 증권 시장' : 'SNSHero.com Virtual Stock Market',
       url: 'https://snshero.com/stock',
       inLanguage: lang,
       description: 'Simulated equity trading market for game universe companies.'
@@ -423,22 +424,22 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   reddit: {
     title: {
-      ko: '히어로 라운지 커뮤니티 - SNS히어로',
-      en: 'Hero Lounge Community (Reddit Style) - SNSHero',
-      gb: 'Hero Lounge Community (Reddit Style) - SNSHero',
-      ja: 'ヒーローラウンジコミュニティ - SNSヒーロー',
-      'zh-CN': '英雄酒馆玩家社区 - SNS英雄',
-      'zh-TW': '英雄酒館玩家社區 - SNS英雄',
-      de: 'Helden-Lounge Community - SNSHero',
-      es: 'Comunidad Hero Lounge - SNSHero',
-      fr: 'Communauté Hero Lounge - SNSHero',
-      id: 'Komunitas Hero Lounge - SNSHero',
-      ru: 'Сообщество Hero Lounge - SNSHero',
-      th: 'ชุมชนฮีโร่เลานจ์ - SNSHero',
-      vi: 'Cộng Đồng Hero Lounge - SNSHero'
+      ko: '히어로 라운지 커뮤니티 - 눈히어로.com',
+      en: 'Hero Lounge Community (Reddit Style) - SNSHero.com',
+      gb: 'Hero Lounge Community (Reddit Style) - SNSHero.com',
+      ja: 'ヒーローラウンジコミュニティ - SNSHero.com',
+      'zh-CN': '英雄酒馆玩家社区 - SNSHero.com',
+      'zh-TW': '英雄酒館玩家社區 - SNSHero.com',
+      de: 'Helden-Lounge Community - SNSHero.com',
+      es: 'Comunidad Hero Lounge - SNSHero.com',
+      fr: 'Communauté Hero Lounge - SNSHero.com',
+      id: 'Komunitas Hero Lounge - SNSHero.com',
+      ru: 'Сообщество Hero Lounge - SNSHero.com',
+      th: 'ชุมชนฮีโร่เลานจ์ - SNSHero.com',
+      vi: 'Cộng Đồng Hero Lounge - SNSHero.com'
     },
     description: {
-      ko: '나만의 덱 자랑, 카드 공략 공유, 실시간 댓글 및 업보트 토론이 펼쳐지는 SNS히어로 공식 레딧 스타일 소셜 광장.',
+      ko: '나만의 덱 자랑, 카드 공략 공유, 실시간 댓글 및 업보트 토론이 펼쳐지는 눈히어로.com 공식 레딧 스타일 소셜 광장.',
       en: 'Reddit-style community to boast decks, share winning guides, post comments, and discuss game tactics.',
       gb: 'Reddit-style community to boast decks, share winning guides, post comments, and discuss game tactics.',
       ja: 'デッキ自慢、攻略の共有、コメントやアップボートで交流できる公式掲示板。',
@@ -457,7 +458,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': ['DiscussionForumPosting', 'SocialMediaPosting'],
-      name: 'SNSHero Community Forum',
+      name: lang === 'ko' ? '눈히어로.com 커뮤니티 포럼' : 'SNSHero.com Community Forum',
       url: 'https://snshero.com/reddit',
       inLanguage: lang,
       description: 'Social hub for sharing decks and chatting with players.'
@@ -466,19 +467,19 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   status: {
     title: {
-      ko: '플레이어 프로필 & 전적 분석 - SNS히어로',
-      en: 'Player Profile & Battle Statistics - SNSHero',
-      gb: 'Player Profile & Battle Statistics - SNSHero',
-      ja: 'プレイヤープロフィール & 戦績分析 - SNSヒーロー',
-      'zh-CN': '玩家个人资料与战绩分析 - SNS英雄',
-      'zh-TW': '玩家個人資料與戰績分析 - SNS英雄',
-      de: 'Spielerprofil & Kampfstatistiken - SNSHero',
-      es: 'Perfil del Jugador y Estadísticas - SNSHero',
-      fr: 'Profil du Joueur & Statistiques de Combat - SNSHero',
-      id: 'Profil Pemain & Statistik Pertempuran - SNSHero',
-      ru: 'Профиль Игрока и Статистика Боев - SNSHero',
-      th: 'โปรไฟล์ผู้เล่นและสถิติการต่อสู้ - SNSHero',
-      vi: 'Hồ Sơ Người Chơi & Thống Kê Trận Đấu - SNSHero'
+      ko: '플레이어 프로필 & 전적 분석 - 눈히어로.com',
+      en: 'Player Profile & Battle Statistics - SNSHero.com',
+      gb: 'Player Profile & Battle Statistics - SNSHero.com',
+      ja: 'プレイヤープロフィール & 戦績分析 - SNSHero.com',
+      'zh-CN': '玩家个人资料与战绩分析 - SNSHero.com',
+      'zh-TW': '玩家個人資料與戰績分析 - SNSHero.com',
+      de: 'Spielerprofil & Kampfstatistiken - SNSHero.com',
+      es: 'Perfil del Jugador y Estadísticas - SNSHero.com',
+      fr: 'Profil du Joueur & Statistiques de Combat - SNSHero.com',
+      id: 'Profil Pemain & Statistik Pertempuran - SNSHero.com',
+      ru: 'Профиль Игрока и Статистика Боев - SNSHero.com',
+      th: 'โปรไฟล์ผู้เล่นและสถิติการต่อสู้ - SNSHero.com',
+      vi: 'Hồ Sơ Người Chơi & Thống Kê Trận Đấu - SNSHero.com'
     },
     description: {
       ko: '나의 총 전투력, 길드 정보, 속성별 레이더 차트, 업적 달성도 및 최근 랭킹대전 승패무 전적을 한눈에 확인하세요.',
@@ -500,7 +501,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': 'ProfilePage',
-      name: 'SNSHero Player Profile & Record',
+      name: lang === 'ko' ? '눈히어로.com 플레이어 프로필 & 전적' : 'SNSHero.com Player Profile & Record',
       url: 'https://snshero.com/status',
       inLanguage: lang
     })
@@ -508,19 +509,19 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   setting: {
     title: {
-      ko: '설정 및 PWA 웹푸시 알림 - SNS히어로',
-      en: 'Settings & PWA Web Push Notifications - SNSHero',
-      gb: 'Settings & PWA Web Push Notifications - SNSHero',
-      ja: '設定 & PWAプッシュ通知 - SNSヒーロー',
-      'zh-CN': '系统设置与PWA推送通知 - SNS英雄',
-      'zh-TW': '系統設置與PWA推送通知 - SNS英雄',
-      de: 'Einstellungen & PWA Web-Push - SNSHero',
-      es: 'Configuración y Notificaciones Web Push PWA - SNSHero',
-      fr: 'Paramètres et Notifications Web Push PWA - SNSHero',
-      id: 'Pengaturan & Notifikasi Web Push PWA - SNSHero',
-      ru: 'Настройки и Веб-Пуш Уведомления PWA - SNSHero',
-      th: 'การตั้งค่าและการแจ้งเตือน Web Push PWA - SNSHero',
-      vi: 'Cài Đặt & Thông Báo Web Push PWA - SNSHero'
+      ko: '설정 및 PWA 웹푸시 알림 - 눈히어로.com',
+      en: 'Settings & PWA Web Push Notifications - SNSHero.com',
+      gb: 'Settings & PWA Web Push Notifications - SNSHero.com',
+      ja: '設定 & PWAプッシュ通知 - SNSHero.com',
+      'zh-CN': '系统设置与PWA推送通知 - SNSHero.com',
+      'zh-TW': '系統設置與PWA推送通知 - SNSHero.com',
+      de: 'Einstellungen & PWA Web-Push - SNSHero.com',
+      es: 'Configuración y Notificaciones Web Push PWA - SNSHero.com',
+      fr: 'Paramètres et Notifications Web Push PWA - SNSHero.com',
+      id: 'Pengaturan & Notifikasi Web Push PWA - SNSHero.com',
+      ru: 'Настройки и Веб-Пуш Уведомления PWA - SNSHero.com',
+      th: 'การตั้งค่าและการแจ้งเตือน Web Push PWA - SNSHero.com',
+      vi: 'Cài Đặt & Thông Báo Web Push PWA - SNSHero.com'
     },
     description: {
       ko: '12개 다국어 언어 변경, 사운드/BGM 조절, PWA 홈 화면 설치 가이드, 웹푸시 알림 등록 및 이벤트 보상 수령.',
@@ -542,7 +543,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': 'SoftwareApplication',
-      name: 'SNSHero System & Notification Settings',
+      name: lang === 'ko' ? '눈히어로.com 시스템 & 알림 설정' : 'SNSHero.com System & Notification Settings',
       url: 'https://snshero.com/setting',
       inLanguage: lang
     })
@@ -550,24 +551,24 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   bench: {
     title: {
-      ko: 'snshero bench - SNSHero Bench Point (SHBP) AI 1시간 공인 벤치마크 | SNS히어로',
-      en: 'snshero bench - SNSHero Bench Point (SHBP) Official 1-Hour AI Benchmark | SNSHero',
-      gb: 'snshero bench - SNSHero Bench Point (SHBP) Official 1-Hour AI Benchmark | SNSHero',
-      ja: 'snshero bench - SNSHero Bench Point (SHBP) 公式1時間AIベンチマーク | SNSヒーロー',
-      'zh-CN': 'snshero bench - SNSHero Bench Point (SHBP) 官方AI 1小时跑分基准测试 | SNS英雄',
-      'zh-TW': 'snshero bench - SNSHero Bench Point (SHBP) 官方AI 1小時跑分基準測試 | SNS英雄',
-      de: 'snshero bench - SNSHero Bench Point (SHBP) Offizieller 1-Stunden-KI-Benchmark | SNSHero',
-      es: 'snshero bench - SNSHero Bench Point (SHBP) Benchmark Oficial de IA de 1 Hora | SNSHero',
-      fr: 'snshero bench - SNSHero Bench Point (SHBP) Benchmark IA Officiel d\'une heure | SNSHero',
-      id: 'snshero bench - SNSHero Bench Point (SHBP) Tolok Ukur AI Resmi 1 Jam | SNSHero',
-      ru: 'snshero bench - SNSHero Bench Point (SHBP) Официальный 1-часовой бенчмарк ИИ | SNSHero',
-      th: 'snshero bench - SNSHero Bench Point (SHBP) เกณฑ์มาตรฐาน AI 1 ชั่วโมงอย่างเป็นทางการ | SNSHero',
-      vi: 'snshero bench - SNSHero Bench Point (SHBP) Điểm chuẩn AI 1 giờ chính thức | SNSHero'
+      ko: 'snshero bench - SNSHero Bench Point (SHBP) AI 1시간 공인 벤치마크 | 눈히어로.com',
+      en: 'snshero bench - SNSHero Bench Point (SHBP) Official 1-Hour AI Benchmark | SNSHero.com',
+      gb: 'snshero bench - SNSHero Bench Point (SHBP) Official 1-Hour AI Benchmark | SNSHero.com',
+      ja: 'snshero bench - SNSHero Bench Point (SHBP) 公式1時間AIベンチマーク | SNSHero.com',
+      'zh-CN': 'snshero bench - SNSHero Bench Point (SHBP) 官方AI 1小时跑分基准测试 | SNSHero.com',
+      'zh-TW': 'snshero bench - SNSHero Bench Point (SHBP) 官方AI 1小時跑分基準測試 | SNSHero.com',
+      de: 'snshero bench - SNSHero Bench Point (SHBP) Offizieller 1-Stunden-KI-Benchmark | SNSHero.com',
+      es: 'snshero bench - SNSHero Bench Point (SHBP) Benchmark Oficial de IA de 1 Hora | SNSHero.com',
+      fr: 'snshero bench - SNSHero Bench Point (SHBP) Benchmark IA Officiel d\'une heure | SNSHero.com',
+      id: 'snshero bench - SNSHero Bench Point (SHBP) Tolok Ukur AI Resmi 1 Jam | SNSHero.com',
+      ru: 'snshero bench - SNSHero Bench Point (SHBP) Официальный 1-часовой бенчмарк ИИ | SNSHero.com',
+      th: 'snshero bench - SNSHero Bench Point (SHBP) เกณฑ์มาตรฐาน AI 1 ชั่วโมงอย่างเป็นทางการ | SNSHero.com',
+      vi: 'snshero bench - SNSHero Bench Point (SHBP) Điểm chuẩn AI 1 giờ chính thức | SNSHero.com'
     },
     description: {
-      ko: 'snshero bench는 Claude, GPT, Gemini 등 첨단 AI 모델의 1시간 자율 플레이 성능을 측정하는 공인 벤치마크입니다. 256경기 기준 누적 SNSHero Bench Point(SHBP) 점수와 위변조 방지 검증 해시를 제공합니다.',
-      en: 'snshero bench is the official 1-hour autonomous gameplay benchmark evaluating Claude, GPT, and Gemini. Measures cumulative SNSHero Bench Point (SHBP) score across 256 games with verification hash.',
-      gb: 'snshero bench is the official 1-hour autonomous gameplay benchmark evaluating Claude, GPT, and Gemini. Measures cumulative SNSHero Bench Point (SHBP) score across 256 games with verification hash.',
+      ko: 'snshero bench는 Claude, GPT, Gemini 등 첨단 AI 모델의 1시간 자율 플레이 성능을 측정하는 눈히어로.com 공인 벤치마크입니다. 256경기 기준 누적 SNSHero Bench Point(SHBP) 점수와 위변조 방지 검증 해시를 제공합니다.',
+      en: 'snshero bench is the official SNSHero.com 1-hour autonomous gameplay benchmark evaluating Claude, GPT, and Gemini. Measures cumulative SNSHero Bench Point (SHBP) score across 256 games with verification hash.',
+      gb: 'snshero bench is the official SNSHero.com 1-hour autonomous gameplay benchmark evaluating Claude, GPT, and Gemini. Measures cumulative SNSHero Bench Point (SHBP) score across 256 games with verification hash.',
       ja: 'snshero benchは、Claude、GPT、Gemini等のAIが1時間自律プレイして達成するSNSHero Bench Point(SHBP)を測定する公式ベンチマークです。',
       'zh-CN': 'snshero bench是评估Claude、GPT和Gemini一小时自主游戏能力的官方跑分基准测试。提供256场比赛累计SHBP得分与防作弊验证哈希。',
       'zh-TW': 'snshero bench是評估Claude、GPT和Gemini一小時自主遊戲能力的官方跑分基準測試。提供256場比賽累計SHBP得分與防作弊驗證哈希。',
@@ -593,7 +594,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
           inLanguage: lang,
           isPartOf: {
             '@type': 'WebSite',
-            name: 'SNSHero',
+            name: lang === 'ko' ? '눈히어로.com' : 'SNSHero.com',
             url: 'https://snshero.com'
           }
         },
@@ -638,41 +639,41 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   movie: {
     title: {
-      ko: 'SNSHero 공식 애니메이션 40화 (카단과 아케인의 메아리) | SNS히어로',
-      en: 'SNSHero Official Animation 40 Episodes | SNSHero',
-      gb: 'SNSHero Official Animation 40 Episodes | SNSHero',
-      ja: 'SNSHero 公式アニメーション全40話 | SNSヒーロー',
-      'zh-CN': 'SNSHero 官方动画全40集 | SNS英雄',
-      'zh-TW': 'SNSHero 官方動畫全40集 | SNS英雄',
-      de: 'SNSHero Offizielle Animation 40 Folgen | SNSHero',
-      es: 'SNSHero Animación Oficial 40 Episodios | SNSHero',
-      fr: 'SNSHero Animation Officielle 40 Épisodes | SNSHero',
-      id: 'SNSHero Animasi Resmi 40 Episode | SNSHero',
-      ru: 'SNSHero Официальная Анимация 40 Серий | SNSHero',
-      th: 'SNSHero แอนิเมชันทางการ 40 ตอน | SNSHero',
-      vi: 'SNSHero Hoạt Hình Chính Thức 40 Tập | SNSHero'
+      ko: '눈히어로.com - 카단의 여정 | 공식 애니메이션 40화',
+      en: "SNSHero.com - Kadan's Journey | Official Animation 40 Episodes",
+      gb: "SNSHero.com - Kadan's Journey | Official Animation 40 Episodes",
+      ja: "SNSHero.com - Kadan's Journey | 公式アニメーション全40話",
+      'zh-CN': "SNSHero.com - Kadan's Journey | 官方动画全40集",
+      'zh-TW': "SNSHero.com - Kadan's Journey | 官方動畫全40集",
+      de: "SNSHero.com - Kadan's Journey | Offizielle Animation 40 Folgen",
+      es: "SNSHero.com - Kadan's Journey | Animación Oficial 40 Episodios",
+      fr: "SNSHero.com - Kadan's Journey | Animation Officielle 40 Épisodes",
+      id: "SNSHero.com - Kadan's Journey | Animasi Resmi 40 Episode",
+      ru: "SNSHero.com - Kadan's Journey | Официальная Анимация 40 Серий",
+      th: "SNSHero.com - Kadan's Journey | แอนิเมชันทางการ 40 ตอน",
+      vi: "SNSHero.com - Kadan's Journey | Hoạt Hình Chính Thức 40 Tập"
     },
     description: {
-      ko: 'SNS히어로 공식 40부작 판타지 애니메이션 시리즈(PLBTRBTakaSNU) 무료 스트리밍! 매 화 시청 시 +100 SNS 게임 보상을 즉시 수령하세요.',
-      en: 'Watch the official 40-episode SNSHero fantasy animation series (PLBTRBTakaSNU) and claim +100 SNS reward per episode.',
-      gb: 'Watch the official 40-episode SNSHero fantasy animation series (PLBTRBTakaSNU) and claim +100 SNS reward per episode.',
-      ja: 'SNSヒーロー公式ファンタジーアニメ全40話無料配信！1話視聴ごとに+100 SNS報酬を獲得。',
-      'zh-CN': '免费观看SNS英雄官方40集奇幻动画系列，每集立领+100 SNS奖励！',
-      'zh-TW': '免費觀看SNS英雄官方40集奇幻動畫系列，每集立領+100 SNS獎勵！',
-      de: 'Sieh dir die 40-teilige SNSHero Fantasy-Animationsserie an und erhalte +100 SNS pro Folge.',
-      es: 'Mira la serie de animación oficial de 40 episodios de SNSHero y gana +100 SNS por episodio.',
-      fr: 'Regardez la série animée officielle de 40 épisodes de SNSHero et gagnez +100 SNS par épisode.',
-      id: 'Tonton seri animasi resmi 40 episode SNSHero dan klaim +100 SNS per episode.',
-      ru: 'Смотрите официальный 40-серийный мультсериал SNSHero и получайте +100 SNS за серию.',
-      th: 'รับชมแอนิเมชันแฟนตาซี 40 ตอนของ SNSHero ฟรี พร้อมรับ +100 SNS ต่อตอน',
-      vi: 'Xem trọn bộ 40 tập hoạt hình SNSHero miễn phí và nhận +100 SNS mỗi tập.'
+      ko: '눈히어로.com - 카단의 여정 공식 40부작 판타지 애니메이션 시리즈(PLBTRBTakaSNU) 무료 스트리밍! 매 화 시청 시 +100 SNS 게임 보상을 즉시 수령하세요.',
+      en: "Watch the official 40-episode SNSHero.com - Kadan's Journey fantasy animation series (PLBTRBTakaSNU) and claim +100 SNS reward per episode.",
+      gb: "Watch the official 40-episode SNSHero.com - Kadan's Journey fantasy animation series (PLBTRBTakaSNU) and claim +100 SNS reward per episode.",
+      ja: "SNSHero.com - Kadan's Journey 公式ファンタジーアニメ全40話無料配信！1話視聴ごとに+100 SNS報酬を獲得。",
+      'zh-CN': "免费观看SNSHero.com - Kadan's Journey官方40集奇幻动画系列，每集立领+100 SNS奖励！",
+      'zh-TW': "免費觀看SNSHero.com - Kadan's Journey官方40集奇幻動畫系列，每集立領+100 SNS獎勵！",
+      de: 'Sieh dir die 40-teilige SNSHero.com Fantasy-Animationsserie an und erhalte +100 SNS pro Folge.',
+      es: 'Mira la serie de animación oficial de 40 episodios de SNSHero.com y gana +100 SNS por episodio.',
+      fr: 'Regardez la série animée officielle de 40 épisodes de SNSHero.com et gagnez +100 SNS par épisode.',
+      id: 'Tonton seri animasi resmi 40 episode SNSHero.com dan klaim +100 SNS per episode.',
+      ru: 'Смотрите официальный 40-серийный мультсериал SNSHero.com и получайте +100 SNS за серию.',
+      th: 'รับชมแอนิเมชันแฟนตาซี 40 ตอนของ SNSHero.com ฟรี พร้อมรับ +100 SNS ต่อตอน',
+      vi: 'Xem trọn bộ 40 tập hoạt hình SNSHero.com miễn phí và nhận +100 SNS mỗi tập.'
     },
     canonicalPath: '/movie',
     schemaType: 'TVSeries',
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': 'TVSeries',
-      name: 'SNSHero Official Animation (40 Episodes)',
+      name: lang === 'ko' ? '눈히어로.com - 카단의 여정 (공식 애니메이션 40화)' : "SNSHero.com - Kadan's Journey (Official Animation 40 Episodes)",
       url: 'https://snshero.com/movie',
       numberOfEpisodes: 40,
       inLanguage: lang,
@@ -682,41 +683,41 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   cinema: {
     title: {
-      ko: 'SNSHero 공식 무비 40화 (Kadan & Arcane Echoes: The Movie) | SNS히어로',
-      en: 'SNSHero Official Movie 40 Episodes | SNSHero',
-      gb: 'SNSHero Official Movie 40 Episodes | SNSHero',
-      ja: 'SNSHero 公式ムービー全40話 | SNSヒーロー',
-      'zh-CN': 'SNSHero 官方电影全40集 | SNS英雄',
-      'zh-TW': 'SNSHero 官方電影全40集 | SNS英雄',
-      de: 'SNSHero Offizieller Film 40 Folgen | SNSHero',
-      es: 'SNSHero Película Oficial 40 Episodios | SNSHero',
-      fr: 'SNSHero Film Officiel 40 Épisodes | SNSHero',
-      id: 'SNSHero Film Resmi 40 Episode | SNSHero',
-      ru: 'SNSHero Официальный Фильм 40 Серий | SNSHero',
-      th: 'SNSHero มูฟวี่ทางการ 40 ตอน | SNSHero',
-      vi: 'SNSHero Phim Chính Thức 40 Tập | SNSHero'
+      ko: '눈히어로.com - 카단의 여정 | 공식 무비 40화',
+      en: "SNSHero.com - Kadan's Journey | Official Movie 40 Episodes",
+      gb: "SNSHero.com - Kadan's Journey | Official Movie 40 Episodes",
+      ja: "SNSHero.com - Kadan's Journey | 公式ムービー全40話",
+      'zh-CN': "SNSHero.com - Kadan's Journey | 官方电影全40集",
+      'zh-TW': "SNSHero.com - Kadan's Journey | 官方電影全40集",
+      de: "SNSHero.com - Kadan's Journey | Offizieller Film 40 Folgen",
+      es: "SNSHero.com - Kadan's Journey | Película Oficial 40 Episodios",
+      fr: "SNSHero.com - Kadan's Journey | Film Officiel 40 Épisodes",
+      id: "SNSHero.com - Kadan's Journey | Film Resmi 40 Episode",
+      ru: "SNSHero.com - Kadan's Journey | Официальный Фильм 40 Серий",
+      th: "SNSHero.com - Kadan's Journey | มูฟวี่ทางการ 40 ตอน",
+      vi: "SNSHero.com - Kadan's Journey | Phim Chính Thức 40 Tập"
     },
     description: {
-      ko: 'SNS히어로 공식 40부작 판타지 무비 시리즈(PLeb-8Xpcho0o) 무료 감상! 매 화 감상 시 +100 SNS 게임 보상을 즉시 수령하세요.',
-      en: 'Stream the official 40-episode SNSHero cinematic movie series (PLeb-8Xpcho0o) and earn +100 SNS reward per episode.',
-      gb: 'Stream the official 40-episode SNSHero cinematic movie series (PLeb-8Xpcho0o) and earn +100 SNS reward per episode.',
-      ja: 'SNSヒーロー公式シネマティックムービー全40話無料配信！1話視聴ごとに+100 SNS報酬を獲得。',
-      'zh-CN': '免费观看SNS英雄官方40集电影系列，每集立领+100 SNS奖励！',
-      'zh-TW': '免費觀看SNS英雄官方40集電影系列，每集立領+100 SNS獎勵！',
-      de: 'Streame die 40-teilige SNSHero Filmreihe und sichere dir +100 SNS pro Folge.',
-      es: 'Disfruta de la serie de películas oficial de 40 episodios de SNSHero y gana +100 SNS por episodio.',
-      fr: 'Regardez la série de films officielle de 40 épisodes de SNSHero et gagnez +100 SNS par épisode.',
-      id: 'Streaming seri film resmi 40 episode SNSHero dan klaim +100 SNS per episode.',
-      ru: 'Смотрите официальный 40-серийный киносериал SNSHero и получайте +100 SNS за серию.',
-      th: 'รับชมมูฟวี่ 40 ตอนของ SNSHero ฟรี พร้อมรับ +100 SNS ต่อตอน',
-      vi: 'Xem trọn bộ 40 tập phim SNSHero miễn phí và nhận +100 SNS mỗi tập.'
+      ko: '눈히어로.com - 카단의 여정 공식 40부작 판타지 무비 시리즈(PLeb-8Xpcho0o) 무료 감상! 매 화 감상 시 +100 SNS 게임 보상을 즉시 수령하세요.',
+      en: "Stream the official 40-episode SNSHero.com - Kadan's Journey cinematic movie series (PLeb-8Xpcho0o) and earn +100 SNS reward per episode.",
+      gb: "Stream the official 40-episode SNSHero.com - Kadan's Journey cinematic movie series (PLeb-8Xpcho0o) and earn +100 SNS reward per episode.",
+      ja: "SNSHero.com - Kadan's Journey 公式シネマティックムービー全40話無料配信！1話視聴ごとに+100 SNS報酬を獲得。",
+      'zh-CN': "免费观看SNSHero.com - Kadan's Journey官方40集电影系列，每集立领+100 SNS奖励！",
+      'zh-TW': "免費觀看SNSHero.com - Kadan's Journey官方40集電影系列，每集立領+100 SNS獎勵！",
+      de: 'Streame die 40-teilige SNSHero.com Filmreihe und sichere dir +100 SNS pro Folge.',
+      es: 'Disfruta de la serie de películas oficial de 40 episodios de SNSHero.com y gana +100 SNS por episodio.',
+      fr: 'Regardez la série de films officielle de 40 épisodes de SNSHero.com et gagnez +100 SNS par épisode.',
+      id: 'Streaming seri film resmi 40 episode SNSHero.com dan klaim +100 SNS per episode.',
+      ru: 'Смотрите официальный 40-серийный киносериал SNSHero.com и получайте +100 SNS за серию.',
+      th: 'รับชมมูฟวี่ 40 ตอนของ SNSHero.com ฟรี พร้อมรับ +100 SNS ต่อตอน',
+      vi: 'Xem trọn bộ 40 tập phim SNSHero.com miễn phí và nhận +100 SNS mỗi tập.'
     },
     canonicalPath: '/cinema',
     schemaType: 'MovieSeries',
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
       '@type': 'MovieSeries',
-      name: 'SNSHero Official Movie (40 Episodes)',
+      name: lang === 'ko' ? '눈히어로.com - 카단의 여정 (공식 무비 40화)' : "SNSHero.com - Kadan's Journey (Official Movie 40 Episodes)",
       url: 'https://snshero.com/cinema',
       numberOfEpisodes: 40,
       inLanguage: lang,
@@ -757,7 +758,7 @@ export function updateGeoMetadata(view: string, lang: Language = 'ko') {
   setMeta('property', 'og:title', title);
   setMeta('property', 'og:description', description);
   setMeta('property', 'og:url', fullUrl);
-  setMeta('property', 'og:site_name', 'SNSHero');
+  setMeta('property', 'og:site_name', lang === 'ko' ? '눈히어로.com' : 'SNSHero.com');
 
   // Twitter Cards
   setMeta('property', 'twitter:title', title);

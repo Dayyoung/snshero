@@ -8,7 +8,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>SNSHero: 카단 & 아케인 에코즈 (Part 1)</title>
+<title>눈히어로.com - 카단의 여정 (Part 1)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -390,9 +390,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <span class="cover-volume">VOLUME 1</span>
   </div>
   <div class="cover-center">
-    <div class="cover-series">SNSHero Official Web Novel Series</div>
-    <div class="cover-title">SNS히어로</div>
-    <div class="cover-subtitle-kadan">카단 & 아케인 에코즈</div>
+    <div class="cover-series">눈히어로.com Official Web Novel Series</div>
+    <div class="cover-title">눈히어로.com</div>
+    <div class="cover-subtitle-kadan">카단의 여정</div>
     <div class="cover-subtitle">Part 1 · 제 1화 ~ 제 40화 완결본</div>
     <div class="cover-divider"></div>
     <p class="cover-desc">
@@ -417,7 +417,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <div class="characters-page">
   <div class="section-header">
     <h2 class="section-title">주요 등장인물 (Characters)</h2>
-    <span class="section-subtitle">카단 & 아케인 에코즈 인물 열전</span>
+    <span class="section-subtitle">눈히어로.com - 카단의 여정 인물 열전</span>
   </div>
   <div class="char-grid">
     <div class="char-card">
@@ -480,16 +480,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <!-- 판권지 (COLOPHON) -->
 <div class="colophon-page">
   <div class="colophon-box">
-    <div class="colophon-title">SNS히어로: 카단 & 아케인 에코즈 (Part 1)</div>
+    <div class="colophon-title">눈히어로.com - 카단의 여정 (Part 1)</div>
     <div class="colophon-sub">공식 전자책 완결본 (Official e-Book)</div>
     <table class="colophon-table">
       <tr>
         <td>도서명</td>
-        <td>SNS히어로: 카단 & 아케인 에코즈 (Part 1)</td>
+        <td>눈히어로.com - 카단의 여정 (Part 1)</td>
       </tr>
       <tr>
         <td>저작권자</td>
-        <td>ModooSoft / SNSHero Revolution</td>
+        <td>ModooSoft / 눈히어로.com</td>
       </tr>
       <tr>
         <td>발행일</td>
@@ -505,7 +505,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       </tr>
       <tr>
         <td>발행처</td>
-        <td>SNSHero Revolution Media Lounge</td>
+        <td>눈히어로.com 미디어 라운지 (https://snshero.com)</td>
       </tr>
     </table>
     <div style="font-size: 8pt; color: #94a3b8; line-height: 1.6;">
@@ -613,7 +613,7 @@ async def generate_pdf():
         """
         header_template = """
         <div style="font-size: 7.5pt; width: 100%; display: flex; justify-content: space-between; padding: 0 18mm; color: #cbd5e1; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;">
-          <span>SNSHero: Kadan & Arcane Echoes</span>
+          <span>눈히어로.com - 카단의 여정</span>
           <span>공식 웹소설 완결본 (Part 1)</span>
         </div>
         """

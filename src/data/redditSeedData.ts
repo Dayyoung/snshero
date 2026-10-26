@@ -371,14 +371,14 @@ export const SEED_POSTS: RedditPost[] = [
       domain: 'snshero.com',
       aspectRatio: 16 / 9,
     },
-    body: `안녕하세요, 게이머 여러분! **SNS히어로(SNSHero)** 공식 개발팀입니다.
-전 세계 게이머들의 가슴을 뛰게 했던 전설의 미니게임, **더 위쳐 3(The Witcher 3: Wild Hunt) 오리지널 궨트(Gwent Classic)**가 SNSHero.com 웹 브라우저 게임으로 공식 출시되었습니다! ⚔️
+    body: `안녕하세요, 게이머 여러분! **눈히어로.com** 공식 개발팀입니다.
+전 세계 게이머들의 가슴을 뛰게 했던 전설의 미니게임, **더 위쳐 3(The Witcher 3: Wild Hunt) 오리지널 궨트(Gwent Classic)**가 눈히어로.com (SNSHero.com) 웹 브라우저 게임으로 공식 출시되었습니다! ⚔️
 
 ---
 
 ### 🌐 즉시 플레이 링크
 - 🎮 **궨트 게임 바로 플레이하기**: https://snshero.com/gwent
-- 📱 **SNSHero 3x3 모바일 카드 배틀**: https://snshero.com/
+- 📱 **눈히어로.com 3x3 모바일 카드 배틀**: https://snshero.com/
 - 🐙 **오픈소스 GitHub 리포지토리**: https://github.com/Dayyoung/snshero
 - 📺 **바이브코딩 웹게임 개발 강의**: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
 
@@ -428,8 +428,8 @@ export const SEED_POSTS: RedditPost[] = [
   {
     id: 'post_snshero_game_intro_guide',
     subreddit: 'gaming',
-    title: '[공식] SNS히어로(SNSHero.com) 완벽 가이드: AI 원클릭 웹 카드 배틀 RPG 소개 및 필승 공략법 🎮 (플레이 스크린샷 수록)',
-    originalTitle: '[Official] SNSHero (https://snshero.com) Complete Guide: AI 1-Click Web Card Battle RPG Introduction & Strategy Guide 🎮 (Screenshots Included)',
+    title: '[공식] 눈히어로.com - 카단의 여정 완벽 가이드: AI 원클릭 웹 카드 배틀 RPG 소개 및 필승 공략법 🎮 (플레이 스크린샷 수록)',
+    originalTitle: '[Official] SNSHero.com - Kadan\'s Journey Complete Guide: AI 1-Click Web Card Battle RPG Introduction & Strategy Guide 🎮 (Screenshots Included)',
     author: 'SNSHero_Official',
     authorAvatar: 'https://snshero.com/favicon.png',
     createdAt: Date.now() - 1000 * 60 * 5,
@@ -453,12 +453,12 @@ export const SEED_POSTS: RedditPost[] = [
       domain: 'snshero.com',
       aspectRatio: 16 / 9,
     },
-    body: `안녕하세요, 게이머 여러분! **SNS히어로(SNSHero)** 공식 개발팀입니다.
-AI와 함께 진화하는 차세대 원클릭 웹 카드 배틀 RPG, **SNSHero.com**의 게임 소개와 초보자 필승 플레이 가이드를 상세히 안내해 드립니다!
+    body: `안녕하세요, 게이머 여러분! **눈히어로.com** 공식 개발팀입니다.
+AI와 함께 진화하는 차세대 원클릭 웹 카드 배틀 RPG, **눈히어로.com - 카단의 여정**의 게임 소개와 초보자 필승 플레이 가이드를 상세히 안내해 드립니다!
 
 ---
 
-### 🌐 SNS히어로(SNSHero) 핵심 바로가기 링크
+### 🌐 눈히어로.com 핵심 바로가기 링크
 - 🎮 **공식 웹게임 즉시 플레이**: https://snshero.com/
 - 🤖 **Google AI Studio 프로젝트**: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
 - 🐙 **오픈소스 GitHub 리포지토리**: https://github.com/Dayyoung/snshero

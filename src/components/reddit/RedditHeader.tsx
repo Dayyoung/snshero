@@ -125,7 +125,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
  <Menu className="w-5 h-5" />
  </button>
 
- {/* 눈히어로.com / S&SHero.com 브랜드 로고 & 마크 */}
+ {/* 눈히어로.com / SNSHero.com 브랜드 로고 & 마크 */}
  <a
  href="/"
  onClick={(e) => {
@@ -134,11 +134,11 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
  window.dispatchEvent(new PopStateEvent('popstate'));
  }}
  className="flex items-center gap-2 cursor-pointer group min-h-[44px] bg-transparent transition-opacity hover:opacity-85"
- aria-label={isKo ? '눈히어로.com 홈으로 이동' : 'Go to S&SHero.com Home'}
+ aria-label={isKo ? '눈히어로.com 홈으로 이동' : 'Go to SNSHero.com Home'}
  >
  <img
  src={isKo ? '/logo-ko.png' : '/logo-en.png'}
- alt={isKo ? '눈히어로.com' : 'S&SHero.com'}
+ alt={isKo ? '눈히어로.com' : 'SNSHero.com'}
  className="h-9 sm:h-10 w-auto object-contain bg-transparent"
  />
  </a>
@@ -225,7 +225,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  onFocus={() => setIsSearchFocused(true)}
- placeholder={isKo ? "SNSHero 검색..." : "Search SNSHero..."}
+ placeholder={isKo ? "눈히어로.com 검색..." : "Search SNSHero.com..."}
  className={`w-full h-11 min-h-[44px] pl-10 pr-10 rounded-sm text-xs sm:text-sm font-mono outline-none transition-all ${
  isDark
  ? 'bg-[#181C1F] hover:bg-[#22272B] focus:bg-[#0E1113] focus:ring-1 focus:ring-[#FF4500] text-gray-100 border border-transparent focus:border-[#FF4500]'
@@ -250,7 +250,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
  }`}>
  <div className="px-4 py-1 text-[11px] font-bold tracking-wider uppercase opacity-50 flex items-center gap-1.5">
  <TrendingUp className="w-3.5 h-3.5 text-[#FF4500]" />
- <span>{isKo ? '실시간 인기 검색어' : 'Trending on SNSHero'}</span>
+ <span>{isKo ? '실시간 인기 검색어' : 'Trending on SNSHero.com'}</span>
  </div>
  {trendingSearches.map((item) => (
  <button
@@ -437,7 +437,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
  }`}
  >
  <Gamepad2 className="w-4 h-4" />
- <span>{isKo ? 'SNSHero 게임 플레이' : 'SNSHero Game Lobby'}</span>
+ <span>{isKo ? '눈히어로.com 게임 플레이' : 'SNSHero.com Game Lobby'}</span>
  </button>
  </div>
  </div>

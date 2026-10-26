@@ -481,13 +481,15 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
   // 3. SEO / GEO / AEO 동적 메타 데이터 & 구조화 데이터(JSON-LD) 주입
   useEffect(() => {
-    const defaultTitle = t('seo_title_home', language) || 'SNSHero - AI Card Battle';
+    const isKo = language === 'ko';
+    const brandName = isKo ? '눈히어로.com' : 'SNSHero.com';
+    const defaultTitle = t('seo_title_home', language) || `${brandName} - AI Card Battle`;
     const defaultDesc = t('seo_desc_home', language) || 'Generative AI web card battle game.';
 
     if (selectedPost) {
       // 3-1. 상세 보기 진입 시 메타 변경
       const catText = t(`community_cat_${selectedPost.category || 'free'}` as any, language);
-      const postTitle = `[${catText}] ${selectedPost.userName} - SNSHero Community`;
+      const postTitle = `[${catText}] ${selectedPost.userName} - ${brandName} ${isKo ? '커뮤니티' : 'Community'}`;
       const postDesc = selectedPost.content.substring(0, 150).replace(/\n/g, ' ');
 
       document.title = postTitle;
@@ -568,15 +570,15 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
         "image": selectedPost.imageUrls || (selectedPost.imageUrl ? [selectedPost.imageUrl] : []),
         "publisher": {
           "@type": "Organization",
-          "name": "SNSHero",
+          "name": brandName,
           "logo": "https://snshero.com/logo.png"
         }
       });
     } else {
       // 3-2. 목록/카테고리 화면인 경우 기본 메타로 원복
       document.title = selectedCategory !== 'select'
-        ? `${t(`community_cat_${selectedCategory}` as any, language)} | SNSHero Community`
-        : `Community | SNSHero`;
+        ? `${t(`community_cat_${selectedCategory}` as any, language)} | ${brandName} ${isKo ? '커뮤니티' : 'Community'}`
+        : `${isKo ? '커뮤니티' : 'Community'} | ${brandName}`;
 
       let descMeta = document.querySelector('meta[name="description"]');
       if (!descMeta) {

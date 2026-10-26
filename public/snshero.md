@@ -1,6 +1,6 @@
-# [SNSHero Revolution] AI Studio 마스터 원샷 개발 프롬프트 및 게임 기획/디자인 명세서 (`snshero.md`)
+# [눈히어로.com - 카단의 여정 / SNSHero.com - Kadan's Journey] AI Studio 마스터 원샷 개발 프롬프트 및 게임 기획/디자인 명세서 (`snshero.md`)
 
-> **문서 목적**: 본 문서는 Google AI Studio, Gemini API 또는 최신 자율 코딩 에이전트에 단일 컨텍스트/프롬프트로 첨부하여, 100% 작동 가능한 완성형 **'SNS히어로 (SNSHero Revolution)'** 웹 카드 배틀 게임(React 19 + TypeScript + Tailwind CSS + LocalStorage)을 단 한 번의 프롬프트로 완벽히 개발할 수 있도록 작성된 **통합 게임 기획서(GDD), 디자인 가이드라인, 시스템 아키텍처 및 마스터 원샷 프롬프트 지침서**입니다.
+> **문서 목적**: 본 문서는 Google AI Studio, Gemini API 또는 최신 자율 코딩 에이전트에 단일 컨텍스트/프롬프트로 첨부하여, 100% 작동 가능한 완성형 **'눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)'** 웹 카드 배틀 게임(React 19 + TypeScript + Tailwind CSS + LocalStorage)을 단 한 번의 프롬프트로 완벽히 개발할 수 있도록 작성된 **통합 게임 기획서(GDD), 디자인 가이드라인, 시스템 아키텍처 및 마스터 원샷 프롬프트 지침서**입니다.
 >
 > 카드 이미지는 `/public/cards1.png` (카드 ID 1~100) 및 `/public/cards2.png` (카드 ID 101~110+) 10x10 스프라이트 시트를 그리드 연산으로 자동 매핑합니다.
 
@@ -25,7 +25,7 @@
 ## 1.1 게임 개요 및 핵심 루프 (Core Game Loop)
 
 ### 게임 정의
-- **타이틀**: SNS히어로 (SNSHero Revolution)
+- **타이틀**: 눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)
 - **장르**: 3x3 전술 카드 배틀 + 캐릭터 다마고치 육성 + 2D 월드맵 RPG + 미니게임 컬렉션
 - **플랫폼**: 모바일/PC 웹 브라우저 (반응형, 모바일 100dvh 최적화)
 - **저장 방식**: 100% 브라우저 로컬스토리지 (LocalStorage) 기반 무서버 영구 저장

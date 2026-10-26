@@ -537,48 +537,43 @@ def build_distinct_anime_pool_for_episode(ep_num: int, ep_data: dict, n_narrativ
 def build_distinct_liveaction_pool_for_episode(ep_num: int, n_narrative: int) -> list[Image.Image]:
     """
     Constructs `n_narrative` 100% distinct Photorealistic 70mm Live-Action panels for Episode `ep_num`
-    in strict chronological order (`act_seq_01..08.png` + `epXX_liveaction_sheet.png`).
-    Zero repeated panels and zero chronological wrap-around!
+    in strict chronological order:
+    - Episode 1: Uses bespoke 1:1 photorealistic live-action `raw_ep01_sheets/sheet_01..06.png` (49 exact scene shots).
+    - Episodes 2..40: Uses the 72 chronological photorealistic live-action shots in `raw_epXX_sheets/act_seq_01..08.png`
+      without injecting out-of-order summary sheets.
     """
-    la_sheet_path = LIVEACTION_RAW_DIR / f"ep{ep_num:02d}_liveaction_sheet.png"
-    la_master_cells = extract_3x3_cells(la_sheet_path) if la_sheet_path.exists() else []
-
     ep_raw_dir = CINEMA_RAW_PREFIX / f"raw_ep{ep_num:02d}_sheets"
-    extra_la_cells: list[Image.Image] = []
 
+    if ep_num == 1 and (ep_raw_dir / "sheet_01.png").exists():
+        s_panels = [extract_3x3_cells(ep_raw_dir / f"sheet_{s_i:02d}.png") for s_i in range(1, 7)]
+        ordered_la_cuts: list[Image.Image] = []
+        ordered_la_cuts.extend(s_panels[0][:9])
+        ordered_la_cuts.extend(s_panels[1][:9])
+        ordered_la_cuts.extend(s_panels[2][:9])
+        ordered_la_cuts.extend(s_panels[3][:9])
+        ordered_la_cuts.extend(s_panels[4][:9])
+        ordered_la_cuts.extend(s_panels[5][1:5])
+        return ordered_la_cuts[:n_narrative]
+
+    extra_la_cells: list[Image.Image] = []
     for seq_i in range(1, 9):
         seq_p = ep_raw_dir / f"act_seq_{seq_i:02d}.png"
         if seq_p.exists():
             extra_la_cells.extend(extract_3x3_cells(seq_p))
 
-    if not extra_la_cells and ep_num == 1:
-        for s_i in range(1, 7):
-            sp = ep_raw_dir / f"sheet_{s_i:02d}.png"
-            if sp.exists():
-                extra_la_cells.extend(extract_3x3_cells(sp))
+    if not extra_la_cells:
+        la_sheet_path = LIVEACTION_RAW_DIR / f"ep{ep_num:02d}_liveaction_sheet.png"
+        extra_la_cells = extract_3x3_cells(la_sheet_path) if la_sheet_path.exists() else []
 
-    anchor_positions = [int(round(ch * (n_narrative - 1) / 8.0)) for ch in range(9)]
-    needed_extra = n_narrative - len(anchor_positions)
-
-    # Pick `needed_extra` strictly distinct panels in chronological order from `extra_la_cells`
-    selected_extra: list[Image.Image] = []
+    # Pick `n_narrative` strictly distinct photorealistic live-action panels in chronological order
+    ordered_la_cuts = []
     used_indices: set[int] = set()
-    for k in range(needed_extra):
-        target = int(round(k * (len(extra_la_cells) - 1) / max(1, needed_extra - 1)))
+    for k in range(n_narrative):
+        target = int(round(k * (len(extra_la_cells) - 1) / max(1, n_narrative - 1)))
         while target in used_indices and target + 1 < len(extra_la_cells):
             target += 1
         used_indices.add(target)
-        selected_extra.append(extra_la_cells[target])
-
-    ordered_la_cuts: list[Image.Image] = []
-    ext_cursor = 0
-    for cut_i in range(n_narrative):
-        if cut_i in anchor_positions and len(la_master_cells) == 9:
-            ch = anchor_positions.index(cut_i)
-            ordered_la_cuts.append(la_master_cells[ch])
-        else:
-            ordered_la_cuts.append(selected_extra[min(ext_cursor, len(selected_extra) - 1)])
-            ext_cursor += 1
+        ordered_la_cuts.append(extra_la_cells[target])
 
     return ordered_la_cuts
 
@@ -610,9 +605,7 @@ def process_single_episode(args: tuple[int, dict, list[dict]]) -> dict:
     n_narrative = total_scenes - 1
 
     anime_cuts, stats = build_distinct_anime_pool_for_episode(ep_num, ep_data, n_narrative)
-    # Option 1 (방안 1): Unify Live-Action / Movie (`la_cuts`) with the 100% 1:1 narration-aligned `anime_cuts`
-    # so Animation, Movie, Webtoon, and /main Play all share the exact same 1:1 scene-aligned imagery.
-    la_cuts = [c.copy() for c in anime_cuts]
+    la_cuts = build_distinct_liveaction_pool_for_episode(ep_num, n_narrative)
 
     webtoon_ep_dir = WEBTOON_DIR / f"episode_{ep_num:02d}"
     cinema_ep_dir = CINEMA_DIR / f"episode_{ep_num:02d}"

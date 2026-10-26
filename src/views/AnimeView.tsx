@@ -179,7 +179,7 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
  {/* ── Page Header ── */}
  <div className="px-2 sm:px-4">
  <PageHeader
- title={t('anime_title', language) || 'SNSHero 애니메이션 (40부작)'}
+ title={t('anime_title', language) || (language === 'ko' ? '눈히어로.com - 카단의 여정 애니메이션 (40부작)' : "SNSHero.com - Kadan's Journey Animation (40 Eps)")}
  onBack={() => onNavigate('home')}
  rightAction={
  <button
@@ -203,10 +203,10 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
  </div>
  <div className="min-w-0">
  <h2 className="text-sm font-bold font-mono text-[#fdfcfc] truncate">
- {language === 'ko' ? `제 ${currentEpisodeNum}화 / 총 ${TOTAL_EPISODES}화` : `Episode ${currentEpisodeNum} / Total ${TOTAL_EPISODES}`}
+ {language === 'ko' ? `눈히어로.com - 카단의 여정 · 제 ${currentEpisodeNum}화 / 총 ${TOTAL_EPISODES}화` : `SNSHero.com - Kadan's Journey · Episode ${currentEpisodeNum} / Total ${TOTAL_EPISODES}`}
  </h2>
  <p className="text-xs text-stone-300 mt-0.5 break-words line-clamp-2 sm:line-clamp-none">
- {t('anime_subtitle', language) || 'SNSHero의 세계관과 펼쳐지는 영웅들의 이야기를 동영상으로 감상하세요.'}
+ {t('anime_subtitle', language) || (language === 'ko' ? '눈히어로.com - 카단의 여정 세계관과 펼쳐지는 영웅들의 이야기를 동영상으로 감상하세요.' : "Watch the world and heroes of SNSHero.com - Kadan's Journey in video.")}
  </p>
  </div>
  </div>
@@ -235,7 +235,7 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
  id="anime-yt-player"
  key={currentEpisodeNum}
  src={embedUrl}
- title={`SNSHero Animation Episode ${currentEpisodeNum}`}
+ title={language === 'ko' ? `눈히어로.com - 카단의 여정 애니메이션 제${currentEpisodeNum}화` : `SNSHero.com - Kadan's Journey Animation Episode ${currentEpisodeNum}`}
  className="w-full h-full border-0"
  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
  allowFullScreen

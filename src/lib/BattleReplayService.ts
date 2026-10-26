@@ -66,7 +66,7 @@ export class BattleReplayService {
     try {
       const shareUrl = this.generateShareUrl(data);
       const outcome = data.userWon ? '승리(VICTORY)' : '패배(DEFEAT)';
-      const text = `[SNS히어로] 1v1 카드 배틀 리플레이!\n결과: ${outcome} (${data.userScore} vs ${data.opponentScore})\n상대: ${data.opponentName}\n리플레이 보기: ${shareUrl}`;
+      const text = `[눈히어로.com] 1v1 카드 배틀 리플레이!\n결과: ${outcome} (${data.userScore} vs ${data.opponentScore})\n상대: ${data.opponentName}\n리플레이 보기: ${shareUrl}`;
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(text);

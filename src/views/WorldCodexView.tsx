@@ -84,8 +84,8 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
     {
       title: t('world_codex_title', language),
       body: language === 'ko'
-        ? '월드 코덱스는 SNS히어로 세계관의 모든 진영과 캐릭터 관계를 한눈에 볼 수 있는 정보 허브입니다. 진영 카드를 눌러 어떤 캐릭터들이 속해있는지 확인하고, 캐릭터 관계도를 통해 인물 간 연결을 탐험하세요.'
-        : 'The World Codex is an information hub where you can explore all factions and character relationships in the SNSHero universe. Tap faction cards to see which characters belong to each faction, and use the relationship map to discover character connections.',
+        ? '월드 코덱스는 눈히어로.com - 카단의 여정 세계관의 모든 진영과 캐릭터 관계를 한눈에 볼 수 있는 정보 허브입니다. 진영 카드를 눌러 어떤 캐릭터들이 속해있는지 확인하고, 캐릭터 관계도를 통해 인물 간 연결을 탐험하세요.'
+        : "The World Codex is an information hub where you can explore all factions and character relationships in the SNSHero.com - Kadan's Journey universe. Tap faction cards to see which characters belong to each faction, and use the relationship map to discover character connections.",
     },
     {
       title: language === 'ko' ? '추천 캐릭터' : 'Featured Characters',

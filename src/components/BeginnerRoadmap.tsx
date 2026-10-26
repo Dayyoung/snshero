@@ -104,10 +104,10 @@ const ROADMAP_STEPS: RoadmapStep[] = [
  },
  {
  id: 6,
- titleKo: '6단계: RPG 에코즈 탐험',
- titleEn: 'Step 6: Explore Kadan RPG',
- descKo: '카단 & 아케인 에코즈 RPG 모드에 진입하세요.',
- descEn: 'Enter Kadan & Arcane Echoes RPG mode.',
+ titleKo: '6단계: 카단의 여정 RPG 탐험',
+ titleEn: "Step 6: Explore Kadan's Journey RPG",
+ descKo: '눈히어로.com - 카단의 여정 RPG 모드에 진입하세요.',
+ descEn: "Enter SNSHero.com - Kadan's Journey RPG mode.",
  rewardSns: 350,
  targetView: 'main',
  checkCompleted: () => {

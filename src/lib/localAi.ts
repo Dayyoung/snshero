@@ -156,10 +156,10 @@ export const generateSmartKnowledgeReply = (options: LocalAiPromptOptions): stri
   const knowledge = getRelevantGameKnowledge(prompt, language);
 
   if (isEn) {
-    return `[SNSHero Tactical Guide] 💡 ${knowledge.split('\n')[1] || knowledge}`;
+    return `[SNSHero.com Tactical Guide] 💡 ${knowledge.split('\n')[1] || knowledge}`;
   } else {
     const firstDetail = knowledge.split('\n')[1] || knowledge;
-    return `[SNS히어로 가이드] 💡 ${firstDetail.replace(/^-\s*/, '')}`;
+    return `[눈히어로.com 가이드] 💡 ${firstDetail.replace(/^-\s*/, '')}`;
   }
 };
 

@@ -61,7 +61,7 @@ export const RankerDeckMirrorModal: React.FC<RankerDeckMirrorModalProps> = ({
  const handleShareDuelLink = async () => {
  triggerHaptic('tap');
  const shareUrl = generateDuelMirrorUrl(rankerName, rank, displayDeck);
- const title = isKo ? `[SNS히어로] 랭킹 #${rank} ${rankerName}의 덱으로 결투 도전!` : `[SNSHero] Duel Challenge with Rank #${rank} ${rankerName}'s Deck!`;
+ const title = isKo ? `[눈히어로.com] 랭킹 #${rank} ${rankerName}의 덱으로 결투 도전!` : `[SNSHero.com] Duel Challenge with Rank #${rank} ${rankerName}'s Deck!`;
  const text = isKo
  ? `명예의 전당 랭커 ${rankerName}(승률 ${winRate}%, 평균전투력 ${avgPower})의 덱을 1클릭 복제하고 즉시 결투를 치러보세요!`
  : `Mirror ranker ${rankerName}'s lineup (WinRate ${winRate}%) and duel right now!`;

@@ -44,8 +44,8 @@ const NATIVE_ADS: NativeAdItem[] = [
  badge: { ko: '영웅 카드 메타 분석', en: 'Hero Card Spotlight' },
  flair: { ko: '🃏 카드 공략 / Guide', en: '🃏 Strategy Guide', color: '#8B5CF6' },
  title: {
- ko: '이번 시즌 아레나 랭커들의 원픽! [카단 & 아케인 에코] 하이브리드 시너지 덱 완벽 가이드',
- en: 'Season 1 Ranked Meta: [Kadan & Arcane Echo] Hybrid Synergy Deck Full Strategy Guide',
+ ko: '이번 시즌 아레나 랭커들의 원픽! [눈히어로.com - 카단의 여정] 하이브리드 시너지 덱 완벽 가이드',
+ en: 'Season 1 Ranked Meta: [SNSHero.com - Kadan\'s Journey] Hybrid Synergy Deck Full Strategy Guide',
  },
  snippet: {
  ko: '전방 물리 탱킹과 후방 광역 연쇄 마법 폭딜을 동시에 챙기는 국민 덱 세팅입니다. 특히 3성 잠재력 개방 시 해금되는 "시공 왜곡" 패시브가 치명타율을 45%까지 끌어올립니다. 도감에서 카드 스킬 확인하고 나만의 마이덱을 편성해보세요!',
@@ -64,12 +64,12 @@ const NATIVE_ADS: NativeAdItem[] = [
  badge: { ko: '공식 웹툰 프리뷰', en: 'Official Webtoon Premiere' },
  flair: { ko: '🎨 공식 웹툰 / Webtoon', en: '🎨 Official Webtoon', color: '#10B981' },
  title: {
- ko: '[웹툰 1화 무료 공개] "카단과 시공의 균열: 기억을 잃은 전설의 기사와 인공지능 요정" - 정주행 시작하기',
- en: '[Ep. 1 Free] "Kadan & The Rift of Time: The Amnesiac Knight and AI Fairy" - Read Now',
+ ko: '[웹툰 1화 무료 공개] "눈히어로.com - 카단의 여정" 공식 풀컬러 웹툰 - 정주행 시작하기',
+ en: '[Ep. 1 Free] "SNSHero.com - Kadan\'s Journey" Official Webtoon - Read Now',
  },
  snippet: {
- ko: '멸망 위기에 처한 디지털 대륙을 구하기 위해 깨어난 소년 카단. 왜 그의 검에는 잃어버린 기억의 파편이 깃들어 있을까? 매주 수/일 연재되는 SNSHero 오리지널 웹툰의 첫 에피소드를 지금 무료로 감상해보세요.',
- en: 'Awakened to save a digital realm on the brink of ruin, why does young Kadan possess shards of forgotten memories in his blade? Dive into Episode 1 of SNSHero official full-color webtoon series for free today.',
+ ko: '멸망 위기에 처한 아케인 대륙을 구하기 위해 깨어난 청년 카단. 왜 그의 앞길에 위대한 영웅들의 운명이 깃들어 있을까? 눈히어로.com - 카단의 여정 오리지널 웹툰의 첫 에피소드를 지금 무료로 감상해보세요.',
+ en: "Awakened to save the Arcane continent on the brink of ruin, young Kadan embarks on an epic quest. Dive into Episode 1 of SNSHero.com - Kadan's Journey official full-color webtoon series for free today.",
  },
  imageUrl: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80',
  ctaText: { ko: '웹툰 1화 무료 감상하기', en: 'Read Episode 1 for Free' },
@@ -84,12 +84,12 @@ const NATIVE_ADS: NativeAdItem[] = [
  badge: { ko: '3D 시네마틱 극장', en: '3D Cinematic Theater' },
  flair: { ko: '🎥 시네마틱 / Movie', en: '🎥 Cinematic Movie', color: '#EF4444' },
  title: {
- ko: '[공식 4K 클립] 극장판 시네마틱 오프닝: 아케인 타워의 최후 결전 & 드래곤 소환 명장면 프리뷰',
- en: '[Official 4K] Cinematic Movie Opening: The Final Siege of Arcane Tower & Dragon Awakening',
+ ko: '[공식 40부작] 눈히어로.com - 카단의 여정 시네마틱 애니메이션 & 무비 전편 프리뷰',
+ en: "[Official 40 Eps] SNSHero.com - Kadan's Journey Cinematic Animation & Movie Series",
  },
  snippet: {
- ko: '압도적인 3D 연출과 웅장한 오케스트라 사운드트랙! 시공의 수호자들과 암흑 드래곤 군단의 격돌을 담아낸 SNSHero 공식 시네마틱 무비 클립을 풀스크린으로 감상하세요.',
- en: 'Breathtaking 3D animation paired with an orchestral soundtrack! Watch the full-screen cinematic preview depicting the clash between Guardians of Time and the Dark Dragon Legion.',
+ ko: '압도적인 시네마틱 연출과 웅장한 사운드트랙! 눈히어로.com - 카단의 여정 공식 40부작 애니메이션과 무비 시리즈를 풀스크린으로 감상하고 회차당 +100 SNS 보상을 받으세요.',
+ en: "Breathtaking animation paired with an orchestral soundtrack! Watch the full-screen 40-episode SNSHero.com - Kadan's Journey animation & movie series and earn +100 SNS per episode.",
  },
  imageUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1200&q=80',
  ctaText: { ko: '시네마틱 영상 감상하기', en: 'Watch Cinematic Movie' },
@@ -104,12 +104,12 @@ const NATIVE_ADS: NativeAdItem[] = [
  badge: { ko: '인터랙티브 웹소설', en: 'Interactive Web Novel' },
  flair: { ko: '📖 웹소설 / Novel', en: '📖 Fantasy Novel', color: '#6366F1' },
  title: {
- ko: '[인기 판타지 소설] "차원 유랑 히어로의 은퇴 생활" 1화: 차원을 넘나드는 기사단장의 비밀',
- en: '[Trending Novel] "Retired Life of the Dimensional Hero" Ch. 1: The Commander\'s Secret',
+ ko: '[40부작 판타지 소설] "눈히어로.com - 카단의 여정" 1화: 거인의 발걸음',
+ en: '[40-Episode Novel] "SNSHero.com - Kadan\'s Journey" Ep. 1: Giant\'s Footsteps',
  },
  snippet: {
- ko: '‘세계를 구하고 마침내 은퇴했는데... 또 다른 차원의 소환진이 열렸다?!’ 독자의 선택에 따라 전개가 달라지는 인터랙티브 웹소설을 만나보세요. 1~3화 무료 정주행 가능!',
- en: '"I saved the universe and finally retired... only to be summoned by another dimension?!" Experience an interactive web novel where your choices shape the narrative. Free chapters available now!',
+ ko: '평범하고 우직한 청년 카단이 아케인 대륙의 11개 종족을 모험하며 위대한 영웅으로 거듭나는 정통 판타지 대서사시 《눈히어로.com - 카단의 여정》 40화 전편 무료 열람 가능!',
+ en: "Experience the classic fantasy epic 'SNSHero.com - Kadan's Journey' as young Kadan explores 11 races across the Arcane continent. Full 40 episodes available for free!",
  },
  imageUrl: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1200&q=80',
  ctaText: { ko: '웹소설 1화 정주행하기', en: 'Read Chapter 1 Now' },

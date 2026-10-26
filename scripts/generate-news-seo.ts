@@ -242,8 +242,8 @@ function buildArticleStaticHtml(
   allPosts: RedditPost[]
 ): string {
   const url = `${BASE_URL}/r/news/comments/${post.id}`;
-  const title = `${post.title} - SNSHero 실시간 구글 뉴스`;
-  const desc = post.body ? post.body.slice(0, 160) : `${post.title} - SNSHero Realtime Google News`;
+  const title = `${post.title} - 눈히어로.com 실시간 구글 뉴스`;
+  const desc = post.body ? post.body.slice(0, 160) : `${post.title} - SNSHero.com Realtime Google News`;
   const fallbackImgUrl = post.media?.previewUrl || getFallbackImageForPost(post, 1);
   const imgUrl = post.media?.url || fallbackImgUrl || `${BASE_URL}/logo.jpg`;
   const pubDateIso = new Date(post.createdAt).toISOString();
@@ -317,7 +317,7 @@ function buildArticleStaticHtml(
         <div style="display: flex; align-items: center; gap: 10px;">
           <a href="/reddit" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: #FF4500; font-weight: 800; font-size: 18px;">
             <span style="background: #FF4500; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">r/</span>
-            <span>SNSHero 뉴스룸</span>
+            <span>눈히어로.com 뉴스룸</span>
           </a>
           <span style="color: #9CA3AF;">|</span>
           <a href="/r/news" style="color: #4B5563; text-decoration: none; font-size: 14px; font-weight: 600;">실시간 구글 뉴스</a>
@@ -396,7 +396,7 @@ function buildArticleStaticHtml(
         </section>
 
         <p style="margin-bottom: 18px;">
-          세부 원문 보도 및 실시간 속보 데이터는 공식 보도 매체 원문을 통해 확인하실 수 있습니다. SNSHero 뉴스팀은 신속하고 정확한 AI 큐레이션을 통해 전 세계 주요 뉴스를 24시간 실시간으로 공급하고 있습니다.
+          세부 원문 보도 및 실시간 속보 데이터는 공식 보도 매체 원문을 통해 확인하실 수 있습니다. 눈히어로.com 뉴스팀은 신속하고 정확한 AI 큐레이션을 통해 전 세계 주요 뉴스를 24시간 실시간으로 공급하고 있습니다.
         </p>
 
         <div style="margin: 24px 0; padding: 16px; background: #EFF6FF; border-radius: 8px; border: 1px solid #BFDBFE;">
@@ -423,8 +423,8 @@ function buildArticleStaticHtml(
 
       <!-- 원클릭 게임 플레이 프로모션 배너 (트래픽 순환 & 체류시간 극대화) -->
       <section style="background: linear-gradient(135deg, #181C1F 0%, #22272B 100%); color: #fff; padding: 24px; border-radius: 16px; margin: 30px 0; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
-        <div style="font-size: 12px; font-weight: 800; color: #FF4500; text-transform: uppercase; margin-bottom: 6px;">SNSHero Official Game</div>
-        <h2 style="font-size: 22px; font-weight: 800; margin: 0 0 10px 0;">뉴스를 다 읽으셨다면, 1초 만에 AI 웹 카드 배틀을 즐겨보세요!</h2>
+        <div style="font-size: 12px; font-weight: 800; color: #FF4500; text-transform: uppercase; margin-bottom: 6px;">SNSHero.com - Kadan's Journey</div>
+        <h2 style="font-size: 22px; font-weight: 800; margin: 0 0 10px 0;">뉴스를 다 읽으셨다면, 1초 만에 눈히어로.com - 카단의 여정 AI 웹 카드 배틀을 즐겨보세요!</h2>
         <p style="font-size: 14px; color: #9CA3AF; margin: 0 0 18px 0;">설치 0초, 회원가입 0초. 110여 종의 카드를 모으고 즉시 대결하세요.</p>
         <a href="/home" style="display: inline-block; background: #FF4500; color: #fff; padding: 12px 30px; border-radius: 30px; font-size: 15px; font-weight: 800; text-decoration: none; box-shadow: 0 4px 14px rgba(255,69,0,0.4);">
           🎮 무료 즉시 플레이하기 (100회 무료 뽑기)
@@ -452,7 +452,7 @@ function buildArticleStaticHtml(
         </p>
         <p>
           <a href="/editorial-guidelines.html" style="color: #6B7280; text-decoration: underline; margin-right: 12px;">편집 가이드라인 및 정정보도 정책</a>
-          <a href="/about-news.html" style="color: #6B7280; text-decoration: underline;">SNSHero 뉴스룸 소개</a>
+          <a href="/about-news.html" style="color: #6B7280; text-decoration: underline;">눈히어로.com 뉴스룸 소개</a>
         </p>
       </footer>
     </main>
@@ -511,8 +511,8 @@ function buildArticleStaticHtml(
 // 5. /reddit 뉴스 메인 피드 정적 HTML 생성기
 function buildRedditNewsIndexHtml(baseHtmlTemplate: string, posts: RedditPost[]): string {
   const url = `${BASE_URL}/reddit`;
-  const title = `SNSHero 실시간 구글 뉴스룸 - Breaking News & Trends`;
-  const desc = `구글 뉴스(Google News US Edition) 기반 24시간 실시간 전 세계 최신 속보 및 커뮤니티 토론 브리핑`;
+  const title = `눈히어로.com 실시간 구글 뉴스룸 - SNSHero.com Breaking News & Trends`;
+  const desc = `구글 뉴스(Google News US Edition) 기반 24시간 실시간 전 세계 최신 속보 및 눈히어로.com (SNSHero.com) 커뮤니티 토론 브리핑`;
 
   const topNewsList = posts.slice(0, 20).map((p, idx) => `
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
@@ -546,7 +546,7 @@ function buildRedditNewsIndexHtml(baseHtmlTemplate: string, posts: RedditPost[])
       <header style="border-bottom: 2px solid #E5E7EB; padding-bottom: 16px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between;">
         <div>
           <h1 style="font-size: 26px; font-weight: 800; color: #111827; margin: 0 0 6px 0;">
-            📰 SNSHero 실시간 구글 뉴스룸 (r/news)
+            📰 눈히어로.com 실시간 구글 뉴스룸 (r/news)
           </h1>
           <p style="font-size: 14px; color: #6B7280; margin: 0;">
             구글 뉴스(Google News US Edition) 공식 연동 24시간 실시간 글로벌 속보 및 분석
@@ -697,8 +697,8 @@ export async function runGenerateNewsSeo(): Promise<void> {
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>SNSHero 뉴스룸 편집 가이드라인 및 정정보도 정책</title>
-  <meta name="description" content="SNSHero 실시간 구글 뉴스룸의 저널리즘 원칙, 팩트체크 기준, 정정보도 및 윤리 강령 안내">
+  <title>눈히어로.com 뉴스룸 편집 가이드라인 및 정정보도 정책</title>
+  <meta name="description" content="눈히어로.com (SNSHero.com) 실시간 구글 뉴스룸의 저널리즘 원칙, 팩트체크 기준, 정정보도 및 윤리 강령 안내">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="index, follow" />
   <style>
@@ -710,9 +710,9 @@ export async function runGenerateNewsSeo(): Promise<void> {
   </style>
 </head>
 <body>
-  <a href="/reddit" class="nav-back">← SNSHero 뉴스룸으로 돌아가기</a>
-  <h1>SNSHero 뉴스룸 편집 가이드라인 및 운영 정책</h1>
-  <p>SNSHero는 구글 뉴스(Google News US Edition) 공식 신디케이션 피드를 바탕으로 글로벌 시사, 경제, 과학기술 동향을 신속하고 투명하게 전달합니다.</p>
+  <a href="/reddit" class="nav-back">← 눈히어로.com 뉴스룸으로 돌아가기</a>
+  <h1>눈히어로.com 뉴스룸 편집 가이드라인 및 운영 정책</h1>
+  <p>눈히어로.com (SNSHero.com)은 구글 뉴스(Google News US Edition) 공식 신디케이션 피드를 바탕으로 글로벌 시사, 경제, 과학기술 동향을 신속하고 투명하게 전달합니다.</p>
   
   <h2>1. 팩트체크 및 출처 명시 원칙</h2>
   <p>모든 기사는 AP, Reuters, Bloomberg, White House, IMF 등 공인된 1차 보도 출처의 원문 링크를 투명하게 공개하며, 왜곡이나 과장 없이 사실에 기반하여 보도합니다.</p>

@@ -40,8 +40,8 @@ export function getMailboxItems(): MailItem[] {
  {
  id: 'mail-welcome-01',
  title: '시즌1 그랜드 오픈 기념 선물!',
- content: 'SNSHero Revolution 시즌 1 오픈을 축하합니다! 모험가님을 위해 특별 보상을 준비했습니다.',
- sender: 'SNSHero 운영팀',
+ content: '눈히어로.com - 카단의 여정 시즌 1 오픈을 축하합니다! 모험가님을 위해 특별 보상을 준비했습니다.',
+ sender: '눈히어로.com 운영팀',
  timestamp: Date.now() - 1000 * 60 * 60 * 4,
  isRead: false,
  isClaimed: false,

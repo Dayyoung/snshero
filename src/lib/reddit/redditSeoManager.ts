@@ -44,7 +44,7 @@ export class RedditSeoManager {
   static applySubredditSeo(sub: RedditSubreddit, activeSort: string = 'new'): void {
     if (typeof document === 'undefined') return;
 
-    const title = `r/${sub.name}: ${sub.title} - SNSHero`;
+    const title = `r/${sub.name}: ${sub.title} - SNSHero.com`;
     const desc = sub.description.slice(0, 160);
     const url = `https://snshero.com/r/${sub.name}`;
 
@@ -62,12 +62,12 @@ export class RedditSeoManager {
     const jsonLd = {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
-      name: `r/${sub.name} - SNSHero Community`,
+      name: `r/${sub.name} - SNSHero.com Community`,
       description: sub.description,
       url,
       isPartOf: {
         '@type': 'WebSite',
-        name: 'SNSHero',
+        name: 'SNSHero.com',
         url: 'https://snshero.com',
       },
       about: {
@@ -87,7 +87,7 @@ export class RedditSeoManager {
   static applyPostDetailSeo(post: RedditPost): void {
     if (typeof document === 'undefined') return;
 
-    const title = `${post.title} : r/${post.subreddit} - SNSHero`;
+    const title = `${post.title} : r/${post.subreddit} - SNSHero.com`;
     const desc = post.body ? post.body.slice(0, 160) : `${post.title} on r/${post.subreddit} - Discussed by u/${post.author}`;
     const url = `https://snshero.com/r/${post.subreddit}/comments/${post.id}`;
     const imageUrl = post.media?.url || 'https://snshero.com/logo.jpg';
@@ -274,7 +274,7 @@ export class RedditSeoManager {
   static applyHomeSeo(): void {
     if (typeof document === 'undefined') return;
 
-    const title = 'SNSHero - Dive into anything: The Heart of the Internet';
+    const title = "SNSHero.com - Kadan's Journey | The Heart of the Internet";
     const desc = 'Reddit-style vibrant discussions, breaking trends, gaming news, memes, and communities with zero latency.';
     const url = 'https://snshero.com/';
 
@@ -287,7 +287,7 @@ export class RedditSeoManager {
     const jsonLd = {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      name: 'SNSHero Community',
+      name: "SNSHero.com - Kadan's Journey",
       url: 'https://snshero.com',
       potentialAction: {
         '@type': 'SearchAction',

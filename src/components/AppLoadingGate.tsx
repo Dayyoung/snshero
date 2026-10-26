@@ -16,7 +16,7 @@ const getViewTitle = (view?: ViewType, lang?: string) => {
  case 'season-hub':
  return isKo ? '시즌 허브' : 'Season Hub';
  case 'web3-landing':
- return isKo ? 'Web3 SNSHero' : 'Web3 SNSHero';
+ return isKo ? 'Web3 눈히어로.com' : 'Web3 SNSHero.com';
  case 'referral':
  return isKo ? '추천인' : 'Referral';
  case 'boost':

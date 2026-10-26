@@ -73,7 +73,7 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate, 
  {language === 'ko' ? '시즌 1 라이브 공지' : 'SEASON 1 NOTICE'}
  </span>
  <h3 className="font-mono text-base font-extrabold text-white">
- {language === 'ko' ? 'SNS히어로 신규 업데이트' : 'SNSHero Major Update'}
+ {language === 'ko' ? '눈히어로.com 신규 업데이트' : 'SNSHero.com Major Update'}
  </h3>
  </div>
  </div>

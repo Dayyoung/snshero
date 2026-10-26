@@ -173,31 +173,31 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  case 'media':
  title = isKo ? '[📚 IP 미디어 라운지]' : '[📚 IP Media Lounge]';
  subTitle = isKo 
- ? 'SNS히어로 오리지널 미디어와 개발자 공식 강의 & 플레이 리소스' 
- : 'SNSHero Original Media, Developer Course & Official Play Resources';
+ ? '눈히어로.com - 카단의 여정 오리지널 미디어와 개발자 공식 강의 & 플레이 리소스' 
+ : "SNSHero.com - Kadan's Journey Original Media, Developer Course & Official Play Resources";
  items = [
  // ── 1. 오리지널 IP 스토리 미디어 ──
  {
  id: 'novel',
  icon: BookOpen,
- titleKo: '오리지널 웹소설 (Novel)',
- titleEn: 'Official Web Novel',
- descKo: '카단 & 아케인 에코즈 세계관 공식 회차 연재',
- descEn: 'Read the epic lore of Kadan & Arcane Echoes',
+ titleKo: '공식 웹소설 (눈히어로.com - 카단의 여정)',
+ titleEn: "Official Web Novel (SNSHero.com - Kadan's Journey)",
+ descKo: '눈히어로.com - 카단의 여정 세계관 공식 40부작 회차 연재',
+ descEn: "Read the epic 40-episode lore of SNSHero.com - Kadan's Journey",
  badgeKo: '연재중',
  badgeEn: 'Series',
  badgeTone: 'indigo',
- sectionHeaderKo: '🎬 오리지널 스토리 & IP 미디어',
- sectionHeaderEn: '🎬 Original Story & IP Media',
+ sectionHeaderKo: '🎬 오리지널 스토리 & IP 미디어 (눈히어로.com - 카단의 여정)',
+ sectionHeaderEn: "🎬 Original Story & IP Media (SNSHero.com - Kadan's Journey)",
  action: () => onNavigate('novel'),
  },
  {
  id: 'webtoon',
  icon: Image,
- titleKo: '공식 웹툰 (Webtoon)',
- titleEn: 'Official Webtoon',
- descKo: '영웅들의 탄생과 전투를 다룬 고화질 카툰',
- descEn: 'High-definition full-color hero manhwa series',
+ titleKo: '공식 웹툰 (눈히어로.com - 카단의 여정)',
+ titleEn: "Official Webtoon (SNSHero.com - Kadan's Journey)",
+ descKo: '영웅들의 탄생과 카단의 여정을 다룬 고화질 풀컬러 카툰',
+ descEn: "High-definition full-color hero webtoon of Kadan's Journey",
  badgeKo: '풀컬러',
  badgeEn: 'Color',
  badgeTone: 'emerald',
@@ -206,8 +206,8 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  {
  id: 'anime',
  icon: Tv,
- titleKo: '애니메이션 극장 (Anime)',
- titleEn: 'Official Anime Theater',
+ titleKo: '애니메이션 극장 (눈히어로.com - 카단의 여정)',
+ titleEn: "Official Anime Theater (SNSHero.com - Kadan's Journey)",
  descKo: '역동적인 시네마틱 액션과 스페셜 클립 감상',
  descEn: 'Watch cinematic hero action shorts & episodes',
  action: () => onNavigate('anime'),
@@ -215,10 +215,10 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  {
  id: 'movie',
  icon: Youtube,
- titleKo: '공식 애니메이션 (40화 · YouTube)',
- titleEn: 'Official Animation (40 Eps · YouTube)',
- descKo: '유튜브 40부작 공식 애니메이션 스트리밍 및 회차별 +100 SNS 보상',
- descEn: 'Stream 40-episode official YouTube animation series & earn +100 SNS',
+ titleKo: '공식 애니메이션 (눈히어로.com - 카단의 여정 40화)',
+ titleEn: "Official Animation (SNSHero.com - Kadan's Journey 40 Eps)",
+ descKo: '눈히어로.com - 카단의 여정 40부작 공식 애니메이션 스트리밍 및 회차별 +100 SNS 보상',
+ descEn: "Stream 40-episode SNSHero.com - Kadan's Journey animation series & earn +100 SNS",
  badgeKo: 'HIT!',
  badgeEn: 'HIT!',
  badgeTone: 'rose',
@@ -227,10 +227,10 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  {
  id: 'cinema',
  icon: Youtube,
- titleKo: '공식 무비 (40화 · YouTube)',
- titleEn: 'Official Movie (40 Eps · YouTube)',
- descKo: '유튜브 40부작 공식 무비 시리즈 감상 및 회차별 +100 SNS 보상',
- descEn: 'Watch SNSHero Official Movie 40-episode YouTube series & claim rewards',
+ titleKo: '공식 무비 (눈히어로.com - 카단의 여정 40화)',
+ titleEn: "Official Movie (SNSHero.com - Kadan's Journey 40 Eps)",
+ descKo: '눈히어로.com - 카단의 여정 40부작 공식 무비 시리즈 감상 및 회차별 +100 SNS 보상',
+ descEn: "Watch SNSHero.com - Kadan's Journey Official Movie 40-episode series & claim rewards",
  badgeKo: 'HIT!',
  badgeEn: 'HIT!',
  badgeTone: 'rose',
@@ -265,10 +265,10 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  {
  id: 'game_play_link',
  icon: Gamepad2,
- titleKo: 'SNSHero.com 게임 플레이링크',
+ titleKo: '눈히어로.com 게임 플레이링크',
  titleEn: 'SNSHero.com Game Play Link',
- descKo: 'SNS히어로 레볼루션 공식 라이브 게임 바로가기',
- descEn: 'Play live web card battle at snshero.com',
+ descKo: '눈히어로.com - 카단의 여정 공식 라이브 게임 바로가기',
+ descEn: "Play live web card battle at SNSHero.com - Kadan's Journey",
  badgeKo: 'PLAY',
  badgeEn: 'LIVE',
  badgeTone: 'emerald',
@@ -278,7 +278,7 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  {
  id: 'gwent_link',
  icon: Gamepad2,
- titleKo: 'SNSHero.com 궨트게임',
+ titleKo: '눈히어로.com 궨트게임',
  titleEn: 'SNSHero.com Gwent Classic',
  descKo: '더 위쳐 3 정통 궨트 웹 브라우저 플레이 (snshero.com/gwent)',
  descEn: 'Play The Witcher 3 classic Gwent in your browser',
@@ -291,7 +291,7 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  {
  id: 'aistudio_app',
  icon: Cpu,
- titleKo: 'SNSHero.com AI Studio',
+ titleKo: '눈히어로.com AI Studio',
  titleEn: 'SNSHero.com AI Studio App',
  descKo: 'Google AI Studio 공식 웹 앱 프로젝트 바로가기',
  descEn: 'Open official Google AI Studio application',
@@ -304,7 +304,7 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  {
  id: 'github_source',
  icon: Github,
- titleKo: 'SNSHero.com 소스파일',
+ titleKo: '눈히어로.com 소스파일',
  titleEn: 'SNSHero.com Source Code (GitHub)',
  descKo: 'GitHub 공식 오픈소스 리포지토리 및 실시간 커밋 내역',
  descEn: 'Inspect full open-source code on GitHub',
@@ -317,7 +317,7 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  {
  id: 'dev_prompt',
  icon: FileText,
- titleKo: 'SNSHero.com 개발 프롬프트',
+ titleKo: '눈히어로.com 개발 프롬프트',
  titleEn: 'SNSHero.com Dev Prompt Spec (Markdown)',
  descKo: 'AI 에이전트 개발 지침서 및 프롬프트 명세서 원문 (snshero.md)',
  descEn: 'Read full AI coding prompts & architectural guidelines',
@@ -330,9 +330,9 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  {
  id: 'youtube_channel',
  icon: Youtube,
- titleKo: 'SNSHero.com 유튜브 채널',
+ titleKo: '눈히어로.com 유튜브 채널',
  titleEn: 'SNSHero.com YouTube Channel (@snshero)',
- descKo: 'SNSHero 공식 유튜브 채널 구독 및 최신 개발 영상 시청',
+ descKo: '눈히어로.com 공식 유튜브 채널 구독 및 최신 개발 영상 시청',
  descEn: 'Subscribe to official @snshero channel for updates',
  badgeKo: '유튜브',
  badgeEn: 'YOUTUBE',

@@ -1473,12 +1473,12 @@ export async function shareCommunityPost(
 ): Promise<{ success: boolean; method: 'native' | 'clipboard' }> {
   triggerHaptic('medium');
   const shareUrl = getCommunityPostShareUrl(post.id);
-  const shareText = `[SNS히어로 아레나] ${post.userName}님의 포스트: "${post.content.slice(0, 60)}..."\n${shareUrl}`;
+  const shareText = `[눈히어로.com 아레나] ${post.userName}님의 포스트: "${post.content.slice(0, 60)}..."\n${shareUrl}`;
 
   if (typeof navigator !== 'undefined' && navigator.share) {
     try {
       await navigator.share({
-        title: `[SNS히어로] ${post.userName}님의 게시글`,
+        title: `[눈히어로.com] ${post.userName}님의 게시글`,
         text: shareText,
         url: shareUrl,
       });

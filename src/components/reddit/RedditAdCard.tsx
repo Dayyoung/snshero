@@ -38,7 +38,7 @@ export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true,
  AD
  </div>
  <span className="font-bold text-xs opacity-90">
- {isKo ? 'u/SNSHero_공식스폰서' : 'u/SNSHero_Official'}
+ {isKo ? 'u/눈히어로.com_공식스폰서' : 'u/SNSHero.com_Official'}
  </span>
  <span className="text-[10px] font-bold px-2 py-0.5 rounded-sm bg-[#FF4500]/10 text-[#FF4500] flex items-center gap-1">
  <Sparkles className="w-2.5 h-2.5" />
@@ -54,8 +54,8 @@ export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true,
  {/* 2. 광고 타이틀 */}
  <h3 className="font-bold text-sm sm:text-base mb-3 leading-snug break-words group-hover:text-[#FF4500] transition-colors">
  {isKo 
- ? 'SNSHero 차세대 웹 카드 배틀 아레나를 지금 바로 무료로 즐겨보세요! 설치 0초, 로딩 0초.' 
- : 'Discover Next-Generation Gaming on SNSHero. 100% Free, Zero Install, Zero Lag.'}
+ ? '눈히어로.com - 카단의 여정 차세대 웹 카드 배틀 아레나를 지금 바로 무료로 즐겨보세요! 설치 0초, 로딩 0초.' 
+ : "Discover Next-Generation Gaming on SNSHero.com - Kadan's Journey. 100% Free, Zero Install, Zero Lag."}
  </h3>
 
  {/* 3. 구글 애드센스 인피드 반응형 광고 슬롯 */}
@@ -73,7 +73,7 @@ export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true,
  <div className="mt-2 flex items-center justify-between pt-2 border-t border-inherit/10 text-xs">
  <span className="text-[11px] opacity-60 flex items-center gap-1">
  <Sparkles className="w-3 h-3 text-[#FF4500]" />
- <span>{isKo ? 'SNSHero 공식 웹 게임' : 'SNSHero Official Web Game'}</span>
+ <span>{isKo ? '눈히어로.com 공식 웹 게임' : 'SNSHero.com Official Web Game'}</span>
  </span>
  <button
  type="button"

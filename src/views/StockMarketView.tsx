@@ -182,12 +182,12 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://snshero.com';
     const shareUrl = `${origin}/?challenge=1-11-31-51-101&ref=stock`;
     const shareText = language === 'ko'
-      ? `[SNSHero 영웅 증권 거래소] 내 포트폴리오 평가 자산 ${portfolioStats.totalStockAssetSns.toLocaleString()} SNS (일일 배당 +${portfolioStats.estimatedDailyDividends} SNS)! 지금 무설치 3초 결투장 대결하고 주주 배당금을 받아가세요: ${shareUrl}`
-      : `[SNSHero Hero Equity Exchange] Portfolio Value: ${portfolioStats.totalStockAssetSns.toLocaleString()} SNS (+${portfolioStats.estimatedDailyDividends} SNS/day)! Join the 3s duel: ${shareUrl}`;
+      ? `[눈히어로.com 영웅 증권 거래소] 내 포트폴리오 평가 자산 ${portfolioStats.totalStockAssetSns.toLocaleString()} SNS (일일 배당 +${portfolioStats.estimatedDailyDividends} SNS)! 지금 무설치 3초 결투장 대결하고 주주 배당금을 받아가세요: ${shareUrl}`
+      : `[SNSHero.com Hero Equity Exchange] Portfolio Value: ${portfolioStats.totalStockAssetSns.toLocaleString()} SNS (+${portfolioStats.estimatedDailyDividends} SNS/day)! Join the 3s duel: ${shareUrl}`;
 
     try {
       if (navigator.share) {
-        await navigator.share({ title: 'SNSHero Equity Portfolio', text: shareText, url: shareUrl });
+        await navigator.share({ title: language === 'ko' ? '눈히어로.com 영웅 증권 거래소' : 'SNSHero.com Equity Portfolio', text: shareText, url: shareUrl });
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(shareText);
       }
