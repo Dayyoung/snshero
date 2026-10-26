@@ -96,7 +96,7 @@ def render_single_episode(ep_num, out_dir):
         is_climax = bool(item.get("isKeyClimax"))
         narr_ko = item.get("narrationKo", "").strip()
         if sc_idx == 0:
-            narr_ko = f"제 {ep_num:02d}화 : {title_ko} ({title_en})"
+            narr_ko = f"{ep_num:02d}화 {title_ko}"
 
         badge_text = "TITLE" if sc_idx == 0 else f"#{sc_idx:02d}"
         badge_w = 62 if sc_idx == 0 else 54
@@ -137,7 +137,7 @@ def render_single_episode(ep_num, out_dir):
         series_label += f"  ({source_range})"
     draw.text((22, 18), series_label, font=font_title_sub, fill=(251, 191, 36))
 
-    main_title_str = f"제 {ep_num:02d}화. {title_ko}"
+    main_title_str = f"{ep_num:02d}화 {title_ko}"
     draw.text((22, 43), main_title_str, font=font_title_lg, fill=(253, 252, 252))
 
     sub_title_str = f"{title_en}  ·  총 {total_scenes}컷 (타이틀 포함 {len(images_info)}컷)"
@@ -213,17 +213,17 @@ def render_single_episode(ep_num, out_dir):
 
     # 3. Bottom Episode Footer
     draw.rectangle([0, curr_y, CANVAS_W, total_h], fill=(32, 29, 29))
-    footer_msg = f"[ 눈히어로.com - 카단의 여정 · 제 {ep_num:02d}화 ({title_ko}) 완독 ]"
+    footer_msg = f"[ 눈히어로.com - 카단의 여정 · {ep_num:02d}화 {title_ko} 완독 ]"
     draw.text((22, curr_y + 20), footer_msg, font=font_footer, fill=(253, 252, 252))
     next_msg = (
-        f"다음 화 예고: 제 {ep_num + 1:02d}화에서 계속됩니다. (https://SNSHero.com)"
+        f"다음 화 예고: {ep_num + 1:02d}화에서 계속됩니다. (https://SNSHero.com)"
         if ep_num < 40
         else "대단원의 막 — 전 40화 완결 (https://SNSHero.com)"
     )
     draw.text((22, curr_y + 50), next_msg, font=font_title_sub, fill=(251, 191, 36))
 
-    safe_title = re.sub(r"[^\w가-힣]+", "_", title_ko).strip("_")
-    filename = f"{ep_num:02d}_눈히어로_코믹툰_제{ep_num:02d}화_{safe_title}.jpg"
+    clean_title = re.sub(r"\s+", " ", re.sub(r"[^\w가-힣\s]+", " ", title_ko)).strip()
+    filename = f"{ep_num:02d}화 {clean_title}.jpg"
     out_path = os.path.join(out_dir, filename)
 
     chosen_bytes = None
