@@ -57,51 +57,13 @@ def build_steady_liveaction_cut_frame(
     font_en_sub,
 ) -> Image.Image:
     """
-    Renders a single clean, 100% steady 800x450 live-action cinema frame for cut `sm`:
-    - Unobstructed full-bleed 800x450 live-action photograph (zero top/bottom black label bars, zero shake).
-    - Clean translucent cinema subtitle plate at the bottom with speaker badge + full Korean & English lines.
+    Renders a single clean, 100% steady, subtitle-free 800x450 live-action cinema frame for cut `sm`:
+    - Unobstructed full-bleed 800x450 live-action photograph (zero top/bottom black label bars, zero subtitles).
     """
-    art_img = Image.open(sm["src_path"]).convert("RGBA")
+    art_img = Image.open(sm["src_path"]).convert("RGB")
     if art_img.size != (WIDTH, HEIGHT):
         art_img = art_img.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
-
-    if sm["is_title"]:
-        return art_img.convert("RGB")
-
-    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
-    odraw = ImageDraw.Draw(overlay)
-
-    ko_lines = sm["ko_lines"]
-    en_lines = sm["en_lines"]
-    if ko_lines or en_lines:
-        box_top = HEIGHT - 102
-        box_bot = HEIGHT - 6
-        odraw.rectangle(
-            [28, box_top, WIDTH - 28, box_bot],
-            fill=(6, 7, 10, 178),
-            outline=(195, 175, 130, 95),
-            width=1,
-        )
-        if sm["speaker_label"]:
-            odraw.text(
-                (WIDTH // 2, box_top + 10),
-                sm["speaker_label"],
-                fill=(245, 205, 115, 245),
-                font=font_speaker,
-                anchor="mm",
-            )
-        curr_y = box_top + 26
-        for kl in ko_lines[:2]:
-            odraw.text((WIDTH // 2 + 1, curr_y + 1), kl, fill=(0, 0, 0, 230), font=font_ko_sub, anchor="mm")
-            odraw.text((WIDTH // 2, curr_y), kl, fill=(255, 255, 255, 250), font=font_ko_sub, anchor="mm")
-            curr_y += 16
-
-        curr_y = max(curr_y + 1, box_top + 59)
-        for el in en_lines[:3]:
-            odraw.text((WIDTH // 2, curr_y), el, fill=(185, 215, 245, 230), font=font_en_sub, anchor="mm")
-            curr_y += 12
-
-    return Image.alpha_composite(art_img, overlay).convert("RGB")
+    return art_img
 
 
 def render_liveaction_episode_frames(

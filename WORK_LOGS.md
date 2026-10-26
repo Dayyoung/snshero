@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 10:00 KST] [방안 1: 애니메이션·무비·웹툰·/main 전 40화(2,009컷) 1:1 장면 완전 통일 및 상단 라벨·하단 자막 없는 클린 16:9(800x450) 애니메이션 40편 & 무비 40편 MP4 전수 생성 완료]
+- **요청 사항**:
+  - `"방안1"`
+  - `"그리고 수정하고 생성할떄 애니메이션/무비 동영상도 자막 없는 버전으로 생성해줘. 유튜브 업로드는 대기. 확인하고 업로드 지시할거야."`
+  - `"상단 라벨도 완전히 제거"`
+- **주요 구현 및 수정 내역**:
+  1. **전 40화(2,009 내러티브 컷 + 40 타이틀 카드 = 2,049컷) 애니메이션·무비·웹툰·`/main` 플레이 1:1 장면 완전 통일 ([`scripts/build_conquest_2009_all_media.py`](file:///Users/dayyoung/project/snshero/scripts/build_conquest_2009_all_media.py))**:
+     - 기존 `la_cuts`(`public/images/cinema/episode_01..40/scene_00..XX.webp` 및 `public/images/storybook_liveaction/ep_01..40/page_01..10.webp`)가 대본과 무관한 초상화 시트(`act_seq_01..08.png`)를 참조하던 문제를 제거하고, 대본과 100% 1:1 매칭된 `anime_cuts` 장면을 동일하게 사용하도록 통일(70mm 시네마 필름 그레이딩 적용).
+     - 타이틀 카드(`scene_00.webp`) 상단/하단 라벨(`SNSHERO · ARCANE ECHOES WEBTOON`, `SNSHERO · 70MM LIVE-ACTION MOTION PICTURE`, `— ACT I ... —`, `OFFICIAL DARK FANTASY CHRONICLE`, `SHOT ON ARRI ALEXA 65 · PANAVISION ANAMORPHIC`)을 전수 완전 제거.
+  2. **애니메이션 40편 & 무비 40편(총 80편) MP4 상단 라벨 및 하단 자막 완전 제거 버전(800x450 16:9 풀블리드) 전수 생성 완료 ([`scripts/generate_all_40_episode_videos.py`](file:///Users/dayyoung/project/snshero/scripts/generate_all_40_episode_videos.py), [`scripts/generate_cinema_videos.py`](file:///Users/dayyoung/project/snshero/scripts/generate_cinema_videos.py))**:
+     - 애니메이션 MP4(`public/video/animation/SNSHero.com_E1..E40_*.mp4`)의 하단 110px 자막/초상화 독(`DOCK_H`)과 무비 MP4(`public/videos/cinema/episode_01..40.mp4`)의 하단 반투명 자막 박스를 완전히 제거하여, 두 영상 시리즈 모두 상단 라벨 및 자막이 일절 없는 순수 `800x450`(16:9) 풀블리드 화면 + 1:1 컷 싱크 보이스오버(`en-US-JennyNeural`) + 잔잔한 배경음악으로 40화씩 총 80편 전수 재인코딩 완료.
+  3. **인터랙티브 플레이어 및 뷰 상단 라벨 제거·1:1 장면 동기화 ([`src/components/movie/LiveActionCinemaPlayer.tsx`](file:///Users/dayyoung/project/snshero/src/components/movie/LiveActionCinemaPlayer.tsx), [`src/components/movie/CinematicMoviePlayer.tsx`](file:///Users/dayyoung/project/snshero/src/components/movie/CinematicMoviePlayer.tsx), [`src/views/CinemaView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CinemaView.tsx), [`src/views/MovieView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MovieView.tsx))**:
+     - `LiveActionCinemaPlayer`와 `CinematicMoviePlayer`의 상단 라벨 헤더 바, 상단 블랙 매트 바, 우측 상단 배지를 모두 제거하고 기본 자막 모드를 `'off'`로 설정.
+     - `LiveActionCinemaPlayer`가 `episode_XX_acting` 플립북 대신 1:1 대본 정렬된 `cinema/episode_XX/scene_YY.webp?v=conquest2009_v4`를 렌더링하도록 수정.
+     - 캐시 버스팅 쿼리(`?v=conquest2009_v4`) 일괄 갱신 완료 (유튜브 업로드는 사용자 확인 후 진행하도록 대기).
+- **검증 및 보고**:
+  - `npx tsc --noEmit` 및 `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-26 08:08 KST] [/setting 화면 언어설정 및 로그아웃 버튼 상시 최하단 배치 개선]
 - **요청 사항**:
   - `"https://snshero.com/setting 언어설정/로그아웃 버튼은 항상 최 하단에 위치하게 해줘."`

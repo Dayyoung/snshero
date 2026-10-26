@@ -184,17 +184,12 @@ def render_webtoon_title_card(cover_panel: Image.Image, ep_num: int, ep_data: di
     vdraw = ImageDraw.Draw(veil)
     for y in range(HEIGHT):
         dist_center = abs(y - HEIGHT * 0.44) / (HEIGHT * 0.56)
-        alpha = int(105 + 85 * min(1.0, dist_center ** 1.2))
+        alpha = int(85 + 75 * min(1.0, dist_center ** 1.2))
         vdraw.line([(0, y), (WIDTH, y)], fill=(10, 9, 12, alpha))
 
     card = Image.alpha_composite(base, veil)
     draw = ImageDraw.Draw(card)
 
-    draw.rectangle([18, 18, WIDTH - 18, HEIGHT - 18], outline=(215, 195, 150, 200), width=1)
-    draw.rectangle([22, 22, WIDTH - 22, HEIGHT - 22], outline=(120, 110, 95, 130), width=1)
-
-    font_badge = ImageFont.truetype(FONT_MONO, 12)
-    font_act = ImageFont.truetype(FONT_MONO, 11)
     font_ep = ImageFont.truetype(FONT_MONO, 15)
 
     title_en = ep_data.get("episodeTitle", f"Episode {ep_num}").strip()
@@ -205,15 +200,11 @@ def render_webtoon_title_card(cover_panel: Image.Image, ep_num: int, ep_data: di
     except Exception:
         font_title = ImageFont.truetype(FONT_MONO, title_font_size)
 
-    draw.text((WIDTH // 2, 62), "SNSHERO · ARCANE ECHOES WEBTOON", fill=(225, 205, 160), font=font_badge, anchor="mm")
-    draw.text((WIDTH // 2, 90), get_act_header_en(ep_num), fill=(175, 168, 155), font=font_act, anchor="mm")
+    draw.rectangle([WIDTH // 2 - 76, 318, WIDTH // 2 + 76, 342], fill=(24, 22, 26, 210), outline=(215, 195, 150, 180), width=1)
+    draw.text((WIDTH // 2, 330), f"EPISODE {ep_num:02d}", fill=(235, 215, 165), font=font_ep, anchor="mm")
 
-    draw.rectangle([WIDTH // 2 - 76, 308, WIDTH // 2 + 76, 332], fill=(24, 22, 26, 210), outline=(215, 195, 150, 180), width=1)
-    draw.text((WIDTH // 2, 320), f"EPISODE {ep_num:02d}", fill=(235, 215, 165), font=font_ep, anchor="mm")
-
-    draw.text((WIDTH // 2 + 2, 368 + 2), title_upper, fill=(0, 0, 0, 220), font=font_title, anchor="mm")
-    draw.text((WIDTH // 2, 368), title_upper, fill=(255, 255, 255), font=font_title, anchor="mm")
-    draw.text((WIDTH // 2, 404), "OFFICIAL DARK FANTASY CHRONICLE", fill=(175, 210, 240), font=font_act, anchor="mm")
+    draw.text((WIDTH // 2 + 2, 378 + 2), title_upper, fill=(0, 0, 0, 220), font=font_title, anchor="mm")
+    draw.text((WIDTH // 2, 378), title_upper, fill=(255, 255, 255), font=font_title, anchor="mm")
 
     return save_webp_under_limit(card.convert("RGB"), out_file)
 
@@ -248,15 +239,12 @@ def render_liveaction_title_card(cover_panel: Image.Image, ep_num: int, ep_data:
     vdraw = ImageDraw.Draw(veil)
     for y in range(HEIGHT):
         dist = abs(y - HEIGHT * 0.44) / (HEIGHT * 0.56)
-        alpha = int(105 + 90 * min(1.0, dist ** 1.2))
+        alpha = int(85 + 75 * min(1.0, dist ** 1.2))
         vdraw.line([(0, y), (WIDTH, y)], fill=(6, 7, 10, alpha))
 
     card = Image.alpha_composite(graded, veil)
     draw = ImageDraw.Draw(card)
-    draw.rectangle([18, 28, WIDTH - 18, HEIGHT - 28], outline=(215, 185, 125, 195), width=1)
 
-    font_badge = ImageFont.truetype(FONT_MONO, 12)
-    font_act = ImageFont.truetype(FONT_MONO, 11)
     font_ep = ImageFont.truetype(FONT_MONO, 15)
 
     title_en = ep_data.get("episodeTitle", f"Episode {ep_num}").strip()
@@ -267,14 +255,10 @@ def render_liveaction_title_card(cover_panel: Image.Image, ep_num: int, ep_data:
     except Exception:
         font_title = ImageFont.truetype(FONT_MONO, title_font_size)
 
-    draw.text((WIDTH // 2, 66), "SNSHERO · 70MM LIVE-ACTION MOTION PICTURE", fill=(235, 205, 145), font=font_badge, anchor="mm")
-    draw.text((WIDTH // 2, 92), get_act_header_en(ep_num), fill=(180, 175, 165), font=font_act, anchor="mm")
-
-    draw.rectangle([WIDTH // 2 - 82, 304, WIDTH // 2 + 82, 328], fill=(16, 15, 20, 220), outline=(215, 185, 125, 190), width=1)
-    draw.text((WIDTH // 2, 316), f"EPISODE {ep_num:02d}", fill=(240, 215, 155), font=font_ep, anchor="mm")
-    draw.text((WIDTH // 2 + 2, 362 + 2), title_upper, fill=(0, 0, 0, 230), font=font_title, anchor="mm")
-    draw.text((WIDTH // 2, 362), title_upper, fill=(255, 255, 255), font=font_title, anchor="mm")
-    draw.text((WIDTH // 2, 398), "SHOT ON ARRI ALEXA 65 · PANAVISION ANAMORPHIC", fill=(155, 205, 240), font=font_act, anchor="mm")
+    draw.rectangle([WIDTH // 2 - 82, 318, WIDTH // 2 + 82, 342], fill=(16, 15, 20, 220), outline=(215, 185, 125, 190), width=1)
+    draw.text((WIDTH // 2, 330), f"EPISODE {ep_num:02d}", fill=(240, 215, 155), font=font_ep, anchor="mm")
+    draw.text((WIDTH // 2 + 2, 378 + 2), title_upper, fill=(0, 0, 0, 230), font=font_title, anchor="mm")
+    draw.text((WIDTH // 2, 378), title_upper, fill=(255, 255, 255), font=font_title, anchor="mm")
 
     return save_webp_under_limit(card.convert("RGB"), out_file)
 
@@ -626,7 +610,9 @@ def process_single_episode(args: tuple[int, dict, list[dict]]) -> dict:
     n_narrative = total_scenes - 1
 
     anime_cuts, stats = build_distinct_anime_pool_for_episode(ep_num, ep_data, n_narrative)
-    la_cuts = build_distinct_liveaction_pool_for_episode(ep_num, n_narrative)
+    # Option 1 (방안 1): Unify Live-Action / Movie (`la_cuts`) with the 100% 1:1 narration-aligned `anime_cuts`
+    # so Animation, Movie, Webtoon, and /main Play all share the exact same 1:1 scene-aligned imagery.
+    la_cuts = [c.copy() for c in anime_cuts]
 
     webtoon_ep_dir = WEBTOON_DIR / f"episode_{ep_num:02d}"
     cinema_ep_dir = CINEMA_DIR / f"episode_{ep_num:02d}"

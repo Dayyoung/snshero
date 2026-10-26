@@ -46,8 +46,8 @@ FFPROBE_BIN = shutil.which("ffprobe") or "/opt/homebrew/bin/ffprobe"
 FPS = 15
 WIDTH = 800
 ART_H = 450
-DOCK_H = 110
-HEIGHT = ART_H + DOCK_H  # 560
+DOCK_H = 0
+HEIGHT = ART_H  # 450 (Clean 16:9 full-bleed without subtitle dock)
 
 FONT_KO = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
 FONT_MONO = "/System/Library/Fonts/Menlo.ttc"
@@ -103,82 +103,13 @@ def build_steady_cut_frame(
     font_micro,
 ) -> Image.Image:
     """
-    Renders a single clean, 100% steady 800x560 frame for cut `sm`:
-    - Top 800x450: Unobstructed full-bleed 16:9 illustration (zero top black label bar, zero shake/particles).
-    - Bottom 800x110: Clean stationary character portrait + speaker badge + full Korean & English narration text.
+    Renders a single clean, 100% steady, subtitle-free 800x450 16:9 frame for cut `sm`:
+    - Unobstructed full-bleed 16:9 illustration (zero top/bottom label bars, zero baked-in subtitles).
     """
-    canvas = Image.new("RGB", (WIDTH, HEIGHT), (14, 12, 12))
     art_img = Image.open(sm["src_path"]).convert("RGB")
-    if art_img.size != (WIDTH, ART_H):
-        art_img = art_img.resize((WIDTH, ART_H), Image.Resampling.LANCZOS)
-    canvas.paste(art_img, (0, 0))
-
-    draw = ImageDraw.Draw(canvas)
-    dock_y1 = ART_H
-    draw.line([(0, dock_y1), (WIDTH, dock_y1)], fill=(212, 175, 55), width=1)
-
-    if sm["is_title"]:
-        draw.rectangle([16, dock_y1 + 14, 196, dock_y1 + 36], fill=(30, 27, 27), outline=(212, 175, 55), width=1)
-        draw.text((24, dock_y1 + 18), "SNSHERO · ANIMATION", font=font_bold, fill=(212, 175, 55))
-        draw.text((210, dock_y1 + 15), sm["title_en"], font=font_title, fill=(253, 252, 252))
-        draw.text(
-            (210, dock_y1 + 48),
-            f"EPISODE {ep_num:02d} · {sm['title_ko']}",
-            font=font_ko,
-            fill=(235, 220, 185),
-        )
-        draw.text(
-            (210, dock_y1 + 74),
-            "OFFICIAL 40-EPISODE ANIMATED CHRONICLE",
-            font=font_sub,
-            fill=(185, 210, 235),
-        )
-    else:
-        pf = sm["portrait_file"]
-        portrait_rendered = False
-        if pf and pf in portrait_cache:
-            p_thumb = portrait_cache[pf]
-            p_x, p_y = 18, dock_y1 + 12
-            draw.rectangle([p_x, p_y, p_x + 64, p_y + 74], fill=(28, 25, 25))
-            canvas.paste(p_thumb, (p_x, p_y), p_thumb)
-            border_col = (212, 175, 55)
-            draw.rectangle([p_x - 1, p_y - 1, p_x + 64, p_y + 74], outline=border_col, width=1)
-            draw.rectangle([p_x - 1, p_y + 76, p_x + 65, p_y + 89], fill=border_col)
-            draw.text((p_x + 8, p_y + 77), "SPEAKER", font=font_micro, fill=(14, 12, 12))
-            portrait_rendered = True
-
-        text_x = 96 if portrait_rendered else 20
-        sp_ko = sm["speaker_ko"] or "내레이션"
-        sp_en = (sm["speaker_en"] or "NARRATION").upper()
-        if sp_ko != sp_en and sp_ko != "내레이션":
-            label = f"[ {sp_ko} · {sp_en} ]"
-        else:
-            label = f"[ {sp_ko} · {sp_en} ]" if sp_ko == "내레이션" else f"[ {sp_en} ]"
-
-        draw.text(
-            (text_x, dock_y1 + 8),
-            label,
-            font=font_ko,
-            fill=(240, 200, 90) if portrait_rendered else (155, 210, 255),
-        )
-
-        # Full steady Korean narration/dialogue (1-2 lines)
-        ko_wrap_w = 48 if portrait_rendered else 54
-        ko_lines = textwrap.wrap(sm["text_ko"], width=ko_wrap_w)[:2]
-        curr_y = dock_y1 + 29
-        for line in ko_lines:
-            draw.text((text_x, curr_y), line, font=font_ko, fill=(255, 255, 255))
-            curr_y += 18
-
-        # Full steady English narration/dialogue (1-3 lines)
-        en_wrap_w = 88 if portrait_rendered else 98
-        en_lines = textwrap.wrap(sm["text_en"], width=en_wrap_w)[:3]
-        curr_y = max(curr_y + 1, dock_y1 + 65)
-        for line in en_lines:
-            draw.text((text_x, curr_y), line, font=font_en, fill=(185, 215, 245))
-            curr_y += 12
-
-    return canvas
+    if art_img.size != (WIDTH, HEIGHT):
+        art_img = art_img.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
+    return art_img
 
 
 def render_animated_episode_frames(

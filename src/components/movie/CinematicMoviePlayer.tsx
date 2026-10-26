@@ -226,7 +226,7 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
 
  return {
  sceneNumber: idx + 1,
- imageUrl: `${(img.localArtUrl || img.imageUrl || `/images/webtoon/episode_${String(epNum).padStart(2, '0')}/scene_${String(idx).padStart(2, '0')}.webp`).split('?')[0]}?v=conquest2009_v2`,
+ imageUrl: `${(img.localArtUrl || img.imageUrl || `/images/webtoon/episode_${String(epNum).padStart(2, '0')}/scene_${String(idx).padStart(2, '0')}.webp`).split('?')[0]}?v=conquest2009_v4`,
  narrationKo: textKo,
  narrationEn: textEn,
  characters,
@@ -268,8 +268,8 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
  const [isMuted, setIsMuted] = useState<boolean>(false);
  const [isTtsEnabled, setIsTtsEnabled] = useState<boolean>(true);
- const [isCcEnabled, setIsCcEnabled] = useState<boolean>(true);
- const [subtitleMode, setSubtitleMode] = useState<'primary' | 'dual' | 'off'>('primary');
+ const [isCcEnabled, setIsCcEnabled] = useState<boolean>(false);
+ const [subtitleMode, setSubtitleMode] = useState<'primary' | 'dual' | 'off'>('off');
  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
  const [showControls, setShowControls] = useState<boolean>(true);
  const [isCompleted, setIsCompleted] = useState<boolean>(false);
@@ -719,56 +719,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  isFullscreen ? 'fixed inset-0 z-50 h-[100dvh] w-screen justify-between' : 'rounded-none border-y border-x-0 border-white/15'
  }`}
  >
- {/* 1. TOP THEATRICAL HEADER BAR (Placed cleanly above the video canvas) */}
- <div className="flex items-center justify-between px-3 py-2 bg-[#141212] border-b border-white/10 shrink-0">
- <div className="flex items-center gap-2 min-w-0">
- <span className="flex items-center gap-1 rounded-sm bg-amber-500 px-2 py-0.5 text-[11px] font-bold tracking-wider text-black shrink-0">
- <Film size={12} />
- EP.{String(episodeNumber).padStart(2, '0')}
- </span>
- <div className="flex flex-col min-w-0">
- <h2 className="text-xs sm:text-sm font-bold text-white tracking-wide truncate">
- {language === 'en' ? titleEn : titleKo}
- </h2>
- <span className="text-[10px] text-stone-400 truncate hidden sm:inline">
- {language === 'en' ? titleKo : titleEn}
- </span>
- </div>
- </div>
-
- <div className="flex items-center gap-1.5 shrink-0">
- {/* Active VFX Indicator Badge */}
- <span className="hidden sm:flex items-center gap-1 rounded-sm border border-white/20 bg-black/60 px-2 py-1 text-[10px] text-amber-300">
- {currentScene?.vfxType === 'snow' && <CloudSnow size={11} />}
- {currentScene?.vfxType === 'embers' && <Flame size={11} />}
- {currentScene?.vfxType === 'runes' && <Sparkles size={11} />}
- {currentScene?.vfxType === 'slash' && <Sword size={11} />}
- {currentScene?.vfxType?.toUpperCase()}
- </span>
-
- {/* Fullscreen Button */}
- <button
- onClick={toggleFullscreen}
- className="flex min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] items-center justify-center rounded-sm border border-white/20 bg-black/70 text-white hover:bg-white/20 transition-colors"
- title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
- >
- {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
- </button>
-
- {/* Close Button (if provided) */}
- {onClose && (
- <button
- onClick={onClose}
- className="flex min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] items-center justify-center rounded-sm border border-white/20 bg-black/70 text-white hover:bg-red-600 transition-colors"
- title="Close Player"
- >
- <X size={16} />
- </button>
- )}
- </div>
- </div>
-
- {/* 2. UNOBSTRUCTED 16:9 KEN BURNS MOTION STAGE */}
+ {/* UNOBSTRUCTED 16:9 KEN BURNS MOTION STAGE (Zero Top Label Bar) */}
  <div className={`relative w-full overflow-hidden bg-black ${isFullscreen ? 'flex-1 min-h-0' : 'aspect-video'}`}>
  <div className="absolute inset-0 flex items-center justify-center overflow-hidden bg-black">
  <img
@@ -785,47 +736,12 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  }}
  />
 
- {/* Subtle Cinematic Edge Vignette Only (No heavy dark bottom curtain blocking art) */}
+ {/* Subtle Cinematic Edge Vignette Only */}
  <div className="pointer-events-none absolute inset-0 bg-radial-[circle_at_center,transparent_65%,rgba(0,0,0,0.45)_100%]" />
  </div>
 
  {/* HTML5 PARTICLE VFX CANVAS OVERLAY */}
  <MovieVfxCanvas vfxType={currentScene?.vfxType || 'none'} intensity={0.9} />
-
- {/* COMPACT NON-INTRUSIVE CORNER COMBAT SFX BADGE (Top-Right Corner Only) */}
- {currentScene?.sfxCues && currentScene.sfxCues.length > 0 && !isCompleted && (
- <div className="absolute top-2 right-2 z-20 flex flex-col items-end gap-1 pointer-events-none">
- {currentScene.sfxCues.slice(0, 1).map((sfx, idx) => {
- const styleClass = {
- slash: 'text-red-400 border-red-500/70',
- impact: 'text-amber-300 border-amber-400/70',
- magic: 'text-cyan-300 border-cyan-400/70',
- rumble: 'text-stone-200 border-stone-400/70',
- }[sfx.style || 'impact'];
-
- return (
- <div
- key={`${currentSceneIdx}_sfx_${idx}`}
- className="pointer-events-auto cursor-pointer select-none animate-in zoom-in-90 duration-150"
- onClick={() => {
- if (sfx.style === 'slash') movieAudio.playSfx('sword-strike');
- else if (sfx.style === 'magic') movieAudio.playSfx('magic-cast');
- else if (sfx.style === 'impact') movieAudio.playSfx('thunder-impact');
- else movieAudio.playSfx('shield-block');
- }}
- title="Click to replay SFX"
- >
- <div className={`px-2 py-0.5 bg-black/65 rounded-none border backdrop-blur-xs font-mono font-black text-xs sm:text-sm tracking-wider flex items-center gap-1.5 ${styleClass}`}>
- <span>{sfx.textEn}</span>
- <span className="text-[10px] font-normal text-stone-300">
- ({sfx.textKo})
- </span>
- </div>
- </div>
- );
- })}
- </div>
- )}
 
  {/* EPISODE COMPLETION CELEBRATION MODAL */}
  {isCompleted && (

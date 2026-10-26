@@ -219,8 +219,8 @@ const buildLiveActionScenes = (epNum: number): LiveActionScene[] => {
 
     return {
       sceneNumber: idx + 1,
-      cinemaImageUrl: `/images/cinema/episode_${padEp}/scene_${padSc}.webp?v=conquest2009_v2`,
-      fallbackImageUrl: `${(img.imageUrl || `/images/webtoon/episode_${padEp}/scene_${padSc}.webp`).split('?')[0]}?v=conquest2009_v2`,
+      cinemaImageUrl: `/images/cinema/episode_${padEp}/scene_${padSc}.webp?v=conquest2009_v4`,
+      fallbackImageUrl: `${(img.imageUrl || `/images/webtoon/episode_${padEp}/scene_${padSc}.webp`).split('?')[0]}?v=conquest2009_v4`,
       narrationKo: textKo,
       narrationEn: textEn,
       characters: img.characters || [],
@@ -251,7 +251,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
   const [sceneProgress, setSceneProgress] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(() => movieAudio.getMuted());
   const [isVoiceEnabled, setIsVoiceEnabled] = useState<boolean>(true);
-  const [subtitleMode, setSubtitleMode] = useState<'primary' | 'dual' | 'off'>('primary');
+  const [subtitleMode, setSubtitleMode] = useState<'primary' | 'dual' | 'off'>('off');
   const [lutPreset, setLutPreset] = useState<CinemaLutPreset>('imax-70mm');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isFinished, setIsFinished] = useState<boolean>(false);
@@ -515,20 +515,10 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
       : activeDialogue?.speakerKo || activeDialogue?.speakerEn;
   const speakerPortrait = activeSpeaker ? getCharacterPortraitUrl(activeSpeaker) : undefined;
 
-  // Map any episode's scenes across the 8 continuous 9-frame acting flipbook sequences (72 sequential poses)
+  // Use the 1:1 narration-aligned cinema cut (`cinema/episode_XX/scene_YY.webp`)
   const getActiveCinemaFrameUrl = (): string => {
     if (usingFallbackImg) return currentScene.fallbackImageUrl;
-    if (currentSceneIdx === 0) {
-      const padEp = String(episodeNumber).padStart(2, '0');
-      return `/images/cinema/episode_${padEp}_acting/seq_01_frame_01.webp`;
-    }
-    const padEp = String(episodeNumber).padStart(2, '0');
-    const totalActingScenes = Math.max(1, scenes.length - 1);
-    const normalizedPos = ((currentSceneIdx - 1 + sceneProgress) / totalActingScenes) * 72;
-    const globalFrameIdx = Math.min(71, Math.max(0, Math.floor(normalizedPos)));
-    const seqNum = Math.floor(globalFrameIdx / 9) + 1;
-    const frameIdx = (globalFrameIdx % 9) + 1;
-    return `/images/cinema/episode_${padEp}_acting/seq_${String(seqNum).padStart(2, '0')}_frame_${String(frameIdx).padStart(2, '0')}.webp`;
+    return currentScene?.cinemaImageUrl || currentScene?.fallbackImageUrl || '';
   };
 
   return (
@@ -538,44 +528,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
         isFullscreen ? 'fixed inset-0 z-[9999] flex flex-col justify-between' : ''
       }`}
     >
-      {/* ── Top 70mm IMAX Camera & LUT Control Strip ── */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-[#0c0e14] border-b border-white/15 text-[11px]">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="px-2 py-0.5 rounded-sm bg-amber-500 text-black font-bold tracking-wider">
-            70MM LIVE-ACTION CINEMA
-          </span>
-          <span className="text-stone-300 font-bold">
-            EP.{String(episodeNumber).padStart(2, '0')} · SHOT {String(currentSceneIdx + 1).padStart(2, '0')}/{String(scenes.length).padStart(2, '0')}
-          </span>
-          <span className="px-1.5 py-0.5 rounded-sm bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[10px]">
-            [v] 8등신 실사 72프레임 연속 동작 플립북
-          </span>
-        </div>
-
-        {/* LUT Preset Switcher */}
-        <div className="flex items-center gap-1 flex-wrap">
-          <Sliders size={12} className="text-amber-400 mr-1 hidden sm:inline" />
-          {LUT_PRESETS.map((preset) => (
-            <button
-              key={preset.id}
-              type="button"
-              onClick={() => {
-                triggerHaptic('light');
-                setLutPreset(preset.id);
-              }}
-              className={`min-h-[32px] px-2 py-1 rounded-sm border text-[10px] font-bold transition-colors cursor-pointer ${
-                lutPreset === preset.id
-                  ? 'border-amber-400 bg-amber-400 text-black'
-                  : 'border-white/15 bg-white/5 text-stone-300 hover:bg-white/10'
-              }`}
-            >
-              {language === 'en' ? preset.labelEn : preset.labelKo}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Main 16:9 / 2.39:1 CinemaScope Viewport ── */}
+      {/* ── Main 16:9 Cinema Viewport (Zero Top Label Bar) ── */}
       <div
         onClick={togglePlay}
         className={`relative w-full overflow-hidden bg-black cursor-pointer ${
@@ -608,7 +561,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
         {/* Real-time Atmospheric Particle VFX Canvas */}
         <MovieVfxCanvas vfxType={currentScene?.vfxType || 'snow'} isPlaying={isPlaying && !isFinished} />
 
-        {/* Anamorphic Horizontal Blue Lens Flare & Radial Vignette Overlay */}
+        {/* Radial Vignette Overlay (Zero Top Black Matte Bar / Zero Top Labels) */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
@@ -616,33 +569,6 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
               'radial-gradient(ellipse at center, rgba(0,0,0,0) 52%, rgba(4,6,10,0.68) 100%)',
           }}
         />
-        <div
-          className="pointer-events-none absolute left-[8%] right-[8%] top-[24%] h-[2px] opacity-35"
-          style={{
-            background:
-              'linear-gradient(90deg, transparent 0%, rgba(96,175,255,0.85) 35%, rgba(255,255,255,0.9) 50%, rgba(96,175,255,0.85) 65%, transparent 100%)',
-          }}
-        />
-
-        {/* Top 2.39:1 CinemaScope Matte Bar */}
-        <div className="pointer-events-none absolute top-0 inset-x-0 h-6 sm:h-8 bg-black z-10" />
-
-        {/* ── English-Only Opening Title Overlay (Shown ONLY on Scene 0) ── */}
-        {currentSceneIdx === 0 && (
-          <div className="pointer-events-none absolute inset-0 z-20 bg-black/55 flex flex-col items-center justify-center px-4 text-center">
-            <div className="border-y border-amber-400/50 py-4 px-6 max-w-xl">
-              <div className="text-[10px] sm:text-xs tracking-[0.25em] text-amber-300/90 font-bold mb-1.5">
-                SNSHERO ORIGINAL LIVE-ACTION CINEMA
-              </div>
-              <div className="text-xl sm:text-3xl font-bold text-white tracking-widest mb-1.5">
-                EPISODE {String(episodeNumber).padStart(2, '0')}
-              </div>
-              <div className="text-sm sm:text-lg font-bold text-amber-200 tracking-wider uppercase">
-                {titleEn || 'TWO VOWS BENEATH THE BLIZZARD'}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* ── Theatrical Cinema Subtitle Overlay (Default: Primary Subtitle) ── */}
         {subtitleMode !== 'off' && currentSceneIdx > 0 && (

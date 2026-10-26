@@ -394,11 +394,6 @@ export const MovieView: React.FC<MovieViewProps> = ({
               ▶️ YouTube
             </button>
           </div>
-          <span className="text-[11px] font-mono text-[#646262]">
-            {language === 'ko'
-              ? '중복 0% · 전 40화 2,009컷 1:1 완전정복 일러스트 적용'
-              : '0% Duplicates · All 40 Episodes 2,009 Unique Cuts Applied'}
-          </span>
         </div>
 
         {playerMode === 'conquest_mp4' ? (
