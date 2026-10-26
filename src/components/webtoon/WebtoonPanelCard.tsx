@@ -164,24 +164,39 @@ export const WebtoonPanelCard: React.FC<WebtoonPanelCardProps> = ({
  </div>
  </div>
 
- {/* Scene Bottom Novel Sentence Card */}
- {narrationText && (
- <div className="bg-[#f8f7f7] border-t border-[rgba(15,0,0,0.12)] px-4 py-3.5 sm:px-5 sm:py-4 font-mono">
- <div className="flex items-start gap-2.5">
- <span
- className={cn(
- 'text-[#fdfcfc] font-bold text-[11px] px-2 py-0.5 rounded-sm mt-0.5 shrink-0 select-none',
- isKeyClimax ? 'bg-amber-700' : 'bg-[#201d1d]'
- )}
- >
- {sceneIndex === 0 ? 'TITLE' : `#${pad2(sceneIndex)}`}
- </span>
- <p className="text-xs sm:text-[13px] leading-relaxed text-[#201d1d] font-medium select-text">
- {narrationText}
- </p>
- </div>
- </div>
- )}
+        {/* Scene Bottom Novel Sentence Card */}
+        {narrationText && (
+          <div className="bg-[#f8f7f7] border-t border-[rgba(15,0,0,0.12)] px-4 py-3.5 sm:px-5 sm:py-4 font-mono">
+            <div className="flex items-start gap-2.5">
+              <span
+                className={cn(
+                  'text-[#fdfcfc] font-bold text-[11px] px-2 py-0.5 rounded-sm mt-0.5 shrink-0 select-none',
+                  isKeyClimax ? 'bg-amber-700' : 'bg-[#201d1d]'
+                )}
+              >
+                {sceneIndex === 0 ? 'TITLE' : `#${pad2(sceneIndex)}`}
+              </span>
+              <p className="text-xs sm:text-[13px] leading-relaxed text-[#201d1d] font-medium select-text">
+                {narrationText.includes('https://SNSHero.com') ? (
+                  <>
+                    {narrationText.split('https://SNSHero.com')[0]}
+                    <a
+                      href="https://SNSHero.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold underline text-amber-800 hover:text-amber-600 transition-colors"
+                    >
+                      https://SNSHero.com
+                    </a>
+                    {narrationText.split('https://SNSHero.com')[1]}
+                  </>
+                ) : (
+                  narrationText
+                )}
+              </p>
+            </div>
+          </div>
+        )}
  </div>
  );
 };

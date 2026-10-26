@@ -270,11 +270,14 @@ export const NovelView: React.FC<NovelViewProps> = ({
     const epPad = pad2(epNum);
     const scPad = pad2(sceneIdx);
     const cacheBust = '?v=conquest2009_v7';
+    const epData = WEBTOON_DATA[String(epNum)];
+    const imgInfo = epData?.images?.find(img => img.index === sceneIdx);
+    if (imgInfo?.type === 'ending_promo') {
+      return `${imgInfo.localArtUrl || imgInfo.imageUrl}${cacheBust}`;
+    }
     if (cartoonArtStyle === 'liveaction') {
       return `/images/cinema/episode_${epPad}/scene_${scPad}.webp${cacheBust}`;
     }
-    const epData = WEBTOON_DATA[String(epNum)];
-    const imgInfo = epData?.images?.find(img => img.index === sceneIdx);
     if (imgInfo) {
       if (imgInfo.localArtUrl) return `${imgInfo.localArtUrl}${cacheBust}`;
       if (imgInfo.imageUrl) return `${imgInfo.imageUrl}${cacheBust}`;

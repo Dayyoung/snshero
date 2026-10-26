@@ -2,7 +2,7 @@
   "1": {
     "episodeNumber": 1,
     "episodeTitle": "Two Vows Beneath the Blizzard",
-    "totalImages": 50,
+    "totalImages": 51,
     "images": [
       {
         "index": 0,
@@ -1833,6 +1833,21 @@
           }
         ],
         "isKeyClimax": true
+      },
+      {
+        "index": 50,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "눈보라 아래 두 서약"
@@ -1840,7 +1855,7 @@
   "2": {
     "episodeNumber": 2,
     "episodeTitle": "Oath of the Seven Pursuers",
-    "totalImages": 48,
+    "totalImages": 49,
     "images": [
       {
         "index": 0,
@@ -3532,6 +3547,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 48,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "일곱 추적자의 맹세"
@@ -3539,7 +3569,7 @@
   "3": {
     "episodeNumber": 3,
     "episodeTitle": "Blood on the Mist Cliff",
-    "totalImages": 53,
+    "totalImages": 54,
     "images": [
       {
         "index": 0,
@@ -5472,6 +5502,21 @@
             "position": "bottom-right"
           }
         ]
+      },
+      {
+        "index": 53,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "안개 절벽의 피"
@@ -5479,7 +5524,7 @@
   "4": {
     "episodeNumber": 4,
     "episodeTitle": "The Child Raised in the Wastes",
-    "totalImages": 47,
+    "totalImages": 48,
     "images": [
       {
         "index": 0,
@@ -7150,6 +7195,21 @@
             "position": "bottom-left"
           }
         ]
+      },
+      {
+        "index": 47,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "황야에서 자란 아이"
@@ -7157,7 +7217,7 @@
   "5": {
     "episodeNumber": 5,
     "episodeTitle": "Phantom in the Downpour",
-    "totalImages": 52,
+    "totalImages": 53,
     "images": [
       {
         "index": 0,
@@ -9035,6 +9095,21 @@
             "position": "bottom-right"
           }
         ]
+      },
+      {
+        "index": 52,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "폭우 속의 유령"
@@ -9042,7 +9117,7 @@
   "6": {
     "episodeNumber": 6,
     "episodeTitle": "The Art of Breathing Stars",
-    "totalImages": 53,
+    "totalImages": 54,
     "images": [
       {
         "index": 0,
@@ -10914,6 +10989,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 53,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "별을 호흡하는 법"
@@ -10921,7 +11011,7 @@
   "7": {
     "episodeNumber": 7,
     "episodeTitle": "The Traitors Camp",
-    "totalImages": 52,
+    "totalImages": 53,
     "images": [
       {
         "index": 0,
@@ -12767,6 +12857,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 52,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "배신자들의 천막"
@@ -12774,7 +12879,7 @@
   "8": {
     "episodeNumber": 8,
     "episodeTitle": "Rider of the Crimson Mane",
-    "totalImages": 47,
+    "totalImages": 48,
     "images": [
       {
         "index": 0,
@@ -14445,6 +14550,21 @@
             "position": "bottom-right"
           }
         ]
+      },
+      {
+        "index": 47,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "붉은 갈기의 기수"
@@ -14452,7 +14572,7 @@
   "9": {
     "episodeNumber": 9,
     "episodeTitle": "Wind in Beggars Clothes",
-    "totalImages": 50,
+    "totalImages": 51,
     "images": [
       {
         "index": 0,
@@ -16285,6 +16405,21 @@
             "position": "bottom-right"
           }
         ]
+      },
+      {
+        "index": 50,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "거지 옷의 바람"
@@ -16292,7 +16427,7 @@
   "10": {
     "episodeNumber": 10,
     "episodeTitle": "Prisoner of the Flame Court",
-    "totalImages": 51,
+    "totalImages": 52,
     "images": [
       {
         "index": 0,
@@ -18160,6 +18295,21 @@
             "position": "bottom-left"
           }
         ]
+      },
+      {
+        "index": 51,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "불꽃 궁정의 포로"
@@ -18167,7 +18317,7 @@
   "11": {
     "episodeNumber": 11,
     "episodeTitle": "The Dagger That Wakes Memory",
-    "totalImages": 54,
+    "totalImages": 55,
     "images": [
       {
         "index": 0,
@@ -20113,6 +20263,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 54,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "기억을 깨우는 단검"
@@ -20120,7 +20285,7 @@
   "12": {
     "episodeNumber": 12,
     "episodeTitle": "Spring Between Two Graves",
-    "totalImages": 48,
+    "totalImages": 49,
     "images": [
       {
         "index": 0,
@@ -21863,6 +22028,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 48,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "두 무덤 사이의 봄"
@@ -21870,7 +22050,7 @@
   "13": {
     "episodeNumber": 13,
     "episodeTitle": "Master of the Jade Staff",
-    "totalImages": 47,
+    "totalImages": 48,
     "images": [
       {
         "index": 0,
@@ -23559,6 +23739,21 @@
             "position": "top-left"
           }
         ]
+      },
+      {
+        "index": 47,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "녹옥 지팡이의 주인"
@@ -23566,7 +23761,7 @@
   "14": {
     "episodeNumber": 14,
     "episodeTitle": "Guests of the Mist Lake",
-    "totalImages": 48,
+    "totalImages": 49,
     "images": [
       {
         "index": 0,
@@ -25278,6 +25473,21 @@
             "position": "top-left"
           }
         ]
+      },
+      {
+        "index": 48,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "안개 호수의 손님들"
@@ -25285,7 +25495,7 @@
   "15": {
     "episodeNumber": 15,
     "episodeTitle": "Night of Serpent and Lion",
-    "totalImages": 49,
+    "totalImages": 50,
     "images": [
       {
         "index": 0,
@@ -27021,6 +27231,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 49,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "독사와 사자의 밤"
@@ -27028,7 +27253,7 @@
   "16": {
     "episodeNumber": 16,
     "episodeTitle": "Brothers Before the Ruins",
-    "totalImages": 49,
+    "totalImages": 50,
     "images": [
       {
         "index": 0,
@@ -28779,6 +29004,21 @@
             "position": "top-left"
           }
         ]
+      },
+      {
+        "index": 49,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "폐허 앞의 형제"
@@ -28786,7 +29026,7 @@
   "17": {
     "episodeNumber": 17,
     "episodeTitle": "Invitation to the Wind Isle",
-    "totalImages": 46,
+    "totalImages": 47,
     "images": [
       {
         "index": 0,
@@ -30467,6 +30707,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 46,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "바람섬의 초대장"
@@ -30474,7 +30729,7 @@
   "18": {
     "episodeNumber": 18,
     "episodeTitle": "Secret of the Black Sanctum",
-    "totalImages": 56,
+    "totalImages": 57,
     "images": [
       {
         "index": 0,
@@ -32491,6 +32746,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 56,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "검은 성전의 비밀"
@@ -32498,7 +32768,7 @@
   "19": {
     "episodeNumber": 19,
     "episodeTitle": "Three Trials",
-    "totalImages": 51,
+    "totalImages": 52,
     "images": [
       {
         "index": 0,
@@ -34382,6 +34652,21 @@
             "position": "bottom-right"
           }
         ]
+      },
+      {
+        "index": 51,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "세 가지 시험"
@@ -34389,7 +34674,7 @@
   "20": {
     "episodeNumber": 20,
     "episodeTitle": "The Wave That Swallowed the Flower Ship",
-    "totalImages": 49,
+    "totalImages": 50,
     "images": [
       {
         "index": 0,
@@ -36182,6 +36467,21 @@
             "position": "top-left"
           }
         ]
+      },
+      {
+        "index": 49,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "꽃배를 삼킨 파도"
@@ -36189,7 +36489,7 @@
   "21": {
     "episodeNumber": 21,
     "episodeTitle": "Betrayal Aboard the Burning Ship",
-    "totalImages": 47,
+    "totalImages": 48,
     "images": [
       {
         "index": 0,
@@ -37856,6 +38156,21 @@
             "position": "bottom-left"
           }
         ]
+      },
+      {
+        "index": 47,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "불탄 배의 흔적"
@@ -37863,7 +38178,7 @@
   "22": {
     "episodeNumber": 22,
     "episodeTitle": "Four on a Deserted Island",
-    "totalImages": 57,
+    "totalImages": 58,
     "images": [
       {
         "index": 0,
@@ -39898,6 +40213,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 57,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "무인도의 투석기"
@@ -39905,7 +40235,7 @@
   "23": {
     "episodeNumber": 23,
     "episodeTitle": "The Record Sleeping in the Cave",
-    "totalImages": 54,
+    "totalImages": 55,
     "images": [
       {
         "index": 0,
@@ -41814,6 +42144,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 54,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "석굴의 기록"
@@ -41821,7 +42166,7 @@
   "24": {
     "episodeNumber": 24,
     "episodeTitle": "Seven Nights in the Sealed Chamber",
-    "totalImages": 51,
+    "totalImages": 52,
     "images": [
       {
         "index": 0,
@@ -43665,6 +44010,21 @@
             "position": "bottom-right"
           }
         ]
+      },
+      {
+        "index": 51,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "봉인된 석실"
@@ -43672,7 +44032,7 @@
   "25": {
     "episodeNumber": 25,
     "episodeTitle": "Night of the False Wedding",
-    "totalImages": 53,
+    "totalImages": 54,
     "images": [
       {
         "index": 0,
@@ -45604,6 +45964,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 53,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "거짓된 혼례"
@@ -45611,7 +45986,7 @@
   "26": {
     "episodeNumber": 26,
     "episodeTitle": "Open Door, Closed Heart",
-    "totalImages": 56,
+    "totalImages": 57,
     "images": [
       {
         "index": 0,
@@ -47625,6 +48000,21 @@
             "position": "bottom-right"
           }
         ]
+      },
+      {
+        "index": 56,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "열린 문, 닫힌 마음"
@@ -47632,7 +48022,7 @@
   "27": {
     "episodeNumber": 27,
     "episodeTitle": "Between Two Promises",
-    "totalImages": 51,
+    "totalImages": 52,
     "images": [
       {
         "index": 0,
@@ -49415,6 +49805,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 51,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "두 개의 약속 사이에서"
@@ -49422,7 +49827,7 @@
   "28": {
     "episodeNumber": 28,
     "episodeTitle": "Revolt of the Jade Council",
-    "totalImages": 55,
+    "totalImages": 56,
     "images": [
       {
         "index": 0,
@@ -51424,6 +51829,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 55,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "비취 평의회의 반란"
@@ -51431,7 +51851,7 @@
   "29": {
     "episodeNumber": 29,
     "episodeTitle": "Queen of the Wind",
-    "totalImages": 53,
+    "totalImages": 54,
     "images": [
       {
         "index": 0,
@@ -53331,6 +53751,21 @@
             "position": "top-left"
           }
         ]
+      },
+      {
+        "index": 53,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "바람의 여왕"
@@ -53338,7 +53773,7 @@
   "30": {
     "episodeNumber": 30,
     "episodeTitle": "Poison at the Four Gates",
-    "totalImages": 50,
+    "totalImages": 51,
     "images": [
       {
         "index": 0,
@@ -55170,6 +55605,21 @@
             "position": "center"
           }
         ]
+      },
+      {
+        "index": 50,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "사문의 독"
@@ -55177,7 +55627,7 @@
   "31": {
     "episodeNumber": 31,
     "episodeTitle": "The Hand That Wagered Everything",
-    "totalImages": 60,
+    "totalImages": 61,
     "images": [
       {
         "index": 0,
@@ -57251,6 +57701,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 60,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "내기에 건 손"
@@ -57258,7 +57723,7 @@
   "32": {
     "episodeNumber": 32,
     "episodeTitle": "Echo of First Love",
-    "totalImages": 51,
+    "totalImages": 52,
     "images": [
       {
         "index": 0,
@@ -59095,6 +59560,21 @@
             "position": "top-left"
           }
         ]
+      },
+      {
+        "index": 51,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "첫사랑의 메아리"
@@ -59102,7 +59582,7 @@
   "33": {
     "episodeNumber": 33,
     "episodeTitle": "Grudge of the Black Marsh",
-    "totalImages": 51,
+    "totalImages": 52,
     "images": [
       {
         "index": 0,
@@ -60991,6 +61471,21 @@
             "position": "bottom-right"
           }
         ]
+      },
+      {
+        "index": 51,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "검은 늪"
@@ -60998,7 +61493,7 @@
   "34": {
     "episodeNumber": 34,
     "episodeTitle": "The Fallen Wind Isle",
-    "totalImages": 52,
+    "totalImages": 53,
     "images": [
       {
         "index": 0,
@@ -62876,6 +63371,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 52,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "쓰러진 바람섬"
@@ -62883,7 +63393,7 @@
   "35": {
     "episodeNumber": 35,
     "episodeTitle": "Mistaken in the Fog",
-    "totalImages": 53,
+    "totalImages": 54,
     "images": [
       {
         "index": 0,
@@ -64841,6 +65351,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 53,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "안개 속의 착각"
@@ -64848,7 +65373,7 @@
   "36": {
     "episodeNumber": 36,
     "episodeTitle": "Map of the Cross-Shaped Scar",
-    "totalImages": 48,
+    "totalImages": 49,
     "images": [
       {
         "index": 0,
@@ -66626,6 +67151,21 @@
             "position": "bottom-right"
           }
         ]
+      },
+      {
+        "index": 48,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "십자 흉터의 지도"
@@ -66633,7 +67173,7 @@
   "37": {
     "episodeNumber": 37,
     "episodeTitle": "War of the Conqueror King",
-    "totalImages": 49,
+    "totalImages": 50,
     "images": [
       {
         "index": 0,
@@ -68433,6 +68973,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 49,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "패왕의 전쟁"
@@ -68440,7 +68995,7 @@
   "38": {
     "episodeNumber": 38,
     "episodeTitle": "Three Silk Seals",
-    "totalImages": 52,
+    "totalImages": 53,
     "images": [
       {
         "index": 0,
@@ -70353,6 +70908,21 @@
             "position": "top-right"
           }
         ]
+      },
+      {
+        "index": 52,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "세 개의 명주 봉인"
@@ -70360,7 +70930,7 @@
   "39": {
     "episodeNumber": 39,
     "episodeTitle": "The World Worth Protecting",
-    "totalImages": 54,
+    "totalImages": 55,
     "images": [
       {
         "index": 0,
@@ -72312,6 +72882,21 @@
             "position": "center"
           }
         ]
+      },
+      {
+        "index": 54,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "지킬 만한 가치가 있는 세상"
@@ -72319,7 +72904,7 @@
   "40": {
     "episodeNumber": 40,
     "episodeTitle": "One Who Is Not Called a Hero",
-    "totalImages": 52,
+    "totalImages": 53,
     "images": [
       {
         "index": 0,
@@ -74144,6 +74729,21 @@
           }
         ],
         "isKeyClimax": true
+      },
+      {
+        "index": 52,
+        "fileName": "scene_ending_snshero.webp",
+        "imageUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "localArtUrl": "/images/webtoon/scene_ending_snshero.webp",
+        "type": "ending_promo",
+        "isKeyClimax": true,
+        "narrationKo": "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이 하세요! https://SNSHero.com (눈히어로.com)",
+        "narrationEn": "Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)",
+        "characters": [
+          "Kadan"
+        ],
+        "dialogues": [],
+        "sfxCues": []
       }
     ],
     "episodeTitleKo": "영웅이 아닌 사람"
