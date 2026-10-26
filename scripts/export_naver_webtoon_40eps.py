@@ -223,7 +223,7 @@ def render_single_episode(ep_num, out_dir):
     draw.text((36, curr_y + 70), next_msg, font=font_title_sub, fill=(251, 191, 36))
 
     safe_title = re.sub(r"[^\w가-힣]+", "_", title_ko).strip("_")
-    filename = f"눈히어로_코믹툰_제{ep_num:02d}화_{safe_title}.jpg"
+    filename = f"{ep_num:02d}_눈히어로_코믹툰_제{ep_num:02d}화_{safe_title}.jpg"
     out_path = os.path.join(out_dir, filename)
     strip.save(out_path, "JPEG", quality=95, subsampling=0, optimize=True)
     size_mb = round(os.path.getsize(out_path) / (1024 * 1024), 2)
@@ -231,6 +231,7 @@ def render_single_episode(ep_num, out_dir):
 
 
 def main():
+    import time
     downloads_dir = os.path.expanduser("~/Downloads")
     os.makedirs(downloads_dir, exist_ok=True)
 
@@ -247,8 +248,13 @@ def main():
             print(f"  [완료 {len(results):02d}/40] 제{ep_num:02d}화 -> {filename} ({dims[0]}x{dims[1]}px, {size_mb}MB)")
 
     results.sort(key=lambda x: x[0])
+    base_time = time.time() - 45
+    for ep_num, filename, _, _ in results:
+        fpath = os.path.join(downloads_dir, filename)
+        t = base_time + ep_num
+        os.utime(fpath, (t, t))
     total_mb = round(sum(r[3] for r in results), 2)
-    print(f"\n전 40화 고화질 웹툰 이미지 생성 완료! (총 40개 파일, 합계 {total_mb}MB)")
+    print(f"\n전 40화 고화질 웹툰 이미지 생성 및 01~40 정렬 완료! (총 40개 파일, 합계 {total_mb}MB)")
 
 
 if __name__ == "__main__":
