@@ -2,6 +2,16 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 17:17 KST] [/wiki/card 미소유 카드 컬러 표시 및 /play 미소유 카드 회색(Grayscale) 표시 적용]
+- **요청 사항**:
+  - "https://snshero.com/wiki/card 여기에 있는 카드들은 소유하지 않아도 회색으로 표시되지 않게 해줘."
+  - "https://snshero.com/play 여기에 있는 카드들은 소유하지않으면 기존에 위키 처럼 회색으로 표시되게 해줘."
+- **주요 수정 내역**:
+  1. **[`src/views/WikiCardView.tsx`](file:///Users/dayyoung/project/snshero/src/views/WikiCardView.tsx)**:
+     - `/wiki/card` 도감 카드 목록에서 미보유(`!isOwned`) 카드에 적용되던 `filter grayscale opacity-60`, `bg-[#f8f7f7]/60`, `isLocked={!isOwned}` 처리를 제거하여 소유 여부와 상관없이 선명한 원본 컬러로 표시되도록 수정.
+  2. **[`src/views/PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx)**:
+     - `/play` 수호자 미션 카드 목록의 `MissionCharacterPortrait` 및 미보유(`!isOwned`) 카드 항목에 기존 위키와 동일한 `filter grayscale opacity-60`, `isLocked={!isOwned}`, `bg-[#f8f7f7]/60` 스타일을 적용하여 미소유 카드가 회색으로 구분되도록 반영.
+
 ## [2026-10-26 15:00 KST] [마이덱(MyDeckView) 수동 카드 변경/적용 시 플레이 화면 자동 이동 버그 수정 (오직 자동 플레이 시에만 이동하도록 제한)]
 - **요청 사항**:
   - "마이덱 으로 이동해서 카드를 변경해서 적용하면 플레이 화면으로 자동으로 이동하는 버그가 있어. 자동 플레이 시에만 이동해야지"

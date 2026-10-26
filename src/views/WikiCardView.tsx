@@ -824,16 +824,13 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
               <div 
                 key={card.id} 
                 onClick={() => openCardDetail(card)}
-                className={cn(
-                  "group relative flex gap-4 p-4 rounded-none border transition-colors overflow-hidden cursor-pointer",
-                  isOwned ? "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]" : "border-[rgba(15,0,0,0.12)] bg-[#f8f7f7]/60"
-                )}
+                className="group relative flex gap-4 p-4 rounded-none border transition-colors overflow-hidden cursor-pointer bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
               >
-                <div className={`w-20 sm:w-24 shrink-0 relative z-10 ${!isOwned ? 'filter grayscale opacity-60' : ''}`}>
+                <div className="w-20 sm:w-24 shrink-0 relative z-10">
                   <CardItem
                     card={displayCard}
                     className="w-full aspect-[5/7]"
-                    isLocked={!isOwned}
+                    isLocked={false}
                     lowSpecMode={true}
                     ignoreBonuses={true}
                   />

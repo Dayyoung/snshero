@@ -280,12 +280,14 @@ const MissionCharacterPortrait: React.FC<{
   className?: string;
   language?: string;
   hideStats?: boolean;
+  isLocked?: boolean;
 }> = ({
   cardId = 41,
   name,
   className,
   language = 'ko',
   hideStats = false,
+  isLocked = false,
 }) => {
   const safeCardId = CARD_DATABASE[cardId] ? cardId : 41;
   const dbCard = CARD_DATABASE[safeCardId];
@@ -308,9 +310,17 @@ const MissionCharacterPortrait: React.FC<{
   };
 
   return (
-    <div className={cn('relative flex h-full w-full items-center justify-center p-1', className)} title={name || dbCard?.title}>
+    <div
+      className={cn(
+        'relative flex h-full w-full items-center justify-center p-1',
+        isLocked && 'filter grayscale opacity-60',
+        className
+      )}
+      title={name || dbCard?.title}
+    >
       <CardItem
         card={cardData}
+        isLocked={isLocked}
         className="w-24 h-34 sm:w-28 sm:h-38 rounded-none border border-[rgba(15,0,0,0.12)] pointer-events-none transform group-hover:scale-105 transition-transform duration-300"
         language={language}
         hideStats={hideStats}
@@ -13836,7 +13846,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         "w-full h-full min-h-[225px] rounded-sm transition-colors flex flex-col overflow-hidden group cursor-pointer text-left relative focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#201d1d]",
                         isOwned 
                           ? "bg-[#fdfcfc] border border-emerald-600 hover:border-[#201d1d]"
-                          : "bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d]"
+                          : "bg-[#f8f7f7]/60 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d]"
                       )}
                       aria-label={`${battleTitle} - No.${cardNumFormatted} ${charName} (${isOwned ? `보유 ${ownedCount}장` : '미보유'})`}
                     >
@@ -13885,9 +13895,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           </div>
                         )}
                         {charCard ? (
-                          <MissionCharacterPortrait cardId={charCard.id} name={charName} language={language} className="w-full h-full" />
+                          <MissionCharacterPortrait cardId={charCard.id} name={charName} language={language} isLocked={!isOwned} className="w-full h-full" />
                         ) : (
-                          <IconComp size={36} className="text-white/80 my-4" />
+                          <IconComp size={36} className={cn("text-white/80 my-4", !isOwned && "filter grayscale opacity-60")} />
                         )}
                       </div>
 
