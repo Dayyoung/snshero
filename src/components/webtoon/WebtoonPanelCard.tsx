@@ -177,6 +177,13 @@ export const WebtoonPanelCard: React.FC<WebtoonPanelCardProps> = ({
                 {sceneIndex === 0 ? 'TITLE' : `#${pad2(sceneIndex)}`}
               </span>
               <p className="text-xs sm:text-[13px] leading-relaxed text-[#201d1d] font-medium select-text">
+                {dialogues?.[0]?.speakerKo &&
+                  dialogues[0].speakerKo !== '내레이션' &&
+                  dialogues[0].speakerKo !== 'Narration' && (
+                    <span className="font-bold text-amber-900 mr-1.5">
+                      [{language === 'ko' ? dialogues[0].speakerKo : (dialogues[0].speakerEn || dialogues[0].speakerKo)}]
+                    </span>
+                  )}
                 {narrationText.includes('https://SNSHero.com') ? (
                   <>
                     {narrationText.split('https://SNSHero.com')[0]}

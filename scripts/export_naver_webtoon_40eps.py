@@ -95,8 +95,14 @@ def render_single_episode(ep_num, out_dir):
         sc_idx = item["index"]
         is_climax = bool(item.get("isKeyClimax"))
         narr_ko = item.get("narrationKo", "").strip()
+        d_list = item.get("dialogues") or []
+        speaker_ko = d_list[0].get("speakerKo", "").strip() if d_list else ""
+
         if sc_idx == 0:
             narr_ko = f"{ep_num:02d}화 {title_ko}"
+        elif speaker_ko and speaker_ko not in ("내레이션", "Narration"):
+            if not narr_ko.startswith(f"[{speaker_ko}]"):
+                narr_ko = f"[{speaker_ko}] {narr_ko}"
 
         badge_text = "TITLE" if sc_idx == 0 else f"#{sc_idx:02d}"
         badge_w = 62 if sc_idx == 0 else 54
@@ -112,6 +118,7 @@ def render_single_episode(ep_num, out_dir):
         panel_layouts.append({
             "sc_idx": sc_idx,
             "is_climax": is_climax,
+            "speaker_ko": speaker_ko,
             "img_rel_path": "public" + (item.get("localArtUrl") or item.get("imageUrl")),
             "badge_text": badge_text,
             "badge_w": badge_w,
@@ -160,7 +167,8 @@ def render_single_episode(ep_num, out_dir):
         dot_color = (217, 119, 6) if is_climax else (32, 29, 29)
         draw.rectangle([18, mid_hdr_y - 4, 26, mid_hdr_y + 4], fill=dot_color)
 
-        hdr_label = "[ TITLE CARD ]" if sc_idx == 0 else f"SCENE {sc_idx:02d} / {total_scenes:02d}  ·  대사번호 #{sc_idx:02d}"
+        spk_tag = f"  ·  [{p['speaker_ko']}]" if p.get("speaker_ko") else ""
+        hdr_label = "[ TITLE CARD ]" if sc_idx == 0 else f"SCENE {sc_idx:02d} / {total_scenes:02d}  ·  대사번호 #{sc_idx:02d}{spk_tag}"
         draw.text((34, mid_hdr_y), hdr_label, font=font_scene_hdr, fill=(32, 29, 29), anchor="lm")
 
         if is_climax:

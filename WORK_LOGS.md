@@ -16416,3 +16416,11 @@
   3. **캐시 버스팅 업데이트**:
      - `src/views/NovelView.tsx` 및 `src/content/movieEpisodeMapping.ts`의 미디어 캐시 버스팅 쿼리를 `?v=conquest2009_v9`로 일괄 갱신.
 - **검증 및 보고**: TypeScript 검증 통과, 로컬 Git 커밋 및 구글 폼 완료 보고서 제출 완료.
+
+
+## [2026-10-27 08:17 KST] 최신화된 컷신(2,009컷) 및 나레이션·화자 대사 반영 네이버 웹툰 40화 전수 재생성
+- **작업 내역**:
+  - 최신화된 3x3 마스터 시트 리마스터링 및 1:1 컷-대사 매핑이 반영된 `public/images/webtoon/episode_01..40/` 컷신과 `src/content/webtoonEpisodeManifest.json`의 나레이션·화자(`speakerKo`) 정보를 반영하여 `scripts/export_naver_webtoon_40eps.py` 및 `src/components/webtoon/WebtoonPanelCard.tsx` 업데이트
+  - `~/Downloads/` 폴더 내 `01화 눈보라 아래 두 서약.jpg` ~ `40화 영웅이라 불리지 않는 자.jpg` 전 40개 고화질 통합 웹툰 이미지(가로 `690px` 고정, 용량 `4.01MB ~ 4.53MB` <= 5MB) 전수 재생성 및 `01`~`40` 순차 정렬 완료
+- **검증 결과**: `npx tsc --noEmit` 0 에러 통과 및 40개 파일 전수 최신화 검증 완료
+- **구글 폼 보고**: 제출 완료 (`[개발] [최신 컷신 및 나레이션 반영 네이버 웹툰 40화 재생성] -> 작업완료`)
