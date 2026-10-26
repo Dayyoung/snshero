@@ -546,13 +546,59 @@ def build_distinct_liveaction_pool_for_episode(ep_num: int, n_narrative: int) ->
 
     if ep_num == 1 and (ep_raw_dir / "sheet_01.png").exists():
         s_panels = [extract_3x3_cells(ep_raw_dir / f"sheet_{s_i:02d}.png") for s_i in range(1, 7)]
-        ordered_la_cuts: list[Image.Image] = []
-        ordered_la_cuts.extend(s_panels[0][:9])
-        ordered_la_cuts.extend(s_panels[1][:9])
-        ordered_la_cuts.extend(s_panels[2][:9])
-        ordered_la_cuts.extend(s_panels[3][:9])
-        ordered_la_cuts.extend(s_panels[4][:9])
-        ordered_la_cuts.extend(s_panels[5][1:5])
+        # Exact 1:1 scene-by-scene mapping of the 54 panels in raw_ep01_sheets/sheet_01..06.png
+        # to Episode 1 Scenes 01..49 (matching every narration and dialogue line 1:1):
+        ordered_la_cuts: list[Image.Image] = [
+            s_panels[0][0],  # Scene 01: 엘윈 마을 설경 전경
+            s_panels[0][1],  # Scene 02: 눈보라가 덮친 마을 거리와 돌지붕
+            s_panels[0][2],  # Scene 03: 창문 틈새를 막고 등잔불을 끄는 주민들
+            s_panels[5][4],  # Scene 04: 북방 국경 숲과 눈 덮인 계곡
+            s_panels[0][3],  # Scene 05: 통나무 선술집 탁자에 마주 앉은 알렉산다르와 발리안
+            s_panels[0][8],  # Scene 06: 쌍검의 알렉산다르와 아케인 창의 발리안
+            s_panels[0][4],  # Scene 07: 몰락한 아케 성기사단의 혈통을 숨긴 두 사람
+            s_panels[0][5],  # Scene 08: 만삭이 된 아내 엘윈
+            s_panels[0][6],  # Scene 09: 주막 문을 거칠게 열고 들어서는 피투성이 헤르쿨
+            s_panels[0][7],  # Scene 10: 반으로 깨진 성기사단 황금 인장과 황금빛 마나
+            s_panels[1][0],  # Scene 11: 헤르쿨의 목젖 앞에서 멈춘 창끝과 검
+            s_panels[1][1],  # Scene 12: 검을 뽑는 대신 두 손바닥을 펼쳐 보이는 헤르쿨
+            s_panels[1][2],  # Scene 13: "진정하게, 형제들이여..." 헤르쿨 클로즈업
+            s_panels[1][3],  # Scene 14: 선술집을 감싸는 황금빛 방호진
+            s_panels[1][5],  # Scene 15: 탁자 위에 내려놓은 부러진 성기사단장 흉갑 조각
+            s_panels[1][6],  # Scene 16: 마른 빵 한 조각을 나누며 대륙의 형편을 털어놓는 헤르쿨
+            s_panels[1][7],  # Scene 17: 섀도우렐름에 왕국을 팔아넘긴 배신자 귀족들의 궁정
+            s_panels[1][8],  # Scene 18: 섭정 데스나이트 아르투스와 야심가 루시안
+            s_panels[2][0],  # Scene 19: "어둠의 군세가 이 남쪽 계곡까지 내려왔네..."
+            s_panels[2][1],  # Scene 20: 고대 룬이 푸른 맥박처럼 숨 쉬는 은빛 단검 두 자루
+            s_panels[2][2],  # Scene 21: "아이들이 태어나면 이 은빛 단검을 하나씩 건네주게."
+            s_panels[2][3],  # Scene 22: 진실의 룬이 새겨진 두 자루 단검의 교차
+            s_panels[2][4],  # Scene 23: 단검을 쥐며 아들 이름 '카단'을 짓는 알렉산다르
+            s_panels[2][5],  # Scene 24: 단검을 받으며 아이 이름 '이그니스'를 짓는 발리안
+            s_panels[2][6],  # Scene 25: 세 사내가 잔을 맞대어 두 아이의 앞날을 축복함
+            s_panels[2][7],  # Scene 26: 안개 속 눈 덮인 비탈길에 나타난 루시안
+            crop_16x9_and_resize(s_panels[2][7], 0.14, 0.02, 0.86, 0.88),  # Scene 27: 유랑 상인 행세를 하는 루시안 클로즈업
+            s_panels[2][8],  # Scene 28: 따뜻한 보리 수프 한 그릇을 건네는 만삭의 엘윈
+            s_panels[3][0],  # Scene 29: 엘윈 마을을 반역자 소굴로 조작하는 루시안의 계략
+            s_panels[3][2],  # Scene 30: 만삭의 엘윈을 비밀 수로로 피신시키는 알렉산다르
+            s_panels[3][3],  # Scene 31: 아내 이셀라를 마차에 숨기고 창을 휘두르는 발리안
+            s_panels[3][4],  # Scene 32: 주민들을 인질로 세우고 항복을 강요하는 말 위의 루시안
+            s_panels[3][6],  # Scene 33: 창상을 입고 피 흘리며 검등으로 적병을 막아내는 알렉산다르
+            s_panels[3][1],  # Scene 34: 불타는 마을과 포위해 오는 검은 철갑 토벌대
+            s_panels[3][7],  # Scene 35: "아내의 목숨은 네놈 따위의 더러운 주둥이에서 보장받는 것이 아니다!"
+            s_panels[3][8],  # Scene 36: 다리의 동아줄을 쌍검으로 베어 끊는 알렉산다르
+            s_panels[4][0],  # Scene 37: 쇠사슬에 얽혀 전복되는 발리안의 마차
+            s_panels[4][1],  # Scene 38: 루시안의 얼굴에 흙과 얼음 조각을 던지며 저항하는 이셀라
+            s_panels[4][2],  # Scene 39: 적의 주력을 유인하기 위해 안개 절벽으로 향한 발리안
+            s_panels[4][4],  # Scene 40: 적병들을 끌어안고 급류 절벽 아래로 추락하는 발리안
+            s_panels[4][6],  # Scene 41: 부러진 검을 쥐고 무릎 꿇은 채 엘윈의 뒷모습을 바라보는 알렉산다르
+            s_panels[4][7],  # Scene 42: 은빛 단검과 알렉산다르의 부러진 검집을 품에 안은 엘윈
+            s_panels[4][8],  # Scene 43: 엘윈의 뒤를 따르며 차마 전사 소식을 전하지 못하는 피난민 노인들
+            s_panels[5][2],  # Scene 44: 차가운 설원 깊숙이 작은 밀 씨앗 한 줌을 묻는 엘윈의 손
+            s_panels[5][5],  # Scene 45: "언젠가 누군가는 이 땅에서 다시 따뜻한 빵을 구워야 하니까요."
+            s_panels[5][8],  # Scene 46: 눈물을 훔치며 북쪽의 혹한 속으로 발걸음을 옮기는 엘윈
+            s_panels[5][3],  # Scene 47: "아가야, 너는 증오와 복수 때문에 태어나는 것이 아니란다."
+            s_panels[5][6],  # Scene 48: "어떤 불의와 거짓 앞에서도 비겁하게 고개를 숙이지 않는 사람으로 자라다오."
+            s_panels[5][7],  # Scene 49: 설원 아래 묻힌 씨앗의 새싹과 은빛 단검의 룬
+        ]
         return ordered_la_cuts[:n_narrative]
 
     extra_la_cells: list[Image.Image] = []

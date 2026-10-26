@@ -2,6 +2,19 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 12:16 KST] [제1화(/book?ep=1 실사 컷 모드 및 /cinema?ep=1) 49개 나레이션·대사 문장별 실제 실사 컷(sheet_01..06.png) 1:1 인덱스 오프셋 전수 교정 및 episode_01.mp4 재인코딩 완료]
+- **요청 사항**:
+  - `"http://localhost:3000/book?ep=1 애니메이션 이미지는 나레이션과 대사 나레이션 내용이 맞는데 실사 컷 전환 하면 나레이션과 이미지가 내용이 맞지않아."`
+- **원인 분석**:
+  - `public/images/cinema/raw_ep01_sheets/sheet_01..06.png`(총 54개 실사 컷)를 `s_panels[0][:9] + s_panels[1][:9] + ...`로 단순 연결하면서, `sheet_01`의 Scene 04 누락 및 Scene 06(`s_panels[0][8]`) 위치 변경, `sheet_02`의 Scene 14 2컷 분할(`s_panels[1][3..4]`), `sheet_03`의 Scene 26·27 통합(`s_panels[2][7]`), `sheet_04`의 Scene 30·33 2컷 분할, `sheet_05`의 Scene 39·40 2컷 분할, `sheet_06`의 Scene 44~49 비순차 배치(`[2], [5], [8], [3], [6], [7]`)로 인해 **Scene 04부터 Scene 49까지 실사 컷이 나레이션보다 1~3칸씩 밀려 표시**되던 현상 규명.
+- **주요 구현 및 수정 내역**:
+  1. **제1화 Scene 01 ~ Scene 49 나레이션·대사 1:1 정밀 실사 컷 매핑 ([`scripts/build_conquest_2009_all_media.py`](file:///Users/dayyoung/project/snshero/scripts/build_conquest_2009_all_media.py))**:
+     - Scene 01(엘윈 마을 설경 `s_panels[0][0]`) ~ Scene 05(선술집 탁자 알렉산다르·발리안 `s_panels[0][3]`), Scene 06(쌍검과 창 `s_panels[0][8]`), Scene 07(아케 성기사단 혈통 `s_panels[0][4]`), Scene 08(만삭의 엘윈 `s_panels[0][5]`), Scene 09(문을 열고 들어서는 헤르쿨 `s_panels[0][6]`), Scene 10(반으로 깨진 황금 인장 `s_panels[0][7]`), Scene 11(목젖 앞 창끝 `s_panels[1][0]`), Scene 12(두 손바닥을 펼쳐 보이는 헤르쿨 `s_panels[1][1]`) ... Scene 28(보리 수프를 건네는 엘윈 `s_panels[2][8]`), Scene 29(반역 날조 인장 `s_panels[3][0]`) ... Scene 44(밀 씨앗을 묻는 손 `s_panels[5][2]`), Scene 45(은빛 단검과 밀 씨앗 `s_panels[5][5]`), Scene 46(북쪽으로 걸어가는 엘윈 `s_panels[5][8]`), Scene 47(배를 감싸 안은 엘윈 `s_panels[5][3]`), Scene 48(눈보라 속 두 자루의 검 `s_panels[5][6]`), Scene 49(설원 위 새싹과 은빛 단검 `s_panels[5][7]`)까지 49개 전 장면을 오차 없이 1:1 매핑하여 `public/images/cinema/episode_01/scene_01..49.webp` 및 `public/images/storybook_liveaction/ep_01/page_01..10.webp` 재생성 완료.
+  2. **제1화 무비 MP4(`public/videos/cinema/episode_01.mp4`) 재인코딩 및 캐시 무효화(`?v=conquest2009_v6`)**:
+     - 교정된 49개 실사 컷으로 `episode_01.mp4`를 재인코딩하고, 브라우저 캐시 쿼리를 `?v=conquest2009_v6`으로 상향.
+- **검증 및 보고**:
+  - `npx tsc --noEmit` 및 `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-26 11:49 KST] [무비(/cinema, /novel 실사 모드, /main 무비 모드) 전 40화(2,049컷) 나레이션 1:1 매칭 실제 실사 영화 이미지(Photorealistic Live-Action) 전면 분리 복원 및 무비 40편 MP4(자막·상단 라벨 제거 버전) 재인코딩 완료]
 - **요청 사항**:
   - `"지금 애니메이션 / 무비 의 이미지가 별 차이가 없어. 무비의 이미지는 실제 이미지 로 이미지가 표시되야해."`
