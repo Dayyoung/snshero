@@ -802,14 +802,18 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     rawLines.forEach((line) => {
       if (line.subCuts && line.subCuts.length > 0) {
         line.subCuts.forEach((cut, cIdx) => {
+          const cutCleanKo = (cut.narrationKo || '').replace(/\s+/g, ' ').trim();
+          const cutCleanEn = (cut.narrationEn || '').replace(/\s+/g, ' ').trim();
+          const cutSnippetKo = cutCleanKo.length > 42 ? `${cutCleanKo.slice(0, 42)}…` : cutCleanKo;
+          const cutSnippetEn = cutCleanEn.length > 52 ? `${cutCleanEn.slice(0, 52)}…` : cutCleanEn;
           expanded.push({
             ...line,
             name: cut.speakerKo || line.name,
             nameEn: cut.speakerEn || line.nameEn,
             text: cut.narrationKo || line.text,
             textEn: cut.narrationEn || line.textEn,
-            sceneTitleKo: `[제40화 · 컷 #${cut.cutNumber}] ${line.sceneTitleKo?.replace(/^\[[^\]]+\]\s*/, '') || ''}`,
-            sceneTitleEn: `[EP.40 · Cut #${cut.cutNumber}] ${line.sceneTitleEn?.replace(/^\[[^\]]+\]\s*/, '') || ''}`,
+            sceneTitleKo: `[제40화 · 컷 #${cut.cutNumber}] ${cutSnippetKo}`,
+            sceneTitleEn: `[EP.40 · Cut #${cut.cutNumber}] ${cutSnippetEn}`,
             sceneExplanationKo: cIdx === 0 ? line.sceneExplanationKo : undefined,
             sceneExplanationEn: cIdx === 0 ? line.sceneExplanationEn : undefined,
             sceneImageUrl: cut.imageUrl || line.sceneImageUrl,

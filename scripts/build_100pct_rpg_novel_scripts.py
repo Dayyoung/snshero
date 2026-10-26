@@ -579,6 +579,25 @@ def save_webp_under_limit(img: Image.Image, out_file: Path, limit_bytes: int = 7
     return out_file.stat().st_size
 
 
+EXACT_SPEAKER_OVERRIDES: dict[tuple[int, int], tuple[str, str]] = {
+    (3, 8): ("가웨인", "Gawain"),
+    (3, 23): ("가웨인", "Gawain"),
+    (3, 26): ("메두사 고르고", "Medusa Gorgo"),
+    (3, 30): ("벨페고르", "Belphegor"),
+    (3, 49): ("그림리", "Grimli"),
+    (4, 39): ("그림리", "Grimli"),
+    (5, 33): ("그림리", "Grimli"),
+    (16, 40): ("내레이션", "Narration"),
+    (25, 13): ("카단", "Kadan"),
+    (26, 54): ("카단", "Kadan"),
+    (35, 14): ("카단", "Kadan"),
+    (35, 43): ("실리아", "Celia"),
+    (36, 32): ("카단", "Kadan"),
+    (37, 19): ("카단", "Kadan"),
+    (39, 40): ("카단", "Kadan"),
+}
+
+
 def render_storybook_page_image(
     src_webp: Path,
     out_webp: Path,
@@ -589,60 +608,35 @@ def render_storybook_page_image(
     is_choice: bool = False,
 ) -> int:
     """
-    Creates a dedicated 800x450 Picture-Book Scene Illustration (`page_YY.webp`)
-    for each dialogue/story step.
+    Creates a clean full-bleed 800x450 Picture-Book Scene Illustration (`page_YY.webp`)
+    for both Animation (`storybook`) and Live-Action (`storybook_liveaction`).
     """
     out_webp.parent.mkdir(parents=True, exist_ok=True)
     im = Image.open(src_webp).convert("RGB")
     if im.size != (WIDTH, HEIGHT):
         im = im.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
 
-    im = ImageEnhance.Contrast(im).enhance(1.03)
-    im = ImageEnhance.Color(im).enhance(1.04)
-    canvas = im.convert("RGBA")
+    comp = im.convert("RGBA")
+    cdraw = ImageDraw.Draw(comp)
+    cdraw.rectangle([0, 0, WIDTH - 1, HEIGHT - 1], outline=(55, 50, 45, 230), width=1)
+    sz = save_webp_under_limit(comp.convert("RGB"), out_webp, limit_bytes=78000)
 
-    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
-    odraw = ImageDraw.Draw(overlay)
+    # Also bake corresponding live-action storybook page from /images/cinema/episode_XX/scene_ZZ.webp
+    la_src_str = str(src_webp).replace("/images/webtoon/episode_", "/images/cinema/episode_")
+    la_out_str = str(out_webp).replace("/images/storybook/ep_", "/images/storybook_liveaction/ep_")
+    la_src_path = Path(la_src_str)
+    la_out_path = Path(la_out_str)
+    if la_src_path.exists() and la_out_path != out_webp:
+        la_out_path.parent.mkdir(parents=True, exist_ok=True)
+        la_im = Image.open(la_src_path).convert("RGB")
+        if la_im.size != (WIDTH, HEIGHT):
+            la_im = la_im.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
+        la_comp = la_im.convert("RGBA")
+        la_draw = ImageDraw.Draw(la_comp)
+        la_draw.rectangle([0, 0, WIDTH - 1, HEIGHT - 1], outline=(55, 50, 45, 230), width=1)
+        save_webp_under_limit(la_comp.convert("RGB"), la_out_path, limit_bytes=78000)
 
-    # Subtle bottom gradient vignette so multi-character stage & picture-book frame look cohesive
-    for y in range(HEIGHT - 64, HEIGHT):
-        alpha = int(150 * ((y - (HEIGHT - 64)) / 64.0) ** 1.3)
-        odraw.line([(0, y), (WIDTH, y)], fill=(12, 10, 14, alpha))
-
-    # Crisp 1px picture-book hairline border (no top black label bar)
-    odraw.rectangle([0, 0, WIDTH - 1, HEIGHT - 1], outline=(70, 62, 52, 220), width=1)
-
-    # Render participating character portrait medallions in bottom-right of the storybook canvas
-    # so even at a glance the picture shows every character involved in this dialogue
-    shown_chars = chars[:4]
-    badge_size = 46
-    gap = 6
-    total_w = len(shown_chars) * badge_size + max(0, len(shown_chars) - 1) * gap
-    start_x = WIDTH - total_w - 12
-    base_y = HEIGHT - badge_size - 10
-
-    for idx, ch in enumerate(shown_chars):
-        bx = start_x + idx * (badge_size + gap)
-        by = base_y
-        is_spk = ch.get("isSpeaker", idx == 0)
-        border_col = (245, 190, 65, 245) if is_spk else (160, 155, 145, 190)
-        bg_col = (28, 24, 28, 220) if is_spk else (18, 16, 20, 195)
-        odraw.rectangle([bx - 1, by - 1, bx + badge_size + 1, by + badge_size + 1], fill=bg_col, outline=border_col, width=2 if is_spk else 1)
-
-        seat_rel = ch.get("seatAsset", "").lstrip("/")
-        seat_path = PROJECT_ROOT / "public" / seat_rel
-        if seat_path.exists():
-            try:
-                sp = Image.open(seat_path).convert("RGBA")
-                sp.thumbnail((badge_size - 4, badge_size - 4), Image.Resampling.LANCZOS)
-                sx = bx + (badge_size - sp.width) // 2
-                sy = by + (badge_size - sp.height) // 2
-                overlay.paste(sp, (sx, sy), sp)
-            except Exception:
-                pass
-
-    final_rgb = Image.alpha_composite(canvas, overlay).convert("RGB")
-    return save_webp_under_limit(final_rgb, out_webp)
+    return sz
 
 
 def partition_paragraphs(paras: list[str], n_buckets: int) -> list[list[str]]:
@@ -711,21 +705,36 @@ def build_all_episodes():
         total_ko_chars += sum(len(p) for p in ko_paras)
         total_en_chars += sum(len(p) for p in en_paras)
 
-        # Narrative scene cuts in webtoonEpisodeManifest.json (indices 1..N)
-        narrative_imgs = [img for img in ep_manifest.get("images", []) if img.get("index", 0) > 0]
+        # Narrative scene cuts in webtoonEpisodeManifest.json (indices 1..N, excluding ending_promo)
+        narrative_imgs = [
+            img for img in ep_manifest.get("images", [])
+            if img.get("index", 0) > 0 and img.get("type") != "ending_promo"
+        ]
         n_cuts = len(narrative_imgs)
 
-        # We partition each episode into 9 comprehensive narrative sections (matching the 9 AI storyboard panels)
+        # Apply exact speaker overrides to manifest images so webtoonEpisodeManifest.json & RPG scripts stay 100% synced
+        for img_item in narrative_imgs:
+            c_idx = int(img_item.get("index", 0))
+            if (ep_num, c_idx) in EXACT_SPEAKER_OVERRIDES:
+                ov_ko, ov_en = EXACT_SPEAKER_OVERRIDES[(ep_num, c_idx)]
+                d_list = img_item.get("dialogues", [])
+                if d_list:
+                    d_list[0]["speakerKo"] = ov_ko
+                    d_list[0]["speakerEn"] = ov_en
+                else:
+                    img_item["dialogues"] = [{
+                        "speakerKo": ov_ko,
+                        "speakerEn": ov_en,
+                        "textKo": img_item.get("narrationKo", ""),
+                        "textEn": img_item.get("narrationEn", ""),
+                    }]
+
+        # We partition each episode into 9 comprehensive narrative sections
         # + 1 interactive Fate Choice section inserted after section 6 (the climax turning point) = 10 Picture-Book pages!
         n_sections = 9
-        ko_buckets = partition_paragraphs(ko_paras, n_sections)
-        en_buckets = partition_paragraphs(en_paras, n_sections)
         cut_buckets: list[list[dict]] = [[] for _ in range(n_sections)]
         for i, img_item in enumerate(narrative_imgs):
-            if "panelIndex" in img_item:
-                p = min(n_sections - 1, max(0, int(img_item["panelIndex"])))
-            else:
-                p = min(n_sections - 1, int(i * n_sections / max(1, len(narrative_imgs))))
+            p = min(n_sections - 1, int(i * n_sections / max(1, len(narrative_imgs))))
             cut_buckets[p].append(img_item)
 
         ep_script_lines: list[dict] = []
@@ -735,12 +744,11 @@ def build_all_episodes():
 
         for sec_idx in range(n_sections):
             page_counter += 1
-            sec_ko_paras = ko_buckets[sec_idx]
-            sec_en_paras = en_buckets[sec_idx]
             sec_cuts = cut_buckets[sec_idx]
 
-            full_text_ko = "\n\n".join(sec_ko_paras)
-            full_text_en = "\n\n".join(sec_en_paras)
+            # Build section text directly from `sec_cuts` so `line.text` and `line.subCuts` match 100.0% 1:1!
+            full_text_ko = "\n\n".join(sc.get("narrationKo", "").strip() for sc in sec_cuts if sc.get("narrationKo", "").strip())
+            full_text_en = "\n\n".join(sc.get("narrationEn", "").strip() for sc in sec_cuts if sc.get("narrationEn", "").strip())
 
             # Gather manifest characters from the cuts in this bucket
             manifest_chars = []
@@ -980,6 +988,9 @@ export interface KadanRpgNovelScriptLine {
 }
 
 export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> = """
+
+    with open(MANIFEST_PATH, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, ensure_ascii=False, indent=2)
 
     json_body = json.dumps(all_scripts, indent=2, ensure_ascii=False)
     # Convert top-level numeric string keys "1": [ to 1: [

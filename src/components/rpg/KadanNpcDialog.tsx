@@ -240,18 +240,21 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     const novelScript = KADAN_RPG_NOVEL_SCRIPTS[event.chapterNumber];
     if (novelScript && novelScript.length > 0) {
       if (viewGranularity === 'all_cuts') {
-        // Expand all subCuts into individual Picture-Book pages (~50 pages per episode)
+        // Expand all subCuts into individual 1:1 Cut pages (Cut #1..#N in exact scene_01..scene_NN order)
+        // and place the interactive Fate Choice right after the final narrative cut before battle so Cut #k === Step #k 1:1!
         const expanded: ConversationLine[] = [];
+        const deferredChoices: ConversationLine[] = [];
         let lastCutImageUrl = `/images/webtoon/episode_${String(event.chapterNumber).padStart(2, '0')}/scene_01.webp`;
 
         novelScript.forEach((line) => {
           if (line.speaker === 'choice' || !line.subCuts || line.subCuts.length === 0) {
-            expanded.push({
+            deferredChoices.push({
               ...line,
               cardId: line.cardId ?? event.speakerCardId,
               name: isEn ? (line.nameEn || line.name) : line.name,
               text: isEn ? (line.textEn || line.text) : line.text,
               sceneImageUrl: lastCutImageUrl || line.sceneImageUrl,
+              subCuts: [],
             });
           } else {
             line.subCuts.forEach((cut, cIdx) => {
@@ -271,31 +274,55 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                   (cut.speakerEn && ch.nameEn.toLowerCase() === cut.speakerEn.toLowerCase())
               );
               const cutCardId = matchedChar?.cardId ?? line.cardId ?? event.speakerCardId;
+              const cutSpeakerType: ConversationLine['speaker'] =
+                cut.speakerKo && cut.speakerKo !== '내레이션'
+                  ? cut.speakerKo === '카단'
+                    ? 'kadan'
+                    : 'speaker'
+                  : 'narrator';
+
+              const cutCleanKo = (cut.narrationKo || '').replace(/\s+/g, ' ').trim();
+              const cutCleanEn = (cut.narrationEn || '').replace(/\s+/g, ' ').trim();
+              const cutSnippetKo = cutCleanKo.length > 42 ? `${cutCleanKo.slice(0, 42)}…` : cutCleanKo;
+              const cutSnippetEn = cutCleanEn.length > 52 ? `${cutCleanEn.slice(0, 52)}…` : cutCleanEn;
+
+              const cutCharacters = line.sceneCharacters?.map((ch) => ({
+                ...ch,
+                isSpeaker: matchedChar ? ch.cardId === matchedChar.cardId : ch.isSpeaker,
+              }));
 
               expanded.push({
-                speaker: line.speaker,
+                speaker: cutSpeakerType,
                 cardId: cutCardId,
                 name: cutSpeakerName,
                 nameEn: cut.speakerEn || line.nameEn,
                 text: cutText,
                 textEn: cut.narrationEn,
                 sceneNumber: cut.cutNumber,
-                sceneTitleKo: `[제${event.chapterNumber}화 · 세부 컷 #${cut.cutNumber}] ${line.sceneTitleKo?.replace(/^\[[^\]]+\]\s*/, '') || ''}`,
-                sceneTitleEn: `[EP.${event.chapterNumber} · Cut #${cut.cutNumber}] ${line.sceneTitleEn?.replace(/^\[[^\]]+\]\s*/, '') || ''}`,
-                sceneExplanationKo: line.sceneExplanationKo,
-                sceneExplanationEn: line.sceneExplanationEn,
+                sceneTitleKo: `[제${event.chapterNumber}화 · 컷 #${cut.cutNumber}] ${cutSnippetKo}`,
+                sceneTitleEn: `[EP.${event.chapterNumber} · Cut #${cut.cutNumber}] ${cutSnippetEn}`,
+                sceneExplanationKo: cIdx === 0 ? line.sceneExplanationKo : undefined,
+                sceneExplanationEn: cIdx === 0 ? line.sceneExplanationEn : undefined,
                 dialogueQuoteKo: cutDialog || (cIdx === 0 ? line.dialogueQuoteKo : ''),
                 dialogueQuoteEn: cutDialog || (cIdx === 0 ? line.dialogueQuoteEn : ''),
                 sceneImageUrl: cut.imageUrl || line.sceneImageUrl,
-                sceneCharacters: line.sceneCharacters,
-                subCuts: line.subCuts,
+                sceneCharacters: cutCharacters,
+                subCuts: [],
               });
             });
           }
         });
+
+        deferredChoices.forEach((choiceItem) => {
+          expanded.push({
+            ...choiceItem,
+            sceneImageUrl: lastCutImageUrl || choiceItem.sceneImageUrl,
+          });
+        });
+
         return expanded.map((item, idx) => ({
           ...item,
-          sceneNumber: idx + 1,
+          sceneNumber: item.sceneNumber ?? idx + 1,
           totalScenes: expanded.length,
         }));
       }
@@ -980,6 +1007,18 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                   </span>
                 )}
               </div>
+              {viewGranularity === 'storybook' && activeSubCut && (
+                <div className="mb-3 rounded-none border border-amber-500/50 bg-amber-950/30 px-3 py-2 text-xs sm:text-sm font-mono text-amber-100 leading-relaxed">
+                  <span className="mr-1.5 inline-block rounded-sm bg-amber-400 px-1.5 py-0.5 text-[10px] font-black text-stone-950">
+                    {isEn ? `CUT #${activeSubCut.cutNumber}` : `컷 #${activeSubCut.cutNumber}`}
+                  </span>
+                  <span className="font-bold">
+                    {isEn
+                      ? activeSubCut.narrationEn || activeSubCut.narrationKo
+                      : activeSubCut.narrationKo || activeSubCut.narrationEn}
+                  </span>
+                </div>
+              )}
               <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
                 {renderFormattedNovelText(displayedNovelText || '')}
               </div>

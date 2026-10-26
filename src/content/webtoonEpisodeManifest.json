@@ -3878,8 +3878,8 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "엘리아나",
-            "speakerEn": "Eliana",
+            "speakerKo": "가웨인",
+            "speakerEn": "Gawain",
             "textKo": "“조심해라, 모두 무기를 쥐어라. 이 안개는 단순한 기후의 조화가 아니다.”",
             "textEn": "Loose shale clattered down into the void, echoing faintly against the rock walls below. \"Steady, everyone. Draw your steel,\"",
             "bubbleType": "speech",
@@ -4419,8 +4419,8 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "벨페고르",
-            "speakerEn": "Belphegor",
+            "speakerKo": "가웨인",
+            "speakerEn": "Gawain",
             "textKo": "“천장이다! 흩어져라!” 가웨인의 일갈과 동시에 거대한 폭음이 터졌다. 천장의 대들보를 부수며 낙하한 벨페고르가 흑요석 주먹으로 신전 바닥을 내리찍었다. 돌바닥이 거미줄처럼 갈라지며 파편이 사방으로 튀었다.",
             "textEn": "\"Above us! Scatter!\" A deafening roar split the night. Shattering the ceiling rafters, Belphegor slammed his obsidian fist into the floor, fracturing the flagstones into radial spiderwebs.",
             "bubbleType": "shout",
@@ -4530,8 +4530,8 @@
         "background": "a foggy gothic memorial graveyard and crypt",
         "dialogues": [
           {
-            "speakerKo": "로비냐드",
-            "speakerEn": "Robinyard",
+            "speakerKo": "메두사 고르고",
+            "speakerEn": "Medusa Gorgo",
             "textKo": "“어리석은 날파리들이 제 발로 무덤을 찾아왔구나.” 고르고의 가느다란 손톱 끝에서 발사된 칠흑의 마나 실가닥들이 허공을 수놓더니, 신전 벽면에 드리워진 로비냐드의 그림자를 바위에 단단히 꿰매 버렸다.",
             "textEn": "\"Insolent insects marching willfully into their own tomb!\" Black filaments of concentrated shadow mana erupted from Gorgo's talons, impaling Robinyard's shadow upon the stone wall behind him.",
             "bubbleType": "speech",
@@ -4681,8 +4681,8 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "그림리",
-            "speakerEn": "Grimli",
+            "speakerKo": "벨페고르",
+            "speakerEn": "Belphegor",
             "textKo": "“크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”",
             "textEn": "\"Fools! Your hearts shall nourish the completion of my obsidian carapace!\"",
             "bubbleType": "shout",
@@ -5378,8 +5378,8 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "로비냐드",
-            "speakerEn": "Robinyard",
+            "speakerKo": "그림리",
+            "speakerEn": "Grimli",
             "textKo": "“이 방울 소리가 울릴 때마다 네가 우리 곁에서 줄타기를 하고 있다고 믿겠다. 로비냐드... 네 몫까지 다해서 그 아이를 천하제일의 의로운 방패로 길러내겠다.”",
             "textEn": "\"Every time this bell chimes in battle, I shall know you are dancing beside us. Robinyard... we shall forge that boy into the realm's greatest shield.\" \"We are six now, but Robinyard walks forever within our breath,\"",
             "bubbleType": "thought",
@@ -6929,8 +6929,8 @@
         "background": "a snowbound Lighthaven frontier under a violent blue-white blizzard",
         "dialogues": [
           {
-            "speakerKo": "에일라",
-            "speakerEn": "Aila",
+            "speakerKo": "그림리",
+            "speakerEn": "Grimli",
             "textKo": "“찾았다... 드디어 찾았어. 알렉산다르의 아들을!” 그림리가 쇠망치를 바닥에 떨어뜨리며 굵은 눈물을 쏟아냈다. 망치 끝의 방울이 맑게 울렸다. 에일라는 눈밭 위에 무릎을 꿇고 어린 카단의 어깨를 부둥켜안았다.",
             "textEn": "\"We found him... by the heavens, we have found Aleksandar's boy!\" Grimli let his maul strike the earth as thick tears cut through the soot on his beard. The bell tinkled clearly. Aila dropped to her knees in the drift, pulling the bewildered Kadan into a fierce embrace.",
             "bubbleType": "shout",
@@ -8422,8 +8422,8 @@
         "background": "a subterranean cavern with ancient chains and golden rune circles",
         "dialogues": [
           {
-            "speakerKo": "론돌",
-            "speakerEn": "Rondol",
+            "speakerKo": "그림리",
+            "speakerEn": "Grimli",
             "textKo": "“로비냐드의 원수를 갚을 날이 왔다, 이 마녀 녀석!” 그림리의 포효와 함께 뱃사공 론돌이 지하수를 소용돌이치듯 끌어올려 고르고를 감싼 암흑 연막을 단숨에 씻어냈다.",
             "textEn": "\"Robinyard's vengeance is at hand, foul witch!\" Rondol swept subterranean water upward in a surging wave, stripping away Gorgo's toxic mist.",
             "bubbleType": "shout",
@@ -28723,8 +28723,8 @@
         "background": "a grand palace court with towering arches and throne room",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "내레이션",
+            "speakerEn": "Narration",
             "textKo": "“이그니스! 황궁의 은혜를 배신한 대가를 반드시 치르게 될 것이다!”",
             "textEn": "\"Ignis! You shall pay dearly for betraying the grace of the throne!\"",
             "bubbleType": "shout",
@@ -44549,8 +44549,8 @@
         "background": "a towering dragon precipice among crags",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "카단이 망토 깃을 세우며 말했다. “공기 중에 미약한 마비 독이 퍼져 있다. 별 호흡으로 마나를 정화하며 전진해라.” 실리아가 조용히 고개를 끄덕였다.",
             "textEn": "\"Citizens of the empire!",
             "bubbleType": "speech",
@@ -47986,8 +47986,8 @@
         "background": "a grand palace court with towering arches and throne room",
         "dialogues": [
           {
-            "speakerKo": "이그니스",
-            "speakerEn": "Ignis",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "카단은 이그니스와 함께 모닥불 불빛에 칼날을 비춰보며 조용히 마음을 가다듬었다. “내일 새벽, 우리는 황궁의 옥좌에 진정한 백성들의 깃발을 꽂을 것이다.” 이그니스가 고개를 끄덕이며 미소를 지었다.",
             "textEn": "\"We shall live through the storm together, Ignis. When the dawn breaks, we will look upon a realm where children smile without fear.\"",
             "bubbleType": "speech",
@@ -63987,8 +63987,8 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "알렉산다르",
-            "speakerEn": "Aleksandar",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“우리의 등 뒤에는 수만 명의 생명이 걸려 있다. 어떤 악령의 속삭임도 우리를 멈추지 못한다.”",
             "textEn": "Back to back, the two companions advanced across the fog-shrouded stone bridge.",
             "bubbleType": "speech",
@@ -65059,8 +65059,8 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "데스나이트 아르투스",
-            "speakerEn": "Death Knight Artus",
+            "speakerKo": "실리아",
+            "speakerEn": "Celia",
             "textKo": "실리아가 지팡이를 거두며 나지막이 말했다. “너 역시 루시안의 탐욕에 희생된 꼭두각시였을 뿐이구나.” 아르투스는 문을 닫아걸고 마지막 어둠 속으로 숨어들었다.",
             "textEn": "Before the shattered portal lay the inner sanctuary of the Altar of Ruin, where Lucian channeled the final pages of the Nine Shadows Codex.",
             "bubbleType": "speech",
@@ -66628,8 +66628,8 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "카단이 굳게 주먹을 쥐며 말했다. “그 불꽃은 지금도 우리와 함께 호흡하고 있다. 세 개의 불꽃과 방패가 마침내 하나가 되었다.” 실리아 역시 녹옥 지팡이를 고쳐 쥐며 고개를 끄덕였다.",
             "textEn": "Clenching his fist, Kadan looked upon the light. \"Ignis breathes alongside us even now.",
             "bubbleType": "speech",
@@ -67965,8 +67965,8 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "카단이 방패의 무게중심을 낮추며 경고했다. “저들은 이미 이성을 잃은 사령의 꼭두각시다. 망설임 없이 일격에 무력화시켜야 한다.” 실리아가 바람의 장막을 펼치며 고개를 끄덕였다.",
             "textEn": "\"Ordinary wind cannot pierce their lines!",
             "bubbleType": "speech",
@@ -72470,8 +72470,8 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "이그니스",
-            "speakerEn": "Ignis",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“보고 있는가, 이그니스. 스승님, 숙부님... 우리가 마침내 약속을 지켜냈습니다.”",
             "textEn": "Cilia leaned against Kadan's shoulder, tears shimmering in her eyes.",
             "bubbleType": "thought",
