@@ -253,32 +253,32 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <header className="grid grid-cols-1 gap-4 sm:gap-6 items-stretch w-full pt-12 lg:pt-2">
         <div className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]">
           <div className="flex flex-col gap-5 p-4 sm:gap-6 sm:p-6">
-            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[rgba(15,0,0,0.12)] pb-5">
-              <div>
-                <p className="mb-2 text-sm text-[#646262]">{language === 'ko' ? '눈히어로.com' : 'SNSHero.com'} / {language === 'ko' ? '덱 미리보기' : 'Deck Preview'}</p>
-                <h1 id="main-logo" className="leading-tight tracking-tight flex items-center">
-                  <a
-                    href="/"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNavigate('home');
-                      window.history.pushState({ view: 'home' }, '', '/');
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="inline-flex items-center cursor-pointer bg-transparent transition-opacity hover:opacity-85"
-                    aria-label={language === 'ko' ? '눈히어로.com 홈으로 이동' : 'Go to SNSHero.com Home'}
-                  >
-                    <img
-                      src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
-                      alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}
-                      className="h-14 sm:h-20 w-auto object-contain bg-transparent"
-                    />
-                  </a>
-                  <span className="sr-only">{language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}</span>
-                </h1>
+            <div className="flex flex-col items-center gap-3 border-b border-[rgba(15,0,0,0.12)] pb-5">
+              <div className="w-full flex items-center justify-between gap-3">
+                <p className="text-sm text-[#646262]">{language === 'ko' ? '눈히어로.com' : 'SNSHero.com'} / {language === 'ko' ? '덱 미리보기' : 'Deck Preview'}</p>
+                <span className="text-sm text-[#646262]">{language === 'ko' ? '티어: BRONZE I' : 'TIER: BRONZE I'}</span>
               </div>
-              <span className="text-sm text-[#646262]">{language === 'ko' ? '티어: BRONZE I' : 'TIER: BRONZE I'}</span>
+              <h1 id="main-logo" className="w-full leading-tight tracking-tight flex items-center justify-center py-1">
+                <a
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNavigate('home');
+                    window.history.pushState({ view: 'home' }, '', '/');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="inline-flex items-center justify-center cursor-pointer bg-transparent transition-opacity hover:opacity-85 mx-auto"
+                  aria-label={language === 'ko' ? '눈히어로.com 홈으로 이동' : 'Go to SNSHero.com Home'}
+                >
+                  <img
+                    src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
+                    alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}
+                    className="h-28 sm:h-36 md:h-44 w-auto max-w-full object-contain bg-transparent mx-auto"
+                  />
+                </a>
+                <span className="sr-only">{language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}</span>
+              </h1>
             </div>
             {/* SCR-01: 대표 덱 종합 전투력(CP) 및 연승 불꽃 뱃지 HUD */}
             <div className="w-full flex items-start sm:items-center justify-between gap-3 font-mono select-none">
