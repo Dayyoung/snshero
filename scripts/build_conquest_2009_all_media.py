@@ -281,14 +281,28 @@ def save_3x3_master_sheet(cells_9: list[Image.Image], out_png: Path):
     sheet.save(out_png, "PNG", optimize=True)
 
 
+def compose_diptych_16x9(left_cell: Image.Image, right_cell: Image.Image) -> Image.Image:
+    """Combines two 800x450 panels side-by-side into a single 800x450 16:9 action diptych."""
+    canvas = Image.new("RGB", (WIDTH, HEIGHT), (12, 10, 14))
+    half_w = (WIDTH - 4) // 2  # 398px each with 4px center gutter
+    l_crop = left_cell.crop((int(WIDTH * 0.14), 0, int(WIDTH * 0.86), HEIGHT)).resize((half_w, HEIGHT), Image.Resampling.LANCZOS)
+    r_crop = right_cell.crop((int(WIDTH * 0.14), 0, int(WIDTH * 0.86), HEIGHT)).resize((half_w, HEIGHT), Image.Resampling.LANCZOS)
+    canvas.paste(l_crop, (0, 0))
+    canvas.paste(r_crop, (half_w + 4, 0))
+    return canvas
+
+
 # Exact scene indices prompted for sheets where 9 panels span a specific scene list
 EXACT_SHEET_SCENES: dict[tuple[int, int], list[int]] = {
-    (2, 5): [37, 38, 39, 40, 41, 42, 44, 46, 47],
-    (3, 5): [37, 39, 41, 43, 45, 47, 49, 51, 52],
+    (2, 5): [37, 38, 39, 40, 41, 42, 43, 44, 46],
+    (3, 2): [10, 11, 13, 15, 17, 18, 19, 20, 21],
+    (3, 3): [22, 23, 24, 0, 25, 26, 27, 0, 47],
+    (3, 4): [28, 29, 30, 31, 32, 33, 34, 35, 36],
+    (3, 5): [37, 38, 39, 40, 41, 43, 45, 48, 51],
     (4, 5): [37, 38, 39, 40, 41, 42, 44, 45, 46],
-    (5, 5): [37, 39, 41, 43, 45, 47, 49, 50, 51],
-    (6, 5): [37, 39, 41, 43, 45, 47, 49, 51, 52],
-    (7, 5): [37, 39, 41, 42, 44, 45, 47, 49, 51],
+    (5, 5): [37, 38, 39, 40, 41, 42, 43, 44, 45],
+    (6, 5): [37, 38, 40, 41, 42, 43, 44, 45, 46],
+    (7, 5): [38, 40, 41, 42, 44, 45, 48, 49, 51],
     (8, 5): [37, 39, 40, 41, 42, 43, 44, 45, 46],
     (9, 5): [37, 39, 40, 41, 42, 43, 44, 46, 48],
     (10, 3): [19, 21, 22, 23, 24, 25, 26, 27, 28],
@@ -301,7 +315,7 @@ EXACT_SHEET_SCENES: dict[tuple[int, int], list[int]] = {
     (13, 5): [37, 38, 39, 40, 41, 42, 43, 44, 46],
     (14, 5): [37, 38, 39, 40, 41, 42, 43, 45, 47],
     (15, 5): [37, 39, 40, 41, 42, 43, 45, 47, 48],
-    (16, 5): [37, 38, 39, 41, 42, 44, 45, 46, 48],
+    (16, 5): [37, 38, 39, 41, 43, 44, 45, 46, 47],
     (17, 5): [37, 38, 39, 40, 41, 42, 43, 44, 45],
     (18, 2): [10, 11, 13, 14, 15, 16, 17, 18, 19],
     (18, 3): [20, 22, 23, 24, 25, 26, 27, 28, 29],
@@ -335,7 +349,7 @@ EXACT_SHEET_SCENES: dict[tuple[int, int], list[int]] = {
     (27, 2): [10, 11, 13, 14, 15, 17, 18, 19, 20],
     (27, 3): [21, 22, 24, 25, 27, 29, 30, 31, 32],
     (27, 4): [33, 34, 35, 36, 37, 38, 39, 40, 41],
-    (27, 5): [42, 43, 45, 46, 47, 48, 49, 50, 50],
+    (27, 5): [42, 43, 44, 45, 46, 47, 48, 49, 50],
     (28, 2): [10, 11, 12, 13, 14, 15, 16, 17, 18],
     (28, 3): [19, 21, 22, 23, 24, 25, 28, 29, 30],
     (28, 4): [31, 33, 34, 35, 36, 37, 38, 40, 41],
@@ -343,7 +357,7 @@ EXACT_SHEET_SCENES: dict[tuple[int, int], list[int]] = {
     (29, 2): [10, 12, 14, 16, 18, 19, 20, 21, 22],
     (29, 3): [23, 24, 25, 26, 27, 28, 29, 32, 33],
     (29, 4): [34, 36, 37, 38, 39, 41, 42, 43, 44],
-    (29, 5): [45, 46, 47, 48, 49, 50, 51, 52, 52],
+    (29, 5): [44, 45, 46, 47, 48, 49, 50, 51, 52],
     (30, 2): [10, 12, 13, 14, 15, 16, 17, 18, 20],
     (30, 3): [21, 22, 24, 25, 26, 27, 28, 29, 31],
     (30, 4): [32, 33, 34, 35, 36, 37, 38, 39, 40],
@@ -355,11 +369,11 @@ EXACT_SHEET_SCENES: dict[tuple[int, int], list[int]] = {
     (32, 2): [10, 12, 13, 14, 15, 16, 18, 20, 21],
     (32, 3): [22, 24, 25, 26, 27, 28, 29, 31, 32],
     (32, 4): [34, 36, 38, 39, 40, 41, 42, 43, 44],
-    (32, 5): [45, 46, 47, 48, 49, 50, 50, 50, 50],
+    (32, 5): [42, 43, 44, 45, 46, 47, 48, 49, 50],
     (33, 2): [10, 11, 13, 14, 16, 17, 18, 19, 20],
     (33, 3): [21, 22, 23, 24, 26, 27, 28, 29, 30],
     (33, 4): [31, 32, 33, 35, 37, 38, 39, 41, 42],
-    (33, 5): [43, 44, 45, 46, 47, 48, 49, 50, 50],
+    (33, 5): [42, 43, 44, 45, 46, 47, 48, 49, 50],
     (34, 2): [10, 11, 13, 14, 15, 16, 17, 18, 20],
     (34, 3): [21, 22, 23, 24, 26, 27, 28, 30, 31],
     (34, 4): [33, 34, 35, 36, 37, 38, 40, 41, 42],
@@ -371,11 +385,11 @@ EXACT_SHEET_SCENES: dict[tuple[int, int], list[int]] = {
     (36, 2): [10, 11, 13, 14, 15, 16, 17, 19, 20],
     (36, 3): [21, 23, 24, 25, 26, 27, 28, 29, 30],
     (36, 4): [31, 32, 33, 34, 35, 36, 37, 38, 39],
-    (36, 5): [40, 41, 42, 43, 44, 45, 46, 47, 47],
+    (36, 5): [39, 40, 41, 42, 43, 44, 45, 46, 47],
     (37, 2): [10, 11, 12, 13, 14, 15, 17, 19, 20],
     (37, 3): [21, 23, 24, 25, 26, 27, 28, 29, 30],
     (37, 4): [31, 32, 33, 34, 36, 38, 39, 40, 41],
-    (37, 5): [42, 43, 44, 45, 46, 47, 48, 48, 48],
+    (37, 5): [40, 41, 42, 43, 44, 45, 46, 47, 48],
     (38, 2): [10, 11, 12, 13, 15, 16, 17, 19, 20],
     (38, 3): [21, 22, 23, 24, 25, 27, 28, 29, 31],
     (38, 4): [32, 33, 34, 35, 37, 38, 39, 41, 42],
@@ -405,23 +419,22 @@ def build_distinct_anime_pool_for_episode(ep_num: int, ep_data: dict, n_narrativ
     sb_cells = extract_3x3_cells(sb_sheet_path)
 
     if ep_num == 1:
-        # Episode 1 has 6 bespoke 3x3 webtoon storyboard sheets (sheet_01..06.png) mapped 1:1 to Scenes 01..49!
-        raw_ep01_dir = WEBTOON_DIR / "raw_ep01_sheets"
-        if (raw_ep01_dir / "sheet_01.png").exists():
-            s_panels = [extract_3x3_cells(raw_ep01_dir / f"sheet_{i:02d}.png") for i in range(1, 7)]
+        # Episode 1 has 6 bespoke 3x3 webtoon storyboard sheets (ep01_sheet_01..06.png) mapped 1:1 to Scenes 01..50!
+        if all((FULL_SHEETS_DIR / f"ep01_sheet_{i:02d}.png").exists() for i in range(1, 7)):
+            s_panels = [extract_3x3_cells(FULL_SHEETS_DIR / f"ep01_sheet_{i:02d}.png") for i in range(1, 7)]
             ordered_cuts: list[Image.Image] = []
-            # Scenes 01..09 -> sheet_01[0..8]
+            # Scenes 01..09 -> ep01_sheet_01[0..8]
             ordered_cuts.extend(s_panels[0][:9])
-            # Scenes 10..18 -> sheet_02[0..8]
+            # Scenes 10..18 -> ep01_sheet_02[0..8]
             ordered_cuts.extend(s_panels[1][:9])
-            # Scenes 19..27 -> sheet_03[0..8]
+            # Scenes 19..27 -> ep01_sheet_03[0..8]
             ordered_cuts.extend(s_panels[2][:9])
-            # Scenes 28..36 -> sheet_04[0..8]
+            # Scenes 28..36 -> ep01_sheet_04[0..8]
             ordered_cuts.extend(s_panels[3][:9])
-            # Scenes 37..45 -> sheet_05[0..8]
+            # Scenes 37..45 -> ep01_sheet_05[0..8]
             ordered_cuts.extend(s_panels[4][:9])
-            # Scenes 46..50 -> sheet_06[1..5]
-            ordered_cuts.extend(s_panels[5][1:6])
+            # Scenes 46..50 -> ep01_sheet_06[0..4]
+            ordered_cuts.extend(s_panels[5][:5])
             return ordered_cuts[:n_narrative], {
                 "pureAiSheets": needed_sheets,
                 "totalSheets": needed_sheets,
@@ -473,6 +486,10 @@ def build_distinct_anime_pool_for_episode(ep_num: int, ep_data: dict, n_narrativ
                 target_scenes = [default_start + i for i in range(9)]
 
             for i, cell in enumerate(cells_s[:9]):
+                if target_scenes[i] <= 0:
+                    continue
+                if (ep_num, s_idx) == (3, 3) and i == 2:
+                    cell = compose_diptych_16x9(cells_s[2], cells_s[3])
                 sc = min(n_narrative, max(1, target_scenes[i]))
                 while sc in scene_map and sc + 1 <= n_narrative:
                     sc += 1
@@ -583,6 +600,10 @@ def build_distinct_liveaction_pool_for_episode(ep_num: int, n_narrative: int) ->
                     target_scenes = [default_start + i for i in range(9)]
 
                 for i, cell in enumerate(cells_s[:9]):
+                    if target_scenes[i] <= 0:
+                        continue
+                    if (ep_num, s_idx) == (3, 3) and i == 2:
+                        cell = compose_diptych_16x9(cells_s[2], cells_s[3])
                     sc = min(n_narrative, max(1, target_scenes[i]))
                     while sc in scene_map and sc + 1 <= n_narrative:
                         sc += 1

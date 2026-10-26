@@ -269,7 +269,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
     const epPad = pad2(epNum);
     const scPad = pad2(sceneIdx);
-    const cacheBust = '?v=conquest2009_v9';
+    const cacheBust = '?v=conquest2009_v10';
     const epData = WEBTOON_DATA[String(epNum)];
     const imgInfo = epData?.images?.find(img => img.index === sceneIdx);
     if (imgInfo?.type === 'ending_promo') {
@@ -1734,7 +1734,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         sceneIndex={scNum}
                         totalScenes={totalEpisodeScenes}
                         imgUrl={imgUrl}
-                        localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v9` : undefined)}
+                        localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v10` : undefined)}
                         isKeyClimax={imgInfo?.isKeyClimax}
                         narrationText={sentenceText || ''}
                         dialogues={imgInfo?.dialogues}
@@ -1801,7 +1801,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                           sceneIndex={scNum}
                           totalScenes={totalEpisodeScenes}
                           imgUrl={imgUrl}
-                          localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v9` : undefined)}
+                          localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v10` : undefined)}
                           isKeyClimax={imgInfo?.isKeyClimax}
                           narrationText={sentenceText || ''}
                           dialogues={imgInfo?.dialogues}

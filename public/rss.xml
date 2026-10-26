@@ -9,7 +9,7 @@
     <link>https://snshero.com/reddit</link>
     <description>실시간 구글 뉴스(Google News US Edition) 기반 신속하고 정확한 글로벌 뉴스 및 인공지능 요약 브리핑 - SNSHero News</description>
     <language>en-US</language>
-    <lastBuildDate>Mon, 26 Oct 2026 22:09:09 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 26 Oct 2026 22:41:17 GMT</lastBuildDate>
     <atom:link href="https://snshero.com/news-feed.xml" rel="self" type="application/rss+xml" />
     <image>
       <url>https://snshero.com/logo.jpg</url>
@@ -17,9 +17,209 @@
       <link>https://snshero.com/reddit</link>
     </image>
     <item>
+      <title><![CDATA[Trump Unveils White House Super Intelligence Force Co-Chaired by DNI Jay Clayton and FTC Leadership]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793053020000_0</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793053020000_0</guid>
+      <pubDate>Mon, 26 Oct 2026 22:17:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_semafor]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Semafor reports on President Donald Trump establishing the Super Intelligence Force to oversee national AI policy and sovereign compute infrastructure, directing cabinet members to complete a 120-day federal risk evaluation.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.semafor.com/wp-content/uploads/2026/10/trump-super-intelligence-force.jpg" alt="Trump Unveils White House Super Intelligence Force Co-Chaired by DNI Jay Clayton and FTC Leadership" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Semafor reports on President Donald Trump establishing the Super Intelligence Force to oversee national AI policy and sovereign compute infrastructure, directing cabinet members to complete a 120-day federal risk evaluation.</p>
+          <p><small>출처 및 원문: <a href="https://www.semafor.com/article/10/04/2026/trump-unveils-ai-task-force">semafor.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.semafor.com/wp-content/uploads/2026/10/trump-super-intelligence-force.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.semafor.com/wp-content/uploads/2026/10/trump-super-intelligence-force.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Trump Unveils White House Super Intelligence Force Co-Chaired by DNI Jay Clayton and FTC Leadership]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[SpaceX Q3 AI Revenues Reach $7.6B as SpaceXSI Division Overtakes Starlink in Total Sales]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793052960000_1</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793052960000_1</guid>
+      <pubDate>Mon, 26 Oct 2026 22:16:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_payloadspace]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Payload Space highlights SpaceX financial disclosures indicating that its newly branded SpaceXSI division generated $7.6 billion in third-quarter revenue, surpassing Starlink connectivity sales as enterprise compute demand surges.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://payloadspace.com/wp-content/uploads/2026/10/spacex-ai-revenue-q3.jpg" alt="SpaceX Q3 AI Revenues Reach $7.6B as SpaceXSI Division Overtakes Starlink in Total Sales" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Payload Space highlights SpaceX financial disclosures indicating that its newly branded SpaceXSI division generated $7.6 billion in third-quarter revenue, surpassing Starlink connectivity sales as enterprise compute demand surges.</p>
+          <p><small>출처 및 원문: <a href="https://payloadspace.com/spacexs-ai-revenue-leads-q3-earnings/">payloadspace.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://payloadspace.com/wp-content/uploads/2026/10/spacex-ai-revenue-q3.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://payloadspace.com/wp-content/uploads/2026/10/spacex-ai-revenue-q3.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[SpaceX Q3 AI Revenues Reach $7.6B as SpaceXSI Division Overtakes Starlink in Total Sales]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[HPE and Deloitte Partner with NASA to Deploy Frontier Multi-Model AI Compute to Lunar Rover Systems]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793052900000_2</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793052900000_2</guid>
+      <pubDate>Mon, 26 Oct 2026 22:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_payloadspace]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Payload Space covers Hewlett Packard Enterprise and Deloitte collaborating with NASA to deploy the Spaceborne Computer-4, orchestrating multi-model autonomous telemetry and cyber-intrusion detection on lunar exploration rovers.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://payloadspace.com/wp-content/uploads/2026/10/hpe-spaceborne-computer-4.jpg" alt="HPE and Deloitte Partner with NASA to Deploy Frontier Multi-Model AI Compute to Lunar Rover Systems" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Payload Space covers Hewlett Packard Enterprise and Deloitte collaborating with NASA to deploy the Spaceborne Computer-4, orchestrating multi-model autonomous telemetry and cyber-intrusion detection on lunar exploration rovers.</p>
+          <p><small>출처 및 원문: <a href="https://payloadspace.com/hewlett-packard-enterprise-to-send-ai-compute-module-to-the-moon/">payloadspace.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://payloadspace.com/wp-content/uploads/2026/10/hpe-spaceborne-computer-4.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://payloadspace.com/wp-content/uploads/2026/10/hpe-spaceborne-computer-4.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[HPE and Deloitte Partner with NASA to Deploy Frontier Multi-Model AI Compute to Lunar Rover Systems]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Tech Leaders Sign Voluntary White House Super Intelligence Accord Outlining Operational Safeguards]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793052840000_3</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793052840000_3</guid>
+      <pubDate>Mon, 26 Oct 2026 22:14:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_nationalpost]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[National Post examines the voluntary White House Accord on Super Intelligence signed by frontier AI lab executives, outlining recommended auditing frameworks, red-teaming commitments, and federal reporting standards.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://nationalpost.com/wp-content/uploads/2026/09/trump-tech-executives-accord.jpg" alt="Tech Leaders Sign Voluntary White House Super Intelligence Accord Outlining Operational Safeguards" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>National Post examines the voluntary White House Accord on Super Intelligence signed by frontier AI lab executives, outlining recommended auditing frameworks, red-teaming commitments, and federal reporting standards.</p>
+          <p><small>출처 및 원문: <a href="https://nationalpost.com/news/world/trump-posts-super-intelligence-document-with-u-s-spelled-as-unites-states">nationalpost.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://nationalpost.com/wp-content/uploads/2026/09/trump-tech-executives-accord.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://nationalpost.com/wp-content/uploads/2026/09/trump-tech-executives-accord.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Tech Leaders Sign Voluntary White House Super Intelligence Accord Outlining Operational Safeguards]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Trump Elevates 'Super Intelligence' Rebrand in Bilateral Diplomacy and United Nations Address]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793052780000_4</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793052780000_4</guid>
+      <pubDate>Mon, 26 Oct 2026 22:13:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_scmp]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[South China Morning Post analyzes President Donald Trump advancing the 'Super Intelligence' rebrand on the global diplomatic stage, urging international counterparts to adopt the terminology while establishing federal diplomatic directives.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://cdn.i-scmp.com/sites/default/files/styles/1200x800/public/d8/images/canvas/2026/09/27/trump-superintelligence-diplomacy.jpg" alt="Trump Elevates &apos;Super Intelligence&apos; Rebrand in Bilateral Diplomacy and United Nations Address" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>South China Morning Post analyzes President Donald Trump advancing the 'Super Intelligence' rebrand on the global diplomatic stage, urging international counterparts to adopt the terminology while establishing federal diplomatic directives.</p>
+          <p><small>출처 및 원문: <a href="https://www.scmp.com/news/china/diplomacy/article/3368921/amid-many-thorny-issues-china-trump-pushes-rename-ai-superintelligence">scmp.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://cdn.i-scmp.com/sites/default/files/styles/1200x800/public/d8/images/canvas/2026/09/27/trump-superintelligence-diplomacy.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://cdn.i-scmp.com/sites/default/files/styles/1200x800/public/d8/images/canvas/2026/09/27/trump-superintelligence-diplomacy.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Trump Elevates 'Super Intelligence' Rebrand in Bilateral Diplomacy and United Nations Address]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Multi-Agent AI Orchestration: The 2026 Enterprise Architectural Guide to Autonomous Sub-Task Execution]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793052720000_5</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793052720000_5</guid>
+      <pubDate>Mon, 26 Oct 2026 22:12:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_nowtechlab]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[NowTech Lab publishes an architectural guide detailing how enterprise platforms resolve automation complexity by decomposing high-level workflows into discrete sub-tasks routed across specialized, supervised agent swarms.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://nowtechlab.com/images/blog/multi-agent-orchestration-2026.png" alt="Multi-Agent AI Orchestration: The 2026 Enterprise Architectural Guide to Autonomous Sub-Task Execution" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>NowTech Lab publishes an architectural guide detailing how enterprise platforms resolve automation complexity by decomposing high-level workflows into discrete sub-tasks routed across specialized, supervised agent swarms.</p>
+          <p><small>출처 및 원문: <a href="https://nowtechlab.com/blog/multi-agent-ai-orchestration-the-2026-enterprise-guide">nowtechlab.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://nowtechlab.com/images/blog/multi-agent-orchestration-2026.png" length="240000" type="image/jpeg" />
+      <media:content url="https://nowtechlab.com/images/blog/multi-agent-orchestration-2026.png" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Multi-Agent AI Orchestration: The 2026 Enterprise Architectural Guide to Autonomous Sub-Task Execution]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[AI Agents and Multi-Agent Orchestration: Designing Centralized Supervisor Frameworks in 2026]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793052660000_6</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793052660000_6</guid>
+      <pubDate>Mon, 26 Oct 2026 22:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_skillancy]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Skillancy outlines best practices for architecting multi-agent networks, exploring centralized supervisor agents, role-based tool authorization, and contextual token management for enterprise operational processes.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://skillancy.in/wp-content/uploads/2026/06/multi-agent-orchestration-guide.jpg" alt="AI Agents and Multi-Agent Orchestration: Designing Centralized Supervisor Frameworks in 2026" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Skillancy outlines best practices for architecting multi-agent networks, exploring centralized supervisor agents, role-based tool authorization, and contextual token management for enterprise operational processes.</p>
+          <p><small>출처 및 원문: <a href="https://skillancy.in/blog/ai-agents-multi-agent-orchestration-the-complete-2026-guide">skillancy.in</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://skillancy.in/wp-content/uploads/2026/06/multi-agent-orchestration-guide.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://skillancy.in/wp-content/uploads/2026/06/multi-agent-orchestration-guide.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[AI Agents and Multi-Agent Orchestration: Designing Centralized Supervisor Frameworks in 2026]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Cognizant and EBRD Establish Multi-Year Alliance to Modernize Enterprise Workflows via AI-Led Systems Integration]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793052600000_7</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793052600000_7</guid>
+      <pubDate>Mon, 26 Oct 2026 22:10:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_pressreleasehub]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[PA Media reports on Cognizant signing a comprehensive digital transformation agreement with the European Bank for Reconstruction and Development, implementing AI-native middleware and automated lifecycle engineering across banking systems.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://pressreleasehub.pa.media/images/cognizant-ebrd-deal.jpg" alt="Cognizant and EBRD Establish Multi-Year Alliance to Modernize Enterprise Workflows via AI-Led Systems Integration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>PA Media reports on Cognizant signing a comprehensive digital transformation agreement with the European Bank for Reconstruction and Development, implementing AI-native middleware and automated lifecycle engineering across banking systems.</p>
+          <p><small>출처 및 원문: <a href="https://pressreleasehub.pa.media/article/cognizant-and-ebrd-partner-to-accelerate-digital-transformation-through-ai-led-outcome-driven-services-87059.html">pressreleasehub.pa.media</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://pressreleasehub.pa.media/images/cognizant-ebrd-deal.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://pressreleasehub.pa.media/images/cognizant-ebrd-deal.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Cognizant and EBRD Establish Multi-Year Alliance to Modernize Enterprise Workflows via AI-Led Systems Integration]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Impinj Explores Physical AI and Enterprise Systems Integration: Bridging Real-Time Sensor Data to Agent Workflows]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793052540000_8</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793052540000_8</guid>
+      <pubDate>Mon, 26 Oct 2026 22:09:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_rfidjournal]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[RFID Journal details an architectural interview exploring how physical IoT infrastructure and real-time sensor streams integrate into autonomous enterprise agents to automate inventory replenishment and supply chain verification.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.rfidjournal.com/wp-content/uploads/2026/10/physical-ai-enterprise.jpg" alt="Impinj Explores Physical AI and Enterprise Systems Integration: Bridging Real-Time Sensor Data to Agent Workflows" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>RFID Journal details an architectural interview exploring how physical IoT infrastructure and real-time sensor streams integrate into autonomous enterprise agents to automate inventory replenishment and supply chain verification.</p>
+          <p><small>출처 및 원문: <a href="https://www.rfidjournal.com/news/impinjs-matt-branda-on-physical-intelligence-physical-ai-and-the-data-enterprise-ai-needs-the-rfid-journal-qa/225726/">rfidjournal.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.rfidjournal.com/wp-content/uploads/2026/10/physical-ai-enterprise.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.rfidjournal.com/wp-content/uploads/2026/10/physical-ai-enterprise.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Impinj Explores Physical AI and Enterprise Systems Integration: Bridging Real-Time Sensor Data to Agent Workflows]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Global Enterprise Perspectives on Super Intelligence: Examining Strategic Differences in AI Architecture]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793052480000_9</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793052480000_9</guid>
+      <pubDate>Mon, 26 Oct 2026 22:08:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_scmp]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[South China Morning Post compares American and international approaches to AI terminology and systems architecture, analyzing how differing definitions shape enterprise software investments, data sovereignty, and human-machine collaboration models.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://cdn.i-scmp.com/sites/default/files/styles/1200x800/public/d8/images/canvas/2026/10/11/super-intelligence-comparison.jpg" alt="Global Enterprise Perspectives on Super Intelligence: Examining Strategic Differences in AI Architecture" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>South China Morning Post compares American and international approaches to AI terminology and systems architecture, analyzing how differing definitions shape enterprise software investments, data sovereignty, and human-machine collaboration models.</p>
+          <p><small>출처 및 원문: <a href="https://www.scmp.com/tech/tech-trends/article/3370269/whats-name-what-china-and-trump-call-ai-reveals-how-they-see-its-future">scmp.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://cdn.i-scmp.com/sites/default/files/styles/1200x800/public/d8/images/canvas/2026/10/11/super-intelligence-comparison.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://cdn.i-scmp.com/sites/default/files/styles/1200x800/public/d8/images/canvas/2026/10/11/super-intelligence-comparison.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Global Enterprise Perspectives on Super Intelligence: Examining Strategic Differences in AI Architecture]]></media:title>
+      </media:content>
+    </item>
+    <item>
       <title><![CDATA[AI Czar Jay Clayton Characterizes Super Intelligence Force as Federal 'Cop on the Beat']]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793050080000_0</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793050080000_0</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793050080000_10</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793050080000_10</guid>
       <pubDate>Mon, 26 Oct 2026 21:28:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_meritalk]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -38,8 +238,8 @@
     </item>
     <item>
       <title><![CDATA[White House Calibrates Super Intelligence Order to Focus Security Scrutiny on Frontier Model Leaps]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793050020000_1</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793050020000_1</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793050020000_11</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793050020000_11</guid>
       <pubDate>Mon, 26 Oct 2026 21:27:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_cyberscoop]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -58,8 +258,8 @@
     </item>
     <item>
       <title><![CDATA[Executive Order 14434 Formally Inaugurates the Era of Super Intelligence Across Federal Agencies]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793049960000_2</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049960000_2</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793049960000_12</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049960000_12</guid>
       <pubDate>Mon, 26 Oct 2026 21:26:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_presidency]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -78,8 +278,8 @@
     </item>
     <item>
       <title><![CDATA[Federal Trade Commission Moves to Enforce Strict Liability on Autonomous AI Agents Under White House Accord]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793049900000_3</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049900000_3</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793049900000_13</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049900000_13</guid>
       <pubDate>Mon, 26 Oct 2026 21:25:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_reason]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -98,8 +298,8 @@
     </item>
     <item>
       <title><![CDATA[Elon Musk Refocuses Strategic Priority on SpaceXSI Following Department of Government Efficiency Exit]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793049840000_4</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049840000_4</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793049840000_14</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049840000_14</guid>
       <pubDate>Mon, 26 Oct 2026 21:24:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_mashable]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -118,8 +318,8 @@
     </item>
     <item>
       <title><![CDATA[Multi-Agent AI: How Hybrid Orchestration Drives Enterprise Systems Integration at Scale]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793049780000_5</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049780000_5</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793049780000_15</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049780000_15</guid>
       <pubDate>Mon, 26 Oct 2026 21:23:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_boost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -138,8 +338,8 @@
     </item>
     <item>
       <title><![CDATA[Real-World Case Studies of AI Agent Orchestration Across Production Enterprise Architectures in 2026]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793049720000_6</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049720000_6</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793049720000_16</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049720000_16</guid>
       <pubDate>Mon, 26 Oct 2026 21:22:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_viston]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -158,8 +358,8 @@
     </item>
     <item>
       <title><![CDATA[Cisco and Mannai Partner to Deploy Sovereign AI Infrastructure and Systems Integration in Qatar]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793049660000_7</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049660000_7</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793049660000_17</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049660000_17</guid>
       <pubDate>Mon, 26 Oct 2026 21:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_tahawultech]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -178,8 +378,8 @@
     </item>
     <item>
       <title><![CDATA[LG CNS Deploys Proprietary AgenticWorks Platform Across 30,000 Employees to Accelerate Enterprise SI AX]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793049600000_8</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049600000_8</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793049600000_18</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049600000_18</guid>
       <pubDate>Mon, 26 Oct 2026 21:20:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_finance]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -198,8 +398,8 @@
     </item>
     <item>
       <title><![CDATA[Korea Inc Confronts Data Governance and Systems Integration Hurdles in the AI Transformation Era]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793049540000_9</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049540000_9</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793049540000_19</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793049540000_19</guid>
       <pubDate>Mon, 26 Oct 2026 21:19:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_dbr]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -218,8 +418,8 @@
     </item>
     <item>
       <title><![CDATA[Donald Trump Launches 'Super Intelligence Force' to Direct Federal Compute Modernization]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793046300000_10</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046300000_10</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793046300000_20</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046300000_20</guid>
       <pubDate>Mon, 26 Oct 2026 20:25:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_gulfnews]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -238,8 +438,8 @@
     </item>
     <item>
       <title><![CDATA[SpaceX Capital Expenditures Accelerate Past $16B in Q3 Driven by SpaceXSI Compute Scaling]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793046240000_11</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046240000_11</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793046240000_21</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046240000_21</guid>
       <pubDate>Mon, 26 Oct 2026 20:24:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_businessinsider]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -258,8 +458,8 @@
     </item>
     <item>
       <title><![CDATA[White House Opens 2027 Super Intelligence Challenge for K-12 Academic Institutions Nationwide]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793046180000_12</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046180000_12</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793046180000_22</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046180000_22</guid>
       <pubDate>Mon, 26 Oct 2026 20:23:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_acceledesk]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -278,8 +478,8 @@
     </item>
     <item>
       <title><![CDATA[Trump DNI Jay Clayton Dismisses Calls for Regulatory Pause on Super Intelligence Development]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793046120000_13</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046120000_13</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793046120000_23</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046120000_23</guid>
       <pubDate>Mon, 26 Oct 2026 20:22:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_nz]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -298,8 +498,8 @@
     </item>
     <item>
       <title><![CDATA[SpaceX vs. IREN: Analyzing Capital Expenditure Economics and the SpaceXSI Infrastructure Moat]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793046060000_14</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046060000_14</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793046060000_24</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046060000_24</guid>
       <pubDate>Mon, 26 Oct 2026 20:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_benzinga]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -318,8 +518,8 @@
     </item>
     <item>
       <title><![CDATA[IBM Shifts from Systems Integration to Systems Orchestration in the Agentic AI Era]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793046000000_15</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046000000_15</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793046000000_25</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793046000000_25</guid>
       <pubDate>Mon, 26 Oct 2026 20:20:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -338,8 +538,8 @@
     </item>
     <item>
       <title><![CDATA[AI Agent Orchestration and Multi-Agent Systems in 2026: A Practical Architecture Playbook]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793045940000_16</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793045940000_16</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793045940000_26</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793045940000_26</guid>
       <pubDate>Mon, 26 Oct 2026 20:19:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_ai]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -358,8 +558,8 @@
     </item>
     <item>
       <title><![CDATA[AI-Native Companies in 2026: Architecting Systems Integration Models for Autonomous Scale]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793045880000_17</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793045880000_17</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793045880000_27</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793045880000_27</guid>
       <pubDate>Mon, 26 Oct 2026 20:18:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_uvik]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -378,8 +578,8 @@
     </item>
     <item>
       <title><![CDATA[The Supervisory Developer: How Agentic AI Redefines Enterprise Systems Integration Engineering]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793045820000_18</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793045820000_18</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793045820000_28</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793045820000_28</guid>
       <pubDate>Mon, 26 Oct 2026 20:17:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_vn]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -398,8 +598,8 @@
     </item>
     <item>
       <title><![CDATA[UK Finance Leaders Accelerate AI Transformation but Confront Systems Interoperability Roadblocks]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793045760000_19</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793045760000_19</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793045760000_29</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793045760000_29</guid>
       <pubDate>Mon, 26 Oct 2026 20:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_futurumgroup]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -418,8 +618,8 @@
     </item>
     <item>
       <title><![CDATA[State Department Orders 'Super Intelligence' Wording Across All Official Diplomatic Communications]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793042280000_20</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793042280000_20</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793042280000_30</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793042280000_30</guid>
       <pubDate>Mon, 26 Oct 2026 19:18:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_nextgov]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -438,8 +638,8 @@
     </item>
     <item>
       <title><![CDATA[Trump Unveils 'Super Intelligence Force' to Oversee Federal Compute Modernization and Security]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793042220000_21</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793042220000_21</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793042220000_31</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793042220000_31</guid>
       <pubDate>Mon, 26 Oct 2026 19:17:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_the-star]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -458,8 +658,8 @@
     </item>
     <item>
       <title><![CDATA[Inside the White House 'Super Intelligence' Accord: Governance Commitments and Tech Industry Accords]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793042160000_22</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793042160000_22</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793042160000_32</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793042160000_32</guid>
       <pubDate>Mon, 26 Oct 2026 19:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_cheddar]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -478,8 +678,8 @@
     </item>
     <item>
       <title><![CDATA[SpaceX Super Intelligence Launches 130-Company Global Partner Network for Enterprise Grok Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793042100000_23</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793042100000_23</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793042100000_33</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793042100000_33</guid>
       <pubDate>Mon, 26 Oct 2026 19:15:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_shashi]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -498,8 +698,8 @@
     </item>
     <item>
       <title><![CDATA[SpaceX Financial Disclosures Reveal Super Intelligence Division Generates 52% of Corporate Revenue]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793042040000_24</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793042040000_24</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793042040000_34</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793042040000_34</guid>
       <pubDate>Mon, 26 Oct 2026 19:14:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_openingbelldailynews]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -518,8 +718,8 @@
     </item>
     <item>
       <title><![CDATA[IRONSCALES Security Report Reveals 77% of Enterprises Suffered Operational Agentic AI Incidents]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793041980000_25</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793041980000_25</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793041980000_35</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793041980000_35</guid>
       <pubDate>Mon, 26 Oct 2026 19:13:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_channelinsider]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -538,8 +738,8 @@
     </item>
     <item>
       <title><![CDATA[Best Agentic AI Platforms in 2026: Systems Integration and Autonomous Operational Execution]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793041920000_26</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793041920000_26</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793041920000_36</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793041920000_36</guid>
       <pubDate>Mon, 26 Oct 2026 19:12:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_blueprism]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -558,8 +758,8 @@
     </item>
     <item>
       <title><![CDATA[Multi-Agent Orchestration Guide 2026: Architectural Design Patterns and Business Workflow Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793041860000_27</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793041860000_27</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793041860000_37</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793041860000_37</guid>
       <pubDate>Mon, 26 Oct 2026 19:11:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_origami]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -578,8 +778,8 @@
     </item>
     <item>
       <title><![CDATA[Top Data Modernization Service Providers in 2026: Enterprise Systems Integration and AI Transformation]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793041800000_28</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793041800000_28</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793041800000_38</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793041800000_38</guid>
       <pubDate>Mon, 26 Oct 2026 19:10:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_corsactech]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -598,8 +798,8 @@
     </item>
     <item>
       <title><![CDATA[RSM Middle Market Survey: Legacy Systems Integration Remains Top Bottleneck for Agentic AI Adoption]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793041740000_29</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793041740000_29</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793041740000_39</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793041740000_39</guid>
       <pubDate>Mon, 26 Oct 2026 19:09:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_rsmus]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -618,8 +818,8 @@
     </item>
     <item>
       <title><![CDATA[Policy Proposal Mandates Commercial AI Labs Disclose Model Training Data to Super Intelligence Force]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793039280000_30</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793039280000_30</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793039280000_40</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793039280000_40</guid>
       <pubDate>Mon, 26 Oct 2026 18:28:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_nextgov]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -638,8 +838,8 @@
     </item>
     <item>
       <title><![CDATA[Trump Officially Mandates 'Super Intelligence' Terminology Across All Federal Agency Operations]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793039220000_31</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793039220000_31</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793039220000_41</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793039220000_41</guid>
       <pubDate>Mon, 26 Oct 2026 18:27:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thelivingdraft]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -658,8 +858,8 @@
     </item>
     <item>
       <title><![CDATA[White House Super Intelligence Accord Explained: Frontier Lab Commitments and Federal Standards]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793039160000_32</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793039160000_32</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793039160000_42</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793039160000_42</guid>
       <pubDate>Mon, 26 Oct 2026 18:26:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_choosely]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -678,8 +878,8 @@
     </item>
     <item>
       <title><![CDATA[SpaceX Super Intelligence Launches Certified Partner Network to Scale Enterprise Grok Deployments]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793039100000_33</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793039100000_33</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793039100000_43</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793039100000_43</guid>
       <pubDate>Mon, 26 Oct 2026 18:25:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_x]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -698,8 +898,8 @@
     </item>
     <item>
       <title><![CDATA[Melania Trump Unveils 'Super Intelligence' Academic Initiative Supporting National STEM Readiness]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793039040000_34</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793039040000_34</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793039040000_44</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793039040000_44</guid>
       <pubDate>Mon, 26 Oct 2026 18:24:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_eastwingmagazine]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -718,8 +918,8 @@
     </item>
     <item>
       <title><![CDATA[Oracle's Agentic AI Platform Accelerates Enterprise Systems Integration and Fusion Cloud Deployments]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793038980000_35</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793038980000_35</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793038980000_45</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793038980000_45</guid>
       <pubDate>Mon, 26 Oct 2026 18:23:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_dqindia]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -738,8 +938,8 @@
     </item>
     <item>
       <title><![CDATA[Cognizant and EBRD Partner to Accelerate Enterprise Systems Integration via AI-Led Digital Services]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793038920000_36</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793038920000_36</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793038920000_46</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793038920000_46</guid>
       <pubDate>Mon, 26 Oct 2026 18:22:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_investors]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -758,8 +958,8 @@
     </item>
     <item>
       <title><![CDATA[Agentic AI for Enterprise: Moving Beyond Technology Adoption into Governed Business Process Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793038860000_37</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793038860000_37</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793038860000_47</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793038860000_47</guid>
       <pubDate>Mon, 26 Oct 2026 18:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_pipefy]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -778,8 +978,8 @@
     </item>
     <item>
       <title><![CDATA[Multi-Agent AI Orchestration in 2026: A CTO Guide to Production System Design and Governance]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793038800000_38</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793038800000_38</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793038800000_48</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793038800000_48</guid>
       <pubDate>Mon, 26 Oct 2026 18:20:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_kgtsolutions]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -798,8 +998,8 @@
     </item>
     <item>
       <title><![CDATA[Agentic AI for Business Automation in 2026: Unlocking Multi-Step Workflows Across Corporate Backends]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793038740000_39</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793038740000_39</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793038740000_49</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793038740000_49</guid>
       <pubDate>Mon, 26 Oct 2026 18:19:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_zentricsolutions]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -814,206 +1014,6 @@
       <enclosure url="https://zentricsolutions.com/assets/images/agentic-ai-business-automation.jpg" length="240000" type="image/jpeg" />
       <media:content url="https://zentricsolutions.com/assets/images/agentic-ai-business-automation.jpg" medium="image" width="1200" height="675">
         <media:title><![CDATA[Agentic AI for Business Automation in 2026: Unlocking Multi-Step Workflows Across Corporate Backends]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Why Trump's Rebrand of Artificial Intelligence to Super Intelligence Matters]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793034300000_40</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793034300000_40</guid>
-      <pubDate>Mon, 26 Oct 2026 17:05:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_time]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[TIME analyzes the geopolitical implications of Executive Order 14434 mandating the term 'Super Intelligence' across federal agencies, exploring how the strategic nomenclature reorients national security priorities and sovereign computing investments.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://api.time.com/wp-content/uploads/2026/10/trump-super-intelligence.jpg" alt="Why Trump&apos;s Rebrand of Artificial Intelligence to Super Intelligence Matters" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>TIME analyzes the geopolitical implications of Executive Order 14434 mandating the term 'Super Intelligence' across federal agencies, exploring how the strategic nomenclature reorients national security priorities and sovereign computing investments.</p>
-          <p><small>출처 및 원문: <a href="https://time.com/article/2026/10/23/why-trump-s-rebrand-of-artificial-intelligence-to-super-intelligent-matters/">time.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://api.time.com/wp-content/uploads/2026/10/trump-super-intelligence.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://api.time.com/wp-content/uploads/2026/10/trump-super-intelligence.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Why Trump's Rebrand of Artificial Intelligence to Super Intelligence Matters]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Trump Announces Members of 'Super Intelligence Force' to Coordinate Federal Frontier AI Strategy]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793034240000_41</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793034240000_41</guid>
-      <pubDate>Mon, 26 Oct 2026 17:04:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_hstoday]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Homeland Security Today reports on President Donald Trump appointing Director of National Intelligence Jay Clayton as AI Czar to lead the Super Intelligence Force, directing cabinet-level oversight across federal supercomputing assets and intelligence integration.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://www.hstoday.us/wp-content/uploads/2026/10/super-intelligence-force-trump.jpg" alt="Trump Announces Members of &apos;Super Intelligence Force&apos; to Coordinate Federal Frontier AI Strategy" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Homeland Security Today reports on President Donald Trump appointing Director of National Intelligence Jay Clayton as AI Czar to lead the Super Intelligence Force, directing cabinet-level oversight across federal supercomputing assets and intelligence integration.</p>
-          <p><small>출처 및 원문: <a href="https://www.hstoday.us/subject-matter-areas/ai-and-advanced-tech/trump-announces-members-of-super-intelligence-force-to-coordinate-ai-policy/">hstoday.us</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://www.hstoday.us/wp-content/uploads/2026/10/super-intelligence-force-trump.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://www.hstoday.us/wp-content/uploads/2026/10/super-intelligence-force-trump.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Trump Announces Members of 'Super Intelligence Force' to Coordinate Federal Frontier AI Strategy]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Trump Signs 'Super Intelligence' Pact as Tech Leaders Convene at White House Accord]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793034180000_42</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793034180000_42</guid>
-      <pubDate>Mon, 26 Oct 2026 17:03:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_ibtimes]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[International Business Times covers President Donald Trump convening top technology executives at the White House to formalize a voluntary Super Intelligence agreement, establishing national safety testing protocols and accelerated federal deployment pathways.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://d.ibtimes.co.uk/en/full/1823108/trump-super-intelligence-pact.jpg" alt="Trump Signs &apos;Super Intelligence&apos; Pact as Tech Leaders Convene at White House Accord" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>International Business Times covers President Donald Trump convening top technology executives at the White House to formalize a voluntary Super Intelligence agreement, establishing national safety testing protocols and accelerated federal deployment pathways.</p>
-          <p><small>출처 및 원문: <a href="https://www.ibtimes.co.uk/white-house-super-intelligence-accord-typo-trump-signature-1823108">ibtimes.co.uk</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://d.ibtimes.co.uk/en/full/1823108/trump-super-intelligence-pact.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://d.ibtimes.co.uk/en/full/1823108/trump-super-intelligence-pact.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Trump Signs 'Super Intelligence' Pact as Tech Leaders Convene at White House Accord]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SpaceX's 'Super Intelligence' Segment Accelerates Commercial Valuation Following Federal SI Mandate]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793034120000_43</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793034120000_43</guid>
-      <pubDate>Mon, 26 Oct 2026 17:02:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_fool]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Motley Fool evaluates the financial trajectory of Elon Musk rebranding xAI into SpaceXSI, detailing how integrated satellite telemetry, orbital data center clusters, and frontier compute models drive exponential enterprise valuation.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://g.foolcdn.com/editorial/images/812345/spacex-super-intelligence.jpg" alt="SpaceX&apos;s &apos;Super Intelligence&apos; Segment Accelerates Commercial Valuation Following Federal SI Mandate" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Motley Fool evaluates the financial trajectory of Elon Musk rebranding xAI into SpaceXSI, detailing how integrated satellite telemetry, orbital data center clusters, and frontier compute models drive exponential enterprise valuation.</p>
-          <p><small>출처 및 원문: <a href="https://www.fool.com/investing/2026/10/24/spacexs-super-intelligence-segment-just-made-the-s/">fool.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://g.foolcdn.com/editorial/images/812345/spacex-super-intelligence.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://g.foolcdn.com/editorial/images/812345/spacex-super-intelligence.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SpaceX's 'Super Intelligence' Segment Accelerates Commercial Valuation Following Federal SI Mandate]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SpaceX Secures $40B Debt Financing to Expand SpaceXSI Compute Infrastructure and Starlink Data Networks]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793034060000_44</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793034060000_44</guid>
-      <pubDate>Mon, 26 Oct 2026 17:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_datacenterdynamics]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Data Center Dynamics reports on Elon Musk securing $40 billion in private debt financing to accelerate infrastructure builds for SpaceXSI, scaling high-density GPU clusters and space-ground low-latency data pipelines for sovereign and commercial workloads.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://media.datacenterdynamics.com/media/images/spacex-colossus-ai-datacenter.width-800.jpg" alt="SpaceX Secures $40B Debt Financing to Expand SpaceXSI Compute Infrastructure and Starlink Data Networks" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Data Center Dynamics reports on Elon Musk securing $40 billion in private debt financing to accelerate infrastructure builds for SpaceXSI, scaling high-density GPU clusters and space-ground low-latency data pipelines for sovereign and commercial workloads.</p>
-          <p><small>출처 및 원문: <a href="https://www.datacenterdynamics.com/en/news/spacex-secures-40bn-in-debt-financing-elon-musk-says/">datacenterdynamics.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://media.datacenterdynamics.com/media/images/spacex-colossus-ai-datacenter.width-800.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://media.datacenterdynamics.com/media/images/spacex-colossus-ai-datacenter.width-800.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SpaceX Secures $40B Debt Financing to Expand SpaceXSI Compute Infrastructure and Starlink Data Networks]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Agentic AI in 2026: How Autonomous Systems Are Transforming Enterprise IT Operations]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793034000000_45</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793034000000_45</guid>
-      <pubDate>Mon, 26 Oct 2026 17:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_community]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[n8n explores the architectural transition from static chatbots to autonomous enterprise agents capable of multi-step planning, tool orchestration, and automated decision-making across legacy ERP and CRM backends without manual human routing.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://community.n8n.io/uploads/default/original/3X/a/b/agentic-ai-enterprise-2026.png" alt="Agentic AI in 2026: How Autonomous Systems Are Transforming Enterprise IT Operations" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>n8n explores the architectural transition from static chatbots to autonomous enterprise agents capable of multi-step planning, tool orchestration, and automated decision-making across legacy ERP and CRM backends without manual human routing.</p>
-          <p><small>출처 및 원문: <a href="https://community.n8n.io/t/agentic-ai-in-2026-how-autonomous-ai-is-transforming-enterprise-operations/324670">community.n8n.io</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://community.n8n.io/uploads/default/original/3X/a/b/agentic-ai-enterprise-2026.png" length="240000" type="image/jpeg" />
-      <media:content url="https://community.n8n.io/uploads/default/original/3X/a/b/agentic-ai-enterprise-2026.png" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Agentic AI in 2026: How Autonomous Systems Are Transforming Enterprise IT Operations]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[AI in the Enterprise 2026: Orchestration Over Prompt Engineering Drives the Agentic Reckoning]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793033940000_46</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793033940000_46</guid>
-      <pubDate>Mon, 26 Oct 2026 16:59:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_wave-3]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Wave 3 examines how enterprise IT leaders are transitioning from isolated agent pilots to multi-agent orchestration frameworks, showing that systems integration across existing databases and microservices has replaced prompt design as the decisive competitive factor.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://wave-3.co/images/blog/ai-enterprise-trends-2026.webp" alt="AI in the Enterprise 2026: Orchestration Over Prompt Engineering Drives the Agentic Reckoning" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Wave 3 examines how enterprise IT leaders are transitioning from isolated agent pilots to multi-agent orchestration frameworks, showing that systems integration across existing databases and microservices has replaced prompt design as the decisive competitive factor.</p>
-          <p><small>출처 및 원문: <a href="https://wave-3.co/pages/blog-posts/ai-enterprise-trends-2026.html">wave-3.co</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://wave-3.co/images/blog/ai-enterprise-trends-2026.webp" length="240000" type="image/jpeg" />
-      <media:content url="https://wave-3.co/images/blog/ai-enterprise-trends-2026.webp" medium="image" width="1200" height="675">
-        <media:title><![CDATA[AI in the Enterprise 2026: Orchestration Over Prompt Engineering Drives the Agentic Reckoning]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Top AI Agent Development Companies in 2026: Systems Integrators Redefine Enterprise Deployment]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793033880000_47</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793033880000_47</guid>
-      <pubDate>Mon, 26 Oct 2026 16:58:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_pixelmatters]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Pixelmatters highlights how global systems integrators like Accenture and specialized deployment firms are bridging foundational model APIs with enterprise workflows, embedding autonomous agent swarms into production business architectures.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.prismic.io/pixelmatters/top-ai-agent-development-companies.jpg" alt="Top AI Agent Development Companies in 2026: Systems Integrators Redefine Enterprise Deployment" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Pixelmatters highlights how global systems integrators like Accenture and specialized deployment firms are bridging foundational model APIs with enterprise workflows, embedding autonomous agent swarms into production business architectures.</p>
-          <p><small>출처 및 원문: <a href="https://www.pixelmatters.com/insights/top-ai-agent-development-companies">pixelmatters.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.prismic.io/pixelmatters/top-ai-agent-development-companies.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://images.prismic.io/pixelmatters/top-ai-agent-development-companies.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Top AI Agent Development Companies in 2026: Systems Integrators Redefine Enterprise Deployment]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[How CFOs Are Funding and Scaling AI Agents in 2026: Transitioning from Pilot Projects to Systems Industrialization]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793033820000_48</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793033820000_48</guid>
-      <pubDate>Mon, 26 Oct 2026 16:57:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_bcg]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Boston Consulting Group details strategic investment shifts as corporate finance leaders prioritize agentic systems integration, automating more than 90% of routine corporate accounting and reporting tasks through production-grade agent swarms.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://web-assets.bcg.com/dims4/default/cfos-funding-scaling-ai-agents.jpg" alt="How CFOs Are Funding and Scaling AI Agents in 2026: Transitioning from Pilot Projects to Systems Industrialization" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Boston Consulting Group details strategic investment shifts as corporate finance leaders prioritize agentic systems integration, automating more than 90% of routine corporate accounting and reporting tasks through production-grade agent swarms.</p>
-          <p><small>출처 및 원문: <a href="https://www.bcg.com/publications/2026/how-cfos-are-funding-scaling-ai-agents">bcg.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://web-assets.bcg.com/dims4/default/cfos-funding-scaling-ai-agents.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://web-assets.bcg.com/dims4/default/cfos-funding-scaling-ai-agents.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[How CFOs Are Funding and Scaling AI Agents in 2026: Transitioning from Pilot Projects to Systems Industrialization]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[AX Summit 2026: Accelerating SI AX Innovation and Global Collaborative IT Engineering Models]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793033760000_49</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793033760000_49</guid>
-      <pubDate>Mon, 26 Oct 2026 16:56:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_omigroup]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[OmiGroup outlines strategic frameworks from AX Summit 2026, establishing joint systems integration partnerships to deploy AI-augmented engineering workflows, automated middleware bridges, and sovereign IT transformation architectures across international enterprises.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://www.omigroup.vn/storage/ax-summit-2026-si-transformation.jpg" alt="AX Summit 2026: Accelerating SI AX Innovation and Global Collaborative IT Engineering Models" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>OmiGroup outlines strategic frameworks from AX Summit 2026, establishing joint systems integration partnerships to deploy AI-augmented engineering workflows, automated middleware bridges, and sovereign IT transformation architectures across international enterprises.</p>
-          <p><small>출처 및 원문: <a href="https://www.omigroup.vn/en/news/ax-summit-2026-y-nhanh-i-mi-ax-v-xy-dng-m-hnh-hp-tc-si-ton-cu-hn---vit">omigroup.vn</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://www.omigroup.vn/storage/ax-summit-2026-si-transformation.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://www.omigroup.vn/storage/ax-summit-2026-si-transformation.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[AX Summit 2026: Accelerating SI AX Innovation and Global Collaborative IT Engineering Models]]></media:title>
       </media:content>
     </item>
   </channel>
