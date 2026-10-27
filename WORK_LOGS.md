@@ -2,6 +2,18 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-27 09:33 KST] [공식 SNSHero 유튜브 채널 내 기존 구버전 애니메이션/무비 재생목록(9종) 및 구버전 동영상(250+건) 전수 완전삭제 완료 — 금일 업로드본 80편만 유지]
+- **요청 사항**:
+  - "해당 채널에 이전에 올렸던 기존 애니메이션/무비 40화 동영상 및 플레이리스트는 제거해줘. 오늘것만 유지"
+- **주요 수행 내역**:
+  1. **기존 구버전 애니메이션/무비 재생목록 9종 전수 삭제 완료**:
+     - `PLAP5BnG0QZw8`, `PLfJ0X_nGc5Uc`, `PLHiW8jLQ0t2Q`, `PLWJoj18KXId0`, `PLdQXi60Hv4Fg`, `PLMdirwPt_FHU`, `PLSvmAWAJh8FU`, `PLK35ZdYm5NNE`, `PLOLtCtApKgp8` 재생목록 9종을 YouTube Studio에서 완전 삭제 완료.
+     - 금일 신규 생성한 공식 애니메이션 40화 재생목록(`PLY6O_zlgCxYY`)과 공식 실사 무비 40화 재생목록(`PLMkfo7bS3l4Q`)만 유지.
+  2. **기존 구버전 애니메이션/무비 동영상 전수 완전삭제(Delete forever) 완료 ([`scripts/delete_old_anim_movie_videos_and_playlists.py`](file:///Users/dayyoung/project/snshero/scripts/delete_old_anim_movie_videos_and_playlists.py))**:
+     - 금일 업로드한 신규 애니메이션 40편(`62ziCvTMfB8` ~ `jdAoSYT5ouo`) 및 신규 실사 무비 40편(`kipcS4NOw5s` ~ `kDGG_YSQvfM`) 총 80편을 제외한 이전 애니메이션/무비 동영상 전수(총 251건 + 초안 1건)를 YouTube Studio에서 일괄 완전삭제 완료.
+- **검증 및 보고**:
+  - YouTube Studio 전 페이지 스캔(잔여 구버전 애니메이션/무비 영상 0건) 및 YouTube Data API v3 조회를 통해 금일 애니메이션 40편(`40/40 PUBLIC`, `PLY6O_zlgCxYY`) 및 무비 40편(`40/40 PUBLIC`, `PLMkfo7bS3l4Q`) 정상 유지 확인 완료.
+
 ## [2026-10-27 08:57 KST] [신규 생성 애니메이션 40편 & 무비 40편(총 80편) 공식 SNSHero 유튜브 채널 전수 공개 업로드 및 전체 링크 최신화 완료]
 - **요청 사항**:
   - "새로 생성한 유튜브/무비 영상 각각 40개 업로드 및 링크 최신화"
