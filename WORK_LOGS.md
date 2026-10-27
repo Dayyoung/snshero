@@ -2,6 +2,17 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-27 21:27 KST] [Tailscale Funnel 서버(https://dayyoung-macbookpro.tail3717a4.ts.net) 최신 8등신 캐릭터 에셋 프로덕션 번들 반영 및 정적 에셋 ETag/no-cache 즉시 갱신 적용]
+- **요청 사항**:
+  - `https://dayyoung-macbookpro.tail3717a4.ts.net` 접속 및 최신 빌드/에셋 서빙 상태 점검 및 갱신.
+- **주요 구현 및 수정 내역**:
+  1. **[`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts) 정적 에셋 캐시 재검증(ETag + `Cache-Control: no-cache`) 적용**:
+     - `public-wildcard-static-plugin`에서 `/cards1.png`, `/cards2.png`, `/card100.png`, `/seat/*.png`, `/seat_attack/*.png` 등 정적 이미지 서빙 시 기존의 `public, max-age=3600` 대신 파일 크기·수정시각 기반 `ETag` 및 `Cache-Control: no-cache` 헤더를 설정하여 에셋 교체 시 브라우저가 구버전 캐시를 쓰지 않고 즉시 최신 이미지를 반영하도록 개선.
+  2. **프로덕션 정적 번들(`dist/`) 빌드 및 통합 프리뷰 서버(`scripts/start-server.sh`) 재가동**:
+     - `npm run build`를 실행하여 최신 110종 8등신 극장판 캐릭터 시트와 공격 모션 에셋을 `dist/` 및 `version.json`에 동기화하고, 포트 3000 프리뷰 서버와 실시간 빌드 워처(`watch-build`), 웹푸시 디스패처(포트 3001)를 재기동.
+- **검증 및 보고**:
+  - `https://dayyoung-macbookpro.tail3717a4.ts.net/card-play` 및 `/cards1.png`, `/version.json` `HTTP/2 200` 응답 확인 완료, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-27 20:48 KST] [110종 전 캐릭터 SD(2~3등신) → 8등신 극장판 다크판타지 애니메이션 캐릭터 시트(11장×10명) 전면 교체 및 공격 모션 시트 전수 재생성 완료]
 - **요청 사항**:
   - "기존 캐릭터 이미지가 너무 단순하고 귀여워서 이제는 극장판 만화 수준으로 8등신으로 캐릭터시트를 11장으로 1장당 10명씩 그려서 이를 잘라서 캐릭터 시트를 만들자. 캐릭터 특성은 소설에 나오는 캐릭터 설정을 그대로 유지하자. 여자 캐릭터는 글래머러스하게 매력적으로 그려줘"

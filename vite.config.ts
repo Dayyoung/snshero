@@ -570,16 +570,24 @@ export default defineConfig(({mode}) => {
                       const ext = path.extname(targetPath).toLowerCase();
                       const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
-                      res.statusCode = 200;
-                      res.setHeader('Content-Type', contentType);
-                      res.setHeader('Content-Length', stat.size);
+                      const etag = `W/"${stat.size.toString(16)}-${Math.floor(stat.mtimeMs).toString(16)}"`;
+                      res.setHeader('ETag', etag);
+                      res.setHeader('Last-Modified', stat.mtime.toUTCString());
                       if (ext === '.html' || ext === '.json' || relativePath === 'version.json') {
                         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
                         res.setHeader('Pragma', 'no-cache');
                         res.setHeader('Expires', '0');
                       } else {
-                        res.setHeader('Cache-Control', 'public, max-age=3600');
+                        res.setHeader('Cache-Control', 'no-cache');
+                        if (req.headers['if-none-match'] === etag) {
+                          res.statusCode = 304;
+                          res.end();
+                          return;
+                        }
                       }
+                      res.statusCode = 200;
+                      res.setHeader('Content-Type', contentType);
+                      res.setHeader('Content-Length', stat.size);
                       res.setHeader('Access-Control-Allow-Origin', '*');
                       fs.createReadStream(targetPath).pipe(res);
                       return;
