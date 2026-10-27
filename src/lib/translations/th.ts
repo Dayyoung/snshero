@@ -2885,4 +2885,6 @@ export const th = {
     cinema_title: "มูฟวี่อย่างเป็นทางการ SNSHero.com - Kadan's Journey (40 ตอน)",
     cinema_subtitle: 'ภาพยนตร์ดาร์กแฟนตาซีคนแสดงจริงพร้อมการเกรดสีอนามอร์ฟิก 70mm',
     cinema_list: 'รายการตอน',
+    anime_char_sheets_btn: 'ชีตตัวละครอนิเมะ 110 คน',
+    anime_char_sheets_desc: 'ภาพตั้งต้นตัวละครอนิเมะเต็มตัว 110 คน พร้อม SD 3 ส่วนสุดน่ารักและพรอมต์วิดีโอ AI',
 };

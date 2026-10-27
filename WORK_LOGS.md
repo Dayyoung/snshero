@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-28 07:14 KST] [소설 『카단의 여정』 기반 110인 애니메이션 제작용 공식 캐릭터 설정 시트(여성 글래머·독특한 헤어 / 남성·몬스터 근육·시그니처 무기 강조 / 3등신 SD 귀여움 계승·병기) 전수 제작 및 스튜디오 뷰어 연동 완료]
+- **요청 사항**:
+  - "해당 소설내용 으로 에니메이션을 만들고 싶어. 우선 영상을 만들기전에 110개 케릭터의 케릭터 시트를 만들고 싶어. 여성 케릭터는 글래머스하고 몸매가 드러나고 헤어스타일도 독특하게 디자인하고싶고 남자캐릭터나 몬스터 케릭터는 개성이 드러나게 근육질에 아이템 특징들이 강조되게 잘 표현하고 싶어. 애니메이션용 케릭터시트 110명의 케릭터 시트를 생성해줄래. 기존 3등신 케릭터의 귀여움도 표현되어야해."
+- **주요 구현 및 제작 내역**:
+  1. **기존 인게임 3등신 카드 에셋(`public/seat/*.png`, `public/cards1.png` 등) 100% 무변경 보존**:
+     - 라이브 카드 배틀 에셋을 일절 덮어쓰지 않고, 애니메이션 영상 제작 전용 독립 스튜디오 에셋 스위트(`public/anime-character-sheets/`)로 구축.
+  2. **소설 『카단의 여정』 세계관 & 110인 전수 작화 명세 DB 구축 ([`scripts/anime_character_specs.py`](file:///Users/dayyoung/project/snshero/scripts/anime_character_specs.py))**:
+     - 여성 캐릭터(실리아, 엘윈, 카제, 로비나드, 아쿠아리스, 나이아드, 운디네, 캐스케이드, 파이로, 실프, 실피드, 하피, 제우스피어, 가이아, 테라, 고르곤, 아라크네, 카르디스, 엘리아나, 티타니아, 실바니아, 베작스, 캘토르, 에일라, 메두사 고르고, 이셀라 등): 글래머러스한 S라인·몸매가 드러나는 코스튬 실루엣 + 물방울 트윈번·나비 트윈루프·쿠나이 하이 포니테일·초승달 오당고·용각 셀레스티얼 업스타일 등 독창적 헤어스타일 설계.
+     - 남성·몬스터·드워프·마공학·드래곤 캐릭터(카단, 발리안, 길가메시, 론돌, 헤르쿨, 알렉산다르, 이그니스, 벨페고르, 발록, 에올루스, 뇌신, 그림리, 펜릴, 미노타우로스, 바이라, 크로노스, 드레드윙 등): 탄탄한 근육질 체형과 시그니처 무기·방패·갑주·마도구 디테일을 대담하게 강조.
+     - 기존 3등신 캐릭터의 귀여움 계승: 초롱초롱하고 표정이 살아있는 큰 눈망울 매력을 전신 애니메이션 원화에 녹여내고, 모든 개별/진영 시트에 원본 `[3등신 기본 큐트 원형]` 및 `[3등신 액션 연출 포즈]`를 직접 병기하여 코믹/일상 데포르메(SD) 컷 레퍼런스로 즉시 활용 가능하게 구성.
+  3. **110인 전수 애니메이션 캐릭터 시트 자동화 파이프라인 ([`scripts/build_110_anime_character_sheets.py`](file:///Users/dayyoung/project/snshero/scripts/build_110_anime_character_sheets.py))**:
+     - 잉크 외곽선·컬러 그래디언트 인식 DP Seam Carving으로 무기·날개·방패·활 끝단 잘림 없는 110종 고해상도 투명 원화 컷아웃(`public/anime-character-sheets/cutouts/001_Aquaris.png` ~ `110_Dreadwing.png`) 생성.
+     - 110장 개별 HD 스튜디오 설정화(`1600×1000`, `public/anime-character-sheets/sheets/001_Aquaris_sheet.jpg` ~ `110_Dreadwing_sheet.jpg`: 전신 원화 + 두부/헤어 클로즈업 + 3등신 큐트 SD/액션 병기 + 소설 설정·작화 지침·5색 지정 컬러칩) 생성.
+     - 11대 진영별 10인 마스터 시트(`2400×1420`, `public/anime-character-sheets/factions/01_water_master_sheet.jpg` ~ `11_dragon_master_sheet.jpg`) 및 110인 전체 총람 포스터(`public/anime-character-sheets/all_110_cast_poster.jpg`), AI 영상 생성 프롬프트 포함 매니페스트(`public/anime-character-sheets/manifest.json`) 생성.
+  4. **인터랙티브 110인 캐릭터 시트 스튜디오 뷰어 ([`public/anime-character-sheets/index.html`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/index.html)) 및 [`AnimeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/AnimeView.tsx) 12개 다국어 연동**:
+     - 진영/성별·유형 필터, 이름·무기 검색, 원클릭 설정 시트 다운로드 및 AI 영상 생성 프롬프트 복사 기능을 갖춘 스튜디오 뷰어를 구축하고 `/animation` 화면 상단에 바로가기 버튼을 연결.
+- **검증 및 보고**:
+  - `npx tsc --noEmit` 0 에러, `npm run build` 프로덕션 빌드 및 11개 진영 마스터 시트 전수 시각 검수 완료, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-28 01:28 KST] [110종 캐릭터 시트 및 공격 모션 에셋을 8등신 변경 적용 전 원본(08dbc97d0) 상태로 전수 복구 완료]
 - **요청 사항**:
   - "적용전으로 복구"

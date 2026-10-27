@@ -2890,4 +2890,6 @@ export const vi = {
     cinema_title: "Phim Chính Thức SNSHero.com - Kadan's Journey (40 Tập)",
     cinema_subtitle: 'Rạp phim giả tưởng đen tối người đóng chân thực với chỉnh màu anamorphic 70mm.',
     cinema_list: 'Danh sách tập',
+    anime_char_sheets_btn: '110 Bản Thiết Kế Nhân Vật Anime',
+    anime_char_sheets_desc: '110 bản thiết kế nhân vật anime toàn thân, đối chiếu chibi SD dễ thương & prompt video AI',
 };

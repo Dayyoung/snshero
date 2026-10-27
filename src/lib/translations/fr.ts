@@ -2890,4 +2890,6 @@ export const fr = {
     cinema_title: "Film Officiel SNSHero.com - Kadan's Journey (40 Épisodes)",
     cinema_subtitle: 'Cinéma de dark fantasy en prise de vues réelles avec étalonnage anamorphique 70mm.',
     cinema_list: 'Liste des épisodes',
+    anime_char_sheets_btn: '110 Fiches Personnages Anime',
+    anime_char_sheets_desc: '110 fiches officielles de personnages anime en pied, références SD chibi et prompts vidéo IA',
 };

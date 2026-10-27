@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNSHero — 『카단의 여정』 110인 애니메이션 캐릭터 시트 스튜디오</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Apple SD Gothic Neo", monospace;
+      background: #fdfcfc;
+      color: #201d1d;
+      line-height: 1.5;
+    }
+    header {
+      background: #201d1d;
+      color: #fdfcfc;
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(100,98,98,0.4);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .title-block h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+    .title-block p { font-size: 12px; color: #c7c4c4; margin-top: 4px; }
+    .nav-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      min-height: 44px;
+      padding: 0 14px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 4px;
+      border: 1px solid rgba(100,98,98,0.45);
+      background: #fdfcfc;
+      color: #201d1d;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .btn.active, .btn-primary {
+      background: #201d1d;
+      color: #fdfcfc;
+      border-color: #fdfcfc;
+    }
+    .toolbar {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(100,98,98,0.25);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      background: #f6f4f2;
+    }
+    .search-input {
+      min-height: 44px;
+      padding: 0 12px;
+      font-family: inherit;
+      font-size: 13px;
+      border: 1px solid rgba(32,29,29,0.35);
+      border-radius: 4px;
+      background: #ffffff;
+      color: #201d1d;
+      min-width: 240px;
+    }
+    .chip {
+      min-height: 38px;
+      padding: 0 11px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(32,29,29,0.25);
+      border-radius: 4px;
+      background: #ffffff;
+      color: #201d1d;
+      cursor: pointer;
+    }
+    .chip.active { background: #201d1d; color: #fdfcfc; border-color: #201d1d; }
+    main { max-width: 1440px; margin: 0 auto; padding: 24px; }
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(32,29,29,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .faction-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+    .faction-card, .char-card {
+      border: 1px solid rgba(32,29,29,0.28);
+      border-radius: 0;
+      background: #ffffff;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .faction-card:hover, .char-card:hover { border-color: #201d1d; }
+    .faction-card img, .char-card img.sheet-img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      background: #f5f4f0;
+    }
+    .faction-card img { aspect-ratio: 2400 / 1420; }
+    .card-meta {
+      padding: 12px 14px;
+      border-top: 1px solid rgba(32,29,29,0.14);
+    }
+    .card-meta-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .card-meta-sub { font-size: 11px; color: #57534e; }
+    .char-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 16px;
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 14, 18, 0.86);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      background: #fdfcfc;
+      border: 1px solid #201d1d;
+      border-radius: 0;
+      max-width: 1280px;
+      width: 100%;
+      max-height: 94vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      background: #201d1d;
+      color: #fdfcfc;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+    }
+    .modal-body { padding: 18px; }
+    .modal-body img { width: 100%; height: auto; border: 1px solid rgba(32,29,29,0.2); display: block; }
+    .prompt-box {
+      margin-top: 14px;
+      padding: 12px;
+      background: #f5f4f1;
+      border: 1px solid rgba(32,29,29,0.22);
+      font-size: 12px;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="title-block">
+        <h1>[SNSHERO STUDIO] 『카단의 여정』 110인 애니메이션 캐릭터 시트</h1>
+        <p>여성: 글래머 체형 & 유니크 헤어 | 남성·몬스터: 근육질 & 시그니처 무기 강조 | 전 캐릭터 3등신 큐트 SD 원형 병기</p>
+      </div>
+      <div class="nav-btns">
+        <button class="btn active" id="tab-all" onclick="setTab('all')">전체 보기 (11진영 + 110인 시트)</button>
+        <button class="btn" id="tab-factions" onclick="setTab('factions')">11대 진영 마스터 시트 (11장)</button>
+        <button class="btn" id="tab-chars" onclick="setTab('chars')">개별 상세 설정화 (110장)</button>
+        <a class="btn" href="/anime-character-sheets/all_110_cast_poster.jpg" target="_blank">110인 총람 포스터 원본</a>
+        <a class="btn" href="/animation">← 애니메이션 극장으로</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <input type="text" id="search" class="search-input" placeholder="캐릭터명 / 무기 / 헤어 / 소설 역할 검색..." oninput="render()" />
+    <button class="chip active" data-filter="all" onclick="setFilter('all', this)">전체 (110)</button>
+    <button class="chip" data-filter="female" onclick="setFilter('female', this)">여성 글래머·유니크헤어</button>
+    <button class="chip" data-filter="male" onclick="setFilter('male', this)">남성 근육·무기강조</button>
+    <button class="chip" data-filter="monster" onclick="setFilter('monster', this)">몬스터·영수</button>
+    <button class="chip" data-filter="mecha" onclick="setFilter('mecha', this)">마공학 메카</button>
+    <button class="chip" data-filter="dragon" onclick="setFilter('dragon', this)">드래곤</button>
+    <span style="margin-left:auto;font-size:12px;font-weight:700;" id="count-label">110 / 110명 표시 중</span>
+  </div>
+
+  <main>
+    <section id="sec-factions">
+      <div class="section-title">
+        <span>■ 11대 세력별 10인 애니메이션 마스터 캐릭터 시트 (2400×1420 HD)</span>
+        <span style="font-size:12px;color:#57534e;">클릭 시 원본 해상도로 확대됩니다</span>
+      </div>
+      <div class="faction-grid" id="faction-grid"></div>
+    </section>
+
+    <section id="sec-chars">
+      <div class="section-title">
+        <span>■ 110인 개별 애니메이션 캐릭터 설정화 시트 (1600×1000 HD · 전신 + 표정·헤어 + 3등신 SD + 작화 지침)</span>
+        <span id="faction-pills" style="display:flex;gap:4px;flex-wrap:wrap;"></span>
+      </div>
+      <div class="char-grid" id="char-grid"></div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="modal" onclick="if(event.target.id==='modal')closeModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <strong id="modal-title">캐릭터 시트 상세</strong>
+        <div style="display:flex;gap:8px;">
+          <a id="modal-cutout-btn" class="btn" href="#" target="_blank" download>투명 PNG 컷아웃 다운로드</a>
+          <a id="modal-dl-btn" class="btn" href="#" target="_blank" download>설정 시트 원본 다운로드</a>
+          <button class="btn" onclick="closeModal()">[X] 닫기</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <img id="modal-img" src="" alt="" />
+        <div class="prompt-box" id="modal-prompt-wrap">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <strong>AI 애니메이션 영상 제작용 영문 프롬프트 (Video Prompt)</strong>
+            <button class="chip" onclick="copyPrompt()">프롬프트 복사</button>
+          </div>
+          <div id="modal-prompt" style="word-break:break-word;color:#333;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let DATA = null;
+    let currentTab = 'all';
+    let currentFilter = 'all';
+    let currentFaction = 'all';
+    let activePrompt = '';
+
+    fetch('/anime-character-sheets/manifest.json')
+      .then(r => r.json())
+      .then(json => {
+        DATA = json;
+        buildFactionPills();
+        render();
+      });
+
+    function buildFactionPills() {
+      const wrap = document.getElementById('faction-pills');
+      let html = `<button class="chip active" onclick="setFaction('all', this)">전 진영</button>`;
+      for (const f of DATA.factions) {
+        html += `<button class="chip" onclick="setFaction('${f.faction}', this)">${f.faction.toUpperCase()}</button>`;
+      }
+      wrap.innerHTML = html;
+    }
+
+    function setTab(t) {
+      currentTab = t;
+      document.querySelectorAll('header .btn').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById('tab-' + t);
+      if (btn) btn.classList.add('active');
+      document.getElementById('sec-factions').classList.toggle('hidden', t === 'chars');
+      document.getElementById('sec-chars').classList.toggle('hidden', t === 'factions');
+    }
+
+    function setFilter(f, el) {
+      currentFilter = f;
+      document.querySelectorAll('.toolbar .chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      render();
+    }
+
+    function setFaction(fac, el) {
+      currentFaction = fac;
+      document.querySelectorAll('#faction-pills .chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      render();
+    }
+
+    function render() {
+      if (!DATA) return;
+      const q = document.getElementById('search').value.trim().toLowerCase();
+
+      const fGrid = document.getElementById('faction-grid');
+      fGrid.innerHTML = DATA.factions.map(f => `
+        <div class="faction-card" onclick="openFactionModal('${f.label}', '${f.sheetUrl}')">
+          <img src="${f.sheetUrl}" loading="lazy" alt="${f.label}" />
+          <div class="card-meta">
+            <div class="card-meta-top">
+              <span>SHEET ${String(f.index).padStart(2,'0')} · ${f.label}</span>
+              <span>NO.${String(f.startId).padStart(3,'0')}–${String(f.endId).padStart(3,'0')}</span>
+            </div>
+            <div class="card-meta-sub">10인 통합 마스터 설정 시트 (전신 + 3등신 큐트 SD 비교)</div>
+          </div>
+        </div>
+      `).join('');
+
+      const filtered = DATA.characters.filter(c => {
+        if (currentFilter !== 'all' && c.category !== currentFilter) return false;
+        if (currentFaction !== 'all' && c.faction !== currentFaction) return false;
+        if (q) {
+          const hay = `${c.code} ${c.nameKo} ${c.nameEn} ${c.novelRoleKo} ${c.hairDesignKo} ${c.signatureItemKo}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      document.getElementById('count-label').textContent = `${filtered.length} / 110명 표시 중`;
+
+      const cGrid = document.getElementById('char-grid');
+      cGrid.innerHTML = filtered.map(c => `
+        <div class="char-card" onclick="openCharModal(${c.id})">
+          <img class="sheet-img" src="${c.sheetUrl}" loading="lazy" alt="${c.nameKo}" />
+          <div class="card-meta">
+            <div class="card-meta-top">
+              <span>${c.code} · ${c.nameKo} (${c.nameEn})</span>
+              <span style="color:${c.factionColor}">${c.faction.toUpperCase()}</span>
+            </div>
+            <div class="card-meta-sub">${c.signatureItemKo}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openFactionModal(title, url) {
+      document.getElementById('modal-title').textContent = title + ' — 10인 마스터 시트';
+      document.getElementById('modal-img').src = url;
+      document.getElementById('modal-dl-btn').href = url;
+      document.getElementById('modal-cutout-btn').classList.add('hidden');
+      document.getElementById('modal-prompt-wrap').classList.add('hidden');
+      document.getElementById('modal').classList.add('open');
+    }
+
+    function openCharModal(id) {
+      const c = DATA.characters.find(x => x.id === id);
+      if (!c) return;
+      activePrompt = c.videoPromptEn;
+      document.getElementById('modal-title').textContent = `${c.code} ${c.nameKo} (${c.nameEn}) — 애니메이션 캐릭터 설정화`;
+      document.getElementById('modal-img').src = c.sheetUrl;
+      document.getElementById('modal-dl-btn').href = c.sheetUrl;
+      const cutBtn = document.getElementById('modal-cutout-btn');
+      cutBtn.href = c.cutoutUrl;
+      cutBtn.classList.remove('hidden');
+      document.getElementById('modal-prompt').textContent = c.videoPromptEn;
+      document.getElementById('modal-prompt-wrap').classList.remove('hidden');
+      document.getElementById('modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+    }
+
+    function copyPrompt() {
+      navigator.clipboard.writeText(activePrompt);
+    }
+  </script>
+</body>
+</html>

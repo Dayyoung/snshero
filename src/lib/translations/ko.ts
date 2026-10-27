@@ -3245,4 +3245,6 @@ export const ko = {
     cinema_title: '눈히어로.com - 카단의 여정 공식 무비 (40화)',
     cinema_subtitle: '눈히어로.com - 카단의 여정 공식 무비 40화 시리즈를 감상하고 회차별 시청 보상을 받으세요.',
     cinema_list: '무비 회차 목록',
+    anime_char_sheets_btn: '110인 애니메이션 캐릭터 시트',
+    anime_char_sheets_desc: '소설 『카단의 여정』 기반 110인 전신 원화 · 3등신 큐트 SD 병기 · AI 영상 프롬프트 스튜디오',
 };

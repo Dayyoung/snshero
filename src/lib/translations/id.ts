@@ -2890,4 +2890,6 @@ export const id = {
     cinema_title: "Film Resmi SNSHero.com - Kadan's Journey (40 Episode)",
     cinema_subtitle: 'Sinema aksi nyata fantasi gelap fotorealistik dengan gradasi warna anamorfik 70mm.',
     cinema_list: 'Daftar Episode',
+    anime_char_sheets_btn: '110 Lembar Karakter Anime',
+    anime_char_sheets_desc: '110 lembar desain karakter anime resmi, referensi SD chibi 3-kepala & prompt video AI',
 };

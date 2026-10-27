@@ -2890,4 +2890,6 @@ export const zhTW = {
     cinema_title: "SNSHero.com - Kadan's Journey 官方電影 (40集)",
     cinema_subtitle: '採用暗黑奇幻真人實拍劇照與70mm變形寬銀幕調色打造的電影院。',
     cinema_list: '影院劇集列表',
+    anime_char_sheets_btn: '110人動畫角色設定集',
+    anime_char_sheets_desc: '基於小說《卡丹之旅》的110名角色全身原畫、3頭身可愛SD對照與AI影片提示詞工作室',
 };

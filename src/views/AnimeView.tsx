@@ -211,16 +211,29 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
  </div>
  </div>
 
- {/* 유튜브 원본 플레이리스트 링크 */}
+ {/* 유튜브 원본 플레이리스트 & 110인 애니메이션 캐릭터 시트 스튜디오 링크 */}
+ <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0 w-full sm:w-auto">
+ <a
+ href="/anime-character-sheets/index.html"
+ target="_blank"
+ rel="noopener noreferrer"
+ title={t('anime_char_sheets_desc', language)}
+ className="min-h-[44px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-sm border border-[#fdfcfc]/30 bg-[#fdfcfc] text-[#201d1d] hover:bg-stone-100 text-xs font-bold font-mono transition-colors shrink-0 cursor-pointer w-full sm:w-auto touch-target"
+ >
+ <Sparkles size={14} className="shrink-0" />
+ <span>{t('anime_char_sheets_btn', language) || '110인 애니메이션 캐릭터 시트'}</span>
+ <ExternalLink size={13} className="shrink-0" />
+ </a>
  <a
  href={YOUTUBE_PLAYLIST_URL}
  target="_blank"
  rel="noopener noreferrer"
- className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-sm border border-purple-300 bg-purple-50 text-purple-700 hover:bg-purple-100 text-xs font-bold transition-all shrink-0 cursor-pointer w-full sm:w-auto"
+ className="min-h-[44px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-sm border border-purple-300 bg-purple-50 text-purple-700 hover:bg-purple-100 text-xs font-bold font-mono transition-colors shrink-0 cursor-pointer w-full sm:w-auto touch-target"
  >
  <span>{t('anime_playlist_link', language) || '유튜브에서 보기'}</span>
- <ExternalLink size={14} />
+ <ExternalLink size={14} className="shrink-0" />
  </a>
+ </div>
  </div>
 
  {/* ── Main Video Player Container (Embedded 16:9) ── */}

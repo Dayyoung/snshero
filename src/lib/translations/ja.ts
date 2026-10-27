@@ -2978,4 +2978,6 @@ export const ja = {
     cinema_title: "SNSHero.com - Kadan's Journey 公式ムービー (全40話)",
     cinema_subtitle: '本格ダークファンタジー実写スチールと70mmアナモルフィック色彩補正によるシネマ劇場です。',
     cinema_list: 'シネマ話数一覧',
+    anime_char_sheets_btn: '110人アニメ設定資料集',
+    anime_char_sheets_desc: '小説『カダンの旅』基準・全110キャラ全身設定画＆3頭身キュートSD対比スタジオ',
 };

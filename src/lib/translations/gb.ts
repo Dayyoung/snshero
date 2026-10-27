@@ -2949,4 +2949,6 @@ export const gb = {
     cinema_title: "SNSHero.com - Kadan's Journey Official Movie (40 Episodes)",
     cinema_subtitle: 'Photorealistic dark fantasy live-action cinema with 70mm anamorphic colour grading.',
     cinema_list: 'Cinema Episodes',
+    anime_char_sheets_btn: '110 Anime Character Sheets',
+    anime_char_sheets_desc: 'Official 110 full-body anime model sheets, 3-head chibi SD references & AI video prompts',
 };
