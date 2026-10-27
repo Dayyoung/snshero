@@ -2,6 +2,22 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-27 12:16 KST] [굿즈샵(/mall) 전 상품 이미지 내 구버전 카드 디자인을 현행 SNSHero 카드 디자인으로 전면 교체 및 3D 원근·조명 합성 완료]
+- **요청 사항**:
+  - "https://snshero.com/mall 에 이미지 중에 카드 이미지를 현행화 해서 이미지를 업데이트 하자."
+- **주요 구현 및 수정 내역**:
+  1. **현행 SNSHero 카드 디자인(`src/components/Card.tsx` 규격) 고해상도 렌더러 및 3D 원근·곡면·조명 합성 파이프라인 구현**:
+     - `public/seat/001.png` ~ `110.png` 공식 픽셀아트 영웅 에셋, 상단 랭크·레벨·`N` 스탯·스태미나 헤더, 좌/우/하(`W/E/S`) 방향 스탯 박스, 8각 마법진 배경, 스킬 바(`WALL`/`OMNI`/`FLIP`/`ASSAULT`), 진영 및 등급 푸터를 현행 카드 디자인과 100% 동일하게 렌더링하여 기존 상품 촬영 구도·조명·원근·그립·나무 거치대·덱 박스 내부에 정밀 합성.
+  2. **굿즈샵(`/mall`) 상품 이미지 8종 전면 현행화 완료 (`public/mall/cdn/shop/files/`)**:
+     - **[`1.png`](file:///Users/dayyoung/project/snshero/public/mall/cdn/shop/files/1.png) (Hero Mug)**: 머그컵 전면의 구버전 카드를 현행 카단(`#41`, Royal Gold) 카드로 원통형 곡면 워핑(Cylindrical Warp) 및 도자기 하이라이트·음영 합성, 우측 하단 워터마크 제거.
+     - **[`2.png`](file:///Users/dayyoung/project/snshero/public/mall/cdn/shop/files/2.png) (Hero T-Shirt)**: 화이트 코튼 티셔츠 가슴 중앙 프린트를 현행 카단(`#41`) 카드로 교체하고 원단 주름 음영(Fabric Shading Multiply) 적용 및 우측 하단 워터마크 제거.
+     - **[`card2.png`](file:///Users/dayyoung/project/snshero/public/mall/cdn/shop/files/card2.png) (2장 스탠딩 3D 카드)**: 좌측 블루 카드를 현행 포세이돈(`#10`, Player Blue Frame), 우측 레드 카드를 현행 이그니시우스(`#20`, AI Red Frame)로 3D 원근 합성 및 두께 림 보존, 워터마크 제거.
+     - **[`card.png`](file:///Users/dayyoung/project/snshero/public/mall/cdn/shop/files/card.png) & [`Gemini_Generated_Image_2449ut2449ut2449.png`](file:///Users/dayyoung/project/snshero/public/mall/cdn/shop/files/Gemini_Generated_Image_2449ut2449ut2449.png) (110-Card Deck Box 슬라이드 1)**: 상단 부채꼴 5장(포세이돈 `#10`, 카단 `#41`, 알렉산다르 `#50`, 이그니시우스 `#20`, 드레드윙 `#110`), 오픈된 덱 박스 내부 및 반원형 썸노치 카드(에일라 `#70`), 좌측 측면 배지, 매뉴얼 내 미니 카드, 우측 하단 테이블 카드 스택(바하무트 `#104`) 전수 현행화.
+     - **[`Gemini_Generated_Image_g8auqwg8auqwg8au.png`](file:///Users/dayyoung/project/snshero/public/mall/cdn/shop/files/Gemini_Generated_Image_g8auqwg8auqwg8au.png) (110-Card Deck Box 슬라이드 2)**: 우측 상단 `S&S HERO` QR 카드 뒷면을 보존하면서 좌측 부채꼴 3장(포세이돈 `#10`, 이그니시우스 `#20`, 드레드윙 `#110`), 오픈 박스 내부 카드(에일라 `#70`), 박스 전면 그리드 내 구버전 물방울 카드 2칸(카단 `#41`, 포세이돈 `#10`), 측면 배지, 매뉴얼 미니 카드, 우측 하단 카드 스택(바하무트 `#104`) 전수 현행화.
+     - **[`pan2.png`](file:///Users/dayyoung/project/snshero/public/mall/cdn/shop/files/pan2.png) & [`pan3.png`](file:///Users/dayyoung/project/snshero/public/mall/cdn/shop/files/pan3.png) (배틀 매트 & 원목 카드 거치대 5분할 콜라주 슬라이드 2·3)**: 원목 카드 홀더에 꽂힌 카드들, 3x3 배틀 매트 위 배치된 카드들, 플레이어 손에 들린 카드(엄지손가락 마스킹 보존), 배경 아웃포커싱 카드들까지 모두 현행 SNSHero 카드로 정밀 교체 및 워터마크 제거.
+- **검증 및 보고**:
+  - 8종 전체 이미지 시각 검수 완료, `npm run lint` 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-27 09:33 KST] [공식 SNSHero 유튜브 채널 내 기존 구버전 애니메이션/무비 재생목록(9종) 및 구버전 동영상(250+건) 전수 완전삭제 완료 — 금일 업로드본 80편만 유지]
 - **요청 사항**:
   - "해당 채널에 이전에 올렸던 기존 애니메이션/무비 40화 동영상 및 플레이리스트는 제거해줘. 오늘것만 유지"
