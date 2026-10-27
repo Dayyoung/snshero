@@ -2,6 +2,18 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-28 01:28 KST] [110종 캐릭터 시트 및 공격 모션 에셋을 8등신 변경 적용 전 원본(08dbc97d0) 상태로 전수 복구 완료]
+- **요청 사항**:
+  - "적용전으로 복구"
+- **주요 수행 내역**:
+  1. **110종 캐릭터 스프라이트·시트·공격 모션 에셋을 적용 전 커밋(`08dbc97d0`) 상태로 100% 원복**:
+     - `public/seat/*.png` (110종 개별 스프라이트), `public/seat_attack/*.png` (110종 공격 모션 스프라이트), `public/characters/animations/card-001.webp` ~ `card-110.webp` 전수 복구.
+     - `public/character_sheet_{water,fire,wind,earth,human,undead,elf,hobbit,beast,mecha,dragon}.png` (11종 진영 시트) 전수 복구.
+     - `public/cards1.png`(`cards1-1.png`, `cards1-2.png`, `cards1-33.png`, `public/gwent/img/cards1.png`), `public/cards2.png`(`card2.png`, `public/gwent/img/cards2.png`), `public/card100.png`(`card100_gemini.png`), `public/cards1_attack.png`, `public/cards2_attack.png`, `public/card100_attack.png` 전수 복구.
+     - 추가되었던 `public/movie_sheets_raw/` 및 `scripts/build_110_movie_character_sheets.py` 제거 및 프로덕션 서빙 디렉토리(`dist/`) 즉시 동기화.
+- **검증 및 보고**:
+  - `git diff 08dbc97d0` 기준 캐릭터 에셋 차이 0건 확인, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-27 21:27 KST] [Tailscale Funnel 서버(https://dayyoung-macbookpro.tail3717a4.ts.net) 최신 8등신 캐릭터 에셋 프로덕션 번들 반영 및 정적 에셋 ETag/no-cache 즉시 갱신 적용]
 - **요청 사항**:
   - `https://dayyoung-macbookpro.tail3717a4.ts.net` 접속 및 최신 빌드/에셋 서빙 상태 점검 및 갱신.
