@@ -16,7 +16,7 @@ import {
  type KadanRpgReward,
  type KadanRpgTile,
 } from '../content/kadanRpgStory';
-import { resolveKadanArtStyleUrl, useKadanRpgProgress } from '../hooks/useKadanRpgProgress';
+import { getUrlRequestedEpisode, resolveKadanArtStyleUrl, useKadanRpgProgress } from '../hooks/useKadanRpgProgress';
 import { useKadanRpgAutoRunner } from '../hooks/useKadanRpgAutoRunner';
 import { KadanWorldMap } from '../components/rpg/KadanWorldMap';
 import { KadanNpcDialog } from '../components/rpg/KadanNpcDialog';
@@ -125,6 +125,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  markEncounterCleared,
  markRewardClaimed,
  completeEvent,
+ jumpToChapter,
  resetProgress,
  reincarnateProgress,
  } = useKadanRpgProgress(currentSeason);
@@ -294,6 +295,61 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  setTargetTile(nextEvent?.tile ?? null);
  setDismissedEventId(null);
  }, [nextEvent, progress.currentChapterId, progress.currentRegionId, progress.rebirthLevel]);
+
+ const handleSelectChapter = useCallback((chapterNum: number) => {
+  const safeEp = Math.max(1, Math.min(KADAN_RPG_EVENTS.length, Math.floor(chapterNum)));
+  const targetEv = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === safeEp) ?? KADAN_RPG_EVENTS[0];
+  const targetReg = getKadanRpgRegion(targetEv.regionId);
+  setActiveEvent(targetEv);
+  setBattleEvent(null);
+  setRewardEvent(null);
+  setMediaPromptEvent(null);
+  setMediaPromptChapterReward(null);
+  setAmbushAlert(null);
+  setAmbushBattle(null);
+  setDismissedEventId(null);
+  setIsEndingDismissed(false);
+  isManualFieldMoveRef.current = false;
+  setHeroTile(clampTile(targetEv.tile, targetReg.width, targetReg.height));
+  setTargetTile(null);
+  jumpToChapter(safeEp);
+  try {
+   const url = new URL(window.location.href);
+   url.pathname = '/main';
+   url.searchParams.set('ep', String(safeEp));
+   window.history.replaceState({ view: 'main' }, '', `${url.pathname}${url.search}`);
+  } catch {}
+ }, [jumpToChapter]);
+
+ useEffect(() => {
+  const applyUrlEpisode = () => {
+   const requestedEp = getUrlRequestedEpisode();
+   if (requestedEp !== null) {
+    handleSelectChapter(requestedEp);
+   }
+  };
+  applyUrlEpisode();
+  window.addEventListener('popstate', applyUrlEpisode);
+  return () => window.removeEventListener('popstate', applyUrlEpisode);
+ }, [handleSelectChapter]);
+
+ useEffect(() => {
+  if (!nextEvent) return;
+  try {
+   const params = new URLSearchParams(window.location.search);
+   if (params.has('ep') || params.has('episode') || params.has('ch') || params.has('chapter')) {
+    const url = new URL(window.location.href);
+    url.pathname = '/main';
+    url.searchParams.set('ep', String(nextEvent.chapterNumber));
+    url.searchParams.delete('episode');
+    url.searchParams.delete('ch');
+    url.searchParams.delete('chapter');
+    if (`${window.location.pathname}${window.location.search}` !== `${url.pathname}${url.search}`) {
+     window.history.replaceState({ view: 'main' }, '', `${url.pathname}${url.search}`);
+    }
+   }
+  } catch {}
+ }, [nextEvent]);
 
  useEffect(() => {
   if (nextEvent?.id && nextEvent.id !== currentChapterLegId) {
@@ -1396,6 +1452,20 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  </span>
  </button>
  )}
+ <select
+ aria-label={language === 'ko' ? '회차 바로 이동' : 'Jump to Episode'}
+ value={nextEvent?.chapterNumber ?? 40}
+ onChange={(e) => handleSelectChapter(Number(e.target.value))}
+ className="min-h-[44px] h-10 shrink-0 rounded-sm border border-[#201d1d] bg-[#fdfcfc] px-2.5 text-xs font-bold text-[#201d1d] font-mono cursor-pointer hover:bg-[#f8f7f7]"
+ >
+ {KADAN_RPG_EVENTS.map((ev) => (
+ <option key={ev.id} value={ev.chapterNumber}>
+ {language === 'ko'
+ ? `제${ev.chapterNumber}화 · ${t(ev.chapterTitleKey, language)}`
+ : `EP.${ev.chapterNumber} · ${t(ev.chapterTitleKey, language)}`}
+ </option>
+ ))}
+ </select>
  <div className={cn(
  "relative inline-flex items-center justify-center overflow-hidden rounded-sm transition-all shrink-0",
  progress.autoMode ? "p-[2px] shadow-[0_0_10px_rgba(59,130,246,0.5)]" : ""

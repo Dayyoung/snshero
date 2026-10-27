@@ -2,6 +2,17 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-27 13:05 KST] [/main?ep=N 및 /play?ep=N URL 링크 접속 시 해당 회차(1~40화)부터 즉시 플레이 지원 구현]
+- **요청 사항**:
+  - "http://localhost:3000/play?ep=32 이렇게 링크로 접속하면 32화 부터 플레이 할 수 있게 해줄래"
+  - "http://localhost:3000/main?ep=32 이렇게 링크로 접속하면 32화 부터 플레이 할 수 있게 해줄래"
+- **주요 구현 및 수정 내역**:
+  1. **[`src/routes.ts`](file:///Users/dayyoung/project/snshero/src/routes.ts) & [`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx)**:
+     - `/main?ep=32`, `/main/ep-32` 및 `/play?ep=32`(`?ep=`, `?episode=`, `?ch=`, `?chapter=`)로 접속 시 스토리 RPG(`main` 뷰)로 라우팅되도록 연결하고, `App.tsx`의 URL 동기화 시 `main`/`play` 뷰의 쿼리 파라미터(`?ep=...`)가 제거되지 않고 보존되도록 수정.
+  2. **[`src/hooks/useKadanRpgProgress.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useKadanRpgProgress.ts) & [`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx)**:
+     - `getUrlRequestedEpisode()` 및 `buildChapterJumpProgress()` / `jumpToChapter()`를 구현하여 URL의 `ep=N`(`1~40`) 감지 시 `1~(N-1)`화를 완료 상태로 설정하고 `N`화 타일 위치 및 다이얼로그로 즉시 진입하도록 구현.
+     - 회차 클리어 후 다음 회차(`N+1`화)로 진행될 때 주소창의 `?ep=` 파라미터도 현재 회차 번호로 자동 갱신되며, 화면 하단 컨트롤 바에 `제1화 ~ 제40화` 즉시 이동 드롭다운 셀렉터 추가.
+
 ## [2026-10-27 12:16 KST] [굿즈샵(/mall) 전 상품 이미지 내 구버전 카드 디자인을 현행 SNSHero 카드 디자인으로 전면 교체 및 3D 원근·조명 합성 완료]
 - **요청 사항**:
   - "https://snshero.com/mall 에 이미지 중에 카드 이미지를 현행화 해서 이미지를 업데이트 하자."

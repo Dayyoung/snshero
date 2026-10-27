@@ -180,19 +180,90 @@ const normalizeProgress = (season: string, value: unknown): KadanRpgProgress => 
   };
 };
 
-export const loadKadanRpgProgress = (season: string): KadanRpgProgress => {
+export const getUrlRequestedEpisode = (): number | null => {
+  try {
+    if (typeof window === 'undefined') return null;
+    const path = (window.location.pathname || '').replace(/\/$/, '').toLowerCase();
+    const isStoryRoute =
+      path === '/main' ||
+      path.startsWith('/main/') ||
+      path === '/play' ||
+      path.startsWith('/play/');
+    if (!isStoryRoute) return null;
+
+    const params = new URLSearchParams(window.location.search);
+    const epParam =
+      params.get('ep') ||
+      params.get('episode') ||
+      params.get('ch') ||
+      params.get('chapter');
+    if (epParam) {
+      const parsed = parseInt(epParam, 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= KADAN_RPG_EVENTS.length) {
+        return parsed;
+      }
+    }
+
+    const pathMatch = path.match(/^\/(?:main|play)\/(?:ep[-_]?)?(\d+)$/i);
+    if (pathMatch) {
+      const parsed = parseInt(pathMatch[1], 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= KADAN_RPG_EVENTS.length) {
+        return parsed;
+      }
+    }
+  } catch {
+    // ignore URL parse errors
+  }
+  return null;
+};
+
+export const buildChapterJumpProgress = (
+  season: string,
+  previous: KadanRpgProgress,
+  targetChapterNumber: number
+): KadanRpgProgress => {
+  const safeEp = Math.max(1, Math.min(KADAN_RPG_EVENTS.length, Math.floor(targetChapterNumber)));
+  const targetEvent =
+    KADAN_RPG_EVENTS.find((event) => event.chapterNumber === safeEp) ?? KADAN_RPG_EVENTS[0];
+  const prevEvent = KADAN_RPG_EVENTS.find((event) => event.chapterNumber === safeEp - 1);
+  const completedChapterIds = KADAN_RPG_EVENTS
+    .filter((event) => event.chapterNumber < safeEp)
+    .map((event) => event.id);
+  const clearedEncounterIds = KADAN_RPG_EVENTS
+    .filter((event) => event.chapterNumber < safeEp)
+    .map((event) => event.encounterId || `enc-ch${String(event.chapterNumber).padStart(2, '0')}`);
+
+  return {
+    ...previous,
+    season,
+    currentRegionId: targetEvent.regionId,
+    currentChapterId: targetEvent.id,
+    completedChapterIds,
+    clearedEncounterIds: Array.from(new Set([...previous.clearedEncounterIds, ...clearedEncounterIds])),
+    lastTile: targetEvent.tile,
+    lastAutoEventId: prevEvent?.id,
+    updatedAt: Date.now(),
+  };
+};
+
+export const loadKadanRpgProgress = (season: string, applyUrlEpisode = false): KadanRpgProgress => {
   const raw = getSeasonItem(KADAN_RPG_PROGRESS_STORAGE_KEY, season);
   const autoModeRaw = getSeasonItem(KADAN_RPG_AUTO_MODE_STORAGE_KEY, season);
   const globalArtStyleRaw =
     typeof window !== 'undefined' ? localStorage.getItem(KADAN_RPG_ART_STYLE_STORAGE_KEY) : null;
+  const requestedEp = applyUrlEpisode ? getUrlRequestedEpisode() : null;
 
   if (!raw) {
     const base = createDefaultProgress(season);
-    return {
+    const initial: KadanRpgProgress = {
       ...base,
       autoMode: autoModeRaw === null ? base.autoMode : autoModeRaw === 'true',
       artStyleMode: globalArtStyleRaw === 'liveaction' ? 'liveaction' : base.artStyleMode,
     };
+    if (requestedEp !== null) {
+      return saveKadanRpgProgress(season, buildChapterJumpProgress(season, initial, requestedEp));
+    }
+    return initial;
   }
 
   try {
@@ -201,13 +272,21 @@ export const loadKadanRpgProgress = (season: string): KadanRpgProgress => {
       globalArtStyleRaw === 'liveaction' || globalArtStyleRaw === 'animation'
         ? globalArtStyleRaw
         : parsed.artStyleMode;
-    return {
+    const loaded: KadanRpgProgress = {
       ...parsed,
       autoMode: autoModeRaw === null ? parsed.autoMode : autoModeRaw === 'true',
       artStyleMode: resolvedArtStyle,
     };
+    if (requestedEp !== null) {
+      return saveKadanRpgProgress(season, buildChapterJumpProgress(season, loaded, requestedEp));
+    }
+    return loaded;
   } catch {
-    return createDefaultProgress(season);
+    const fallback = createDefaultProgress(season);
+    if (requestedEp !== null) {
+      return saveKadanRpgProgress(season, buildChapterJumpProgress(season, fallback, requestedEp));
+    }
+    return fallback;
   }
 };
 
@@ -234,7 +313,7 @@ export const getRebirthLevel = (season?: string): number => {
   try {
     if (typeof window === 'undefined') return 0;
     const currentSeason = season || localStorage.getItem('hero_current_season') || 'season1';
-    const progress = loadKadanRpgProgress(currentSeason);
+    const progress = loadKadanRpgProgress(currentSeason, false);
     return progress?.rebirthLevel ?? 0;
   } catch {
     return 0;
@@ -246,10 +325,10 @@ export const getNextKadanRpgEvent = (progress: KadanRpgProgress) => (
 );
 
 export const useKadanRpgProgress = (season: string) => {
-  const [progress, setProgress] = useState<KadanRpgProgress>(() => loadKadanRpgProgress(season));
+  const [progress, setProgress] = useState<KadanRpgProgress>(() => loadKadanRpgProgress(season, true));
 
   useEffect(() => {
-    setProgress(loadKadanRpgProgress(season));
+    setProgress(loadKadanRpgProgress(season, true));
   }, [season]);
 
   useEffect(() => {
@@ -388,6 +467,12 @@ export const useKadanRpgProgress = (season: string) => {
     });
   }, [persist]);
 
+  const jumpToChapter = useCallback((targetChapterNumber: number) => {
+    setProgress((previous) =>
+      saveKadanRpgProgress(season, buildChapterJumpProgress(season, previous, targetChapterNumber))
+    );
+  }, [season]);
+
   const resetProgress = useCallback(() => {
     setProgress((previous) => {
       const base = createDefaultProgress(season);
@@ -433,6 +518,7 @@ export const useKadanRpgProgress = (season: string) => {
     markEncounterCleared,
     markRewardClaimed,
     completeEvent,
+    jumpToChapter,
     resetProgress,
     reincarnateProgress,
   };

@@ -1831,11 +1831,22 @@ function AppContent() {
     }
 
     // Preserve search params for specific views if present
-    if ((view === 'prediction-market' || view === 'webtoon' || view === 'share' || view === 'movie' || view === 'cinema' || view === 'anime' || view === 'novel') && window.location.search) {
+    const shouldPreserveSearch =
+      view === 'main' ||
+      view === 'play' ||
+      view === 'prediction-market' ||
+      view === 'webtoon' ||
+      view === 'share' ||
+      view === 'movie' ||
+      view === 'cinema' ||
+      view === 'anime' ||
+      view === 'novel';
+
+    if (shouldPreserveSearch && window.location.search) {
       targetPath += window.location.search;
     }
 
-    const currentFullUrl = currentPath + ((view === 'prediction-market' || view === 'webtoon' || view === 'share' || view === 'movie' || view === 'cinema' || view === 'anime' || view === 'novel') ? window.location.search : '');
+    const currentFullUrl = currentPath + (shouldPreserveSearch ? window.location.search : '');
     if (currentFullUrl !== targetPath) {
       window.history.pushState({ view }, '', targetPath);
     }

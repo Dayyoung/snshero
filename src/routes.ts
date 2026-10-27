@@ -440,6 +440,13 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
   if (cleanPath.startsWith('/novel/s1-') || cleanPath.startsWith('/book/')) return 'novel';
   if (cleanPath.startsWith('/movie/') || cleanPath.startsWith('/animation/')) return 'movie';
   if (cleanPath.startsWith('/cinema/') || cleanPath.startsWith('/live-cinema/')) return 'cinema';
+  if (cleanPath.startsWith('/main/')) return 'main';
+  if (
+    cleanPath === '/play' &&
+    (params.get('ep') || params.get('episode') || params.get('ch') || params.get('chapter'))
+  ) {
+    return 'main';
+  }
   if (cleanPath.startsWith('/gotest')) return 'home';
   if (cleanPath === '/gwent' || cleanPath.startsWith('/gwent/')) return 'gwent';
 
