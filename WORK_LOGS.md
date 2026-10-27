@@ -16510,3 +16510,7 @@
   - 110장 풀세트(`s-s-heroes-110-card-unique-heroes-deck-collectible-card-game`) 및 11개 종족별 10장 덱(`s-s-heroes-deck-water` ~ `s-s-heroes-deck-dragon`, 한국어/영어 총 48개 HTML 파일)의 `<media-gallery>` 슬라이드쇼 및 줌 프리뷰(`deck_{faction}.png`, `deck_{faction}_2.png`) 복구 완료.
   - `public/mall/*` 변경사항을 `dist/mall/`에 즉시 동기화하여 `http://localhost:3000/mall/products/s-s-heroes-deck-human?variant=49548125470905` 접속 시 상품 미리보기 화면이 정상 표시됨을 검증 완료.
 - **보고 완료**: 연동 구글 폼 작업완료 보고서 제출 완료 (`51d90f334`).
+
+### [2026-10-27 13:59 KST] `/git-push` 원격 저장소(`origin main`) 푸시 완료
+- **작업 내용**: 인게임 카드 프레임 디자인 동기화, 히어로 머그컵 원통 곡률 양각 정렬, 110장 풀세트(`$300.00`, 10% 할인) 및 11개 종족별 10장 덱(`$30.00`) 상품 추가, 상세화면 `<media-gallery>` 미리보기 이미지 복구 등 로컬 커밋 내역을 `origin main`에 푸시 완료.
+- **보고 완료**: 연동 구글 폼 작업완료 보고서 제출 완료.
