@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-27 20:48 KST] [110종 전 캐릭터 SD(2~3등신) → 8등신 극장판 다크판타지 애니메이션 캐릭터 시트(11장×10명) 전면 교체 및 공격 모션 시트 전수 재생성 완료]
+- **요청 사항**:
+  - "기존 캐릭터 이미지가 너무 단순하고 귀여워서 이제는 극장판 만화 수준으로 8등신으로 캐릭터시트를 11장으로 1장당 10명씩 그려서 이를 잘라서 캐릭터 시트를 만들자. 캐릭터 특성은 소설에 나오는 캐릭터 설정을 그대로 유지하자. 여자 캐릭터는 글래머러스하게 매력적으로 그려줘"
+  - "캐릭터가 변경되었으니, 공격모션도 다시 만들어야겠지"
+- **주요 구현 및 수정 내역**:
+  1. **11종 마스터 캐릭터 시트(시트당 10명 = 총 110명) 8등신 극장판 다크판타지 애니메이션 화풍 제작 및 아카이빙 (`public/movie_sheets_raw/01_water.jpg` ~ `11_dragon.jpg`)**:
+     - 웹소설 『카단의 여정』 세계관 및 110종 캐릭터별 고유 무기·갑주·속성·외형 설정을 유지하면서 기존의 2~3등신 SD 비율을 8등신 극장판 애니메이션 비율로 전면 리마스터하고, 여성 캐릭터(니아, 카이라, 실피드, 가이아, 에스피나, 카라, 리리스, 모르가나, 실리아, 루나, 알레리아, 티란데, 메두사 등)는 글래머러스하고 매혹적인 실루엣과 화려한 코스튬 디테일로 제작.
+  2. **정밀 배경 제거·바닥선/단상 클린업 및 110종 개별 투명 스프라이트·진영별 시트·통합 스프라이트 시트 일괄 생성 ([`scripts/build_110_movie_character_sheets.py`](file:///Users/dayyoung/project/snshero/scripts/build_110_movie_character_sheets.py))**:
+     - `public/seat/{Character_Name}.png` (110종 개별 `256x296` RGBA 투명 컷아웃) 전수 교체.
+     - `public/character_sheet_{water,fire,wind,earth,human,undead,elf,hobbit,beast,mecha,dragon}.png` (11종 진영별 `2560x296` RGBA 마스터 시트) 전수 갱신.
+     - `public/cards1.png`(`cards1-1.png`, `cards1-2.png`, `cards1-33.png`, `public/gwent/img/cards1.png`), `public/cards2.png`(`card2.png`, `public/gwent/img/cards2.png`), `public/card100.png`(`card100_gemini.png`) 통합 스프라이트 시트 전수 동기화.
+  3. **신규 8등신 캐릭터 스프라이트 기반 110종 전 캐릭터 공격 모션 이미지 및 공격 스프라이트 시트 전면 재생성 ([`scripts/generate_110_attack_motions.py`](file:///Users/dayyoung/project/snshero/scripts/generate_110_attack_motions.py))**:
+     - `public/seat_attack/{Character_Name}.png` (110종 개별 `256x296` RGBA 공격 모션 컷아웃) 및 `public/characters/animations/card-001.webp` ~ `card-110.webp` 전수 재생성.
+     - `public/cards1_attack.png`, `public/cards2_attack.png`, `public/card100_attack.png` 공격 모션 통합 스프라이트 시트 전수 재생성 완료.
+- **검증 및 보고**:
+  - 11종 캐릭터 시트 및 공격 모션 시트 시각 검수 완료, `npx tsc --noEmit` 및 `npm run lint` 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-27 13:05 KST] [/main?ep=N 및 /play?ep=N URL 링크 접속 시 해당 회차(1~40화)부터 즉시 플레이 지원 구현]
 - **요청 사항**:
   - "http://localhost:3000/play?ep=32 이렇게 링크로 접속하면 32화 부터 플레이 할 수 있게 해줄래"
