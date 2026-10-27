@@ -16502,3 +16502,11 @@
   - 이에 따라 카드 상단 테두리(`◆ BRONZE Lv.1 · [2] · ⚡11`)는 바로 위 **머그컵 입구(림) 라운드**와 좌우 여백 편차 없이 100% 평행하게 휘어지고, 카드 하단 테두리(`#041 · [1] · ★ ★ BRONZE`)는 바로 아래 **`SSS HERO .COM` 라벨 및 컵 바닥 라운드**와 동일한 곡률로 휘어지도록 수정했습니다.
   - 브라우저 캐시 즉시 갱신을 위해 `public/mall` 및 `dist/mall` 전체 HTML 내 `1.png?v=20261027_3` 쿼리를 동기화했습니다.
 - **검증 및 보고**: 이미지 시각 검증 완료, 구글 폼 보고서 제출 및 로컬 커밋 완료.
+
+### [2026-10-27 13:47 KST] 종족별 10장 덱 및 110장 풀세트 상품 상세화면 미디어 갤러리(미리보기 이미지) 복구 완료
+- **원인 분석**: 상품 상세 HTML 생성 시 `<sticky-add-to-cart>` 내부의 첫 번째 `<div ref="priceContainer">`부터 우측 컬럼의 `</product-price>`까지 `re.DOTALL` 정규식이 매칭되면서 두 태그 사이에 위치한 좌측 `<media-gallery>`(상품 이미지 슬라이드쇼)와 `<h1>` 상품명 블록이 함께 치환되어 누락됨.
+- **조치 내용**:
+  - `<product-price[^>]*>\s*<div ref="priceContainer">.*?</product-price>`로 정규식 앵커를 명확히 제한하여 `<sticky-add-to-cart>` 및 `<media-gallery>` 영역이 100% 보존되도록 수정.
+  - 110장 풀세트(`s-s-heroes-110-card-unique-heroes-deck-collectible-card-game`) 및 11개 종족별 10장 덱(`s-s-heroes-deck-water` ~ `s-s-heroes-deck-dragon`, 한국어/영어 총 48개 HTML 파일)의 `<media-gallery>` 슬라이드쇼 및 줌 프리뷰(`deck_{faction}.png`, `deck_{faction}_2.png`) 복구 완료.
+  - `public/mall/*` 변경사항을 `dist/mall/`에 즉시 동기화하여 `http://localhost:3000/mall/products/s-s-heroes-deck-human?variant=49548125470905` 접속 시 상품 미리보기 화면이 정상 표시됨을 검증 완료.
+- **보고 완료**: 연동 구글 폼 작업완료 보고서 제출 완료 (`51d90f334`).
