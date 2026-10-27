@@ -1,4 +1,4 @@
-import { ViewType } from '../types';
+import { GoodsType, ViewType } from '../types';
 
 export const SNS_ECONOMY_COSTS = {
   cardPack: {
@@ -23,7 +23,9 @@ export const SNS_ECONOMY_COSTS = {
   },
   goods: {
     mugUsd: 10,
-    tshirtUsd: 35,
+    tshirtUsd: 30,
+    deckBundleUsd: 300,
+    deckFactionUsd: 30,
     snsPerUsd: 1000,
   },
 } as const;
@@ -50,7 +52,7 @@ export const SNS_ECONOMY_EARNINGS = {
   },
 } as const;
 
-export type GoodsSpendType = 'mug' | 'tshirt';
+export type GoodsSpendType = GoodsType;
 
 export interface SpendRecoveryRoute {
   view: ViewType;
@@ -72,9 +74,9 @@ export const getSkillUpgradeCost = (level: number): number => {
 export const getSkillResetCost = (): number => SNS_ECONOMY_COSTS.skill.reset;
 
 export const getGoodsUnitUsdPrice = (goodsType: GoodsSpendType): number => {
-  return goodsType === 'mug'
-    ? SNS_ECONOMY_COSTS.goods.mugUsd
-    : SNS_ECONOMY_COSTS.goods.tshirtUsd;
+  if (goodsType === 'mug') return SNS_ECONOMY_COSTS.goods.mugUsd;
+  if (goodsType === 'deck') return SNS_ECONOMY_COSTS.goods.deckBundleUsd;
+  return SNS_ECONOMY_COSTS.goods.deckFactionUsd;
 };
 
 export const getGoodsSnsCost = (goodsType: GoodsSpendType, quantity: number): number => {

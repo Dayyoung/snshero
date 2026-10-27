@@ -15,10 +15,99 @@
   const PRODUCTS_DB = {
     deck: {
       id: "deck",
-      nameKo: "1. S&S Heroes 컬렉터블 카드 게임 - 110장 유니크 히어로",
-      nameEn: "1. S&S Heroes Collectible Card Game - 110 Unique Heroes",
-      price: 30,
+      nameKo: "1. S&S Heroes 컬렉터블 카드 게임 - 110장 올인원 풀세트 (10% 할인)",
+      nameEn: "1. S&S Heroes Collectible Card Game - 110-Card Complete Set (10% OFF)",
+      price: 300,
+      compareAtPrice: 330,
       img: "/mall/cdn/shop/files/card.png",
+      hasSize: false
+    },
+    deck_water: {
+      id: "deck_water",
+      nameKo: "S&S Heroes 캐릭터 타입 덱 [워터 엘레멘탈] 10장 세트 (#001~#010)",
+      nameEn: "S&S Heroes Character Type Deck [Water Elemental] 10-Card Set (#001-#010)",
+      price: 30,
+      img: "/mall/cdn/shop/files/deck_water.png",
+      hasSize: false
+    },
+    deck_fire: {
+      id: "deck_fire",
+      nameKo: "S&S Heroes 캐릭터 타입 덱 [파이어 엘레멘탈] 10장 세트 (#011~#020)",
+      nameEn: "S&S Heroes Character Type Deck [Fire Elemental] 10-Card Set (#011-#020)",
+      price: 30,
+      img: "/mall/cdn/shop/files/deck_fire.png",
+      hasSize: false
+    },
+    deck_wind: {
+      id: "deck_wind",
+      nameKo: "S&S Heroes 캐릭터 타입 덱 [윈드 엘레멘탈] 10장 세트 (#021~#030)",
+      nameEn: "S&S Heroes Character Type Deck [Wind Elemental] 10-Card Set (#021-#030)",
+      price: 30,
+      img: "/mall/cdn/shop/files/deck_wind.png",
+      hasSize: false
+    },
+    deck_earth: {
+      id: "deck_earth",
+      nameKo: "S&S Heroes 캐릭터 타입 덱 [어스 엘레멘탈] 10장 세트 (#031~#040)",
+      nameEn: "S&S Heroes Character Type Deck [Earth Elemental] 10-Card Set (#031-#040)",
+      price: 30,
+      img: "/mall/cdn/shop/files/deck_earth.png",
+      hasSize: false
+    },
+    deck_human: {
+      id: "deck_human",
+      nameKo: "S&S Heroes 캐릭터 타입 덱 [휴먼 워리어] 10장 세트 (#041~#050)",
+      nameEn: "S&S Heroes Character Type Deck [Human Warrior] 10-Card Set (#041-#050)",
+      price: 30,
+      img: "/mall/cdn/shop/files/deck_human.png",
+      hasSize: false
+    },
+    deck_undead: {
+      id: "deck_undead",
+      nameKo: "S&S Heroes 캐릭터 타입 덱 [언데드 섀도우] 10장 세트 (#051~#060)",
+      nameEn: "S&S Heroes Character Type Deck [Undead Shadow] 10-Card Set (#051-#060)",
+      price: 30,
+      img: "/mall/cdn/shop/files/deck_undead.png",
+      hasSize: false
+    },
+    deck_elf: {
+      id: "deck_elf",
+      nameKo: "S&S Heroes 캐릭터 타입 덱 [엘프 미스틱 메이지] 10장 세트 (#061~#070)",
+      nameEn: "S&S Heroes Character Type Deck [Elf Mystic Mage] 10-Card Set (#061-#070)",
+      price: 30,
+      img: "/mall/cdn/shop/files/deck_elf.png",
+      hasSize: false
+    },
+    deck_dwarf: {
+      id: "deck_dwarf",
+      nameKo: "S&S Heroes 캐릭터 타입 덱 [드워프 포지 가디언] 10장 세트 (#071~#080)",
+      nameEn: "S&S Heroes Character Type Deck [Dwarf Forge Guardians] 10-Card Set (#071-#080)",
+      price: 30,
+      img: "/mall/cdn/shop/files/deck_dwarf.png",
+      hasSize: false
+    },
+    deck_monster: {
+      id: "deck_monster",
+      nameKo: "S&S Heroes 캐릭터 타입 덱 [비스트 & 몬스터] 10장 세트 (#081~#090)",
+      nameEn: "S&S Heroes Character Type Deck [Beast & Monster] 10-Card Set (#081-#090)",
+      price: 30,
+      img: "/mall/cdn/shop/files/deck_monster.png",
+      hasSize: false
+    },
+    deck_robot: {
+      id: "deck_robot",
+      nameKo: "S&S Heroes 캐릭터 타입 덱 [로봇 & 메카] 10장 세트 (#091~#100)",
+      nameEn: "S&S Heroes Character Type Deck [Robot & Mecha] 10-Card Set (#091-#100)",
+      price: 30,
+      img: "/mall/cdn/shop/files/deck_robot.png",
+      hasSize: false
+    },
+    deck_dragon: {
+      id: "deck_dragon",
+      nameKo: "S&S Heroes 캐릭터 타입 덱 [에이션트 드래곤] 10장 세트 (#101~#110)",
+      nameEn: "S&S Heroes Character Type Deck [Ancient Dragon] 10-Card Set (#101-#110)",
+      price: 30,
+      img: "/mall/cdn/shop/files/deck_dragon.png",
       hasSize: false
     },
     table: {
@@ -47,6 +136,21 @@
     }
   };
 
+  const FACTION_KEYS = ["water", "fire", "wind", "earth", "human", "undead", "elf", "dwarf", "monster", "robot", "dragon"];
+  const FACTION_VARIANT_MAP = {
+    "49548125470901": "deck_water",
+    "49548125470902": "deck_fire",
+    "49548125470903": "deck_wind",
+    "49548125470904": "deck_earth",
+    "49548125470905": "deck_human",
+    "49548125470906": "deck_undead",
+    "49548125470907": "deck_elf",
+    "49548125470908": "deck_dwarf",
+    "49548125470909": "deck_monster",
+    "49548125470910": "deck_robot",
+    "49548125470911": "deck_dragon"
+  };
+
   let currentOrderState = {
     productId: "table",
     quantity: 1,
@@ -66,12 +170,23 @@
 
   function getProductTypeFromPage() {
     const path = decodeURIComponent((window.location.pathname + window.location.search).toLowerCase());
+    for (const [vId, pKey] of Object.entries(FACTION_VARIANT_MAP)) {
+      if (path.includes(vId)) return pKey;
+    }
+    for (const fKey of FACTION_KEYS) {
+      if (path.includes(`deck-${fKey}`) || path.includes(`deck_${fKey}`)) {
+        return `deck_${fKey}`;
+      }
+    }
     if (path.includes("mug") || path.includes("머그컵") || path.includes("%eb%a8%b8%ea%b7%b8%ec%bb%b5")) return "mug";
     if (path.includes("tshirt") || path.includes("t-shirt") || path.includes("티셔츠") || path.includes("%ed%8b%b0%ec%85%94%ec%b8%a0")) return "tshirt";
     if (path.includes("table") || path.includes("게임테이블") || path.includes("%ea%b2%8c%ec%9e%84%ed%85%8c%ec%9d%b4%eb%b8%94") || path.includes("49555810484362")) return "table";
     if (path.includes("deck") || path.includes("110-card") || path.includes("110") || path.includes("49548125470858")) return "deck";
     
     const title = (document.title || "").toLowerCase();
+    for (const fKey of FACTION_KEYS) {
+      if (title.includes(`deck-${fKey}`) || title.includes(`[${fKey}`)) return `deck_${fKey}`;
+    }
     if (title.includes("머그컵") || title.includes("mug")) return "mug";
     if (title.includes("티셔츠") || title.includes("t-shirt") || title.includes("shirt")) return "tshirt";
     if (title.includes("테이블") || title.includes("table")) return "table";
@@ -335,6 +450,7 @@
     const product = PRODUCTS_DB[currentOrderState.productId] || PRODUCTS_DB.table;
     const isEn = isEnglishPage();
     const total = (product.price * currentOrderState.quantity).toFixed(2);
+    const compareTotal = product.compareAtPrice ? (product.compareAtPrice * currentOrderState.quantity).toFixed(2) : null;
 
     const imgElem = document.getElementById('snshero-modal-product-img');
     const titleElem = document.getElementById('snshero-modal-product-title');
@@ -346,7 +462,13 @@
     if (imgElem) imgElem.src = product.img;
     if (titleElem) titleElem.innerText = isEn ? product.nameEn : product.nameKo;
     if (qtyElem) qtyElem.innerText = currentOrderState.quantity.toString();
-    if (priceElem) priceElem.innerText = `$${total}`;
+    if (priceElem) {
+      if (compareTotal) {
+        priceElem.innerHTML = `<span style="font-size:11px;color:#888;text-decoration:line-through;display:block;">$${compareTotal}</span>$${total} <span style="font-size:10px;background:#b91c1c;color:#fff;padding:1px 4px;border-radius:2px;">10% OFF</span>`;
+      } else {
+        priceElem.innerText = `$${total}`;
+      }
+    }
     if (finalAmountElem) finalAmountElem.innerText = `$${total} USD`;
 
     if (sizeContainer) {
@@ -666,14 +788,29 @@
         e.preventDefault();
         e.stopPropagation();
 
-        const productCard = buyElem.closest('[data-product-handle], .card-wrapper, .product-card, .grid__item');
-        let pType = null;
-        if (productCard) {
-          const handle = (productCard.getAttribute('data-product-handle') || productCard.innerText || '').toLowerCase();
-          if (handle.includes('mug') || handle.includes('머그')) pType = 'mug';
-          else if (handle.includes('shirt') || handle.includes('티셔츠')) pType = 'tshirt';
-          else if (handle.includes('table') || handle.includes('테이블')) pType = 'table';
-          else if (handle.includes('deck') || handle.includes('110')) pType = 'deck';
+        let pType = buyElem.getAttribute('data-product-type') || null;
+        if (!pType) {
+          const productCard = buyElem.closest('[data-product-type], [data-product-handle], .card-wrapper, .product-card, .grid__item');
+          if (productCard) {
+            const explicitType = productCard.getAttribute('data-product-type');
+            if (explicitType) {
+              pType = explicitType;
+            } else {
+              const handle = (productCard.getAttribute('data-product-handle') || productCard.innerHTML || productCard.innerText || '').toLowerCase();
+              for (const fKey of FACTION_KEYS) {
+                if (handle.includes(`deck-${fKey}`) || handle.includes(`deck_${fKey}`)) {
+                  pType = `deck_${fKey}`;
+                  break;
+                }
+              }
+              if (!pType) {
+                if (handle.includes('mug') || handle.includes('머그')) pType = 'mug';
+                else if (handle.includes('shirt') || handle.includes('티셔츠')) pType = 'tshirt';
+                else if (handle.includes('table') || handle.includes('테이블')) pType = 'table';
+                else if (handle.includes('deck') || handle.includes('110')) pType = 'deck';
+              }
+            }
+          }
         }
 
         openCheckoutModal(pType);
@@ -726,6 +863,7 @@
     init();
   }
 
+  window.SNSHeroOpenCheckout = openCheckoutModal;
   setInterval(initLanguageSelectors, 1000);
   setInterval(cleanShopifyDynamicText, 1000);
 

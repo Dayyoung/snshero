@@ -117,6 +117,68 @@ const GOODS_ORDERS_STORAGE_KEY = 'hero_goods_orders';
 const REFUND_ELIGIBLE_PAYMENT_METHODS: GoodsPaymentMethod[] = ['dollar', 'paypal', 'payoneer', 'card', 'applepay', 'simplePay'];
 const REFUND_REASON_OPTIONS: RefundRequestReason[] = ['accidental_purchase', 'wrong_item', 'delivery_issue', 'other'];
 
+const FACTION_DECK_ITEMS: Array<{
+  type: GoodsType;
+  key: string;
+  labelKo: string;
+  labelEn: string;
+  range: string;
+  img: string;
+}> = [
+  { type: 'deck_water', key: 'water', labelKo: '물의 원소 영웅 덱 (10장)', labelEn: 'Water Elemental Deck (10 Cards)', range: '#001~#010', img: '/mall/cdn/shop/files/deck_water.png' },
+  { type: 'deck_fire', key: 'fire', labelKo: '불의 원소 영웅 덱 (10장)', labelEn: 'Fire Elemental Deck (10 Cards)', range: '#011~#020', img: '/mall/cdn/shop/files/deck_fire.png' },
+  { type: 'deck_wind', key: 'wind', labelKo: '바람의 원소 영웅 덱 (10장)', labelEn: 'Wind Elemental Deck (10 Cards)', range: '#021~#030', img: '/mall/cdn/shop/files/deck_wind.png' },
+  { type: 'deck_earth', key: 'earth', labelKo: '대지의 원소 영웅 덱 (10장)', labelEn: 'Earth Elemental Deck (10 Cards)', range: '#031~#040', img: '/mall/cdn/shop/files/deck_earth.png' },
+  { type: 'deck_human', key: 'human', labelKo: '인간 전사 영웅 덱 (10장)', labelEn: 'Human Warrior Deck (10 Cards)', range: '#041~#050', img: '/mall/cdn/shop/files/deck_human.png' },
+  { type: 'deck_undead', key: 'undead', labelKo: '언데드 암흑 영웅 덱 (10장)', labelEn: 'Undead Shadow Deck (10 Cards)', range: '#051~#060', img: '/mall/cdn/shop/files/deck_undead.png' },
+  { type: 'deck_elf', key: 'elf', labelKo: '엘프 마법사 영웅 덱 (10장)', labelEn: 'Elf Mystic Mage Deck (10 Cards)', range: '#061~#070', img: '/mall/cdn/shop/files/deck_elf.png' },
+  { type: 'deck_dwarf', key: 'dwarf', labelKo: '드워프 수호자 영웅 덱 (10장)', labelEn: 'Dwarf Guardian Deck (10 Cards)', range: '#071~#080', img: '/mall/cdn/shop/files/deck_dwarf.png' },
+  { type: 'deck_monster', key: 'monster', labelKo: '야수 & 몬스터 영웅 덱 (10장)', labelEn: 'Beast & Monster Deck (10 Cards)', range: '#081~#090', img: '/mall/cdn/shop/files/deck_monster.png' },
+  { type: 'deck_robot', key: 'robot', labelKo: '로봇 & 메카 영웅 덱 (10장)', labelEn: 'Robot & Mecha Deck (10 Cards)', range: '#091~#100', img: '/mall/cdn/shop/files/deck_robot.png' },
+  { type: 'deck_dragon', key: 'dragon', labelKo: '고대 드래곤 영웅 덱 (10장)', labelEn: 'Ancient Dragon Deck (10 Cards)', range: '#101~#110', img: '/mall/cdn/shop/files/deck_dragon.png' },
+];
+
+function getGoodsUnitPriceUsd(goodsType: GoodsType | null): number {
+  if (!goodsType) return 30;
+  if (goodsType === 'mug') return 10;
+  if (goodsType === 'deck') return 300;
+  return 30;
+}
+
+function getGoodsDisplayLabel(goodsType: GoodsType | null, language: Language): string {
+  const isKo = language === 'ko';
+  if (!goodsType) return isKo ? '히어로 굿즈' : 'Hero Goods';
+  if (goodsType === 'mug') return isKo ? '히어로 커스텀 머그컵' : 'Custom Mug Cup';
+  if (goodsType === 'tshirt') return isKo ? '히어로 커스텀 티셔츠' : 'Custom T-Shirt';
+  if (goodsType === 'table') return isKo ? '히어로 게임테이블' : 'Hero Game Table';
+  if (goodsType === 'deck') return isKo ? '110장 올인원 풀세트 (10% 할인)' : '110-Card Complete Set (10% OFF)';
+  const found = FACTION_DECK_ITEMS.find((item) => item.type === goodsType);
+  if (found) return isKo ? `${found.labelKo} [${found.range}]` : `${found.labelEn} [${found.range}]`;
+  return isKo ? '히어로 카드 덱' : 'Hero Card Deck';
+}
+
+function getGoodsPreviewImage(goodsType: GoodsType | null): string | null {
+  if (!goodsType) return null;
+  if (goodsType === 'deck') return '/mall/cdn/shop/files/card.png';
+  if (goodsType === 'table') return '/mall/cdn/shop/files/pan.png';
+  const found = FACTION_DECK_ITEMS.find((item) => item.type === goodsType);
+  if (found) return found.img;
+  return null;
+}
+
+function resolveGoodsTypeFromString(raw: string): GoodsType {
+  const gType = raw.toLowerCase();
+  for (const item of FACTION_DECK_ITEMS) {
+    if (gType.includes(`deck_${item.key}`) || gType.includes(`deck-${item.key}`)) {
+      return item.type;
+    }
+  }
+  if (gType.includes('mug') || gType.includes('머그')) return 'mug';
+  if (gType.includes('table') || gType.includes('테이블')) return 'table';
+  if (gType.includes('deck') || gType.includes('110') || gType.includes('카드')) return 'deck';
+  return 'tshirt';
+}
+
 function loadStoredGoodsOrders(): GoodsOrder[] {
   if (typeof window === 'undefined') return [];
 
@@ -132,9 +194,16 @@ function loadStoredGoodsOrders(): GoodsOrder[] {
         if (!order || typeof order !== 'object') return null;
         const candidate = order as Partial<GoodsOrder> & {
           itemName?: string;
+          productName?: string;
+          productType?: string;
+          totalPriceUsd?: number;
+          buyerAddress?: string;
+          buyerCountry?: string;
+          buyerEmail?: string;
           price?: string;
           quantity?: number;
           goodsSize?: 'S' | 'M' | 'L';
+          size?: 'S' | 'M' | 'L';
           paymentMethod?: string;
           cardId?: number;
           cardName?: string;
@@ -147,35 +216,38 @@ function loadStoredGoodsOrders(): GoodsOrder[] {
           season?: string;
         };
 
-        if (typeof candidate.itemName !== 'string' || typeof candidate.timestamp !== 'number') return null;
+        const resolvedItemName = candidate.itemName || candidate.productName;
+        if (typeof resolvedItemName !== 'string' || typeof candidate.timestamp !== 'number') return null;
 
         const paymentMethod = (typeof candidate.paymentMethod === 'string' ? candidate.paymentMethod : 'dollar') as GoodsPaymentMethod;
         const inferredAmountUsd = typeof candidate.amountUsd === 'number'
           ? candidate.amountUsd
+          : typeof candidate.totalPriceUsd === 'number'
+          ? candidate.totalPriceUsd
           : (() => {
               if (typeof candidate.price !== 'string') return 0;
               const match = candidate.price.match(/\$([0-9]+(?:\.[0-9]+)?)/);
               return match ? Number(match[1]) : 0;
             })();
         const goodsType: GoodsType = candidate.goodsType
-          ?? (candidate.itemName.toLowerCase().includes('shirt') ? 'tshirt' : 'mug');
+          ?? (candidate.productType ? resolveGoodsTypeFromString(candidate.productType) : resolveGoodsTypeFromString(resolvedItemName));
 
         return {
           orderId: typeof candidate.orderId === 'string' && candidate.orderId.trim()
             ? candidate.orderId
             : `legacy-goods-${candidate.timestamp}-${index}`,
           buyerName: candidate.buyerName ?? '',
-          shippingAddress: candidate.shippingAddress ?? '',
-          country: candidate.country ?? 'ko',
-          itemName: candidate.itemName,
+          shippingAddress: candidate.shippingAddress ?? candidate.buyerAddress ?? '',
+          country: candidate.country ?? candidate.buyerCountry ?? 'ko',
+          itemName: resolvedItemName,
           goodsType,
           quantity: typeof candidate.quantity === 'number' ? candidate.quantity : 1,
-          goodsSize: candidate.goodsSize,
+          goodsSize: candidate.goodsSize ?? candidate.size,
           price: candidate.price ?? (inferredAmountUsd > 0 ? `$${inferredAmountUsd} USD` : '$0 USD'),
           paymentMethod,
-          cardId: typeof candidate.cardId === 'number' ? candidate.cardId : 1,
-          cardName: candidate.cardName ?? 'Card #1',
-          email: candidate.email ?? 'guest-email',
+          cardId: typeof candidate.cardId === 'number' ? candidate.cardId : 41,
+          cardName: candidate.cardName ?? 'Card #41',
+          email: candidate.email ?? candidate.buyerEmail ?? 'guest-email',
           uid: candidate.uid ?? 'guest-id',
           timestamp: candidate.timestamp,
           season: candidate.season ?? 'season1',
@@ -961,19 +1033,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
     const params = new URLSearchParams(window.location.search);
     
-    // Mall에서 전달된 굿즈 구매 파라미터 처리 (?goods=mug|tshirt|table|deck&qty=1&size=M)
+    // Mall에서 전달된 굿즈 구매 파라미터 처리 (?goods=mug|tshirt|table|deck|deck_water...&qty=1&size=M)
     const goodsParam = params.get('goods');
     if (goodsParam) {
-      const gType = goodsParam.toLowerCase();
-      if (gType.includes('mug') || gType.includes('머그')) {
-        setSelectedGoods('mug');
-      } else if (gType.includes('table') || gType.includes('테이블')) {
-        setSelectedGoods('table');
-      } else if (gType.includes('deck') || gType.includes('110') || gType.includes('카드')) {
-        setSelectedGoods('deck');
-      } else {
-        setSelectedGoods('tshirt');
-      }
+      setSelectedGoods(resolveGoodsTypeFromString(goodsParam));
       setGoodsModalOpen(true);
 
       const qParam = parseInt(params.get('qty') || '1', 10);
@@ -992,16 +1055,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
     const handleMallMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === 'SNSHERO_MALL_BUY') {
         const { goodsType, quantity, size } = event.data;
-        const gType = String(goodsType).toLowerCase();
-        if (gType.includes('mug') || gType.includes('머그')) {
-          setSelectedGoods('mug');
-        } else if (gType.includes('table') || gType.includes('테이블')) {
-          setSelectedGoods('table');
-        } else if (gType.includes('deck') || gType.includes('110') || gType.includes('카드')) {
-          setSelectedGoods('deck');
-        } else {
-          setSelectedGoods('tshirt');
-        }
+        setSelectedGoods(resolveGoodsTypeFromString(String(goodsType)));
         if (quantity && quantity > 0) setGoodsQuantity(quantity);
         if (size === 'S' || size === 'M' || size === 'L') setGoodsSize(size);
         setGoodsModalOpen(true);
@@ -1301,11 +1355,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
 
   const handleGoodsDollarCheckout = () => {
-    const priceVal = selectedGoods === 'mug' ? 10 : 30;
+    const priceVal = getGoodsUnitPriceUsd(selectedGoods);
     const totalPrice = priceVal * goodsQuantity;
     const goodsCardId = selectedGoods === 'mug' ? mugCardId : tshirtCardId;
     const cardInfo = CARD_DATABASE[goodsCardId];
-    const goodsLabel = selectedGoods === 'mug' ? 'Custom Mug Cup' : (selectedGoods === 'deck' ? '110 Heroes Card Deck' : (selectedGoods === 'table' ? 'Hero Game Table' : 'Custom T-Shirt'));
+    const goodsLabel = getGoodsDisplayLabel(selectedGoods, language);
 
     setSelectedGoodsGatewayId('paypal');
     localStorage.setItem('hero_goods_pending_payment', JSON.stringify({
@@ -1341,9 +1395,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
   };
 
   const handleGoodsCryptoPayment = () => {
-    const priceVal = selectedGoods === 'mug' ? 10 : 35;
+    const priceVal = getGoodsUnitPriceUsd(selectedGoods);
     const totalPrice = priceVal * goodsQuantity;
     const goodsCardId = selectedGoods === 'mug' ? mugCardId : tshirtCardId;
+    const goodsLabel = getGoodsDisplayLabel(selectedGoods, language);
 
     setSelectedGoodsGatewayId('crypto-okx');
     const pendingPayment = {
@@ -1360,13 +1415,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
     setGoodsCheckoutOpen(false);
     setGoodsPaymentPopupOpen(false);
-    setSelectedPaymentItem({ amount: totalPrice * 1000, price: totalPrice.toString(), label: selectedGoods === 'mug' ? 'Goods Mug Cup' : 'Goods T-Shirt', isGoods: true } as any);
+    setSelectedPaymentItem({ amount: totalPrice * 1000, price: totalPrice.toString(), label: goodsLabel, isGoods: true } as any);
     setCryptoModalOpen(true);
     setCryptoStep('coin');
     fetchCryptoCoins();
   };
 
   const handleGoodsCoinPurchase = async (coinType: string) => {
+    if (!selectedGoods) return;
     const totalSnsCost = getGoodsSnsCost(selectedGoods, goodsQuantity);
 
     if (sns < totalSnsCost) {
@@ -1381,7 +1437,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       return;
     }
 
-    updateSns(-totalSnsCost, 'goods_purchase', selectedGoods === 'mug' ? 'Mug Cup' : 'T-Shirt');
+    updateSns(-totalSnsCost, 'goods_purchase', 'earned');
     setGoodsPaymentMethod('coin');
     setGoodsCheckoutOpen(false);
     setGoodsShippingOpen(true);
@@ -1444,16 +1500,17 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
     const goodsCardId = selectedGoods === 'mug' ? mugCardId : tshirtCardId;
     const cardInfo = CARD_DATABASE[goodsCardId];
-    const priceVal = selectedGoods === 'mug' ? 10 * goodsQuantity : 35 * goodsQuantity;
+    const priceVal = getGoodsUnitPriceUsd(selectedGoods) * goodsQuantity;
     const paymentMethod = (goodsPaymentMethod || 'dollar') as GoodsPaymentMethod;
     const goodsType = selectedGoods as GoodsType;
+    const goodsLabel = getGoodsDisplayLabel(selectedGoods, language);
 
     const purchaseData: GoodsOrder = {
       orderId: `goods-${Date.now()}-${user?.uid || 'guest-id'}-${goodsType}-${goodsCardId}`,
       buyerName: goodsBuyerName,
       shippingAddress: goodsBuyerAddress,
       country: goodsCountry,
-      itemName: selectedGoods === 'mug' ? 'Custom Mug Cup' : 'Custom T-Shirt',
+      itemName: goodsLabel,
       goodsType,
       quantity: goodsQuantity,
       goodsSize: selectedGoods === 'tshirt' ? goodsSize : undefined,
@@ -1483,7 +1540,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
         const res = await axios.post('/api/payoneer/create-session', {
           amount: priceVal.toString(),
           currency: 'USD',
-          label: selectedGoods === 'mug' ? 'Custom Mug Cup' : 'Custom T-Shirt',
+          label: goodsLabel,
           isAdRemoval: false,
           isGoods: true,
           returnBaseUrl
@@ -4948,67 +5005,105 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <X size={16} />
                   </button>
 
-                  <div className="flex flex-col items-center gap-4">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="text-xs font-bold text-slate-800 text-center">
+                      {getGoodsDisplayLabel(selectedGoods, language)}
+                    </div>
                     <div className="relative w-36 h-36 flex items-center justify-center bg-slate-50 border border-slate-200 rounded-none overflow-hidden">
-                      <img src={selectedGoods === 'mug' ? getAssetUrl('/mug.png') : getAssetUrl('/icon.png')} alt="Goods" className="w-full h-full object-contain" />
-                      <div className={cn(
-                        "absolute bg-transparent overflow-hidden opacity-90 select-none rounded-xs p-1 flex flex-col justify-between items-center",
-                        selectedGoods === 'mug'
-                          ? "top-[30%] left-[37%] translate-x-[5px] w-[28%] aspect-[4/7] rotate-[-2deg]"
-                          : "top-[28%] left-[37%] w-[28%] aspect-[4/7]"
-                      )}>
-                        <div className="w-full aspect-[5/7] overflow-hidden">
-                          <CardItem
-                            card={{
-                              ...CARD_DATABASE[selectedGoods === 'mug' ? mugCardId : tshirtCardId],
-                              id: 'goods-modal-preview',
-                              owner: null,
-                              level: 1,
-                              imageIndex: selectedGoods === 'mug' ? mugCardId : tshirtCardId
-                            }}
-                            className="w-full h-full text-[4px]"
-                            customImage={customCardImage}
-                            processedImage={processedCardImages?.[(selectedGoods === 'mug' ? mugCardId : tshirtCardId) - 1]}
-                            lowSpecMode={true}
-                          />
-                        </div>
-                        <div className="w-full text-center text-[3.5px] font-black text-slate-950 leading-none truncate my-0.5">
-                          {(() => {
-                            const cId = selectedGoods === 'mug' ? mugCardId : tshirtCardId;
-                            return getFormattedCardName(CARD_DATABASE[cId], language).replace(". ", ".");
-                          })()}
-                        </div>
-                        <div className="w-full flex justify-center origin-center scale-[0.4] my-0.5 whitespace-nowrap">
-                          <h1 id="main-logo" className="font-extrabold italic tracking-tight flex items-center justify-center mx-auto select-none font-mono">
-                            <a
-                              href="/"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                window.history.pushState({ view: 'home' }, '', '/');
-                                window.dispatchEvent(new PopStateEvent('popstate'));
-                              }}
-                              className="inline-flex items-center bg-transparent cursor-pointer"
-                            >
-                              <img src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'} alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'} className="h-3.5 w-auto object-contain bg-transparent" />
-                            </a>
-                          </h1>
-                        </div>
-                      </div>
+                      {getGoodsPreviewImage(selectedGoods) ? (
+                        <img src={getGoodsPreviewImage(selectedGoods)!} alt="Goods" className="w-full h-full object-contain" />
+                      ) : (
+                        <>
+                          <img src={selectedGoods === 'mug' ? getAssetUrl('/mug.png') : getAssetUrl('/icon.png')} alt="Goods" className="w-full h-full object-contain" />
+                          <div className={cn(
+                            "absolute bg-transparent overflow-hidden opacity-90 select-none rounded-xs p-1 flex flex-col justify-between items-center",
+                            selectedGoods === 'mug'
+                              ? "top-[30%] left-[37%] translate-x-[5px] w-[28%] aspect-[4/7] rotate-[-2deg]"
+                              : "top-[28%] left-[37%] w-[28%] aspect-[4/7]"
+                          )}>
+                            <div className="w-full aspect-[5/7] overflow-hidden">
+                              <CardItem
+                                card={{
+                                  ...CARD_DATABASE[selectedGoods === 'mug' ? mugCardId : tshirtCardId],
+                                  id: 'goods-modal-preview',
+                                  owner: null,
+                                  level: 1,
+                                  imageIndex: selectedGoods === 'mug' ? mugCardId : tshirtCardId
+                                }}
+                                className="w-full h-full text-[4px]"
+                                customImage={customCardImage}
+                                processedImage={processedCardImages?.[(selectedGoods === 'mug' ? mugCardId : tshirtCardId) - 1]}
+                                lowSpecMode={true}
+                              />
+                            </div>
+                            <div className="w-full text-center text-[3.5px] font-black text-slate-950 leading-none truncate my-0.5">
+                              {(() => {
+                                const cId = selectedGoods === 'mug' ? mugCardId : tshirtCardId;
+                                return getFormattedCardName(CARD_DATABASE[cId], language).replace(". ", ".");
+                              })()}
+                            </div>
+                            <div className="w-full flex justify-center origin-center scale-[0.4] my-0.5 whitespace-nowrap">
+                              <h1 id="main-logo" className="font-extrabold italic tracking-tight flex items-center justify-center mx-auto select-none font-mono">
+                                <a
+                                  href="/"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    window.history.pushState({ view: 'home' }, '', '/');
+                                    window.dispatchEvent(new PopStateEvent('popstate'));
+                                  }}
+                                  className="inline-flex items-center bg-transparent cursor-pointer"
+                                >
+                                  <img src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'} alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'} className="h-3.5 w-auto object-contain bg-transparent" />
+                                </a>
+                              </h1>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    {/* Card Changer Option */}
-                    <div className="flex justify-between items-center bg-slate-50 p-3 border border-slate-200 rounded-none">
-                      <span className="font-bold uppercase text-xs">{t('goods_change_card', language)}</span>
-                      <button
-                        onClick={() => setGoodsCardSelectOpen(true)}
-                        className="px-3.5 py-2.5 min-h-[44px] bg-slate-900 hover:bg-slate-800 text-white rounded-sm text-xs font-bold uppercase active:scale-95 transition-all cursor-pointer flex items-center justify-center"
-                      >
-                        {t('goods_change_card', language)}
-                      </button>
-                    </div>
+                    {/* Deck Edition Switcher (For 110-Card Bundle & 11 Character-Type Decks) */}
+                    {(selectedGoods === 'deck' || selectedGoods.startsWith('deck_')) && (
+                      <div className="bg-slate-50 p-3 border border-slate-200 rounded-none space-y-2">
+                        <div className="text-[11px] font-bold text-slate-700">
+                          {language === 'ko' ? '카드 덱 에디션 선택 (110장 풀세트 10% 할인 / 11종 타입별 덱)' : 'Select Deck Edition (110-Card 10% OFF / 11 Character-Type Decks)'}
+                        </div>
+                        <select
+                          value={selectedGoods}
+                          onChange={(e) => setSelectedGoods(e.target.value as GoodsType)}
+                          className="w-full min-h-[44px] bg-white border border-slate-300 px-2.5 py-2 text-xs font-mono font-bold text-slate-900 rounded-sm"
+                        >
+                          <option value="deck">
+                            {language === 'ko'
+                              ? '★ 110장 올인원 풀세트 — $300.00 (정가 $330 ➔ 10% 할인)'
+                              : '★ 110-Card Complete Set — $300.00 ($330 Regular ➔ 10% OFF)'}
+                          </option>
+                          {FACTION_DECK_ITEMS.map((item) => (
+                            <option key={item.type} value={item.type}>
+                              {language === 'ko'
+                                ? `${item.labelKo} [${item.range}] — $30.00`
+                                : `${item.labelEn} [${item.range}] — $30.00`}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    {/* Card Changer Option (For Mug & T-shirt) */}
+                    {(selectedGoods === 'mug' || selectedGoods === 'tshirt') && (
+                      <div className="flex justify-between items-center bg-slate-50 p-3 border border-slate-200 rounded-none">
+                        <span className="font-bold uppercase text-xs">{t('goods_change_card', language)}</span>
+                        <button
+                          onClick={() => setGoodsCardSelectOpen(true)}
+                          className="px-3.5 py-2.5 min-h-[44px] bg-slate-900 hover:bg-slate-800 text-white rounded-sm text-xs font-bold uppercase active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                        >
+                          {t('goods_change_card', language)}
+                        </button>
+                      </div>
+                    )}
 
                     {/* Size Option (Only for Tshirt) */}
                     {selectedGoods === 'tshirt' && (
@@ -5059,7 +5154,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     {/* Total billing amount display */}
                     <div className="border-t border-dashed border-slate-200 pt-4 flex justify-between items-center font-bold">
                       <span className="uppercase text-xs">{t('goods_total_price', language)}</span>
-                      <span className="text-xl tracking-tighter">${(selectedGoods === 'mug' ? 10 : 30) * goodsQuantity}.00 USD</span>
+                      <div className="text-right">
+                        {selectedGoods === 'deck' && (
+                          <div className="text-[11px] text-slate-400 line-through">
+                            ${330 * goodsQuantity}.00 USD (10% OFF)
+                          </div>
+                        )}
+                        <span className="text-xl tracking-tighter text-red-700">
+                          ${getGoodsUnitPriceUsd(selectedGoods) * goodsQuantity}.00 USD
+                        </span>
+                      </div>
                     </div>
 
                     <button
@@ -5183,7 +5287,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       className="w-full min-h-[44px] py-3.5 px-4 bg-amber-600 hover:bg-amber-700 text-white active:scale-[0.98] transition-all rounded-sm flex flex-col items-center justify-center gap-0.5 cursor-pointer"
                     >
                       <span className="text-sm uppercase font-bold">{t('goods_dollar_payment', language)}</span>
-                      <span className="text-xs font-semibold opacity-90">${(selectedGoods === 'mug' ? 10 : 35) * goodsQuantity}.00 USD</span>
+                      <span className="text-xs font-semibold opacity-90">${getGoodsUnitPriceUsd(selectedGoods) * goodsQuantity}.00 USD</span>
                     </button>
 
                     <button
@@ -5191,7 +5295,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       className="w-full min-h-[44px] py-3.5 px-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 active:scale-[0.98] transition-all rounded-sm flex flex-col items-center justify-center gap-0.5 cursor-pointer"
                     >
                       <span className="text-sm uppercase font-bold text-slate-700">{t('goods_coin_payment', language)}</span>
-                      <span className="text-xs font-bold text-blue-600">${(selectedGoods === 'mug' ? 10 : 35) * goodsQuantity}.00 USD</span>
+                      <span className="text-xs font-bold text-blue-600">${getGoodsUnitPriceUsd(selectedGoods) * goodsQuantity}.00 USD</span>
                     </button>
 
                     {user?.email === 'dryudryu@gmail.com' && (
@@ -5305,8 +5409,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       {t('goods_payment_summary_title', language)}
                     </p>
                     <div className="flex items-center justify-between gap-3 text-sm font-semibold text-slate-700">
-                      <span>{selectedGoods === 'mug' ? 'Custom Mug Cup' : (selectedGoods === 'deck' ? '110 Heroes Card Deck' : (selectedGoods === 'table' ? 'Hero Game Table' : 'Custom T-Shirt'))}</span>
-                      <span>${((selectedGoods === 'mug' ? 10 : 30) * goodsQuantity).toFixed(2)} USD</span>
+                      <span>{getGoodsDisplayLabel(selectedGoods, language)}</span>
+                      <span>${(getGoodsUnitPriceUsd(selectedGoods) * goodsQuantity).toFixed(2)} USD</span>
                     </div>
                     {goodsSelectedCountry && (
                       <p className="text-xs text-slate-500 font-semibold">
@@ -5330,8 +5434,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     {selectedGoodsGatewayId === 'paypal' && (
                       <PayPalButtonWrapper
                         item={{
-                          label: selectedGoods === 'mug' ? 'Custom Mug Cup' : (selectedGoods === 'deck' ? '110 Heroes Card Deck' : (selectedGoods === 'table' ? 'Hero Game Table' : 'Custom T-Shirt')),
-                          price: ((selectedGoods === 'mug' ? 10 : 30) * goodsQuantity).toString(),
+                          label: getGoodsDisplayLabel(selectedGoods, language),
+                          price: (getGoodsUnitPriceUsd(selectedGoods) * goodsQuantity).toString(),
                           isGoods: true,
                           goodsType: selectedGoods,
                           quantity: goodsQuantity,

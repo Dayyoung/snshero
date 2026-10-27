@@ -273,7 +273,22 @@ export interface TradeAuditLog {
   createdAt: string;
 }
 
-export type GoodsType = 'mug' | 'tshirt' | 'deck' | 'table';
+export type GoodsType =
+  | 'mug'
+  | 'tshirt'
+  | 'deck'
+  | 'table'
+  | 'deck_water'
+  | 'deck_fire'
+  | 'deck_wind'
+  | 'deck_earth'
+  | 'deck_human'
+  | 'deck_undead'
+  | 'deck_elf'
+  | 'deck_dwarf'
+  | 'deck_monster'
+  | 'deck_robot'
+  | 'deck_dragon';
 
 export type GoodsPaymentMethod =
   | 'dollar'
