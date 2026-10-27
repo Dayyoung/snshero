@@ -25,7 +25,6 @@ import { AdSenseBanner } from '../components/AdSenseBanner';
 import { CardItem } from '../components/CardItem';
 import { BoardAttackVectorOverlay, type PlacedCardAttackEvent } from '../components/battle/CardAttackMotionEffect';
 import { t } from '../lib/i18n';
-import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
 import { isRankingDiverted, getDivertedMode, getDivertedLossCount, getDivertedMatchCount, isDivertVerified } from '../lib/rankingDivertService';
@@ -546,9 +545,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     captionKo: '우직한 청년 카단의 모험이 아케인 대륙에서 펼쳐집니다.',
     captionEn: 'The journey of young Kadan begins in the realm of Arcane.'
   });
-
-  // Mission Game 3s Dialogue Intro State
-  const [showMissionDialogue, setShowMissionDialogue] = useState<boolean>(Boolean(effectiveTargetCardId));
 
   // 무승부 덱 TP 비교 타이 브레이커 상태
   const [tieBreakerInfo, setTieBreakerInfo] = useState<{
@@ -1272,7 +1268,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
   // ─── AI Opponent / Auto Player Logic ───────────────────────────────
   useEffect(() => {
-    if (gameOver || isEvaluating || rankingSearchCountdown !== null || showMissionDialogue) return;
+    if (gameOver || isEvaluating || rankingSearchCountdown !== null) return;
 
     const isFirstMove = board.every(c => c === null);
 
@@ -1346,7 +1342,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
       return () => clearTimeout(timer);
     }
-  }, [turn, isAutoBattle, activeOverride, gameOver, isEvaluating, rankingSearchCountdown, showMissionDialogue, opponentHand, playerHand, board, boardShields, battleSpeed, executeFlips, handlePlaceCard, difficultyProfile.aiMistakeChance]);
+  }, [turn, isAutoBattle, activeOverride, gameOver, isEvaluating, rankingSearchCountdown, opponentHand, playerHand, board, boardShields, battleSpeed, executeFlips, handlePlaceCard, difficultyProfile.aiMistakeChance]);
 
   // ─── Interactive Skill Activations ─────────────────────────────────
   const handleUsePowerSkill = () => {
@@ -1650,10 +1646,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         }
       }
 
-      if (effectiveTargetCardId) {
-        // 미션 게임: 3초 대사 보여주고 시작
-        setShowMissionDialogue(true);
-      }
       initMatchDecks();
       return;
     }
@@ -2010,7 +2002,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               const isJustPlaced = lastPlacedAttack?.slotIdx === idx;
               const isSelectedHand = selectedHandIndex !== null && playerHand[selectedHandIndex];
               const isShielded = boardShields[idx];
-              const isPlayable = !isOccupied && Boolean(isSelectedHand) && turn === 'player' && !gameOver && !isEvaluating && rankingSearchCountdown === null && !showMissionDialogue;
+              const isPlayable = !isOccupied && Boolean(isSelectedHand) && turn === 'player' && !gameOver && !isEvaluating && rankingSearchCountdown === null;
               const tileEl = elementalBoard[idx];
               const tileDef = tileEl ? ELEMENT_DEFINITIONS[tileEl] : null;
               const cardEl = isOccupied && cell ? getNormalizedElement(cell) : null;
@@ -2033,7 +2025,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   disabled={!isPlayable}
                   aria-label={`${t(isOccupied ? cell.owner === 'player' ? 'my_deck_title' : 'opponent_deck' : 'toast_select_empty_slot', language)} ${idx + 1}${isOccupied ? `: ${language === 'ko' ? cell.title : cell.title_en || cell.title}` : ''}${cardEl ? ` (${cardEl})` : ''}${isShielded ? `, ${t('ability_shield', language)}` : ''}`}
                   onClick={() => {
-                    if (turn === 'player' && !isOccupied && isSelectedHand && rankingSearchCountdown === null && !showMissionDialogue) {
+                    if (turn === 'player' && !isOccupied && isSelectedHand && rankingSearchCountdown === null) {
                       handlePlaceCard(idx, isSelectedHand, true);
                     }
                   }}
@@ -2605,12 +2597,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       onClick={() => {
                         playSound('tap');
                         setRematchCountdown(null);
-                        if (effectiveTargetCardId) {
-                          setShowMissionDialogue(true);
-                          initMatchDecks();
-                        } else {
-                          initMatchDecks();
-                        }
+                        initMatchDecks();
                       }}
                       className="w-full min-h-[44px] py-2 font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1 bg-[#201d1d] text-[#fdfcfc]"
                     >
@@ -2931,17 +2918,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* ─── 미션 게임 3초 대사 인트로 모달 ────────────────────────── */}
-      {effectiveTargetCardId && (
-        <MissionDialogueIntro
-          isOpen={showMissionDialogue}
-          cardId={effectiveTargetCardId}
-          language={language}
-          onComplete={() => setShowMissionDialogue(false)}
-          onSkip={() => setShowMissionDialogue(false)}
-        />
-      )}
     </div>
     </MotionConfig>
   );
