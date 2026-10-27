@@ -760,23 +760,41 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
       onPointerDown={() => movieAudio.unlockSpeech()}
     >
       {/* ─── 1. 상단 전체화면 헤더 바: 회차 제목 · 장면 진행도 · 삽화모드(애니/무비) · 닫기 ─── */}
-      <div className="shrink-0 flex items-center justify-between gap-2 border-b border-stone-800 bg-[#16141b] px-3 sm:px-5 py-2.5">
-        <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-          <span className="shrink-0 rounded-sm bg-amber-500 px-2.5 py-1 text-xs sm:text-sm font-mono font-black text-stone-950">
-            {language === 'ko' ? `제${event.chapterNumber}화 / 40화` : `EP.${event.chapterNumber} / 40`}
-          </span>
-          <span className="truncate text-sm sm:text-base md:text-lg font-mono font-extrabold text-stone-100">
-            {t(event.chapterTitleKey, language)}
-          </span>
-          <span className="shrink-0 rounded-sm border border-stone-700 bg-stone-900 px-2 py-0.5 text-xs font-mono font-bold text-amber-300">
-            {lineIndex + 1} / {conversationLines.length}
-          </span>
+      <div className="shrink-0 flex flex-col md:flex-row md:items-center md:justify-between gap-1.5 md:gap-2 border-b border-stone-800 bg-[#16141b] px-2.5 sm:px-5 py-2 md:py-2.5">
+        {/* 상단 1열(모바일) / 좌측 영역(데스크톱): 회차 배지 + 제목 + 컷 카운터 + 모바일 닫기 버튼 */}
+        <div className="flex w-full md:w-auto md:flex-1 items-center justify-between md:justify-start gap-1.5 sm:gap-2.5 min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1">
+            <span className="shrink-0 rounded-sm bg-amber-500 px-2 sm:px-2.5 py-0.5 sm:py-1 text-[11px] sm:text-sm font-mono font-black text-stone-950">
+              {language === 'ko' ? `제${event.chapterNumber}화 / 40화` : `EP.${event.chapterNumber} / 40`}
+            </span>
+            <span className="min-w-0 flex-1 truncate text-xs sm:text-base md:text-lg font-mono font-extrabold text-stone-100">
+              {t(event.chapterTitleKey, language)}
+            </span>
+            <span className="shrink-0 rounded-sm border border-stone-700 bg-stone-900 px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-mono font-bold text-amber-300">
+              {lineIndex + 1} / {conversationLines.length}
+            </span>
+          </div>
+
+          {/* 모바일 전용 우측 상단 고정 닫기 버튼 (절대 잘리지 않음) */}
+          <button
+            type="button"
+            onClick={() => {
+              movieAudio.stopNarration();
+              onClose();
+            }}
+            className="md:hidden min-h-[40px] min-w-[40px] shrink-0 flex items-center justify-center rounded-sm border border-stone-700 bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white transition-colors cursor-pointer"
+            aria-label={t('kadan_rpg_close', language) || 'Close'}
+            title={t('kadan_rpg_close', language) || 'Close'}
+          >
+            <X size={18} />
+          </button>
         </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        {/* 상단 2열(모바일) / 우측 컨트롤 영역(데스크톱): 전체컷/10장면 · TTS · 애니/무비 · 데스크톱 닫기 */}
+        <div className="flex w-full md:w-auto items-center justify-between md:justify-end gap-1.5 sm:gap-2 shrink-0 overflow-x-auto no-scrollbar">
           {/* 장면 구성 단위 토글: 전체컷(기본값) / 10장면 요약 */}
           <div
-            className="inline-flex min-h-[40px] items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
+            className="inline-flex min-h-[36px] sm:min-h-[40px] shrink-0 items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
             role="group"
             aria-label={language === 'ko' ? '장면 구성 전환' : 'Scene Granularity'}
           >
@@ -784,7 +802,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
               type="button"
               onClick={() => setViewGranularity('all_cuts')}
               className={cn(
-                'min-h-[34px] px-2 sm:px-2.5 py-1 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer',
+                'min-h-[30px] sm:min-h-[34px] px-2 sm:px-2.5 py-1 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer whitespace-nowrap',
                 viewGranularity === 'all_cuts'
                   ? 'bg-emerald-400 text-stone-950 font-black'
                   : 'text-stone-400 hover:text-stone-200'
@@ -796,7 +814,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
               type="button"
               onClick={() => setViewGranularity('storybook')}
               className={cn(
-                'min-h-[34px] px-2 sm:px-2.5 py-1 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer',
+                'min-h-[30px] sm:min-h-[34px] px-2 sm:px-2.5 py-1 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer whitespace-nowrap',
                 viewGranularity === 'storybook'
                   ? 'bg-emerald-400 text-stone-950 font-black'
                   : 'text-stone-400 hover:text-stone-200'
@@ -816,7 +834,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
               setIsTtsEnabled(next);
             }}
             className={cn(
-              'min-h-[40px] px-2.5 py-1 rounded-sm border text-xs font-mono font-bold transition-colors cursor-pointer flex items-center gap-1',
+              'min-h-[36px] sm:min-h-[40px] shrink-0 px-2.5 py-1 rounded-sm border text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap',
               isTtsEnabled
                 ? 'border-amber-400 bg-amber-400/20 text-amber-300 font-black'
                 : 'border-stone-700 bg-stone-900 text-stone-400 hover:text-stone-200'
@@ -824,12 +842,12 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
             title={language === 'ko' ? 'TTS 음성 낭독 켜기/끄기' : 'Toggle TTS Voiceover'}
           >
             {isTtsEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
-            <span className="hidden sm:inline">TTS</span>
+            <span>TTS</span>
           </button>
 
           {/* 삽화모드 토글: 애니 / 무비 */}
           <div
-            className="inline-flex min-h-[40px] items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
+            className="inline-flex min-h-[36px] sm:min-h-[40px] shrink-0 items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
             role="group"
             aria-label={language === 'ko' ? '삽화모드 전환' : 'Illustration Mode'}
           >
@@ -837,7 +855,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
               type="button"
               onClick={() => handleSetArtStyleMode('animation')}
               className={cn(
-                'min-h-[34px] px-2.5 py-1 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer',
+                'min-h-[30px] sm:min-h-[34px] px-2 sm:px-2.5 py-1 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer whitespace-nowrap',
                 artStyleMode === 'animation'
                   ? 'bg-cyan-400 text-stone-950 font-black'
                   : 'text-stone-400 hover:text-stone-200'
@@ -849,7 +867,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
               type="button"
               onClick={() => handleSetArtStyleMode('liveaction')}
               className={cn(
-                'min-h-[34px] px-2.5 py-1 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer',
+                'min-h-[30px] sm:min-h-[34px] px-2 sm:px-2.5 py-1 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer whitespace-nowrap',
                 artStyleMode === 'liveaction'
                   ? 'bg-amber-400 text-stone-950 font-black'
                   : 'text-stone-400 hover:text-stone-200'
@@ -859,14 +877,14 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
             </button>
           </div>
 
-          {/* 닫기 */}
+          {/* 데스크톱 닫기 버튼 */}
           <button
             type="button"
             onClick={() => {
               movieAudio.stopNarration();
               onClose();
             }}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-sm border border-stone-700 bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white transition-colors cursor-pointer"
+            className="hidden md:flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-sm border border-stone-700 bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white transition-colors cursor-pointer"
             aria-label={t('kadan_rpg_close', language) || 'Close'}
             title={t('kadan_rpg_close', language) || 'Close'}
           >
@@ -1068,32 +1086,32 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
       </div>
 
       {/* ─── 3. 하단 전체화면 컨트롤 바: 자동플레이 · 스킵 · 이전/다음 ─── */}
-      <div className="shrink-0 flex items-center justify-between gap-2 border-t border-stone-800 bg-[#16141b] px-3 sm:px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-        <div className="flex items-center gap-2">
+      <div className="shrink-0 flex items-center justify-between gap-1.5 sm:gap-2 border-t border-stone-800 bg-[#16141b] px-2.5 sm:px-5 py-2.5 sm:py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
           {/* 자동플레이 */}
           {onToggleAutoMode && (
             <button
               type="button"
               onClick={onToggleAutoMode}
               className={cn(
-                'min-h-[44px] rounded-sm px-3.5 py-2 text-xs sm:text-sm font-mono font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 border',
+                'min-h-[44px] shrink-0 rounded-sm px-2.5 sm:px-3.5 py-2 text-xs sm:text-sm font-mono font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-1 sm:gap-1.5 border whitespace-nowrap',
                 autoMode
                   ? 'bg-indigo-600 border-indigo-400 text-white'
                   : 'bg-stone-900 border-stone-700 text-stone-300 hover:bg-stone-800'
               )}
             >
               {autoMode ? (
-                <Bot size={15} className="animate-spin text-cyan-200" />
+                <Bot size={15} className="animate-spin text-cyan-200 shrink-0" />
               ) : (
-                <Pause size={15} />
+                <Pause size={15} className="shrink-0" />
               )}
               <span>
                 {autoMode
                   ? language === 'ko'
-                    ? '자동플레이 ON'
+                    ? '자동 ON'
                     : 'Auto ON'
                   : language === 'ko'
-                  ? '자동플레이 OFF'
+                  ? '자동 OFF'
                   : 'Auto OFF'}
               </span>
             </button>
@@ -1103,20 +1121,20 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
           <button
             type="button"
             onClick={handleSkipStory}
-            className="min-h-[44px] rounded-sm px-3.5 py-2 text-xs sm:text-sm font-mono font-bold border border-stone-700 bg-stone-900 hover:bg-stone-800 text-stone-300 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+            className="min-h-[44px] shrink-0 rounded-sm px-2.5 sm:px-3.5 py-2 text-xs sm:text-sm font-mono font-bold border border-stone-700 bg-stone-900 hover:bg-stone-800 text-stone-300 transition-all active:scale-95 cursor-pointer flex items-center gap-1 sm:gap-1.5 whitespace-nowrap"
             title={language === 'ko' ? '대화 건너뛰기' : 'Skip Dialogue'}
           >
-            <FastForward size={15} className="text-amber-400" />
+            <FastForward size={15} className="text-amber-400 shrink-0" />
             <span>{language === 'ko' ? '스킵' : 'Skip'}</span>
           </button>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {lineIndex > 0 && (
             <button
               type="button"
               onClick={retreatConversation}
-              className="min-h-[44px] min-w-[44px] rounded-sm border border-stone-700 bg-stone-900 text-stone-200 hover:bg-stone-800 px-3 py-2 text-xs sm:text-sm font-mono font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center"
+              className="min-h-[44px] min-w-[44px] shrink-0 rounded-sm border border-stone-700 bg-stone-900 text-stone-200 hover:bg-stone-800 px-2.5 sm:px-3 py-2 text-xs sm:text-sm font-mono font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center"
               aria-label={language === 'ko' ? '이전' : 'Prev'}
               title={language === 'ko' ? '이전 장면' : 'Previous'}
             >
@@ -1129,7 +1147,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
             type="button"
             onClick={advanceConversation}
             className={cn(
-              'min-h-[44px] rounded-sm px-5 sm:px-6 py-2 text-xs sm:text-sm font-mono font-black text-white shadow-none transition-all active:scale-95 cursor-pointer flex items-center gap-1.5',
+              'min-h-[44px] shrink-0 rounded-sm px-4 sm:px-6 py-2 text-xs sm:text-sm font-mono font-black text-white shadow-none transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 whitespace-nowrap',
               hasActiveChoices
                 ? 'bg-amber-500 hover:bg-amber-400 text-stone-950'
                 : isFinalLine && canStartBattle

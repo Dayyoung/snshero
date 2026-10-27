@@ -953,141 +953,141 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
  return (
  <div className="flex h-full min-h-screen flex-col bg-[#fdfcfc] text-slate-900 font-mono overflow-x-hidden pb-28">
- {!isBattling && (
- <header className="h-16 shrink-0 border-b border-slate-100 bg-white px-4 md:px-6">
- <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-3">
- <button
- type="button"
- onClick={() => onNavigate('home')}
- className="flex h-11 w-11 items-center justify-center rounded-sm border border-slate-200/70 bg-slate-50 text-slate-700 shadow-sm transition-all active:scale-95"
- aria-label={t('home', language)}
- >
- <ArrowLeft size={20} />
- </button>
- <div className="min-w-0 flex-1 flex items-center gap-2.5">
- <a
- href="/"
- onClick={(e) => {
- e.preventDefault();
- onNavigate('home');
- window.history.pushState({ view: 'home' }, '', '/');
- window.dispatchEvent(new PopStateEvent('popstate'));
- }}
- className="inline-flex items-center shrink-0 cursor-pointer bg-transparent transition-opacity hover:opacity-85"
- aria-label={t('home', language)}
- >
- <img
- src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
- alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}
- className="h-9 sm:h-10 w-auto object-contain bg-transparent shrink-0"
- />
- </a>
- <div className="min-w-0 flex-1">
- <div className="flex items-center gap-2">
- <p className="truncate text-xs font-black uppercase tracking-normal text-indigo-600">{t('kadan_rpg_title_badge', language)}</p>
- {/* Reincarnation Badge in Top Header */}
- <span className={cn(
- "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-mono font-bold tracking-tight border select-none",
- progress.rebirthLevel > 0
- ? "bg-amber-950/90 text-amber-300 border-amber-500/80 shadow-[0_0_12px_rgba(245,158,11,0.35)] animate-pulse"
- : "bg-slate-100 text-slate-700 border-slate-300"
- )}>
- <span className="text-sm sm:text-base">{progress.rebirthLevel > 0 ? '👑' : '🌱'}</span>
- <span className="text-xs sm:text-sm font-black">
- {progress.rebirthLevel > 0 ? (
- <>
- <span>{language === 'ko' ? '환생 ' : 'Rebirth Lv.'}</span>
- <span className="text-sm sm:text-base font-black text-amber-100">{progress.rebirthLevel}</span>
- <span>{language === 'ko' ? '회차' : ''}</span>
- </>
- ) : (
- t('kadan_rpg_first_journey_badge', language)
- )}
- </span>
- </span>
- </div>
- <h1 className="truncate text-base font-extrabold tracking-normal text-slate-900 md:text-lg">{t('kadan_rpg_title', language)}</h1>
- </div>
- </div>
- {isComplete && (
- <button
- type="button"
- onClick={() => setIsEndingDismissed(false)}
- className="flex min-h-10 sm:min-h-11 items-center gap-1.5 rounded-sm bg-[#201d1d] px-3 py-2 text-xs font-black text-white shadow-none shadow-none transition-all hover:brightness-110 active:scale-95 cursor-pointer animate-pulse shrink-0"
- title={language === 'ko' ? '엔딩 및 환생 팝업 보기' : 'View Ending & Rebirth'}
- >
- <Sparkles size={16} className="text-amber-300" />
- <span>{language === 'ko' ? '엔딩/환생' : 'Ending'}</span>
- </button>
- )}
- {/* 애니메이션 / 무비(실사) 이미지 스타일 토글 (로컬스토리지 영구 저장) */}
- <div
- className="inline-flex min-h-11 items-center rounded-sm border border-[#201d1d] bg-[#f8f7f7] p-0.5 font-mono shrink-0"
- role="group"
- aria-label={language === 'ko' ? '애니메이션/무비 이미지 스타일 토글' : 'Animation / Movie Image Style Toggle'}
- >
- <button
- type="button"
- onClick={() => setArtStyleMode('animation')}
- className={cn(
- 'min-h-[38px] px-2.5 py-1.5 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer flex items-center gap-1',
- artStyleMode === 'animation'
- ? 'bg-[#201d1d] text-[#fdfcfc] font-black'
- : 'text-[#646262] hover:text-[#201d1d]'
- )}
- title={
- language === 'ko'
- ? '애니메이션 이미지 스타일(2,009컷)로 게임 진행 (설정 자동 저장)'
- : 'Play with Animation image style (Saved)'
- }
- >
- <span>🎨</span>
- <span className="hidden md:inline">{language === 'ko' ? '애니메이션' : 'Anime'}</span>
- <span className="md:hidden">{language === 'ko' ? '애니' : 'Anime'}</span>
- </button>
- <button
- type="button"
- onClick={() => setArtStyleMode('liveaction')}
- className={cn(
- 'min-h-[38px] px-2.5 py-1.5 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer flex items-center gap-1',
- artStyleMode === 'liveaction'
- ? 'bg-amber-400 text-[#201d1d] font-black border border-[#201d1d]'
- : 'text-[#646262] hover:text-[#201d1d]'
- )}
- title={
- language === 'ko'
- ? '무비(70mm 실사) 이미지 스타일(2,009컷)로 게임 진행 (설정 자동 저장)'
- : 'Play with Movie (70mm Live-Action) image style (Saved)'
- }
- >
- <span>🎬</span>
- <span>{language === 'ko' ? '무비' : 'Movie'}</span>
- </button>
- </div>
- <div className={cn(
- "relative inline-flex items-center justify-center overflow-hidden rounded-none transition-all",
- progress.autoMode ? "p-[2px] shadow-[0_0_12px_rgba(59,130,246,0.6)]" : ""
- )}>
- {progress.autoMode && (
- <div className="absolute -inset-[180%] animate-[spin_2.5s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_180deg,#1d4ed8_270deg,#60a5fa_330deg,#93c5fd_360deg)]" />
- )}
- <button
- type="button"
- onClick={() => setAutoMode(!progress.autoMode)}
- className={cn(
- "relative z-10 flex min-h-11 items-center gap-2 rounded-[6px] px-3 py-2 text-sm font-bold transition-all active:scale-95 cursor-pointer",
- progress.autoMode
- ? "bg-indigo-600 text-white"
- : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
- )}
- >
- {progress.autoMode ? <Bot size={18} className="animate-spin text-cyan-200" /> : <Pause size={18} />}
- <span className="hidden sm:inline">{progress.autoMode ? t('kadan_rpg_auto_on', language) : t('kadan_rpg_auto_off', language)}</span>
- </button>
- </div>
- </div>
- </header>
- )}
+      {!isBattling && (
+        <header className="h-16 shrink-0 border-b border-slate-100 bg-white px-2.5 sm:px-4 md:px-6">
+          <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-1.5 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => onNavigate('home')}
+              className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-sm border border-slate-200/70 bg-slate-50 text-slate-700 shadow-sm transition-all active:scale-95"
+              aria-label={t('home', language)}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="min-w-0 flex-1 flex items-center gap-2 sm:gap-2.5">
+              <a
+                href="/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('home');
+                  window.history.pushState({ view: 'home' }, '', '/');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }}
+                className="hidden sm:inline-flex items-center shrink-0 cursor-pointer bg-transparent transition-opacity hover:opacity-85"
+                aria-label={t('home', language)}
+              >
+                <img
+                  src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
+                  alt={language === 'ko' ? '눈히어로.com' : 'SNSHero.com'}
+                  className="h-9 sm:h-10 w-auto object-contain bg-transparent shrink-0"
+                />
+              </a>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                  <p className="truncate text-[11px] sm:text-xs font-black uppercase tracking-normal text-indigo-600">{t('kadan_rpg_title_badge', language)}</p>
+                  {/* Reincarnation Badge in Top Header */}
+                  <span className={cn(
+                    "shrink-0 inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-sm text-[11px] sm:text-sm font-mono font-bold tracking-tight border select-none",
+                    progress.rebirthLevel > 0
+                      ? "bg-amber-950/90 text-amber-300 border-amber-500/80 shadow-[0_0_12px_rgba(245,158,11,0.35)] animate-pulse"
+                      : "bg-slate-100 text-slate-700 border-slate-300"
+                  )}>
+                    <span className="text-xs sm:text-base">{progress.rebirthLevel > 0 ? '👑' : '🌱'}</span>
+                    <span className="text-[11px] sm:text-sm font-black whitespace-nowrap">
+                      {progress.rebirthLevel > 0 ? (
+                        <>
+                          <span>{language === 'ko' ? '환생 ' : 'Rebirth Lv.'}</span>
+                          <span className="text-xs sm:text-base font-black text-amber-100">{progress.rebirthLevel}</span>
+                          <span>{language === 'ko' ? '회차' : ''}</span>
+                        </>
+                      ) : (
+                        t('kadan_rpg_first_journey_badge', language)
+                      )}
+                    </span>
+                  </span>
+                </div>
+                <h1 className="truncate text-sm sm:text-base font-extrabold tracking-normal text-slate-900 md:text-lg">{t('kadan_rpg_title', language)}</h1>
+              </div>
+            </div>
+            {isComplete && (
+              <button
+                type="button"
+                onClick={() => setIsEndingDismissed(false)}
+                className="flex min-h-10 sm:min-h-11 items-center gap-1 sm:gap-1.5 rounded-sm bg-[#201d1d] px-2.5 sm:px-3 py-2 text-[11px] sm:text-xs font-black text-white shadow-none transition-all hover:brightness-110 active:scale-95 cursor-pointer animate-pulse shrink-0 whitespace-nowrap"
+                title={language === 'ko' ? '엔딩 및 환생 팝업 보기' : 'View Ending & Rebirth'}
+              >
+                <Sparkles size={15} className="text-amber-300 shrink-0" />
+                <span className="hidden xs:inline sm:inline">{language === 'ko' ? '엔딩/환생' : 'Ending'}</span>
+              </button>
+            )}
+            {/* 애니메이션 / 무비(실사) 이미지 스타일 토글 (로컬스토리지 영구 저장) */}
+            <div
+              className="inline-flex min-h-10 sm:min-h-11 items-center rounded-sm border border-[#201d1d] bg-[#f8f7f7] p-0.5 font-mono shrink-0"
+              role="group"
+              aria-label={language === 'ko' ? '애니메이션/무비 이미지 스타일 토글' : 'Animation / Movie Image Style Toggle'}
+            >
+              <button
+                type="button"
+                onClick={() => setArtStyleMode('animation')}
+                className={cn(
+                  'min-h-[34px] sm:min-h-[38px] px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap',
+                  artStyleMode === 'animation'
+                    ? 'bg-[#201d1d] text-[#fdfcfc] font-black'
+                    : 'text-[#646262] hover:text-[#201d1d]'
+                )}
+                title={
+                  language === 'ko'
+                    ? '애니메이션 이미지 스타일(2,009컷)로 게임 진행 (설정 자동 저장)'
+                    : 'Play with Animation image style (Saved)'
+                }
+              >
+                <span>🎨</span>
+                <span className="hidden md:inline">{language === 'ko' ? '애니메이션' : 'Anime'}</span>
+                <span className="md:hidden">{language === 'ko' ? '애니' : 'Anime'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setArtStyleMode('liveaction')}
+                className={cn(
+                  'min-h-[34px] sm:min-h-[38px] px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap',
+                  artStyleMode === 'liveaction'
+                    ? 'bg-amber-400 text-[#201d1d] font-black border border-[#201d1d]'
+                    : 'text-[#646262] hover:text-[#201d1d]'
+                )}
+                title={
+                  language === 'ko'
+                    ? '무비(70mm 실사) 이미지 스타일(2,009컷)로 게임 진행 (설정 자동 저장)'
+                    : 'Play with Movie (70mm Live-Action) image style (Saved)'
+                }
+              >
+                <span>🎬</span>
+                <span>{language === 'ko' ? '무비' : 'Movie'}</span>
+              </button>
+            </div>
+            <div className={cn(
+              "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-none transition-all",
+              progress.autoMode ? "p-[2px] shadow-[0_0_12px_rgba(59,130,246,0.6)]" : ""
+            )}>
+              {progress.autoMode && (
+                <div className="absolute -inset-[180%] animate-[spin_2.5s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_180deg,#1d4ed8_270deg,#60a5fa_330deg,#93c5fd_360deg)]" />
+              )}
+              <button
+                type="button"
+                onClick={() => setAutoMode(!progress.autoMode)}
+                className={cn(
+                  "relative z-10 flex min-h-10 sm:min-h-11 items-center gap-2 rounded-sm px-2.5 sm:px-3 py-2 text-sm font-bold transition-all active:scale-95 cursor-pointer",
+                  progress.autoMode
+                    ? "bg-indigo-600 text-white"
+                    : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+                )}
+              >
+                {progress.autoMode ? <Bot size={18} className="animate-spin text-cyan-200" /> : <Pause size={18} />}
+                <span className="hidden sm:inline">{progress.autoMode ? t('kadan_rpg_auto_on', language) : t('kadan_rpg_auto_off', language)}</span>
+              </button>
+            </div>
+          </div>
+        </header>
+      )}
 
  <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 overflow-y-auto p-3 sm:p-4 md:p-6 pb-[calc(env(safe-area-inset-bottom)+5rem)]">
  {isComplete && (

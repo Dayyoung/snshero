@@ -2,6 +2,18 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-28 07:58 KST] [/main 스토리 RPG 대화창 및 상단 헤더 모바일 가로 넘침(닫기 버튼 잘림) 버그 수정]
+- **요청 사항**:
+  - `http://localhost:3000/main` 상단메뉴가 모바일에서 넘쳐서 표시되고, 특히 닫기(`[X]`) 버튼이 잘리는 현상 수정.
+- **수행 및 검증 내역**:
+  1. [`src/components/rpg/KadanNpcDialog.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/KadanNpcDialog.tsx):
+     - 모바일(`< md`)에서는 상단 헤더를 2열(`flex-col md:flex-row`)로 반응형 배치하여, 1열에 `[회차 배지] + [회차 제목(truncate)] + [장면 번호] + [우측 상단 고정 닫기(X) 버튼]`이 위치하고 2열에 `[전체컷/10장면 토글] + [TTS 버튼] + [애니/무비 토글]`이 배치되도록 개선.
+     - 닫기(`X`) 버튼이 모바일 우측 상단에 `shrink-0`으로 고정되어 320px~430px 등 모든 모바일 해상도에서 절대 잘리지 않도록 수정.
+     - 하단 컨트롤 바(`자동 ON/OFF`, `스킵`, `이전`, `다음 ▶`)의 패딩 및 `whitespace-nowrap`/`shrink-0` 적용으로 모바일 가로 넘침 방지.
+  2. [`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx):
+     - `/main` 상단 헤더의 모바일 패딩(`px-2.5 sm:px-4`) 및 요소 간격(`gap-1.5 sm:gap-3`) 조정, 모바일 초소형 화면에서 로고 숨김(`hidden sm:inline-flex`) 처리로 타이틀 및 우측 컨트롤 버튼이 넘치지 않도록 개선.
+  3. `npm run lint && npm run build` 무결성 검증 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-28 07:21 KST] [/start-server 고속 프로덕션 정적 프리뷰 서버(포트 3000), 실시간 자동 빌드 워처(watch-build), 웹푸시 디스패처(포트 3001) 통합 기동 완료]
 - **요청 사항**:
   - `/start-server` 실행 요청.
