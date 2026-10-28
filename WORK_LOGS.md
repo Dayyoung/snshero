@@ -16723,3 +16723,10 @@
   3. 20종 배경장소 설정 시트(`public/anime-character-sheets/locations/sheets/LOC_001..020_*_sheet.jpg`) 및 20종 소품 설정 시트(`public/anime-character-sheets/props/sheets/PROP_001..020_*_sheet.jpg`), 총람 포스터 2종(`all_20_locations_poster.jpg`, `all_20_props_poster.jpg`) 생성 완료.
   4. `public/anime-character-sheets/manifest.json` 및 프리프로덕션 스튜디오(`public/anime-character-sheets/index.html`)에 캐릭터(110)·배경장소(20)·핵심소품(20) 통합 탭 연동 완료.
 - **검증 및 보고**: 프로덕션 빌드 검증 및 구글 폼 완료 보고 제출.
+
+## 2026-10-28 15:17 (KST) — /script-anime 스킬 생성 및 제1화(1회) 6초 동영상 컷신 프롬프트(7등신 Cutout 기준) 생성 완료
+- **작업 내역**:
+  1. `/script-anime [회차]` 스킬 정의서(`skills/script-anime/SKILL.md`) 및 6초 동영상 컷신 프롬프트 자동 생성 스크립트(`skills/script-anime/scripts/generate_episode_cutscene_prompts.py`) 구축.
+  2. 각 6초 컷신 프롬프트마다 (1) 현재 회차 전체 스토리 요약, (2) 배경장소 시트(`LOC-001`~`LOC-020`), (3) **7등신 전신 컷아웃(`public/anime-character-sheets/cutouts/001..110_*.png`)** 기준 등장 캐릭터 묘사, (4) 등장 소품 시트(`PROP-001`~`PROP-020`) 및 소품 소지 캐릭터 명시, (5) 6초 이내 요약 대사 또는 전원 침묵(`NO SPOKEN DIALOGUE`) 지침, (6) 글자 포함 절대 금지(`STRICT NO-TEXT RULE`) 규칙 완벽 적용.
+  3. `/script-anime 1회` 실행으로 제1화 『눈보라 아래 두 서약』(`Two Vows Beneath the Blizzard`) 총 28컷(168초) 마크다운·JSON 프롬프트 리스트 생성 완료.
+- **구글 폼 보고서 제출**: 제출 완료
