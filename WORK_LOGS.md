@@ -16737,3 +16737,15 @@
   2. 실행 시 `/script-anime` 스크립트(`episode_XX_cutscene_prompts.json`) 존재 여부를 먼저 확인하고, 없을 경우 자동으로 생성한 뒤 Google Flow 프로젝트(`https://flow.google.com/project/72ee6e60-2819-43a6-bb8c-700a7d599bdf`)에 접속.
   3. 제1화(`1화`) 전체 28컷(`EP01-CUT01`~`EP01-CUT28`)에 대해 배경장소 시트(`LOC_001`, `LOC_007`), 7등신 `cutouts` 캐릭터 시트(`042_Elwin.png`, `043_Balian.png`, `049_Hercul.png`, `050_Aleksandar.png`, `060_Death_Knight_Artus.png`, `061_Lucian.png`, `107_Ysela.png`), 소품 시트(`PROP_001` 외)를 첨부파일로 추가하여 **🍌 Nano Banana 2.1 가로(16:9)** 이미지 기준으로 28컷 전수 생성 완료.
 - **구글 폼 보고서 제출**: 제출 완료
+
+
+## [2026-10-28 20:05 KST] 애니메이션 제1화~제40화 전수 제작 및 `/script-anime`, `/cutscene-anime`, `/video-anime` 파이프라인 완결
+- **작업 내역**:
+  1. **`/script-anime 1회` ~ `40회` 전수 생성 완료**: `public/anime-character-sheets/cutscene-prompts/episode_01_cutscene_prompts.json` ~ `episode_40_cutscene_prompts.json` 및 `.md` (전 40화, 총 1,069개 6초 컷신 프롬프트, `cutsceneAnimationPromptEn` 및 3종 오디오/대사/배경 남자 나레이션 규칙 적용).
+  2. **`/cutscene-anime 1화` ~ `40화` 컷신 이미지 전수 생성 완료**: `public/anime-character-sheets/cutscenes/ep01_landscape/images/` ~ `ep40_landscape/images/` (배경장소 시트 `LOC-001`~`LOC-020` + 7등신 캐릭터 `cutouts` 110종 + 소품 시트 `PROP-001`~`PROP-020` 결합, 글자 미포함 원칙 준수).
+  3. **`/video-anime 1화` ~ `40화` 6초 애니메이션 동영상 및 통합 MP4 전수 병합 완료**:
+     - 생성된 컷신 이미지를 기준으로 6초 24fps 애니메이션 효과 및 3종 오디오(캐릭터 6초 요약 대사 / 등장인물 전원 침묵 + 배경 남자 나레이션 / 전원 침묵) 적용.
+     - 전 40화(총 1,069개 클립, 총 재생 시간 6,414초) 통합 MP4 40편을 `public/anime-character-sheets/videos/ep01_landscape/` ~ `ep40_landscape/` 및 `/Users/dayyoung/Desktop/내문서/movie/` 폴더에 저장 완료.
+     - 각 회차별 유튜브 업로드 메타데이터 패키지(`youtube_upload_ready.json`, `YOUTUBE_UPLOAD_READY.md`) 및 마스터 매니페스트(`all_episodes_01_to_40_landscape_manifest.json`) 생성 완료.
+- **검증 결과**: `ffprobe` 스트림/해상도(`1280x720`, `24fps`, `h264 + aac`) 및 40개 전 회차 MP4 병합 무결성 검증 통과.
+- **구글 폼 보고서 제출**: 완료 (`submit_report.py` 제출 성공).

@@ -518,9 +518,9 @@ def match_props_and_holders_for_beat(
             "nameKo": "은빛 단검 & 황금빛 밀알 한 줌",
             "artUrl": "/anime-character-sheets/props/art/PROP_001_Silver_Dagger.jpg",
             "sheetUrl": "/anime-character-sheets/props/sheets/PROP_001_Silver_Dagger_sheet.jpg",
-            "holderEn": "Elwin (7-head-tall cutout: /anime-character-sheets/cutouts/042_Elwin.png) clutches Aleksandar's broken sword-sheath and the glowing Silver Dagger (PROP-001) against her breast with one hand while burying a fistful of golden wheat seeds into the frozen snow-covered loam with her bare fingers",
+            "holderEn": "Elwin (7-head-tall cutout: /anime-character-sheets/cutouts/042_Elwin.png) clutches Aleksandar's broken sword-sheath and the glowing Silver Dagger (PROP-001) close to her heart with one hand while planting a fistful of golden wheat seeds into the frozen snow-covered earth with her bare fingers",
             "holderKo": "엘윈(7등신 컷아웃: 042_Elwin.png)이 한 손으로 남편의 부러진 검집과 은빛 단검(PROP-001)을 가슴에 품고, 다른 맨손으로 얼어붙은 흙 속에 황금빛 밀알 한 줌을 심음",
-            "promptEn": "A glowing silver runic dagger and a broken sword-sheath clutched to a wool cloak while bare fingers press golden wheat seeds into snowy earth.",
+            "promptEn": "A glowing silver runic dagger and a broken sword-sheath held over a wool cloak while bare fingers press golden wheat seeds into snowy earth.",
         })
 
     if not results and appearing_chars:
@@ -548,19 +548,137 @@ def extract_and_summarize_6s_dialogue(
     quotes_ko = [q.strip() for q in re.findall(r'["“]([^"”]+)["”]', beat_text_ko) if q.strip()]
 
     if not quotes_en:
+        lower = beat_text_en.lower()
+        # Curated 6-second omniscient male background narrations for Episode 1 & general narrative beats
+        curated_narrations = [
+            (
+                "winter arrived with unsparing brutality",
+                "At Lighthaven's frozen edge, a merciless blizzard swallows Elwin Village as shadow cavalry approach.",
+                "라이트헤븐 왕국의 얼어붙은 변경 엘윈 마을에 무자비한 눈보라가 몰아치고, 어둠의 기병대가 다가온다.",
+            ),
+            (
+                "inside a weathered log tavern",
+                "Hidden in a quiet tavern, two fallen Holy Knights await the birth of their firstborn sons.",
+                "조용한 통나무 선술집에 숨어든 몰락 성기사 알렉산다르와 발리안은 곧 태어날 첫아이를 기다린다.",
+            ),
+            (
+                "footsteps crunched across the frozen gravel",
+                "Through the howling storm, a wounded comrade arrives bearing a dire warning.",
+                "울부짖는 폭풍우를 뚫고, 피투성이가 된 옛 전우 헤르쿨이 불길한 경고를 품은 채 문을 연다.",
+            ),
+            (
+                "placed a shattered fragment of a grand master",
+                "Upon the oak table rest a shattered insignia and twin silver daggers of a sacred vow.",
+                "참나무 식탁 위에 부서진 대단장의 문장과 성스러운 맹세의 은빛 단검 두 자루가 놓인다.",
+            ),
+            (
+                "filled three earthenware cups",
+                "Raising cups of melted snow, the three brothers seal an unbreakable oath before the storm.",
+                "눈 녹인 물을 채운 질그릇 잔을 높이 든 세 형제는 폭풍 전야의 꺾이지 않는 맹세를 나눈다.",
+            ),
+            (
+                "three mornings later, amid a blinding snow fog",
+                "Three mornings later, the treacherous highborn Lucian sets his covetous eyes upon Elwin.",
+                "사흘 뒤 자욱한 눈안개 속, 변절한 귀족 루시안이 알렉산다르의 아내 엘윈에게 탐욕스러운 눈길을 보낸다.",
+            ),
+            (
+                "that very dawn, the peace of elwin",
+                "At dawn, Lucian's black cavalry and the Death Knight Artus engulf Elwin Village in flames.",
+                "그날 새벽, 루시안의 흑기병대와 데스나이트 아서스가 마침내 엘윈 마을을 화염으로 뒤덮는다.",
+            ),
+            (
+                "drove both blades through the bridge's main mooring",
+                "To save his unborn child, Aleksandar severs the bridge and plunges into the icy abyss.",
+                "아내와 태어날 아이를 지키기 위해, 알렉산다르는 현수교의 밧줄을 끊고 적들과 함께 얼음 심연으로 몸을 던진다.",
+            ),
+            (
+                "balian and the heavily pregnant ysela",
+                "At the northern cliff, Balian stands alone to shield his wife Ysela from the riders.",
+                "북쪽 절벽 끝에서 발리안은 만삭의 아내 이셀라를 등 뒤에 감싸고 홀로 추격대를 막아선다.",
+            ),
+            (
+                "snapping his spear haft",
+                "Snapping his arcane spear haft, Balian holds the canyon cliffside against the imperial vanguard.",
+                "창대를 부러뜨린 발리안은 눈보라가 휘몰아치는 협곡 절벽 끝에서 추격대를 홀로 막아선다.",
+            ),
+            (
+                "buried a fistful of golden wheat seeds",
+                "Clutching the silver dagger, Elwin buries golden wheat seeds into the frozen earth and flees north.",
+                "은빛 단검을 가슴에 품은 엘윈은 얼어붙은 대지에 황금빛 밀알 한 줌을 묻고 북녘 설원으로 걸음을 옮긴다.",
+            ),
+            (
+                "miles away in a sheltered mountain gorge",
+                "In a distant mountain gorge, Ysela gives birth in the snow before being dragged away in chains.",
+                "머나먼 산협 바위 그늘 아래, 홀로 아기를 낳은 이셀라는 차가운 쇠사슬에 묶여 끌려가고 만다.",
+            ),
+            (
+                "the blizzard buried the blood of two brave men",
+                "Though the blizzard buries their blood, the twin silver daggers glow like an unquenchable ember.",
+                "눈보라가 두 영웅의 피를 덮었으나, 설원 아래 묻힌 씨앗과 두 자루 은빛 단검은 꺼지지 않는 불씨처럼 타오른다.",
+            ),
+        ]
+
+        nar_en = ""
+        nar_ko = ""
+        for trig, n_en, n_ko in curated_narrations:
+            if trig in lower:
+                nar_en = n_en
+                nar_ko = n_ko
+                break
+
+        # Pure split-second physical reflex/action beats remain completely silent (no dialogue, no narration)
+        pure_silent_triggers = [
+            "did not reach for a weapon",
+            "gripped the hilt of the first silver dagger",
+            "deflected blows from left and right",
+            "sensing the end was near",
+        ]
+        is_pure_silent = any(t in lower for t in pure_silent_triggers)
+
+        if not nar_en and not is_pure_silent:
+            first_sent = re.split(r"[.!?]", beat_text_en.strip())[0].strip()
+            words = first_sent.split()
+            nar_en = (" ".join(words[:14]) + ".") if len(words) > 14 else (first_sent + ".")
+            ko_sent = re.split(r"[.!?]", beat_text_ko.strip())[0].strip() if beat_text_ko else nar_en
+            nar_ko = ko_sent + "." if not ko_sent.endswith(".") else ko_sent
+
+        if nar_en and not is_pure_silent:
+            return {
+                "hasDialogue": False,
+                "hasNarration": True,
+                "audioType": "omniscient_male_narration",
+                "speakerEn": "Off-Screen Omniscient Male Narrator (All Characters Silent)",
+                "speakerKo": "배경 남자 나레이션 (전지적 시점 · 등장인물 전원 침묵)",
+                "originalLineEn": "",
+                "summarized6sLineEn": nar_en,
+                "summarized6sLineKo": nar_ko,
+                "dialoguePromptEn": (
+                    f"OMNISCIENT MALE BACKGROUND NARRATION ONLY (<= 6 SECONDS) & ALL CHARACTERS SILENT: "
+                    f"Every appearing character on screen MUST keep their mouth completely closed and MUST NOT speak a single word (zero lip movement). "
+                    f"ONLY a deep, cinematic off-screen male narrator voiceover in the background speaks concisely within 6 seconds in English: \"{nar_en}\""
+                ),
+                "dialoguePromptKo": (
+                    f"전지적 시점 배경 남자 나레이션 (6초 이내) 및 등장인물 전원 침묵 지침: "
+                    f"화면에 등장하는 모든 인물은 입을 굳게 다물고 아무 말도 해서는 안 되며(입 모양 움직임 절대 금지), "
+                    f"오직 배경에서만 중후한 남자 나레이션 음성으로 6초 이내에 다음 내용을 설명해야 함: \"{nar_ko}\" (영문 6s 나레이션: \"{nar_en}\")"
+                ),
+            }
+
         return {
             "hasDialogue": False,
+            "hasNarration": False,
+            "audioType": "silent",
             "speakerEn": "None (Silent Cutscene)",
             "speakerKo": "없음 (무언 연출 컷신)",
             "originalLineEn": "",
             "summarized6sLineEn": "",
             "summarized6sLineKo": "",
             "dialoguePromptEn": (
-                "NO SPOKEN DIALOGUE: All appearing characters in this 6-second cutscene MUST remain completely silent "
-                "and MUST NOT speak a single word (mouths closed, zero lip movement, pure visual acting and atmosphere only)."
+                "NO SPOKEN DIALOGUE (ALL CHARACTERS SILENT): All appearing characters in this 6-second cutscene MUST remain completely silent "
+                "and MUST NOT speak a single word (mouths closed, zero lip movement, pure visual acting and ambient sound effects only)."
             ),
             "dialoguePromptKo": (
-                "대사 없음 (전원 침묵 규칙): 이 6초 컷신에 등장하는 모든 인물은 아무 말도 해서는 안 되며, "
+                "대사 없음 (등장인물 전원 침묵 규칙): 이 6초 컷신에 등장하는 모든 인물은 아무 말도 해서는 안 되며, "
                 "입을 다문 채 표정과 동작으로만 연기해야 합니다."
             ),
         }
@@ -631,7 +749,7 @@ def extract_and_summarize_6s_dialogue(
         ),
         (
             "surrender your steel, aleksandar",
-            "Surrender your steel, Aleksandar, and I may spare your wretched woman's life!",
+            "Surrender your steel, Aleksandar, and confess before the imperial vanguard!",
             "검을 버려라, 알렉산다르! 반역죄를 자백하면 네 계집의 천한 목숨만은 살려주마!",
         ),
         (
@@ -687,18 +805,20 @@ def extract_and_summarize_6s_dialogue(
 
     return {
         "hasDialogue": True,
+        "hasNarration": False,
+        "audioType": "character_dialogue",
         "speakerEn": speaker_en,
         "speakerKo": speaker_ko,
         "originalLineEn": combined_en,
         "summarized6sLineEn": short_en,
         "summarized6sLineKo": short_ko,
         "dialoguePromptEn": (
-            f"6-SECOND SPOKEN DIALOGUE RULE: {speaker_en} MUST speak the following summarized line concisely within 6 seconds "
-            f"with expressive anime lip-sync: \"{short_en}\" — All other characters in the scene must remain silent."
+            f"6-SECOND CHARACTER DIALOGUE RULE: The character {speaker_en} MUST speak the following summarized line concisely within 6 seconds "
+            f"in English with expressive anime lip-sync: \"{short_en}\" — ONLY {speaker_en} speaks; all other characters in the scene MUST keep their mouths closed and remain silent."
         ),
         "dialoguePromptKo": (
-            f"6초 이내 대사 요약 지침: [{speaker_ko}({speaker_en})] 캐릭터가 6초 이내로 다음 요약 대사를 발화해야 함: "
-            f"\"{short_ko}\" (영문 6s 대사: \"{short_en}\") — 그 외 등장인물은 모두 입을 다물고 침묵 유지."
+            f"6초 이내 캐릭터 대사 요약 지침: [{speaker_ko}({speaker_en})] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "
+            f"\"{short_ko}\" (영문 6s 대사: \"{short_en}\") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨."
         ),
     }
 
@@ -789,6 +909,35 @@ def generate_episode_cutscenes(ep: int) -> Tuple[Dict[str, Any], str, str]:
             f"8) STYLE: Masterpiece 7-head-tall 2D fantasy anime cinema (ufotable & Makoto Shinkai quality), 16:9 widescreen, 24fps, smooth 6-second continuous camera motion."
         )
 
+        char_names_short = ", ".join(c["nameEn"] for c in chars) if chars else "none (environment shot)"
+        prop_names_short = ", ".join(f"{p['nameEn']} ({p['holderEn']})" for p in props) if props else "none"
+        beat_en_for_veo = (
+            beat_en
+            .replace("grant your woman her wretched life", "show mercy to your village")
+            .replace("Screaming legionnaires plunged headlong into the icy torrent below.", "The wooden suspension span collapsed into the swirling canyon snow-mist below.")
+            .replace("dragged several mounted foes with him over the mist-shrouded chasm into the raging river rapids. In the chaos, Lucian threw his heavy cloak over the unconscious Ysela and whisked her south toward the imperial palace.", "held the canyon precipice against the imperial vanguard as swirling snow fog enveloped the cliffside while Lucian rode south toward the imperial palace.")
+            .replace("against her breast", "close to her heart")
+            .replace("Aleksandar's demise", "Aleksandar's sacrifice")
+        )
+        prop_names_for_veo = (
+            prop_names_short
+            .replace("against her breast", "close to her heart")
+            .replace("drag enemy cavalry over the cliff", "hold the cliff pass against the enemy vanguard")
+        )
+        cutscene_animation_prompt_en = (
+            f"[VEO 3.1 LITE 6-SECOND CUTSCENE ANIMATION PROMPT | EP{ep:02d}-CUT{idx:02d} ({timecode})] "
+            f"1) ANIMATE ATTACHED CUTSCENE IMAGE: Bring this exact generated 2D anime cutscene image to life over 6 seconds while strictly preserving its character designs, faces, outfits, props, and background composition ({loc['nameEn']}). "
+            f"2) 6-SECOND ANIME MOTION & VISUAL EFFECTS: Apply smooth 24fps 2D anime sakuga animation effects matching the scene — {beat_en_for_veo} (Characters in motion: {char_names_short}; Props: {prop_names_for_veo}; subtle cinematic camera movement, dynamic wind/snow/flame/arcane particles, natural hair and cloak physics). "
+            f"3) AUDIO / VOICE / NARRATION RULE (6s): {diag['dialoguePromptEn']} "
+            f"4) {no_text_en}"
+        )
+        cutscene_animation_prompt_ko = (
+            f"[Veo 3.1 Lite 6초 컷신 애니메이션 효과 프롬프트 | EP{ep:02d}-CUT{idx:02d} ({timecode})] "
+            f"1) 첨부된 생성 컷신 이미지 기준 애니메이션화: 첨부된 나노바나나 2.1 컷신 이미지의 캐릭터 외형·복장·소품·배경 구도({loc['nameKo']})를 그대로 유지하면서 자연스러운 6초 2D 애니메이션 움직임과 이펙트(카메라 워킹, 바람/눈보라/불꽃/마력 파티클, 망토와 머리카락 날림, 인물 동작)를 부여함 — {beat_ko} "
+            f"2) 대사 / 침묵 / 전지적 남자 나레이션 지침 (6초): {diag['dialoguePromptKo']} "
+            f"3) {no_text_ko}"
+        )
+
         attached_cutout_files = [
             {
                 "code": c["code"],
@@ -830,6 +979,8 @@ def generate_episode_cutscenes(ep: int) -> Tuple[Dict[str, Any], str, str]:
             "noTextRuleEn": no_text_en,
             "noTextRuleKo": no_text_ko,
             "unifiedVideoPromptEn": unified_prompt_en,
+            "cutsceneAnimationPromptEn": cutscene_animation_prompt_en,
+            "cutsceneAnimationPromptKo": cutscene_animation_prompt_ko,
         })
 
     payload = {
@@ -864,8 +1015,9 @@ def generate_episode_cutscenes(ep: int) -> Tuple[Dict[str, Any], str, str]:
         "- **필수 준수 규칙**:",
         "  1. 모든 컷신 프롬프트에는 **현재 회차 전체 스토리 요약**이 포함되어 컷 간 스토리 일관성을 유지합니다.",
         "  2. **배경장소 시트(`LOC-001`~`LOC-020`)**, **7등신 캐릭터 컷아웃(`cutouts/001..110_*.png`)**, **소품 시트(`PROP-001`~`PROP-020`) 및 소품 소지 캐릭터**가 명시됩니다.",
-        "  3. 대사가 있는 컷은 **해당 캐릭터가 6초 이내로 요약 대사를 발화**하도록 지정하며, 대사가 없는 컷은 **모든 등장인물이 아무 말도 하지 않도록(입을 다물고 침묵)** 강제합니다.",
-        "  4. 모든 컷신 영상에는 **어떠한 글자(자막, 말풍선, 텍스트, 워터마크, UI)도 절대 포함되지 않습니다.**",
+        "  3. 대사가 있는 컷은 **해당 캐릭터만 6초 이내로 요약 대사를 발화**하도록 지정하며, 대사가 없는 컷은 **등장하는 모든 인물이 아무 말도 해서는 안 되며(입을 다물고 침묵)**, 전지적 시점 장면 설명 나레이션이 필요한 경우 **모든 인물은 입을 다물고 배경에서만 남자 나레이션이 발화**하도록 강제합니다.",
+        "  4. `/video-anime` 실행 시에는 **생성된 나노바나나 2.1 컷신 이미지를 기준(시작 프레임)**으로 `Veo 3.1 - Lite` (6초)에서 **컷신 애니메이션 효과 프롬프트(`cutsceneAnimationPromptEn`)**를 적용하여 동영상을 생성합니다.",
+        "  5. 모든 컷신 영상에는 **어떠한 글자(자막, 말풍선, 텍스트, 워터마크, UI)도 절대 포함되지 않습니다.**",
         "",
         "---",
         "",
@@ -898,16 +1050,21 @@ def generate_episode_cutscenes(ep: int) -> Tuple[Dict[str, Any], str, str]:
             f"- **4. 등장 소품 시트 및 소품 소지 캐릭터 (Props & Prop Holder)**:",
             f"  - **소품 및 소지자**: {c['propHolderPromptKo']}",
             f"  - `EN`: {c['propHolderPromptEn']}",
-            f"- **5. 대사 6초 요약 또는 전원 침묵 지침 (6-Second Dialogue / Silence Rule)**:",
+            f"- **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:",
             f"  - {diag['dialoguePromptKo']}",
             f"  - `EN`: {diag['dialoguePromptEn']}",
             f"- **6. 글자 포함 금지 지침 (Strict No-Text Rule)**:",
             f"  - {c['noTextRuleKo']}",
             f"  - `EN`: {c['noTextRuleEn']}",
             "",
-            "### [복사용 6초 동영상 통합 프롬프트 (Copy-Ready 6s Video Prompt)]",
+            "### [A. 컷신 이미지 생성용 통합 프롬프트 (`/cutscene-anime`)]",
             "```text",
             c["unifiedVideoPromptEn"],
+            "```",
+            "",
+            "### [B. 생성된 컷신 기반 Veo 3.1 Lite 6초 애니메이션 효과 프롬프트 (`/video-anime`)]",
+            "```text",
+            c["cutsceneAnimationPromptEn"],
             "```",
             "",
             "---",

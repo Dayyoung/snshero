@@ -1,0 +1,53 @@
+# YouTube 업로드 준비 완료 패키지 — 제1화 『눈보라 아래 두 서약』 (Two Vows Beneath the Blizzard)
+
+- **최종 병합 동영상 (프로젝트 내)**: `/Users/dayyoung/project/snshero/public/anime-character-sheets/videos/ep01_landscape/SNSHero_Anime_EP01_Two_Vows_Beneath_the_Blizzard_16x9.mp4`
+- **최종 병합 동영상 (데스크탑 Movie 폴더)**: `/Users/dayyoung/Desktop/내문서/movie/SNSHero_Anime_EP01_Two_Vows_Beneath_the_Blizzard_16x9.mp4`
+- **해상도 / 화면 비율**: `1280x720 (16:9 가로 와이드)`
+- **생성 모델 및 방식**: `Veo 3.1 - Lite` (나노바나나 2.1 생성 컷신 이미지 기준 6초 애니메이션 효과 부여 × 28컷 = 168초)
+- **파일 크기**: `70.70 MB`
+
+## 제목 (Title)
+```text
+[SNS히어로 애니메이션 1화 풀버전] 눈보라 아래 두 서약 (Two Vows Beneath the Blizzard) | SNSHero Anime EP01
+```
+
+## 설명 (Description)
+```text
+🎬 [SNS히어로 애니메이션 1화 풀버전] 눈보라 아래 두 서약 (Two Vows Beneath the Blizzard) | SNSHero Anime EP01
+
+📖 줄거리 요약 (KO): 제1화 『눈보라 아래 두 서약』(Two Vows Beneath the Blizzard): 라이트헤븐 왕국의 남쪽 끝자락, 거친 산맥과 툰드라가 맞닿은 엘윈 마을에는 겨울이 가혹하리만치 서둘러 당도했다. 중반부 사흘 뒤, 짙은 안개 속 눈 덮인 비탈길에서 젊은 궁정 귀족 루시안이 알렉산다르의 만삭 아내 엘윈과 마주쳤다. 이어 결말에서는 눈보라가 두 남자의 피 묻은 맹세를 덮었지만, 설원 아래 묻힌 씨앗과 두 자루 은빛 단검의 룬은 꺼지지 않는 불씨처럼 어둠 속에서 고요히 타오르고 있었다.
+📖 Synopsis (EN): Episode 01 ('Two Vows Beneath the Blizzard'): At the southernmost edge of the Kingdom of Lighthaven, where jagged mountain ranges met the frozen tundra, winter arrived with unsparing brutality in the village of Elwin. As the conflict escalates (Three mornings later, amid a blinding snow fog, the young highborn Lucian encountered Aleksandar's wife, Elwin, on the village perimeter.), the episode culminates when the blizzard buried the blood of two brave men, yet the seeds beneath the snow and the twin silver daggers glowed in the darkness like an ember that no storm could ever quench.
+
+⏱️ 컷신 타임라인 (6초 × 28컷 = 총 2분 48초):
+00:00 EP01-CUT01 - 엘윈 마을 (배경 연출 | 배경 남자 나레이션)
+00:06 EP01-CUT02 - 엘윈 마을 (알렉산다르, 발리안, 엘윈, 이셀라 | 배경 남자 나레이션)
+00:12 EP01-CUT03 - 엘윈 마을 (헤르쿨 | 배경 남자 나레이션)
+00:18 EP01-CUT04 - 엘윈 마을 (알렉산다르, 발리안, 헤르쿨 | 배경 남자 나레이션)
+00:24 EP01-CUT05 - 엘윈 마을 (발리안, 알렉산다르, 헤르쿨 | 대사: 발리안)
+00:30 EP01-CUT06 - 엘윈 마을 (헤르쿨, 알렉산다르, 발리안 | 대사: 헤르쿨)
+00:36 EP01-CUT07 - 엘윈 마을 (헤르쿨 | 배경 남자 나레이션)
+00:42 EP01-CUT08 - 붉은 유리 궁전 (불꽃 궁정) (헤르쿨, 루시안, 데스나이트 아르투스 | 배경 남자 나레이션)
+00:48 EP01-CUT09 - 엘윈 마을 (헤르쿨 | 대사: 헤르쿨)
+00:54 EP01-CUT10 - 엘윈 마을 (헤르쿨 | 배경 남자 나레이션)
+01:00 EP01-CUT11 - 엘윈 마을 (헤르쿨, 알렉산다르, 발리안 | 대사: 헤르쿨)
+01:06 EP01-CUT12 - 엘윈 마을 (알렉산다르 | 대사: 알렉산다르)
+01:12 EP01-CUT13 - 엘윈 마을 (발리안 | 대사: 발리안)
+01:18 EP01-CUT14 - 엘윈 마을 (알렉산다르, 발리안, 헤르쿨 | 배경 남자 나레이션)
+01:24 EP01-CUT15 - 엘윈 마을 (엘윈, 루시안 | 배경 남자 나레이션)
+01:30 EP01-CUT16 - 엘윈 마을 (알렉산다르, 발리안, 엘윈, 이셀라, 루시안 | 배경 남자 나레이션)
+01:36 EP01-CUT17 - 엘윈 마을 (알렉산다르, 루시안 | 대사: 루시안)
+01:42 EP01-CUT18 - 엘윈 마을 (알렉산다르 | 대사: 알렉산다르)
+01:48 EP01-CUT19 - 엘윈 마을 (알렉산다르 | 배경 남자 나레이션)
+01:54 EP01-CUT20 - 엘윈 마을 (발리안, 이셀라, 루시안 | 대사: 이셀라)
+02:00 EP01-CUT21 - 엘윈 마을 (발리안, 이셀라 | 대사: 발리안)
+02:06 EP01-CUT22 - 붉은 유리 궁전 (불꽃 궁정) (발리안, 이셀라, 루시안 | 배경 남자 나레이션)
+02:12 EP01-CUT23 - 엘윈 마을 (알렉산다르, 엘윈 | 배경 남자 나레이션)
+02:18 EP01-CUT24 - 엘윈 마을 (엘윈 | 배경 남자 나레이션)
+02:24 EP01-CUT25 - 엘윈 마을 (엘윈 | 배경 남자 나레이션)
+02:30 EP01-CUT26 - 엘윈 마을 (엘윈 | 대사: 엘윈)
+02:36 EP01-CUT27 - 엘윈 마을 (엘윈 | 대사: 엘윈)
+02:42 EP01-CUT28 - 엘윈 마을 (엘윈 | 배경 남자 나레이션)
+
+🎮 지금 바로 플레이: https://snshero.com
+#SNS히어로 #SNSHero #판타지애니메이션 #웹소설애니화 #KadansJourney #AIAnimation #Veo31
+```

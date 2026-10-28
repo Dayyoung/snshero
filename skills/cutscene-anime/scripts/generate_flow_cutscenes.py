@@ -360,6 +360,16 @@ def run_flow_cutscenes(ep: int, orientation: str, start_cut: int = 1, end_cut: O
             viewport={"width": 1280, "height": 800},
         )
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
+        zzl0ze_bodies: List[str] = []
+
+        def on_response(resp):
+            if "rpcids=Zzl0ze" in resp.url:
+                try:
+                    zzl0ze_bodies.append(resp.text())
+                except Exception:
+                    pass
+
+        page.on("response", on_response)
         print(f"[Flow] Navigating to {FLOW_PROJECT_URL} ...")
         page.goto(FLOW_PROJECT_URL, wait_until="domcontentloaded", timeout=60000)
         time.sleep(7)
@@ -437,9 +447,51 @@ def run_flow_cutscenes(ep: int, orientation: str, start_cut: int = 1, end_cut: O
         wait_for_active_generations(page, max_concurrent=0, timeout_sec=120)
         time.sleep(5)
 
+        # Reload project page once to capture latest Zzl0ze state and export cutscene images locally
+        page.goto(FLOW_PROJECT_URL, wait_until="domcontentloaded", timeout=60000)
+        time.sleep(7)
+        images_dir = out_dir / "images"
+        images_dir.mkdir(parents=True, exist_ok=True)
+        ep_prefix = f"EP{ep:02d}-CUT"
+        orient_tag = "PORTRAIT 9:16" if orientation == "portrait" else "LANDSCAPE 16:9"
+        img_pat = re.compile(rf"\[(NANO BANANA 2\.1 {orient_tag} ANIME CUTSCENE IMAGE)\]\s*\[6-SECOND ANIME CUTSCENE VIDEO PROMPT \| ({ep_prefix}\d{{2}})")
+        img_url_map = {}
+        for body in zzl0ze_bodies:
+            for m in img_pat.finditer(body):
+                cid = m.group(2)
+                pref = body[max(0, m.start() - 500):m.start()]
+                urls = re.findall(r"https://lh3\.googleusercontent\.com/asb/[A-Za-z0-9_-]+", pref)
+                if urls:
+                    img_url_map[cid] = urls[-1]
+
+        exported_count = 0
+        for cut in cutscenes:
+            cid = cut["cutCode"]
+            cnum = cut["cutNumber"]
+            img_out = images_dir / f"EP{ep:02d}_CUT{cnum:02d}_cutscene.jpg"
+            if img_out.exists() and img_out.stat().st_size > 15000:
+                exported_count += 1
+                continue
+            if cid in img_url_map:
+                r = ctx.request.get(img_url_map[cid])
+                if r.ok and len(r.body()) > 15000:
+                    img_out.write_bytes(r.body())
+                    exported_count += 1
+                    print(f"  🖼️ [{cid}] Exported Nano Banana 2.1 cutscene image -> {img_out.name}", flush=True)
+
+        flow_status_file = out_dir / "flow_generation_status.json"
+        flow_status_file.write_text(json.dumps({
+            "episode": ep,
+            "orientation": orientation,
+            "totalCutscenes": len(cutscenes),
+            "completedCutscenes": max(exported_count, sum(1 for v in status_data.values() if isinstance(v, dict) and v.get("submitted"))),
+            "exportedImages": exported_count,
+            "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        }, ensure_ascii=False, indent=2), encoding="utf-8")
+
         final_screenshot = out_dir / f"flow_ep{ep:02d}_{orientation}_canvas.png"
         page.screenshot(path=str(final_screenshot))
-        print(f"✅ All {end_cut - start_cut + 1} cutscenes for Episode {ep:02d} ({orientation}) generated in Flow project!")
+        print(f"✅ All {end_cut - start_cut + 1} cutscenes for Episode {ep:02d} ({orientation}) generated & {exported_count} exported!")
         print(f"   Canvas screenshot saved to: {final_screenshot}")
         ctx.close()
 

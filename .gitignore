@@ -10,3 +10,5 @@ functions/.env
 .env.example
 tmp/image_narrations_translation_cache.json
 package-lock.json
+public/anime-character-sheets/videos/**/*.mp4
+public/anime-character-sheets/cutscenes/**/images/*.jpg

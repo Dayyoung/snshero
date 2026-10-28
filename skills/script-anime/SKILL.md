@@ -28,10 +28,13 @@ description: 지정한 회차(예: /script-anime 1회)의 영문 소설과 7등�
    - 현재 생성해야 하는 컷신에 등장하는 모든 인물을 **7등신 전신 컷아웃 이미지(`public/anime-character-sheets/cutouts/XXX_Name.png`) 첨부 링크** 및 **7등신 외형·복장 프롬프트**로 묘사합니다.
 4. **등장 소품 및 소품 소지 캐릭터 묘사 (`Props & Prop Holder Specification`)**:
    - 현재 컷신에 등장해야 하는 **소품(`PROP-001`~`PROP-020` 또는 고유 무기/성물)**과 **그 소품을 소지(착용·사용)해야 하는 캐릭터가 누구인지** 명확하게 프롬프트로 묘사합니다.
-5. **6초 이내 대사 요약 또는 전원 침묵 규칙 (`6-Second Dialogue OR Strict Silence Rule`)**:
-   - **대사가 있는 컷신**: 해당 캐릭터가 대사를 **6초 이내로 요약해서 발화해야 한다**는 지침과 6초 요약 대사(`"..."`)를 프롬프트에 추가합니다.
-   - **대사가 없는 컷신**: 등장하는 **모든 인물은 아무 말도 해서는 안 된다(입을 다물고 침묵 유지, `NO SPOKEN DIALOGUE: All appearing characters must remain completely silent and must not speak a single word`)**는 지침을 프롬프트에 추가합니다.
-6. **글자 포함 절대 금지 규칙 (`Strict No-Text Constraint`)**:
+5. **6초 이내 대사 요약 / 전지적 시점 배경 남자 나레이션 / 전원 침묵 3모드 규칙 (`3-Mode Audio: 6s Character Dialogue / Off-Screen Omniscient Male Narration / Strict Silence`)**:
+   - **캐릭터 대사가 필요한 컷신 (`character_dialogue`)**: 해당 캐릭터가 대사를 **6초 이내(`<= 15 words`)로 요약해서 발화해야 한다**는 지침과 6초 요약 대사(`"..."`)를 프롬프트에 추가하며, 발화자 외 다른 인물은 입을 다뭅니다.
+   - **전지적 시점 장면 설명 나레이션이 필요한 컷신 (`omniscient_male_narration`)**: 화면에 등장하는 **모든 인물은 입을 완전히 다물고 아무 말도 해서는 안 되며(`All appearing characters on screen MUST keep their mouths completely closed and MUST NOT speak a single word`)**, 오직 **배경(화면 밖, Off-Screen)에서만 남자 나레이션 목소리(`ONLY an off-screen omniscient male narrator in the background`)**가 6초 이내로 해당 장면을 설명합니다.
+   - **대사 및 나레이션이 모두 없는 컷신 (`silent`)**: 등장하는 **모든 인물은 아무 말도 해서는 안 된다(입을 다물고 침묵 유지, `NO SPOKEN DIALOGUE: All appearing characters must remain completely silent and must not speak a single word`)**는 지침을 프롬프트에 추가합니다.
+6. **컷신 이미지 기반 Veo 3.1 Lite 애니메이션 효과 프롬프트 (`cutsceneAnimationPromptEn`)**:
+   - `/cutscene-anime`로 생성된 나노바나나 2.1 컷신 이미지를 `Veo 3.1 - Lite`의 **시작 프레임(`시작`)**으로 첨부하여 캐릭터·복장·소품·구도를 100% 보존한 채 6초간 자연스러운 2D 애니메이션 모션 효과와 3모드 오디오를 부여하는 전용 프롬프트(`cutsceneAnimationPromptEn`)를 함께 생성합니다.
+7. **글자 포함 절대 금지 규칙 (`Strict No-Text Constraint`)**:
    - 해당 컷신 영상에는 **어떠한 글자(자막, 말풍선, 알파벳, 한자, 숫자, 워터마크, UI)도 절대 포함되면 안 된다(`STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI overlays anywhere in the video`)**는 지침을 프롬프트에 추가합니다.
 
 ## 실행 절차
