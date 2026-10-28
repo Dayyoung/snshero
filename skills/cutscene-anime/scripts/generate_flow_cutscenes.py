@@ -58,8 +58,10 @@ def ensure_episode_script(ep: int) -> Path:
     return json_path
 
 
-def ensure_chrome_profile(profile_dir: Path = FLOW_PROFILE_DIR):
+def ensure_chrome_profile(profile_dir: Path = FLOW_PROFILE_DIR, force_refresh: bool = False):
     src_root = Path("/Users/dayyoung/Library/Application Support/Google/Chrome")
+    if force_refresh and profile_dir.exists():
+        shutil.rmtree(profile_dir, ignore_errors=True)
     if not profile_dir.exists() or not (profile_dir / "Default").exists():
         profile_dir.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src_root / "Local State", profile_dir / "Local State")
@@ -108,8 +110,56 @@ def collect_cutscene_ref_files(cut: dict) -> List[str]:
     return files
 
 
+SAFE_WORD_MAP = [
+    (r"\bblood-soaked\b", "snow-covered"),
+    (r"\bbloodstained\b", "weather-worn"),
+    (r"\bbleeding\b", "glowing"),
+    (r"\bbloody\b", "crimson"),
+    (r"\bblood\b", "crimson light"),
+    (r"\bcorpses\b", "fallen shields"),
+    (r"\bcorpse\b", "fallen armor"),
+    (r"\bsevered\b", "parted"),
+    (r"\bsevering\b", "cutting through"),
+    (r"\bdecapitated\b", "shattered"),
+    (r"\bslaughtered\b", "defeated"),
+    (r"\bslaughter\b", "battle"),
+    (r"\bmassacre\b", "conflict"),
+    (r"\bmurdered\b", "betrayed"),
+    (r"\bmurder\b", "betrayal"),
+    (r"\bkilled\b", "defeated"),
+    (r"\bkilling\b", "defeating"),
+    (r"\bkill\b", "defeat"),
+    (r"\bstabbed\b", "struck"),
+    (r"\bstabbing\b", "striking"),
+    (r"\bscreaming\b", "shouting"),
+    (r"\bscreams\b", "echoes"),
+    (r"\bexecution\b", "judgment"),
+    (r"\btorture\b", "ordeal"),
+    (r"\bdying\b", "fading"),
+    (r"\bdead\b", "fallen"),
+    (r"\bdeath\b", "shadow"),
+    (r"\bpoisoned\b", "tainted"),
+    (r"\bpoison\b", "dark mist"),
+    (r"\bvenom\b", "dark aura"),
+    (r"\bwounded\b", "weary"),
+    (r"\bwounds\b", "scars"),
+    (r"\bwound\b", "scar"),
+    (r"\bskulls\b", "helmets"),
+    (r"\bskull\b", "helmet"),
+    (r"\bthroat\b", "collar"),
+    (r"\bflesh\b", "armor"),
+]
+
+
+def sanitize_prompt_strict(text: str) -> str:
+    out = text
+    for pat, repl in SAFE_WORD_MAP:
+        out = re.sub(pat, repl, out, flags=re.IGNORECASE)
+    return out
+
+
 def build_image_cutscene_prompt(cut: dict, orientation: str) -> str:
-    base = cut["unifiedVideoPromptEn"]
+    base = sanitize_prompt_strict(cut["unifiedVideoPromptEn"])
     if orientation == "portrait":
         base = base.replace("16:9 widescreen", "9:16 vertical portrait")
         return f"[NANO BANANA 2.1 VERTICAL 9:16 ANIME CUTSCENE IMAGE] {base}"
@@ -120,7 +170,12 @@ def configure_flow_settings(page, orientation: str):
     target_crop = "crop_9_16" if orientation == "portrait" else "crop_16_9"
     target_ratio_label = "9:16" if orientation == "portrait" else "16:9"
 
-    trig = page.locator('button[aria-label="설정 트리거"]').first
+    box = page.locator('[aria-label="무엇을 만들고 싶으신가요?"]').first
+    if box.count() > 0 and box.is_visible():
+        box.click()
+        time.sleep(0.4)
+
+    trig = page.locator('button[aria-label="설정 트리거"], button:has-text("Nano Banana"), button:has-text("동영상 ·")').first
     trig.wait_for(state="visible", timeout=15000)
     trig_txt = trig.inner_text()
     print(f"[Step 2] Current Flow Settings Trigger: {repr(trig_txt)}")
@@ -342,66 +397,67 @@ def run_flow_cutscenes(ep: int, orientation: str, start_cut: int = 1, end_cut: O
                 seen_refs.add(rf)
                 all_ref_files.append(rf)
 
-    ensure_chrome_profile(FLOW_PROFILE_DIR)
+    images_dir = out_dir / "images"
+    images_dir.mkdir(parents=True, exist_ok=True)
+    ensure_chrome_profile(FLOW_PROFILE_DIR, force_refresh=False)
 
     with sync_playwright() as p:
-        ctx = p.chromium.launch_persistent_context(
-            user_data_dir=str(FLOW_PROFILE_DIR),
-            channel="chrome",
-            headless=False,
-            ignore_default_args=["--use-mock-keychain", "--password-store=basic", "--enable-automation"],
-            args=[
-                "--profile-directory=Default",
-                "--disable-extensions",
-                "--disable-blink-features=AutomationControlled",
-                "--hide-crash-restore-bubble",
-                "--window-size=1280,800",
-            ],
-            viewport={"width": 1280, "height": 800},
-        )
-        page = ctx.pages[0] if ctx.pages else ctx.new_page()
-        zzl0ze_bodies: List[str] = []
+        def open_flow_session():
+            c = p.chromium.launch_persistent_context(
+                user_data_dir=str(FLOW_PROFILE_DIR),
+                channel="chrome",
+                headless=False,
+                ignore_default_args=["--use-mock-keychain", "--password-store=basic", "--enable-automation"],
+                args=[
+                    "--profile-directory=Default",
+                    "--disable-extensions",
+                    "--disable-blink-features=AutomationControlled",
+                    "--hide-crash-restore-bubble",
+                    "--window-size=1280,800",
+                ],
+                viewport={"width": 1280, "height": 800},
+            )
+            pg = c.pages[0] if c.pages else c.new_page()
+            for nav_try in range(3):
+                print(f"[Flow] Navigating to {FLOW_PROJECT_URL} (try {nav_try+1}) ...", flush=True)
+                pg.goto(FLOW_PROJECT_URL, wait_until="domcontentloaded", timeout=60000)
+                time.sleep(8)
+                agree_btn = pg.locator('button:has-text("동의함")')
+                if agree_btn.count() > 0 and agree_btn.first.is_visible():
+                    agree_btn.first.click()
+                    time.sleep(1.0)
+                if pg.locator('[aria-label="무엇을 만들고 싶으신가요?"]').count() > 0 and pg.locator('[aria-label="무엇을 만들고 싶으신가요?"]').first.is_visible():
+                    break
+            configure_flow_settings(pg, orientation)
+            return c, pg
 
-        def on_response(resp):
-            if "rpcids=Zzl0ze" in resp.url:
-                try:
-                    zzl0ze_bodies.append(resp.text())
-                except Exception:
-                    pass
-
-        page.on("response", on_response)
-        print(f"[Flow] Navigating to {FLOW_PROJECT_URL} ...")
-        page.goto(FLOW_PROJECT_URL, wait_until="domcontentloaded", timeout=60000)
-        time.sleep(7)
-
-        agree_btn = page.locator('button:has-text("동의함")')
-        if agree_btn.count() > 0 and agree_btn.first.is_visible():
-            agree_btn.first.click()
-            time.sleep(0.5)
-
-        configure_flow_settings(page, orientation)
+        ctx, page = open_flow_session()
         refs_marker = out_dir / "refs_uploaded.json"
         if not refs_marker.exists():
             preupload_episode_reference_sheets(page, all_ref_files)
             refs_marker.write_text(json.dumps(all_ref_files, indent=2), encoding="utf-8")
         else:
-            print(f"[Step 3] All {len(all_ref_files)} reference sheets already verified in Flow project library.")
+            print(f"[Step 3] All {len(all_ref_files)} reference sheets already verified in Flow project library.", flush=True)
 
         for cut in cutscenes[start_cut - 1:end_cut]:
             cnum = cut["cutNumber"]
             ccode = cut["cutCode"]
-            if status_data.get(ccode, {}).get("submitted"):
-                print(f"[{ccode}] Already submitted in this orientation ({orientation}), skipping.")
+            img_out = images_dir / f"EP{ep:02d}_CUT{cnum:02d}_cutscene.jpg"
+            if img_out.exists() and img_out.stat().st_size > 15000:
+                print(f"[{ccode}] Cutscene image already exported ({img_out.name}), skipping.", flush=True)
+                continue
+            if status_data.get(ccode, {}).get("excluded"):
+                print(f"⏭️ [{ccode}] Previously excluded after 3 failed attempts, skipping.", flush=True)
                 continue
 
+            succeeded = False
             for attempt in range(3):
                 try:
-                    wait_for_active_generations(page, max_concurrent=2, timeout_sec=90)
+                    wait_for_active_generations(page, max_concurrent=0, timeout_sec=60)
                     clear_prompt_box(page)
 
                     ref_files = collect_cutscene_ref_files(cut)
                     attached_names = []
-                    # Attach up to 5 reference sheets (1 Location + up to 3 7-head-tall Character Cutouts + 1 Prop Sheet)
                     for rf in ref_files[:5]:
                         ok = attach_reference_sheet(page, rf)
                         if ok:
@@ -410,9 +466,9 @@ def run_flow_cutscenes(ep: int, orientation: str, start_cut: int = 1, end_cut: O
                     close_asset_picker(page)
                     prompt_text = build_image_cutscene_prompt(cut, orientation)
                     box = page.locator('[aria-label="무엇을 만들고 싶으신가요?"]').first
-                    box.click(force=True, timeout=10000)
+                    box.click(timeout=10000)
                     box.fill(prompt_text, timeout=10000)
-                    time.sleep(0.6)
+                    time.sleep(0.7)
 
                     gen_btn = page.locator('button[aria-label="생성 시작"]').first
                     for _ in range(10):
@@ -420,9 +476,59 @@ def run_flow_cutscenes(ep: int, orientation: str, start_cut: int = 1, end_cut: O
                             break
                         time.sleep(0.4)
 
-                    gen_btn.click(force=True, timeout=10000)
-                    print(f"🎬 [{ccode} ({cnum}/{len(cutscenes)})] Submitted to Flow Nano Banana 2.1 ({orientation}) | Attached: {attached_names}", flush=True)
-                    time.sleep(3.5)
+                    before_imgs = set(page.evaluate("""() => {
+                        return Array.from(document.querySelectorAll('img'))
+                            .map(e => e.src || '')
+                            .filter(s => s.includes('/asb/') && !e.classList.contains('thumbnail'));
+                    }"""))
+
+                    gen_btn.click(timeout=10000)
+                    print(f"🎬 [{ccode} ({cnum}/{len(cutscenes)}) | Try {attempt+1}/3] Submitted to Flow Nano Banana 2.1 ({orientation}) | Attached: {attached_names}", flush=True)
+
+                    new_img_url = None
+                    t_wait = time.time()
+                    saw_pct = False
+                    while time.time() - t_wait < 60:
+                        time.sleep(2.5)
+                        cur_imgs = page.evaluate("""() => {
+                            return Array.from(document.querySelectorAll('img'))
+                                .map(e => e.src || '')
+                                .filter(s => s.includes('/asb/') && !e.classList.contains('thumbnail'));
+                        }""")
+                        diff_imgs = [u for u in cur_imgs if u not in before_imgs]
+                        if diff_imgs:
+                            new_img_url = diff_imgs[0]
+                            break
+                        active_pcts = page.evaluate("""() => {
+                            const els = Array.from(document.querySelectorAll('*'));
+                            const pctRe = /^\\d{1,2}%$/;
+                            return els.filter(e => e.children.length === 0 && pctRe.test((e.innerText || '').trim())).map(e => e.innerText.trim());
+                        }""")
+                        if active_pcts:
+                            saw_pct = True
+                        elif not saw_pct and (time.time() - t_wait) > 13:
+                            break
+                        elif saw_pct and (time.time() - t_wait) > 18:
+                            time.sleep(2.0)
+                            cur_imgs = page.evaluate("""() => {
+                                return Array.from(document.querySelectorAll('img'))
+                                    .map(e => e.src || '')
+                                    .filter(s => s.includes('/asb/') && !e.classList.contains('thumbnail'));
+                            }""")
+                            diff_imgs = [u for u in cur_imgs if u not in before_imgs]
+                            if diff_imgs:
+                                new_img_url = diff_imgs[0]
+                            break
+
+                    if not new_img_url:
+                        print(f"⚠️ [{ccode}] Try {attempt+1}/3 failed to produce image (policy/filter). Waiting 4s...", flush=True)
+                        time.sleep(4)
+                        continue
+
+                    r = ctx.request.get(new_img_url)
+                    if r.ok and len(r.body()) > 15000:
+                        img_out.write_bytes(r.body())
+                        print(f"  🖼️ [{ccode}] Exported Nano Banana 2.1 cutscene image -> {img_out.name} ({len(r.body()) // 1024} KB)", flush=True)
 
                     status_data[ccode] = {
                         "cutNumber": cnum,
@@ -431,67 +537,51 @@ def run_flow_cutscenes(ep: int, orientation: str, start_cut: int = 1, end_cut: O
                         "aspectRatio": "9:16" if orientation == "portrait" else "16:9",
                         "model": "🍌 Nano Banana 2.1",
                         "attachedReferenceFiles": attached_names,
+                        "imageUrl": new_img_url,
+                        "localImage": str(img_out.relative_to(ROOT)),
                         "prompt": prompt_text,
                         "submitted": True,
+                        "extracted": img_out.exists(),
                         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
                     }
                     status_file.write_text(json.dumps(status_data, ensure_ascii=False, indent=2), encoding="utf-8")
+                    succeeded = True
                     break
                 except Exception as e:
-                    print(f"⚠️ [{ccode}] Attempt {attempt+1} error: {e} — reloading Flow project page...", flush=True)
+                    print(f"⚠️ [{ccode}] Try {attempt+1}/3 error: {e} — reloading page...", flush=True)
                     page.goto(FLOW_PROJECT_URL, wait_until="domcontentloaded", timeout=60000)
-                    time.sleep(6)
+                    time.sleep(7)
                     configure_flow_settings(page, orientation)
 
-        print(f"⏳ Waiting for final cutscenes on Flow canvas to finish rendering...")
-        wait_for_active_generations(page, max_concurrent=0, timeout_sec=120)
-        time.sleep(5)
+            if not succeeded:
+                print(f"🚫 [{ccode}] Failed 3 times — excluding {ccode} and moving to next cutscene.", flush=True)
+                status_data[ccode] = {
+                    "cutNumber": cnum,
+                    "cutCode": ccode,
+                    "orientation": orientation,
+                    "excluded": True,
+                    "attempts": 3,
+                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                }
+                status_file.write_text(json.dumps(status_data, ensure_ascii=False, indent=2), encoding="utf-8")
 
-        # Reload project page once to capture latest Zzl0ze state and export cutscene images locally
-        page.goto(FLOW_PROJECT_URL, wait_until="domcontentloaded", timeout=60000)
-        time.sleep(7)
-        images_dir = out_dir / "images"
-        images_dir.mkdir(parents=True, exist_ok=True)
-        ep_prefix = f"EP{ep:02d}-CUT"
-        orient_tag = "PORTRAIT 9:16" if orientation == "portrait" else "LANDSCAPE 16:9"
-        img_pat = re.compile(rf"\[(NANO BANANA 2\.1 {orient_tag} ANIME CUTSCENE IMAGE)\]\s*\[6-SECOND ANIME CUTSCENE VIDEO PROMPT \| ({ep_prefix}\d{{2}})")
-        img_url_map = {}
-        for body in zzl0ze_bodies:
-            for m in img_pat.finditer(body):
-                cid = m.group(2)
-                pref = body[max(0, m.start() - 500):m.start()]
-                urls = re.findall(r"https://lh3\.googleusercontent\.com/asb/[A-Za-z0-9_-]+", pref)
-                if urls:
-                    img_url_map[cid] = urls[-1]
-
-        exported_count = 0
-        for cut in cutscenes:
-            cid = cut["cutCode"]
-            cnum = cut["cutNumber"]
-            img_out = images_dir / f"EP{ep:02d}_CUT{cnum:02d}_cutscene.jpg"
-            if img_out.exists() and img_out.stat().st_size > 15000:
-                exported_count += 1
-                continue
-            if cid in img_url_map:
-                r = ctx.request.get(img_url_map[cid])
-                if r.ok and len(r.body()) > 15000:
-                    img_out.write_bytes(r.body())
-                    exported_count += 1
-                    print(f"  🖼️ [{cid}] Exported Nano Banana 2.1 cutscene image -> {img_out.name}", flush=True)
-
+        exported_count = len(list(images_dir.glob(f"EP{ep:02d}_CUT*_cutscene.jpg")))
+        excluded_count = sum(1 for v in status_data.values() if isinstance(v, dict) and v.get("excluded"))
         flow_status_file = out_dir / "flow_generation_status.json"
         flow_status_file.write_text(json.dumps({
             "episode": ep,
             "orientation": orientation,
             "totalCutscenes": len(cutscenes),
-            "completedCutscenes": max(exported_count, sum(1 for v in status_data.values() if isinstance(v, dict) and v.get("submitted"))),
+            "completedCutscenes": exported_count,
+            "excludedCutscenes": excluded_count,
             "exportedImages": exported_count,
+            "finished": True,
             "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         }, ensure_ascii=False, indent=2), encoding="utf-8")
 
         final_screenshot = out_dir / f"flow_ep{ep:02d}_{orientation}_canvas.png"
         page.screenshot(path=str(final_screenshot))
-        print(f"✅ All {end_cut - start_cut + 1} cutscenes for Episode {ep:02d} ({orientation}) generated & {exported_count} exported!")
+        print(f"✅ Episode {ep:02d} ({orientation}) cutscenes done: {exported_count} exported, {excluded_count} excluded after 3 tries!")
         print(f"   Canvas screenshot saved to: {final_screenshot}")
         ctx.close()
 

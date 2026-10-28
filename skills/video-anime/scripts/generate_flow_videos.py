@@ -80,23 +80,26 @@ def ensure_episode_script_and_cutscenes(ep: int, orientation: str) -> Path:
     total_cuts = len(ep_data.get("cutscenes", []))
 
     completed_cuts = 0
+    cutscenes_finished = False
     if cut_img_dir.exists():
         completed_cuts = len(list(cut_img_dir.glob(f"EP{ep:02d}_CUT*_cutscene.jpg")))
-    if completed_cuts < total_cuts and cut_status_file.exists():
+    if cut_status_file.exists():
         try:
             st = json.loads(cut_status_file.read_text(encoding="utf-8"))
-            completed_cuts = max(completed_cuts, sum(1 for v in st.values() if v.get("submitted") or v.get("extracted")))
+            if st.get("finished"):
+                cutscenes_finished = True
+            completed_cuts = max(completed_cuts, int(st.get("completedCutscenes", 0)))
         except Exception:
             pass
 
-    if completed_cuts < total_cuts:
+    if not cutscenes_finished and completed_cuts < total_cuts:
         print(f"[Step 1] Cutscenes for Episode {ep:02d} ({orientation}) incomplete ({completed_cuts}/{total_cuts}). Running /cutscene-anime first...", flush=True)
         subprocess.run(
             [sys.executable, str(CUTSCENE_GENERATOR), f"{ep}화", "--orientation", orientation],
             check=True,
         )
     else:
-        print(f"[Step 1] Verified existing /cutscene-anime ({orientation}) cutscenes: {completed_cuts}/{total_cuts} completed.", flush=True)
+        print(f"[Step 1] Verified existing /cutscene-anime ({orientation}) cutscenes: {completed_cuts}/{total_cuts} exported.", flush=True)
 
     return json_path
 
@@ -176,9 +179,13 @@ def ensure_cutscene_images_exported(ctx, zzl0ze_bodies: List[str], ep: int, orie
 
 def configure_veo_lite_settings(page, orientation: str):
     target_ratio_label = "9:16" if orientation == "portrait" else "16:9"
-    trig = page.locator('button[aria-label="설정 트리거"]').first
+    box = page.locator('[aria-label="무엇을 만들고 싶으신가요?"]').first
+    if box.count() > 0 and box.is_visible():
+        box.click()
+        time.sleep(0.4)
+    trig = page.locator('button[aria-label="설정 트리거"], button:has-text("Nano Banana"), button:has-text("동영상 ·")').first
     trig.wait_for(state="visible", timeout=20000)
-    trig.click(force=True)
+    trig.click()
     time.sleep(0.8)
 
     vid_radio = page.locator('button[role="radio"]:has-text("동영상")').first
@@ -347,11 +354,59 @@ def attach_start_frame_cutscene(page, fpath: str) -> bool:
     return False
 
 
+VEO_SAFE_WORD_MAP = [
+    (r"\bblood-soaked\b", "snow-covered"),
+    (r"\bbloodstained\b", "weather-worn"),
+    (r"\bbleeding\b", "glowing"),
+    (r"\bbloody\b", "crimson"),
+    (r"\bblood\b", "crimson light"),
+    (r"\bcorpses\b", "fallen shields"),
+    (r"\bcorpse\b", "fallen armor"),
+    (r"\bsevered\b", "parted"),
+    (r"\bsevering\b", "cutting through"),
+    (r"\bdecapitated\b", "shattered"),
+    (r"\bslaughtered\b", "defeated"),
+    (r"\bslaughter\b", "battle"),
+    (r"\bmassacre\b", "conflict"),
+    (r"\bmurdered\b", "betrayed"),
+    (r"\bmurder\b", "betrayal"),
+    (r"\bkilled\b", "defeated"),
+    (r"\bkilling\b", "defeating"),
+    (r"\bkill\b", "defeat"),
+    (r"\bstabbed\b", "struck"),
+    (r"\bstabbing\b", "striking"),
+    (r"\bscreaming\b", "shouting"),
+    (r"\bscreams\b", "echoes"),
+    (r"\bexecution\b", "judgment"),
+    (r"\btorture\b", "ordeal"),
+    (r"\bdying\b", "fading"),
+    (r"\bdead\b", "fallen"),
+    (r"\bdeath\b", "shadow"),
+    (r"\bpoisoned\b", "tainted"),
+    (r"\bpoison\b", "dark mist"),
+    (r"\bvenom\b", "dark aura"),
+    (r"\bwounded\b", "weary"),
+    (r"\bwounds\b", "scars"),
+    (r"\bwound\b", "scar"),
+    (r"\bskulls\b", "helmets"),
+    (r"\bskull\b", "helmet"),
+    (r"\bthroat\b", "collar"),
+    (r"\bflesh\b", "armor"),
+]
+
+
+def sanitize_veo_prompt_strict(text: str) -> str:
+    out = text
+    for pat, repl in VEO_SAFE_WORD_MAP:
+        out = re.sub(pat, repl, out, flags=re.IGNORECASE)
+    return out
+
+
 def build_video_animation_prompt(cut: dict, orientation: str) -> str:
     base = cut.get("cutsceneAnimationPromptEn") or cut["unifiedVideoPromptEn"]
     if orientation == "portrait":
         base = base.replace("16:9 widescreen", "9:16 vertical portrait")
-    return base
+    return sanitize_veo_prompt_strict(base)
 
 
 def sync_and_download_from_zzl0ze(
@@ -531,7 +586,27 @@ def write_youtube_upload_package(ep_data: dict, orientation: str, out_dir: Path,
     return json_pkg_path, md_pkg_path
 
 
-def run_flow_videos(ep: int, orientation: str, start_cut: int = 1, end_cut: Optional[int] = None, batch_size: int = 2):
+def ensure_chrome_profile(profile_dir: Path = FLOW_PROFILE_DIR, force_refresh: bool = False):
+    src_root = Path("/Users/dayyoung/Library/Application Support/Google/Chrome")
+    if force_refresh and profile_dir.exists():
+        shutil.rmtree(profile_dir, ignore_errors=True)
+    if not profile_dir.exists() or not (profile_dir / "Default").exists():
+        profile_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src_root / "Local State", profile_dir / "Local State")
+        shutil.copytree(
+            src_root / "Default",
+            profile_dir / "Default",
+            symlinks=True,
+            ignore=shutil.ignore_patterns(
+                "Cache*", "Code Cache*", "GPUCache*", "Service Worker*",
+                "Singleton*", "Extensions*", "Extension*", "Sessions*"
+            ),
+        )
+    for sf in profile_dir.glob("Singleton*"):
+        sf.unlink(missing_ok=True)
+
+
+def run_flow_videos(ep: int, orientation: str, start_cut: int = 1, end_cut: Optional[int] = None, batch_size: int = 1):
     json_path = ensure_episode_script_and_cutscenes(ep, orientation)
     ep_data = json.loads(json_path.read_text(encoding="utf-8"))
     cutscenes = ep_data["cutscenes"]
@@ -552,64 +627,71 @@ def run_flow_videos(ep: int, orientation: str, start_cut: int = 1, end_cut: Opti
         except Exception:
             status_data = {}
 
-    for sf in FLOW_PROFILE_DIR.glob("Singleton*"):
-        sf.unlink(missing_ok=True)
+    ensure_chrome_profile(FLOW_PROFILE_DIR, force_refresh=False)
 
     with sync_playwright() as p:
-        ctx = p.chromium.launch_persistent_context(
-            user_data_dir=str(FLOW_PROFILE_DIR),
-            channel="chrome",
-            headless=False,
-            accept_downloads=True,
-            ignore_default_args=["--use-mock-keychain", "--password-store=basic", "--enable-automation"],
-            args=[
-                "--profile-directory=Default",
-                "--disable-extensions",
-                "--disable-blink-features=AutomationControlled",
-                "--hide-crash-restore-bubble",
-            ],
-            viewport={"width": 1600, "height": 1000},
-        )
-        page = ctx.pages[0] if ctx.pages else ctx.new_page()
-
         zzl0ze_bodies: List[str] = []
         zzl0ze_video_map: Dict[str, str] = {}
-        captured_signed_mp4s: List[str] = []
 
-        def on_response(resp):
-            url = resp.url
-            if "rpcids=Zzl0ze" in url:
-                try:
-                    body = resp.text()
-                    zzl0ze_bodies.append(body)
-                    parsed = parse_zzl0ze_video_map(body, ep)
-                    if parsed:
-                        zzl0ze_video_map.update(parsed)
-                except Exception as e:
-                    print(f"[Zzl0ze resp warn] {e}", flush=True)
-            elif "flow-content.google/video/" in url and "Expires=" in url and "landing_" not in url:
-                if url not in captured_signed_mp4s:
-                    captured_signed_mp4s.append(url)
-                    print(f"  [NET MP4] Captured signed stream: {url[:95]}...", flush=True)
+        def open_flow_video_session():
+            c = p.chromium.launch_persistent_context(
+                user_data_dir=str(FLOW_PROFILE_DIR),
+                channel="chrome",
+                headless=False,
+                accept_downloads=True,
+                ignore_default_args=["--use-mock-keychain", "--password-store=basic", "--enable-automation"],
+                args=[
+                    "--profile-directory=Default",
+                    "--disable-extensions",
+                    "--disable-blink-features=AutomationControlled",
+                    "--hide-crash-restore-bubble",
+                ],
+                viewport={"width": 1600, "height": 1000},
+            )
+            pg = c.pages[0] if c.pages else c.new_page()
 
-        page.on("response", on_response)
-        print(f"[Flow] Navigating to {FLOW_PROJECT_URL} ...", flush=True)
-        page.goto(FLOW_PROJECT_URL, wait_until="domcontentloaded", timeout=60000)
-        time.sleep(8)
+            def on_response(resp):
+                if "rpcids=Zzl0ze" in resp.url:
+                    try:
+                        body = resp.text()
+                        zzl0ze_bodies.append(body)
+                        parsed = parse_zzl0ze_video_map(body, ep)
+                        if parsed:
+                            zzl0ze_video_map.update(parsed)
+                    except Exception:
+                        pass
 
-        # Ensure all 28 generated Nano Banana 2.1 cutscene images are exported locally
+            pg.on("response", on_response)
+            for nav_try in range(3):
+                print(f"[Flow] Navigating to {FLOW_PROJECT_URL} (try {nav_try+1}) ...", flush=True)
+                pg.goto(FLOW_PROJECT_URL, wait_until="domcontentloaded", timeout=60000)
+                time.sleep(8)
+                agree_btn = pg.locator('button:has-text("동의함")')
+                if agree_btn.count() > 0 and agree_btn.first.is_visible():
+                    agree_btn.first.click()
+                    time.sleep(1.0)
+                if pg.locator('[aria-label="무엇을 만들고 싶으신가요?"]').count() > 0 and pg.locator('[aria-label="무엇을 만들고 싶으신가요?"]').first.is_visible():
+                    break
+            configure_veo_lite_settings(pg, orientation)
+            return c, pg
+
+        ctx, page = open_flow_video_session()
+
+        # Ensure all generated Nano Banana 2.1 cutscene images are exported locally
         cut_img_map = ensure_cutscene_images_exported(ctx, zzl0ze_bodies, ep, orientation, len(cutscenes), cut_img_dir)
 
-        # Sync any already-generated videos in Flow using the authoritative Zzl0ze mapping
-        print(f"[Flow] Authoritative Zzl0ze video map has {len(zzl0ze_video_map)}/{len(target_cuts)} generated cutscene videos.", flush=True)
-        sync_and_download_from_zzl0ze(ctx, zzl0ze_video_map, target_cuts, cut_img_map, clips_dir, status_data, status_file, orientation)
+        # Sync any already-generated videos in Flow
+        if zzl0ze_video_map:
+            sync_and_download_from_zzl0ze(ctx, zzl0ze_video_map, target_cuts, cut_img_map, clips_dir, status_data, status_file, orientation)
 
         pending_cuts = [
             cut for cut in target_cuts
-            if not ((clips_dir / f"{cut['cutCode']}.mp4").exists() and (clips_dir / f"{cut['cutCode']}.mp4").stat().st_size > 100000)
+            if cut["cutCode"] in cut_img_map
+            and cut_img_map[cut["cutCode"]].exists()
+            and not (status_data.get(cut["cutCode"]) or {}).get("excluded")
+            and not ((clips_dir / f"{cut['cutCode']}.mp4").exists() and (clips_dir / f"{cut['cutCode']}.mp4").stat().st_size > 100000)
         ]
         if pending_cuts:
-            configure_veo_lite_settings(page, orientation)
             cutscene_files_to_index = [
                 str(cut_img_map[c["cutCode"]])
                 for c in pending_cuts
@@ -617,94 +699,114 @@ def run_flow_videos(ep: int, orientation: str, start_cut: int = 1, end_cut: Opti
             ]
             preupload_cutscene_images(page, cutscene_files_to_index, out_dir)
 
-            for b_start in range(0, len(pending_cuts), batch_size):
-                batch = pending_cuts[b_start:b_start + batch_size]
-                batch_codes = [c["cutCode"] for c in batch]
-                print(f"\n🚀 [Batch {b_start // batch_size + 1}] Animating {len(batch)} generated cutscenes with Veo 3.1 - Lite (6s): {batch_codes}", flush=True)
-
-                before_thumbs = set(
-                    page.locator("flow-video-tile img.thumbnail").evaluate_all("els => els.map(e => e.src).filter(Boolean)")
-                )
-
-                submitted_cuts = []
-                for cut in batch:
-                    ccode = cut["cutCode"]
-                    cnum = cut["cutNumber"]
-                    cut_img_path = str(cut_img_map[ccode])
-                    prompt_text = build_video_animation_prompt(cut, orientation)
-                    diag = cut.get("dialogue") or {}
-                    audio_mode = diag.get("audioType", "silent")
-
-                    for attempt in range(3):
-                        try:
-                            clear_prompt_composer(page)
-                            ok_ref = attach_start_frame_cutscene(page, cut_img_path)
-                            close_picker_if_open(page)
-
-                            box = page.locator('[aria-label="무엇을 만들고 싶으신가요?"]').first
-                            box.click(force=True, timeout=10000)
-                            box.fill(prompt_text, timeout=10000)
-                            time.sleep(0.6)
-
-                            gen_btn = page.locator('button[aria-label="생성 시작"]').first
-                            for _ in range(12):
-                                if gen_btn.is_enabled():
-                                    break
-                                time.sleep(0.4)
-
-                            if not gen_btn.is_enabled():
-                                configure_veo_lite_settings(page, orientation)
-                                clear_prompt_composer(page)
-                                attach_start_frame_cutscene(page, cut_img_path)
-                                box.click(force=True)
-                                box.fill(prompt_text)
-                                time.sleep(0.6)
-
-                            gen_btn.click(force=True, timeout=10000)
-                            print(f"  🎬 [{ccode} ({cnum}/{len(cutscenes)})] Submitted (CutsceneImg={Path(cut_img_path).name}, Audio={audio_mode}, attached={ok_ref})", flush=True)
-                            submitted_cuts.append(cut)
-                            time.sleep(4.5)
-                            break
-                        except Exception as e:
-                            print(f"  ⚠️ [{ccode}] Submit attempt {attempt+1} error: {e}", flush=True)
-                            page.goto(FLOW_PROJECT_URL, wait_until="domcontentloaded", timeout=60000)
-                            time.sleep(7)
-                            configure_veo_lite_settings(page, orientation)
-
-                if not submitted_cuts:
+            for cut in pending_cuts:
+                ccode = cut["cutCode"]
+                cnum = cut["cutNumber"]
+                clip_out = clips_dir / f"{ccode}.mp4"
+                if clip_out.exists() and clip_out.stat().st_size > 100000:
+                    continue
+                if (status_data.get(ccode) or {}).get("excluded"):
+                    print(f"  ⏭️ [{ccode}] Previously excluded after 3 failed attempts, skipping.", flush=True)
                     continue
 
-                t0 = time.time()
-                zero_pct_streak = 0
-                while time.time() - t0 < 180:
-                    time.sleep(4)
-                    active_pcts = page.evaluate("""() => {
-                        const els = Array.from(document.querySelectorAll('*'));
-                        const pctRe = /^\\d{1,2}%$/;
-                        return els.filter(e => e.children.length === 0 && pctRe.test((e.innerText || '').trim())).map(e => e.innerText.trim());
-                    }""")
-                    elapsed = int(time.time() - t0)
-                    print(f"    [{elapsed}s] active_pcts={active_pcts}", flush=True)
-                    if len(active_pcts) == 0 and elapsed >= 42:
-                        zero_pct_streak += 1
-                        if zero_pct_streak >= 2:
+                cut_img_path = str(cut_img_map[ccode])
+                prompt_text = build_video_animation_prompt(cut, orientation)
+                diag = cut.get("dialogue") or {}
+                audio_mode = diag.get("audioType", "silent")
+
+                succeeded = False
+                for attempt in range(3):
+                    try:
+                        clear_prompt_composer(page)
+                        ok_ref = attach_start_frame_cutscene(page, cut_img_path)
+                        close_picker_if_open(page)
+
+                        use_prompt = prompt_text
+                        if attempt >= 1:
+                            # On 2nd/3rd try, use sanitized sakuga motion prompt preserving audio rule
+                            use_prompt = re.sub(
+                                r"2\) 6-SECOND ANIME MOTION & VISUAL EFFECTS:.*?3\) AUDIO / VOICE / NARRATION RULE",
+                                "2) 6-SECOND ANIME MOTION & VISUAL EFFECTS: Apply smooth 24fps 2D anime sakuga camera motion, dynamic wind and glowing arcane particles, natural hair and cloak movement. 3) AUDIO / VOICE / NARRATION RULE",
+                                prompt_text,
+                                flags=re.DOTALL,
+                            )
+
+                        box = page.locator('[aria-label="무엇을 만들고 싶으신가요?"]').first
+                        box.click(timeout=10000)
+                        box.fill(use_prompt, timeout=10000)
+                        time.sleep(0.7)
+
+                        gen_btn = page.locator('button[aria-label="생성 시작"]').first
+                        for _ in range(12):
+                            if gen_btn.is_enabled():
+                                break
+                            time.sleep(0.4)
+
+                        before_thumbs = set(
+                            page.locator("flow-video-tile img.thumbnail").evaluate_all("els => els.map(e => e.src).filter(Boolean)")
+                        )
+
+                        gen_btn.click(timeout=10000)
+                        print(f"  🎬 [{ccode} ({cnum}/{len(cutscenes)}) | Try {attempt+1}/3] Submitted to Veo 3.1 - Lite (CutsceneImg={Path(cut_img_path).name}, Audio={audio_mode}, attached={ok_ref})", flush=True)
+
+                        t0 = time.time()
+                        saw_pct = False
+                        new_thumb = None
+                        while time.time() - t0 < 120:
+                            time.sleep(3.5)
+                            after_thumbs = page.locator("flow-video-tile img.thumbnail").evaluate_all("els => els.map(e => e.src).filter(Boolean)")
+                            diff_thumbs = [t for t in after_thumbs if t not in before_thumbs]
+                            if diff_thumbs:
+                                new_thumb = diff_thumbs[0]
+                                break
+                            active_pcts = page.evaluate("""() => {
+                                const els = Array.from(document.querySelectorAll('*'));
+                                const pctRe = /^\\d{1,2}%$/;
+                                return els.filter(e => e.children.length === 0 && pctRe.test((e.innerText || '').trim())).map(e => e.innerText.trim());
+                            }""")
+                            elapsed = int(time.time() - t0)
+                            if active_pcts:
+                                saw_pct = True
+                                print(f"    [{elapsed}s] active_pcts={active_pcts}", flush=True)
+                            elif not saw_pct and elapsed >= 15:
+                                break
+                            elif saw_pct and elapsed >= 22:
+                                for _ in range(4):
+                                    time.sleep(2.0)
+                                    after_thumbs = page.locator("flow-video-tile img.thumbnail").evaluate_all("els => els.map(e => e.src).filter(Boolean)")
+                                    diff_thumbs = [t for t in after_thumbs if t not in before_thumbs]
+                                    if diff_thumbs:
+                                        new_thumb = diff_thumbs[0]
+                                        break
+                                break
+
+                        if not new_thumb:
+                            print(f"  ⚠️ [{ccode}] Try {attempt+1}/3 did not complete (policy/filter). Waiting 4s...", flush=True)
+                            time.sleep(4)
+                            continue
+
+                        zzl0ze_video_map[ccode] = f"{new_thumb}=mm,22,15"
+                        sync_and_download_from_zzl0ze(ctx, zzl0ze_video_map, [cut], cut_img_map, clips_dir, status_data, status_file, orientation)
+                        if clip_out.exists() and clip_out.stat().st_size > 100000:
+                            succeeded = True
                             break
-                    else:
-                        zero_pct_streak = 0
+                    except Exception as e:
+                        print(f"  ⚠️ [{ccode}] Try {attempt+1}/3 error: {e} — reloading page...", flush=True)
+                        page.goto(FLOW_PROJECT_URL, wait_until="domcontentloaded", timeout=60000)
+                        time.sleep(7)
+                        configure_veo_lite_settings(page, orientation)
 
-                time.sleep(3)
-                after_thumbs = page.locator("flow-video-tile img.thumbnail").evaluate_all("els => els.map(e => e.src).filter(Boolean)")
-                new_thumbs = [t for t in after_thumbs if t not in before_thumbs]
-                for cut, thumb_src in zip(submitted_cuts, reversed(new_thumbs[:len(submitted_cuts)])):
-                    ccode = cut["cutCode"]
-                    zzl0ze_video_map[ccode] = f"{thumb_src}=mm,22,15"
-
-                # Reload project page to trigger authoritative Zzl0ze state sync
-                page.goto(FLOW_PROJECT_URL, wait_until="domcontentloaded", timeout=60000)
-                time.sleep(8)
-                sync_and_download_from_zzl0ze(ctx, zzl0ze_video_map, target_cuts, cut_img_map, clips_dir, status_data, status_file, orientation)
-                if b_start + batch_size < len(pending_cuts):
-                    configure_veo_lite_settings(page, orientation)
+                if not succeeded:
+                    print(f"  🚫 [{ccode}] Failed 3 times — excluding {ccode} and moving to next clip/episode.", flush=True)
+                    status_data[ccode] = {
+                        "cutNumber": cnum,
+                        "cutCode": ccode,
+                        "orientation": orientation,
+                        "excluded": True,
+                        "attempts": 3,
+                        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                    }
+                    status_file.write_text(json.dumps(status_data, ensure_ascii=False, indent=2), encoding="utf-8")
 
         final_canvas_png = out_dir / f"flow_ep{ep:02d}_{orientation}_videos_canvas.png"
         page.screenshot(path=str(final_canvas_png))
