@@ -16634,3 +16634,10 @@
   - 기존 눈알(`Eye-Emblem`) 도안을 제거하고, 빙결 은빛·아이스 블루 테두리와 육각 눈 결정(Snowflake Crest) 및 서리 결정 스파클이 빛나는 셀 애니메이션풍 **눈(SNOW) 방패**로 교체(`scripts/anime_sheet_restorations.py`, `scripts/anime_character_specs.py`).
   - `public/anime-character-sheets/cutouts/041_Kadan.png`, `sheets/041_Kadan_sheet.jpg`, `factions/05_human_master_sheet.jpg`, `all_110_cast_poster.jpg`, `manifest.json` 일괄 갱신 완료.
 - **검증 및 보고**: 시각 검수 완료 및 연동 구글 폼 작업완료 보고서 제출 완료 (`HTTP 200`).
+
+## [2026-10-28] UNDEAD 언데드 종족 10종 (#051~#060) 고해상도 2D 셀 애니메이션 캐릭터 시트 전면 재생성 완료
+- **작업 내용**:
+  - 기존 2열 10인 밀집 시트에서 추출되어 해상도가 낮고 하단 발끝·로브·검 끝 일부가 잘려 있던 **UNDEAD (`#051 워커` ~ `#060 데스나이트 아르투스`)** 10종 전원을 **5인 와이드 고해상도(`1376×768`) 2D 셀 애니메이션 전신 원화 시트 2장**(`anime_06a_undead_v2_fix_1793150217689.jpg`, `anime_06b_undead_v2_fix_1793150318717.jpg`)으로 전면 재생성 및 교체 완료.
+  - 여성 캐릭터(`#054 아라크네`, `#056 카르디스`)의 글래머러스한 S라인 몸매와 하이슬릿 드레스·롱부츠 전신, 남성/몬스터 캐릭터(`#051 워커`, `#052 구울`, `#053 캐리언`, `#055 패치워크`, `#057 스톤가고일`, `#058 사이드라고사`, `#059 켈투스`, `#060 데스나이트 아르투스`)의 근육질 체형과 시그니처 무기·날개·꼬리·부츠 끝까지 유실 0건으로 반영.
+  - `public/anime-character-sheets/` 내 컷아웃(`cutouts/051..060`), 개별 시트(`sheets/051..060`), 마스터 시트(`factions/06_undead_master_sheet.jpg`), 전체 포스터(`all_110_cast_poster.jpg`), `manifest.json` 일괄 갱신 완료.
+- **검증 및 보고**: 시각 검수 완료 및 연동 구글 폼 작업완료 보고서 제출 완료 (`HTTP 200`).

@@ -1521,17 +1521,17 @@
       "bodyCharmKo": "전투 흔적이 가득한 흑철 흉갑과 뼈 갑주 실루엣",
       "signatureItemKo": "해골 부조 가시 방패와 보랏빛 원혼 불꽃이 타오르는 마검",
       "palette": [
-        "#656572",
-        "#41404C",
-        "#201D27",
-        "#848290",
-        "#B1AEBB"
+        "#4B474E",
+        "#696366",
+        "#26202A",
+        "#9E6BBB",
+        "#C2ADB7"
       ],
       "sheetUrl": "/anime-character-sheets/sheets/051_Walker_sheet.jpg",
       "cutoutUrl": "/anime-character-sheets/cutouts/051_Walker.png",
       "chibiIdleUrl": "/seat/Walker.png",
       "chibiAttackUrl": "/seat_attack/Walker.png",
-      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Walker (워커), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 보랏빛 영혼 불꽃이 반짝이는 개성 만점 해골 얼굴(3등신 원작의 귀여운 위트 계승) and 해골 부조 가시 방패와 보랏빛 원혼 불꽃이 타오르는 마검, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #656572, #41404C, #201D27."
+      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Walker (워커), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 보랏빛 영혼 불꽃이 반짝이는 개성 만점 해골 얼굴(3등신 원작의 귀여운 위트 계승) and 해골 부조 가시 방패와 보랏빛 원혼 불꽃이 타오르는 마검, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #4B474E, #696366, #26202A."
     },
     {
       "id": 52,
@@ -1549,17 +1549,17 @@
       "bodyCharmKo": "창백한 청록빛 피부 위로 질기게 발달한 잔근육과 주술 로브",
       "signatureItemKo": "초록색 영혼 불꽃을 뿜어내는 거대한 해골 토템 지팡이",
       "palette": [
-        "#292626",
-        "#444741",
-        "#82757C",
-        "#645860",
-        "#9EA999"
+        "#2C3739",
+        "#7CBDA9",
+        "#446C67",
+        "#629B8E",
+        "#8EE5AD"
       ],
       "sheetUrl": "/anime-character-sheets/sheets/052_Ghoul_sheet.jpg",
       "cutoutUrl": "/anime-character-sheets/cutouts/052_Ghoul.png",
       "chibiIdleUrl": "/seat/Ghoul.png",
       "chibiAttackUrl": "/seat_attack/Ghoul.png",
-      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Ghoul (구울), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 찢어진 검은 두건 아래 초록빛으로 빛나는 눈과 기괴한 주술사 인상 and 초록색 영혼 불꽃을 뿜어내는 거대한 해골 토템 지팡이, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #292626, #444741, #82757C."
+      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Ghoul (구울), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 찢어진 검은 두건 아래 초록빛으로 빛나는 눈과 기괴한 주술사 인상 and 초록색 영혼 불꽃을 뿜어내는 거대한 해골 토템 지팡이, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #2C3739, #7CBDA9, #446C67."
     },
     {
       "id": 53,
@@ -1577,17 +1577,17 @@
       "bodyCharmKo": "쇠사슬을 끊어낸 우람한 보디빌더급 언데드 근육질 상체",
       "signatureItemKo": "양손에 쥔 거대하고 투박한 쌍둥이 도살자 대식칼(Cleavers)",
       "palette": [
-        "#1E2429",
-        "#42484F",
-        "#6E8386",
-        "#83A3A2",
-        "#A4C8C3"
+        "#211F1F",
+        "#796F6E",
+        "#CEA896",
+        "#A98A7F",
+        "#444243"
       ],
       "sheetUrl": "/anime-character-sheets/sheets/053_Carrion_sheet.jpg",
       "cutoutUrl": "/anime-character-sheets/cutouts/053_Carrion.png",
       "chibiIdleUrl": "/seat/Carrion.png",
       "chibiAttackUrl": "/seat_attack/Carrion.png",
-      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Carrion (캐리언), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 차가운 청록빛 안광과 거친 전투 봉합 흔적 and 양손에 쥔 거대하고 투박한 쌍둥이 도살자 대식칼(Cleavers), crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #1E2429, #42484F, #6E8386."
+      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Carrion (캐리언), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 차가운 청록빛 안광과 거친 전투 봉합 흔적 and 양손에 쥔 거대하고 투박한 쌍둥이 도살자 대식칼(Cleavers), crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #211F1F, #796F6E, #CEA896."
     },
     {
       "id": 54,
@@ -1605,17 +1605,17 @@
       "bodyCharmKo": "풍만한 볼륨감이 극대화된 검붉은 레이스 코르셋 상체 + 귀여운 악마적 미소",
       "signatureItemKo": "등 뒤로 뻗어 나온 광택 나는 흑거미 여왕 다리와 마력 은사(Web)",
       "palette": [
-        "#221A32",
-        "#3B384D",
-        "#76627F",
-        "#94839D",
-        "#5A566A"
+        "#342F36",
+        "#45121F",
+        "#F7DCD1",
+        "#A69290",
+        "#4F484C"
       ],
       "sheetUrl": "/anime-character-sheets/sheets/054_Arachne_sheet.jpg",
       "cutoutUrl": "/anime-character-sheets/cutouts/054_Arachne.png",
       "chibiIdleUrl": "/seat/Arachne.png",
       "chibiAttackUrl": "/seat_attack/Arachne.png",
-      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Arachne (아라크네), glamorous curvy hourglass anime heroine, expressive big sparkling anime eyes, form-fitting outfit, distinctive features: 은빛 거미줄 티아라와 칠흑빛 고딕 트윈 스파이럴 드릴 헤어 and 등 뒤로 뻗어 나온 광택 나는 흑거미 여왕 다리와 마력 은사(Web), crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #221A32, #3B384D, #76627F."
+      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Arachne (아라크네), glamorous curvy hourglass anime heroine, expressive big sparkling anime eyes, form-fitting outfit, distinctive features: 은빛 거미줄 티아라와 칠흑빛 고딕 트윈 스파이럴 드릴 헤어 and 등 뒤로 뻗어 나온 광택 나는 흑거미 여왕 다리와 마력 은사(Web), crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #342F36, #45121F, #F7DCD1."
     },
     {
       "id": 55,
@@ -1633,17 +1633,17 @@
       "bodyCharmKo": "전차처럼 거대하게 부풀어 오른 근육질 팔뚝과 육중한 복부",
       "signatureItemKo": "온몸을 감싼 무쇠 사슬과 초대형 정육 갈고리 도끼",
       "palette": [
-        "#2C1E23",
-        "#543E47",
-        "#877074",
-        "#A28A89",
-        "#BBA8A3"
+        "#25211F",
+        "#9F7F6D",
+        "#463C35",
+        "#735F5A",
+        "#463C35"
       ],
       "sheetUrl": "/anime-character-sheets/sheets/055_Patchwork_sheet.jpg",
       "cutoutUrl": "/anime-character-sheets/cutouts/055_Patchwork.png",
       "chibiIdleUrl": "/seat/Patchwork.png",
       "chibiAttackUrl": "/seat_attack/Patchwork.png",
-      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Patchwork (패치워크), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 크기가 다른 둥글고 귀여운 듯 섬뜩한 발광 눈동자 and 온몸을 감싼 무쇠 사슬과 초대형 정육 갈고리 도끼, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #2C1E23, #543E47, #877074."
+      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Patchwork (패치워크), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 크기가 다른 둥글고 귀여운 듯 섬뜩한 발광 눈동자 and 온몸을 감싼 무쇠 사슬과 초대형 정육 갈고리 도끼, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #25211F, #9F7F6D, #463C35."
     },
     {
       "id": 56,
@@ -1661,17 +1661,17 @@
       "bodyCharmKo": "창백한 피부와 대비되는 글래머러스한 다크 퍼플 코르셋 & 하이 슬릿 로브",
       "signatureItemKo": "양손에서 타오르는 거대한 자수정빛 영혼 화염구",
       "palette": [
-        "#5B4354",
-        "#452649",
-        "#8A6E82",
-        "#B879C2",
-        "#DBBDDA"
+        "#F8CCBD",
+        "#4F2A57",
+        "#2F173B",
+        "#6A4457",
+        "#AF7597"
       ],
       "sheetUrl": "/anime-character-sheets/sheets/056_Cardis_sheet.jpg",
       "cutoutUrl": "/anime-character-sheets/cutouts/056_Cardis.png",
       "chibiIdleUrl": "/seat/Cardis.png",
       "chibiAttackUrl": "/seat_attack/Cardis.png",
-      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Cardis (카르디스), glamorous curvy hourglass anime heroine, expressive big sparkling anime eyes, form-fitting outfit, distinctive features: 금장 보랏빛 마녀 후드 밖으로 땋아 내린 마젠타 핑크 트윈 브레이드 헤어 and 양손에서 타오르는 거대한 자수정빛 영혼 화염구, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #5B4354, #452649, #8A6E82."
+      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Cardis (카르디스), glamorous curvy hourglass anime heroine, expressive big sparkling anime eyes, form-fitting outfit, distinctive features: 금장 보랏빛 마녀 후드 밖으로 땋아 내린 마젠타 핑크 트윈 브레이드 헤어 and 양손에서 타오르는 거대한 자수정빛 영혼 화염구, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #F8CCBD, #4F2A57, #2F173B."
     },
     {
       "id": 57,
@@ -1689,17 +1689,17 @@
       "bodyCharmKo": "조각상처럼 완벽하게 갈라진 회색 암석 흉근과 복근",
       "signatureItemKo": "거대하게 펼쳐진 돌 박쥐 날개와 강철 같은 발톱",
       "palette": [
-        "#444551",
-        "#272732",
-        "#666B78",
-        "#23222D",
-        "#3B3B46"
+        "#272933",
+        "#3E404C",
+        "#777981",
+        "#21212B",
+        "#777981"
       ],
       "sheetUrl": "/anime-character-sheets/sheets/057_Stone_Gargoyle_sheet.jpg",
       "cutoutUrl": "/anime-character-sheets/cutouts/057_Stone_Gargoyle.png",
       "chibiIdleUrl": "/seat/Stone_Gargoyle.png",
       "chibiAttackUrl": "/seat_attack/Stone_Gargoyle.png",
-      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Stone Gargoyle (스톤가고일), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 박쥐 귀와 악마 뿔이 솟은 석상 두부와 형형한 눈빛 and 거대하게 펼쳐진 돌 박쥐 날개와 강철 같은 발톱, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #444551, #272732, #666B78."
+      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Stone Gargoyle (스톤가고일), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 박쥐 귀와 악마 뿔이 솟은 석상 두부와 형형한 눈빛 and 거대하게 펼쳐진 돌 박쥐 날개와 강철 같은 발톱, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #272933, #3E404C, #777981."
     },
     {
       "id": 58,
@@ -1717,17 +1717,17 @@
       "bodyCharmKo": "투명한 만년설 수정과 창백한 용골이 결합한 유려하고 강인한 비룡 체구",
       "signatureItemKo": "한기를 뿜어내는 거대 빙결 날개와 절대영도 브레스",
       "palette": [
-        "#77C3E0",
-        "#5E99C0",
-        "#303848",
-        "#476F99",
-        "#33527F"
+        "#516D7F",
+        "#6BA2C0",
+        "#B3D7E1",
+        "#9ABECC",
+        "#6F8EA1"
       ],
       "sheetUrl": "/anime-character-sheets/sheets/058_Sidragosa_sheet.jpg",
       "cutoutUrl": "/anime-character-sheets/cutouts/058_Sidragosa.png",
       "chibiIdleUrl": "/seat/Sidragosa.png",
       "chibiAttackUrl": "/seat_attack/Sidragosa.png",
-      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Sidragosa (사이드라고사), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 고드름 왕관처럼 솟은 빙결 뿔과 푸른 냉기 안광 and 한기를 뿜어내는 거대 빙결 날개와 절대영도 브레스, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #77C3E0, #5E99C0, #303848."
+      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Sidragosa (사이드라고사), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 고드름 왕관처럼 솟은 빙결 뿔과 푸른 냉기 안광 and 한기를 뿜어내는 거대 빙결 날개와 절대영도 브레스, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #516D7F, #6BA2C0, #B3D7E1."
     },
     {
       "id": 59,
@@ -1745,17 +1745,17 @@
       "bodyCharmKo": "화려한 은장 암흑 대주교 로브와 공중 부양 포즈의 압도적 카리스마",
       "signatureItemKo": "스스로 책장을 넘기는 사령 마도서와 거대 영혼 수정 홀",
       "palette": [
-        "#24182F",
-        "#616767",
-        "#4F4657",
-        "#3B294B",
-        "#C2F7DC"
+        "#5B4A6F",
+        "#A7A4BC",
+        "#37274E",
+        "#888199",
+        "#795393"
       ],
       "sheetUrl": "/anime-character-sheets/sheets/059_Keltus_sheet.jpg",
       "cutoutUrl": "/anime-character-sheets/cutouts/059_Keltus.png",
       "chibiIdleUrl": "/seat/Keltus.png",
       "chibiAttackUrl": "/seat_attack/Keltus.png",
-      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Keltus (켈투스), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 자수정 보석이 박힌 은빛 해골 왕관과 보랏빛 마안 and 스스로 책장을 넘기는 사령 마도서와 거대 영혼 수정 홀, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #24182F, #616767, #4F4657."
+      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Keltus (켈투스), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 자수정 보석이 박힌 은빛 해골 왕관과 보랏빛 마안 and 스스로 책장을 넘기는 사령 마도서와 거대 영혼 수정 홀, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #5B4A6F, #A7A4BC, #37274E."
     },
     {
       "id": 60,
@@ -1773,17 +1773,17 @@
       "bodyCharmKo": "해골 부조가 새겨진 칠흑 판금 갑주와 망토로 무장한 거구의 초근육질 데스나이트",
       "signatureItemKo": "영혼마저 얼려버리는 초대형 푸른 서리 룬 마검(Frostmourne-style Greatsword)",
       "palette": [
-        "#23272E",
-        "#488998",
-        "#37C1D5",
-        "#434A50",
-        "#7ED7DE"
+        "#353942",
+        "#1D1F27",
+        "#5E98A2",
+        "#74D7DF",
+        "#4F6C73"
       ],
       "sheetUrl": "/anime-character-sheets/sheets/060_Death_Knight_Artus_sheet.jpg",
       "cutoutUrl": "/anime-character-sheets/cutouts/060_Death_Knight_Artus.png",
       "chibiIdleUrl": "/seat/Death_Knight_Artus.png",
       "chibiAttackUrl": "/seat_attack/Death_Knight_Artus.png",
-      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Death Knight Artus (데스나이트 아르투스), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 칠흑빛 가시 왕관 투구 아래 차갑게 타오르는 시안 블루 안광 and 영혼마저 얼려버리는 초대형 푸른 서리 룬 마검(Frostmourne-style Greatsword), crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #23272E, #488998, #37C1D5."
+      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Death Knight Artus (데스나이트 아르투스), powerful muscular fantasy anime warrior/creature, charismatic expressive eyes, bold oversized signature weapon, distinctive features: 칠흑빛 가시 왕관 투구 아래 차갑게 타오르는 시안 블루 안광 and 영혼마저 얼려버리는 초대형 푸른 서리 룬 마검(Frostmourne-style Greatsword), crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #353942, #1D1F27, #5E98A2."
     },
     {
       "id": 61,

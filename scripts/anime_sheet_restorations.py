@@ -1161,83 +1161,17 @@ def apply_all_surgical_restorations(
     anime_cutouts[49] = clean_cutout_specks(Image.fromarray(c49), keep_only_main=True)
 
     # ==========================================================
-    # 6B. UNDEAD (#051..#060) & ELF B (#068..#070)
+    # 6B. UNDEAD V2 HIGH-RES (#051..#060) & ELF B (#068..#070)
     # ==========================================================
-    u_raw = np.array(Image.open(brain_dir / "sheet_06_undead_1793100207910.jpg").convert("RGB"))
-    u_rgba = np.array(remove_white_bg_clean(Image.fromarray(u_raw)))
-    # Restore green skull-staff & spellbook magic glow (#052 Ghoul & #059 Keltus) and purple flame wisps (#056 Cardis)
-    for y in range(25, 145):
-        for gx in range(382, 438):
-            r, g, b = [int(v) for v in u_raw[y, gx]]
-            if g > 150 and (g - r) > 18:
-                u_rgba[y, gx, :3] = [r, g, b]
-                u_rgba[y, gx, 3] = 255
-    for y in range(405, 515):
-        for gx in list(range(852, 908)) + list(range(1042, 1110)):
-            r, g, b = [int(v) for v in u_raw[y, gx]]
-            if g > 150 and (g - r) > 18:
-                u_rgba[y, gx, :3] = [r, g, b]
-                u_rgba[y, gx, 3] = 255
-    for y in range(425, 555):
-        for gx in list(range(675, 712)) + list(range(775, 838)):
-            r, g, b = [int(v) for v in u_raw[y, gx]]
-            if r > 150 and b > 150 and (r - g) > 35:
-                u_rgba[y, gx, :3] = [r, g, b]
-                u_rgba[y, gx, 3] = 255
+    u6a_im = remove_white_bg_clean(Image.open(brain_dir / "anime_06a_undead_v2_fix_1793150217689.jpg").convert("RGB"))
+    cuts_u6a = split_row_by_dp_seams(u6a_im, num_chars=5)
+    for i in range(5):
+        anime_cutouts[51 + i] = clean_cutout_specks(cuts_u6a[i], keep_only_main=True)
 
-    u_top = u_rgba[0:386, :].copy()
-    c51 = u_top[:, 10:244].copy()
-    c51[340:, (234 - 10) :, 3] = 0
-    anime_cutouts[51] = clean_cutout_specks(Image.fromarray(c51), keep_only_main=True)
-
-    c52 = u_top[:, 234:438].copy()
-    c52[:340, : (245 - 234), 3] = 0
-    anime_cutouts[52] = clean_cutout_specks(Image.fromarray(c52), keep_only_main=True)
-
-    c53 = u_top[:, 445:664].copy()
-    for y in range(386):
-        for gx in range(640, 664):
-            r, g, b, a = [int(v) for v in c53[y, gx - 445]]
-            if a > 0 and (y < 238 or y > 305 or (r < 68 and g < 62 and b >= g)):
-                c53[y, gx - 445, 3] = 0
-    anime_cutouts[53] = clean_cutout_specks(Image.fromarray(c53), keep_only_main=True)
-
-    c54 = u_top[:, 638:866].copy()
-    for y in range(386):
-        for gx in range(638, 665):
-            r, g, b, a = [int(v) for v in c54[y, gx - 638]]
-            if a > 0 and 235 <= y <= 308 and (g > r + 4 or r > 85):
-                c54[y, gx - 638, 3] = 0
-    anime_cutouts[54] = clean_cutout_specks(Image.fromarray(c54), keep_only_main=True)
-
-    c55 = u_top[:, 868:1120].copy()
-    anime_cutouts[55] = clean_cutout_specks(Image.fromarray(c55), keep_only_main=True)
-
-    u_bot = u_rgba[386:768, :].copy()
-    c58 = u_bot[:, 8:354].copy()
-    for y in range(c58.shape[0]):
-        for gx in range(342, 354):
-            r, g, b, a = [int(v) for v in c58[y, gx - 8]]
-            if a > 0 and (b < r + 25):
-                c58[y, gx - 8, 3] = 0
-    anime_cutouts[58] = clean_cutout_specks(Image.fromarray(c58), keep_only_main=True)
-
-    c57 = u_bot[:, 354:675].copy()
-    for y in range(c57.shape[0]):
-        for gx in range(354, 365):
-            r, g, b, a = [int(v) for v in c57[y, gx - 354]]
-            if a > 0 and (b > r + 28):
-                c57[y, gx - 354, 3] = 0
-    anime_cutouts[57] = clean_cutout_specks(Image.fromarray(c57), keep_only_main=True)
-
-    c56 = u_bot[:, 675:845].copy()
-    anime_cutouts[56] = clean_cutout_specks(Image.fromarray(c56), keep_only_main=False)
-
-    c59 = u_bot[:, 852:1115].copy()
-    anime_cutouts[59] = clean_cutout_specks(Image.fromarray(c59), keep_only_main=False)
-
-    c60 = u_bot[:, 1118:1372].copy()
-    anime_cutouts[60] = clean_cutout_specks(Image.fromarray(c60), keep_only_main=True)
+    u6b_im = remove_white_bg_clean(Image.open(brain_dir / "anime_06b_undead_v2_fix_1793150318717.jpg").convert("RGB"))
+    cuts_u6b = split_row_by_dp_seams(u6b_im, num_chars=5)
+    for i in range(5):
+        anime_cutouts[56 + i] = clean_cutout_specks(cuts_u6b[i], keep_only_main=False)
 
     # Elf B (#068 Kaeltor, #069 Gandar, #070 Aila)
     e7b = np.array(remove_white_bg_clean(Image.open(brain_dir / "anime_07b_elf_1793137821573.jpg").convert("RGB")))
