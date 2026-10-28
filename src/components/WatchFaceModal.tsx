@@ -150,7 +150,7 @@ export const WatchFaceModal: React.FC<WatchFaceModalProps> = ({
 
  return (
  <AnimatePresence>
- <div className="fixed inset-0 z-[10200] flex items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-md">
+ <div className="fixed inset-0 z-[20200] flex items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-md">
  <motion.div
  initial={{ opacity: 0, scale: 0.95, y: 12 }}
  animate={{ opacity: 1, scale: 1, y: 0 }}

@@ -307,7 +307,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  ref={scrollContainerRef}
  role="dialog"
  aria-modal="true"
- className="fixed inset-0 z-[10050] h-[100dvh] w-full overflow-y-auto overscroll-y-contain touch-pan-y [-webkit-overflow-scrolling:touch] bg-[#fdfcfc] text-[#201d1d] font-mono"
+ className="fixed inset-0 z-[20100] h-[100dvh] w-full overflow-y-auto overscroll-y-contain touch-pan-y [-webkit-overflow-scrolling:touch] bg-[#fdfcfc] text-[#201d1d] font-mono"
  >
  {/* 상단 고정(Sticky) 전체화면 헤더 & 탭 바 */}
  <div className="sticky top-0 z-30 border-b border-stone-800 bg-[#201d1d] text-white pt-[env(safe-area-inset-top,0px)]">
@@ -1110,7 +1110,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  )}
 
  {toastMessage && (
- <div className="pointer-events-none fixed bottom-6 left-1/2 z-[10150] -translate-x-1/2 rounded-sm bg-slate-900 px-4 py-2 text-xs font-black uppercase tracking-wider text-white border border-white/20">
+ <div className="pointer-events-none fixed bottom-6 left-1/2 z-[20150] -translate-x-1/2 rounded-sm bg-slate-900 px-4 py-2 text-xs font-black uppercase tracking-wider text-white border border-white/20">
  {toastMessage}
  </div>
  )}

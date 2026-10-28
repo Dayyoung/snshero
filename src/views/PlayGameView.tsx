@@ -163,6 +163,9 @@ import { recordHeroBattleResult } from '../lib/heroMasteryHelper';
 import { getSeasonItem, setSeasonItem } from '../lib/seasonStorage';
 import { triggerHaptic } from '../lib/haptic';
 import { MissionEncounterModal } from '../components/MissionEncounterModal';
+import { WikiCardDetailModal } from '../components/WikiCardDetailModal';
+import { ArCardViewer } from '../components/ArCardViewer';
+import { WatchFaceModal } from '../components/WatchFaceModal';
 import { getRebirthLevel } from '../hooks/useKadanRpgProgress';
 import { battleAudio } from '../lib/BattleAudioEngine';
 import { useBattleScreenGuard } from '../hooks/useBattleScreenGuard';
@@ -2776,6 +2779,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const activeMissionCardIdRef = useRef<number | null>(null);
   const [activeMissionCardId, setActiveMissionCardId] = useState<number | null>(null);
   const [encounterOpponentCardId, setEncounterOpponentCardId] = useState<number | null>(null);
+  const [selectedWikiCardId, setSelectedWikiCardId] = useState<number | null>(null);
+  const [isWiki3DViewerOpen, setIsWiki3DViewerOpen] = useState<boolean>(false);
+  const [isWikiWatchFaceOpen, setIsWikiWatchFaceOpen] = useState<boolean>(false);
+  const [wikiShareTemplateCardId, setWikiShareTemplateCardId] = useState<number | null>(null);
+  const selectedWikiCard = selectedWikiCardId ? CARD_DATABASE[selectedWikiCardId] ?? null : null;
 
   const openMissionEncounter = (cardIndex: number) => {
     setEncounterOpponentCardId(cardIndex);
@@ -13377,6 +13385,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           language={language}
           playSfx={playSfx}
           lowSpecMode={lowSpecMode}
+          pauseCountdown={selectedWikiCardId !== null}
+          onOpenCardDetail={(cid) => setSelectedWikiCardId(cid)}
           onClose={() => setEncounterOpponentCardId(null)}
           onStartBattle={() => {
             const targetCard = encounterOpponentCardId;
@@ -13386,6 +13396,92 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             }
           }}
         />
+
+        {/* Mission Card Full-Screen Detail Modal (? 버튼 클릭 시 표시) */}
+        {selectedWikiCard && (
+          <WikiCardDetailModal
+            selectedCard={selectedWikiCard}
+            language={language}
+            lowSpecMode={lowSpecMode}
+            initialTab="art"
+            onClose={() => setSelectedWikiCardId(null)}
+            onNavigate={(targetView) => {
+              const targetId = selectedWikiCard.id;
+              setSelectedWikiCardId(null);
+              if (targetView === 'main') {
+                openMissionEncounter(targetId);
+              } else if (setView) {
+                setView(targetView);
+              } else if (typeof window !== 'undefined') {
+                window.location.href = `/${targetView}`;
+              }
+            }}
+            onSelectCard={(card) => setSelectedWikiCardId(card.id)}
+            onOpenViewer={() => setIsWiki3DViewerOpen(true)}
+            onPrintCard={() => {
+              if (typeof window !== 'undefined') {
+                window.open(`/wiki/card?cardId=${selectedWikiCard.id}`, '_blank');
+              }
+            }}
+            onDownloadCard={() => {
+              if (typeof window !== 'undefined') {
+                window.open(`/wiki/card?cardId=${selectedWikiCard.id}`, '_blank');
+              }
+            }}
+            onOpenShareTemplate={() => setWikiShareTemplateCardId(selectedWikiCard.id)}
+            onOpenWatchFace={() => setIsWikiWatchFaceOpen(true)}
+            season={season}
+            availableSkins={cardSkins.getAvailableSkins(selectedWikiCard.id)}
+            isSkinUnlocked={cardSkins.isSkinUnlocked}
+            isSkinActive={cardSkins.isSkinActive}
+            onApplySkin={cardSkins.applySkin}
+            onRemoveSkin={cardSkins.removeSkin}
+          />
+        )}
+
+        {isWiki3DViewerOpen && selectedWikiCard && (
+          <ArCardViewer
+            isOpen={isWiki3DViewerOpen}
+            onClose={() => setIsWiki3DViewerOpen(false)}
+            language={language}
+            ownedCards={playerDeck}
+            inventory={inventory}
+            showCameraPreview={false}
+            initialCard={{
+              id: selectedWikiCard.id,
+              power: selectedWikiCard.power,
+              imageIndex: selectedWikiCard.id,
+              title: selectedWikiCard.title,
+              title_dis: selectedWikiCard.title_dis,
+              title_en: selectedWikiCard.title_en,
+              stats: selectedWikiCard.stats,
+              level: 1,
+              hp: 100,
+              rarity: selectedWikiCard.rarity || 'bronze',
+              imageUrl: selectedWikiCard.imageUrl,
+            }}
+          />
+        )}
+
+        <WatchFaceModal
+          isOpen={isWikiWatchFaceOpen}
+          onClose={() => setIsWikiWatchFaceOpen(false)}
+          initialCard={selectedWikiCard}
+          language={language}
+        />
+
+        <AnimatePresence>
+          {wikiShareTemplateCardId !== null && (
+            <ShareTemplateCard
+              templateType="character"
+              language={language}
+              cardId={wikiShareTemplateCardId}
+              lowSpecMode={lowSpecMode}
+              onClose={() => setWikiShareTemplateCardId(null)}
+              showToast={() => {}}
+            />
+          )}
+        </AnimatePresence>
       </>
     );
   };
@@ -13870,6 +13966,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           )}>
                             {charName}
                           </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              playBattleSfx('button_tap');
+                              triggerHaptic('tap');
+                              setSelectedWikiCardId(cardIndex);
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.stopPropagation();
+                              }
+                            }}
+                            className="inline-flex h-5 w-5 sm:h-5.5 sm:w-5.5 shrink-0 items-center justify-center rounded-sm border border-amber-400/60 bg-amber-400/20 text-[11px] font-black text-amber-300 hover:bg-amber-400 hover:text-[#201d1d] active:scale-95 transition-all cursor-pointer"
+                            title={language === 'ko' ? `${charName} 카드 상세 정보 보기` : `View ${charName} Card Info`}
+                            aria-label={language === 'ko' ? `${charName} 카드 상세 정보 보기` : `View ${charName} Card Info`}
+                          >
+                            ?
+                          </button>
                         </div>
                         <div className="flex items-center gap-1 shrink-0">
                           <span className={cn("text-[8px] sm:text-[9px] px-1 py-0.2 rounded-xs border font-black flex items-center", elemBadgeStyle)}>

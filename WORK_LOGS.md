@@ -16659,3 +16659,12 @@
      - `scripts/build_110_anime_character_sheets.py`를 통해 110종 전 캐릭터의 `HEAD, HAIR & EXPRESSION` 상반신 포트레이트(`public/anime-character-sheets/busts/001_bust.jpg` ~ `110_bust.jpg`, 600×600 HD)를 추출·생성하고 개별 시트(`sheets/*.jpg`) 및 `manifest.json` 동기화.
      - `WikiCardDetailModal.tsx`의 아트 탭에서 기존 3등신 카드 이미지 대신 새로 제작한 캐릭터 시트 `HEAD, HAIR` 상반신 원화(`/anime-character-sheets/busts/{001..110}_bust.jpg`)가 기본 메인 이미지로 표시되도록 교체.
 - **검증 및 보고**: `npx tsc --noEmit` 0 에러 통과, 구글 폼 작업 완료 보고서 제출 완료.
+
+## 2026-10-28 12:14 (KST) — `/play` 미션게임 카드 이름 옆 `?` 버튼 추가 및 신규 전체화면 카드 상세 팝업 연동
+- **작업 내용**:
+  1. **`/play` (`src/views/PlayGameView.tsx`) 110종 미션게임 카드 이름 옆 `[?]` 버튼 추가**:
+     - 각 미션게임 카드 상단 헤더(`No.XX 캐릭터명`) 옆에 `[?]` 버튼을 추가하고, 클릭 시 대결 진입(`openMissionEncounter`)을 방지(`e.stopPropagation()`)한 뒤 새로 개편한 전체화면 카드 상세 팝업(`WikiCardDetailModal`)을 즉시 표시하도록 연동.
+     - 상세 팝업 내 `플레이` 버튼 클릭 시 해당 미션 카드의 수호자 조우/대결로 즉시 진입하도록 연결하고, `3D 뷰어`, `와치페이스`, `공유 템플릿` 등 모든 서브 모달을 `/play` 화면에서도 100% 동작하도록 연동.
+  2. **수호자 조우 모달(`src/components/MissionEncounterModal.tsx`) 내 캐릭터 이름 옆 `[?]` 버튼 추가**:
+     - 조우 팝업 안의 캐릭터 이름 옆에도 `[?]` 버튼을 추가하고, 상세 팝업이 열려 있는 동안에는 3초 자동 배틀 시작 카운트다운이 일시 정지되도록 개선.
+- **검증 및 보고**: `npx tsc --noEmit` 통과 및 구글 폼 작업 완료 보고서 제출 완료.

@@ -15,6 +15,8 @@ interface MissionEncounterModalProps {
  onClose: () => void;
  playSfx: (url: string) => void;
  lowSpecMode?: boolean;
+ onOpenCardDetail?: (cardId: number) => void;
+ pauseCountdown?: boolean;
 }
 
 export const MissionEncounterModal: React.FC<MissionEncounterModalProps> = ({
@@ -24,7 +26,9 @@ export const MissionEncounterModal: React.FC<MissionEncounterModalProps> = ({
  onStartBattle,
  onClose,
  playSfx,
- lowSpecMode = false
+ lowSpecMode = false,
+ onOpenCardDetail,
+ pauseCountdown = false,
 }) => {
  const [countdown, setCountdown] = React.useState<number>(3);
  const onStartBattleRef = React.useRef(onStartBattle);
@@ -36,22 +40,22 @@ export const MissionEncounterModal: React.FC<MissionEncounterModalProps> = ({
  setCountdown(3);
  return;
  }
+ if (pauseCountdown) return;
 
- setCountdown(3);
  const interval = setInterval(() => {
  setCountdown(prev => Math.max(0, prev - 1));
  }, 1000);
 
  return () => clearInterval(interval);
- }, [isOpen]);
+ }, [isOpen, pauseCountdown]);
 
  // 카운트다운 완료 시 배틀 시작 (렌더링 외부 이펙트에서 안전하게 호출)
  useEffect(() => {
- if (!isOpen) return;
+ if (!isOpen || pauseCountdown) return;
  if (countdown === 0) {
  onStartBattleRef.current();
  }
- }, [isOpen, countdown]);
+ }, [isOpen, countdown, pauseCountdown]);
 
  useEffect(() => {
  if (!isOpen) return;
@@ -204,6 +208,21 @@ export const MissionEncounterModal: React.FC<MissionEncounterModalProps> = ({
  <span className="text-sm sm:text-base font-bold text-[#201d1d]">
  {novelData.characterName}
  </span>
+ {onOpenCardDetail && (
+ <button
+ type="button"
+ onClick={(e) => {
+ e.stopPropagation();
+ playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+ onOpenCardDetail(safeCardId);
+ }}
+ className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-sm border border-[#201d1d] bg-amber-400 text-xs font-black text-[#201d1d] hover:bg-amber-300 active:scale-95 transition-all cursor-pointer"
+ title={isKo ? `${novelData.characterName} 카드 상세 정보 보기` : `View ${novelData.characterName} Card Info`}
+ aria-label={isKo ? `${novelData.characterName} 카드 상세 정보 보기` : `View ${novelData.characterName} Card Info`}
+ >
+ ?
+ </button>
+ )}
  <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-sm border flex items-center gap-1", elemBadgeStyle)}>
  {elemIcon}
  <span>{novelData.speakerTitle}</span>
