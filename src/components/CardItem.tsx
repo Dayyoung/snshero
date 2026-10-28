@@ -17,7 +17,7 @@ import type { CardSkin } from '../content/cardSkins';
 import { getCardSkinByKey } from '../content/cardSkins';
 import { getCardSkinThemeVisual } from '../content/cardSkinThemes';
 import { resolveCardImage, getCardImageFallback, getCardDisplayModeImageCandidates, type ResolvedCardImage } from '../content/cardImageVariants';
-import { useGameSettings } from '../contexts/GameSettingsContext';
+import { useGameSettings, type CardDisplayMode } from '../contexts/GameSettingsContext';
 
 interface CardItemProps {
  card: CardData;
@@ -44,6 +44,8 @@ interface CardItemProps {
  isDamaged?: boolean;
  /** Explicitly render the character's Attack Motion image & effect (auto-enabled when isOnBoard is true). */
  showAttackMotion?: boolean;
+ /** Optional override for card display mode (e.g. 'bust' when viewing clicked card details). */
+ displayModeOverride?: CardDisplayMode;
 }
 
 const areNumberArraysEqual = (left?: number[], right?: number[]) => {
@@ -121,13 +123,14 @@ const getFactionIcon = (faction?: CharacterFaction | string) => {
  }
 };
 
-export const CardItem = React.memo(({ card, className, onClick, isLocked, isSelected, isDragging, hideBackground, isOnBoard, customImage, combatHighlights, lowSpecMode, processedImage, language = 'en', cellElement, hideStats, isMatgo, ignoreBonuses, downloadMode, activeSkin, isDamaged, showAttackMotion }: CardItemProps) => {
+export const CardItem = React.memo(({ card, className, onClick, isLocked, isSelected, isDragging, hideBackground, isOnBoard, customImage, combatHighlights, lowSpecMode, processedImage, language = 'en', cellElement, hideStats, isMatgo, ignoreBonuses, downloadMode, activeSkin, isDamaged, showAttackMotion, displayModeOverride }: CardItemProps) => {
  const { cardSkinTheme, cardDisplayMode, lowSpecMode: settingsLowSpecMode } = useGameSettings();
+ const effectiveDisplayMode = displayModeOverride ?? cardDisplayMode;
  const reducedMotion = useReducedMotion();
  // Keep live battle stats; do not replace the card with its database record.
  const activeCard = card;
  const performanceMode = Boolean(lowSpecMode || settingsLowSpecMode || reducedMotion);
- const isActionMotionSupported = cardDisplayMode === 'chibi3';
+ const isActionMotionSupported = effectiveDisplayMode === 'chibi3';
  const shouldHideBg = hideBackground || !!downloadMode;
  const [isFlipping, setIsFlipping] = useState(false);
  const [damageFeedback, setDamageFeedback] = useState(false);
@@ -168,7 +171,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  }, [isDamaged]);
 
  const visualCardId = useMemo(() => getVisualCardId(activeCard), [activeCard]);
- const useAttackMotionArt = isActionMotionSupported && Boolean(isOnBoard || showAttackMotion);
+ const useAttackMotionArt = Boolean(showAttackMotion || (isActionMotionSupported && isOnBoard));
  const attackMotionMeta = useMemo(() => visualCardId ? getCharacterAttackMotionMeta(visualCardId) : undefined, [visualCardId]);
  const ipProfile = useMemo(() => visualCardId ? getCharacterIpProfile(visualCardId) : undefined, [visualCardId]);
  const rarityTier = useMemo(() => {
@@ -198,7 +201,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  const imageSources = useMemo(() => {
  const defaultSprite = visualCardId ? getCardSpriteAsset(visualCardId) : '/cards1.png';
  const attackSprite = visualCardId ? getCardAttackSpriteAsset(visualCardId) : '/cards1_attack.png';
- const displayModeSources = visualCardId ? getCardDisplayModeImageCandidates(visualCardId, cardDisplayMode) : [];
+ const displayModeSources = visualCardId ? getCardDisplayModeImageCandidates(visualCardId, effectiveDisplayMode) : [];
  const orderedSources = useAttackMotionArt
   ? [
      processedImage,
@@ -224,7 +227,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
      assetManifestEntry?.lowSpecFallbackAssetPath,
     ];
  return Array.from(new Set(orderedSources.filter((source): source is string => Boolean(source)).map(src => getAssetUrl(src))));
- }, [activeCard.imageUrl, assetManifestEntry, attackMotionMeta, cardDisplayMode, customImage, processedImage, resolvedImage.source, useAttackMotionArt, visualCardId]);
+ }, [activeCard.imageUrl, assetManifestEntry, attackMotionMeta, customImage, effectiveDisplayMode, processedImage, resolvedImage.source, useAttackMotionArt, visualCardId]);
  const [imageSourceIndex, setImageSourceIndex] = useState(0);
  useEffect(() => { setImageSourceIndex(0); }, [imageSources]);
  const currentImageSource = imageSources[imageSourceIndex];
@@ -943,6 +946,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  prev.hideBackground === next.hideBackground &&
  prev.isOnBoard === next.isOnBoard &&
  prev.showAttackMotion === next.showAttackMotion &&
+ prev.displayModeOverride === next.displayModeOverride &&
  prev.customImage === next.customImage &&
  prev.lowSpecMode === next.lowSpecMode &&
  prev.processedImage === next.processedImage &&

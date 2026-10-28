@@ -18429,7 +18429,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </button>
 
               <div className="w-[180px] aspect-[5/7]  rounded-none overflow-hidden border-2 border-amber-500/50">
-                <CardItem card={previewHandCard} isLocked={false} customImage={customCardImage} />
+                <CardItem card={previewHandCard} displayModeOverride="bust" isLocked={false} customImage={customCardImage} />
               </div>
 
               <div className="w-full space-y-2 text-center">

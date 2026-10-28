@@ -130,6 +130,7 @@ export const CardLongPressPreviewModal: React.FC<CardLongPressPreviewModalProps>
  <div className="w-24 h-34 shrink-0 relative flex items-center justify-center">
  <CardItem
  card={card}
+ displayModeOverride="bust"
  isLocked={true}
  className="w-full h-full rounded-sm border border-slate-700 pointer-events-none"
  customImage={customImage}

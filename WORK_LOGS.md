@@ -2,6 +2,18 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-28 13:46 KST] [카드 표시 설정 기본 모드를 3등신으로 설정하고 카드 클릭(상세 보기) 시 상반신으로 표시 및 원격 푸시(/git-push)]
+- **요청 사항**:
+  - "3등신 을 기본으로 하자. 제일 났다. 대신 카드 클릭시에는 상반신으로 카드를 표시해줘. /git-push"
+- **주요 구현 및 수정 내역**:
+  1. **[`src/contexts/GameSettingsContext.tsx`](file:///Users/dayyoung/project/snshero/src/contexts/GameSettingsContext.tsx) & [`src/views/SettingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/SettingView.tsx)**:
+     - `cardDisplayMode`의 최초 기본 설정값을 `'chibi3'`(`3등신`)으로 변경하고, 기존 세션에서도 기본값이 `3등신`으로 즉시 적용되도록 1회 마이그레이션 플래그(`hero_card_display_mode_chibi3_default_v1`)를 반영.
+     - 설정 화면 UI의 기본값 표기를 `3등신 · ⚡액션 연출 (기본)`으로 업데이트.
+  2. **[`src/components/CardItem.tsx`](file:///Users/dayyoung/project/snshero/src/components/CardItem.tsx) & 카드 클릭 상세 모달 전수 연동**:
+     - `CardItem`에 `displayModeOverride?: CardDisplayMode` prop을 추가하여, 일반 카드 목록/보드에서는 설정된 모드(기본 `3등신`)로 표시하되, 카드를 클릭하여 열리는 모든 상세 모달([`WikiCardDetailModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/WikiCardDetailModal.tsx), [`MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx) 카드 상세/편집 모달, [`CardLongPressPreviewModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/CardLongPressPreviewModal.tsx), [`MissionEncounterModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/MissionEncounterModal.tsx), [`PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx) 핸드카드 상세 팝업)에서는 `displayModeOverride="bust"`(`상반신`)으로 카드가 표시되도록 적용.
+- **검증 및 보고**:
+  - `npx tsc --noEmit` 및 `npx vite build` 무결점 통과, 로컬 Git 커밋, 원격 저장소 푸시(`git push origin main`), 구글 폼 보고서 제출 완료.
+
 ## [2026-10-28 13:40 KST] [설정 화면에서 카드 표시 설정(7등신/상반신/3등신)을 시스템 설정 최상단 첫 번째 항목으로 이동]
 - **요청 사항**:
   - "설정에서 카드 표시 설정 (7등신 / 상반신 / 3등신) 를 가장 위 항목으로 표시해줘. 눈에 안뛴다."
