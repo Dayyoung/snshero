@@ -697,9 +697,44 @@ def render_individual_studio_sheet(
     draw.rectangle([634, 104, 1034, 142], fill=(34, 33, 38, 255))
     draw.text((648, 113), "02  HEAD, HAIR & EXPRESSION · 표정·헤어 디테일", font=fonts["panel_h"], fill=(255, 255, 255))
 
-    # Crop upper 46% of anime_cutout for close-up bust/head/hair showcase
+    # Smart head/hair-centered bust crop so tall wings/weapons never push the head down or off-center
     aw, ah = anime_cutout.size
-    bust_crop = anime_cutout.crop((0, 0, aw, max(1, int(ah * 0.48))))
+    cut_arr = np.array(anime_cutout)
+    torso_slice = cut_arr[int(ah * 0.30) : int(ah * 0.58), :, 3] > 40
+    txs = np.where(torso_slice)[1]
+    tcx = int(np.median(txs)) if len(txs) else aw // 2
+    c_x0, c_x1 = max(0, tcx - int(aw * 0.12)), min(aw, tcx + int(aw * 0.12))
+
+    central_col = cut_arr[:, c_x0:c_x1, 3] > 40
+    c_ys = np.where(central_col)[0]
+    head_top = int(c_ys.min()) if len(c_ys) else 0
+
+    head_band = cut_arr[
+        head_top : min(ah, head_top + int(ah * 0.16)),
+        max(0, tcx - int(aw * 0.18)) : min(aw, tcx + int(aw * 0.18)),
+        3,
+    ] > 40
+    hxs = np.where(head_band)[1] + max(0, tcx - int(aw * 0.18))
+    head_cx = int(np.median(hxs)) if len(hxs) else tcx
+
+    if head_top > int(ah * 0.055):
+        # Shift crop window down so the head & horns/hair sit right in the middle of Panel 02
+        y0 = max(0, head_top - int(ah * 0.055))
+        crop_h = int(ah * 0.43) if 101 <= cid <= 105 else int(ah * 0.45)
+        y1 = min(ah, y0 + crop_h)
+    else:
+        y0 = 0
+        y1 = max(1, int(ah * 0.48))
+
+    if head_top > int(ah * 0.055) or abs(head_cx - (aw // 2)) > 12:
+        half_w = max(head_cx, aw - head_cx)
+        bust_canvas = Image.new("RGBA", (half_w * 2, y1 - y0), (0, 0, 0, 0))
+        sub_crop = anime_cutout.crop((0, y0, aw, y1))
+        bust_canvas.paste(sub_crop, (half_w - head_cx, 0))
+        bust_crop = bust_canvas
+    else:
+        bust_crop = anime_cutout.crop((0, y0, aw, y1))
+
     paste_centered(sheet, bust_crop, (648, 154, 1020, 510), align_bottom=False)
 
     # ─── PANEL 3: 3-HEAD CUTE SD / CHIBI ORIGIN & ACTION (x=634..1034, y=540..968) ───
