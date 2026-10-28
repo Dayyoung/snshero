@@ -41,9 +41,10 @@ def inpaint_symmetric_gaps(
 
 def build_kadan_with_back_eye_shield(kadan_cutout: Image.Image) -> Image.Image:
     """
-    Renders Kadan (#041) with the canonical Eye-Emblem Shield ('눈 문양의 방패')
-    slung diagonally on his upper back so the shield rim and the glowing cyan-gold
-    All-Seeing Eye Emblem are 100% visible beside his left shoulder/deltoid.
+    Renders Kadan (#041) with the canonical Snow-Emblem Shield ('눈[SNOW] 문양의 방패')
+    slung diagonally on his upper back so the frost-rimmed shield and the glowing
+    ice-cyan & snow-white 6-pointed Snowflake Crest (설원 눈 결정 문양) are 100% visible
+    beside his left shoulder/deltoid.
     """
     kw, kh = kadan_cutout.size
     pad_l, pad_r, pad_t = 28, 114, 16
@@ -84,19 +85,30 @@ def build_kadan_with_back_eye_shield(kadan_cutout: Image.Image) -> Image.Image:
     mid_rim = shield_poly(0.89, 0.89)
     inner_plate = shield_poly(0.82, 0.82)
 
-    draw.polygon(outer_rim, fill=(168, 178, 198, 255))
-    draw.polygon(hi_rim, fill=(212, 222, 238, 255))
-    draw.polygon(mid_rim, fill=(154, 128, 72, 255))
-    draw.polygon(inner_plate, fill=(34, 45, 64, 255))
+    # Frost-silver outer rim + ice-blue metallic bevel + deep glacial navy plate
+    draw.polygon(outer_rim, fill=(164, 186, 214, 255))
+    draw.polygon(hi_rim, fill=(224, 240, 252, 255))
+    draw.polygon(mid_rim, fill=(96, 138, 184, 255))
+    draw.polygon(inner_plate, fill=(28, 44, 70, 255))
 
+    # Diagonal glacial ice sheen across shield face
     sheen_pts = [
         rot_pt(-rx * 0.35, -ry * 0.72),
         rot_pt(rx * 0.35, -ry * 0.72),
         rot_pt(rx * 0.70, -ry * 0.05),
         rot_pt(0.0, ry * 0.38),
     ]
-    draw.polygon(sheen_pts, fill=(48, 63, 88, 255))
+    draw.polygon(sheen_pts, fill=(42, 66, 102, 255))
 
+    sheen_hi = [
+        rot_pt(rx * 0.05, -ry * 0.68),
+        rot_pt(rx * 0.28, -ry * 0.68),
+        rot_pt(rx * 0.66, -ry * 0.14),
+        rot_pt(rx * 0.44, ry * 0.04),
+    ]
+    draw.polygon(sheen_hi, fill=(56, 88, 132, 255))
+
+    # Frost-crystal studs around the rim
     for deg in range(0, 360, 30):
         th = math.radians(deg)
         lx = math.sin(th) * rx * 0.925
@@ -106,90 +118,159 @@ def build_kadan_with_back_eye_shield(kadan_cutout: Image.Image) -> Image.Image:
         else:
             ly *= 0.88
         rpx, rpy = rot_pt(lx, ly)
-        rr = 3.5 * ss
-        draw.ellipse(
-            [rpx - rr, rpy - rr, rpx + rr, rpy + rr],
-            fill=(238, 212, 136, 255),
-            outline=(26, 24, 30, 255),
+        rr = 3.8 * ss
+        stud_pts = [
+            (rpx, rpy - rr),
+            (rpx + rr * 0.85, rpy),
+            (rpx, rpy + rr),
+            (rpx - rr * 0.85, rpy),
+        ]
+        draw.polygon(
+            stud_pts,
+            fill=(210, 244, 255, 255),
+            outline=(22, 32, 48, 255),
             width=max(1, ss // 2),
         )
 
-    ecx, ecy = rot_pt(rx * 0.38, -ry * 0.15)
-    ew = rx * 0.34
-    eh = ry * 0.175
+    # Center of the visible Snowflake Crest ('눈[SNOW] 결정 문양') on the shield face
+    scx, scy = rot_pt(rx * 0.35, -ry * 0.13)
+    sr = rx * 0.39  # Radius of the 6-pointed snowflake emblem
 
-    def rot_eye(ex: float, ey: float) -> tuple[float, float]:
-        return (ecx + ex * ca - ey * sa, ecy + ex * sa + ey * ca)
+    def rot_snow(sx: float, sy: float) -> tuple[float, float]:
+        return (scx + sx * ca - sy * sa, scy + sx * sa + sy * ca)
 
-    for ray_ang, ray_len, ray_w in [
-        (-math.pi * 0.5, eh * 1.72, ew * 0.14),
-        (math.pi * 0.5, eh * 1.72, ew * 0.14),
-        (0.0, ew * 1.32, eh * 0.22),
-        (math.pi, ew * 1.25, eh * 0.22),
-        (-math.pi * 0.25, ew * 1.02, eh * 0.14),
-        (math.pi * 0.25, ew * 1.02, eh * 0.14),
-        (-math.pi * 0.75, ew * 1.02, eh * 0.14),
-        (math.pi * 0.75, ew * 1.02, eh * 0.14),
+    # 1) Soft frost-aura halo behind the snowflake crest
+    for halo_scale, halo_col in [
+        (1.06, (48, 92, 138, 255)),
+        (0.86, (62, 118, 172, 255)),
     ]:
-        rx_dir, ry_dir = math.cos(ray_ang), math.sin(ray_ang)
-        px_dir, py_dir = -ry_dir, rx_dir
-        r_pts = [
-            rot_eye(px_dir * ray_w, py_dir * ray_w),
-            rot_eye(rx_dir * ray_len, ry_dir * ray_len),
-            rot_eye(-px_dir * ray_w, -py_dir * ray_w),
+        halo_pts = []
+        for i in range(12):
+            ang_i = math.radians(i * 30.0 - 90.0)
+            rad_i = sr * halo_scale * (1.0 if i % 2 == 0 else 0.56)
+            halo_pts.append(rot_snow(math.cos(ang_i) * rad_i, math.sin(ang_i) * rad_i))
+        draw.polygon(halo_pts, fill=halo_col)
+
+    # 2) Inner hexagonal ice-crystal ring connecting the 6 arms
+    for ring_r, ring_w, ring_fill, ring_out in [
+        (sr * 0.44, max(2, int(2.2 * ss)), (74, 158, 218, 255), (18, 30, 48, 255)),
+        (sr * 0.34, max(2, int(1.6 * ss)), (34, 58, 92, 255), (180, 236, 255, 255)),
+    ]:
+        hex_pts = []
+        for i in range(6):
+            a6 = math.radians(i * 60.0 - 90.0)
+            hex_pts.append(rot_snow(math.cos(a6) * ring_r, math.sin(a6) * ring_r))
+        draw.polygon(hex_pts, fill=ring_fill, outline=ring_out, width=ring_w)
+
+    # 3) 6 Intermediate secondary frost spikes (at 30, 90, 150, 210, 270, 330 deg)
+    for i in range(6):
+        a_sec = math.radians(i * 60.0 - 60.0)
+        ux, uy = math.cos(a_sec), math.sin(a_sec)
+        px, py = -uy, ux
+        sec_len = sr * 0.62
+        sec_w = sr * 0.075
+        sec_pts = [
+            rot_snow(ux * sr * 0.20 + px * sec_w, uy * sr * 0.20 + py * sec_w),
+            rot_snow(ux * sec_len, uy * sec_len),
+            rot_snow(ux * sr * 0.20 - px * sec_w, uy * sr * 0.20 - py * sec_w),
         ]
-        draw.polygon(r_pts, fill=(236, 198, 96, 255), outline=(24, 22, 28, 255), width=max(1, int(1.3 * ss)))
+        draw.polygon(
+            sec_pts,
+            fill=(152, 224, 252, 255),
+            outline=(18, 28, 46, 255),
+            width=max(2, int(1.4 * ss)),
+        )
 
-    for sign_y in (-1.0, 1.0):
-        brow_pts = []
-        for i in range(31):
-            u = -1.0 + 2.0 * (i / 30.0)
-            bx = u * ew * 1.08
-            by = sign_y * eh * (1.30 - 0.66 * (u * u))
-            brow_pts.append(rot_eye(bx, by))
-        for i in range(30, -1, -1):
-            u = -1.0 + 2.0 * (i / 30.0)
-            bx = u * ew * 0.98
-            by = sign_y * eh * (1.06 - 0.60 * (u * u))
-            brow_pts.append(rot_eye(bx, by))
-        draw.polygon(brow_pts, fill=(244, 210, 112, 255), outline=(24, 22, 28, 255), width=max(1, int(1.2 * ss)))
+    # 4) 6 Primary Snowflake Arms + Dendritic V-Branches + Diamond Crystal Tips
+    for i in range(6):
+        a_main = math.radians(i * 60.0 - 90.0)
+        ux, uy = math.cos(a_main), math.sin(a_main)
+        px, py = -uy, ux
 
-    eye_outer = []
-    eye_inner = []
-    for i in range(60):
-        t = (i / 60.0) * 2.0 * math.pi
-        ex = math.cos(t) * ew
-        ey = math.sin(t) * eh * (1.0 - 0.18 * (math.cos(t) ** 2))
-        eye_outer.append(rot_eye(ex * 1.13, ey * 1.18))
-        eye_inner.append(rot_eye(ex, ey))
+        # Two pairs of dendritic V-branches (barbs) along each main arm
+        for b_pos, b_len, b_w in [
+            (0.46, 0.30, 0.058),
+            (0.70, 0.22, 0.050),
+        ]:
+            base_d = sr * b_pos
+            for sign in (-1.0, 1.0):
+                b_ang = a_main + sign * math.radians(52.0)
+                bx, by = math.cos(b_ang), math.sin(b_ang)
+                bpx, bpy = -by, bx
+                bw = sr * b_w
+                bl = sr * b_len
+                ox, oy = ux * base_d, uy * base_d
+                barb_pts = [
+                    rot_snow(ox - bpx * bw * 0.7, oy - bpy * bw * 0.7),
+                    rot_snow(ox + bx * bl * 0.72 + bpx * bw * 0.95, oy + by * bl * 0.72 + bpy * bw * 0.95),
+                    rot_snow(ox + bx * bl, oy + by * bl),
+                    rot_snow(ox + bx * bl * 0.72 - bpx * bw * 0.95, oy + by * bl * 0.72 - bpy * bw * 0.95),
+                    rot_snow(ox + bpx * bw * 0.7, oy + bpy * bw * 0.7),
+                ]
+                draw.polygon(
+                    barb_pts,
+                    fill=(218, 246, 255, 255),
+                    outline=(18, 28, 46, 255),
+                    width=max(2, int(1.4 * ss)),
+                )
 
-    draw.polygon(eye_outer, fill=(240, 202, 102, 255), outline=(22, 20, 26, 255), width=max(2, int(1.8 * ss)))
-    draw.polygon(eye_inner, fill=(232, 246, 255, 255), outline=(22, 20, 26, 255), width=max(2, int(1.6 * ss)))
+        # Main crystalline shaft + spearhead diamond tip
+        shaft_w = sr * 0.072
+        tip_w = sr * 0.135
+        arm_pts = [
+            rot_snow(px * shaft_w, py * shaft_w),
+            rot_snow(ux * sr * 0.74 + px * shaft_w, uy * sr * 0.74 + py * shaft_w),
+            rot_snow(ux * sr * 0.83 + px * tip_w, uy * sr * 0.83 + py * tip_w),
+            rot_snow(ux * sr * 1.02, uy * sr * 1.02),
+            rot_snow(ux * sr * 0.83 - px * tip_w, uy * sr * 0.83 - py * tip_w),
+            rot_snow(ux * sr * 0.74 - px * shaft_w, uy * sr * 0.74 - py * shaft_w),
+            rot_snow(-px * shaft_w, -py * shaft_w),
+        ]
+        draw.polygon(
+            arm_pts,
+            fill=(238, 252, 255, 255),
+            outline=(18, 28, 46, 255),
+            width=max(2, int(1.7 * ss)),
+        )
 
-    ir_r = eh * 0.86
-    draw.ellipse(
-        [ecx - ir_r, ecy - ir_r, ecx + ir_r, ecy + ir_r],
-        fill=(32, 174, 236, 255),
-        outline=(16, 48, 84, 255),
-        width=max(2, int(1.5 * ss)),
-    )
-    ir_in = eh * 0.60
-    draw.ellipse([ecx - ir_in, ecy - ir_in, ecx + ir_in, ecy + ir_in], fill=(128, 234, 255, 255))
+        # Inner cyan facet highlight along each main arm
+        in_w = sr * 0.030
+        in_pts = [
+            rot_snow(ux * sr * 0.12 + px * in_w, uy * sr * 0.12 + py * in_w),
+            rot_snow(ux * sr * 0.88, uy * sr * 0.88),
+            rot_snow(ux * sr * 0.12 - px * in_w, uy * sr * 0.12 - py * in_w),
+        ]
+        draw.polygon(in_pts, fill=(110, 214, 255, 255))
 
-    pup_pts = [
-        rot_eye(0, -eh * 0.68),
-        rot_eye(ew * 0.14, 0),
-        rot_eye(0, eh * 0.68),
-        rot_eye(-ew * 0.14, 0),
-    ]
-    draw.polygon(pup_pts, fill=(14, 24, 44, 255))
-    gx, gy = rot_eye(-ew * 0.15, -eh * 0.28)
-    gr = eh * 0.22
-    draw.ellipse([gx - gr, gy - gr, gx + gr, gy + gr], fill=(255, 255, 255, 255))
+    # 5) Central 6-pointed snow star & pure white ice core
+    core_outer = []
+    core_inner = []
+    for i in range(12):
+        a_c = math.radians(i * 30.0 - 90.0)
+        r_out = sr * (0.25 if i % 2 == 0 else 0.12)
+        r_in = sr * (0.14 if i % 2 == 0 else 0.07)
+        core_outer.append(rot_snow(math.cos(a_c) * r_out, math.sin(a_c) * r_out))
+        core_inner.append(rot_snow(math.cos(a_c) * r_in, math.sin(a_c) * r_in))
+    draw.polygon(core_outer, fill=(88, 198, 250, 255), outline=(18, 28, 46, 255), width=max(2, int(1.5 * ss)))
+    draw.polygon(core_inner, fill=(255, 255, 255, 255))
 
-    draw.line(outer_rim + [outer_rim[0]], fill=(22, 20, 26, 255), width=max(2, int(2.4 * ss)), joint="curve")
-    draw.line(mid_rim + [mid_rim[0]], fill=(24, 22, 28, 255), width=max(2, int(1.6 * ss)), joint="curve")
-    draw.line(inner_plate + [inner_plate[0]], fill=(22, 20, 26, 255), width=max(2, int(1.8 * ss)), joint="curve")
+    # 6) Small floating snow crystal sparkles around the main snowflake
+    for sx_off, sy_off, sp_r in [
+        (0.08, -0.52, 6.5 * ss),
+        (0.56, 0.22, 6.0 * ss),
+        (0.32, 0.46, 5.2 * ss),
+    ]:
+        spx, spy = rot_pt(rx * sx_off, ry * sy_off)
+        sp_pts = []
+        for k in range(8):
+            ak = math.radians(k * 45.0)
+            rk = sp_r * (1.0 if k % 2 == 0 else 0.32)
+            sp_pts.append((spx + math.cos(ak) * rk, spy + math.sin(ak) * rk))
+        draw.polygon(sp_pts, fill=(230, 250, 255, 255), outline=(20, 34, 54, 255), width=max(1, ss // 2))
+
+    draw.line(outer_rim + [outer_rim[0]], fill=(20, 26, 38, 255), width=max(2, int(2.4 * ss)), joint="curve")
+    draw.line(mid_rim + [mid_rim[0]], fill=(22, 30, 44, 255), width=max(2, int(1.6 * ss)), joint="curve")
+    draw.line(inner_plate + [inner_plate[0]], fill=(20, 26, 38, 255), width=max(2, int(1.8 * ss)), joint="curve")
 
     shield_layer = sh_hi.resize((cw, ch), Image.Resampling.LANCZOS)
 
@@ -1503,10 +1584,10 @@ def apply_all_surgical_restorations(
     for y in range(768):
         if y <= 490:
             c12_arr[y, (543 - 285) :, 3] = 0
-        elif y <= 540:
+        elif y <= 536:
             for gx in range(543, 576):
                 r, g, b, a = [int(v) for v in c12_arr[y, gx - 285]]
-                if a > 0 and r < 125:
+                if a > 0 and (r < 145 or (r - b < 35)):
                     c12_arr[y, gx - 285, 3] = 0
     anime_cutouts[12] = clean_cutout_specks(Image.fromarray(c12_arr), keep_only_main=True)
 
@@ -1515,7 +1596,7 @@ def apply_all_surgical_restorations(
     for y in range(488, 768):
         for gx in range(543, 577):
             r, g, b, a = [int(v) for v in c13_arr[y, gx - 543]]
-            if a > 0 and (y >= 540 or r > 115):
+            if a > 0 and (y >= 538 or (r > 140 and (r - b > 35))):
                 c13_arr[y, gx - 543, 3] = 0
     anime_cutouts[13] = clean_cutout_specks(Image.fromarray(c13_arr), keep_only_main=True)
 

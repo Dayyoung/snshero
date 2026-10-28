@@ -16627,3 +16627,10 @@
   - `public/anime-character-sheets/` 내 컷아웃(`cutouts/*.png`), 개별 시트(`sheets/*_sheet.jpg`), 진영 마스터 시트(`factions/*_master_sheet.jpg`), 전체 포스터(`all_110_cast_poster.jpg`), 매니페스트(`manifest.json`) 일괄 갱신 완료.
   - 인게임 에셋(`public/seat/*`, `public/seat_attack/*`, `public/cards1.png`, `public/cards2.png`, `public/card100.png`) 100% 무변경 보존 확인.
 - **검증 및 보고**: 시각 검수 완료 및 연동 구글 폼 작업완료 보고서 제출 완료 (`HTTP 200`).
+
+## [2026-10-28] #041 카단(Kadan) 등 뒤 눈(SNOW) 문양 방패(Snow-Emblem Shield) 캐릭터 시트 재생성 완료
+- **작업 내용**:
+  - 카단(`#041`)의 등 뒤 '눈방패' 의미를 북방 설원의 **눈(SNOW / 육각 눈 결정 · 서리 룬) 문양 방패(`Snow-Emblem Shield`)**로 정확히 반영하여 재생성 완료.
+  - 기존 눈알(`Eye-Emblem`) 도안을 제거하고, 빙결 은빛·아이스 블루 테두리와 육각 눈 결정(Snowflake Crest) 및 서리 결정 스파클이 빛나는 셀 애니메이션풍 **눈(SNOW) 방패**로 교체(`scripts/anime_sheet_restorations.py`, `scripts/anime_character_specs.py`).
+  - `public/anime-character-sheets/cutouts/041_Kadan.png`, `sheets/041_Kadan_sheet.jpg`, `factions/05_human_master_sheet.jpg`, `all_110_cast_poster.jpg`, `manifest.json` 일괄 갱신 완료.
+- **검증 및 보고**: 시각 검수 완료 및 연동 구글 폼 작업완료 보고서 제출 완료 (`HTTP 200`).
