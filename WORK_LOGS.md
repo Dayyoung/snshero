@@ -16730,3 +16730,10 @@
   2. 각 6초 컷신 프롬프트마다 (1) 현재 회차 전체 스토리 요약, (2) 배경장소 시트(`LOC-001`~`LOC-020`), (3) **7등신 전신 컷아웃(`public/anime-character-sheets/cutouts/001..110_*.png`)** 기준 등장 캐릭터 묘사, (4) 등장 소품 시트(`PROP-001`~`PROP-020`) 및 소품 소지 캐릭터 명시, (5) 6초 이내 요약 대사 또는 전원 침묵(`NO SPOKEN DIALOGUE`) 지침, (6) 글자 포함 절대 금지(`STRICT NO-TEXT RULE`) 규칙 완벽 적용.
   3. `/script-anime 1회` 실행으로 제1화 『눈보라 아래 두 서약』(`Two Vows Beneath the Blizzard`) 총 28컷(168초) 마크다운·JSON 프롬프트 리스트 생성 완료.
 - **구글 폼 보고서 제출**: 제출 완료
+
+## 2026-10-28 15:53 (KST) — /cutscene-anime & /cutscene-anime-short 스킬 구축 및 Google Flow 제1화 28컷(나노바나나 2.1 가로 16:9) 전수 생성 완료
+- **작업 내역**:
+  1. `/cutscene-anime [회차]`(가로 16:9) 및 `/cutscene-anime-short [회차]`(세로 9:16) 스킬 정의서(`skills/cutscene-anime/SKILL.md`, `skills/cutscene-anime-short/SKILL.md`) 및 Google Flow 자동화 스크립트(`skills/cutscene-anime/scripts/generate_flow_cutscenes.py`) 구축.
+  2. 실행 시 `/script-anime` 스크립트(`episode_XX_cutscene_prompts.json`) 존재 여부를 먼저 확인하고, 없을 경우 자동으로 생성한 뒤 Google Flow 프로젝트(`https://flow.google.com/project/72ee6e60-2819-43a6-bb8c-700a7d599bdf`)에 접속.
+  3. 제1화(`1화`) 전체 28컷(`EP01-CUT01`~`EP01-CUT28`)에 대해 배경장소 시트(`LOC_001`, `LOC_007`), 7등신 `cutouts` 캐릭터 시트(`042_Elwin.png`, `043_Balian.png`, `049_Hercul.png`, `050_Aleksandar.png`, `060_Death_Knight_Artus.png`, `061_Lucian.png`, `107_Ysela.png`), 소품 시트(`PROP_001` 외)를 첨부파일로 추가하여 **🍌 Nano Banana 2.1 가로(16:9)** 이미지 기준으로 28컷 전수 생성 완료.
+- **구글 폼 보고서 제출**: 제출 완료
