@@ -275,3 +275,150 @@ export function getCardImageVariants(cardId: number): CardImageVariant[] {
 export function hasCardImageSource(cardId: number, imageUrl?: string): boolean {
   return Boolean(imageUrl);
 }
+
+const ANIME_CUTOUT_FILENAME_BY_ID: Record<number, string> = {
+  1: '001_Aquaris.png',
+  2: '002_Naiad.png',
+  3: '003_Undine.png',
+  4: '004_Kelpie.png',
+  5: '005_Aqualord.png',
+  6: '006_Leviathan.png',
+  7: '007_Gargantia.png',
+  8: '008_Cascade.png',
+  9: '009_Kraken.png',
+  10: '010_Poseidon.png',
+  11: '011_Ignis.png',
+  12: '012_Salamander.png',
+  13: '013_Belphegor.png',
+  14: '014_Pyro.png',
+  15: '015_Balrog.png',
+  16: '016_Muspel.png',
+  17: '017_Ivar.png',
+  18: '018_Ashel_the_Immortal.png',
+  19: '019_Phoenix.png',
+  20: '020_Ignisius.png',
+  21: '021_Zephyros.png',
+  22: '022_Sylph.png',
+  23: '023_Sylphid.png',
+  24: '024_Harpy.png',
+  25: '025_Aeolus.png',
+  26: '026_Tempest.png',
+  27: '027_Cyclone.png',
+  28: '028_Zeusphere.png',
+  29: '029_Raijin.png',
+  30: '030_Wind_God_Toram.png',
+  31: '031_Gaia.png',
+  32: '032_Gnome.png',
+  33: '033_Terra.png',
+  34: '034_Gorgon.png',
+  35: '035_Obelisk.png',
+  36: '036_Grandrock.png',
+  37: '037_Rokta.png',
+  38: '038_Orihalcon.png',
+  39: '039_Atlas.png',
+  40: '040_Colossus.png',
+  41: '041_Kadan.png',
+  42: '042_Elwin.png',
+  43: '043_Balian.png',
+  44: '044_Kaze.png',
+  45: '045_Gawain.png',
+  46: '046_Rondol.png',
+  47: '047_Gilgamesh.png',
+  48: '048_Robinyard.png',
+  49: '049_Hercul.png',
+  50: '050_Aleksandar.png',
+  51: '051_Walker.png',
+  52: '052_Ghoul.png',
+  53: '053_Carrion.png',
+  54: '054_Arachne.png',
+  55: '055_Patchwork.png',
+  56: '056_Cardis.png',
+  57: '057_Stone_Gargoyle.png',
+  58: '058_Sidragosa.png',
+  59: '059_Keltus.png',
+  60: '060_Death_Knight_Artus.png',
+  61: '061_Lucian.png',
+  62: '062_Celia.png',
+  63: '063_Eliana.png',
+  64: '064_Titania.png',
+  65: '065_Sylvania.png',
+  66: '066_Malfuon.png',
+  67: '067_Vezax.png',
+  68: '068_Kaeltor.png',
+  69: '069_Gandar.png',
+  70: '070_Aila.png',
+  71: '071_Balbo.png',
+  72: '072_Fredo.png',
+  73: '073_Samwy.png',
+  74: '074_Grimli.png',
+  75: '075_Magnis.png',
+  76: '076_Brandy.png',
+  77: '077_Muradi.png',
+  78: '078_Thorgrim.png',
+  79: '079_Berryforge.png',
+  80: '080_Ironforge.png',
+  81: '081_Fenrir.png',
+  82: '082_Minotaur.png',
+  83: '083_Jormungandr.png',
+  84: '084_Griffon.png',
+  85: '085_Byra.png',
+  86: '086_Leonar.png',
+  87: '087_Barghest.png',
+  88: '088_Ursoc.png',
+  89: '089_Medusa_Gorgo.png',
+  90: '090_Pegasus.png',
+  91: '091_Spiderbot.png',
+  92: '092_Chronos.png',
+  93: '093_Sentinel.png',
+  94: '094_Devastator.png',
+  95: '095_Goliath.png',
+  96: '096_Siege_Engine.png',
+  97: '097_Hyperion_Prime.png',
+  98: '098_Ironclad.png',
+  99: '099_Magitech_Golem.png',
+  100: '100_Omega_Weapon.png',
+  101: '101_Drake.png',
+  102: '102_Wyverny.png',
+  103: '103_Netherdragon.png',
+  104: '104_Bahamut.png',
+  105: '105_Spikedragon.png',
+  106: '106_Earth_Dragon_Terra.png',
+  107: '107_Ysela.png',
+  108: '108_Alexstra.png',
+  109: '109_Malygon.png',
+  110: '110_Dreadwing.png',
+};
+
+/**
+ * 카드 표시 모드(7등신 / 상반신 / 3등신)에 따른 우선 이미지 경로 후보를 반환합니다.
+ * - 'full7': 7등신 전신 애니메이션 캐릭터 투명 컷아웃 PNG
+ * - 'bust': 상반신(HEAD & HAIR) 투명 PNG 및 JPG
+ * - 'chibi3': 빈 배열 반환 (기본 3등신 SD 스프라이트/개별 시트 및 3등신 공격 모션 사용)
+ */
+export function getCardDisplayModeImageCandidates(
+  cardId: number,
+  mode: 'full7' | 'bust' | 'chibi3',
+): string[] {
+  if (!Number.isFinite(cardId) || cardId < 1 || cardId > 110) {
+    return [];
+  }
+  const pad3 = String(cardId).padStart(3, '0');
+  const cutoutFile = ANIME_CUTOUT_FILENAME_BY_ID[cardId];
+
+  if (mode === 'full7') {
+    return cutoutFile ? [`/anime-character-sheets/cutouts/${cutoutFile}`] : [];
+  }
+
+  if (mode === 'bust') {
+    const candidates = [
+      `/anime-character-sheets/busts/${pad3}_bust.png`,
+      `/anime-character-sheets/busts/${pad3}_bust.jpg`,
+    ];
+    if (cutoutFile) {
+      candidates.push(`/anime-character-sheets/cutouts/${cutoutFile}`);
+    }
+    return candidates;
+  }
+
+  return [];
+}

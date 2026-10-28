@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-28 13:32 KST] [설정 화면 카드 표시 설정(7등신/상반신/3등신, 기본값 7등신, 3등신 전용 액션연출) 추가 및 전 카드 적용]
+- **요청 사항**:
+  - "설정에서 카드표시 설정을 추가하자. 7등신/상반신/3등신 설정하면 카드에 표시되는 이미지를 해당 설정으로 표시해주자. 최초 설정은 7등신으로 설정. 액션 연출은 3등신만 가능하겠네."
+- **주요 구현 및 수정 내역**:
+  1. **[`src/contexts/GameSettingsContext.tsx`](file:///Users/dayyoung/project/snshero/src/contexts/GameSettingsContext.tsx)**:
+     - `CardDisplayMode = 'full7' | 'bust' | 'chibi3'` 타입 및 `CARD_DISPLAY_MODE_STORAGE_KEY = 'hero_card_display_mode'`를 추가하고, 최초 기본값을 `'full7'`(`7등신`)로 설정.
+  2. **110종 상반신 투명 RGBA PNG 생성 (`public/anime-character-sheets/busts/001_bust.png` ~ `110_bust.png`) 및 [`src/content/cardImageVariants.ts`](file:///Users/dayyoung/project/snshero/src/content/cardImageVariants.ts)**:
+     - 카드 내 원소 배경·마법진·문양이 자연스럽게 비치도록 110종 캐릭터 상반신(`HEAD & HAIR`) 투명 RGBA PNG(`001_bust.png` ~ `110_bust.png`)를 생성하고, `getCardDisplayModeImageCandidates(cardId, mode)` 헬퍼로 `full7`(7등신 전신 컷아웃), `bust`(상반신 투명 PNG/JPG), `chibi3`(3등신 SD) 경로 후보를 반환하도록 구현.
+  3. **[`src/components/CardItem.tsx`](file:///Users/dayyoung/project/snshero/src/components/CardItem.tsx) & [`src/components/WikiCardDetailModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/WikiCardDetailModal.tsx)**:
+     - `cardDisplayMode` 설정에 따라 카드 일러스트를 `7등신`/`상반신`/`3등신`으로 실시간 전환하며, 액션(공격모션) 연출(`useAttackMotionArt`, `isAttackBurstActive`, `SlotAttackMotionBurst`, 공격 찌르기 모션)은 `cardDisplayMode === 'chibi3'`(3등신)일 때만 작동하도록 제어.
+  4. **[`src/views/SettingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/SettingView.tsx)**:
+     - 시스템 설정 섹션에 **카드 표시 설정 (`7등신` / `상반신` / `3등신`)** 3단 선택 버튼 및 모드별 안내(최초 기본: 7등신, 액션 연출은 3등신 전용) UI를 추가.
+- **검증 및 보고**:
+  - `npx tsc --noEmit` 및 `npx vite build` 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-28 07:58 KST] [/main 스토리 RPG 대화창 및 상단 헤더 모바일 가로 넘침(닫기 버튼 잘림) 버그 수정]
 - **요청 사항**:
   - `http://localhost:3000/main` 상단메뉴가 모바일에서 넘쳐서 표시되고, 특히 닫기(`[X]`) 버튼이 잘리는 현상 수정.

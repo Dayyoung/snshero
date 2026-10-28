@@ -107,7 +107,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
   localAiStatus
 }) => {
   const { addSns } = useSns();
-  const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme, cardSkinTheme, setCardSkinTheme, targetFps, setTargetFps, batterySaver, setBatterySaver, hapticEnabled, setHapticEnabled } = useGameSettings();
+  const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme, cardSkinTheme, setCardSkinTheme, cardDisplayMode, setCardDisplayMode, targetFps, setTargetFps, batterySaver, setBatterySaver, hapticEnabled, setHapticEnabled } = useGameSettings();
   const [isJukeboxOpen, setIsJukeboxOpen] = useState(false);
   const perf = usePerformanceMode();
   const [simResults, setSimResults] = useState<any[]>([]);
@@ -1127,6 +1127,108 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 >
                   ⚙️ {language === 'ko' ? '메탈' : 'Metal'}
                 </button>
+              </div>
+            </div>
+
+            {/* 카드 표시 설정 (7등신 / 상반신 / 3등신) */}
+            <div className="bg-white p-6 border-t border-slate-100 space-y-4">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-4">
+                  <Sparkles size={24} className="text-slate-700" />
+                  <div>
+                    <p className="font-bold text-sm tracking-tight uppercase text-slate-800">
+                      {language === 'ko' ? '카드 표시 설정 (7등신 / 상반신 / 3등신)' : 'Card Display Mode (7-Head / Bust / 3-Head)'}
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-semibold tracking-widest uppercase">
+                      {language === 'ko'
+                        ? '카드 일러스트 비율 선택 · 최초 기본값: 7등신 (액션 연출은 3등신 전용)'
+                        : 'Select card character illustration mode · Default: 7-Head (Action motion in 3-Head only)'}
+                    </p>
+                  </div>
+                </div>
+                <span className="shrink-0 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider border border-[#201d1d] bg-[#201d1d] text-amber-300 rounded-sm">
+                  {cardDisplayMode === 'full7'
+                    ? (language === 'ko' ? '7등신 적용중' : '7-HEAD')
+                    : cardDisplayMode === 'bust'
+                      ? (language === 'ko' ? '상반신 적용중' : 'BUST')
+                      : (language === 'ko' ? '3등신 적용중' : '3-HEAD')}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCardDisplayMode('full7');
+                    triggerHaptic('light');
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                  }}
+                  className={cn(
+                    "py-2.5 px-2 min-h-[48px] text-xs font-bold rounded-sm border transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5",
+                    cardDisplayMode === 'full7'
+                      ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]"
+                      : "bg-[#f8f7f7] border-[rgba(15,0,0,0.12)] text-[#201d1d] hover:bg-[#f1eeee]"
+                  )}
+                >
+                  <span>{language === 'ko' ? '7등신' : '7-Head'}</span>
+                  <span className={cn("text-[9px] font-semibold", cardDisplayMode === 'full7' ? "text-amber-300" : "text-slate-500")}>
+                    {language === 'ko' ? '전신 원화 (기본)' : 'Full Body (Default)'}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCardDisplayMode('bust');
+                    triggerHaptic('light');
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                  }}
+                  className={cn(
+                    "py-2.5 px-2 min-h-[48px] text-xs font-bold rounded-sm border transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5",
+                    cardDisplayMode === 'bust'
+                      ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]"
+                      : "bg-[#f8f7f7] border-[rgba(15,0,0,0.12)] text-[#201d1d] hover:bg-[#f1eeee]"
+                  )}
+                >
+                  <span>{language === 'ko' ? '상반신' : 'Upper Body'}</span>
+                  <span className={cn("text-[9px] font-semibold", cardDisplayMode === 'bust' ? "text-amber-300" : "text-slate-500")}>
+                    {language === 'ko' ? 'HEAD & HAIR' : 'HEAD & HAIR'}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCardDisplayMode('chibi3');
+                    triggerHaptic('light');
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                  }}
+                  className={cn(
+                    "py-2.5 px-2 min-h-[48px] text-xs font-bold rounded-sm border transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5",
+                    cardDisplayMode === 'chibi3'
+                      ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]"
+                      : "bg-[#f8f7f7] border-[rgba(15,0,0,0.12)] text-[#201d1d] hover:bg-[#f1eeee]"
+                  )}
+                >
+                  <span>{language === 'ko' ? '3등신' : '3-Head SD'}</span>
+                  <span className={cn("text-[9px] font-semibold", cardDisplayMode === 'chibi3' ? "text-emerald-300" : "text-slate-500")}>
+                    {language === 'ko' ? '⚡액션 연출 가능' : '⚡Action Motion'}
+                  </span>
+                </button>
+              </div>
+
+              <div className="p-3 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[10px] font-bold text-slate-600 flex items-center justify-between gap-2">
+                <span>
+                  {cardDisplayMode === 'full7' && (language === 'ko'
+                    ? '• 7등신 전신 애니메이션 캐릭터 원화로 모든 카드가 표시됩니다. (액션 연출은 3등신만 가능)'
+                    : '• Displays 7-head full-body anime character art on all cards. (Action motion in 3-Head only)')}
+                  {cardDisplayMode === 'bust' && (language === 'ko'
+                    ? '• 캐릭터 시트 HEAD & HAIR 상반신 클로즈업 원화로 카드가 표시됩니다. (액션 연출은 3등신만 가능)'
+                    : '• Displays HEAD & HAIR upper-body character portrait on all cards. (Action motion in 3-Head only)')}
+                  {cardDisplayMode === 'chibi3' && (language === 'ko'
+                    ? '• 3등신 귀여운 SD 캐릭터로 표시되며, 전투 배치 및 상세 화면에서 역동적인 액션(공격모션) 연출이 활성화됩니다!'
+                    : '• Displays 3-head SD characters with dynamic battle attack motion effects enabled!')}
+                </span>
               </div>
             </div>
           </div>

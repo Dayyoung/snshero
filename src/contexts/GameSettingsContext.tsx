@@ -14,6 +14,9 @@ import { isHapticEnabled, setHapticEnabled as saveHapticSetting } from '../lib/h
 
 export type ThemeMode = 'light' | 'dark' | 'metal';
 export type TargetFps = '30' | '60';
+export type CardDisplayMode = 'full7' | 'bust' | 'chibi3';
+
+export const CARD_DISPLAY_MODE_STORAGE_KEY = 'hero_card_display_mode';
 
 interface GameSettings {
   language: Language;
@@ -24,6 +27,8 @@ interface GameSettings {
   setTheme: (val: ThemeMode) => void;
   cardSkinTheme: CardSkinThemeId;
   setCardSkinTheme: (val: CardSkinThemeId) => void;
+  cardDisplayMode: CardDisplayMode;
+  setCardDisplayMode: (val: CardDisplayMode) => void;
   targetFps: TargetFps;
   setTargetFps: (fps: TargetFps) => void;
   batterySaver: boolean;
@@ -67,6 +72,16 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
     return 'original_mecha';
   });
 
+  const [cardDisplayMode, setCardDisplayModeState] = useState<CardDisplayMode>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(CARD_DISPLAY_MODE_STORAGE_KEY);
+      if (saved === 'full7' || saved === 'bust' || saved === 'chibi3') {
+        return saved;
+      }
+    }
+    return 'full7';
+  });
+
   const [targetFps, setTargetFpsState] = useState<TargetFps>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('hero_target_fps');
@@ -105,6 +120,11 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
     setCardSkinThemeState(val);
   }, []);
 
+  const handleSetCardDisplayMode = useCallback((val: CardDisplayMode) => {
+    localStorage.setItem(CARD_DISPLAY_MODE_STORAGE_KEY, val);
+    setCardDisplayModeState(val);
+  }, []);
+
   const handleSetTargetFps = useCallback((fps: TargetFps) => {
     localStorage.setItem('hero_target_fps', fps);
     setTargetFpsState(fps);
@@ -129,13 +149,15 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
     setTheme: handleSetTheme,
     cardSkinTheme,
     setCardSkinTheme: handleSetCardSkinTheme,
+    cardDisplayMode,
+    setCardDisplayMode: handleSetCardDisplayMode,
     targetFps,
     setTargetFps: handleSetTargetFps,
     batterySaver,
     setBatterySaver: handleSetBatterySaver,
     hapticEnabled,
     setHapticEnabled: handleSetHapticEnabled,
-  }), [language, lowSpecMode, theme, cardSkinTheme, targetFps, batterySaver, hapticEnabled, handleSetLanguage, handleSetLowSpecMode, handleSetTheme, handleSetCardSkinTheme, handleSetTargetFps, handleSetBatterySaver, handleSetHapticEnabled]);
+  }), [language, lowSpecMode, theme, cardSkinTheme, cardDisplayMode, targetFps, batterySaver, hapticEnabled, handleSetLanguage, handleSetLowSpecMode, handleSetTheme, handleSetCardSkinTheme, handleSetCardDisplayMode, handleSetTargetFps, handleSetBatterySaver, handleSetHapticEnabled]);
 
   return (
     <GameSettingsContext.Provider value={value}>

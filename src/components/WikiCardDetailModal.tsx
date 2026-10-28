@@ -127,7 +127,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  [selectedCard.id],
  );
 
- const { cardSkinTheme } = useGameSettings();
+ const { cardSkinTheme, cardDisplayMode } = useGameSettings();
  const resolvedImg = useMemo(
  () => resolveCardImage(selectedCard.id, { imageUrl: selectedCard.imageUrl, cardSkinTheme }),
  [selectedCard.id, selectedCard.imageUrl, cardSkinTheme],
@@ -458,6 +458,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  />
  </div>
  <div className="flex flex-wrap items-center justify-center gap-1.5 mt-1">
+ {cardDisplayMode === 'chibi3' ? (
  <button
  type="button"
  onClick={() => setPreviewAttackMotion(v => !v)}
@@ -473,6 +474,21 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  ? (language === 'ko' ? '기본자세 보기' : 'BASE POSE')
  : (language === 'ko' ? '공격모션 보기' : 'ATTACK MOTION')}
  </button>
+ ) : (
+ <button
+ type="button"
+ onClick={() => setToastMessage(
+ language === 'ko'
+ ? '액션(공격모션) 연출은 [설정 > 카드 표시 설정: 3등신]에서만 지원됩니다.'
+ : 'Action motion is only supported in [Settings > Card Display: 3-Head Chibi] mode.'
+ )}
+ className="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-[10px] font-bold uppercase tracking-wider border border-stone-300 bg-stone-100 text-stone-500 cursor-pointer"
+ title={language === 'ko' ? '액션 연출은 3등신 설정에서만 가능합니다' : 'Action motion available in 3-Head Chibi mode'}
+ >
+ <Swords size={12} />
+ {language === 'ko' ? '액션연출 (3등신 전용)' : 'ACTION (3-HEAD ONLY)'}
+ </button>
+ )}
  <button
  type="button"
  onClick={onOpenViewer}
