@@ -1028,6 +1028,17 @@ def main() -> None:
         anime_cutouts[71 + i] = dwarf10_cuts[i]
     print("Segmented Dwarf -> IDs 071..080")
 
+    # Apply complete anatomical & equipment restorations + Kadan's back Eye-Emblem Shield
+    from anime_sheet_restorations import apply_all_surgical_restorations
+    apply_all_surgical_restorations(
+        anime_cutouts,
+        BRAIN_DIR,
+        remove_white_bg_clean,
+        clean_cutout_specks,
+        split_row_by_dp_seams,
+    )
+    print("Applied surgical limb/weapon/item restorations + Kadan back Eye-Emblem Shield")
+
     # 6. Mecha B (IDs 96..100) + Dragons & Starlight Dragon-Queen Ysela (IDs 101..110)
     for cid in range(96, 101):
         orig_p = PROJECT_ROOT / "public" / "seat" / cards[cid]["seat_filename"]
