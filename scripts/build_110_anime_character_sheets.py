@@ -1028,7 +1028,7 @@ def main() -> None:
         anime_cutouts[71 + i] = dwarf10_cuts[i]
     print("Segmented Dwarf -> IDs 071..080")
 
-    # Apply complete anatomical & equipment restorations + Kadan's back Eye-Emblem Shield
+    # Apply complete anatomical & equipment restorations + Kadan's back Eye-Emblem Shield + v2 Fire/Earth/Dwarf/Mecha/Dragon sheets
     from anime_sheet_restorations import apply_all_surgical_restorations
     apply_all_surgical_restorations(
         anime_cutouts,
@@ -1037,21 +1037,7 @@ def main() -> None:
         clean_cutout_specks,
         split_row_by_dp_seams,
     )
-    print("Applied surgical limb/weapon/item restorations + Kadan back Eye-Emblem Shield")
-
-    # 6. Mecha B (IDs 96..100) + Dragons & Starlight Dragon-Queen Ysela (IDs 101..110)
-    for cid in range(96, 101):
-        orig_p = PROJECT_ROOT / "public" / "seat" / cards[cid]["seat_filename"]
-        anime_cutouts[cid] = cel_remaster_highres_unit(Image.open(orig_p), "robot")
-
-    for cid in range(101, 111):
-        orig_p = PROJECT_ROOT / "public" / "seat" / cards[cid]["seat_filename"]
-        orig_im = Image.open(orig_p)
-        if cid == 107:
-            anime_cutouts[cid] = build_ysela_starlight_dragon_queen(anime_cutouts[8], orig_im)
-        else:
-            anime_cutouts[cid] = cel_remaster_highres_unit(orig_im, "dragon")
-    print("Built Mecha B (096..100) and Dragons + Starlight Dragon-Queen Ysela (101..110)")
+    print("Applied all v2 high-res sheets (Fire/Earth/Dwarf/Mecha/Dragon) + surgical restorations + Kadan back Eye-Emblem Shield")
 
     # Load all 110 original 3-head chibi idle & attack sprites (read-only!)
     cards1_atlas = Image.open(PROJECT_ROOT / "public" / "cards1.png").convert("RGBA")

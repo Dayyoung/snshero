@@ -16619,3 +16619,11 @@
   - 인게임 3등신 카드 에셋(`public/seat/*`, `public/seat_attack/*`, `public/cards1.png`, `public/cards2.png`) 변경 0건 보존 확인.
   - `npm run lint` (`tsc --noEmit`) 0 에러 통과.
   - 로컬 Git 커밋 및 연동 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
+## [2026-10-28] FIRE · DWARF · MECHA · DRAGON · EARTH 총 50종 캐릭터 시트 고해상도 2D 셀 애니메이션 원화 전면 재생성 완료
+- **작업 내용**:
+  - 기존에 3등신 원본 카드 리마스터(`cel_remaster_highres_unit`) 또는 10인 밀집 시트로 생성되어 해상도·프로포션 변화가 부족했던 **FIRE (`#011~#020`)**, **DWARF (`#071~#080`)**, **MECHA (`#091~#100`)**, **DRAGON (`#101~#110`)**, 그리고 **EARTH (`#031~#040`)** 총 5개 종족 50종의 캐릭터 시트를 **5인 와이드 고해상도(`1376×768`) 2D 셀 애니메이션 전신 원화**로 전면 신규 생성 및 교체 완료.
+  - 캐릭터 간 겹침 없이 모든 손·발·날개·꼬리·대검·망치·방패·메카 무장이 100% 온전하게 보존되도록 추출 및 외곽선 정밀 분리(`scripts/anime_sheet_restorations.py`, `scripts/build_110_anime_character_sheets.py`) 완료.
+  - `public/anime-character-sheets/` 내 컷아웃(`cutouts/*.png`), 개별 시트(`sheets/*_sheet.jpg`), 진영 마스터 시트(`factions/*_master_sheet.jpg`), 전체 포스터(`all_110_cast_poster.jpg`), 매니페스트(`manifest.json`) 일괄 갱신 완료.
+  - 인게임 에셋(`public/seat/*`, `public/seat_attack/*`, `public/cards1.png`, `public/cards2.png`, `public/card100.png`) 100% 무변경 보존 확인.
+- **검증 및 보고**: 시각 검수 완료 및 연동 구글 폼 작업완료 보고서 제출 완료 (`HTTP 200`).

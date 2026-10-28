@@ -1479,3 +1479,220 @@ def apply_all_surgical_restorations(
             if 0 <= mx < c95.shape[1] and c95[y, mx, 3] > 80:
                 c95[y, x] = c95[y, mx]
     anime_cutouts[95] = clean_cutout_specks(Image.fromarray(c95), keep_only_main=True)
+
+    # ==========================================================
+    # 10. V2 HIGH-RES FULL REGENERATION FOR FIRE, EARTH, DWARF, MECHA & DRAGON
+    # ==========================================================
+    # 10.1 FIRE V2 (#011..#020)
+    f2a_im = remove_white_bg_clean(Image.open(brain_dir / "anime_02a_fire_v2_1793146752301.jpg").convert("RGB"))
+    f2a = np.array(f2a_im)
+    f2a_mod = f2a.copy()
+    for y in range(280, 412):
+        if y <= 328:
+            xs = 1049
+        else:
+            xs = int(round(1049 + (y - 328) * (23.0 / 82.0)))
+        f2a_mod[y, xs : xs + 3, 3] = 0
+    cuts_f2a = split_row_by_dp_seams(
+        Image.fromarray(f2a_mod), num_chars=5, seam_windows=[None, (535, 576), None, (1042, 1096)]
+    )
+    anime_cutouts[11] = clean_cutout_specks(cuts_f2a[0], keep_only_main=True)
+
+    # #012 Salamander (strip #013 Belphegor's hanging dark chain at x >= 543, y <= 535)
+    c12_arr = f2a[:, 285:576].copy()
+    for y in range(768):
+        if y <= 490:
+            c12_arr[y, (543 - 285) :, 3] = 0
+        elif y <= 540:
+            for gx in range(543, 576):
+                r, g, b, a = [int(v) for v in c12_arr[y, gx - 285]]
+                if a > 0 and r < 125:
+                    c12_arr[y, gx - 285, 3] = 0
+    anime_cutouts[12] = clean_cutout_specks(Image.fromarray(c12_arr), keep_only_main=True)
+
+    # #013 Belphegor (keep his hanging right chain at x >= 544, y <= 535; strip Salamander's orange tail at y >= 488, x <= 576)
+    c13_arr = f2a[:, 543:882].copy()
+    for y in range(488, 768):
+        for gx in range(543, 577):
+            r, g, b, a = [int(v) for v in c13_arr[y, gx - 543]]
+            if a > 0 and (y >= 540 or r > 115):
+                c13_arr[y, gx - 543, 3] = 0
+    anime_cutouts[13] = clean_cutout_specks(Image.fromarray(c13_arr), keep_only_main=True)
+
+    # #014 Pyro & #015 Balrog separated along exact sleeve outer contour
+    c14_arr = f2a[:, 865:1092].copy()
+    for y in range(768):
+        if y < 280:
+            x_lim = 1049
+        elif y <= 328:
+            x_lim = 1049
+        elif y <= 410:
+            x_lim = int(round(1049 + (y - 328) * (23.0 / 82.0))) + 1
+        else:
+            x_lim = 1091
+        if x_lim - 865 < c14_arr.shape[1]:
+            c14_arr[y, max(0, x_lim - 865) :, 3] = 0
+    anime_cutouts[14] = clean_cutout_specks(Image.fromarray(c14_arr), keep_only_main=True)
+
+    c15_arr = f2a[:, 1048:1376].copy()
+    for y in range(768):
+        if y <= 328:
+            x_min = 1050
+        elif y <= 410:
+            x_min = int(round(1049 + (y - 328) * (23.0 / 82.0))) + 1
+        elif y <= 470:
+            x_min = 1091
+        else:
+            x_min = 1048
+        c15_arr[y, : max(0, x_min - 1048), 3] = 0
+    anime_cutouts[15] = clean_cutout_specks(Image.fromarray(c15_arr), keep_only_main=True)
+
+    f2b_im = remove_white_bg_clean(Image.open(brain_dir / "anime_02b_fire_v2_1793146800423.jpg").convert("RGB"))
+    cuts_f2b = split_row_by_dp_seams(f2b_im, num_chars=5)
+    for i in range(4):
+        anime_cutouts[16 + i] = clean_cutout_specks(cuts_f2b[i], keep_only_main=True)
+
+    # #020 Ignisius: extend Solar Greatsword tip cleanly past right canvas border
+    c20_raw = np.array(clean_cutout_specks(cuts_f2b[4], keep_only_main=True))
+    h20, w20, _ = c20_raw.shape
+    ext_w = 46
+    c20_ext = np.zeros((h20, w20 + ext_w, 4), dtype=np.uint8)
+    c20_ext[:, :w20] = c20_raw
+    sword_ys = [y for y in range(h20) if c20_raw[y, w20 - 2, 3] > 100]
+    if sword_ys:
+        y_top0, y_bot0 = min(sword_ys), max(sword_ys)
+        half_h0 = (y_bot0 - y_top0) / 2.0
+        yc0 = (y_top0 + y_bot0) / 2.0
+        slope = 0.455
+        for dx in range(1, ext_w):
+            t = 1.0 - (dx / float(ext_w - 2))
+            if t <= 0:
+                continue
+            yc = yc0 + dx * slope
+            hh = max(0.8, half_h0 * t)
+            y0 = max(0, int(np.floor(yc - hh)))
+            y1 = min(h20 - 1, int(np.ceil(yc + hh)))
+            for y in range(y0, y1 + 1):
+                rel = (y - yc) / max(1.0, hh)
+                src_y = int(np.clip(round(yc0 + rel * half_h0), y_top0, y_bot0))
+                c20_ext[y, w20 - 1 + dx] = c20_raw[src_y, w20 - 4]
+    anime_cutouts[20] = Image.fromarray(c20_ext)
+
+    # 10.2 EARTH V2 (#031..#040)
+    for fname, start_id in [
+        ("anime_04a_earth_v2_1793147012368.jpg", 31),
+        ("anime_04b_earth_v2_1793147055383.jpg", 36),
+    ]:
+        e_im = remove_white_bg_clean(Image.open(brain_dir / fname).convert("RGB"))
+        e_cuts = split_row_by_dp_seams(e_im, num_chars=5)
+        for i, c in enumerate(e_cuts):
+            cid = start_id + i
+            anime_cutouts[cid] = clean_cutout_specks(c, keep_only_main=(cid != 35))
+
+    # 10.3 DWARF V2 (#071..#080)
+    d8a_im = remove_white_bg_clean(Image.open(brain_dir / "anime_08a_dwarf_v2_1793146779135.jpg").convert("RGB"))
+    cuts_d8a = split_row_by_dp_seams(d8a_im, num_chars=5)
+    for i in range(5):
+        anime_cutouts[71 + i] = clean_cutout_specks(cuts_d8a[i], keep_only_main=True)
+
+    d8b_im = remove_white_bg_clean(Image.open(brain_dir / "anime_08b_dwarf_v2_1793146882447.jpg").convert("RGB"))
+    d8b = np.array(d8b_im)
+    cuts_d8b = split_row_by_dp_seams(d8b_im, num_chars=5)
+    for i in range(3):
+        anime_cutouts[76 + i] = clean_cutout_specks(cuts_d8b[i], keep_only_main=True)
+
+    # #079 Berryforge (round solar shield boundary) & #080 Ironforge (symmetric twin shields)
+    c79_arr = d8b[:, 795:1136].copy()
+    for y in range(768):
+        if 320 <= y <= 515:
+            dy = (y - 417.0) / 98.5
+            if abs(dy) <= 1.0:
+                x_lim = int(round(1052.0 + 79.5 * np.sqrt(max(0.0, 1.0 - dy * dy)))) + 1
+            else:
+                x_lim = 1076
+        else:
+            x_lim = 1076
+        if x_lim - 795 < c79_arr.shape[1]:
+            c79_arr[y, max(0, x_lim - 795) :, 3] = 0
+    anime_cutouts[79] = clean_cutout_specks(Image.fromarray(c79_arr), keep_only_main=True)
+
+    c80_arr = d8b[:, 1090:1376].copy()
+    if_cx = 1233.5 - 1090.0
+    for y in range(768):
+        for x in range(int(if_cx) + 1):
+            mx = int(round(2 * if_cx - x))
+            if 0 <= mx < c80_arr.shape[1]:
+                c80_arr[y, x] = c80_arr[y, mx]
+    anime_cutouts[80] = clean_cutout_specks(Image.fromarray(c80_arr), keep_only_main=True)
+
+    # 10.4 MECHA V2 (#091..#100)
+    m10a_im = remove_white_bg_clean(Image.open(brain_dir / "anime_10a_mecha_v2_1793146756466.jpg").convert("RGB"))
+    cuts_m10a = split_row_by_dp_seams(m10a_im, num_chars=5)
+    for i in range(5):
+        anime_cutouts[91 + i] = clean_cutout_specks(cuts_m10a[i], keep_only_main=True)
+
+    m10b = np.array(remove_white_bg_clean(Image.open(brain_dir / "anime_10b_mecha_v2_1793146778631.jpg").convert("RGB")))
+    # #096 Siege Engine
+    c96_arr = m10b[:, 0:346].copy()
+    for y in range(768):
+        for x in range(290, 346):
+            r, g, b, a = [int(v) for v in c96_arr[y, x]]
+            if a > 0 and (b > r + 15 and g > r + 10):
+                c96_arr[y, x, 3] = 0
+        if y < 225 or y > 475:
+            c96_arr[y, 298:, 3] = 0
+    anime_cutouts[96] = clean_cutout_specks(Image.fromarray(c96_arr), keep_only_main=True)
+
+    # #097 Hyperion Prime
+    c97_arr = m10b[:, 295:642].copy()
+    for y in range(768):
+        for x in range(c97_arr.shape[1]):
+            gx = x + 295
+            r, g, b, a = [int(v) for v in c97_arr[y, x]]
+            if a == 0:
+                continue
+            if gx < 358 or gx > 576:
+                if not (g > 165 and b > 180 and b > r + 40):
+                    c97_arr[y, x, 3] = 0
+            elif 300 <= y <= 450 and (gx < 366 or gx > 568):
+                if r < 140 and g < 150 and b < 160:
+                    c97_arr[y, x, 3] = 0
+    anime_cutouts[97] = clean_cutout_specks(Image.fromarray(c97_arr), keep_only_main=True)
+
+    # #098 Ironclad
+    c98_arr = m10b[:, 592:848].copy()
+    ic_cx = 719 - 592
+    for y in range(768):
+        for dx in range(1, ic_cx + 1):
+            if ic_cx + dx < c98_arr.shape[1]:
+                c98_arr[y, ic_cx - dx] = c98_arr[y, ic_cx + dx]
+    anime_cutouts[98] = clean_cutout_specks(Image.fromarray(c98_arr), keep_only_main=True)
+
+    # #099 Magitech Golem
+    c99_arr = m10b[:, 850:1142].copy()
+    mg_cx = 996 - 850
+    for y in range(768):
+        for dx in range(1, mg_cx + 1):
+            if mg_cx + dx < c99_arr.shape[1]:
+                c99_arr[y, mg_cx + dx] = c99_arr[y, mg_cx - dx]
+    anime_cutouts[99] = clean_cutout_specks(Image.fromarray(c99_arr), keep_only_main=True)
+
+    # #100 Omega Weapon
+    c100_arr = m10b[:, 1102:1376].copy()
+    om_cx = 1243 - 1102
+    for y in range(768):
+        for dx in range(1, om_cx + 1):
+            if om_cx + dx < c100_arr.shape[1]:
+                c100_arr[y, om_cx - dx] = c100_arr[y, om_cx + dx]
+    anime_cutouts[100] = clean_cutout_specks(Image.fromarray(c100_arr), keep_only_main=True)
+
+    # 10.5 DRAGON V2 (#101..#110)
+    for fname, start_id in [
+        ("anime_11a_dragon_v2_1793146754296.jpg", 101),
+        ("anime_11b_dragon_v2_1793146796876.jpg", 106),
+    ]:
+        dr_im = remove_white_bg_clean(Image.open(brain_dir / fname).convert("RGB"))
+        dr_cuts = split_row_by_dp_seams(dr_im, num_chars=5)
+        for i, c in enumerate(dr_cuts):
+            cid = start_id + i
+            anime_cutouts[cid] = clean_cutout_specks(c, keep_only_main=(cid != 110))
