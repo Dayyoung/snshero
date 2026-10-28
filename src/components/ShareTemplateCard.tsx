@@ -295,7 +295,7 @@ export const ShareTemplateCard: React.FC<ShareTemplateCardProps> = ({
  animate={{ opacity: 1, scale: 1 }}
  exit={{ opacity: 0, scale: 0.95 }}
  transition={{ duration: lowSpecMode ? 0 : 0.2 }}
- className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+ className="fixed inset-0 z-[10200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
  >
  <div className="bg-white rounded-none shadow-none w-full max-w-lg max-h-[90vh] overflow-y-auto flex flex-col">
  {/* Header */}

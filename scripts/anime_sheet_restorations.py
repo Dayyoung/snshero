@@ -335,9 +335,14 @@ def apply_all_surgical_restorations(
                 if a > 15 and (b - r > 35):
                     aqua[y, x, 3] = 0
         else:
-            hand_pad = 22 if 235 <= y <= 315 else 6
+            hand_pad = 22 if 235 <= y <= 352 else 6
             aqua[y, : max(0, scx - hand_pad), 3] = 0
-            if 335 <= y <= 650:
+            if 315 <= y < 352:
+                for x in range(max(0, scx - hand_pad), max(0, scx - 6)):
+                    r, g, b, a = [int(v) for v in aqua[y, x]]
+                    if a > 15 and (b > r + 15):
+                        aqua[y, x, 3] = 0
+            if 352 <= y <= 650:
                 body_x = None
                 search_start = max(scx + 16, 132 if y < 495 else 150)
                 for x in range(search_start, min(aw, 210)):

@@ -91,7 +91,7 @@ export const SecretArtifactDecryptionModal: React.FC<SecretArtifactDecryptionMod
  <div
  role="dialog"
  aria-modal="true"
- className="fixed inset-0 z-[250] bg-black/85 flex items-center justify-center p-3 font-mono text-xs select-none animate-fade-in"
+ className="fixed inset-0 z-[10200] bg-black/85 flex items-center justify-center p-3 font-mono text-xs select-none animate-fade-in"
  >
  <div className="w-full max-w-sm bg-[#141212] border border-stone-800 rounded-none text-stone-200 flex flex-col relative overflow-hidden">
  {/* 헤더 */}

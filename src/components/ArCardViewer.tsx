@@ -26,7 +26,7 @@ export const ArCardViewer: React.FC<ArCardViewerProps> = ({
  if (!isOpen) return null;
 
  return (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 select-none">
+ <div className="fixed inset-0 z-[10200] flex items-center justify-center bg-black/75 p-4 select-none">
  <div className="relative w-full max-w-md bg-[#fdfcfc] text-[#201d1d] border border-black/20 p-5 rounded-none shadow-none flex flex-col max-h-[90vh]">
  {/* Header */}
  <div className="flex items-center justify-between border-b border-black/10 pb-3 mb-4">

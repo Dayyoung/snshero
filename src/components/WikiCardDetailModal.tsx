@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { Camera, BookOpen, ChevronDown, ChevronUp, Copy, Download, Image as ImageIcon, Info, Palette, Printer, QrCode, Quote, Share2, Shirt, ShoppingBag, Sparkles, Users, X, Swords, Lock, Unlock, MapPin, ExternalLink, Watch } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
@@ -120,7 +120,12 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  const [toastMessage, setToastMessage] = useState<string | null>(null);
  const [showArtifactModal, setShowArtifactModal] = useState(false);
  const [previewAttackMotion, setPreviewAttackMotion] = useState(false);
+ const scrollContainerRef = useRef<HTMLDivElement | null>(null);
  const attackMotionMeta = useMemo(() => getCharacterAttackMotionMeta(selectedCard.id), [selectedCard.id]);
+ const characterSheetBustUrl = useMemo(
+ () => getAssetUrl(`/anime-character-sheets/busts/${String(selectedCard.id).padStart(3, '0')}_bust.jpg`),
+ [selectedCard.id],
+ );
 
  const { cardSkinTheme } = useGameSettings();
  const resolvedImg = useMemo(
@@ -209,7 +214,26 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  setActiveTab(initialTab);
  setStoryExpanded(false);
  setToastMessage(null);
+ setPreviewAttackMotion(false);
+ if (scrollContainerRef.current) {
+ scrollContainerRef.current.scrollTop = 0;
+ }
  }, [initialTab, selectedCard.id]);
+
+ useEffect(() => {
+ if (scrollContainerRef.current) {
+ scrollContainerRef.current.scrollTop = 0;
+ }
+ }, [activeTab]);
+
+ useEffect(() => {
+ if (typeof document === 'undefined') return;
+ const prevOverflow = document.body.style.overflow;
+ document.body.style.overflow = 'hidden';
+ return () => {
+ document.body.style.overflow = prevOverflow;
+ };
+ }, []);
 
  useEffect(() => {
  if (!toastMessage) return;
@@ -279,24 +303,25 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  };
 
  return (
- <motion.div
- {...modalMotion}
- className="fixed inset-0 z-[1000] flex items-center justify-center bg-slate-950/70 p-3 backdrop-blur-md sm:p-4"
- onClick={onClose}
+ <div
+ ref={scrollContainerRef}
+ role="dialog"
+ aria-modal="true"
+ className="fixed inset-0 z-[10050] h-[100dvh] w-full overflow-y-auto overscroll-y-contain touch-pan-y [-webkit-overflow-scrolling:touch] bg-[#fdfcfc] text-[#201d1d] font-mono"
  >
- <motion.div
- {...modalMotion}
- className="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-none border border-slate-200 bg-white text-slate-800 shadow-none"
- onClick={(event) => event.stopPropagation()}
- >
- <div className="flex items-start justify-between gap-4 border-b border-slate-200 bg-[#201d1d] px-5 py-4 text-white sm:px-6">
- <div className="min-w-0">
- <div className="flex flex-wrap items-center gap-2">
- <span className={cn('rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.28em]', rarityBadgeClass(selectedCard.rarity))}>
+ {/* 상단 고정(Sticky) 전체화면 헤더 & 탭 바 */}
+ <div className="sticky top-0 z-30 border-b border-stone-800 bg-[#201d1d] text-white pt-[env(safe-area-inset-top,0px)]">
+ <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 py-2.5 sm:px-6 sm:py-3.5">
+ <div className="min-w-0 flex-1">
+ <div className="flex flex-wrap items-center gap-1.5">
+ <span className="rounded-sm border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-amber-300">
+ ID_{String(selectedCard.id).padStart(3, '0')}
+ </span>
+ <span className={cn('rounded-sm border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider', rarityBadgeClass(selectedCard.rarity))}>
  {rarityLabel}
  </span>
  {factionDef && (
- <span className={cn('rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.28em]', factionBadgeClass(profile?.faction ?? 'human'))}>
+ <span className={cn('rounded-sm border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider', factionBadgeClass(profile?.faction ?? 'human'))}>
  {factionLabel}
  </span>
  )}
@@ -305,30 +330,27 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  {equippedDeckPresets.map((p) => (
  <span
  key={p}
- className="rounded-full border border-emerald-400 bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-black text-emerald-300"
+ className="rounded-sm border border-emerald-400 bg-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-300"
  >
- {language === 'ko' ? `[덱 ${p} 장착]` : `[Deck ${p}]`}
+ {language === 'ko' ? `[덱 ${p}]` : `[Deck ${p}]`}
  </span>
  ))}
  {equippedDeckPresets.length > 0 && (
  <span
- className="rounded-full border border-amber-400/60 bg-amber-500/20 px-2.5 py-0.5 text-[10px] font-bold text-amber-200 flex items-center gap-1"
+ className="hidden sm:inline-flex rounded-sm border border-amber-400/60 bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-200 items-center gap-1"
  title={language === 'ko' ? '덱에 편성된 카드는 실수로 분해되지 않도록 안전 보호됩니다.' : 'Cards equipped in decks are protected from disassembly.'}
  >
  <Lock size={10} className="text-amber-300" />
- {language === 'ko' ? '덱 편성 중 (분해 불가)' : 'In Deck (Protected)'}
+ {language === 'ko' ? '덱 보호중' : 'Protected'}
  </span>
  )}
  </div>
- <h2 className="mt-2 truncate text-2xl font-black uppercase tracking-tight sm:text-3xl">
+ <h2 className="mt-1 truncate text-lg font-black uppercase tracking-tight sm:text-2xl">
  {cardName}
  </h2>
- <p className="mt-1 text-xs font-semibold uppercase tracking-[0.3em] text-white/65">
- ID_{String(selectedCard.id).padStart(3, '0')}
- </p>
  </div>
 
- <div className="flex items-center gap-2">
+ <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
  <button
  type="button"
  onClick={() => {
@@ -339,39 +361,40 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  );
  }}
  className={cn(
- "inline-flex h-11 px-3.5 items-center justify-center gap-1.5 rounded-sm border text-xs font-black uppercase tracking-wider transition-all active:scale-95",
+ "inline-flex min-h-[44px] px-2.5 sm:px-3.5 items-center justify-center gap-1 rounded-sm border text-[11px] sm:text-xs font-black uppercase tracking-wider transition-all active:scale-95 cursor-pointer",
  locked 
- ? "border-amber-400 bg-amber-400/20 text-amber-300 shadow-sm"
- : "border-white/15 bg-white/10 text-white/70 hover:bg-white/15"
+ ? "border-amber-400 bg-amber-400/20 text-amber-300"
+ : "border-white/20 bg-white/10 text-white/80 hover:bg-white/15"
  )}
  title={locked ? "Unlock Card" : "Lock Card"}
  >
- {locked ? <Lock size={15} className="text-amber-300" /> : <Unlock size={15} />}
- <span>{locked ? (language === 'ko' ? '잠김' : 'LOCKED') : (language === 'ko' ? '잠금' : 'LOCK')}</span>
+ {locked ? <Lock size={14} className="text-amber-300" /> : <Unlock size={14} />}
+ <span className="hidden xs:inline">{locked ? (language === 'ko' ? '잠김' : 'LOCKED') : (language === 'ko' ? '잠금' : 'LOCK')}</span>
  </button>
 
  <button
  type="button"
  onClick={() => onNavigate('webtoon')}
- className="inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-white/15 bg-white/10 px-4 text-xs font-black uppercase tracking-[0.24em] text-white transition-colors hover:bg-white/15 active:scale-95"
+ className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-sm border border-white/20 bg-white/10 px-2.5 sm:px-3.5 text-[11px] sm:text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-white/15 active:scale-95 cursor-pointer"
  >
  <BookOpen size={14} />
- {t('world_open_webtoon', language)}
+ <span className="hidden sm:inline">{t('world_open_webtoon', language)}</span>
  </button>
 
  <button
  type="button"
  onClick={onClose}
- className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border border-white/15 bg-white/10 text-white transition-colors hover:bg-white/15 active:scale-95"
+ className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center gap-1 rounded-sm border border-rose-400/60 bg-rose-600 px-3 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-rose-500 active:scale-95 cursor-pointer"
  aria-label={t('close', language)}
  >
- <X size={20} />
+ <X size={18} />
+ <span>{language === 'ko' ? '닫기' : 'CLOSE'}</span>
  </button>
  </div>
  </div>
 
- <div className="border-b border-slate-200 bg-white px-2 sm:px-4">
- <div className="flex gap-2 overflow-x-auto py-3 scrollbar-none">
+ <div className="border-t border-stone-800 bg-[#fdfcfc] text-[#201d1d]">
+ <div className="mx-auto flex max-w-5xl gap-1.5 sm:gap-2 overflow-x-auto touch-pan-x px-3 py-2 sm:px-6 scrollbar-none">
  {TAB_CONFIG.map(({ key: tabKey, icon: TabIcon }) => {
  const label = t(
  tabKey === 'info'
@@ -394,21 +417,22 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  type="button"
  onClick={() => setActiveTab(tabKey)}
  className={cn(
- 'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-sm border px-4 py-2 text-xs font-black uppercase tracking-[0.24em] transition-all active:scale-95',
+ 'inline-flex min-h-[42px] sm:min-h-[44px] shrink-0 items-center gap-1.5 rounded-sm border px-3 sm:px-4 py-1.5 text-xs font-black uppercase tracking-wider transition-all active:scale-95 cursor-pointer',
  isActive
- ? 'border-indigo-500 bg-indigo-600 text-white shadow-none shadow-indigo-200'
- : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300 hover:bg-white',
+ ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
+ : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400 hover:bg-slate-50',
  )}
  >
- <TabIcon size={14} className={isActive ? 'text-white' : 'text-slate-400'} />
+ <TabIcon size={14} className={isActive ? 'text-amber-300' : 'text-slate-400'} />
  <span>{label}</span>
  </button>
  );
  })}
  </div>
  </div>
+ </div>
 
- <div className="flex-1 overflow-y-auto bg-slate-50 px-4 py-4 sm:px-6">
+ <div className="mx-auto w-full max-w-5xl px-3 py-4 sm:px-6 sm:py-6 pb-[calc(env(safe-area-inset-bottom,0px)+6rem)]">
  {activeTab === 'info' && (
  <div className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
  <div className="space-y-4">
@@ -853,63 +877,48 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  </span>
  </div>
 
- <div className="mt-4 flex flex-col md:flex-row items-center justify-center gap-6 overflow-hidden rounded-none border border-white/10 bg-slate-900 p-4 min-h-[260px]">
- {/* 카드 실물 패키지 뷰 */}
- <div className="w-44 sm:w-52 aspect-[3/4] shrink-0 drop-shadow-none transition-transform hover:scale-105">
- <CardItem
- card={selectedCard as unknown as CardData}
- showAttackMotion={previewAttackMotion}
- language={language}
- lowSpecMode={lowSpecMode}
- />
- </div>
-
- {/* 일러스트 원본 이미지 뷰 */}
- <div className="flex-1 min-w-0 flex flex-col items-center justify-center w-full max-w-xs">
- <div className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2 px-1">
+ <div className="mt-4 flex flex-col items-center justify-center overflow-hidden rounded-none border border-white/10 bg-slate-900 p-3 sm:p-5">
+ {/* 캐릭터 시트 02 HEAD, HAIR & EXPRESSION 상반신 원화 뷰 */}
+ <div className="w-full max-w-md">
+ <div className="w-full flex flex-wrap items-center justify-between gap-2 text-[10px] font-black uppercase tracking-wider text-white/80 mb-2 px-1">
  <span>
  {previewAttackMotion
  ? (language === 'ko' ? `공격모션: ${attackMotionMeta?.moveNameKo || '전술 타격'}` : `Attack Motion: ${attackMotionMeta?.moveNameEn || 'Strike'}`)
- : (language === 'ko' ? '일러스트 원본 아트' : 'Full Illustration Art')}
+ : (language === 'ko' ? '02 HEAD, HAIR & EXPRESSION · 상반신 원화' : '02 HEAD, HAIR & EXPRESSION · Upper-Body Art')}
  </span>
  <div className="flex items-center gap-1.5">
  <button
  type="button"
  onClick={() => setPreviewAttackMotion(v => !v)}
- className="min-h-[44px] text-[9px] font-bold text-amber-300 hover:text-amber-200 flex items-center gap-1 border border-amber-500/40 bg-amber-950/60 px-2 py-0.5 rounded-sm cursor-pointer transition-colors"
+ className="min-h-[44px] text-[10px] font-bold text-amber-300 hover:text-amber-200 flex items-center gap-1 border border-amber-500/40 bg-amber-950/60 px-2.5 py-1 rounded-sm cursor-pointer transition-colors"
  >
- <Swords size={10} />
- <span>{previewAttackMotion ? (language === 'ko' ? '기본 아트' : 'Base Art') : (language === 'ko' ? '공격모션' : 'Attack Art')}</span>
+ <Swords size={12} />
+ <span>{previewAttackMotion ? (language === 'ko' ? '상반신 원화' : 'Head & Hair Art') : (language === 'ko' ? '공격모션' : 'Attack Art')}</span>
  </button>
  <button
  type="button"
  onClick={() => setActiveTab('skins')}
- className="min-h-[44px] text-[9px] font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 border border-indigo-500/30 bg-indigo-950/60 px-2 py-0.5 rounded-sm cursor-pointer transition-colors"
+ className="min-h-[44px] text-[10px] font-bold text-indigo-300 hover:text-indigo-200 flex items-center gap-1 border border-indigo-500/40 bg-indigo-950/60 px-2.5 py-1 rounded-sm cursor-pointer transition-colors"
  >
- <Shirt size={10} />
+ <Shirt size={12} />
  <span>{language === 'ko' ? '스킨 변경' : 'Skins'}</span>
  </button>
  </div>
  </div>
- <div className="w-full aspect-square rounded-none bg-[#fdfcfc] border border-white/20 overflow-hidden flex items-center justify-center p-2">
+ <div className="w-full aspect-square rounded-none bg-[#ffffff] border-2 border-stone-700 overflow-hidden flex items-center justify-center">
  {previewAttackMotion && attackMotionMeta ? (
  <img
  src={attackMotionMeta.cutoutAttackUrl}
  alt={`${cardName} Attack Motion`}
- className="h-full w-full object-contain drop-shadow-none rounded-none"
- referrerPolicy="no-referrer"
- />
- ) : resolvedImg.source && !isSpriteSheet(resolvedImg.source) ? (
- <img
- src={resolvedImg.source}
- alt={cardName}
- className="h-full w-full object-contain drop-shadow-none rounded-none"
+ className="h-full w-full object-contain drop-shadow-none rounded-none p-2"
  referrerPolicy="no-referrer"
  />
  ) : (
- <div
- className="w-full h-full rounded-none"
- style={getCardSpriteStyle(Number(selectedCard.id), resolvedImg.source)}
+ <img
+ src={characterSheetBustUrl}
+ alt={`${cardName} HEAD & HAIR Upper-Body Character Sheet`}
+ className="h-full w-full object-contain drop-shadow-none rounded-none"
+ referrerPolicy="no-referrer"
  />
  )}
  </div>
@@ -1101,45 +1110,44 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  )}
 
  {toastMessage && (
- <div className="pointer-events-none fixed bottom-6 left-1/2 z-[1020] -translate-x-1/2 rounded-full bg-slate-900 px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-white shadow-none">
+ <div className="pointer-events-none fixed bottom-6 left-1/2 z-[10150] -translate-x-1/2 rounded-sm bg-slate-900 px-4 py-2 text-xs font-black uppercase tracking-wider text-white border border-white/20">
  {toastMessage}
  </div>
  )}
- </div>
 
- <div className="border-t border-slate-200 bg-white px-4 py-4 sm:px-6">
+ <div className="mt-6 rounded-none border border-slate-200 bg-white px-4 py-4 sm:px-6">
  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
- <p className="text-[11px] font-semibold text-slate-500">
+ <p className="text-[11px] font-semibold text-slate-600">
  {selectedCard.ability ? (language === 'ko' ? selectedCard.ability.description_ko : selectedCard.ability.description_en) : cardName}
  </p>
- <div className="flex flex-wrap items-center gap-2">
+ <div className="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-2">
  <button
  type="button"
  onClick={() => onNavigate('world-codex')}
- className="inline-flex min-h-11 items-center justify-center rounded-sm border border-indigo-200 bg-indigo-50 px-4 py-2.5 text-xs font-black uppercase tracking-[0.22em] text-indigo-700 transition-all hover:bg-indigo-100 active:scale-95"
+ className="inline-flex min-h-[44px] items-center justify-center rounded-sm border border-indigo-200 bg-indigo-50 px-3 sm:px-4 py-2.5 text-xs font-black uppercase tracking-wider text-indigo-700 transition-all hover:bg-indigo-100 active:scale-95 cursor-pointer"
  >
  <Users size={14} />
- <span className="ml-2">{t('wiki_card_detail_tab_relations', language)}</span>
+ <span className="ml-1.5 truncate">{t('wiki_card_detail_tab_relations', language)}</span>
  </button>
  <button
  type="button"
  onClick={() => onNavigate('main')}
- className="inline-flex min-h-11 items-center justify-center rounded-sm border border-amber-200 bg-amber-500 px-4 py-2.5 text-xs font-black uppercase tracking-[0.22em] text-slate-950 transition-all hover:bg-amber-400 active:scale-95"
+ className="inline-flex min-h-[44px] items-center justify-center rounded-sm border border-amber-300 bg-amber-500 px-3 sm:px-4 py-2.5 text-xs font-black uppercase tracking-wider text-slate-950 transition-all hover:bg-amber-400 active:scale-95 cursor-pointer"
  >
  <Sparkles size={14} />
- <span className="ml-2">{t('play', language)}</span>
+ <span className="ml-1.5 truncate">{t('play', language)}</span>
  </button>
  <button
  type="button"
  onClick={onClose}
- className="inline-flex min-h-11 items-center justify-center rounded-sm bg-slate-950 px-5 py-2.5 text-xs font-black uppercase tracking-[0.22em] text-white transition-all hover:bg-slate-800 active:scale-95"
+ className="inline-flex min-h-[44px] items-center justify-center rounded-sm bg-[#201d1d] px-4 sm:px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white transition-all hover:bg-stone-800 active:scale-95 cursor-pointer"
  >
  {t('close', language)}
  </button>
  </div>
  </div>
  </div>
- </motion.div>
+ </div>
 
  {/* RSI-007: Secret Artifact Decryption Modal */}
  <SecretArtifactDecryptionModal
@@ -1150,7 +1158,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  sourceTitle={`Wiki Codex #${selectedCard.id} - ${cardName}`}
  language={language}
  />
- </motion.div>
+ </div>
  );
 };
 

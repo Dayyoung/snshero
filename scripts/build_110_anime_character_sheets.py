@@ -29,6 +29,7 @@ OUT_ROOT = PROJECT_ROOT / "public" / "anime-character-sheets"
 CUTOUT_DIR = OUT_ROOT / "cutouts"
 SHEET_DIR = OUT_ROOT / "sheets"
 FACTION_DIR = OUT_ROOT / "factions"
+BUST_DIR = OUT_ROOT / "busts"
 
 FONT_TTC = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
 
@@ -608,6 +609,67 @@ def draw_wrapped_text(
     return cy
 
 
+def extract_head_hair_bust(anime_cutout: Image.Image, cid: int) -> Image.Image:
+    """
+    Extracts the upper-body (HEAD, HAIR & EXPRESSION) crop with the character's head/hair
+    centered horizontally and positioned high in the frame so tall weapons/wings never push the head down.
+    """
+    aw, ah = anime_cutout.size
+    cut_arr = np.array(anime_cutout)
+    torso_slice = cut_arr[int(ah * 0.28) : int(ah * 0.56), :, 3] > 40
+    txs = np.where(torso_slice)[1]
+    tcx = int(np.median(txs)) if len(txs) else aw // 2
+    c_x0, c_x1 = max(0, tcx - int(aw * 0.12)), min(aw, tcx + int(aw * 0.12))
+
+    central_col = cut_arr[:, c_x0:c_x1, 3] > 40
+    c_ys = np.where(central_col)[0]
+    head_top = int(c_ys.min()) if len(c_ys) else 0
+
+    head_band = cut_arr[
+        head_top : min(ah, head_top + int(ah * 0.18)),
+        max(0, tcx - int(aw * 0.20)) : min(aw, tcx + int(aw * 0.20)),
+        3,
+    ] > 40
+    hxs = np.where(head_band)[1] + max(0, tcx - int(aw * 0.20))
+    head_cx = int(np.median(hxs)) if len(hxs) else tcx
+
+    # Start crop just 1.5% above actual head/hair/crown top so tall weapons/wings don't create empty headroom
+    y0 = max(0, head_top - int(ah * 0.015))
+    crop_h = int(ah * 0.44) if 101 <= cid <= 105 else int(ah * 0.46)
+    y1 = min(ah, y0 + crop_h)
+
+    sub_crop = anime_cutout.crop((0, y0, aw, y1))
+    sub_arr = np.array(sub_crop)[:, :, 3] > 25
+    s_xs = np.where(sub_arr)[1]
+    if len(s_xs) == 0:
+        return sub_crop
+
+    x_min, x_max = int(s_xs.min()), int(s_xs.max()) + 1
+    # Cap horizontal span around head_cx so wide wings/halberds don't shrink the bust or push the head off-center
+    max_half_w = int((y1 - y0) * 0.54)
+    left_span = min(head_cx - x_min, max_half_w)
+    right_span = min(x_max - head_cx, max_half_w)
+    half_span = max(left_span, right_span, int((y1 - y0) * 0.42))
+
+    bust_canvas = Image.new("RGBA", (half_span * 2, y1 - y0), (0, 0, 0, 0))
+    crop_x0 = max(0, head_cx - half_span)
+    crop_x1 = min(aw, head_cx + half_span)
+    trimmed = sub_crop.crop((crop_x0, 0, crop_x1, y1 - y0))
+    bust_canvas.paste(trimmed, (half_span - (head_cx - crop_x0), 0))
+    return bust_canvas
+
+
+def render_head_hair_bust_card(anime_cutout: Image.Image, cid: int) -> Image.Image:
+    """
+    Renders a 600x600 HD Upper-Body (HEAD, HAIR & EXPRESSION) Portrait Card on pure studio white (#FFFFFF).
+    """
+    W, H = 600, 600
+    canvas = Image.new("RGBA", (W, H), (255, 255, 255, 255))
+    bust_crop = extract_head_hair_bust(anime_cutout, cid)
+    paste_centered(canvas, bust_crop, (16, 16, W - 16, H), align_bottom=True)
+    return canvas.convert("RGB")
+
+
 def render_individual_studio_sheet(
     cid: int,
     card: dict,
@@ -698,44 +760,8 @@ def render_individual_studio_sheet(
     draw.text((648, 113), "02  HEAD, HAIR & EXPRESSION · 표정·헤어 디테일", font=fonts["panel_h"], fill=(255, 255, 255))
 
     # Smart head/hair-centered bust crop so tall wings/weapons never push the head down or off-center
-    aw, ah = anime_cutout.size
-    cut_arr = np.array(anime_cutout)
-    torso_slice = cut_arr[int(ah * 0.30) : int(ah * 0.58), :, 3] > 40
-    txs = np.where(torso_slice)[1]
-    tcx = int(np.median(txs)) if len(txs) else aw // 2
-    c_x0, c_x1 = max(0, tcx - int(aw * 0.12)), min(aw, tcx + int(aw * 0.12))
-
-    central_col = cut_arr[:, c_x0:c_x1, 3] > 40
-    c_ys = np.where(central_col)[0]
-    head_top = int(c_ys.min()) if len(c_ys) else 0
-
-    head_band = cut_arr[
-        head_top : min(ah, head_top + int(ah * 0.16)),
-        max(0, tcx - int(aw * 0.18)) : min(aw, tcx + int(aw * 0.18)),
-        3,
-    ] > 40
-    hxs = np.where(head_band)[1] + max(0, tcx - int(aw * 0.18))
-    head_cx = int(np.median(hxs)) if len(hxs) else tcx
-
-    if head_top > int(ah * 0.055):
-        # Shift crop window down so the head & horns/hair sit right in the middle of Panel 02
-        y0 = max(0, head_top - int(ah * 0.055))
-        crop_h = int(ah * 0.43) if 101 <= cid <= 105 else int(ah * 0.45)
-        y1 = min(ah, y0 + crop_h)
-    else:
-        y0 = 0
-        y1 = max(1, int(ah * 0.48))
-
-    if head_top > int(ah * 0.055) or abs(head_cx - (aw // 2)) > 12:
-        half_w = max(head_cx, aw - head_cx)
-        bust_canvas = Image.new("RGBA", (half_w * 2, y1 - y0), (0, 0, 0, 0))
-        sub_crop = anime_cutout.crop((0, y0, aw, y1))
-        bust_canvas.paste(sub_crop, (half_w - head_cx, 0))
-        bust_crop = bust_canvas
-    else:
-        bust_crop = anime_cutout.crop((0, y0, aw, y1))
-
-    paste_centered(sheet, bust_crop, (648, 154, 1020, 510), align_bottom=False)
+    bust_crop = extract_head_hair_bust(anime_cutout, cid)
+    paste_centered(sheet, bust_crop, (648, 150, 1020, 520), align_bottom=True)
 
     # ─── PANEL 3: 3-HEAD CUTE SD / CHIBI ORIGIN & ACTION (x=634..1034, y=540..968) ───
     p3 = [634, 540, 1034, 968]
@@ -914,6 +940,7 @@ def main() -> None:
     CUTOUT_DIR.mkdir(parents=True, exist_ok=True)
     SHEET_DIR.mkdir(parents=True, exist_ok=True)
     FACTION_DIR.mkdir(parents=True, exist_ok=True)
+    BUST_DIR.mkdir(parents=True, exist_ok=True)
 
     cards = parse_110_cards()
 
@@ -1110,8 +1137,12 @@ def main() -> None:
         slug = card["seat_filename"].replace(".png", "")
         cutout_rel = f"/anime-character-sheets/cutouts/{cid:03d}_{slug}.png"
         sheet_rel = f"/anime-character-sheets/sheets/{cid:03d}_{slug}_sheet.jpg"
+        bust_rel = f"/anime-character-sheets/busts/{cid:03d}_bust.jpg"
 
         anime_cutouts[cid].save(CUTOUT_DIR / f"{cid:03d}_{slug}.png", "PNG")
+
+        bust_rgb = render_head_hair_bust_card(anime_cutouts[cid], cid)
+        bust_rgb.save(BUST_DIR / f"{cid:03d}_bust.jpg", "JPEG", quality=92, optimize=True)
 
         sheet_rgb, hex_swatches = render_individual_studio_sheet(
             cid,
@@ -1156,6 +1187,7 @@ def main() -> None:
                 "bodyCharmKo": body_desc,
                 "signatureItemKo": item_desc,
                 "palette": hex_swatches,
+                "bustUrl": bust_rel,
                 "sheetUrl": sheet_rel,
                 "cutoutUrl": cutout_rel,
                 "chibiIdleUrl": f"/seat/{card['seat_filename']}",

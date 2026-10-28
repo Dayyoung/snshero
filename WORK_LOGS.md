@@ -16648,3 +16648,14 @@
   - 중앙 두부/뿔 상단(`head_top`) 및 두부 가로 중심(`head_cx`)을 자동 감지하여 `02 HEAD, HAIR & EXPRESSION` 박스 정중앙(상하·좌우 가운데)에 머리와 표정이 오도록 위치 조정 완료(`scripts/build_110_anime_character_sheets.py`).
   - 110종 개별 시트(`public/anime-character-sheets/sheets/*_sheet.jpg`) 및 전체 통합 포스터(`all_110_cast_poster.jpg`) 일괄 갱신 완료.
 - **검증 및 보고**: `#101~#105` 등 시각 검수 완료 및 연동 구글 폼 작업완료 보고서 제출 완료 (`HTTP 200`).
+
+## 2026-10-28 11:56 (KST) — 위키 카드 상세(`/wiki/card`) 모바일 전체화면 전환·상하 스크롤 해결 및 아트탭 캐릭터시트 HEAD/HAIR 상반신 원화 적용
+- **작업 내용**:
+  1. **모바일 전체화면 뷰 전환 및 상하 스크롤 정상화 (`src/components/WikiCardDetailModal.tsx`)**:
+     - 기존 중첩 플로팅 모달(`max-h-[92vh] overflow-hidden` + 중첩 `transform`) 구조를 `fixed inset-0 z-[10050] h-[100dvh] w-full overflow-y-auto overscroll-y-contain touch-pan-y [-webkit-overflow-scrolling:touch]` 단일 전체화면 스크롤 뷰로 전면 전환.
+     - 상단 헤더 및 탭 바를 모바일 최적화된 슬림 고정(`sticky top-0 z-30`) 형태로 구성하고, 본문 및 하단 액션 버튼 영역이 페이지 전체 스크롤 흐름 안에 자연스럽게 이어지도록 개선하여 모바일에서 모든 버튼까지 매끄럽게 상하 스크롤 및 클릭 가능하도록 해결.
+     - 전역 플로팅 HUD 버튼(`z-[9999]`)에 의한 상단 버튼 가림 방지(`z-[10050]`) 및 내부 실행 모달(`ArCardViewer`, `WatchFaceModal`, `ShareTemplateCard`, `SecretArtifactDecryptionModal`)의 레이어 우선순위를 `z-[10200]`으로 상향.
+  2. **아트 탭(`art`) 캐릭터시트 `02 HEAD, HAIR & EXPRESSION` 상반신 원화 적용**:
+     - `scripts/build_110_anime_character_sheets.py`를 통해 110종 전 캐릭터의 `HEAD, HAIR & EXPRESSION` 상반신 포트레이트(`public/anime-character-sheets/busts/001_bust.jpg` ~ `110_bust.jpg`, 600×600 HD)를 추출·생성하고 개별 시트(`sheets/*.jpg`) 및 `manifest.json` 동기화.
+     - `WikiCardDetailModal.tsx`의 아트 탭에서 기존 3등신 카드 이미지 대신 새로 제작한 캐릭터 시트 `HEAD, HAIR` 상반신 원화(`/anime-character-sheets/busts/{001..110}_bust.jpg`)가 기본 메인 이미지로 표시되도록 교체.
+- **검증 및 보고**: `npx tsc --noEmit` 0 에러 통과, 구글 폼 작업 완료 보고서 제출 완료.
