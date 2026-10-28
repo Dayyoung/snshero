@@ -74,12 +74,18 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
 
   const [cardDisplayMode, setCardDisplayModeState] = useState<CardDisplayMode>(() => {
     if (typeof window !== 'undefined') {
+      const migratedToBustDefault = localStorage.getItem('hero_card_display_mode_bust_default_v1');
+      if (!migratedToBustDefault) {
+        localStorage.setItem('hero_card_display_mode_bust_default_v1', 'true');
+        localStorage.setItem(CARD_DISPLAY_MODE_STORAGE_KEY, 'bust');
+        return 'bust';
+      }
       const saved = localStorage.getItem(CARD_DISPLAY_MODE_STORAGE_KEY);
       if (saved === 'full7' || saved === 'bust' || saved === 'chibi3') {
         return saved;
       }
     }
-    return 'full7';
+    return 'bust';
   });
 
   const [targetFps, setTargetFpsState] = useState<TargetFps>(() => {

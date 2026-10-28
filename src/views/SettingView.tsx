@@ -1141,8 +1141,8 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     </p>
                     <p className="text-[10px] text-slate-400 font-semibold tracking-widest uppercase">
                       {language === 'ko'
-                        ? '카드 일러스트 비율 선택 · 최초 기본값: 7등신 (액션 연출은 3등신 전용)'
-                        : 'Select card character illustration mode · Default: 7-Head (Action motion in 3-Head only)'}
+                        ? '카드 일러스트 비율 선택 · 최초 기본값: 상반신 (액션 연출은 3등신 전용)'
+                        : 'Select card character illustration mode · Default: Upper Body (Action motion in 3-Head only)'}
                     </p>
                   </div>
                 </div>
@@ -1172,7 +1172,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 >
                   <span>{language === 'ko' ? '7등신' : '7-Head'}</span>
                   <span className={cn("text-[9px] font-semibold", cardDisplayMode === 'full7' ? "text-amber-300" : "text-slate-500")}>
-                    {language === 'ko' ? '전신 원화 (기본)' : 'Full Body (Default)'}
+                    {language === 'ko' ? '전신 원화' : 'Full Body'}
                   </span>
                 </button>
 
@@ -1192,7 +1192,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 >
                   <span>{language === 'ko' ? '상반신' : 'Upper Body'}</span>
                   <span className={cn("text-[9px] font-semibold", cardDisplayMode === 'bust' ? "text-amber-300" : "text-slate-500")}>
-                    {language === 'ko' ? 'HEAD & HAIR' : 'HEAD & HAIR'}
+                    {language === 'ko' ? 'HEAD & HAIR (기본)' : 'HEAD & HAIR (Default)'}
                   </span>
                 </button>
 

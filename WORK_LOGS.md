@@ -2,6 +2,17 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-28 13:37 KST] [카드 표시 설정 기본 모드를 상반신(HEAD & HAIR)으로 변경]
+- **요청 사항**:
+  - "상반신을 기본 모드로 하자. 7등신은 너무 케릭이 작아보인다."
+- **주요 구현 및 수정 내역**:
+  1. **[`src/contexts/GameSettingsContext.tsx`](file:///Users/dayyoung/project/snshero/src/contexts/GameSettingsContext.tsx)**:
+     - `cardDisplayMode`의 최초 기본 설정값을 `'bust'`(`상반신`)로 변경하고, 기존 세션에서도 기본값이 `상반신`으로 즉시 적용되도록 1회 마이그레이션 플래그(`hero_card_display_mode_bust_default_v1`)를 반영.
+  2. **[`src/views/SettingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/SettingView.tsx)**:
+     - 카드 표시 설정 UI의 기본값 안내 문구 및 버튼 캡션을 `상반신 · HEAD & HAIR (기본)`으로 업데이트.
+- **검증 및 보고**:
+  - `npx tsc --noEmit` 및 `npx vite build` 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-28 13:32 KST] [설정 화면 카드 표시 설정(7등신/상반신/3등신, 기본값 7등신, 3등신 전용 액션연출) 추가 및 전 카드 적용]
 - **요청 사항**:
   - "설정에서 카드표시 설정을 추가하자. 7등신/상반신/3등신 설정하면 카드에 표시되는 이미지를 해당 설정으로 표시해주자. 최초 설정은 7등신으로 설정. 액션 연출은 3등신만 가능하겠네."
