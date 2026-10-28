@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SNSHero — 『카단의 여정』 110인 애니메이션 캐릭터 시트 스튜디오</title>
+  <title>SNSHero — 『카단의 여정』 프리프로덕션 시트 스튜디오 (110 캐릭터 · 20 배경장소 · 20 소품)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -74,7 +74,7 @@
       border-radius: 4px;
       background: #ffffff;
       color: #201d1d;
-      min-width: 240px;
+      min-width: 260px;
     }
     .chip {
       min-height: 38px;
@@ -89,7 +89,7 @@
       cursor: pointer;
     }
     .chip.active { background: #201d1d; color: #fdfcfc; border-color: #201d1d; }
-    main { max-width: 1440px; margin: 0 auto; padding: 24px; }
+    main { max-width: 1440px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; gap: 36px; }
     .section-title {
       font-size: 15px;
       font-weight: 800;
@@ -99,12 +99,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
     }
     .faction-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
       gap: 18px;
-      margin-bottom: 36px;
     }
     .faction-card, .char-card {
       border: 1px solid rgba(32,29,29,0.28);
@@ -133,6 +134,7 @@
       font-size: 13px;
       font-weight: 800;
       margin-bottom: 4px;
+      gap: 8px;
     }
     .card-meta-sub { font-size: 11px; color: #57534e; }
     .char-grid {
@@ -169,6 +171,8 @@
       align-items: center;
       position: sticky;
       top: 0;
+      flex-wrap: wrap;
+      gap: 8px;
     }
     .modal-body { padding: 18px; }
     .modal-body img { width: 100%; height: auto; border: 1px solid rgba(32,29,29,0.2); display: block; }
@@ -186,31 +190,52 @@
   <header>
     <div class="header-inner">
       <div class="title-block">
-        <h1>[SNSHERO STUDIO] 『카단의 여정』 110인 애니메이션 캐릭터 시트</h1>
-        <p>여성: 글래머 체형 & 유니크 헤어 | 남성·몬스터: 근육질 & 시그니처 무기 강조 | 전 캐릭터 3등신 큐트 SD 원형 병기</p>
+        <h1>[SNSHERO PRE-PRODUCTION STUDIO] 『카단의 여정』 캐릭터(110) · 배경장소(20) · 소품(20) 설정 시트</h1>
+        <p>영문 소설 표준 용어(Canonical English Novel Terms) 100% 통일 | 이미지 컷신 및 AI 애니메이션 영상 제작용 마스터 레퍼런스</p>
       </div>
       <div class="nav-btns">
-        <button class="btn active" id="tab-all" onclick="setTab('all')">전체 보기 (11진영 + 110인 시트)</button>
-        <button class="btn" id="tab-factions" onclick="setTab('factions')">11대 진영 마스터 시트 (11장)</button>
-        <button class="btn" id="tab-chars" onclick="setTab('chars')">개별 상세 설정화 (110장)</button>
-        <a class="btn" href="/anime-character-sheets/all_110_cast_poster.jpg" target="_blank">110인 총람 포스터 원본</a>
+        <button class="btn active" id="tab-all" onclick="setTab('all')">전체 스튜디오 (150종)</button>
+        <button class="btn" id="tab-locations" onclick="setTab('locations')">배경장소 시트 (20 LOC)</button>
+        <button class="btn" id="tab-props" onclick="setTab('props')">핵심 소품 시트 (20 PROP)</button>
+        <button class="btn" id="tab-chars" onclick="setTab('chars')">캐릭터 시트 (110 CHAR)</button>
+        <a class="btn" href="/anime-character-sheets/all_20_locations_poster.jpg" target="_blank">20 배경 총람 포스터</a>
+        <a class="btn" href="/anime-character-sheets/all_20_props_poster.jpg" target="_blank">20 소품 총람 포스터</a>
+        <a class="btn" href="/anime-character-sheets/all_110_cast_poster.jpg" target="_blank">110 캐릭터 포스터</a>
         <a class="btn" href="/animation">← 애니메이션 극장으로</a>
       </div>
     </div>
   </header>
 
   <div class="toolbar">
-    <input type="text" id="search" class="search-input" placeholder="캐릭터명 / 무기 / 헤어 / 소설 역할 검색..." oninput="render()" />
-    <button class="chip active" data-filter="all" onclick="setFilter('all', this)">전체 (110)</button>
-    <button class="chip" data-filter="female" onclick="setFilter('female', this)">여성 글래머·유니크헤어</button>
-    <button class="chip" data-filter="male" onclick="setFilter('male', this)">남성 근육·무기강조</button>
-    <button class="chip" data-filter="monster" onclick="setFilter('monster', this)">몬스터·영수</button>
-    <button class="chip" data-filter="mecha" onclick="setFilter('mecha', this)">마공학 메카</button>
-    <button class="chip" data-filter="dragon" onclick="setFilter('dragon', this)">드래곤</button>
-    <span style="margin-left:auto;font-size:12px;font-weight:700;" id="count-label">110 / 110명 표시 중</span>
+    <input type="text" id="search" class="search-input" placeholder="영문 소설 명칭(Elwin Village, Nine Shadows Codex...) / 한글명 / 등장 회차 검색..." oninput="render()" />
+    <div id="char-filters" style="display:flex;gap:6px;flex-wrap:wrap;">
+      <button class="chip active" data-filter="all" onclick="setFilter('all', this)">캐릭터 전체 (110)</button>
+      <button class="chip" data-filter="female" onclick="setFilter('female', this)">여성 글래머·유니크헤어</button>
+      <button class="chip" data-filter="male" onclick="setFilter('male', this)">남성 근육·무기강조</button>
+      <button class="chip" data-filter="monster" onclick="setFilter('monster', this)">몬스터·영수</button>
+      <button class="chip" data-filter="mecha" onclick="setFilter('mecha', this)">마공학 메카</button>
+      <button class="chip" data-filter="dragon" onclick="setFilter('dragon', this)">드래곤</button>
+    </div>
+    <span style="margin-left:auto;font-size:12px;font-weight:700;" id="count-label">110 캐릭터 · 20 배경장소 · 20 소품 표시 중</span>
   </div>
 
   <main>
+    <section id="sec-locations">
+      <div class="section-title">
+        <span>■ 20대 주요 배경장소 설정 시트 (Canonical Location Concept Sheets · 1600×1000 HD)</span>
+        <a class="chip" href="/anime-character-sheets/all_20_locations_poster.jpg" target="_blank" style="text-decoration:none;display:inline-flex;align-items:center;">20대 배경장소 총람 포스터 열기 ↗</a>
+      </div>
+      <div class="char-grid" id="location-grid"></div>
+    </section>
+
+    <section id="sec-props">
+      <div class="section-title">
+        <span>■ 20대 핵심 아이템·소품 설정 시트 (Canonical Prop & Item Concept Sheets · 1600×1000 HD)</span>
+        <a class="chip" href="/anime-character-sheets/all_20_props_poster.jpg" target="_blank" style="text-decoration:none;display:inline-flex;align-items:center;">20대 소품·아이템 총람 포스터 열기 ↗</a>
+      </div>
+      <div class="char-grid" id="prop-grid"></div>
+    </section>
+
     <section id="sec-factions">
       <div class="section-title">
         <span>■ 11대 세력별 10인 애니메이션 마스터 캐릭터 시트 (2400×1420 HD)</span>
@@ -231,9 +256,9 @@
   <div class="modal-backdrop" id="modal" onclick="if(event.target.id==='modal')closeModal()">
     <div class="modal-box">
       <div class="modal-header">
-        <strong id="modal-title">캐릭터 시트 상세</strong>
-        <div style="display:flex;gap:8px;">
-          <a id="modal-cutout-btn" class="btn" href="#" target="_blank" download>투명 PNG 컷아웃 다운로드</a>
+        <strong id="modal-title">시트 상세</strong>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a id="modal-cutout-btn" class="btn" href="#" target="_blank" download>아트워크/컷아웃 원본 다운로드</a>
           <a id="modal-dl-btn" class="btn" href="#" target="_blank" download>설정 시트 원본 다운로드</a>
           <button class="btn" onclick="closeModal()">[X] 닫기</button>
         </div>
@@ -241,9 +266,9 @@
       <div class="modal-body">
         <img id="modal-img" src="" alt="" />
         <div class="prompt-box" id="modal-prompt-wrap">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <strong>AI 애니메이션 영상 제작용 영문 프롬프트 (Video Prompt)</strong>
-            <button class="chip" onclick="copyPrompt()">프롬프트 복사</button>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;flex-wrap:wrap;">
+            <strong id="modal-prompt-title">AI 컷신 및 애니메이션 영상 제작용 영문 프롬프트 (Unified English Prompt)</strong>
+            <button class="chip" onclick="copyPrompt()">영문 프롬프트 복사</button>
           </div>
           <div id="modal-prompt" style="word-break:break-word;color:#333;"></div>
         </div>
@@ -280,13 +305,17 @@
       document.querySelectorAll('header .btn').forEach(b => b.classList.remove('active'));
       const btn = document.getElementById('tab-' + t);
       if (btn) btn.classList.add('active');
-      document.getElementById('sec-factions').classList.toggle('hidden', t === 'chars');
-      document.getElementById('sec-chars').classList.toggle('hidden', t === 'factions');
+
+      document.getElementById('sec-locations').classList.toggle('hidden', t !== 'all' && t !== 'locations');
+      document.getElementById('sec-props').classList.toggle('hidden', t !== 'all' && t !== 'props');
+      document.getElementById('sec-factions').classList.toggle('hidden', t !== 'all' && t !== 'chars');
+      document.getElementById('sec-chars').classList.toggle('hidden', t !== 'all' && t !== 'chars');
+      document.getElementById('char-filters').classList.toggle('hidden', t === 'locations' || t === 'props');
     }
 
     function setFilter(f, el) {
       currentFilter = f;
-      document.querySelectorAll('.toolbar .chip').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('#char-filters .chip').forEach(c => c.classList.remove('active'));
       el.classList.add('active');
       render();
     }
@@ -302,6 +331,45 @@
       if (!DATA) return;
       const q = document.getElementById('search').value.trim().toLowerCase();
 
+      // 1. Locations (20)
+      const locs = (DATA.locations || []).filter(loc => {
+        if (!q) return true;
+        const hay = `${loc.code} ${loc.nameEn} ${loc.nameKo} ${loc.regionEn} ${loc.regionKo} ${loc.summaryKo} ${(loc.episodes || []).map(e => 'ep' + e).join(' ')}`.toLowerCase();
+        return hay.includes(q);
+      });
+      document.getElementById('location-grid').innerHTML = locs.map(loc => `
+        <div class="char-card" onclick="openLocModal('${loc.code}')">
+          <img class="sheet-img" src="${loc.sheetUrl}" loading="lazy" alt="${loc.nameEn}" />
+          <div class="card-meta">
+            <div class="card-meta-top">
+              <span>${loc.code} · ${loc.nameEn}</span>
+              <span style="color:${loc.accentColor}">EP ${(loc.episodes || []).slice(0, 4).join(', ')}</span>
+            </div>
+            <div class="card-meta-sub">${loc.nameKo} — ${loc.regionKo}</div>
+          </div>
+        </div>
+      `).join('');
+
+      // 2. Props (20)
+      const props = (DATA.props || []).filter(p => {
+        if (!q) return true;
+        const hay = `${p.code} ${p.nameEn} ${p.nameKo} ${p.categoryEn} ${p.holderKo} ${p.summaryKo} ${(p.episodes || []).map(e => 'ep' + e).join(' ')}`.toLowerCase();
+        return hay.includes(q);
+      });
+      document.getElementById('prop-grid').innerHTML = props.map(p => `
+        <div class="char-card" onclick="openPropModal('${p.code}')">
+          <img class="sheet-img" src="${p.sheetUrl}" loading="lazy" alt="${p.nameEn}" />
+          <div class="card-meta">
+            <div class="card-meta-top">
+              <span>${p.code} · ${p.nameEn}</span>
+              <span style="color:${p.accentColor}">${p.holderKo}</span>
+            </div>
+            <div class="card-meta-sub">${p.nameKo} (${p.categoryEn})</div>
+          </div>
+        </div>
+      `).join('');
+
+      // 3. Factions (11)
       const fGrid = document.getElementById('faction-grid');
       fGrid.innerHTML = DATA.factions.map(f => `
         <div class="faction-card" onclick="openFactionModal('${f.label}', '${f.sheetUrl}')">
@@ -316,6 +384,7 @@
         </div>
       `).join('');
 
+      // 4. Characters (110)
       const filtered = DATA.characters.filter(c => {
         if (currentFilter !== 'all' && c.category !== currentFilter) return false;
         if (currentFaction !== 'all' && c.faction !== currentFaction) return false;
@@ -326,7 +395,7 @@
         return true;
       });
 
-      document.getElementById('count-label').textContent = `${filtered.length} / 110명 표시 중`;
+      document.getElementById('count-label').textContent = `${locs.length} 배경 · ${props.length} 소품 · ${filtered.length} 캐릭터 표시 중`;
 
       const cGrid = document.getElementById('char-grid');
       cGrid.innerHTML = filtered.map(c => `
@@ -341,6 +410,40 @@
           </div>
         </div>
       `).join('');
+    }
+
+    function openLocModal(code) {
+      const loc = (DATA.locations || []).find(x => x.code === code);
+      if (!loc) return;
+      activePrompt = loc.promptEn;
+      document.getElementById('modal-title').textContent = `${loc.code} · ${loc.nameEn} (${loc.nameKo}) — 배경장소 설정 시트`;
+      document.getElementById('modal-img').src = loc.sheetUrl;
+      document.getElementById('modal-dl-btn').href = loc.sheetUrl;
+      const cutBtn = document.getElementById('modal-cutout-btn');
+      cutBtn.textContent = '배경 원화(Art) 다운로드';
+      cutBtn.href = loc.artUrl;
+      cutBtn.classList.remove('hidden');
+      document.getElementById('modal-prompt-title').textContent = `영문 소설 표준 명칭: [${loc.nameEn}] · 컷신/영상 생성 프롬프트`;
+      document.getElementById('modal-prompt').textContent = loc.promptEn;
+      document.getElementById('modal-prompt-wrap').classList.remove('hidden');
+      document.getElementById('modal').classList.add('open');
+    }
+
+    function openPropModal(code) {
+      const p = (DATA.props || []).find(x => x.code === code);
+      if (!p) return;
+      activePrompt = p.promptEn;
+      document.getElementById('modal-title').textContent = `${p.code} · ${p.nameEn} (${p.nameKo}) — 소품·아이템 설정 시트`;
+      document.getElementById('modal-img').src = p.sheetUrl;
+      document.getElementById('modal-dl-btn').href = p.sheetUrl;
+      const cutBtn = document.getElementById('modal-cutout-btn');
+      cutBtn.textContent = '소품 원화(Art) 다운로드';
+      cutBtn.href = p.artUrl;
+      cutBtn.classList.remove('hidden');
+      document.getElementById('modal-prompt-title').textContent = `영문 소설 표준 명칭: [${p.nameEn}] · 컷신/영상 생성 프롬프트`;
+      document.getElementById('modal-prompt').textContent = p.promptEn;
+      document.getElementById('modal-prompt-wrap').classList.remove('hidden');
+      document.getElementById('modal').classList.add('open');
     }
 
     function openFactionModal(title, url) {
@@ -360,8 +463,10 @@
       document.getElementById('modal-img').src = c.sheetUrl;
       document.getElementById('modal-dl-btn').href = c.sheetUrl;
       const cutBtn = document.getElementById('modal-cutout-btn');
+      cutBtn.textContent = '투명 PNG 컷아웃 다운로드';
       cutBtn.href = c.cutoutUrl;
       cutBtn.classList.remove('hidden');
+      document.getElementById('modal-prompt-title').textContent = `영문 소설 표준 캐릭터명: [${c.nameEn}] · 영상 제작 프롬프트`;
       document.getElementById('modal-prompt').textContent = c.videoPromptEn;
       document.getElementById('modal-prompt-wrap').classList.remove('hidden');
       document.getElementById('modal').classList.add('open');

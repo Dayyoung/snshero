@@ -16715,3 +16715,11 @@
   2. **수호자 조우 모달(`src/components/MissionEncounterModal.tsx`) 내 캐릭터 이름 옆 `[?]` 버튼 추가**:
      - 조우 팝업 안의 캐릭터 이름 옆에도 `[?]` 버튼을 추가하고, 상세 팝업이 열려 있는 동안에는 3초 자동 배틀 시작 카운트다운이 일시 정지되도록 개선.
 - **검증 및 보고**: `npx tsc --noEmit` 통과 및 구글 폼 작업 완료 보고서 제출 완료.
+
+### [2026-10-28] 『카단의 여정』 전 40화 주요 배경장소(20종) 및 핵심 소품·아이템(20종) 조사, 영문 소설 명칭 표준화 및 설정 시트 생성 완료
+- **작업 내용**:
+  1. 한국어 소설 전 40화(`public/book/episode_01..40.md`) 및 영문 소설 전 40화(`public/book/image_narrations/english_txt/SNSHero_Novel_Episode_01..40_EN.txt`) 교차 분석 완료.
+  2. 20대 주요 배경장소(`LOC-001 Elwin Village`, `LOC-004 Great Plains of the Wildlands`, `LOC-005 Pegasus Valley`, `LOC-007 Red Glass Palace` 등) 및 20대 핵심 소품·아이템(`PROP-001 Silver Dagger`, `PROP-004 Nine Shadows Codex`, `PROP-007 Snowdrop Flower`, `PROP-009 Three Silk Seals` 등) 영문 소설 공식 단어로 네이밍 표준화 완료.
+  3. 20종 배경장소 설정 시트(`public/anime-character-sheets/locations/sheets/LOC_001..020_*_sheet.jpg`) 및 20종 소품 설정 시트(`public/anime-character-sheets/props/sheets/PROP_001..020_*_sheet.jpg`), 총람 포스터 2종(`all_20_locations_poster.jpg`, `all_20_props_poster.jpg`) 생성 완료.
+  4. `public/anime-character-sheets/manifest.json` 및 프리프로덕션 스튜디오(`public/anime-character-sheets/index.html`)에 캐릭터(110)·배경장소(20)·핵심소품(20) 통합 탭 연동 완료.
+- **검증 및 보고**: 프로덕션 빌드 검증 및 구글 폼 완료 보고 제출.
