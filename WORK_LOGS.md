@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-29 14:56 KST] [카드 기본 표시 모드 7등신(full7) 전신 원화 전환 및 원격 푸시(/git-push)]
+- **요청 사항**:
+  - "7등신 모드를 기본으로 해줘. /git-push"
+- **작업 개요**:
+  - 전역 카드 표시 기본 설정을 7등신 전신 애니메이션 원화(`full7`)로 전환하고, 기존 사용자의 localStorage에도 자동 반영되도록 마이그레이션 키(`hero_card_display_mode_full7_default_v1`) 적용.
+  - 설정 화면(`SettingView.tsx`)에서 7등신 버튼을 기본 모드로 표시하고 안내 문구 동기화.
+- **주요 구현 및 반영 내역**:
+  1. [`src/contexts/GameSettingsContext.tsx`](file:///Users/dayyoung/project/snshero/src/contexts/GameSettingsContext.tsx):
+     - `cardDisplayMode` 기본값을 `'full7'`로 설정하고 마이그레이션 로직 적용.
+  2. [`src/views/SettingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/SettingView.tsx):
+     - '7등신' 버튼에 `전신 원화 (기본)` 배지 지정 및 설명 문구 업데이트.
+  3. `npm run build` 프로덕션 번들 무결점 빌드 통과.
+  4. 구글 폼 완료 보고서 제출 및 `git push origin main` 원격 저장소 푸시 완료.
+
 ## [2026-10-29 14:30 KST] [카드 상반신 머리 정중앙 정렬 알고리즘 개편, 기본 표시 상반신 전환 및 카드 클릭 상세 보기 7등신 전신 표시 연동]
 - **요청 사항**:
   - "카드에 표시되는 상반신은 머리를 가운데로 정렬될 수 있게해줘."
