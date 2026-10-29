@@ -309,59 +309,63 @@ def render_scene(
     if len(cids) == 1:
         # ─── 1 CHARACTER: FOCUSED DRAMATIC ACTING SHOT ───
         cid = cids[0]
-        if is_dramatic_close and cid in busts_cache:
-            # Use 1:1 Standardized Bust for powerful emotional close-up
-            bust = busts_cache[cid]
-            b_h = int(HEIGHT * 0.96)
-            b_w = int(bust.width * (b_h / float(bust.height)))
-            s_char = bust.resize((b_w, b_h), Image.Resampling.LANCZOS)
-            place_right = (sc_idx % 2 == 0)
-            if place_right:
-                s_char = s_char.transpose(Image.FLIP_LEFT_RIGHT)
-                px = WIDTH - b_w - 30
-            else:
-                px = 30
-            py = HEIGHT - b_h
-            actor_heads.append((px + b_w * (0.45 if place_right else 0.55), py + b_h * 0.20, place_right, cid))
-        else:
-            # Use 7-head Full-body Cutout
-            cut = cutouts_cache.get(cid) or busts_cache.get(cid)
-            if cut:
-                target_h = int(HEIGHT * 0.90)
+        cut = cutouts_cache.get(cid)
+        if cut:
+            if is_dramatic_close:
+                # Cinematic Close-up using full cutout enlarged (avoids square avatar half-cut issue)
+                target_h = int(HEIGHT * 1.15)
                 target_w = int(cut.width * (target_h / float(cut.height)))
                 s_char = cut.resize((target_w, target_h), Image.Resampling.LANCZOS)
                 place_right = (sc_idx % 2 == 0)
                 if place_right:
                     s_char = s_char.transpose(Image.FLIP_LEFT_RIGHT)
-                    px = WIDTH - target_w - 50
+                    px = WIDTH - target_w - 30
                 else:
-                    px = 50
-                py = HEIGHT - target_h + 10
+                    px = 30
+                py = HEIGHT - int(target_h * 0.78) # Waist/chest line at bottom of canvas
                 actor_heads.append((px + target_w * (0.45 if place_right else 0.55), py + target_h * 0.16, place_right, cid))
             else:
-                s_char = None
+                # Dynamic Full-body Shot
+                target_h = int(HEIGHT * 0.88)
+                target_w = int(cut.width * (target_h / float(cut.height)))
+                s_char = cut.resize((target_w, target_h), Image.Resampling.LANCZOS)
+                place_right = (sc_idx % 2 == 0)
+                if place_right:
+                    s_char = s_char.transpose(Image.FLIP_LEFT_RIGHT)
+                    px = WIDTH - target_w - 45
+                else:
+                    px = 45
+                py = HEIGHT - target_h + 10
+                actor_heads.append((px + target_w * (0.45 if place_right else 0.55), py + target_h * 0.16, place_right, cid))
 
-        if s_char:
             # Soft ambient backlight glow
             glow = Image.new("RGBA", s_char.size, tint + (80,))
             glow.putalpha(s_char.split()[3])
             canvas.alpha_composite(glow.filter(ImageFilter.GaussianBlur(16)), (px, py))
             canvas.alpha_composite(s_char, (px, py))
 
-    elif len(cids) >= 2:
-        # ─── 2+ CHARACTERS: DYNAMIC TWO-SHOT DIALOGUE OR BATTLE ───
+    elif len(cids) == 2:
+        # ─── 2 CHARACTERS: BALANCED TWO-SHOT DIALOGUE OR BATTLE ───
         cid1, cid2 = cids[0], cids[1]
         cut1 = cutouts_cache.get(cid1)
         cut2 = cutouts_cache.get(cid2)
 
-        target_h = int(HEIGHT * 0.86)
+        target_h = int(HEIGHT * 0.78)
+        w1 = int(cut1.width * (target_h / float(cut1.height))) if cut1 else 100
+        w2 = int(cut2.width * (target_h / float(cut2.height))) if cut2 else 100
+
+        # Scale down slightly if total character widths overlap too much
+        if w1 + w2 > WIDTH - 60:
+            scale_ratio = (WIDTH - 60) / float(w1 + w2)
+            target_h = int(target_h * scale_ratio)
+            w1 = int(cut1.width * (target_h / float(cut1.height))) if cut1 else 100
+            w2 = int(cut2.width * (target_h / float(cut2.height))) if cut2 else 100
 
         # Character 1: Left Actor (Facing Right)
         if cut1:
-            w1 = int(cut1.width * (target_h / float(cut1.height)))
             s1 = cut1.resize((w1, target_h), Image.Resampling.LANCZOS)
             x1 = 25
-            y1 = HEIGHT - target_h + 12
+            y1 = HEIGHT - target_h + 10
             glow1 = Image.new("RGBA", s1.size, tint + (70,))
             glow1.putalpha(s1.split()[3])
             canvas.alpha_composite(glow1.filter(ImageFilter.GaussianBlur(12)), (x1, y1))
@@ -370,31 +374,78 @@ def render_scene(
 
         # Character 2: Right Actor (Facing Left towards Actor 1)
         if cut2:
-            w2 = int(cut2.width * (target_h / float(cut2.height)))
             s2 = cut2.resize((w2, target_h), Image.Resampling.LANCZOS).transpose(Image.FLIP_LEFT_RIGHT)
             x2 = WIDTH - w2 - 25
-            y2 = HEIGHT - target_h + 12
+            y2 = HEIGHT - target_h + 10
             glow2 = Image.new("RGBA", s2.size, tint + (70,))
             glow2.putalpha(s2.split()[3])
             canvas.alpha_composite(glow2.filter(ImageFilter.GaussianBlur(12)), (x2, y2))
             canvas.alpha_composite(s2, (x2, y2))
             actor_heads.append((x2 + w2 * 0.45, y2 + target_h * 0.16, True, cid2))
 
-        # If 3rd character exists, place slightly in the background
-        if len(cids) >= 3:
-            cid3 = cids[2]
-            cut3 = cutouts_cache.get(cid3)
-            if cut3:
-                h3 = int(HEIGHT * 0.68) # 3D depth perspective
-                w3 = int(cut3.width * (h3 / float(cut3.height)))
-                s3 = cut3.resize((w3, h3), Image.Resampling.LANCZOS)
+    elif len(cids) >= 3:
+        # ─── 3+ CHARACTERS: PROPORTIONALLY SCALED MULTI-HERO GROUP SHOT ───
+        # When 3+ heroes appear, scale height down so all characters remain clearly visible without clutter
+        base_h = int(HEIGHT * 0.58) if len(cids) == 3 else int(HEIGHT * 0.50)
+        
+        valid_cuts = []
+        for c in cids[:3]:
+            ct = cutouts_cache.get(c)
+            if ct:
+                valid_cuts.append((c, ct))
+
+        if valid_cuts:
+            # Auto-fit width calculation
+            raw_widths = [int(ct.width * (base_h / float(ct.height))) for _, ct in valid_cuts]
+            total_w = sum(raw_widths)
+            if total_w > int(WIDTH * 0.88):
+                ratio = (WIDTH * 0.88) / float(total_w)
+                target_h = max(int(HEIGHT * 0.45), int(base_h * ratio))
+                widths = [int(ct.width * (target_h / float(ct.height))) for _, ct in valid_cuts]
+            else:
+                target_h = base_h
+                widths = raw_widths
+
+            y_base = HEIGHT - target_h + 10
+
+            if len(valid_cuts) == 3:
+                # 3 Characters: Left, Center, Right balanced layout
+                c1_id, cut1 = valid_cuts[0]
+                c2_id, cut2 = valid_cuts[1]
+                c3_id, cut3 = valid_cuts[2]
+                w1, w2, w3 = widths[0], widths[1], widths[2]
+
+                s1 = cut1.resize((w1, target_h), Image.Resampling.LANCZOS)
+                s2 = cut2.resize((w2, target_h), Image.Resampling.LANCZOS).transpose(Image.FLIP_LEFT_RIGHT)
+                s3 = cut3.resize((w3, target_h), Image.Resampling.LANCZOS)
+
+                x1 = 20
+                x2 = WIDTH - w2 - 20
                 x3 = (WIDTH - w3) // 2
-                y3 = HEIGHT - h3 - 20
-                # Darken background actor slightly for depth
-                s3_arr = s3.split()
-                s3_rgb = ImageEnhance.Brightness(s3.convert("RGB")).enhance(0.85).convert("RGBA")
-                s3_rgb.putalpha(s3_arr[3])
-                canvas.alpha_composite(s3_rgb, (x3, y3))
+
+                # Render center actor first (middle layer), then left & right actors
+                for s, x, cid, is_r, head_ratio in [
+                    (s3, x3, c3_id, False, 0.50),
+                    (s1, x1, c1_id, False, 0.55),
+                    (s2, x2, c2_id, True, 0.45),
+                ]:
+                    glow = Image.new("RGBA", s.size, tint + (65,))
+                    glow.putalpha(s.split()[3])
+                    canvas.alpha_composite(glow.filter(ImageFilter.GaussianBlur(10)), (x, y_base))
+                    canvas.alpha_composite(s, (x, y_base))
+                    actor_heads.append((x + s.width * head_ratio, y_base + target_h * 0.16, is_r, cid))
+
+            else:
+                # 2 valid from the list fallback
+                for i, (cid, cut) in enumerate(valid_cuts):
+                    w = widths[i]
+                    s = cut.resize((w, target_h), Image.Resampling.LANCZOS)
+                    x = 30 if i == 0 else WIDTH - w - 30
+                    glow = Image.new("RGBA", s.size, tint + (70,))
+                    glow.putalpha(s.split()[3])
+                    canvas.alpha_composite(glow.filter(ImageFilter.GaussianBlur(10)), (x, y_base))
+                    canvas.alpha_composite(s, (x, y_base))
+                    actor_heads.append((x + w * 0.5, y_base + target_h * 0.16, (i != 0), cid))
 
     # 4.5. Speech Bubble ("...") on Speaking Character (Omit if silence/narration)
     char_dialogues = [
