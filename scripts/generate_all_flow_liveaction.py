@@ -58,19 +58,33 @@ end tell
     return p.stdout.strip()
 
 
-def clear_reference_chips():
+def check_and_clear_error() -> bool:
     js = """
     (() => {
-        const chips = Array.from(document.querySelectorAll('.reference-ingredient-chip'));
-        chips.forEach(c => {
-            const btn = c.querySelector('button, mat-icon, .cancel-icon') || c;
-            btn.click();
-        });
-        return 'CLEARED_' + chips.length;
+        const errorToast = document.querySelector('.toast, .error-message, [role="alert"], .flow-notification');
+        if (errorToast && errorToast.innerText.includes('비정상')) {
+            return 'HAS_BOT_WARNING';
+        }
+        return 'OK';
     })()
     """
-    run_js(js)
-    time.sleep(0.3)
+    res = run_js(js)
+    if 'HAS_BOT_WARNING' in res:
+        print("  [FLOW ALERT] Bot warning detected. Reloading tab and waiting 8s...")
+        subprocess.run(['osascript', '-e', '''
+tell application "Google Chrome"
+    repeat with w in windows
+        repeat with t in tabs of w
+            if URL of t contains "flow.google.com/project/72ee6e60-2819-43a6-bb8c-700a7d599bdf" then
+                reload t
+            end if
+        end repeat
+    end repeat
+end tell
+'''])
+        time.sleep(8.0)
+        return True
+    return False
 
 
 def get_current_flow_image_urls() -> list:
@@ -281,7 +295,9 @@ def process_episode(ep: int, force: bool = False) -> bool:
 
         print(f"\n[{ep:02d}-{c_num:02d}/{total_cuts}] Generating Live-Action Cutscene: {c_code}")
 
-        # 1. Clear reference chips
+        # 1. Check & clear any error, clear reference chips
+        check_and_clear_error()
+        time.sleep(1.0)
         clear_reference_chips()
 
         # 2. Build Live-Action Prompt
@@ -294,7 +310,7 @@ def process_episode(ep: int, force: bool = False) -> bool:
         # 4. Trigger generation
         if not trigger_generate_hardware_return(prompt):
             print(f"  [ERROR] Failed to trigger generate for {c_code}")
-            time.sleep(2.0)
+            time.sleep(3.0)
             continue
 
         # 5. Wait for Flow generation
@@ -314,14 +330,16 @@ def process_episode(ep: int, force: bool = False) -> bool:
 
         if not new_url:
             print(f"\n  [ERROR] Generation timed out after {time.time() - start_t:.1f}s for {c_code}")
+            check_and_clear_error()
+            time.sleep(3.0)
             continue
 
         # 6. Direct download
-        time.sleep(0.8)
+        time.sleep(1.0)
         if download_image_from_url(new_url, jpg_dst, webp_dst):
             new_cuts_generated += 1
 
-        time.sleep(1.0)
+        time.sleep(3.5)
 
     print(f"\nEpisode {ep:02d} Summary: {new_cuts_generated} new generated, {skipped_cuts} skipped (Total {total_cuts} cuts).")
 
