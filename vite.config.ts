@@ -46,6 +46,22 @@ export default defineConfig(({mode}) => {
     plugins: [
       react(), 
       tailwindcss(),
+      {
+        name: 'clean-dist-assets',
+        buildStart() {
+          const assetsDir = path.resolve(process.cwd(), 'dist', 'assets');
+          if (fs.existsSync(assetsDir)) {
+            try {
+              const files = fs.readdirSync(assetsDir);
+              for (const file of files) {
+                fs.rmSync(path.join(assetsDir, file), { recursive: true, force: true });
+              }
+            } catch (err) {
+              console.warn('[clean-dist-assets] Warning while cleaning assets:', err);
+            }
+          }
+        },
+      },
       (() => {
         const middleware = (req: any, res: any, next: any) => {
           if (!req.url) return next();
@@ -53,6 +69,11 @@ export default defineConfig(({mode}) => {
             try {
               const rawUrl = req.url.split('?')[0];
               const decodedUrl = decodeURIComponent(rawUrl);
+
+              // 0. Fast HTTP Cache-Control for immutable production assets
+              if (decodedUrl.startsWith('/assets/')) {
+                res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+              }
 
               // Real-time Reddit RSS Feed proxy (fetches live posts from reddit.com with smart in-memory caching)
               if (decodedUrl === '/api/reddit/feed') {

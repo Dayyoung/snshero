@@ -46,7 +46,6 @@ import { useContextualTutorial } from './hooks/useContextualTutorial';
 import { processIncomingReferral, createPendingReferralReward } from './lib/referral';
 import { type LocalAiCapabilityStatus, getLocalAiCapabilityStatus, requestLocalAiReply, generateSmartKnowledgeReply } from './lib/localAi';
 import { trackCreatorEvent } from './content/creatorCampaigns';
-import { WEBTOON_SEASONS, getWebtoonSeasonById, getWebtoonEpisodesForSeason } from './content/webtoonEpisodes';
 import { saveWebtoonProgress, type WebtoonProgressState } from './lib/webtoonProgress';
 import { BGM_TRACKS, DEFAULT_BGM_TRACK_ID } from './lib/audioConstants';
 import { getSeasonItem, setSeasonItem, removeSeasonItem } from './lib/seasonStorage';
@@ -2941,6 +2940,7 @@ function AppContent() {
             return;
           }
           case 'mock-webtoon': {
+            const { WEBTOON_SEASONS, getWebtoonSeasonById, getWebtoonEpisodesForSeason } = await import('./content/webtoonEpisodes');
             const seasonConfig = getWebtoonSeasonById(currentSeason) ?? WEBTOON_SEASONS[0];
             const releasedEpisodes = getWebtoonEpisodesForSeason(new Date(), seasonConfig)
               .filter((episode) => episode.releaseStatus !== 'upcoming');

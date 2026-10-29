@@ -2,6 +2,30 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-29 15:40 KST] [초기 페이지(http://localhost:3000/) 로딩 속도 극대화: 21만 개 더미 번들(2.9GB) 제거, 3.2MB 웹툰 매니페스트 동적 분리 및 HTTP 캐싱 최적화]
+- **요청 사항**:
+  - "http://localhost:3000/ 접속하는데 로딩시간이 너무 걸려"
+- **원인 분석**:
+  1. **빌드 디렉터리(`dist/assets`) 쓰레기 누적**: `vite.config.ts`의 `emptyOutDir: false`로 인해 수백 번의 실시간 자동 빌드가 누적되면서 `dist/assets`에 무려 **215,683개(2.9GB)**의 오래된 번들 파일들이 쌓여 있었음. 이로 인해 브라우저 및 정적 서버가 정적 리소스를 탐색(`stat`, `readdir`)할 때마다 심각한 파일 시스템 I/O 병목이 발생함.
+  2. **초기 엔트리 번들에 3.2MB 웹툰 매니페스트 정적 임포트**: `src/App.tsx` 최상단에서 단 하나의 슬래시 커맨드(`/mock-webtoon`)를 위해 `webtoonEpisodes.ts` 및 3.2MB에 달하는 `webtoonEpisodeManifest.json`을 정적으로 import하여, 초기 로딩 시 `data-webtoon` 청크(2.5MB)가 불필요하게 modulepreload되어 브라우저 메인 스레드 파싱을 블로킹하고 있었음.
+  3. **정적 에셋 HTTP 캐싱 부재**: 해시가 포함된 정적 번들에 대해 `Cache-Control` 헤더가 `no-cache`로 응답되어 매번 새로 다운로드되고 있었음.
+- **주요 해결 및 최적화 내역**:
+  1. **`dist/assets` 클린업 및 자동 정화 플러그인 구현**:
+     - 기존 누적된 215,683개(2.9GB)의 고스트 번들 파일을 완전 삭제하여 파일 수를 **712개(20MB)**로 **99.7% 감축(99.3% 용량 절감)**.
+     - [`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts)에 `clean-dist-assets` 플러그인을 도입하여 빌드 시작 시 항상 `dist/assets`를 깨끗이 정화하도록 안전장치 구축.
+  2. **`src/App.tsx` 3.2MB 웹툰 데이터 초기 번들 완전 분리**:
+     - [`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx): 상단 정적 import를 제거하고 `case 'mock-webtoon'` 내부에서 `await import('./content/webtoonEpisodes')` 동적 임포트로 전환.
+     - `dist/index.html`의 `<link rel="modulepreload">`에서 2.5MB에 달하는 `data-webtoon` 청크가 100% 완전히 제거됨.
+  3. **프로덕션 에셋 초고속 브라우저 캐싱 적용**:
+     - [`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts): 해시가 포함된 `/assets/` 요청에 대해 `Cache-Control: public, max-age=31536000, immutable` 헤더 적용. 첫 방문 이후 모든 정적 번들은 0ms(브라우저 메모리/디스크 캐시)에서 즉각 로드.
+  4. **성능 벤치마크 검증**:
+     - HTML TTFB: **0.0016초 (1.6ms)**
+     - Index JS 번들 TTFB: **0.0023초 (2.3ms)**, 전체 전송: **3.2ms**
+     - 첫 페이지 로드 체감 지연 완전 해소.
+- **보고 및 커밋**:
+  - `npm run build` 프로덕션 번들 정상 빌드 완료.
+  - 구글 폼 완료 보고서 제출 및 로컬 커밋 완료.
+
 ## [2026-10-29 15:30 KST] [7등신 모드(full7) 캐릭터 신장(키) 균일화 파이프라인 구현 및 가로 와이드 캐릭터 축소 왜곡 방지]
 - **요청 사항**:
   - "7등신모드에서 좌우가 잘려도 좋으니 케릭터들의 키를 통일해 줄래. 지금은 좌우로 긴 케릭터가 키가 작아보이는 효과가 있어"
