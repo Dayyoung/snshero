@@ -2,6 +2,14 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-29 14:05 KST] [/start-server 고속 프로덕션 정적 프리뷰 서버(포트 3000), 실시간 자동 빌드 워처(watch-build), 웹푸시 디스패처(포트 3001) 통합 기동 완료]
+- **요청 사항**:
+  - `/start-server` 명령 실행 및 서버 기동 요청.
+- **수행 및 검증 내역**:
+  1. [`scripts/start-server.sh`](file:///Users/dayyoung/project/snshero/scripts/start-server.sh) 실행을 통해 기존 포트 점유 프로세스 정리 후 최신 정적 번들(`dist/`) 기반 Vite Preview 서버(`0.0.0.0:3000`), 소스 수정 감시 자동 빌드 워처([`scripts/watch-build.js`](file:///Users/dayyoung/project/snshero/scripts/watch-build.js)), W3C Web Push 디스패처 서버(`0.0.0.0:3001`) 백그라운드 통합 기동 완료.
+  2. `http://localhost:3000/card-play` (`HTTP/1.1 200 OK`) 및 `http://localhost:3001/api/push/health` (`status: ok`) 응답 정상 확인.
+  3. 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-29 14:05 KST] [110종 캐릭터 상반신(busts) 및 캐릭터시트 Panel 02 얼굴/가슴 부위 표준 정방형 크롭 전면 개편]
 - **요청 사항**:
   - "busts 상반신 이미지들이 크기가 오락가락하게 표시돼. 좌우로 잘려도 상관없으니 얼굴과 가슴부위가 잘 노출되도록 잘라줘."
