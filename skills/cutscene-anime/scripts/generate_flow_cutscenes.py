@@ -158,8 +158,21 @@ def sanitize_prompt_strict(text: str) -> str:
     return out
 
 
-def build_image_cutscene_prompt(cut: dict, orientation: str) -> str:
+def build_image_cutscene_prompt(cut: dict, orientation: str, style: str = "anime") -> str:
     base = sanitize_prompt_strict(cut["unifiedVideoPromptEn"])
+    if style == "liveaction":
+        base = re.sub(r"\banime\b", "photorealistic live-action cinema", base, flags=re.IGNORECASE)
+        base = re.sub(r"\bcel-shading\b", "hyper-realistic natural lighting", base, flags=re.IGNORECASE)
+        base = re.sub(r"\bmanga\b", "theatrical film still", base, flags=re.IGNORECASE)
+        base = re.sub(r"\bcartoon\b", "live-action", base, flags=re.IGNORECASE)
+        ratio_str = "16:9 WIDESCREEN" if orientation == "landscape" else "9:16 VERTICAL"
+        return (
+            f"[70MM IMAX PHOTOREALISTIC LIVE-ACTION CINEMA FILM STILL | {ratio_str}] "
+            f"Masterpiece theatrical fantasy film still shot on ARRI Alexa 65 anamorphic lenses, Kodak Vision3 500T 35mm film. "
+            f"Living real human actors with authentic skin pores and natural expressions, authentic weathered leather and forged steel plate armor, "
+            f"atmospheric volumetric lighting, subtle film grain. STRICT ZERO ANIME, STRICT ZERO CARTOON, ZERO CEL-SHADING. {base}"
+        )
+
     if orientation == "portrait":
         base = base.replace("16:9 widescreen", "9:16 vertical portrait")
         return f"[NANO BANANA 2.1 VERTICAL 9:16 ANIME CUTSCENE IMAGE] {base}"
@@ -374,14 +387,15 @@ def wait_for_active_generations(page, max_concurrent: int = 2, timeout_sec: int 
     return []
 
 
-def run_flow_cutscenes(ep: int, orientation: str, start_cut: int = 1, end_cut: Optional[int] = None):
+def run_flow_cutscenes(ep: int, orientation: str, start_cut: int = 1, end_cut: Optional[int] = None, style: str = "anime"):
     json_path = ensure_episode_script(ep)
     ep_data = json.loads(json_path.read_text(encoding="utf-8"))
     cutscenes = ep_data["cutscenes"]
     if end_cut is None:
         end_cut = len(cutscenes)
 
-    out_dir = ROOT / "public" / "anime-character-sheets" / "cutscenes" / f"ep{ep:02d}_{orientation}"
+    subfolder = f"cutscenes_{style}" if style != "anime" else "cutscenes"
+    out_dir = ROOT / "public" / "anime-character-sheets" / subfolder / f"ep{ep:02d}_{orientation}"
     out_dir.mkdir(parents=True, exist_ok=True)
     status_file = out_dir / "cutscene_generation_status.json"
     status_data = {}
@@ -493,7 +507,7 @@ def run_flow_cutscenes(ep: int, orientation: str, start_cut: int = 1, end_cut: O
                         attached_names = [Path(rf).name for rf in ref_files[:5]]
 
                     close_asset_picker(page)
-                    prompt_text = build_image_cutscene_prompt(cut, orientation)
+                    prompt_text = build_image_cutscene_prompt(cut, orientation, style)
                     box = page.locator('[aria-label="무엇을 만들고 싶으신가요?"]').first
                     box.click(timeout=10000)
                     box.fill(prompt_text, timeout=10000)
@@ -628,15 +642,16 @@ def run_flow_cutscenes(ep: int, orientation: str, start_cut: int = 1, end_cut: O
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate anime cutscenes in Google Flow with Nano Banana 2.1")
+    parser = argparse.ArgumentParser(description="Generate cutscenes in Google Flow with Nano Banana 2.1")
     parser.add_argument("episode", help="Episode number or string (e.g., 1화, 1회, 1)")
     parser.add_argument("--orientation", choices=["landscape", "portrait"], default="landscape", help="landscape (16:9) or portrait (9:16)")
+    parser.add_argument("--style", choices=["anime", "liveaction"], default="anime", help="anime (default) or liveaction (photorealistic cinema)")
     parser.add_argument("--start-cut", type=int, default=1)
     parser.add_argument("--end-cut", type=int, default=None)
     args = parser.parse_args()
 
     ep = parse_episode_arg(args.episode)
-    run_flow_cutscenes(ep, args.orientation, args.start_cut, args.end_cut)
+    run_flow_cutscenes(ep, args.orientation, args.start_cut, args.end_cut, args.style)
 
 
 if __name__ == "__main__":
