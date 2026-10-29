@@ -121,18 +121,18 @@
       "bodyCharmKo": "글래머러스한 S라인이 비치는 크리스탈 워터 바디슈트 + 3등신의 크고 반짝이는 귀여운 눈매",
       "signatureItemKo": "가슴 앞에서 빛나는 태초의 아쿠아 물방울 코어 & 부유 수구",
       "palette": [
-        "#4D0D1C",
-        "#707B81",
-        "#8D2736",
-        "#A4A2A3",
-        "#8BD6D6"
+        "#4C96BA",
+        "#25588C",
+        "#71B4CD",
+        "#A3DCE7",
+        "#D4E1E4"
       ],
       "bustUrl": "/anime-character-sheets/busts/001_bust.jpg",
       "sheetUrl": "/anime-character-sheets/sheets/001_Aquaris_sheet.jpg",
       "cutoutUrl": "/anime-character-sheets/cutouts/001_Aquaris.png",
       "chibiIdleUrl": "/seat/Aquaris.png",
       "chibiAttackUrl": "/seat_attack/Aquaris.png",
-      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Aquaris (아쿠아리스), glamorous curvy hourglass anime heroine, expressive big sparkling anime eyes, form-fitting outfit, distinctive features: 투명하게 부유하는 물방울 트윈번 & 버블 링 헤어 and 가슴 앞에서 빛나는 태초의 아쿠아 물방울 코어 & 부유 수구, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #4D0D1C, #707B81, #8D2736."
+      "videoPromptEn": "2D Japanese-Korean fantasy animation scene from 'Kadan's Journey', featuring Aquaris (아쿠아리스), glamorous curvy hourglass anime heroine, expressive big sparkling anime eyes, form-fitting outfit, distinctive features: 투명하게 부유하는 물방울 트윈번 & 버블 링 헤어 and 가슴 앞에서 빛나는 태초의 아쿠아 물방울 코어 & 부유 수구, crisp cel-shaded anime linework, smooth sakuga keyframe animation, dynamic wind and elemental aura particles, color palette #4C96BA, #25588C, #71B4CD."
     },
     {
       "id": 2,
