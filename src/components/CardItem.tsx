@@ -779,20 +779,26 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
      />
     </>
    ) : (
-    <motion.img
-     key={`${currentImageSource}-${attackBurstCounter}`}
-     src={currentImageSource}
-     alt={displayCardName}
-     animate={
-      isAttackBurstActive && !performanceMode && attackMotionMeta
-       ? getCharacterAttackLungeAnimation(attackMotionMeta.attackAnimation)
-       : { scale: useAttackMotionArt ? 1.05 : 1, x: 0, y: 0, rotate: 0 }
-     }
-     transition={{ duration: performanceMode ? 0 : 0.42, ease: 'easeOut' }}
-     className="relative z-10 h-full w-full object-contain"
-     referrerPolicy="no-referrer"
-     onError={() => setImageSourceIndex(currentIndex => currentIndex + 1)}
-    />
+    <div className="relative z-10 flex h-full w-full items-center justify-center overflow-hidden">
+     <motion.img
+      key={`${currentImageSource}-${attackBurstCounter}`}
+      src={currentImageSource}
+      alt={displayCardName}
+      animate={
+       isAttackBurstActive && !performanceMode && attackMotionMeta
+        ? getCharacterAttackLungeAnimation(attackMotionMeta.attackAnimation)
+        : { scale: useAttackMotionArt ? 1.05 : 1, x: 0, y: 0, rotate: 0 }
+      }
+      transition={{ duration: performanceMode ? 0 : 0.42, ease: 'easeOut' }}
+      className={cn(
+       effectiveDisplayMode === 'full7'
+        ? "h-full w-auto max-w-none shrink-0 object-cover object-center"
+        : "h-full w-full object-contain"
+      )}
+      referrerPolicy="no-referrer"
+      onError={() => setImageSourceIndex(currentIndex => currentIndex + 1)}
+     />
+    </div>
    )
   ) : (
    <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-[3cqw] px-[8cqw] text-center">

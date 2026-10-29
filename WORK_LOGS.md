@@ -2,6 +2,19 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-29 15:30 KST] [7등신 모드(full7) 캐릭터 신장(키) 균일화 파이프라인 구현 및 가로 와이드 캐릭터 축소 왜곡 방지]
+- **요청 사항**:
+  - "7등신모드에서 좌우가 잘려도 좋으니 케릭터들의 키를 통일해 줄래. 지금은 좌우로 긴 케릭터가 키가 작아보이는 효과가 있어"
+- **작업 개요**:
+  - 7등신 모드(`full7`)에서 기존 `object-contain` 스타일로 인해 대형 날개나 양손 무기를 펼친 와이드 캐릭터(종횡비 1.7~1.8)가 프레임 가로폭에 걸려 세로 키가 50% 수준으로 왜소하게 축소되는 문제 해결.
+  - 사용자의 "좌우가 잘려도 좋으니 캐릭터들의 키를 통일해달라"는 지침에 따라, 일러스트 창 높이 100%(`h-full`)를 기준으로 종횡비를 유지(`w-auto max-w-none shrink-0`)하면서 가로 정중앙(`justify-center overflow-hidden`)에 안착시키는 **높이 기준 신장 통일 렌더링** 구조 구축.
+- **주요 구현 및 반영 내역**:
+  1. [`src/components/CardItem.tsx`](file:///Users/dayyoung/project/snshero/src/components/CardItem.tsx):
+     - `effectiveDisplayMode === 'full7'`일 때 `motion.img`를 `relative z-10 flex h-full w-full items-center justify-center overflow-hidden` 래퍼로 감싸고, `h-full w-auto max-w-none shrink-0 object-cover object-center` 스타일 적용.
+     - 가로가 넓은 캐릭터(발록, 그리폰, 드래곤 등)도 슬림한 인간형 캐릭터와 100% 동일한 키(높이)로 시원하게 서 있게 되며, 좌우 날개 끝은 프레임 밖으로 자연스럽게 클리핑되어 모든 캐릭터의 스케일 균형 확보.
+  2. `npm run build` 프로덕션 번들 무결점 빌드 통과.
+  3. 구글 폼 완료 보고서 제출 및 로컬 커밋 완료.
+
 ## [2026-10-29 14:56 KST] [카드 기본 표시 모드 7등신(full7) 전신 원화 전환 및 원격 푸시(/git-push)]
 - **요청 사항**:
   - "7등신 모드를 기본으로 해줘. /git-push"
