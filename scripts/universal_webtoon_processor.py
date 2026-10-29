@@ -14,7 +14,7 @@ BRAIN_DIR = "/Users/dayyoung/.gemini/antigravity/brain/7735ed8e-a83b-4148-9951-0
 # AI Speaker Visual Marker Specifications
 DOT_COLOR = (255, 0, 51)      # Pure Neon Red #FF0033
 DOT_OUTLINE = (255, 255, 255)  # 1px White Micro Rim for contrast
-DOT_RADIUS = 3                 # Diameter = 6px (Micro Anchor, <0.005% of screen)
+DOT_RADIUS = 5                 # Diameter = 6px (Micro Anchor, <0.005% of screen)
 
 def draw_head_halo_dot(image: Image.Image, x: int, y: int, radius: int = DOT_RADIUS):
     """
