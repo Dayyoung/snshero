@@ -194,7 +194,7 @@ export const MissionEncounterModal: React.FC<MissionEncounterModalProps> = ({
  <div className="relative border border-[#201d1d] rounded-none">
  <CardItem
  card={previewCard}
- displayModeOverride="bust"
+ displayModeOverride="full7"
  className="w-28 h-40 sm:w-32 sm:h-44 rounded-none pointer-events-none"
  language={language}
  lowSpecMode={lowSpecMode}

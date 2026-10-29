@@ -2904,7 +2904,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                  <div className="flex justify-center mb-4">
                     <CardItem 
                       card={currentDeck[editingCardIndex]!} 
-                      displayModeOverride="bust"
+                      displayModeOverride="full7"
                       className="w-32 h-44" 
                       customImage={customCardImage} />
                  </div>
@@ -2992,9 +2992,9 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               <div className="w-full md:w-1/2 bg-[#f8f7f7] flex flex-col items-center justify-center p-6 gap-4 border-b md:border-b-0 md:border-r border-[#0f0000]/12 shrink-0">
                 <CardItem 
                   card={selectedCardForDetail} 
-                  displayModeOverride="bust"
+                  displayModeOverride="full7"
                   isLocked={true} 
-                  className="w-32 h-44 scale-75" 
+                  className="w-36 h-48 sm:w-44 sm:h-60" 
                   customImage={customCardImage} 
                   />
                 

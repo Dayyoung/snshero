@@ -617,11 +617,12 @@ def draw_wrapped_text(
 
 def extract_head_hair_bust(anime_cutout: Image.Image, cid: int) -> Image.Image:
     """
-    Standardized Head & Chest Bust Extractor:
+    Standardized Head & Chest Bust Extractor with Robust Percentile Head-Centering:
     - Extracts the head, neck, shoulders, and chest/upper torso (~45% of total character height).
-    - Ignores extreme horizontal wings or extended weapons ('좌우로 잘려도 상관없음') so that every character's
-      face and chest are prominently, consistently, and beautifully displayed at a uniform scale.
-    - Centers horizontally around the head/chest center-of-mass, producing a 1:1 square crop.
+    - Uses robust percentile trimming (p10..p90) on the head/face zone (5%~22% height) to eliminate
+      stray weapon tips, magic sparks, or background wing outliers.
+    - Centers the 1:1 square canvas PRECISELY on the character's facial/head axis so that every character's
+      head is positioned at the exact 50% horizontal center.
     """
     aw, ah = anime_cutout.size
     cut_arr = np.array(anime_cutout)
@@ -639,18 +640,27 @@ def extract_head_hair_bust(anime_cutout: Image.Image, cid: int) -> Image.Image:
     y1 = min(ah, y_min + int(char_h * 0.45))
     crop_h = max(40, y1 - y0)
 
-    # Find the horizontal center-of-mass focusing on head and upper chest (12% to 65% of crop slice)
-    sub_y0 = y0 + int(crop_h * 0.12)
-    sub_y1 = y0 + int(crop_h * 0.65)
-    weights = cut_arr[sub_y0:sub_y1, :, 3].sum(axis=0)
-    if weights.sum() > 0:
-        cx = float((np.arange(aw) * weights).sum() / weights.sum())
-    else:
-        cx = float(aw / 2)
+    # Robust Head-Centering Algorithm:
+    hy0 = y_min + int(char_h * 0.05)
+    hy1 = y_min + int(char_h * 0.22)
+    h_mask = (ys >= hy0) & (ys <= hy1)
+    if not np.any(h_mask):
+        h_mask = (ys >= y_min) & (ys <= y_min + int(char_h * 0.30))
+    h_xs = xs[h_mask]
 
-    # 1:1 square aspect ratio centered around cx
+    # Outlier-resistant percentile trimming (ignores sparks, stray wings, antenna tips)
+    p10, p90 = np.percentile(h_xs, [10, 90])
+    core_xs = h_xs[(h_xs >= p10) & (h_xs <= p90)]
+    if len(core_xs) > 0:
+        core_mid = (core_xs.min() + core_xs.max()) / 2.0
+        core_mean = float(core_xs.mean())
+        head_cx = float(core_mid * 0.5 + core_mean * 0.5)
+    else:
+        head_cx = float((h_xs.min() + h_xs.max()) / 2.0)
+
+    # 1:1 square aspect ratio centered exactly around head_cx
     target_w = crop_h
-    x0 = int(round(cx - target_w / 2))
+    x0 = int(round(head_cx - target_w / 2))
     x1 = x0 + target_w
 
     crop_canvas = Image.new("RGBA", (target_w, crop_h), (0, 0, 0, 0))

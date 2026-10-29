@@ -780,7 +780,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 >
                   <span>{language === 'ko' ? '상반신' : 'Upper Body'}</span>
                   <span className={cn("text-[9px] font-semibold", cardDisplayMode === 'bust' ? "text-amber-300" : "text-slate-500")}>
-                    {language === 'ko' ? 'HEAD & HAIR' : 'HEAD & HAIR'}
+                    {language === 'ko' ? '얼굴·가슴 (기본)' : 'Face & Chest (Default)'}
                   </span>
                 </button>
 
@@ -800,7 +800,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 >
                   <span>{language === 'ko' ? '3등신' : '3-Head SD'}</span>
                   <span className={cn("text-[9px] font-semibold", cardDisplayMode === 'chibi3' ? "text-emerald-300" : "text-slate-500")}>
-                    {language === 'ko' ? '⚡액션 연출 (기본)' : '⚡Action (Default)'}
+                    {language === 'ko' ? '⚡액션 연출' : '⚡Action Motion'}
                   </span>
                 </button>
               </div>
@@ -808,14 +808,14 @@ export const SettingView: React.FC<SettingViewProps> = ({
               <div className="p-3 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[10px] font-bold text-slate-600 flex items-center justify-between gap-2">
                 <span>
                   {cardDisplayMode === 'full7' && (language === 'ko'
-                    ? '• 7등신 전신 애니메이션 캐릭터 원화로 모든 카드가 표시되며, 카드 클릭(상세 보기) 시에는 상반신 원화로 표시됩니다.'
-                    : '• Displays 7-head full-body anime character art on cards, and upper-body bust art when clicking a card.')}
+                    ? '• 7등신 전신 애니메이션 캐릭터 원화로 모든 카드가 표시됩니다.'
+                    : '• Displays 7-head full-body anime character art on all cards.')}
                   {cardDisplayMode === 'bust' && (language === 'ko'
-                    ? '• 캐릭터 시트 HEAD & HAIR 상반신 클로즈업 원화로 카드가 표시됩니다. (액션 연출은 3등신만 가능)'
-                    : '• Displays HEAD & HAIR upper-body character portrait on all cards. (Action motion in 3-Head only)')}
+                    ? '• 상반신(얼굴 및 가슴 중심) 클로즈업 원화로 모든 카드가 표시되며, 카드 클릭(상세 보기) 시에는 7등신 전신 원화로 표시됩니다. (기본 설정)'
+                    : '• Displays upper-body (face & chest centered) portraits on cards, and 7-head full-body art when clicking a card. (Default)')}
                   {cardDisplayMode === 'chibi3' && (language === 'ko'
-                    ? '• 기본 3등신 SD 캐릭터 및 역동적인 액션 연출로 표시되며, 카드 클릭(상세 보기) 시에는 상반신(HEAD & HAIR) 원화로 표시됩니다!'
-                    : '• Displays 3-head SD characters with battle action motion, and upper-body bust art when clicking a card!')}
+                    ? '• 3등신 SD 캐릭터 및 역동적인 액션 배틀 연출로 표시되며, 카드 클릭(상세 보기) 시에는 7등신 전신 원화로 표시됩니다.'
+                    : '• Displays 3-head SD characters with dynamic battle action motion, and 7-head full-body art when clicking a card.')}
                 </span>
               </div>
             </div>

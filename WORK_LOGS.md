@@ -2,6 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-29 14:30 KST] [카드 상반신 머리 정중앙 정렬 알고리즘 개편, 기본 표시 상반신 전환 및 카드 클릭 상세 보기 7등신 전신 표시 연동]
+- **요청 사항**:
+  - "카드에 표시되는 상반신은 머리를 가운데로 정렬될 수 있게해줘."
+  - "카드 기본표시 설정을 상반신으로 변경해줘. 그리고 카드정보를 클릭하면 상세보기는 7등신으로 표시되게."
+  - "/git-push"
+- **작업 개요**:
+  - 기존 흉상 크롭 방식에서 한쪽으로 뻗은 어깨 장식, 망토, 불꽃 파티클이나 날개로 인해 머리(두상/얼굴) 중심이 30~60px 치우치는 현상을 방지하도록 머리 영역(5%~22% 높이)의 로버스트 백분위수(p10..p90) 기반 두상 중심축 정렬 파이프라인으로 전면 개편.
+  - 전역 카드 표시 기본 설정을 3등신(`chibi3`)에서 **상반신(`bust`)**으로 변경하고, 기존 사용자의 localStorage에도 자동 반영되도록 마이그레이션 적용.
+  - 카드를 클릭하거나 길게 눌렀을 때 열리는 상세 보기 모달에서 7등신 전신 원화(`full7`)로 표시되도록 연동.
+- **주요 구현 및 반영 내역**:
+  1. **두상 중심 정밀 정렬 파이프라인 구현 (`scripts/build_110_anime_character_sheets.py`)**:
+     - `extract_head_hair_bust`: 두상/얼굴 구간(5%~22%)에서 아웃라이어 파티클을 제거한 코어 픽셀(p10..p90)의 기하학적 중점과 알파 질량 중심을 결합한 `head_cx`를 산출하여 1:1 정방형 캔버스 정중앙(50%)에 머리가 완벽하게 안착하도록 수정.
+     - 110종 `public/anime-character-sheets/busts/` PNG 및 JPG, 캐릭터 시트 Panel 02 전수 재생성 완료.
+  2. **기본 표시 설정 상반신 전환 (`src/contexts/GameSettingsContext.tsx`, `src/views/SettingView.tsx`)**:
+     - `cardDisplayMode` 기본값을 `'bust'`로 설정하고 마이그레이션 키(`hero_card_display_mode_bust_default_v2`) 적용.
+     - 설정 화면 내 버튼 서브라벨 및 설명 문구 업데이트.
+  3. **카드 정보 클릭 시 상세 보기 7등신 전신 표시 연동**:
+     - 위키 카드 상세 모달 (`src/components/WikiCardDetailModal.tsx`): `displayModeOverride="full7"`
+     - 카드 롱프레스/미리보기 모달 (`src/components/CardLongPressPreviewModal.tsx`): `displayModeOverride="full7"`
+     - 마이덱 카드 상세 및 편집 모달 (`src/views/MyDeckView.tsx`): `displayModeOverride="full7"`
+     - 인게임 손패 카드 클릭 미리보기 (`src/views/PlayGameView.tsx`): `displayModeOverride="full7"`
+     - 미션 조우 캐릭터 모달 (`src/components/MissionEncounterModal.tsx`): `displayModeOverride="full7"`
+  4. **빌드 검증, 원격 푸시 및 보고**:
+     - `npm run build` 프로덕션 번들 무결점 빌드 통과.
+     - 구글 폼 완료 보고서 제출 및 `git push origin main` 원격 저장소 배포 완료.
+
 ## [2026-10-29 14:05 KST] [/start-server 고속 프로덕션 정적 프리뷰 서버(포트 3000), 실시간 자동 빌드 워처(watch-build), 웹푸시 디스패처(포트 3001) 통합 기동 완료]
 - **요청 사항**:
   - `/start-server` 명령 실행 및 서버 기동 요청.

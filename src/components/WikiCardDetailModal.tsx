@@ -452,7 +452,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  <div className="w-44 sm:w-48 aspect-[3/4] drop-shadow-none transition-transform hover:scale-105">
  <CardItem
  card={selectedCard as unknown as CardData}
- displayModeOverride="bust"
+ displayModeOverride="full7"
  showAttackMotion={previewAttackMotion}
  language={language}
  lowSpecMode={lowSpecMode}
