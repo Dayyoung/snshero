@@ -190,37 +190,37 @@ def configure_veo_lite_settings(page, orientation: str):
 
     vid_radio = page.locator('button[role="radio"]:has-text("동영상")').first
     if vid_radio.is_visible():
-        vid_radio.click(force=True)
+        vid_radio.click()
         time.sleep(0.4)
 
     frame_radio = page.locator('button[role="radio"]:has-text("프레임")').first
     if frame_radio.is_visible():
-        frame_radio.click(force=True)
+        frame_radio.click()
         time.sleep(0.4)
 
     ratio_radio = page.locator(f'button[role="radio"]:has-text("{target_ratio_label}")').first
     if ratio_radio.is_visible():
-        ratio_radio.click(force=True)
+        ratio_radio.click()
         time.sleep(0.4)
 
     model_sel = page.locator('button[aria-label="모델 제품군 선택"]').first
     if model_sel.is_visible():
         if "Veo 3.1 - Lite" not in (model_sel.inner_text() or ""):
-            model_sel.click(force=True)
+            model_sel.click()
             time.sleep(0.6)
             lite_opt = page.locator('[role="menuitem"]:has-text("Veo 3.1 - Lite")').first
             if lite_opt.count() > 0 and lite_opt.is_visible():
-                lite_opt.click(force=True)
+                lite_opt.click()
                 time.sleep(0.6)
 
     dur_6s = page.locator('button[role="radio"]:has-text("6초")').first
     if dur_6s.is_visible():
-        dur_6s.click(force=True)
+        dur_6s.click()
         time.sleep(0.4)
 
     x1_radio = page.locator('button[role="radio"]:has-text("x1")').first
     if x1_radio.is_visible():
-        x1_radio.click(force=True)
+        x1_radio.click()
         time.sleep(0.4)
 
     page.keyboard.press("Escape")
@@ -237,12 +237,12 @@ def open_start_frame_picker(page):
     if start_btn.count() == 0 or not start_btn.is_visible():
         box = page.locator('[aria-label="무엇을 만들고 싶으신가요?"]').first
         if box.count() > 0 and box.is_visible():
-            box.click(force=True)
+            box.click()
             time.sleep(0.4)
         start_btn = page.locator('button:has-text("시작"), button[aria-label="프롬프트 상자에 소재 추가"]').first
 
-    if start_btn.count() > 0:
-        start_btn.click(force=True)
+    if start_btn.count() > 0 and start_btn.is_visible():
+        start_btn.click()
         time.sleep(0.9)
     return search_inp
 
@@ -258,20 +258,20 @@ def clear_prompt_composer(page):
     close_picker_if_open(page)
     clr = page.locator('button[aria-label="프롬프트 지우기"]').first
     if clr.count() > 0 and clr.is_visible():
-        clr.click(force=True)
+        clr.click()
         time.sleep(0.4)
 
     for _ in range(3):
         chip_cancel = page.locator('button.chip-container:has-text("cancel")').first
         if chip_cancel.count() > 0 and chip_cancel.is_visible():
-            chip_cancel.click(force=True)
+            chip_cancel.click()
             time.sleep(0.35)
         else:
             break
 
     box = page.locator('[aria-label="무엇을 만들고 싶으신가요?"]').first
     if box.is_visible():
-        box.click(force=True)
+        box.click()
         page.keyboard.press("Meta+A")
         page.keyboard.press("Backspace")
         time.sleep(0.2)
@@ -301,7 +301,7 @@ def preupload_cutscene_images(page, files_to_ensure: List[str], out_dir: Path):
             time.sleep(0.25)
         upload_btn = page.locator('button:has-text("미디어 업로드")').first
         with page.expect_file_chooser() as fc_info:
-            upload_btn.click(force=True)
+            upload_btn.click()
         fc_info.value.set_files(chunk)
         wait_s = max(9, int(len(chunk) * 1.4))
         print(f"    ⏳ Indexed chunk {i // chunk_size + 1} ({len(chunk)} cutscene images), waiting {wait_s}s...", flush=True)
@@ -319,7 +319,7 @@ def attach_start_frame_cutscene(page, fpath: str) -> bool:
     if not search_inp.is_visible():
         return False
 
-    search_inp.click(force=True)
+    search_inp.click()
     search_inp.fill("")
     time.sleep(0.15)
     search_inp.fill(prefix)
@@ -330,7 +330,7 @@ def attach_start_frame_cutscene(page, fpath: str) -> bool:
         upload_btn = page.locator('button:has-text("미디어 업로드")').first
         if upload_btn.is_visible():
             with page.expect_file_chooser() as fc_info:
-                upload_btn.click(force=True)
+                upload_btn.click()
             fc_info.value.set_files([fpath])
             time.sleep(4.5)
             search_inp.fill(prefix)
@@ -340,12 +340,12 @@ def attach_start_frame_cutscene(page, fpath: str) -> bool:
     if opt.count() > 0 and opt.is_visible():
         cls_attr = opt.get_attribute("class") or ""
         if "asset-item-active" not in cls_attr:
-            opt.click(force=True)
+            opt.click()
             time.sleep(0.45)
         add_btn = page.locator('button:has-text("프롬프트에 추가")').first
         for _ in range(10):
             if add_btn.is_visible() and add_btn.is_enabled():
-                add_btn.click(force=True)
+                add_btn.click()
                 time.sleep(0.6)
                 return True
             time.sleep(0.3)
@@ -633,7 +633,28 @@ def run_flow_videos(ep: int, orientation: str, start_cut: int = 1, end_cut: Opti
         zzl0ze_bodies: List[str] = []
         zzl0ze_video_map: Dict[str, str] = {}
 
-        def open_flow_video_session():
+        def open_flow_video_session(force_refresh_profile: bool = False):
+            if force_refresh_profile:
+                print("[Flow] Refreshing Chrome profile to clear any BotGuard / unusual activity lock...", flush=True)
+                ensure_chrome_profile(FLOW_PROFILE_DIR, force_refresh=True)
+                warm = p.chromium.launch_persistent_context(
+                    user_data_dir=str(FLOW_PROFILE_DIR),
+                    channel="chrome",
+                    headless=False,
+                    ignore_default_args=["--use-mock-keychain", "--password-store=basic", "--enable-automation"],
+                    args=[
+                        "--profile-directory=Default",
+                        "--disable-extensions",
+                        "--disable-blink-features=AutomationControlled",
+                        "--hide-crash-restore-bubble",
+                    ],
+                    viewport={"width": 1600, "height": 1000},
+                )
+                time.sleep(3.5)
+                warm.close()
+                time.sleep(1.0)
+                ensure_chrome_profile(FLOW_PROFILE_DIR, force_refresh=False)
+
             c = p.chromium.launch_persistent_context(
                 user_data_dir=str(FLOW_PROFILE_DIR),
                 channel="chrome",
@@ -675,7 +696,7 @@ def run_flow_videos(ep: int, orientation: str, start_cut: int = 1, end_cut: Opti
             configure_veo_lite_settings(pg, orientation)
             return c, pg
 
-        ctx, page = open_flow_video_session()
+        ctx, page = open_flow_video_session(force_refresh_profile=False)
 
         # Ensure all generated Nano Banana 2.1 cutscene images are exported locally
         cut_img_map = ensure_cutscene_images_exported(ctx, zzl0ze_bodies, ep, orientation, len(cutscenes), cut_img_dir)
@@ -781,8 +802,16 @@ def run_flow_videos(ep: int, orientation: str, start_cut: int = 1, end_cut: Opti
                                 break
 
                         if not new_thumb:
-                            print(f"  ⚠️ [{ccode}] Try {attempt+1}/3 did not complete (policy/filter). Waiting 4s...", flush=True)
-                            time.sleep(4)
+                            if not saw_pct:
+                                print(f"  ⚠️ [{ccode}] Try {attempt+1}/3 blocked before 0% (BotGuard / unusual activity). Refreshing Chrome profile...", flush=True)
+                                try:
+                                    ctx.close()
+                                except Exception:
+                                    pass
+                                ctx, page = open_flow_video_session(force_refresh_profile=True)
+                            else:
+                                print(f"  ⚠️ [{ccode}] Try {attempt+1}/3 did not complete (policy/filter). Waiting 4s...", flush=True)
+                                time.sleep(4)
                             continue
 
                         zzl0ze_video_map[ccode] = f"{new_thumb}=mm,22,15"

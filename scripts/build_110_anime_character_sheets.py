@@ -617,82 +617,51 @@ def draw_wrapped_text(
 
 def extract_head_hair_bust(anime_cutout: Image.Image, cid: int) -> Image.Image:
     """
-    Extracts the upper-body (HEAD, HAIR & EXPRESSION) crop with ZERO clipping on top, left, or right:
-    - Starts from the true top (y0 = 0) so horns, crowns, halos, wings, and raised staves/tridents are 100% preserved.
-    - Preserves the full horizontal width (x_min .. x_max) of the upper silhouette so shoulders, wings, bows,
-      shields, and weapons are never sliced off on left or right.
+    Standardized Head & Chest Bust Extractor:
+    - Extracts the head, neck, shoulders, and chest/upper torso (~45% of total character height).
+    - Ignores extreme horizontal wings or extended weapons ('좌우로 잘려도 상관없음') so that every character's
+      face and chest are prominently, consistently, and beautifully displayed at a uniform scale.
+    - Centers horizontally around the head/chest center-of-mass, producing a 1:1 square crop.
     """
     aw, ah = anime_cutout.size
     cut_arr = np.array(anime_cutout)
-    fg = cut_arr[:, :, 3] > 22
-    ys_all = np.where(fg)[0]
-    top_y = max(0, int(ys_all.min()) - 8) if len(ys_all) else 0
+    fg = cut_arr[:, :, 3] > 20
+    ys, xs = np.where(fg)
+    if len(ys) == 0:
+        return anime_cutout
 
-    # If the cutout is wide (e.g. spread wings / wide weapons), include further down so torso & head look substantial
-    aspect = aw / float(max(1, ah))
-    if 101 <= cid <= 105:
-        crop_ratio = 0.50
-    elif aspect > 0.90:
-        crop_ratio = min(0.76, max(0.56, 0.52 * aspect))
+    y_min, y_max = int(ys.min()), int(ys.max())
+    char_h = max(1, y_max - y_min)
+
+    # Top crown margin (2% above highest character pixel)
+    y0 = max(0, y_min - int(char_h * 0.02))
+    # Head + neck + chest + upper waist (45% of character height)
+    y1 = min(ah, y_min + int(char_h * 0.45))
+    crop_h = max(40, y1 - y0)
+
+    # Find the horizontal center-of-mass focusing on head and upper chest (12% to 65% of crop slice)
+    sub_y0 = y0 + int(crop_h * 0.12)
+    sub_y1 = y0 + int(crop_h * 0.65)
+    weights = cut_arr[sub_y0:sub_y1, :, 3].sum(axis=0)
+    if weights.sum() > 0:
+        cx = float((np.arange(aw) * weights).sum() / weights.sum())
     else:
-        crop_ratio = 0.54
-    y1 = min(ah, max(top_y + 40, int(ah * crop_ratio)))
+        cx = float(aw / 2)
 
-    sub_crop = anime_cutout.crop((0, top_y, aw, y1))
-    sub_rgba = np.array(sub_crop)
-    fg_sub = sub_rgba[:, :, 3] > 22
-    sh, sw = fg_sub.shape
+    # 1:1 square aspect ratio centered around cx
+    target_w = crop_h
+    x0 = int(round(cx - target_w / 2))
+    x1 = x0 + target_w
 
-    # Remove any small disconnected weapon/particle fragments that were sliced across the bottom cut line (y == sh - 1)
-    # while preserving floating upper halos/drums/orbs that do not only exist as bottom-edge slices.
-    labels = np.zeros((sh, sw), dtype=np.int32)
-    comp_sizes: dict[int, int] = {}
-    comp_touches_bot: dict[int, bool] = {}
-    comp_min_y: dict[int, int] = {}
-    lbl = 0
-    for ry in range(sh):
-        for rx in range(sw):
-            if fg_sub[ry, rx] and labels[ry, rx] == 0:
-                lbl += 1
-                q = deque([(ry, rx)])
-                labels[ry, rx] = lbl
-                sz = 0
-                t_bot = False
-                min_ry = ry
-                while q:
-                    cy, cx = q.popleft()
-                    sz += 1
-                    if cy >= sh - 2:
-                        t_bot = True
-                    if cy < min_ry:
-                        min_ry = cy
-                    for ny in (cy - 1, cy, cy + 1):
-                        for nx in (cx - 1, cx, cx + 1):
-                            if 0 <= ny < sh and 0 <= nx < sw and fg_sub[ny, nx] and labels[ny, nx] == 0:
-                                labels[ny, nx] = lbl
-                                q.append((ny, nx))
-                comp_sizes[lbl] = sz
-                comp_touches_bot[lbl] = t_bot
-                comp_min_y[lbl] = min_ry
+    crop_canvas = Image.new("RGBA", (target_w, crop_h), (0, 0, 0, 0))
+    src_x0 = max(0, x0)
+    src_x1 = min(aw, x1)
+    src_y0 = max(0, y0)
+    src_y1 = min(ah, y1)
 
-    if comp_sizes:
-        main_lbl = max(comp_sizes, key=lambda k: comp_sizes[k])
-        main_sz = comp_sizes[main_lbl]
-        for k, sz in comp_sizes.items():
-            if k == main_lbl:
-                continue
-            # Drop fragments sliced at bottom cut line (like low scimitar tips or lower sparks) or tiny specks
-            if sz < 45 or (comp_touches_bot[k] and sz < main_sz * 0.25) or (comp_min_y[k] > sh * 0.72 and sz < main_sz * 0.15):
-                sub_rgba[labels == k, 3] = 0
-
-    fg_clean = sub_rgba[:, :, 3] > 22
-    s_xs = np.where(fg_clean)[1]
-    if len(s_xs) == 0:
-        return sub_crop
-
-    x_min = max(0, int(s_xs.min()) - 10)
-    x_max = min(aw, int(s_xs.max()) + 11)
-    return Image.fromarray(sub_rgba).crop((x_min, 0, x_max, sh))
+    sub = anime_cutout.crop((src_x0, src_y0, src_x1, src_y1))
+    crop_canvas.paste(sub, (src_x0 - x0, src_y0 - y0), sub)
+    return crop_canvas
 
 
 def render_head_hair_bust_assets(anime_cutout: Image.Image, cid: int) -> tuple[Image.Image, Image.Image]:
