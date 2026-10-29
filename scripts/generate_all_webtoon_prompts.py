@@ -59,8 +59,8 @@ def build_scene_prompt(ep_num: int, img: dict) -> dict:
     if has_speech:
         prompt += (
             f"\nComposition Note: Dialogue scene with {speaker}. "
-            f"Reserve clear, open negative space in the upper background (bright sky or high ceiling) for comic speech bubble placement. "
-            f"Do NOT overlap speech bubbles onto the characters' faces or bodies.\n"
+            f"Frame the speaker character with natural headroom above their head for clean composition. "
+            f"Distinct, appealing anime character framing.\n"
         )
     else:
         prompt += "\nComposition Note: Pure narrative cinematic shot. Balanced panoramic framing.\n"
@@ -124,14 +124,14 @@ def main():
 
     total_scenes = 0
     episodes_processed = 0
-    for ep_num in range(3, 41):
+    for ep_num in range(1, 41):
         count = process_episode(manifest, ep_num)
         if count > 0:
             total_scenes += count
             episodes_processed += 1
             print(f"Processed EP{ep_num:02d}: {count} scenes")
 
-    print(f"\nAll episodes 3 to 40 processed! Total episodes: {episodes_processed}, Total scenes: {total_scenes}")
+    print(f"\nAll episodes 1 to 40 processed! Total episodes: {episodes_processed}, Total scenes: {total_scenes}")
 
 if __name__ == "__main__":
     main()
