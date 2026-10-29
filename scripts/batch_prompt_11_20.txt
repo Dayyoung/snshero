@@ -1,0 +1,197 @@
+Please generate 10 theatrical 16:9 dark-fantasy anime webtoon illustrations for SNSHero Episode 1 (scenes 11 to 20).
+Save each image to the specified absolute path.
+Aesthetic: Ufotable / Castlevania high-end anime movie visual. NO text, NO speech bubbles, NO subtitles, NO watermarks.
+
+--- SCENE 11 (Save to: /tmp/ep01_ai_raw/scene_11.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 11 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: Snowbound mountain village under dramatic skies.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Balian (발리안): 이그니스의 아버지 · 아케인 창술의 달인 · 아내 이셀라를 구하려 안개 절벽에 투신한 충의의 기사. Distinctive appearance: 강인하고 자상한 눈매를 감싸는 은빛 날개 기사 투구, 진홍빛 망토와 은백색 성기사 판금 갑주로 강조된 늠름한 근육질 체구. Signature gear: 눈보라 속 마수의 숨통을 꿰뚫는 발광 시안 '아케인 창(Arcane Spear)'과 십자 방패.
+- Hercul (헤르쿨): 아케 성기사단의 생존 성기사 · 두 아이에게 은빛 단검을 전하고 일곱 추적자를 이끈 거한 스승. Distinctive appearance: 야수처럼 풍성한 흑갈색 장발과 덥수룩한 수염, 정감 있고 강렬한 눈매, 가죽 탄띠만 두른 채 헐크처럼 우람하게 갈라진 초근육질 상체. Signature gear: 황금빛 성력이 폭발하는 초대형 반월 대검과 은빛 룬 단검.
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+
+Scene Context & Dramatic Moment:
+In the span of a single heartbeat, the tip of Balian's arcane spear hissed forward, freezing a bare inch from the intruder's throat. Behind him, Aleksandar's twin blades were already drawn in a fluid cross-guard, sealing every line of retreat.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 12 (Save to: /tmp/ep01_ai_raw/scene_12.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 12 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: Snowbound mountain village under dramatic skies.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Balian (발리안): 이그니스의 아버지 · 아케인 창술의 달인 · 아내 이셀라를 구하려 안개 절벽에 투신한 충의의 기사. Distinctive appearance: 강인하고 자상한 눈매를 감싸는 은빛 날개 기사 투구, 진홍빛 망토와 은백색 성기사 판금 갑주로 강조된 늠름한 근육질 체구. Signature gear: 눈보라 속 마수의 숨통을 꿰뚫는 발광 시안 '아케인 창(Arcane Spear)'과 십자 방패.
+- Hercul (헤르쿨): 아케 성기사단의 생존 성기사 · 두 아이에게 은빛 단검을 전하고 일곱 추적자를 이끈 거한 스승. Distinctive appearance: 야수처럼 풍성한 흑갈색 장발과 덥수룩한 수염, 정감 있고 강렬한 눈매, 가죽 탄띠만 두른 채 헐크처럼 우람하게 갈라진 초근육질 상체. Signature gear: 황금빛 성력이 폭발하는 초대형 반월 대검과 은빛 룬 단검.
+
+Scene Context & Dramatic Moment:
+"If you are a hound dispatched from the Shadow Realm, speaking your name will only hasten your demise," Balian growled, the azure spark along his spearhead reflecting the stranger's grim eyes. Hercul did not reach for a weapon. Instead, he slowly opened both empty palms.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 13 (Save to: /tmp/ep01_ai_raw/scene_13.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 13 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: Snowbound mountain village under dramatic skies.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Hercul (헤르쿨): 아케 성기사단의 생존 성기사 · 두 아이에게 은빛 단검을 전하고 일곱 추적자를 이끈 거한 스승. Distinctive appearance: 야수처럼 풍성한 흑갈색 장발과 덥수룩한 수염, 정감 있고 강렬한 눈매, 가죽 탄띠만 두른 채 헐크처럼 우람하게 갈라진 초근육질 상체. Signature gear: 황금빛 성력이 폭발하는 초대형 반월 대검과 은빛 룬 단검.
+
+Scene Context & Dramatic Moment:
+"Stand down, brothers. I bear the blood of wolves upon my mantle, yet I do not hunt for the pack."
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 14 (Save to: /tmp/ep01_ai_raw/scene_14.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 14 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: inside a weathered frontier tavern lit by fire and rune lamps.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Hercul (헤르쿨): 아케 성기사단의 생존 성기사 · 두 아이에게 은빛 단검을 전하고 일곱 추적자를 이끈 거한 스승. Distinctive appearance: 야수처럼 풍성한 흑갈색 장발과 덥수룩한 수염, 정감 있고 강렬한 눈매, 가죽 탄띠만 두른 채 헐크처럼 우람하게 갈라진 초근육질 상체. Signature gear: 황금빛 성력이 폭발하는 초대형 반월 대검과 은빛 룬 단검.
+
+Scene Context & Dramatic Moment:
+A dome of golden protective aegis blossomed outward, muffling the roar of the exterior tempest in an instant. Along the tavern shelves, earthenware flasks vibrated in harmonious resonance.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 15 (Save to: /tmp/ep01_ai_raw/scene_15.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 15 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: a towering dragon precipice among crags.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Hercul (헤르쿨): 아케 성기사단의 생존 성기사 · 두 아이에게 은빛 단검을 전하고 일곱 추적자를 이끈 거한 스승. Distinctive appearance: 야수처럼 풍성한 흑갈색 장발과 덥수룩한 수염, 정감 있고 강렬한 눈매, 가죽 탄띠만 두른 채 헐크처럼 우람하게 갈라진 초근육질 상체. Signature gear: 황금빛 성력이 폭발하는 초대형 반월 대검과 은빛 룬 단검.
+
+Scene Context & Dramatic Moment:
+Hercul had manifested a defensive perimeter without initiating a single hostile gesture. Reaching into his tunic with steady fingers, he placed a shattered breastplate insignia upon the rough oak table—the undeniable relic of their executed Grand Master.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 16 (Save to: /tmp/ep01_ai_raw/scene_16.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 16 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: dawn breaking over the restored kingdom morning.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Hercul (헤르쿨): 아케 성기사단의 생존 성기사 · 두 아이에게 은빛 단검을 전하고 일곱 추적자를 이끈 거한 스승. Distinctive appearance: 야수처럼 풍성한 흑갈색 장발과 덥수룩한 수염, 정감 있고 강렬한 눈매, 가죽 탄띠만 두른 채 헐크처럼 우람하게 갈라진 초근육질 상체. Signature gear: 황금빛 성력이 폭발하는 초대형 반월 대검과 은빛 룬 단검.
+
+Scene Context & Dramatic Moment:
+As the tension subsided, Hercul swallowed a stale crust of bread and laid bare the kingdom's grim plight until the early hours of dawn.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 17 (Save to: /tmp/ep01_ai_raw/scene_17.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 17 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: a grand palace court with towering arches and throne room.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Hercul (헤르쿨): 아케 성기사단의 생존 성기사 · 두 아이에게 은빛 단검을 전하고 일곱 추적자를 이끈 거한 스승. Distinctive appearance: 야수처럼 풍성한 흑갈색 장발과 덥수룩한 수염, 정감 있고 강렬한 눈매, 가죽 탄띠만 두른 채 헐크처럼 우람하게 갈라진 초근육질 상체. Signature gear: 황금빛 성력이 폭발하는 초대형 반월 대검과 은빛 룬 단검.
+
+Scene Context & Dramatic Moment:
+The court at Lighthaven wallowed in gluttonous banquets and extortionate levies, leaving frontier outposts entirely defenseless against demonic incursions. Hercul had been tracking a treasonous covenant of nobles who had sold their fealty to the Shadow Realm.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 18 (Save to: /tmp/ep01_ai_raw/scene_18.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 18 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: a grand palace court with towering arches and throne room.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Death Knight Artus (데스나이트 아르투스): 붉은 유리 궁정의 섭정 · 섀도우렐름과 내통하여 아케 성기사단을 숙청한 최종 흑막. Distinctive appearance: 칠흑빛 가시 왕관 투구 아래 차갑게 타오르는 시안 블루 안광, 해골 부조가 새겨진 칠흑 판금 갑주와 망토로 무장한 거구의 초근육질 데스나이트. Signature gear: 영혼마저 얼려버리는 초대형 푸른 서리 룬 마검(Frostmourne-style Greatsword).
+- Lucian (루시안): 붉은 유리 궁정의 야심가 귀족 · 엘윈 마을을 파멸시키고 이셀라를 납치한 숙적. Distinctive appearance: 비단처럼 매끄럽게 넘긴 에메랄드 그린 귀족 장발과 뾰족한 엘프 귀, 고급스러운 다크 에메랄드 금장 제복 아래 날렵하고 단단한 근육질 체형. Signature gear: 초록빛 마력 화살이 장전된 화려한 에메랄드 아케인 대궁.
+
+Scene Context & Dramatic Moment:
+At the summit of this black list sat Regent Death Knight Artus and the ambitious courtier Lucian.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 19 (Save to: /tmp/ep01_ai_raw/scene_19.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 19 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: a frozen mountain canyon bridge and icy waterfall cliff.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Hercul (헤르쿨): 아케 성기사단의 생존 성기사 · 두 아이에게 은빛 단검을 전하고 일곱 추적자를 이끈 거한 스승. Distinctive appearance: 야수처럼 풍성한 흑갈색 장발과 덥수룩한 수염, 정감 있고 강렬한 눈매, 가죽 탄띠만 두른 채 헐크처럼 우람하게 갈라진 초근육질 상체. Signature gear: 황금빛 성력이 폭발하는 초대형 반월 대검과 은빛 룬 단검.
+
+Scene Context & Dramatic Moment:
+"The shadow reaches even into this southern basin," Hercul whispered, his gaze shadowed with sorrow. "Inquisitors flying royal banners will descend upon this hamlet before the new moon."
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 20 (Save to: /tmp/ep01_ai_raw/scene_20.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 20 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: Snowbound mountain village under dramatic skies.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Hercul (헤르쿨): 아케 성기사단의 생존 성기사 · 두 아이에게 은빛 단검을 전하고 일곱 추적자를 이끈 거한 스승. Distinctive appearance: 야수처럼 풍성한 흑갈색 장발과 덥수룩한 수염, 정감 있고 강렬한 눈매, 가죽 탄띠만 두른 채 헐크처럼 우람하게 갈라진 초근육질 상체. Signature gear: 황금빛 성력이 폭발하는 초대형 반월 대검과 은빛 룬 단검.
+
+Scene Context & Dramatic Moment:
+Before stepping back into the blizzard, Hercul produced two slender silver daggers wrapped in oiled doe-skin. Along the white-silver fuller slept ancient runes of the Holy Order, pulsing like faint blue veins beneath frost.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.

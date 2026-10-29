@@ -1,0 +1,197 @@
+Please generate 10 theatrical 16:9 dark-fantasy anime webtoon illustrations for SNSHero Episode 1 (scenes 41 to 50).
+Save each image to the specified absolute path.
+Aesthetic: Ufotable / Castlevania high-end anime movie visual. NO text, NO speech bubbles, NO subtitles, NO watermarks.
+
+--- SCENE 41 (Save to: /tmp/ep01_ai_raw/scene_41.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 41 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: a frozen mountain canyon bridge and icy waterfall cliff.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+- Elwin (엘윈): 카단의 어머니 · 남편의 희생 끝에 북방 설원에서 홀로 카단을 길러낸 강인하고 아름다운 여전사. Distinctive appearance: 왕실 기품을 담은 황금빛 발키리 크라운 브레이드 & 사이드 링렛 헤어, 글래머러스한 볼륨감과 잘록한 허리가 돋보이는 실버·블루 흉갑 코르셋 & 하이슬릿 배틀 스커트. Signature gear: 푸른 서리 룬이 각인된 아케 성기사단 쌍검.
+
+Scene Context & Dramatic Moment:
+On the ruined bridge, Aleksandar broke his twin swords across the breastplate of the final commander before collapsing upon one knee. Through the blinding snow, his fading eyes caught a fleeting glimpse of Elwin's cloaked figure escaping into the safety of the northern wilderness.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 42 (Save to: /tmp/ep01_ai_raw/scene_42.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 42 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: a volcanic magma citadel and flame chamber.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Elwin (엘윈): 카단의 어머니 · 남편의 희생 끝에 북방 설원에서 홀로 카단을 길러낸 강인하고 아름다운 여전사. Distinctive appearance: 왕실 기품을 담은 황금빛 발키리 크라운 브레이드 & 사이드 링렛 헤어, 글래머러스한 볼륨감과 잘록한 허리가 돋보이는 실버·블루 흉갑 코르셋 & 하이슬릿 배틀 스커트. Signature gear: 푸른 서리 룬이 각인된 아케 성기사단 쌍검.
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+
+Scene Context & Dramatic Moment:
+Reaching the frozen tundra, Elwin dropped to her knees, looking back toward the pillars of smoke rising from their ruined home. Beneath her bodice, the silver dagger resonated faintly against the broken sword-sheath of her husband.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 43 (Save to: /tmp/ep01_ai_raw/scene_43.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 43 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: Snowbound mountain village under dramatic skies.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+- Elwin (엘윈): 카단의 어머니 · 남편의 희생 끝에 북방 설원에서 홀로 카단을 길러낸 강인하고 아름다운 여전사. Distinctive appearance: 왕실 기품을 담은 황금빛 발키리 크라운 브레이드 & 사이드 링렛 헤어, 글래머러스한 볼륨감과 잘록한 허리가 돋보이는 실버·블루 흉갑 코르셋 & 하이슬릿 배틀 스커트. Signature gear: 푸른 서리 룬이 각인된 아케 성기사단 쌍검.
+
+Scene Context & Dramatic Moment:
+Inside her womb, the unborn child kicked with sudden strength. The elderly refugees who caught up with her could not bear to speak Aleksandar's demise aloud. Elwin did not ask.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 44 (Save to: /tmp/ep01_ai_raw/scene_44.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 44 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: dawn breaking over the restored kingdom morning.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+- Elwin (엘윈): 카단의 어머니 · 남편의 희생 끝에 북방 설원에서 홀로 카단을 길러낸 강인하고 아름다운 여전사. Distinctive appearance: 왕실 기품을 담은 황금빛 발키리 크라운 브레이드 & 사이드 링렛 헤어, 글래머러스한 볼륨감과 잘록한 허리가 돋보이는 실버·블루 흉갑 코르셋 & 하이슬릿 배틀 스커트. Signature gear: 푸른 서리 룬이 각인된 아케 성기사단 쌍검.
+
+Scene Context & Dramatic Moment:
+She tucked the broken sheath against her breast, scooped away the snow with bare fingers, and buried a fistful of golden wheat seeds into the frozen loam.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 45 (Save to: /tmp/ep01_ai_raw/scene_45.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 45 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: dawn breaking over the restored kingdom morning.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Elwin (엘윈): 카단의 어머니 · 남편의 희생 끝에 북방 설원에서 홀로 카단을 길러낸 강인하고 아름다운 여전사. Distinctive appearance: 왕실 기품을 담은 황금빛 발키리 크라운 브레이드 & 사이드 링렛 헤어, 글래머러스한 볼륨감과 잘록한 허리가 돋보이는 실버·블루 흉갑 코르셋 & 하이슬릿 배틀 스커트. Signature gear: 푸른 서리 룬이 각인된 아케 성기사단 쌍검.
+
+Scene Context & Dramatic Moment:
+"Even if we never return," she whispered softly, "someone must live to bake bread upon this ground once more."
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 46 (Save to: /tmp/ep01_ai_raw/scene_46.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 46 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: a snowbound Lighthaven frontier under a violent blue-white blizzard.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Elwin (엘윈): 카단의 어머니 · 남편의 희생 끝에 북방 설원에서 홀로 카단을 길러낸 강인하고 아름다운 여전사. Distinctive appearance: 왕실 기품을 담은 황금빛 발키리 크라운 브레이드 & 사이드 링렛 헤어, 글래머러스한 볼륨감과 잘록한 허리가 돋보이는 실버·블루 흉갑 코르셋 & 하이슬릿 배틀 스커트. Signature gear: 푸른 서리 룬이 각인된 아케 성기사단 쌍검.
+
+Scene Context & Dramatic Moment:
+Wiping the frozen tears from her cheeks, Elwin turned north into the gale.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 47 (Save to: /tmp/ep01_ai_raw/scene_47.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 47 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: a snowbound Lighthaven frontier under a violent blue-white blizzard.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Elwin (엘윈): 카단의 어머니 · 남편의 희생 끝에 북방 설원에서 홀로 카단을 길러낸 강인하고 아름다운 여전사. Distinctive appearance: 왕실 기품을 담은 황금빛 발키리 크라운 브레이드 & 사이드 링렛 헤어, 글래머러스한 볼륨감과 잘록한 허리가 돋보이는 실버·블루 흉갑 코르셋 & 하이슬릿 배틀 스커트. Signature gear: 푸른 서리 룬이 각인된 아케 성기사단 쌍검.
+
+Scene Context & Dramatic Moment:
+"My child, you were not born to carry the burden of vengeance," her voice rang steady against the wind.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 48 (Save to: /tmp/ep01_ai_raw/scene_48.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 48 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: Snowbound mountain village under dramatic skies.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Elwin (엘윈): 카단의 어머니 · 남편의 희생 끝에 북방 설원에서 홀로 카단을 길러낸 강인하고 아름다운 여전사. Distinctive appearance: 왕실 기품을 담은 황금빛 발키리 크라운 브레이드 & 사이드 링렛 헤어, 글래머러스한 볼륨감과 잘록한 허리가 돋보이는 실버·블루 흉갑 코르셋 & 하이슬릿 배틀 스커트. Signature gear: 푸른 서리 룬이 각인된 아케 성기사단 쌍검.
+
+Scene Context & Dramatic Moment:
+"Only promise me that you will never bow your head before a lie."
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 49 (Save to: /tmp/ep01_ai_raw/scene_49.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 49 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: dawn breaking over the restored kingdom morning.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Elwin (엘윈): 카단의 어머니 · 남편의 희생 끝에 북방 설원에서 홀로 카단을 길러낸 강인하고 아름다운 여전사. Distinctive appearance: 왕실 기품을 담은 황금빛 발키리 크라운 브레이드 & 사이드 링렛 헤어, 글래머러스한 볼륨감과 잘록한 허리가 돋보이는 실버·블루 흉갑 코르셋 & 하이슬릿 배틀 스커트. Signature gear: 푸른 서리 룬이 각인된 아케 성기사단 쌍검.
+
+Scene Context & Dramatic Moment:
+The blizzard buried the blood of two brave men, yet the seeds beneath the snow and the twin silver daggers glowed in the darkness like an ember that no storm could ever quench.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 50 (Save to: /tmp/ep01_ai_raw/scene_50.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 50 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: Snowbound mountain village under dramatic skies.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Kadan (카단): 소설 주인공 · 알렉산다르와 엘윈의 아들 · 북방 설원에서 자란 불굴의 소년 영웅. Distinctive appearance: 바람에 헝클어진 밤갈색 스파이키 헤어와 3등신 원작의 맑고 결연한 청록빛 눈망울, 민소매 북방 전투 조끼 위로 드러난 탄탄하고 균형 잡힌 청년 근육질 팔과 어깨. Signature gear: 등에 장착한 북방 설원 수호의 '눈(SNOW) 문양 방패(Snow-Emblem Shield)'와 붉은 머플러, 어머니·스승의 유품 '기억을 깨우는 은빛 룬 단검'.
+
+Scene Context & Dramatic Moment:
+Want to play the card game based on this webtoon? Play at the site below! https://SNSHero.com (눈히어로.com)
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.

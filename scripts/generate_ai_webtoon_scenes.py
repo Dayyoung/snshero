@@ -62,8 +62,9 @@ def build_scene_prompt(
 ) -> tuple[str, list[int], list[dict]]:
     raw_chars = img_meta.get("characters", [])
     dialogues = img_meta.get("dialogues", [])
-    narration_ko = img_meta.get("narrationText", "")
-    narration_en = img_meta.get("narrationTextEn", "")
+    narration_ko = img_meta.get("narrationKo", "")
+    narration_en = img_meta.get("narrationEn", "")
+    bg_desc = img_meta.get("background", "")
 
     # Match characters
     cids = []
@@ -90,31 +91,35 @@ def build_scene_prompt(
     char_lines = []
     for cid in cids[:3]:
         c = chars_by_id.get(cid, {})
-        name = c.get("nameEn", f"Hero_{cid}")
-        role = c.get("role", "")
-        elem = c.get("element", "")
-        wpn = c.get("weapon", "")
-        char_lines.append(f"- {name} ({role}, {elem} element): wearing signature armor/outfit, wielding {wpn}")
+        name_en = c.get("nameEn", f"Hero_{cid}")
+        name_ko = c.get("nameKo", "")
+        novel_role = c.get("novelRoleKo", "")
+        hair = c.get("hairDesignKo", "")
+        body = c.get("bodyCharmKo", "")
+        sig_item = c.get("signatureItemKo", "")
+        char_lines.append(
+            f"- {name_en} ({name_ko}): {novel_role}. Distinctive appearance: {hair}, {body}. Signature gear: {sig_item}."
+        )
 
     chars_desc = "\n".join(char_lines)
-
     loc_name = EP_LOC_MAP.get(ep_num, "LOC_001_Elwin_Village.jpg").replace(".jpg", "").replace("_", " ")
 
     prompt = f"""Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode {ep_num} Scene {sc_idx} of SNSHero.
 
 Setting & Environment:
-{loc_name}: Epic fantasy atmosphere, rich background lighting, weather interaction (snow/mist/ember/wind), deep perspective.
+Location: {loc_name}. Specific scenery: {bg_desc or 'Snowbound mountain village under dramatic skies'}.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
 
 Featured Characters:
 {chars_desc}
 
-Scene Context & Emotion:
+Scene Context & Dramatic Moment:
 {narration_en or narration_ko}
 
 Visual Aesthetic:
-- High-end theatrical anime key visual (Ufotable / Castlevania aesthetic).
-- Dynamic character poses integrated naturally into the environment with accurate ground contact, atmospheric lighting, and shadows.
-- Distinct character separation without excessive overlap.
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
 - Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
 """
     return prompt.strip(), cids, dialogues

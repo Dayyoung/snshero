@@ -1,0 +1,201 @@
+Please generate 10 theatrical 16:9 dark-fantasy anime webtoon illustrations for SNSHero Episode 1 (scenes 01 to 10).
+Save each image to the specified absolute path.
+Aesthetic: Ufotable / Castlevania high-end anime movie visual. NO text, NO speech bubbles, NO subtitles, NO watermarks.
+
+--- SCENE 01 (Save to: /tmp/ep01_ai_raw/scene_01.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 1 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: a snowbound Lighthaven frontier under a violent blue-white blizzard.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+- Balian (발리안): 이그니스의 아버지 · 아케인 창술의 달인 · 아내 이셀라를 구하려 안개 절벽에 투신한 충의의 기사. Distinctive appearance: 강인하고 자상한 눈매를 감싸는 은빛 날개 기사 투구, 진홍빛 망토와 은백색 성기사 판금 갑주로 강조된 늠름한 근육질 체구. Signature gear: 눈보라 속 마수의 숨통을 꿰뚫는 발광 시안 '아케인 창(Arcane Spear)'과 십자 방패.
+
+Scene Context & Dramatic Moment:
+At the southernmost edge of the Kingdom of Lighthaven, where jagged mountain ranges met the frozen tundra, winter arrived with unsparing brutality in the village of Elwin.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 02 (Save to: /tmp/ep01_ai_raw/scene_02.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 2 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: a snowbound Lighthaven frontier under a violent blue-white blizzard.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+- Balian (발리안): 이그니스의 아버지 · 아케인 창술의 달인 · 아내 이셀라를 구하려 안개 절벽에 투신한 충의의 기사. Distinctive appearance: 강인하고 자상한 눈매를 감싸는 은빛 날개 기사 투구, 진홍빛 망토와 은백색 성기사 판금 갑주로 강조된 늠름한 근육질 체구. Signature gear: 눈보라 속 마수의 숨통을 꿰뚫는 발광 시안 '아케인 창(Arcane Spear)'과 십자 방패.
+
+Scene Context & Dramatic Moment:
+By midday, howling gales and razor-sharp flurries had wiped the stockades and watchtowers from sight. Before dusk could settle, the blizzard swallowed the muddy tracks and stone roofs whole.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 03 (Save to: /tmp/ep01_ai_raw/scene_03.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 3 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: inside a weathered frontier tavern lit by fire and rune lamps.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+- Balian (발리안): 이그니스의 아버지 · 아케인 창술의 달인 · 아내 이셀라를 구하려 안개 절벽에 투신한 충의의 기사. Distinctive appearance: 강인하고 자상한 눈매를 감싸는 은빛 날개 기사 투구, 진홍빛 망토와 은백색 성기사 판금 갑주로 강조된 늠름한 근육질 체구. Signature gear: 눈보라 속 마수의 숨통을 꿰뚫는 발광 시안 '아케인 창(Arcane Spear)'과 십자 방패.
+
+Scene Context & Dramatic Moment:
+The villagers sealed their windows with grease-coated parchment, covered their hearth embers, and extinguished their lanterns early.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 04 (Save to: /tmp/ep01_ai_raw/scene_04.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 4 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: an enchanted forest elf sanctuary under moonlight.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+- Balian (발리안): 이그니스의 아버지 · 아케인 창술의 달인 · 아내 이셀라를 구하려 안개 절벽에 투신한 충의의 기사. Distinctive appearance: 강인하고 자상한 눈매를 감싸는 은빛 날개 기사 투구, 진홍빛 망토와 은백색 성기사 판금 갑주로 강조된 늠름한 근육질 체구. Signature gear: 눈보라 속 마수의 숨통을 꿰뚫는 발광 시안 '아케인 창(Arcane Spear)'과 십자 방패.
+
+Scene Context & Dramatic Moment:
+Rumors had spread across the ice like wildfire: the dreaded shadow cavalry from the conquered northern marches had already breached the frontier woods.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 05 (Save to: /tmp/ep01_ai_raw/scene_05.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 5 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: inside a weathered frontier tavern lit by fire and rune lamps.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+- Balian (발리안): 이그니스의 아버지 · 아케인 창술의 달인 · 아내 이셀라를 구하려 안개 절벽에 투신한 충의의 기사. Distinctive appearance: 강인하고 자상한 눈매를 감싸는 은빛 날개 기사 투구, 진홍빛 망토와 은백색 성기사 판금 갑주로 강조된 늠름한 근육질 체구. Signature gear: 눈보라 속 마수의 숨통을 꿰뚫는 발광 시안 '아케인 창(Arcane Spear)'과 십자 방패.
+
+Scene Context & Dramatic Moment:
+Inside a weathered log tavern hidden behind the village smithy, Aleksandar and Balian sat across from each other, nursing chilled infusions by the dull glow of charcoal.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 06 (Save to: /tmp/ep01_ai_raw/scene_06.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 6 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: a snowbound Lighthaven frontier under a violent blue-white blizzard.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+- Balian (발리안): 이그니스의 아버지 · 아케인 창술의 달인 · 아내 이셀라를 구하려 안개 절벽에 투신한 충의의 기사. Distinctive appearance: 강인하고 자상한 눈매를 감싸는 은빛 날개 기사 투구, 진홍빛 망토와 은백색 성기사 판금 갑주로 강조된 늠름한 근육질 체구. Signature gear: 눈보라 속 마수의 숨통을 꿰뚫는 발광 시안 '아케인 창(Arcane Spear)'과 십자 방패.
+
+Scene Context & Dramatic Moment:
+Aleksandar was a quiet hunter of the northern borders who wielded twin blades with effortless grace. While Balian was a seasoned veteran capable of piercing the throat of a winter wolf through the thickest whiteout with his arcane spear.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 07 (Save to: /tmp/ep01_ai_raw/scene_07.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 7 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: Snowbound mountain village under dramatic skies.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Aleksandar (알렉산다르): 카단의 아버지 · 몰락한 아케 성기사단의 후예이자 쌍검을 다루는 북방의 전설적 사냥꾼. Distinctive appearance: 왕가의 혈통을 상징하는 황금 서클릿과 정돈된 갈색 머리·수염, 로열 블루와 황금 갑주 코트 아래 단련된 완벽한 전사 근육질 체구. Signature gear: 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검'.
+- Balian (발리안): 이그니스의 아버지 · 아케인 창술의 달인 · 아내 이셀라를 구하려 안개 절벽에 투신한 충의의 기사. Distinctive appearance: 강인하고 자상한 눈매를 감싸는 은빛 날개 기사 투구, 진홍빛 망토와 은백색 성기사 판금 갑주로 강조된 늠름한 근육질 체구. Signature gear: 눈보라 속 마수의 숨통을 꿰뚫는 발광 시안 '아케인 창(Arcane Spear)'과 십자 방패.
+
+Scene Context & Dramatic Moment:
+Both men concealed their lineage as descendants of the fallen Order of Arcane Holy Knights, choosing instead to till the stony earth and hammer iron in silence.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 08 (Save to: /tmp/ep01_ai_raw/scene_08.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 8 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: Snowbound mountain village under dramatic skies.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Elwin (엘윈): 카단의 어머니 · 남편의 희생 끝에 북방 설원에서 홀로 카단을 길러낸 강인하고 아름다운 여전사. Distinctive appearance: 왕실 기품을 담은 황금빛 발키리 크라운 브레이드 & 사이드 링렛 헤어, 글래머러스한 볼륨감과 잘록한 허리가 돋보이는 실버·블루 흉갑 코르셋 & 하이슬릿 배틀 스커트. Signature gear: 푸른 서리 룬이 각인된 아케 성기사단 쌍검.
+- Ysela (이셀라): 이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 성광(星光)의 용무녀 여왕. Distinctive appearance: 황금 용각(Dragon Horns)과 별빛 비녀가 어우러진 사파이어 블루 셀레스티얼 업스타일 헤어, 애절하면서도 기품 있는 큰 금안 + 글래머러스한 로열 블루·골드 용비늘 슬릿 드레스. Signature gear: 등 뒤에 펼쳐진 밤하늘 별자리 사파이어·황금 드래곤 날개.
+
+Scene Context & Dramatic Moment:
+The impending birth of their firstborns from their heavily pregnant wives, Elwin and Ysela, was the solitary lantern that kept the bitter defeat of their homeland bearable.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 09 (Save to: /tmp/ep01_ai_raw/scene_09.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 9 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: inside a weathered frontier tavern lit by fire and rune lamps.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Hercul (헤르쿨): 아케 성기사단의 생존 성기사 · 두 아이에게 은빛 단검을 전하고 일곱 추적자를 이끈 거한 스승. Distinctive appearance: 야수처럼 풍성한 흑갈색 장발과 덥수룩한 수염, 정감 있고 강렬한 눈매, 가죽 탄띠만 두른 채 헐크처럼 우람하게 갈라진 초근육질 상체. Signature gear: 황금빛 성력이 폭발하는 초대형 반월 대검과 은빛 룬 단검.
+
+Scene Context & Dramatic Moment:
+Suddenly, the heavy pine door groaned on its iron hinges and burst open. Ahead of the freezing draft came the sharp reek of blood and scorched ozone. Framed against the howling squall stood Hercul, clad in tattered pilgrim vestments.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
+
+--- SCENE 10 (Save to: /tmp/ep01_ai_raw/scene_10.jpg) ---
+Generate a cinematic 16:9 theatrical dark-fantasy anime webtoon illustration (1280x720) for Episode 1 Scene 10 of SNSHero.
+
+Setting & Environment:
+Location: LOC 001 Elwin Village. Specific scenery: Snowbound mountain village under dramatic skies.
+Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
+
+Featured Characters:
+- Hercul (헤르쿨): 아케 성기사단의 생존 성기사 · 두 아이에게 은빛 단검을 전하고 일곱 추적자를 이끈 거한 스승. Distinctive appearance: 야수처럼 풍성한 흑갈색 장발과 덥수룩한 수염, 정감 있고 강렬한 눈매, 가죽 탄띠만 두른 채 헐크처럼 우람하게 갈라진 초근육질 상체. Signature gear: 황금빛 성력이 폭발하는 초대형 반월 대검과 은빛 룬 단검.
+
+Scene Context & Dramatic Moment:
+At his belt dangled the cracked golden seal of the Holy Knights, and faint ripples of radiant mana leaked through his torn gauntlets, etching incandescent runes into the damp floorboards.
+
+Visual Aesthetic:
+- High-end theatrical anime key visual (like Ufotable, Demon Slayer, Fate/Stay Night, Castlevania).
+- Characters naturally integrated with ground contact, dynamic silhouettes, and cast shadows.
+- Distinct character separation without excessive clutter.
+- Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements.
