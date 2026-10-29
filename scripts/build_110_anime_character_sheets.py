@@ -346,13 +346,17 @@ def clean_cutout_specks(crop_rgba: Image.Image, keep_only_main: bool = False) ->
         elif y0 > h * 0.84 and sz < main_sz * 0.05:
             arr[labels == k, 3] = 0
 
-    # Tight re-crop with 8px padding
+    # Tight crop then wrap on a fresh RGBA canvas with 12px transparent margin on all 4 sides
     ys, xs = np.where(arr[:, :, 3] > 18)
     if len(xs) == 0:
         return Image.fromarray(arr)
-    tx0, tx1 = max(0, int(xs.min()) - 4), min(w, int(xs.max()) + 5)
-    ty0, ty1 = max(0, int(ys.min()) - 4), min(h, int(ys.max()) + 5)
-    return Image.fromarray(arr[ty0:ty1, tx0:tx1])
+    tx0, tx1 = int(xs.min()), int(xs.max()) + 1
+    ty0, ty1 = int(ys.min()), int(ys.max()) + 1
+    core = Image.fromarray(arr[ty0:ty1, tx0:tx1])
+    pad = 12
+    padded = Image.new("RGBA", (core.width + pad * 2, core.height + pad * 2), (0, 0, 0, 0))
+    padded.paste(core, (pad, pad))
+    return padded
 
 
 def cel_remaster_highres_unit(orig_rgba: Image.Image, faction: str) -> Image.Image:
@@ -577,7 +581,8 @@ def paste_centered(
     sprite: Image.Image,
     box: tuple[int, int, int, int],
     align_bottom: bool = False,
-) -> None:
+    bottom_pad: int = 4,
+) -> tuple[int, int, int, int]:
     x0, y0, x1, y1 = box
     bw, bh = x1 - x0, y1 - y0
     sw, sh = sprite.size
@@ -586,8 +591,9 @@ def paste_centered(
     nh = max(1, int(round(sh * scale)))
     resized = sprite.resize((nw, nh), Image.Resampling.LANCZOS)
     px = x0 + (bw - nw) // 2
-    py = (y1 - nh - 4) if align_bottom else (y0 + (bh - nh) // 2)
+    py = (y1 - nh - bottom_pad) if align_bottom else (y0 + (bh - nh) // 2)
     canvas.paste(resized, (px, py), resized)
+    return (px, py, nw, nh)
 
 
 def draw_wrapped_text(
@@ -611,63 +617,99 @@ def draw_wrapped_text(
 
 def extract_head_hair_bust(anime_cutout: Image.Image, cid: int) -> Image.Image:
     """
-    Extracts the upper-body (HEAD, HAIR & EXPRESSION) crop with the character's head/hair
-    centered horizontally and positioned high in the frame so tall weapons/wings never push the head down.
+    Extracts the upper-body (HEAD, HAIR & EXPRESSION) crop with ZERO clipping on top, left, or right:
+    - Starts from the true top (y0 = 0) so horns, crowns, halos, wings, and raised staves/tridents are 100% preserved.
+    - Preserves the full horizontal width (x_min .. x_max) of the upper silhouette so shoulders, wings, bows,
+      shields, and weapons are never sliced off on left or right.
     """
     aw, ah = anime_cutout.size
     cut_arr = np.array(anime_cutout)
-    torso_slice = cut_arr[int(ah * 0.28) : int(ah * 0.56), :, 3] > 40
-    txs = np.where(torso_slice)[1]
-    tcx = int(np.median(txs)) if len(txs) else aw // 2
-    c_x0, c_x1 = max(0, tcx - int(aw * 0.12)), min(aw, tcx + int(aw * 0.12))
+    fg = cut_arr[:, :, 3] > 22
+    ys_all = np.where(fg)[0]
+    top_y = max(0, int(ys_all.min()) - 8) if len(ys_all) else 0
 
-    central_col = cut_arr[:, c_x0:c_x1, 3] > 40
-    c_ys = np.where(central_col)[0]
-    head_top = int(c_ys.min()) if len(c_ys) else 0
+    # If the cutout is wide (e.g. spread wings / wide weapons), include further down so torso & head look substantial
+    aspect = aw / float(max(1, ah))
+    if 101 <= cid <= 105:
+        crop_ratio = 0.50
+    elif aspect > 0.90:
+        crop_ratio = min(0.76, max(0.56, 0.52 * aspect))
+    else:
+        crop_ratio = 0.54
+    y1 = min(ah, max(top_y + 40, int(ah * crop_ratio)))
 
-    head_band = cut_arr[
-        head_top : min(ah, head_top + int(ah * 0.18)),
-        max(0, tcx - int(aw * 0.20)) : min(aw, tcx + int(aw * 0.20)),
-        3,
-    ] > 40
-    hxs = np.where(head_band)[1] + max(0, tcx - int(aw * 0.20))
-    head_cx = int(np.median(hxs)) if len(hxs) else tcx
+    sub_crop = anime_cutout.crop((0, top_y, aw, y1))
+    sub_rgba = np.array(sub_crop)
+    fg_sub = sub_rgba[:, :, 3] > 22
+    sh, sw = fg_sub.shape
 
-    # Start crop just 1.5% above actual head/hair/crown top so tall weapons/wings don't create empty headroom
-    y0 = max(0, head_top - int(ah * 0.015))
-    crop_h = int(ah * 0.44) if 101 <= cid <= 105 else int(ah * 0.46)
-    y1 = min(ah, y0 + crop_h)
+    # Remove any small disconnected weapon/particle fragments that were sliced across the bottom cut line (y == sh - 1)
+    # while preserving floating upper halos/drums/orbs that do not only exist as bottom-edge slices.
+    labels = np.zeros((sh, sw), dtype=np.int32)
+    comp_sizes: dict[int, int] = {}
+    comp_touches_bot: dict[int, bool] = {}
+    comp_min_y: dict[int, int] = {}
+    lbl = 0
+    for ry in range(sh):
+        for rx in range(sw):
+            if fg_sub[ry, rx] and labels[ry, rx] == 0:
+                lbl += 1
+                q = deque([(ry, rx)])
+                labels[ry, rx] = lbl
+                sz = 0
+                t_bot = False
+                min_ry = ry
+                while q:
+                    cy, cx = q.popleft()
+                    sz += 1
+                    if cy >= sh - 2:
+                        t_bot = True
+                    if cy < min_ry:
+                        min_ry = cy
+                    for ny in (cy - 1, cy, cy + 1):
+                        for nx in (cx - 1, cx, cx + 1):
+                            if 0 <= ny < sh and 0 <= nx < sw and fg_sub[ny, nx] and labels[ny, nx] == 0:
+                                labels[ny, nx] = lbl
+                                q.append((ny, nx))
+                comp_sizes[lbl] = sz
+                comp_touches_bot[lbl] = t_bot
+                comp_min_y[lbl] = min_ry
 
-    sub_crop = anime_cutout.crop((0, y0, aw, y1))
-    sub_arr = np.array(sub_crop)[:, :, 3] > 25
-    s_xs = np.where(sub_arr)[1]
+    if comp_sizes:
+        main_lbl = max(comp_sizes, key=lambda k: comp_sizes[k])
+        main_sz = comp_sizes[main_lbl]
+        for k, sz in comp_sizes.items():
+            if k == main_lbl:
+                continue
+            # Drop fragments sliced at bottom cut line (like low scimitar tips or lower sparks) or tiny specks
+            if sz < 45 or (comp_touches_bot[k] and sz < main_sz * 0.25) or (comp_min_y[k] > sh * 0.72 and sz < main_sz * 0.15):
+                sub_rgba[labels == k, 3] = 0
+
+    fg_clean = sub_rgba[:, :, 3] > 22
+    s_xs = np.where(fg_clean)[1]
     if len(s_xs) == 0:
         return sub_crop
 
-    x_min, x_max = int(s_xs.min()), int(s_xs.max()) + 1
-    # Cap horizontal span around head_cx so wide wings/halberds don't shrink the bust or push the head off-center
-    max_half_w = int((y1 - y0) * 0.54)
-    left_span = min(head_cx - x_min, max_half_w)
-    right_span = min(x_max - head_cx, max_half_w)
-    half_span = max(left_span, right_span, int((y1 - y0) * 0.42))
-
-    bust_canvas = Image.new("RGBA", (half_span * 2, y1 - y0), (0, 0, 0, 0))
-    crop_x0 = max(0, head_cx - half_span)
-    crop_x1 = min(aw, head_cx + half_span)
-    trimmed = sub_crop.crop((crop_x0, 0, crop_x1, y1 - y0))
-    bust_canvas.paste(trimmed, (half_span - (head_cx - crop_x0), 0))
-    return bust_canvas
+    x_min = max(0, int(s_xs.min()) - 10)
+    x_max = min(aw, int(s_xs.max()) + 11)
+    return Image.fromarray(sub_rgba).crop((x_min, 0, x_max, sh))
 
 
-def render_head_hair_bust_card(anime_cutout: Image.Image, cid: int) -> Image.Image:
+def render_head_hair_bust_assets(anime_cutout: Image.Image, cid: int) -> tuple[Image.Image, Image.Image]:
     """
-    Renders a 600x600 HD Upper-Body (HEAD, HAIR & EXPRESSION) Portrait Card on pure studio white (#FFFFFF).
+    Renders BOTH:
+    1. 500x500 HD Transparent RGBA Upper-Body Portrait (`{cid:03d}_bust.png` — loaded first by `mode === 'bust'`!)
+    2. 600x600 HD Studio-White RGB Upper-Body Portrait (`{cid:03d}_bust.jpg`)
     """
-    W, H = 600, 600
-    canvas = Image.new("RGBA", (W, H), (255, 255, 255, 255))
     bust_crop = extract_head_hair_bust(anime_cutout, cid)
-    paste_centered(canvas, bust_crop, (16, 16, W - 16, H), align_bottom=True)
-    return canvas.convert("RGB")
+
+    png_canvas = Image.new("RGBA", (500, 500), (0, 0, 0, 0))
+    paste_centered(png_canvas, bust_crop, (12, 12, 488, 500), align_bottom=True, bottom_pad=0)
+
+    jpg_canvas = Image.new("RGBA", (600, 600), (255, 255, 255, 255))
+    paste_centered(jpg_canvas, bust_crop, (16, 16, 584, 600), align_bottom=True, bottom_pad=0)
+
+    return png_canvas, jpg_canvas.convert("RGB")
 
 
 def render_individual_studio_sheet(
@@ -741,9 +783,19 @@ def render_individual_studio_sheet(
     draw.rectangle([28, 104, 616, 142], fill=(34, 33, 38, 255))
     draw.text((42, 113), "01  ANIME FULL-BODY DESIGN · 애니메이션 전신 원화", font=fonts["panel_h"], fill=(255, 255, 255))
 
-    # Height guide lines (Settei head-ratio lines)
+    # Compute scaled dimensions inside Panel 1 so height guide lines match wide-winged & tall characters alike
+    p1_box = (46, 162, 598, 932)
+    p1_bw, p1_bh = p1_box[2] - p1_box[0], p1_box[3] - p1_box[1]
+    cw_cut, ch_cut = anime_cutout.size
+    p1_scale = min(p1_bw / float(cw_cut), p1_bh / float(ch_cut))
+    p1_nh = max(1, int(round(ch_cut * p1_scale)))
+    use_bottom_align = p1_nh >= int(p1_bh * 0.80)
+    ruler_top = (p1_box[3] - p1_nh - 4) if use_bottom_align else (p1_box[1] + (p1_bh - p1_nh) // 2)
+    ruler_bot = ruler_top + p1_nh
+
+    # Height guide lines (Settei head-ratio lines dynamically spanning TOP 100% .. BASE 0% of character)
     for pct, lbl_txt in [(0.0, "TOP 100%"), (0.25, "75%"), (0.50, "MID 50%"), (0.75, "25%"), (1.0, "BASE 0%")]:
-        gy = int(176 + pct * (934 - 176))
+        gy = int(ruler_top + pct * max(120, ruler_bot - ruler_top))
         draw.line([(44, gy), (600, gy)], fill=(230, 234, 240, 255), width=1)
         draw.text((48, gy - 16), lbl_txt, font=fonts["tiny"], fill=(165, 170, 180))
 
@@ -751,7 +803,7 @@ def render_individual_studio_sheet(
     draw.rectangle([42, 938, 602, 960], fill=(244, 243, 240, 255))
     draw.text((54, 941), f"STYLE FOCUS : {type_badge}", font=fonts["tiny_b"], fill=fac_rgb)
 
-    paste_centered(sheet, anime_cutout, (48, 162, 596, 932), align_bottom=True)
+    paste_centered(sheet, anime_cutout, p1_box, align_bottom=use_bottom_align, bottom_pad=4)
 
     # ─── PANEL 2: FACE, HAIRSTYLE & UPPER DETAIL ZOOM (x=634..1034, y=104..522) ───
     p2 = [634, 104, 1034, 522]
@@ -759,9 +811,9 @@ def render_individual_studio_sheet(
     draw.rectangle([634, 104, 1034, 142], fill=(34, 33, 38, 255))
     draw.text((648, 113), "02  HEAD, HAIR & EXPRESSION · 표정·헤어 디테일", font=fonts["panel_h"], fill=(255, 255, 255))
 
-    # Smart head/hair-centered bust crop so tall wings/weapons never push the head down or off-center
+    # Zero-clip upper-body bust crop aligned flush to Panel 2 bottom frame (y=520)
     bust_crop = extract_head_hair_bust(anime_cutout, cid)
-    paste_centered(sheet, bust_crop, (648, 150, 1020, 520), align_bottom=True)
+    paste_centered(sheet, bust_crop, (644, 148, 1024, 520), align_bottom=True, bottom_pad=0)
 
     # ─── PANEL 3: 3-HEAD CUTE SD / CHIBI ORIGIN & ACTION (x=634..1034, y=540..968) ───
     p3 = [634, 540, 1034, 968]
@@ -1101,6 +1153,25 @@ def main() -> None:
     )
     print("Applied all v2 high-res sheets (Fire/Earth/Dwarf/Mecha/Dragon) + surgical restorations + Kadan back Eye-Emblem Shield")
 
+    # Override with newly generated 100% unclipped SOLO full-body plates from raw_solo_regenerated/
+    solo_dir = OUT_ROOT / "raw_solo_regenerated"
+    if solo_dir.exists():
+        solo_loaded = 0
+        for sp in sorted(solo_dir.glob("*_solo.jpg")):
+            try:
+                scid = int(sp.name[:3])
+                s_rgb = Image.open(sp).convert("RGB")
+                s_rgba = remove_white_bg_clean(s_rgb)
+                anime_cutouts[scid] = clean_cutout_specks(s_rgba, keep_only_main=False)
+                solo_loaded += 1
+            except Exception as ex:
+                print(f"Warning loading solo plate {sp.name}: {ex}")
+        print(f"Applied {solo_loaded} pristine unclipped SOLO full-body anime character plates!")
+
+    # Ensure every single one of all 110 cutouts has clean 12px transparent margin on all 4 sides
+    for cid_pad in range(1, 111):
+        anime_cutouts[cid_pad] = clean_cutout_specks(anime_cutouts[cid_pad], keep_only_main=False)
+
     # Load all 110 original 3-head chibi idle & attack sprites (read-only!)
     cards1_atlas = Image.open(PROJECT_ROOT / "public" / "cards1.png").convert("RGBA")
     chibi_idles: dict[int, Image.Image] = {}
@@ -1141,7 +1212,8 @@ def main() -> None:
 
         anime_cutouts[cid].save(CUTOUT_DIR / f"{cid:03d}_{slug}.png", "PNG")
 
-        bust_rgb = render_head_hair_bust_card(anime_cutouts[cid], cid)
+        bust_png, bust_rgb = render_head_hair_bust_assets(anime_cutouts[cid], cid)
+        bust_png.save(BUST_DIR / f"{cid:03d}_bust.png", "PNG")
         bust_rgb.save(BUST_DIR / f"{cid:03d}_bust.jpg", "JPEG", quality=92, optimize=True)
 
         sheet_rgb, hex_swatches = render_individual_studio_sheet(
