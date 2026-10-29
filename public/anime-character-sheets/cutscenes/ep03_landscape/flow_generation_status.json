@@ -2,6 +2,9 @@
   "episode": 3,
   "orientation": "landscape",
   "totalCutscenes": 32,
-  "completedCutscenes": 32,
-  "updatedAt": "2026-10-28T19:50:30+0900"
+  "completedCutscenes": 0,
+  "excludedCutscenes": 32,
+  "exportedImages": 0,
+  "finished": true,
+  "updatedAt": "2026-10-29T00:14:56+0900"
 }

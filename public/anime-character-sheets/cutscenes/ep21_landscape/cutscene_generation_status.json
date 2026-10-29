@@ -1,0 +1,234 @@
+{
+  "EP21-CUT01": {
+    "cutNumber": 1,
+    "cutCode": "EP21-CUT01",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:17:11+0900"
+  },
+  "EP21-CUT02": {
+    "cutNumber": 2,
+    "cutCode": "EP21-CUT02",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:19:50+0900"
+  },
+  "EP21-CUT03": {
+    "cutNumber": 3,
+    "cutCode": "EP21-CUT03",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:22:13+0900"
+  },
+  "EP21-CUT04": {
+    "cutNumber": 4,
+    "cutCode": "EP21-CUT04",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:24:35+0900"
+  },
+  "EP21-CUT05": {
+    "cutNumber": 5,
+    "cutCode": "EP21-CUT05",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:27:12+0900"
+  },
+  "EP21-CUT06": {
+    "cutNumber": 6,
+    "cutCode": "EP21-CUT06",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:29:20+0900"
+  },
+  "EP21-CUT07": {
+    "cutNumber": 7,
+    "cutCode": "EP21-CUT07",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:31:43+0900"
+  },
+  "EP21-CUT08": {
+    "cutNumber": 8,
+    "cutCode": "EP21-CUT08",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:34:25+0900"
+  },
+  "EP21-CUT09": {
+    "cutNumber": 9,
+    "cutCode": "EP21-CUT09",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:37:04+0900"
+  },
+  "EP21-CUT10": {
+    "cutNumber": 10,
+    "cutCode": "EP21-CUT10",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:39:42+0900"
+  },
+  "EP21-CUT11": {
+    "cutNumber": 11,
+    "cutCode": "EP21-CUT11",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:41:50+0900"
+  },
+  "EP21-CUT12": {
+    "cutNumber": 12,
+    "cutCode": "EP21-CUT12",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:44:15+0900"
+  },
+  "EP21-CUT13": {
+    "cutNumber": 13,
+    "cutCode": "EP21-CUT13",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:46:23+0900"
+  },
+  "EP21-CUT14": {
+    "cutNumber": 14,
+    "cutCode": "EP21-CUT14",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:49:01+0900"
+  },
+  "EP21-CUT15": {
+    "cutNumber": 15,
+    "cutCode": "EP21-CUT15",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:51:25+0900"
+  },
+  "EP21-CUT16": {
+    "cutNumber": 16,
+    "cutCode": "EP21-CUT16",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:53:32+0900"
+  },
+  "EP21-CUT17": {
+    "cutNumber": 17,
+    "cutCode": "EP21-CUT17",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:55:55+0900"
+  },
+  "EP21-CUT18": {
+    "cutNumber": 18,
+    "cutCode": "EP21-CUT18",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T04:58:17+0900"
+  },
+  "EP21-CUT19": {
+    "cutNumber": 19,
+    "cutCode": "EP21-CUT19",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T05:00:24+0900"
+  },
+  "EP21-CUT20": {
+    "cutNumber": 20,
+    "cutCode": "EP21-CUT20",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T05:02:45+0900"
+  },
+  "EP21-CUT21": {
+    "cutNumber": 21,
+    "cutCode": "EP21-CUT21",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T05:05:10+0900"
+  },
+  "EP21-CUT22": {
+    "cutNumber": 22,
+    "cutCode": "EP21-CUT22",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T05:07:17+0900"
+  },
+  "EP21-CUT23": {
+    "cutNumber": 23,
+    "cutCode": "EP21-CUT23",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T05:09:39+0900"
+  },
+  "EP21-CUT24": {
+    "cutNumber": 24,
+    "cutCode": "EP21-CUT24",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T05:11:45+0900"
+  },
+  "EP21-CUT25": {
+    "cutNumber": 25,
+    "cutCode": "EP21-CUT25",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T05:14:08+0900"
+  },
+  "EP21-CUT26": {
+    "cutNumber": 26,
+    "cutCode": "EP21-CUT26",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T05:16:45+0900"
+  },
+  "EP21-CUT27": {
+    "cutNumber": 27,
+    "cutCode": "EP21-CUT27",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T05:19:09+0900"
+  },
+  "EP21-CUT28": {
+    "cutNumber": 28,
+    "cutCode": "EP21-CUT28",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T05:21:35+0900"
+  },
+  "EP21-CUT29": {
+    "cutNumber": 29,
+    "cutCode": "EP21-CUT29",
+    "orientation": "landscape",
+    "excluded": true,
+    "attempts": 3,
+    "timestamp": "2026-10-29T05:23:58+0900"
+  }
+}

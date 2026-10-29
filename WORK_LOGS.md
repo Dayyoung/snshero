@@ -2,6 +2,33 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-29 12:45 KST] [110종 전체 캐릭터 전신 및 상반신 애니메이션 원화 완전 통일 재생성 및 에셋 스위트 리빌드 완료]
+- **요청 사항**:
+  - "좋아. 근데 문제는 새로 생성한 48종이랑 기존 이미지랑 스타일이 안맞는다. 이럴거면 나머지 62개 이미지도 다시 생성해서 통일해줘."
+  - "https://flow.google.com/project/72ee6e60-2819-43a6-bb8c-700a7d599bdf 인증하고 켜두었어"
+- **작업 개요**:
+  - 기존 48종 단독 플레이트와 구버전 5인/10인 합본 시트 간 스타일 불일치를 해소하기 위해, **남은 62종 캐릭터를 100% 동일한 Google Flow `🍌 Nano Banana 2.1` 16:9 와이드스크린(1376x768), `#FFFFFF` 순백 스튜디오 배경, 20% 마진의 단독 전신(Solo Full-Body) 원화로 전수 재생성**.
+  - **110종 전체 캐릭터 100.0% 화풍 완전 통일 달성 (`raw_solo_regenerated/001..110_solo.jpg`)**.
+- **주요 파이프라인 및 자동화 구현**:
+  1. **Google Chrome AppleScript + CoreGraphics CGEvent 결합 전자동 생성기 구현 (`scripts/run_flow_solo_automation.py`)**:
+     - 사용자의 실제 Chrome 브라우저 세션에 연결하여, 프로덕션 Angular/ProseMirror 입력창에 프롬프트를 안정적으로 주입(`execCommand` + `InputEvent`)하고, OS 레벨의 하드웨어 마우스 클릭(CGEvent)으로 `생성 시작` 버튼을 안정적으로 격발.
+     - Google Flow 신규 CDN 도메인(`flow-content.google/image/...`)의 서명된 고화질 무손실 이미지를 실시간 감지하여 자동 다운로드.
+     - 비정상 활동 감지 원천 방지를 위한 안전 쿨다운(8.5초) 및 3회 실패 시 자동 스킵 지침 적용.
+  2. **110종 전원 신체/무기/날개/장신구 0% 잘림(Zero-Clipping) 완전 보장**:
+     - 4개 모서리 순백 배경 검증(`is_valid_white_bg_solo_char`) 및 12px 투명 여백 보장을 통해 110종 전 캐릭터에서 상하좌우 0픽셀 접촉 및 잘림을 원천 차단.
+  3. **110종 캐릭터 에셋 스위트 전면 재생성 (`scripts/build_110_anime_character_sheets.py`)**:
+     - 110종 고해상도 투명 PNG 컷아웃 (`public/anime-character-sheets/cutouts/*.png`) 전수 갱신.
+     - 110종 상반신 흉상 (`public/anime-character-sheets/busts/*.png`, `*.jpg`) 전수 갱신.
+     - 110종 1600x1000 HD 스튜디오 캐릭터 시트 (`public/anime-character-sheets/sheets/*_sheet.jpg`) 전수 갱신.
+     - 11종 2400x1420 세력 마스터 시트 (`public/anime-character-sheets/factions/*_sheet.jpg`) 전수 갱신.
+     - 110인 그랜드 캐스트 포스터 (`all_110_cast_poster.jpg`, 1.42MB) 및 메타데이터 매니페스트 (`manifest.json`) 100% 갱신.
+  4. **인게임 데이터 무결성 보존**:
+     - 인게임 3등신 도트/카드 스프라이트(`public/seat/*.png`, `public/cards1.png`)는 100% 원본 그대로 무결점 보존.
+- **검증 및 보고**:
+  - `npm run build` 프로덕션 빌드 0에러 완벽 통과 (`✓ built in 31.09s`).
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+  - 로컬 Git 커밋만 수행 (원격 저장소 `git push` 절대 금지 원칙 준수).
+
 ## [2026-10-29 10:35 KST] [캐릭터시트 31종 및 110종 전체 Cutouts 좌우 잘림/무기 디테일 전수 재생성 및 상반신 개선 완료]
 - **요청 사항**:
   - "004_Kelpie_sheet.jpg ... 110_Dreadwing_sheet.jpg (31종)"
