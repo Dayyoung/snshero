@@ -91,7 +91,7 @@ def draw_comic_speech_bubble(
 
 # Bubble placement parameters per dialogue scene
 # cx, cy, tail_tip, is_left_speaker
-BUBBLE_CONFIGS = {
+BUBBLE_CONFIGS_EP01 = {
     12: (170, 55, (230, 115), True),   # Balian on left, pointing down-right toward his stance
     13: (560, 55, (490, 115), False),  # Hercul on right, pointing down-left toward him
     19: (540, 55, (470, 115), False),  # Hercul leaning across table
@@ -108,16 +108,40 @@ BUBBLE_CONFIGS = {
     48: (220, 55, (280, 115), True),   # Elwin speaking
 }
 
-def process_scene(src_path: str, scene_idx: int, dst_path: str):
+BUBBLE_CONFIGS_EP02 = {
+    4:  (200, 55, (260, 115), True),   # Hercul inspecting crest
+    12: (180, 55, (240, 115), True),   # Grimli raising warhammer
+    16: (580, 55, (510, 115), False),  # Aila aiming crossbow
+    20: (560, 55, (490, 115), False),  # Gawain raising iron staff
+    25: (384, 55, (384, 115), True),   # Orphan boy pleading in center
+    30: (180, 55, (240, 115), True),   # Grimli lowering warhammer
+    32: (220, 55, (280, 115), True),   # Hercul revealing truth
+    33: (560, 55, (490, 115), False),  # Gawain speaking
+    35: (220, 55, (280, 115), True),   # Aila promising to head north
+    36: (580, 55, (510, 115), False),  # Kaze flipping coin
+    37: (180, 55, (240, 115), True),   # Rondol speaking
+    38: (580, 55, (510, 115), False),  # Eliana speaking
+    39: (560, 55, (490, 115), False),  # Robinyard on rooftop
+    41: (200, 55, (260, 115), True),   # Hercul swearing to go south
+    42: (580, 55, (510, 115), False),  # Gawain proposing the 18-year pact
+    43: (580, 55, (510, 115), False),  # Gawain on the reunion duel
+    45: (200, 55, (260, 115), True),   # Hercul accepting the oath
+}
+
+BUBBLE_CONFIGS = BUBBLE_CONFIGS_EP01
+
+def process_scene(src_path: str, scene_idx: int, dst_path: str, ep: int = 1):
     im = Image.open(src_path).convert("RGBA")
     im_resized = im.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
 
-    if scene_idx in BUBBLE_CONFIGS:
-        cx, cy, tail_tip, is_left = BUBBLE_CONFIGS[scene_idx]
+    configs = BUBBLE_CONFIGS_EP02 if ep == 2 else BUBBLE_CONFIGS_EP01
+
+    if scene_idx in configs:
+        cx, cy, tail_tip, is_left = configs[scene_idx]
         draw_comic_speech_bubble(im_resized, cx, cy, tail_tip, is_left)
-        print(f"Scene {scene_idx:02d}: Added speech bubble at ({cx}, {cy}) -> {tail_tip}")
+        print(f"[EP{ep:02d}] Scene {scene_idx:02d}: Added speech bubble at ({cx}, {cy}) -> {tail_tip}")
     else:
-        print(f"Scene {scene_idx:02d}: Narration only (NO speech bubble)")
+        print(f"[EP{ep:02d}] Scene {scene_idx:02d}: Narration only (NO speech bubble)")
 
     final_rgb = im_resized.convert("RGB")
     final_rgb.save(dst_path, "WEBP", quality=82)
