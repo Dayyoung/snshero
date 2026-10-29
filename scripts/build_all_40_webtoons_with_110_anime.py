@@ -134,6 +134,88 @@ def get_ambient_tint(loc_fname: str) -> tuple[int, int, int]:
     return (220, 230, 245)
 
 
+def draw_comic_speech_bubble(
+    canvas: Image.Image,
+    cx: int,
+    cy: int,
+    tail_tip: tuple[int, int],
+    is_left_speaker: bool = True,
+):
+    """
+    Renders a crisp comic-style speech bubble with '...' inside.
+    If is_left_speaker is True, tail points downward toward left/center (character on left).
+    If False, tail points downward toward right/center (character on right).
+    """
+    bw, bh = 72, 36
+    r = 10
+    scale = 3
+    L_W, L_H = canvas.width * scale, canvas.height * scale
+
+    shape_img = Image.new("L", (L_W, L_H), 0)
+    sdraw = ImageDraw.Draw(shape_img)
+
+    lcx, lcy = cx * scale, cy * scale
+    lbw, lbh = bw * scale, bh * scale
+    lr = r * scale
+
+    bx1 = lcx - lbw // 2
+    by1 = lcy - lbh // 2
+    bx2 = bx1 + lbw
+    by2 = by1 + lbh
+
+    ltx, lty = tail_tip[0] * scale, tail_tip[1] * scale
+
+    if is_left_speaker:
+        p1 = (bx1 + int(lbw * 0.40), by2)
+        p2 = (bx1 + int(lbw * 0.70), by2)
+    else:
+        p1 = (bx2 - int(lbw * 0.70), by2)
+        p2 = (bx2 - int(lbw * 0.40), by2)
+    p3 = (ltx, lty)
+
+    # 1. Solid body + tail
+    sdraw.rounded_rectangle([bx1, by1, bx2, by2], radius=lr, fill=255)
+    sdraw.polygon([p1, p2, p3], fill=255)
+
+    # 2. Border via dilation
+    stroke_radius = int(2.0 * scale)
+    outer_mask = shape_img.filter(ImageFilter.MaxFilter(stroke_radius * 2 + 1))
+    inner_mask = shape_img
+
+    bubble_layer = Image.new("RGBA", (L_W, L_H), (0, 0, 0, 0))
+
+    # Outer border in dark charcoal
+    border_img = Image.new("RGBA", (L_W, L_H), (24, 28, 36, 255))
+    bubble_layer.paste(border_img, (0, 0), outer_mask)
+
+    # Inner fill in clean white
+    fill_img = Image.new("RGBA", (L_W, L_H), (255, 255, 255, 255))
+    bubble_layer.paste(fill_img, (0, 0), inner_mask)
+
+    # 3. Three dots (...) inside bubble
+    bdraw = ImageDraw.Draw(bubble_layer)
+    dot_r = int(2.6 * scale)
+    dot_gap = int(10 * scale)
+    dot_color = (24, 28, 36, 255)
+    for dx in [-dot_gap, 0, dot_gap]:
+        bdraw.ellipse([lcx + dx - dot_r, lcy - dot_r, lcx + dx + dot_r, lcy + dot_r], fill=dot_color)
+
+    # Soft subtle shadow for strong contrast against any background
+    shadow = Image.new("RGBA", (L_W, L_H), (0, 0, 0, 0))
+    shadow_fill = Image.new("RGBA", (L_W, L_H), (0, 0, 0, 90))
+    shadow.paste(shadow_fill, (0, 0), outer_mask)
+    shadow = shadow.filter(ImageFilter.GaussianBlur(int(2.5 * scale)))
+
+    down_shadow = shadow.resize((canvas.width, canvas.height), Image.Resampling.LANCZOS)
+    down_bubble = bubble_layer.resize((canvas.width, canvas.height), Image.Resampling.LANCZOS)
+
+    s_offset = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    s_offset.paste(down_shadow, (0, 2))
+
+    canvas.alpha_composite(s_offset)
+    canvas.alpha_composite(down_bubble)
+
+
 def render_scene(
     bg_img: Image.Image,
     loc_fname: str,
@@ -222,6 +304,7 @@ def render_scene(
     # 4. Cinematic Character Composition
     # Determine shot scale (Close-up vs Medium vs Full-body)
     is_dramatic_close = (sc_idx % 5 == 3) or (len(dialogues) > 0 and len(dialogues[0].get("textKo", "")) > 45)
+    actor_heads = [] # List of tuples: (head_x, head_y, is_right_facing_left, cid)
 
     if len(cids) == 1:
         # ─── 1 CHARACTER: FOCUSED DRAMATIC ACTING SHOT ───
@@ -239,6 +322,7 @@ def render_scene(
             else:
                 px = 30
             py = HEIGHT - b_h
+            actor_heads.append((px + b_w * (0.45 if place_right else 0.55), py + b_h * 0.20, place_right, cid))
         else:
             # Use 7-head Full-body Cutout
             cut = cutouts_cache.get(cid) or busts_cache.get(cid)
@@ -253,6 +337,7 @@ def render_scene(
                 else:
                     px = 50
                 py = HEIGHT - target_h + 10
+                actor_heads.append((px + target_w * (0.45 if place_right else 0.55), py + target_h * 0.16, place_right, cid))
             else:
                 s_char = None
 
@@ -281,6 +366,7 @@ def render_scene(
             glow1.putalpha(s1.split()[3])
             canvas.alpha_composite(glow1.filter(ImageFilter.GaussianBlur(12)), (x1, y1))
             canvas.alpha_composite(s1, (x1, y1))
+            actor_heads.append((x1 + w1 * 0.55, y1 + target_h * 0.16, False, cid1))
 
         # Character 2: Right Actor (Facing Left towards Actor 1)
         if cut2:
@@ -292,6 +378,7 @@ def render_scene(
             glow2.putalpha(s2.split()[3])
             canvas.alpha_composite(glow2.filter(ImageFilter.GaussianBlur(12)), (x2, y2))
             canvas.alpha_composite(s2, (x2, y2))
+            actor_heads.append((x2 + w2 * 0.45, y2 + target_h * 0.16, True, cid2))
 
         # If 3rd character exists, place slightly in the background
         if len(cids) >= 3:
@@ -308,6 +395,52 @@ def render_scene(
                 s3_rgb = ImageEnhance.Brightness(s3.convert("RGB")).enhance(0.85).convert("RGBA")
                 s3_rgb.putalpha(s3_arr[3])
                 canvas.alpha_composite(s3_rgb, (x3, y3))
+
+    # 4.5. Speech Bubble ("...") on Speaking Character (Omit if silence/narration)
+    char_dialogues = [
+        d for d in dialogues
+        if d.get("speakerKo") and d.get("speakerKo") not in ("내레이션", "Narration", "")
+        and d.get("speakerEn") not in ("Narration", "Narrator", "")
+    ]
+    if char_dialogues and actor_heads:
+        first_d = char_dialogues[0]
+        spk_cid = first_d.get("characterCardId")
+        if not spk_cid:
+            spk_name = first_d.get("speakerKo", "").strip().lower()
+            spk_cid = name_to_id.get(spk_name)
+            if not spk_cid:
+                spk_name_en = first_d.get("speakerEn", "").strip().lower()
+                spk_cid = name_to_id.get(spk_name_en)
+
+        # Match with on-screen actors
+        target_actor = None
+        if spk_cid:
+            for ah in actor_heads:
+                if ah[3] == spk_cid:
+                    target_actor = ah
+                    break
+        if not target_actor:
+            target_actor = actor_heads[0]
+
+        hx, hy, is_right, _ = target_actor
+        if is_right:
+            # Actor on Right: bubble placed above/left of head, tail pointing down-right toward head
+            bcx = int(hx - 20)
+            bcy = max(34, int(hy - 48))
+            tail = (int(hx - 5), int(hy - 8))
+            is_left = False
+        else:
+            # Actor on Left: bubble placed above/right of head, tail pointing down-left toward head
+            bcx = int(hx + 20)
+            bcy = max(34, int(hy - 48))
+            tail = (int(hx + 5), int(hy - 8))
+            is_left = True
+
+        # Clamp safely within canvas
+        bcx = max(45, min(WIDTH - 45, bcx))
+        bcy = max(26, min(HEIGHT - 35, bcy))
+
+        draw_comic_speech_bubble(canvas, cx=bcx, cy=bcy, tail_tip=tail, is_left_speaker=is_left)
 
     # 5. Crisp Terminal-Flat Frame Border
     draw = ImageDraw.Draw(canvas)
