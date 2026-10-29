@@ -128,13 +128,39 @@ BUBBLE_CONFIGS_EP02 = {
     45: (200, 55, (260, 115), True),   # Hercul accepting the oath
 }
 
+BUBBLE_CONFIGS_EP03 = {
+    6:  (580, 55, (510, 115), False),  # Eliana inspecting dark magic
+    8:  (560, 55, (490, 115), False),  # Gawain warning of mist
+    10: (580, 55, (510, 115), False),  # Kaze sensing malice
+    12: (180, 55, (240, 115), True),   # Rondol sensing river spirits
+    14: (180, 55, (240, 115), True),   # Grimli raising hammer
+    16: (560, 55, (490, 115), False),  # Robinyard on cliff edge
+    23: (560, 55, (490, 115), False),  # Gawain shouting ceiling ambush
+    26: (580, 55, (510, 115), False),  # Medusa Gorgo snickering
+    30: (200, 55, (260, 115), True),   # Belphegor roaring
+    33: (580, 55, (510, 115), False),  # Eliana warning of poison mist
+    34: (200, 55, (260, 115), True),   # Robinyard defying monsters
+    37: (200, 55, (260, 115), True),   # Robinyard shouting coordination cue
+    42: (580, 55, (510, 115), False),  # Medusa Gorgo fleeing oath
+    44: (200, 55, (260, 115), True),   # Robinyard smiling farewell
+    46: (200, 55, (260, 115), True),   # Robinyard urging north
+    47: (580, 55, (510, 115), False),  # Eliana weeping
+    49: (180, 55, (240, 115), True),   # Grimli swearing oath
+    51: (560, 55, (490, 115), False),  # Gawain declaring oath of six
+}
+
 BUBBLE_CONFIGS = BUBBLE_CONFIGS_EP01
 
 def process_scene(src_path: str, scene_idx: int, dst_path: str, ep: int = 1):
     im = Image.open(src_path).convert("RGBA")
     im_resized = im.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
 
-    configs = BUBBLE_CONFIGS_EP02 if ep == 2 else BUBBLE_CONFIGS_EP01
+    if ep == 3:
+        configs = BUBBLE_CONFIGS_EP03
+    elif ep == 2:
+        configs = BUBBLE_CONFIGS_EP02
+    else:
+        configs = BUBBLE_CONFIGS_EP01
 
     if scene_idx in configs:
         cx, cy, tail_tip, is_left = configs[scene_idx]
