@@ -16478,11 +16478,8 @@
         "type": "scene",
         "narrationKo": "라이트헤븐 내성의 심장부에 우뚝 솟은 붉은 유리 궁전은 대륙 어디에서도 볼 수 없는 기괴하고도 찬란한 위용을 자랑했다.",
         "narrationEn": "Towering at the very core of Lighthaven's inner citadel, the Red Glass Palace projected a bizarre and incandescent majesty found nowhere else on the continent.",
-        "characters": [
-          "Lucian",
-          "Kadan"
-        ],
-        "background": "a towering dragon precipice among crags",
+        "characters": [],
+        "background": "LOC-007 Red Glass Palace (Flame Court) - an imposing dark-fantasy palace court built of towering black obsidian pillars and glowing crimson stained-glass spires, arcane braziers burning with ruby fire, polished red crystal floor, molten magma conduits",
         "dialogues": [
           {
             "speakerKo": "내레이션",

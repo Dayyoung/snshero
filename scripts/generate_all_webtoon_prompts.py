@@ -35,24 +35,31 @@ def build_scene_prompt(ep_num: int, img: dict) -> dict:
     speaker = dlgs[0]["speakerKo"] if has_speech else None
 
     # Character text
-    char_desc_list = [CHARACTER_DESCRIPTIONS[c] for c in chars if c in CHARACTER_DESCRIPTIONS]
-    if not char_desc_list:
-        if chars:
+    if not chars:
+        char_section = (
+            "Featured Elements:\n"
+            "Pure majestic architectural and environmental landscape scenery. "
+            "ABSOLUTELY NO CHARACTERS, NO PEOPLE, NO ACTORS, NO HUMANS in frame. "
+            "Empty scenic panoramic environment view.\n"
+        )
+        aesthetic_chars = "- Pure landscape concept art: breathtaking architectural scale, dramatic atmospheric lighting, immaculate environmental detailing."
+    else:
+        char_desc_list = [CHARACTER_DESCRIPTIONS[c] for c in chars if c in CHARACTER_DESCRIPTIONS]
+        if not char_desc_list:
             char_desc_list = [f"{c}: detailed anime hero" for c in chars]
-        else:
-            char_desc_list = ["The heroes of SNSHero"]
-    char_text = ", ".join(char_desc_list)
+        char_text = ", ".join(char_desc_list)
+        char_section = f"Featured Characters & Elements:\n{char_text}\n"
+        aesthetic_chars = "- Expressive, appealing anime character designs with dynamic poses, crisp silhouettes, and clean grounding."
 
     prompt = (
         f"Generate a bright, vibrant 16:9 cinematic anime webtoon illustration (1280x720) for Episode {ep_num} Scene {idx} of SNSHero.\n\n"
         f"Art Style & Visual Aesthetic:\n"
         f"- Bright, luminous, colorful modern fantasy anime style (crisp vibrant colors, high-key clear lighting, Genshin Impact / Makoto Shinkai bright cinematic atmosphere, clean anime cel-shading, sparkling vivid effects, rich saturated colors, NO murky gloom, NO heavy muddy darkness).\n"
         f"- Beautiful high-clarity anime backgrounds with crisp daylight, glowing atmospheric mist, and vivid skies.\n"
-        f"- Expressive, appealing anime character designs with dynamic poses, crisp silhouettes, and clean grounding.\n\n"
+        f"{aesthetic_chars}\n\n"
         f"Scene Narrative & Action:\n"
         f"{narration_ko}\n({narration_en})\n\n"
-        f"Featured Characters & Elements:\n"
-        f"{char_text}\n"
+        f"{char_section}"
     )
     if bg:
         prompt += f"Environment & Setting: {bg}\n"

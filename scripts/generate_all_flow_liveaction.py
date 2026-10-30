@@ -77,16 +77,24 @@ end tell
 def check_and_clear_error() -> bool:
     js = """
     (() => {
-        const errorToast = document.querySelector('.toast, .error-message, [role="alert"], .flow-notification');
-        if (errorToast && errorToast.innerText.includes('비정상')) {
-            return 'HAS_BOT_WARNING';
+        const hasWarning = document.body.innerText.includes('비정상적인 활동') || document.body.innerText.includes('비정상');
+        let deleted = 0;
+        document.querySelectorAll('button').forEach(b => {
+            if (b.textContent && b.textContent.includes('delete_forever')) {
+                b.click();
+                deleted++;
+            }
+        });
+        if (hasWarning) {
+            return 'HAS_BOT_WARNING_' + deleted;
         }
-        return 'OK';
+        return deleted > 0 ? 'CLEARED_' + deleted : 'OK';
     })()
     """
     res = run_js(js)
     if 'HAS_BOT_WARNING' in res:
-        print("  [FLOW ALERT] Bot warning detected.")
+        print(f"  [FLOW ALERT] Bot warning detected ({res}). Clearing and refreshing...")
+        time.sleep(2.0)
         reload_flow_tab()
         return True
     return False
@@ -137,32 +145,44 @@ def build_liveaction_prompt(cut: dict) -> str:
     narration = cut.get("dialogue", {}).get("summarized6sLineEn", "")
 
     # Character names
-    char_names = [c.get("nameEn", "") for c in cut.get("characters", [])]
-    char_str = ", ".join(char_names) if char_names else "heroes"
+    char_names = [c.get("nameEn", "") for c in cut.get("characters", []) if c.get("nameEn")]
 
-    # Specific Visual DNA anchors
-    dna_items = []
-    if any(n in ["Elwin", "Ysela", "Aila", "Kaze", "Eliana", "Medusa Gorgo", "Freya", "Aria", "Celia"] for n in char_names):
-        dna_items.append("Glamorous voluptuous hourglass figure, revealing seductive fantasy attire, breathtaking beauty")
-    if any(n in ["Aleksandar", "Balian", "Hercul", "Lucian", "Artus", "Kadan", "Grimli", "Rondol", "Ignis"] for n in char_names):
-        dna_items.append("Chiseled hyper-muscular physique, prominent heavy weapons with sharp specular reflections")
-    if "Rondol" in char_names:
-        dna_items.append("Rondol has short dark hair (never bald) and dark-oak oar-staff")
+    if not char_names:
+        prompt = (
+            f"[70MM IMAX PHOTOREALISTIC LIVE-ACTION CINEMA FILM STILL | 16:9 WIDESCREEN] "
+            f"Masterpiece theatrical dark-fantasy architectural environment cinema still shot on ARRI Alexa 65 anamorphic lenses, Kodak Vision3 500T 35mm film. "
+            f"Grand panoramic architectural landscape establishing shot of {loc_name}. {action} Setting: {loc_desc}. "
+            f"Deep male narrator: '{narration}'. "
+            f"Volumetric atmospheric rim lighting, cinematic depth of field, hyper-detailed fantasy architecture. "
+            f"ABSOLUTELY NO ACTORS, NO PEOPLE, NO CHARACTERS, ZERO HUMANS IN FRAME. PURE SCENIC ARCHITECTURE SHOT. "
+            f"STRICT ZERO ANIME, STRICT ZERO CARTOON, ZERO CEL-SHADING, NO TEXT."
+        )
+    else:
+        char_str = ", ".join(char_names)
 
-    dna_prompt = "; ".join(dna_items)
-    if dna_prompt:
-        dna_prompt = f"VISUAL DNA: {dna_prompt}. "
+        # Specific Visual DNA anchors
+        dna_items = []
+        if any(n in ["Elwin", "Ysela", "Aila", "Kaze", "Eliana", "Medusa Gorgo", "Freya", "Aria", "Celia"] for n in char_names):
+            dna_items.append("Glamorous voluptuous hourglass figure, revealing seductive fantasy attire, breathtaking beauty")
+        if any(n in ["Aleksandar", "Balian", "Hercul", "Lucian", "Artus", "Kadan", "Grimli", "Rondol", "Ignis"] for n in char_names):
+            dna_items.append("Chiseled hyper-muscular physique, prominent heavy weapons with sharp specular reflections")
+        if "Rondol" in char_names:
+            dna_items.append("Rondol has short dark hair (never bald) and dark-oak oar-staff")
 
-    prompt = (
-        f"[70MM IMAX PHOTOREALISTIC LIVE-ACTION CINEMA FILM STILL | 16:9 WIDESCREEN] "
-        f"Masterpiece theatrical dark-fantasy live-action cinema still shot on ARRI Alexa 65 anamorphic lenses, Kodak Vision3 500T 35mm film. "
-        f"Real living human actors with authentic skin pores, natural skin texture, subsurface scattering, weathered leather and forged steel armor. "
-        f"{dna_prompt}"
-        f"SCENE: {char_str} in {loc_name}. {action} Setting: {loc_desc}. "
-        f"MANDATORY SILENCE: All characters keep mouths completely closed in solemn silence (zero lip movement). "
-        f"Deep male narrator: '{narration}'. "
-        f"Volumetric atmospheric rim lighting, cinematic depth of field. STRICT ZERO ANIME, STRICT ZERO CARTOON, ZERO CEL-SHADING, NO TEXT."
-    )
+        dna_prompt = "; ".join(dna_items)
+        if dna_prompt:
+            dna_prompt = f"VISUAL DNA: {dna_prompt}. "
+
+        prompt = (
+            f"[70MM IMAX PHOTOREALISTIC LIVE-ACTION CINEMA FILM STILL | 16:9 WIDESCREEN] "
+            f"Masterpiece theatrical dark-fantasy live-action cinema still shot on ARRI Alexa 65 anamorphic lenses, Kodak Vision3 500T 35mm film. "
+            f"Real living human actors with authentic skin pores, natural skin texture, subsurface scattering, weathered leather and forged steel armor. "
+            f"{dna_prompt}"
+            f"SCENE: {char_str} in {loc_name}. {action} Setting: {loc_desc}. "
+            f"MANDATORY SILENCE: All characters keep mouths completely closed in solemn silence (zero lip movement). "
+            f"Deep male narrator: '{narration}'. "
+            f"Volumetric atmospheric rim lighting, cinematic depth of field. STRICT ZERO ANIME, STRICT ZERO CARTOON, ZERO CEL-SHADING, NO TEXT."
+        )
 
     if len(prompt) > 700:
         prompt = prompt[:695] + " NO TEXT."
@@ -385,8 +405,11 @@ def process_episode(ep: int, force: bool = False) -> bool:
 
         if not new_url:
             print(f"\n  [ERROR] Generation timed out after {time.time() - start_t:.1f}s for {c_code}")
-            check_and_clear_error()
-            time.sleep(3.0)
+            if check_and_clear_error():
+                print("  [COOLDOWN] Bot warning encountered. Sleeping 60s for cooldown...")
+                time.sleep(60.0)
+            else:
+                time.sleep(3.0)
             continue
 
         # 6. Direct download
@@ -400,7 +423,8 @@ def process_episode(ep: int, force: bool = False) -> bool:
 
     if new_cuts_generated > 0:
         commit_episode_git(ep)
-        submit_episode_report(ep, total_cuts)
+        if new_cuts_generated + skipped_cuts >= total_cuts:
+            submit_episode_report(ep, total_cuts)
 
     return True
 
