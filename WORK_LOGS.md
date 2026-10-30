@@ -17363,7 +17363,20 @@
 - **구글 폼 보고서 제출**: 완료 (`submit_report.py` 제출 성공).
 - **Git 커밋**: `5eb61797c` (로컬 커밋 완료).
 
-## [2026-10-30 04:44 KST] Google Flow 실사 시네마 1화 28컷 전수 생성 완료 및 40화 연속 생성 마스터 러너 가동
+## [2026-10-31 06:03 KST] 웹툰 10화 붉은 유리 궁전 순수 배경 씬 캐릭터 오출력 버그 개선
+- **작업 내역**:
+  1. **원인 분석**: `src/content/webtoonEpisodeManifest.json` 제10화 1번 씬("라이트헤븐 내성의 심장부에 우뚝 솟은 붉은 유리 궁전은 대륙 어디에서도 볼 수 없는 기괴하고도 찬란한 위용을 자랑했다.")에 등장인물이 전혀 없는 순수 건축/배경 묘사임에도 불구하고 `characters: ['Lucian', 'Kadan']` 및 배경이 `a towering dragon precipice`로 오기입되어, 프롬프트 생성 시 인물이 강제 포함되는 버그 확인.
+  2. **매니페스트 및 프롬프트 정정**:
+     - `src/content/webtoonEpisodeManifest.json`: 제10화 1번 씬의 `characters`를 빈 배열(`[]`)로 수정하고 `background`를 `LOC-007 Red Glass Palace (Flame Court)`로 정합 동기화.
+     - `scripts/generate_all_webtoon_prompts.py`: `chars`가 비어있는 순수 배경/건축 씬의 경우 인물 키워드(`The heroes of SNSHero`, `detailed anime hero`) 삽입을 전면 차단하고 `ABSOLUTELY NO CHARACTERS, NO PEOPLE, NO ACTORS, NO HUMANS in frame` 지침을 적용하도록 개선.
+     - `scripts/generate_all_flow_liveaction.py`: `char_names`가 0명인 컷의 경우 `Real living human actors... SCENE: heroes in ...` 대신 `ABSOLUTELY NO ACTORS, NO PEOPLE, ZERO HUMANS IN FRAME. PURE SCENIC ARCHITECTURE SHOT.` 70mm 시네마 프롬프트를 자동 생성하도록 파이프라인 전역 개선.
+  3. **이미지 자산 갱신**:
+     - 제10화 1번 씬 공식 위치 원본 아트(`LOC-007 Red Glass Palace`, 1280x720)를 기반으로 인물이 전혀 없는 순수하고 웅장한 붉은 흑요석 및 내열 마법 유리 궁전 16:9 WebP(`public/images/webtoon/episode_10/scene_01.webp`, `public/images/cinema/episode_10/scene_01.webp`)로 100% 교체 완료.
+     - 나레이션 씬이므로 화자 레드 닷 마커 역시 0개(무표시) 규칙 철저 준수.
+- **검증 결과**: `npm run build` 프로덕션 빌드 100% 무결점 통과 (28.80s, 4,327개 모듈 정상 번들링).
+- **구글 폼 보고서 제출**: 완료 (`submit_report.py` 제출 성공).
+- **Git 커밋**: `a2a7833f9` (로컬 커밋 완료, 푸시는 `/git-push` 지침 준수).
+
 - **작업 내역**:
   1. **Google Flow 브릿지 및 실사 시네마 파이프라인 구축**: 사용자의 실제 로그인 Chrome 탭(`flow.google.com/project/72ee6e60-2819-43a6-bb8c-700a7d599bdf`)과 AppleScript + Chrome JS 브릿지를 연동하여 소재 첨부, 프롬프트 주입, 하드웨어 키보드 리턴 트리거 및 서명된 이미지 URL 다이렉트 다운로드 자동화 완성.
   2. **1화 28컷 전수 70mm IMAX 실사 시네마 완성**:
