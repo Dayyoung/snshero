@@ -87,12 +87,27 @@ end tell
     return False
 
 
+def clear_reference_chips():
+    js = """
+    (() => {
+        const chips = Array.from(document.querySelectorAll('.reference-ingredient-chip'));
+        chips.forEach(c => {
+            const btn = c.querySelector('button, mat-icon, .cancel-icon') || c;
+            btn.click();
+        });
+        return 'CLEARED_' + chips.length;
+    })()
+    """
+    run_js(js)
+    time.sleep(0.3)
+
+
 def get_current_flow_image_urls() -> list:
     js = """
     (() => {
         const imgs = Array.from(document.querySelectorAll('img'))
             .map(i => i.currentSrc || i.src)
-            .filter(s => s && s.includes('flow-content.google/image/'));
+            .filter(s => s && (s.includes('flow-content.google/image/') || s.includes('flow.google.com/asb/')));
         return JSON.stringify(imgs);
     })()
     """
@@ -122,9 +137,9 @@ def build_liveaction_prompt(cut: dict) -> str:
 
     # Specific Visual DNA anchors
     dna_items = []
-    if any(n in ["Elwin", "Ysela", "Aila", "Kaze", "Eliana", "Medusa Gorgo", "Freya", "Aria"] for n in char_names):
+    if any(n in ["Elwin", "Ysela", "Aila", "Kaze", "Eliana", "Medusa Gorgo", "Freya", "Aria", "Celia"] for n in char_names):
         dna_items.append("Glamorous voluptuous hourglass figure, revealing seductive fantasy attire, breathtaking beauty")
-    if any(n in ["Aleksandar", "Balian", "Hercul", "Lucian", "Artus", "Kadan", "Grimli", "Rondol"] for n in char_names):
+    if any(n in ["Aleksandar", "Balian", "Hercul", "Lucian", "Artus", "Kadan", "Grimli", "Rondol", "Ignis"] for n in char_names):
         dna_items.append("Chiseled hyper-muscular physique, prominent heavy weapons with sharp specular reflections")
     if "Rondol" in char_names:
         dna_items.append("Rondol has short dark hair (never bald) and dark-oak oar-staff")
@@ -215,6 +230,35 @@ end tell
 
 
 def download_image_from_url(url: str, jpg_dst: Path, webp_dst: Path) -> bool:
+    if "flow.google.com/asb/" in url:
+        escaped_url = url.replace('\\', '\\\\').replace('"', '\\"')
+        js = f"""
+        (() => {{
+            const img = Array.from(document.querySelectorAll('img')).find(i => (i.currentSrc || i.src) === "{escaped_url}");
+            if (!img) return 'NO_IMG';
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth || 1376;
+            canvas.height = img.naturalHeight || 768;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            return canvas.toDataURL('image/jpeg', 0.95);
+        }})()
+        """
+        data_url = run_js(js)
+        if data_url and data_url.startswith("data:image/jpeg;base64,"):
+            try:
+                raw_b64 = data_url.split(",", 1)[1]
+                data = base64.b64decode(raw_b64)
+                im = Image.open(BytesIO(data))
+                jpg_dst.parent.mkdir(parents=True, exist_ok=True)
+                webp_dst.parent.mkdir(parents=True, exist_ok=True)
+                jpg_dst.write_bytes(data)
+                im.save(webp_dst, "WEBP", quality=92)
+                print(f"  [SAVED ASB] {jpg_dst.name} & {webp_dst.name} ({im.size[0]}x{im.size[1]}, {len(data):,} bytes)")
+                return True
+            except Exception as e:
+                print(f"  [ERROR] Failed to save ASB canvas image: {e}")
+
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
@@ -224,7 +268,7 @@ def download_image_from_url(url: str, jpg_dst: Path, webp_dst: Path) -> bool:
         webp_dst.parent.mkdir(parents=True, exist_ok=True)
         jpg_dst.write_bytes(data)
         im.save(webp_dst, "WEBP", quality=92)
-        print(f"  [SAVED] {jpg_dst.name} & {webp_dst.name} ({im.size[0]}x{im.size[1]}, {len(data):,} bytes)")
+        print(f"  [SAVED DIRECT] {jpg_dst.name} & {webp_dst.name} ({im.size[0]}x{im.size[1]}, {len(data):,} bytes)")
         return True
     except Exception as e:
         print(f"  [ERROR] Image download failed: {e}")
