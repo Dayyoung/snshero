@@ -58,6 +58,22 @@ end tell
     return p.stdout.strip()
 
 
+def reload_flow_tab():
+    print("  [FLOW] Reloading Flow tab to refresh session and clear DOM cache...")
+    subprocess.run(['osascript', '-e', '''
+tell application "Google Chrome"
+    repeat with w in windows
+        repeat with t in tabs of w
+            if URL of t contains "flow.google.com/project/72ee6e60-2819-43a6-bb8c-700a7d599bdf" then
+                reload t
+            end if
+        end repeat
+    end repeat
+end tell
+'''])
+    time.sleep(8.0)
+
+
 def check_and_clear_error() -> bool:
     js = """
     (() => {
@@ -70,19 +86,8 @@ def check_and_clear_error() -> bool:
     """
     res = run_js(js)
     if 'HAS_BOT_WARNING' in res:
-        print("  [FLOW ALERT] Bot warning detected. Reloading tab and waiting 8s...")
-        subprocess.run(['osascript', '-e', '''
-tell application "Google Chrome"
-    repeat with w in windows
-        repeat with t in tabs of w
-            if URL of t contains "flow.google.com/project/72ee6e60-2819-43a6-bb8c-700a7d599bdf" then
-                reload t
-            end if
-        end repeat
-    end repeat
-end tell
-'''])
-        time.sleep(8.0)
+        print("  [FLOW ALERT] Bot warning detected.")
+        reload_flow_tab()
         return True
     return False
 
@@ -166,31 +171,33 @@ def build_liveaction_prompt(cut: dict) -> str:
 
 
 def trigger_generate_hardware_return(prompt_text: str) -> bool:
-    insert_js = f"""
-    (() => {{
-        const pm = document.querySelector('div.ProseMirror');
-        if (!pm) return 'NO_PM';
-        pm.focus();
-        const sel = window.getSelection();
-        sel.selectAllChildren(pm);
-        document.execCommand('delete', false);
-        
-        document.execCommand('insertText', false, {json.dumps(prompt_text)});
-        pm.dispatchEvent(new InputEvent('input', {{ bubbles: true, cancelable: true, inputType: 'insertText', data: ' ' }}));
-        pm.dispatchEvent(new KeyboardEvent('keydown', {{ key: 'a', code: 'KeyA', bubbles: true }}));
-        pm.dispatchEvent(new KeyboardEvent('keyup', {{ key: 'a', code: 'KeyA', bubbles: true }}));
-        pm.dispatchEvent(new Event('change', {{ bubbles: true }}));
-        return 'INSERTED';
-    }})()
-    """
-    res1 = run_js(insert_js)
-    if res1 != 'INSERTED':
-        print(f"  Insert failed: {res1}")
-        return False
+    for attempt in range(3):
+        insert_js = f"""
+        (() => {{
+            const pm = document.querySelector('div.ProseMirror');
+            if (!pm) return 'NO_PM';
+            pm.focus();
+            const sel = window.getSelection();
+            sel.selectAllChildren(pm);
+            document.execCommand('delete', false);
+            
+            document.execCommand('insertText', false, {json.dumps(prompt_text)});
+            pm.dispatchEvent(new InputEvent('input', {{ bubbles: true, cancelable: true, inputType: 'insertText', data: ' ' }}));
+            pm.dispatchEvent(new KeyboardEvent('keydown', {{ key: 'a', code: 'KeyA', bubbles: true }}));
+            pm.dispatchEvent(new KeyboardEvent('keyup', {{ key: 'a', code: 'KeyA', bubbles: true }}));
+            pm.dispatchEvent(new Event('change', {{ bubbles: true }}));
+            return 'INSERTED';
+        }})()
+        """
+        res1 = run_js(insert_js)
+        if res1 != 'INSERTED':
+            print(f"  Insert failed (attempt {attempt+1}): {res1}")
+            time.sleep(1.0)
+            continue
 
-    time.sleep(0.4)
+        time.sleep(0.4)
 
-    apple_script = '''
+        apple_script = '''
 tell application "Google Chrome"
     repeat with w in windows
         repeat with t in tabs of w
@@ -206,27 +213,31 @@ tell application "System Events"
     keystroke return
 end tell
 '''
-    subprocess.run(['osascript', '-'], input=apple_script, capture_output=True, text=True)
-    time.sleep(0.8)
+        subprocess.run(['osascript', '-'], input=apple_script, capture_output=True, text=True)
+        time.sleep(1.0)
 
-    check_js = "(() => document.querySelector('div.ProseMirror') ? document.querySelector('div.ProseMirror').innerText.trim().length : -1)()"
-    res_len = run_js(check_js)
-    if res_len == '0':
-        return True
+        check_js = "(() => document.querySelector('div.ProseMirror') ? document.querySelector('div.ProseMirror').innerText.trim().length : -1)()"
+        res_len = run_js(check_js)
+        if res_len == '0':
+            return True
 
-    # Fallback click
-    fallback_js = """
-    (() => {
-        const btn = document.querySelector('button[aria-label="생성 시작"], .generate-icon-button');
-        if (btn && !btn.disabled) {
-            btn.click();
-            return 'FALLBACK_CLICKED';
-        }
-        return 'STILL_BLOCKED';
-    })()
-    """
-    res_fb = run_js(fallback_js)
-    return res_fb == 'FALLBACK_CLICKED'
+        # Second keystroke attempt
+        print(f"  [RETRY] ProseMirror text still present ({res_len} chars), retrying return key...")
+        subprocess.run(['osascript', '-e', '''
+tell application "System Events"
+    keystroke return
+end tell
+'''])
+        time.sleep(1.0)
+        res_len2 = run_js(check_js)
+        if res_len2 == '0':
+            return True
+
+        # If still not submitted, reload tab and retry
+        print(f"  [RELOAD] Form not submitted, reloading tab...")
+        reload_flow_tab()
+
+    return False
 
 
 def download_image_from_url(url: str, jpg_dst: Path, webp_dst: Path) -> bool:
