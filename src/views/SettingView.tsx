@@ -760,7 +760,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 >
                   <span>{language === 'ko' ? '7등신' : '7-Head'}</span>
                   <span className={cn("text-[9px] font-semibold", cardDisplayMode === 'full7' ? "text-amber-300" : "text-slate-500")}>
-                    {language === 'ko' ? '전신 원화 (기본)' : 'Full Body (Default)'}
+                    {language === 'ko' ? '전신 원화' : 'Full Body'}
                   </span>
                 </button>
 
@@ -800,7 +800,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 >
                   <span>{language === 'ko' ? '3등신' : '3-Head SD'}</span>
                   <span className={cn("text-[9px] font-semibold", cardDisplayMode === 'chibi3' ? "text-emerald-300" : "text-slate-500")}>
-                    {language === 'ko' ? '⚡액션 연출' : '⚡Action Motion'}
+                    {language === 'ko' ? '⚡액션 연출 (기본)' : '⚡Action (Default)'}
                   </span>
                 </button>
               </div>
@@ -808,14 +808,14 @@ export const SettingView: React.FC<SettingViewProps> = ({
               <div className="p-3 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[10px] font-bold text-slate-600 flex items-center justify-between gap-2">
                 <span>
                   {cardDisplayMode === 'full7' && (language === 'ko'
-                    ? '• 7등신 전신 애니메이션 캐릭터 원화로 모든 카드가 기본 표시됩니다. (기본 설정)'
-                    : '• Displays 7-head full-body anime character art on all cards. (Default)')}
+                    ? '• 7등신 전신 애니메이션 캐릭터 원화로 모든 카드가 표시됩니다.'
+                    : '• Displays 7-head full-body anime character art on all cards.')}
                   {cardDisplayMode === 'bust' && (language === 'ko'
                     ? '• 상반신(얼굴 및 가슴 중심) 클로즈업 원화로 모든 카드가 표시됩니다.'
                     : '• Displays upper-body (face & chest centered) portraits on cards.')}
                   {cardDisplayMode === 'chibi3' && (language === 'ko'
-                    ? '• 3등신 SD 캐릭터 및 역동적인 액션 배틀 연출로 표시됩니다.'
-                    : '• Displays 3-head SD characters with dynamic battle action motion.')}
+                    ? '• 3등신 SD 캐릭터 및 역동적인 액션 배틀 연출로 기본 표시됩니다. (기본 설정)'
+                    : '• Displays 3-head SD characters with dynamic battle action motion. (Default)')}
                 </span>
               </div>
             </div>
