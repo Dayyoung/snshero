@@ -88,7 +88,7 @@ def verify_all():
                 errors.append(f"Episode {ep_pad}: Missing required lore keyword '{kw}'!")
 
         # Check header
-        if not re.search(r"^#\s+눈히어로\s+\d+화\s+-\s+.+", content, re.MULTILINE):
+        if not re.search(r"^#\s+눈히어로(?:\.com\s+-\s+카단의\s+여정)?\s+\d+화\s+-\s+.+", content, re.MULTILINE):
             errors.append(f"Episode {ep_pad}: Invalid markdown header title format!")
 
         # Check index.json synchronization for this episode

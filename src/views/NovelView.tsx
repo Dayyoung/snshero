@@ -117,6 +117,13 @@ interface EpisodeNarrationData {
 
 const TOTAL_EPISODES = 40;
 
+const NOVEL_ENDING_PROMO_PARAGRAPH = [
+  '==========================',
+  '소설 관련 카드게임 플레이를 원하시나요?',
+  '아래 사이트에서 플레이 하세요!',
+  'Https://SNSHero.com (눈히어로.com)',
+].join('\n');
+
 const pad2 = (n: number) => String(n).padStart(2, '0');
 const pad3 = (n: number) => String(n).padStart(3, '0');
 
@@ -498,8 +505,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
           : (enInfo?.fileName ? `/book/image_narrations/english_txt/${enInfo.fileName}` : `/book/episode_${epPad}.md`);
 
         const [mdRes, narrRes] = await Promise.all([
-          fetch(`${getAssetUrl(textPath)}?v=novel2026_v3`),
-          fetch(`${getAssetUrl(`/book/image_narrations/episode_${epPad}_narrations.json`)}?v=novel2026_v3`),
+          fetch(`${getAssetUrl(textPath)}?v=novel2026_v4`),
+          fetch(`${getAssetUrl(`/book/image_narrations/episode_${epPad}_narrations.json`)}?v=novel2026_v4`),
         ]);
 
         if (mdRes.ok && isMounted) {
@@ -532,7 +539,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
   const parsedContent = React.useMemo(() => {
     if (!markdownText) {
       const defaultTitle = language === 'ko' ? `제 ${currentEpisodeNum}화` : `Episode ${currentEpisodeNum}`;
-      return { title: defaultTitle, sourceRange: '', paragraphs: [] };
+      return { title: defaultTitle, sourceRange: '', paragraphs: [NOVEL_ENDING_PROMO_PARAGRAPH] };
     }
 
     if (language === 'ko') {
@@ -558,7 +565,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
           sourceRange = line.replace('> ', '').trim();
         } else {
           if (currentParagraph) {
-            currentParagraph += ' ' + line;
+            const sep = currentParagraph.startsWith('==========================') ? '\n' : ' ';
+            currentParagraph += sep + line;
           } else {
             currentParagraph = line;
           }
@@ -567,6 +575,11 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
       if (currentParagraph) {
         bodyParagraphs.push(currentParagraph);
+      }
+
+      const lastPara = bodyParagraphs[bodyParagraphs.length - 1] || '';
+      if (!lastPara.includes('소설 관련 카드게임 플레이를 원하시나요?')) {
+        bodyParagraphs.push(NOVEL_ENDING_PROMO_PARAGRAPH);
       }
 
       return { title, sourceRange, paragraphs: bodyParagraphs };
@@ -588,6 +601,11 @@ export const NovelView: React.FC<NovelViewProps> = ({
           continue;
         }
 
+        if (clean.startsWith('==========================')) {
+          bodyParagraphs.push(clean);
+          continue;
+        }
+
         // Clean card image references like (042.png) and brackets
         clean = clean.replace(/\(\d{3}\.png\)/g, '');
         clean = clean.replace(/\[([^\]]+)\]/g, '$1');
@@ -596,6 +614,11 @@ export const NovelView: React.FC<NovelViewProps> = ({
         if (clean) {
           bodyParagraphs.push(clean);
         }
+      }
+
+      const lastPara = bodyParagraphs[bodyParagraphs.length - 1] || '';
+      if (!lastPara.includes('소설 관련 카드게임 플레이를 원하시나요?')) {
+        bodyParagraphs.push(NOVEL_ENDING_PROMO_PARAGRAPH);
       }
 
       return { title, sourceRange: `Episode ${currentEpisodeNum}`, paragraphs: bodyParagraphs };
@@ -1864,6 +1887,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
             <div className={cn("space-y-6 font-mono text-justify", fontClass)}>
               {parsedContent.paragraphs.map((paragraph, index) => {
                 const isSpeaking = ttsParagraphIndex === index && (isTtsPlaying || isTtsPaused);
+                const isEndingPromo = paragraph.includes('소설 관련 카드게임 플레이를 원하시나요?');
 
                 return (
                   <p
@@ -1871,6 +1895,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     onClick={() => startTtsFromParagraph(index)}
                     className={cn(
                       "transition-colors cursor-pointer p-2 rounded-none relative group border-l-2",
+                      isEndingPromo && "whitespace-pre-line text-left",
                       isSpeaking
                         ? "border-[#201d1d] bg-[#f8f7f7] font-medium"
                         : "border-transparent hover:border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
