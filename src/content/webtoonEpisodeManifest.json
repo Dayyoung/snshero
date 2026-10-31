@@ -2756,13 +2756,13 @@
         "background": "a subterranean cavern with ancient chains and golden rune circles",
         "dialogues": [
           {
-            "speakerKo": "헤르쿨",
-            "speakerEn": "Hercul",
+            "speakerKo": "구출된 아이",
+            "speakerEn": "Rescued Child",
             "textKo": "“기사님, 제발 멈추세요! 이분들은 우리를 팔아넘기는 유괴범이 아니에요! 붉은 유리 궁정의 지하 감옥으로 끌려가던 우리를 목숨 걸고 구해 주신 분들이라고요!”",
             "textEn": "\"Sir Knight, please cease! These people are not slavers! They risked their very lives to drag us from the hold of the slave galleys destined for the Red Glass Court!\"",
             "bubbleType": "shout",
             "position": "top-right",
-            "characterCardId": 49
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -5929,13 +5929,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "엘윈",
-            "speakerEn": "Elwin",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“아버지의 은빛 단검으로 단단한 얼음 덩어리를 파내어 따뜻한 마구간 구석에 눕혀 주었어요. 살아날 수 있을까요?”",
             "textEn": "\"I used father's silver dagger to carve away the ice and carried it into the barn corner. Will it live?\"",
             "bubbleType": "speech",
             "position": "bottom-right",
-            "characterCardId": 42
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -6046,13 +6046,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "엘윈",
-            "speakerEn": "Elwin",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“저도 언젠가는 아버지처럼 등 뒤의 사람들을 지키는 튼튼한 방패가 될 수 있을까요?”",
             "textEn": "\"Will I ever become a steadfast shield like father, protecting those who stand behind me?\"",
             "bubbleType": "speech",
             "position": "bottom-left",
-            "characterCardId": 42
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -6081,13 +6081,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "길가메시",
-            "speakerEn": "Gilgamesh",
+            "speakerKo": "엘윈",
+            "speakerEn": "Elwin",
             "textKo": "“그럼, 카단. 굳센 나무는 가장 혹독한 칼바람 속에서 가장 깊은 뿌리를 내리는 법이란다.”",
             "textEn": "\"Of course, my child. The sturdiest trees strike their deepest roots in the harshest northern gales.\"",
             "bubbleType": "speech",
             "position": "bottom-right",
-            "characterCardId": 47
+            "characterCardId": 65
           }
         ],
         "sfxCues": [
@@ -7041,13 +7041,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "가웨인",
-            "speakerEn": "Gawain",
+            "speakerKo": "엘윈",
+            "speakerEn": "Elwin",
             "textKo": "“알렉산다르의 약속을 잊지 않고 와 주셨군요...” 가웨인이 쇠지팡이를 짚으며 정중히 예를 표했다.",
             "textEn": "\"You remembered Aleksandar's sacrifice...\" Gawain bowed his head with the solemn dignity of a lifelong tracker.",
             "bubbleType": "thought",
             "position": "bottom-left",
-            "characterCardId": 45
+            "characterCardId": 65
           }
         ],
         "sfxCues": [
@@ -8579,13 +8579,13 @@
         "background": "an ocean coast with dark waves and ancient shipwrecks",
         "dialogues": [
           {
-            "speakerKo": "그림리",
-            "speakerEn": "Grimli",
+            "speakerKo": "메두사 고르고",
+            "speakerEn": "Medusa Gorgo",
             "textKo": "“그리고 대해의 바람섬에서는 현자 에올루스의 외동딸 실리아가 대륙의 질서를 뒤흔들 거대한 폭풍으로 피어나고 있다!”",
             "textEn": "And upon the distant Wind Isle, Lord Aeolus's daughter, the brilliant Silia, grows into a storm that will tear this continent apart!\"",
             "bubbleType": "shout",
             "position": "top-right",
-            "characterCardId": 74
+            "characterCardId": 55
           }
         ],
         "sfxCues": [
@@ -9563,13 +9563,13 @@
         "background": "an ocean coast with dark waves and ancient shipwrecks",
         "dialogues": [
           {
-            "speakerKo": "엘리아나",
-            "speakerEn": "Eliana",
+            "speakerKo": "론돌",
+            "speakerEn": "Rondol",
             "textKo": "“숨을 멈추면 피가 굳고 근육이 얼어붙소! 물길을 거스르지 말고 파도에 몸을 맡기듯 자연스럽게 흘려보내야 하오!”",
             "textEn": "\"Hold your breath till the pulse fades,\"",
             "bubbleType": "shout",
             "position": "top-left",
-            "characterCardId": 63
+            "characterCardId": 98
           }
         ],
         "sfxCues": [
@@ -11477,13 +11477,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "바르가스트",
-            "speakerEn": "Barghest",
+            "speakerKo": "황궁 밀사",
+            "speakerEn": "Imperial Envoy",
             "textKo": "“약조한 거사일이 바로 내일 밤이오. 펜릴의 저녁 축제 술잔에 마비 독을 섞어 둘 것이오. 펜릴이 쓰러지는 즉시 부족 전사들을 모조리 섀도우렐름의 깃발 아래 집결시키시오.”",
             "textEn": "\"The appointed strike falls upon tomorrow night. Paralyzing venom will be introduced into Fenrir's banquet horn. The instant Fenrir collapses, rally the clan lances beneath the banners of the Shadow Realm.\"",
             "bubbleType": "speech",
             "position": "top-left",
-            "characterCardId": 87
+            "characterCardId": 83
           }
         ],
         "sfxCues": [
@@ -11582,13 +11582,13 @@
         "background": "a grand palace court with towering arches and throne room",
         "dialogues": [
           {
-            "speakerKo": "이그니스",
-            "speakerEn": "Ignis",
+            "speakerKo": "황궁 밀사",
+            "speakerEn": "Imperial Envoy",
             "textKo": "“발리안의 아들 이그니스가 황궁의 백색 화염 기사단을 이끌고 북상할 것이오. 귀하가 첫 번째 정복 맹주로 추대될 테니 의심을 거두시오.”",
             "textEn": "\"Ignis, son of Balian, marches north at the head of the Court's White Flame Order. You shall be crowned paramount warlord of the northern reaches, so banish your misgivings.\"",
             "bubbleType": "speech",
             "position": "bottom-right",
-            "characterCardId": 11
+            "characterCardId": 83
           }
         ],
         "sfxCues": [
@@ -12033,13 +12033,13 @@
         "background": "a grand palace court with towering arches and throne room",
         "dialogues": [
           {
-            "speakerKo": "펜릴",
-            "speakerEn": "Fenrir",
+            "speakerKo": "바르가스트",
+            "speakerEn": "Barghest",
             "textKo": "“형님, 조상들이 정해준 경계 안에서 살면 족합니다. 왜 무리하게 모든 부족을 하나로 묶어 황궁의 미움을 사려 하십니까? 이 목걸이를 돌려드릴 테니 이제 그만 항복하십시오.”",
             "textEn": "\"Brother, it is enough to graze within the borders set by our ancestors. Why force thirty clans into a single realm and invite the wrath of the throne? Take back this fang and surrender with honor.\"",
             "bubbleType": "speech",
             "position": "top-left",
-            "characterCardId": 81
+            "characterCardId": 85
           }
         ],
         "sfxCues": [
@@ -12578,13 +12578,13 @@
         "background": "a sunlit crimson plain where wild warhorses gallop",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "펜릴",
+            "speakerEn": "Fenrir",
             "textKo": "“원하는 것을 말해라, 젊은 전사여. 이 대평원의 절반이라도 베어 주마.”",
             "textEn": "\"Name your recompense, young warrior. I would carve you half the northern steppes.\"",
             "bubbleType": "speech",
             "position": "bottom-right",
-            "characterCardId": 41
+            "characterCardId": 86
           }
         ],
         "sfxCues": [
@@ -13926,13 +13926,13 @@
         "background": "a grand palace court with towering arches and throne room",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“북방에서 온 카단이다. 황궁의 백색 화염 기사단장 이그니스를 만나야 한다.”",
             "textEn": "\"I am Kadan of the Wildlands. I seek High Commander Ignis of the White Flame Order.\"",
             "bubbleType": "speech",
             "position": "top-right",
-            "characterCardId": 62
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -14065,13 +14065,13 @@
         "background": "a sunlit crimson plain where wild warhorses gallop",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "골목 건달 두목",
+            "speakerEn": "Alley Thug Leader",
             "textKo": "“말과 돈을 얌전히 넘기면 목숨만은 살려주마! 저 명마 한 필이면 우리 패거리가 일 년은 떵떵거리며 산다!”",
             "textEn": "\"Hand over the crimson stallion and your purse, and you might crawl away with your hides! That warhorse will keep our crew in luxury for a year!\"",
             "bubbleType": "shout",
             "position": "top-right",
-            "characterCardId": 62
+            "characterCardId": 85
           }
         ],
         "sfxCues": [
@@ -14215,13 +14215,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“너, 평범한 거지는 아니구나.” 실리아가 콧방귀를 뀌며 망토를 털었다.",
             "textEn": "\"You are certainly no ordinary beggar girl.\" Cilia brushed her cloak with a satisfied smirk.",
             "bubbleType": "speech",
             "position": "top-right",
-            "characterCardId": 62
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -15829,13 +15829,13 @@
         "background": "a grand palace court with towering arches and throne room",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "워커",
+            "speakerEn": "Walker",
             "textKo": "“그러나 탐욕에 눈이 먼 궁정의 귀족들과 데스나이트 아르투스가 배신을 획책했고, 갓난아기였던 이그니스는 불꽃 궁정의 꼭두각시로 길러진 거요.”",
             "textEn": "Yet corrupt lords of the court and Death Knight Artus orchestrated their betrayal, and infant Ignis was stolen away to be raised as a gilded puppet of the Flame Court.\"",
             "bubbleType": "speech",
             "position": "top-right",
-            "characterCardId": 41
+            "characterCardId": 86
           }
         ],
         "sfxCues": [
@@ -15899,13 +15899,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "엘윈",
-            "speakerEn": "Elwin",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“그렇다면 이그니스는 제 원수가 아니라... 함께 진실을 마주해야 할 형제였군요.”",
             "textEn": "\"Then Ignis is not my sworn enemy... but a brother with whom I must share the truth.\"",
             "bubbleType": "thought",
             "position": "bottom-right",
-            "characterCardId": 42
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -16002,13 +16002,13 @@
         "background": "a subterranean cavern with ancient chains and golden rune circles",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "워커",
+            "speakerEn": "Walker",
             "textKo": "“하지만 그곳은 철통같은 룬 결계로 봉인되어 있소. 그곳 지하에는 사람의 마나를 강제로 추출하는 끔찍한 연금술 설비들이 가동되고 있소.”",
             "textEn": "Yet that sanctum is sealed behind three tiers of impenetrable imperial wards, and beneath it operate horrific alchemical contraptions extracting the living mana of captive souls.\"",
             "bubbleType": "speech",
             "position": "bottom-left",
-            "characterCardId": 41
+            "characterCardId": 86
           }
         ],
         "sfxCues": [
@@ -16342,13 +16342,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“숙부님이 살아 계셔... 반드시 내 손으로 구해내겠다.” 실리아는 카단의 어깨에 손을 얹으며 결연하게 고개를 끄덕였다.",
             "textEn": "\"Uncle Balian survives... I swear upon my blood to tear down his chains.\" Cilia rested a hand upon Kadan's uninjured shoulder, nodding with solemn determination.",
             "bubbleType": "thought",
             "position": "bottom-right",
-            "characterCardId": 62
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -17651,13 +17651,13 @@
         "background": "a snowbound Lighthaven frontier under a violent blue-white blizzard",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "이셀라",
+            "speakerEn": "Ysela",
             "textKo": "“아... 아아... 발리안... 내 남편... 그리고 눈보라 속에서 내 품에서 빼앗겼던 내 아기...!”",
             "textEn": "\"Ah... Balian... My husband... And my sweet infant torn from my arms in the raging snow...!\"",
             "bubbleType": "shout",
             "position": "top-left",
-            "characterCardId": 41
+            "characterCardId": 65
           }
         ],
         "sfxCues": [
@@ -17722,13 +17722,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "이셀라",
+            "speakerEn": "Ysela",
             "textKo": "“내 아기는... 그 차가운 루시안의 손에 끌려가며 내 이름을 불렀단다. 매일 밤 그 아이의 울음소리가 귓가를 맴돌았는데, 마법에 걸려 누구의 목소리인지조차 기억하지 못했어...”",
             "textEn": "\"My precious babe... called my name as he was dragged off in Lucian's cold iron grasp. Every night his cries echoed in my ears, yet under this dark curse I could not even recall whose child wept...\"",
             "bubbleType": "thought",
             "position": "bottom-left",
-            "characterCardId": 41
+            "characterCardId": 65
           }
         ],
         "sfxCues": [
@@ -23616,13 +23616,13 @@
         "background": "a frozen mountain canyon bridge and icy waterfall cliff",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "레오나르",
+            "speakerEn": "Leonar",
             "textKo": "“그 배신의 불씨가 결국 대륙 전체를 전쟁의 소용돌이로 몰아넣은 거다. 안개 호수의 수호자 론돌은 그 당시 장로들의 반란에 맞서다 다리 하나를 잃고 대륙으로 추방당한 충신이지.”",
             "textEn": "That betrayal ignited the continental war. The guardian Rondol lost his leg resisting that coup, choosing exile upon Mist Lake.\"",
             "bubbleType": "speech",
             "position": "bottom-left",
-            "characterCardId": 62
+            "characterCardId": 86
           }
         ],
         "sfxCues": [
@@ -24129,13 +24129,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "레오나르",
+            "speakerEn": "Leonar",
             "textKo": "“지금 우리가 건너야 할 일흔두 개의 석주는 그 당시 궁전들을 떠받치던 거대한 수호 기둥들이다.”",
             "textEn": "Those seventy-two basalt monoliths we must navigate were once the immense pillars supporting the imperial palaces.\"",
             "bubbleType": "speech",
             "position": "top-right",
-            "characterCardId": 62
+            "characterCardId": 86
           }
         ],
         "sfxCues": [
@@ -24300,13 +24300,13 @@
         "background": "an ocean coast with dark waves and ancient shipwrecks",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "론돌",
+            "speakerEn": "Rondol",
             "textKo": "“결국 돌아왔구나, 섬에서 도망쳤던 어린 왕녀여. 섬의 장로들은 너를 배신자라 부르며 저주하고 있는데, 무슨 낯으로 다시 이 바다를 찾았느냐?”",
             "textEn": "\"So you have returned at last, headstrong princess who fled the island. The elders brand you a traitor and curse your name to the tides. By what brazen courage do you dare tread upon this sea once more?\"",
             "bubbleType": "speech",
             "position": "bottom-left",
-            "characterCardId": 62
+            "characterCardId": 98
           }
         ],
         "sfxCues": [
@@ -26292,13 +26292,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "레오나르",
-            "speakerEn": "Leonar",
+            "speakerKo": "피난민 아이",
+            "speakerEn": "Refugee Child",
             "textKo": "“할아버지! 등에서 피가... 검은 피가 흘러요!” 레오나르는 거친 손으로 아이들의 뺨을 어루만지며 억지로 미소를 지어 보였다.",
             "textEn": "\"Grandfather! Your back... Black blood is pouring from your shoulders!\" Caressing their tear-stained cheeks with his massive, calloused hand, Leonar forced a reassuring grin.",
             "bubbleType": "shout",
             "position": "top-right",
-            "characterCardId": 86
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -26435,13 +26435,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "알렉산다르",
-            "speakerEn": "Aleksandar",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“더러운 원혼들이 감히 의로운 자의 피를 더럽히지 못한다!” 카단의 은빛 단검이 허공을 가르며 푸른 유성 같은 궤적을 그렸다. 알렉산다르 스승이 전수했던 성기사의 파마 비검이 사령 독사들의 목을 연달아 꿰뚫었다.",
             "textEn": "\"Foul spirits shall never desecrate the blood of the righteous!\" With fluid, lightning precision, Kadan cleaved through the air. The sacred anti-fiend sword techniques passed down by Master Aleksandar severed the ethereal spines of the five phantom serpents in consecutive arcs of azure radiance.",
             "bubbleType": "shout",
             "position": "top-right",
-            "characterCardId": 50
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -27621,13 +27621,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "이그니스",
+            "speakerEn": "Ignis",
             "textKo": "“거짓과 피로 얼룩진 명예 따위는 차라리 호수 바닥의 진흙 속에 묻히는 편이 낫다. 내 손으로 지켜왔다고 믿었던 모든 것들이, 실은 무고한 사람들의 피를 빨아먹는 괴물들의 방패막이에 불과했어.”",
             "textEn": "\"Honor stained in deceit and innocent blood is far better buried beneath the lake mud. Everything I spent my life fighting to protect was nothing more than a shield for corrupt monsters feasting upon the weak.\"",
             "bubbleType": "speech",
             "position": "top-right",
-            "characterCardId": 41
+            "characterCardId": 11
           }
         ],
         "sfxCues": [
@@ -28185,13 +28185,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "이그니스",
-            "speakerEn": "Ignis",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“방패를 쥐는 손이 무거울수록, 지켜야 할 사람들의 온기가 가슴속에 차오르는 법이다. 증오는 상대를 파괴하기 전에 내 영혼을 먼저 태워버리지만, 지키고자 하는 마음은 혹한 속에서도 불씨를 피워낸다.”",
             "textEn": "The heavier the shield in your hand, the warmer the hearts of those you protect will dwell within your breast. Hatred incinerates one's own soul long before it reaches the foe, but the resolve to protect kindles an eternal ember even amidst the bitterest blizzard.\"",
             "bubbleType": "speech",
             "position": "top-right",
-            "characterCardId": 11
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -28259,13 +28259,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "이그니스",
+            "speakerEn": "Ignis",
             "textKo": "“지붕이라... 나 역시 누군가의 지붕이 될 수 있을까.” 카단이 방패를 두드리며 미소 지었다.",
             "textEn": "\"A roof... Could hands like mine ever serve as a shelter for another?\" Kadan tapped his iron rim with a warm smile.",
             "bubbleType": "thought",
             "position": "bottom-right",
-            "characterCardId": 41
+            "characterCardId": 11
           }
         ],
         "sfxCues": [
@@ -31044,13 +31044,13 @@
         "background": "a subterranean cavern with ancient chains and golden rune circles",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "실리아",
+            "speakerEn": "Celia",
             "textKo": "“종이나 잉크는 세월의 풍파에 닳아 없어지지만, 대지의 모든 숨결과 거짓 없는 기억은 이 흑요석 수정 속에 영원히 봉인되어 있어요.”",
             "textEn": "Parchment and ink decay with the passage of centuries, but every breath of the earth and every true memory is eternally sealed within this living obsidian matrix.\"",
             "bubbleType": "speech",
             "position": "bottom-right",
-            "characterCardId": 41
+            "characterCardId": 62
           }
         ],
         "sfxCues": [
@@ -31216,13 +31216,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "이그니스",
+            "speakerEn": "Ignis",
             "textKo": "“내 평생을 지탱해 온 정의가 과연 무엇이었는지, 두 눈으로 확인하기가 두렵군.”",
             "textEn": "I almost fear to look with my own eyes upon the reality of what I spent my life fighting to defend.\"",
             "bubbleType": "thought",
             "position": "top-left",
-            "characterCardId": 62
+            "characterCardId": 11
           }
         ],
         "sfxCues": [
@@ -31612,13 +31612,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실피드",
-            "speakerEn": "Sylphid",
+            "speakerKo": "제피르",
+            "speakerEn": "Zephyr",
             "textKo": "“성기사들이 여왕을 시해했다! 반역자들을 한 놈도 살려두지 마라!”",
             "textEn": "\"The Holy Knights have assassinated the queen! Slay every traitor without mercy!\"",
             "bubbleType": "shout",
             "position": "bottom-right",
-            "characterCardId": 23
+            "characterCardId": 83
           }
         ],
         "sfxCues": [
@@ -31929,13 +31929,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "이그니스",
+            "speakerEn": "Ignis",
             "textKo": "“그런데 나는... 나는 그 추악한 살인마들의 손을 잡고 아버지를 역적이라 저주하며 살아왔단 말인가!”",
             "textEn": "Yet I... I held hands with those vile murderers, poisoning my heart with hatred toward you all these years!\"",
             "bubbleType": "shout",
             "position": "top-left",
-            "characterCardId": 41
+            "characterCardId": 11
           }
         ],
         "sfxCues": [
@@ -34919,13 +34919,13 @@
         "background": "an ocean coast with dark waves and ancient shipwrecks",
         "dialogues": [
           {
-            "speakerKo": "이그니스",
-            "speakerEn": "Ignis",
+            "speakerKo": "제피르",
+            "speakerEn": "Zephyr",
             "textKo": "“어리석은 에올루스와 철없는 왕녀여! 바람 속삭임 섬은 오늘부로 신세계를 열어젖힐 거대한 제물이 될 것이다! 대해의 심연이 모든 것을 삼키고 나면, 황실과 내가 손을 잡고 이 대륙의 새로운 지배자로 군림할 것이다!”",
             "textEn": "\"Foolish Aeolus and witless princess! Whispering Wind Island shall serve as the grand sacrificial altar for the new era! Once the ocean swallows everything, the empire and I shall rule supreme over the continent!\"",
             "bubbleType": "shout",
             "position": "top-right",
-            "characterCardId": 11
+            "characterCardId": 83
           }
         ],
         "sfxCues": [
@@ -37165,13 +37165,13 @@
         "background": "a subterranean cavern with ancient chains and golden rune circles",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "항구 노인",
+            "speakerEn": "Harbor Elder",
             "textKo": "“오오, 빛의 신이시여! 성기사의 방패가 돌아왔구나! 루시안의 붉은 늑대 기사단이 항구를 불태우고 젊은이들을 광산으로 끌고 갔지만, 지하 소금 창고에 어린아이 스무 명을 숨겨두었습니다!”",
             "textEn": "\"Praise be to the heavens! The sacred shield of the Holy Knights has returned! Lucian's Crimson Wolf vanguard put the harbor to the torch and dragged our able-bodied youths to the labor mines, but I managed to conceal twenty orphaned children beneath these salt vaults!\"",
             "bubbleType": "shout",
             "position": "top-right",
-            "characterCardId": 41
+            "characterCardId": 86
           }
         ],
         "sfxCues": [
@@ -37752,13 +37752,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "이그니스",
-            "speakerEn": "Ignis",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“아이들에게 단 한 발자국도 다가서지 못한다!” 카단은 별의 호흡을 실어 방패를 힘차게 회전시키며 감찰병들의 창날을 부러뜨렸다. 이그니스 역시 쇠파이프를 비껴 쥐며 돌진했다.",
             "textEn": "\"Not a single foot shall approach these children!\" Channeling star-breathing, Kadan spun his shield, snapping spearheads and shattering the vanguard's formation. Ignis charged beside him, his iron weapon wreathed in roaring white fire.",
             "bubbleType": "shout",
             "position": "bottom-left",
-            "characterCardId": 11
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -38881,13 +38881,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "그림리",
+            "speakerEn": "Grimli",
             "textKo": "“이 늙은 그림리의 손재주라면 한나절 만에 성벽도 부수는 거대한 ‘삼중 회전식 투석기’를 뚝딱 만들어낼 수 있다!”",
             "textEn": "The sea gods have delivered the finest siege timber right to our doorsteps!",
             "bubbleType": "shout",
             "position": "bottom-left",
-            "characterCardId": 41
+            "characterCardId": 76
           }
         ],
         "sfxCues": [
@@ -39377,13 +39377,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "그림리",
+            "speakerEn": "Grimli",
             "textKo": "“그 우직한 친구는 방패만 잘 다루는 게 아니라 나무를 깎고 돌을 쌓는 손재주도 기가 막혔어. 네 망치질 솜씨를 보니 스승의 피가 헛되이 흐르지 않았구나.”",
             "textEn": "That stubborn knight not only wielded a shield like a mountain, but he also had the finest hands for timber and stonework I ever saw. Watching your hammer work today, I know his craft lives proudly in your blood.\"",
             "bubbleType": "speech",
             "position": "bottom-right",
-            "characterCardId": 41
+            "characterCardId": 76
           }
         ],
         "sfxCues": [
@@ -40741,13 +40741,13 @@
         "background": "a subterranean cavern with ancient chains and golden rune circles",
         "dialogues": [
           {
-            "speakerKo": "알렉산다르",
-            "speakerEn": "Aleksandar",
+            "speakerKo": "이그니스",
+            "speakerEn": "Ignis",
             "textKo": "“이곳에... 내 아버지가 남기신 기록이 있단 말인가.” 동굴 입구 바닥에는 오랜 세월 동안 파도에 마모된 성기사단의 십자 표식들이 희미하게 남아 있었다. 발리안 숙부와 알렉산다르 스승이 과거 원정길에 남겨둔 이정표였다.",
             "textEn": "They function as a screening matrix, neutralizing imperial tracking cantrips.\"",
             "bubbleType": "thought",
             "position": "top-left",
-            "characterCardId": 50
+            "characterCardId": 11
           }
         ],
         "sfxCues": [
@@ -42653,13 +42653,13 @@
         "background": "a towering dragon precipice among crags",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“시작하자!” 카단의 기합과 함께 세 사람의 마나가 폭발하듯 뿜어져 나왔다. 카단의 손끝에서는 북방 혹한을 견뎌낸 맑고 투명한 별빛 마나가 흘러들었고, 실리아의 손끝에서는 대지를 소생시키는 비취빛 바람 마나가 소용돌이쳤다.",
             "textEn": "\"Now!\"",
             "bubbleType": "shout",
             "position": "bottom-right",
-            "characterCardId": 62
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -45240,13 +45240,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "실비아",
+            "speakerEn": "Sylvia",
             "textKo": "실비아 영애는 풀려난 손목을 감싸 쥐며 눈물을 흘렸다. “루시안은 제 가문의 고대 영지 증서를 빼앗기 위해 제 부모님을 감옥에 가두었습니다. 제발 제 가문과 백성들을 구해주세요!”",
             "textEn": "Princess Cilia...",
             "bubbleType": "shout",
             "position": "bottom-right",
-            "characterCardId": 41
+            "characterCardId": 62
           }
         ],
         "sfxCues": [
@@ -45349,13 +45349,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "이그니스",
-            "speakerEn": "Ignis",
+            "speakerKo": "수도의 시민들",
+            "speakerEn": "Capital Citizens",
             "textKo": "“저 방패는... 옛 성기사단의 문장이다! 성기사단이 살아 돌아왔다!”",
             "textEn": "\"That crest... The Arcane Holy Knights have returned!\"",
             "bubbleType": "shout",
             "position": "bottom-left",
-            "characterCardId": 11
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -45384,13 +45384,13 @@
         "background": "a grand palace court with towering arches and throne room",
         "dialogues": [
           {
-            "speakerKo": "루시안",
-            "speakerEn": "Lucian",
+            "speakerKo": "수도의 시민들",
+            "speakerEn": "Capital Citizens",
             "textKo": "“이그니스 기사단장님이 황궁의 반역자들에게 맞서고 계신다!” 시민들의 외침에 겁에 질린 루시안은 사제들의 호위를 받으며 제단 뒤편의 비밀 철문으로 도망치기 시작했다.",
             "textEn": "\"Commander Ignis fights against the court's assassins!\" Terrified by the rising tide of public revolt, Lucian fled toward the private iron sally port behind the altar under heavy escort.",
             "bubbleType": "shout",
             "position": "bottom-right",
-            "characterCardId": 61
+            "characterCardId": 11
           }
         ],
         "sfxCues": [
@@ -47473,13 +47473,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "이그니스",
-            "speakerEn": "Ignis",
+            "speakerKo": "발타자르",
+            "speakerEn": "Balthazar",
             "textKo": "“내일 밤 자정... 평의회에서... 황제 폐하의 영혼을 제물로 바치는 의식이... 거행될 것이다...”",
             "textEn": "Did you not teach me that a true knight is a shield for the weak?\"",
             "bubbleType": "thought",
             "position": "bottom-right",
-            "characterCardId": 11
+            "characterCardId": 83
           }
         ],
         "sfxCues": [
@@ -47857,13 +47857,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "이그니스",
+            "speakerEn": "Ignis",
             "textKo": "“내일 밤이면 모든 것이 끝난다. 내 목숨이 다하는 한이 있더라도, 황제 폐하와 무고한 백성들을 반드시 구해내겠다.”",
             "textEn": "Gathered around a small brazier beneath the shadow of the Obsidian Spire, the three companions studied the palace blueprints.",
             "bubbleType": "speech",
             "position": "bottom-left",
-            "characterCardId": 41
+            "characterCardId": 11
           }
         ],
         "sfxCues": [
@@ -48870,13 +48870,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "이그니스",
+            "speakerEn": "Ignis",
             "textKo": "“두 사람의 정다운 대화를 방해한 것은 아닌지 모르겠군.” 카단이 차를 건네며 대답했다.",
             "textEn": "\"I trust I am not intruding upon your peace.\" Handing him a cup of tea, Kadan shook his head.",
             "bubbleType": "speech",
             "position": "bottom-left",
-            "characterCardId": 41
+            "characterCardId": 11
           }
         ],
         "sfxCues": [
@@ -48974,13 +48974,13 @@
         "background": "an abyssal void and dimensional tear battlefield",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "이그니스",
+            "speakerEn": "Ignis",
             "textKo": "“내일 밤 평의회에서... 나는 루시안과 끝장을 볼 생각이다. 내 아버지가 뒤집어썼던 누명과, 내 칼에 희생되었던 무고한 사람들의 넋을 달래기 위해, 내 목숨을 던져서라도 루시안의 심연 마법을 끊어내겠다.”",
             "textEn": "\"Tomorrow night, I will settle the final debt with Lucian.",
             "bubbleType": "thought",
             "position": "top-right",
-            "characterCardId": 41
+            "characterCardId": 11
           }
         ],
         "sfxCues": [
@@ -49343,13 +49343,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "이그니스",
+            "speakerEn": "Ignis",
             "textKo": "“만약 내게 무슨 일이 생기거든... 이 불씨를 쥐고 끝까지 살아남아 다오. 그리고 내 몫까지 세상을 지켜다오.”",
             "textEn": "When Kadan tried to return the phial, Ignis held his wrist in an unyielding grip.",
             "bubbleType": "shout",
             "position": "bottom-right",
-            "characterCardId": 62
+            "characterCardId": 11
           }
         ],
         "sfxCues": [
@@ -50687,13 +50687,13 @@
         "background": "a volcanic magma citadel and flame chamber",
         "dialogues": [
           {
-            "speakerKo": "이그니스",
-            "speakerEn": "Ignis",
+            "speakerKo": "루시안",
+            "speakerEn": "Lucian",
             "textKo": "이그니스의 백색 화염은 루시안의 암흑 결계를 맹렬하게 집어삼켰다. 불길 속에서 루시안의 진홍빛 법복이 누더기로 타들어갔다. “괴물 같은 놈들! 감히 내 신세계를 방해하다니!”",
             "textEn": "Then let this entire palace burn to ash in the abyss!\"",
             "bubbleType": "shout",
             "position": "top-right",
-            "characterCardId": 11
+            "characterCardId": 83
           }
         ],
         "sfxCues": [
@@ -52819,13 +52819,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "그림리",
-            "speakerEn": "Grimli",
+            "speakerKo": "론돌",
+            "speakerEn": "Rondol",
             "textKo": "“하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘사문(四門)의 독’ 결계를 통과해야 한다.”",
             "textEn": "\"Master Aleksandar and Queen Sylphid smile upon your wisdom from the heavens.\"",
             "bubbleType": "speech",
             "position": "top-right",
-            "characterCardId": 74
+            "characterCardId": 98
           }
         ],
         "sfxCues": [
@@ -53817,13 +53817,13 @@
             "characterCardId": 62
           },
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“가자, 최후의 결전지로.”",
             "textEn": "“\"So long as this fire burns, we shall never lose our way.\" United in grief and unwavering resolve, the companions marched toward the final abyss.”",
             "bubbleType": "speech",
             "position": "top-right",
-            "characterCardId": 62
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -55965,13 +55965,13 @@
         "background": "an ocean coast with dark waves and ancient shipwrecks",
         "dialogues": [
           {
-            "speakerKo": "그림리",
-            "speakerEn": "Grimli",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“이 일대의 나룻배를 독점하고 있는 자가 있다고 들었다.” 그림리가 침을 뱉으며 대답했다.",
             "textEn": "\"I understand a solitary overlord monopolizes all the river barges.\" Spitting into the sand, Grimli replied in disgust.",
             "bubbleType": "speech",
             "position": "bottom-right",
-            "characterCardId": 74
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -56483,13 +56483,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "보가트",
+            "speakerEn": "Bogart",
             "textKo": "“하지만 네놈이 진다면... 그 전설의 방패를 쥔 네 왼팔을 통째로 잘라 내 도박장의 장식품으로 걸어두겠다! 어때, 내기에 걸겠느냐?”",
             "textEn": "We can compensate you generously in imperial gold.\"",
             "bubbleType": "shout",
             "position": "bottom-left",
-            "characterCardId": 62
+            "characterCardId": 85
           }
         ],
         "sfxCues": [
@@ -59186,13 +59186,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "환마 릴리스",
+            "speakerEn": "Succubus Lilith",
             "textKo": "“크아악! 천박한 피리 소리가 내 예술을 망치다니!” 카단이 방패를 앞으로 내지르며 도약했다.",
             "textEn": "Reaching into his tunic, Kadan placed the warm White Glass Ember into her trembling palm. \"We have an unbroken covenant to fulfill.",
             "bubbleType": "shout",
             "position": "bottom-left",
-            "characterCardId": 41
+            "characterCardId": 55
           }
         ],
         "sfxCues": [
@@ -59222,13 +59222,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "그림리",
-            "speakerEn": "Grimli",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“스승님과 동료들의 영혼을 모독한 죄, 여기서 끝이다!” 카단의 방패 강타가 릴리스의 흉갑을 산산조각 냈고, 뒤이어 론돌과 그림리의 맹렬한 연격이 환마를 완전히 소멸시켰다.",
             "textEn": "Remember our promise to watch the green barley sprout through the northern snows together.\"",
             "bubbleType": "shout",
             "position": "bottom-right",
-            "characterCardId": 74
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -59639,13 +59639,13 @@
             "characterCardId": 62
           },
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“목숨을 걸고 지키마.”",
             "textEn": "“The final hour had arrived.”",
             "bubbleType": "speech",
             "position": "bottom-right",
-            "characterCardId": 62
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -60733,13 +60733,13 @@
         "background": "an ocean coast with dark waves and ancient shipwrecks",
         "dialogues": [
           {
-            "speakerKo": "가웨인",
-            "speakerEn": "Gawain",
+            "speakerKo": "론돌",
+            "speakerEn": "Rondol",
             "textKo": "“뼈다귀 도마뱀 놈아, 바다의 짠맛을 보아라!” 진흙 기둥이 골룡의 날개를 강타하며 균형을 무너뜨렸고, 가웨인이 허공으로 도약해 폭풍의 참격으로 첫 번째 골룡의 목뼈를 단숨에 절단해 버렸다.",
             "textEn": "Seizing the opening, Rondol raised a massive mud spout with his pegleg, throwing the lead drake off balance.",
             "bubbleType": "shout",
             "position": "top-left",
-            "characterCardId": 45
+            "characterCardId": 98
           }
         ],
         "sfxCues": [
@@ -62914,13 +62914,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "론돌",
+            "speakerEn": "Rondol",
             "textKo": "“대륙의 미래를 부탁한다, 성기사의 후예여!” 쿠구구구궁!",
             "textEn": "\"We entrust the future to your shield, heir of the Holy Order!\"",
             "bubbleType": "shout",
             "position": "top-left",
-            "characterCardId": 62
+            "characterCardId": 98
           }
         ],
         "sfxCues": [
@@ -67232,13 +67232,13 @@
             "characterCardId": 62
           },
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“가자. 평화로운 새벽을 되찾으러!”",
             "textEn": "“Beyond lay the blood-drenched Throne of Ruin, and the monstrous silhouette of High Chancellor Lucian waiting in the dark.”",
             "bubbleType": "shout",
             "position": "top-left",
-            "characterCardId": 62
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -68462,13 +68462,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "카르낙",
+            "speakerEn": "Karnak",
             "textKo": "“어째서... 어째서 고르고 님의 절대적인 피의 힘이... 일개 무쇠 방패 따위에 밀린단 말인가...”",
             "textEn": "Kneeling in the rubble, Karnak coughed black bile, staring at Kadan's clear, unblemished gaze with tears of bitter repentance.",
             "bubbleType": "thought",
             "position": "bottom-right",
-            "characterCardId": 41
+            "characterCardId": 83
           }
         ],
         "sfxCues": [
@@ -72255,13 +72255,13 @@
         "background": "a snowbound Lighthaven frontier under a violent blue-white blizzard",
         "dialogues": [
           {
-            "speakerKo": "루시안",
-            "speakerEn": "Lucian",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "루시안은 바닥을 기며 살려달라고 애원했지만, 카단의 눈빛은 얼어붙은 강물처럼 차가웠다. “네가 앗아간 수많은 목숨들의 무게를 뼈저리게 느껴라. 죗값은 법과 역사의 엄정한 심판대에서 치러질 것이다.”",
             "textEn": "\"The villages you burned, the captives who perished in the mines, and the lives of my masters and Ignis cannot be bought with gold.",
             "bubbleType": "speech",
             "position": "top-right",
-            "characterCardId": 61
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -73233,13 +73233,13 @@
         "background": "an ocean coast with dark waves and ancient shipwrecks",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "황제",
+            "speakerEn": "Emperor",
             "textKo": "“또한 바람 속삭임 섬의 왕녀 실리아에게 제국의 황후이자 동부 연맹의 총섭정 관을 바치노라!”",
             "textEn": "\"People of the continent!",
             "bubbleType": "shout",
             "position": "bottom-left",
-            "characterCardId": 62
+            "characterCardId": 86
           }
         ],
         "sfxCues": [
@@ -73408,13 +73408,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "제국의 백성들",
+            "speakerEn": "Imperial Citizens",
             "textKo": "황제의 칙령 낭독이 끝나자 광장은 떠나갈 듯한 함성으로 뒤덮였다. “카단 대원수 만세! 실리아 황후 전하 만세!”",
             "textEn": "Yet Kadan and Cilia stood before the dais clad not in velvet robes, but in simple traveler's furs and rough linen.",
             "bubbleType": "shout",
             "position": "bottom-right",
-            "characterCardId": 62
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
@@ -73581,13 +73581,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "실리아",
-            "speakerEn": "Celia",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“저는 영웅이 아니라, 단지 혹한 속에서 얼어 죽어가던 스승님과 이그니스의 온기를 등 뒤에 전하고자 방패를 들었던 한 사람의 방랑자에 불과합니다.”",
             "textEn": "Cilia placed her jade staff upon the stone steps, offering a serene smile. \"Nor can I accept an imperial crown.",
             "bubbleType": "speech",
             "position": "top-left",
-            "characterCardId": 62
+            "characterCardId": 41
           }
         ],
         "sfxCues": [
