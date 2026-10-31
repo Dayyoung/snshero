@@ -28,7 +28,7 @@ import {
 import { MovieVfxCanvas, MovieVfxType } from './MovieVfxCanvas';
 import { movieAudio, MovieBgmTheme, MovieSfxType } from '../../lib/MovieAudioSynthesizer';
 import { MOVIE_EPISODES, getCharacterPortraitUrl } from '../../content/movieEpisodeMapping';
-import WEBTOON_MANIFEST from '../../content/webtoonEpisodeManifest.json';
+import CINEMA_MANIFEST from '../../content/cinemaEpisodeManifest.json';
 import { triggerHaptic } from '../../lib/haptic';
 
 export type CinemaLutPreset = 'imax-70mm' | 'cold-blizzard' | 'warm-torch' | 'noir-grain';
@@ -103,7 +103,7 @@ const LUT_PRESETS: Array<{ id: CinemaLutPreset; labelKo: string; labelEn: string
 ];
 
 const buildLiveActionScenes = (epNum: number): LiveActionScene[] => {
-  const manifest = WEBTOON_MANIFEST as Record<
+  const manifest = CINEMA_MANIFEST as unknown as Record<
     string,
     {
       episodeNumber: number;
@@ -148,8 +148,8 @@ const buildLiveActionScenes = (epNum: number): LiveActionScene[] => {
   const padEp = String(epNum).padStart(2, '0');
 
   if (!epData || !epData.images || epData.images.length === 0) {
-    return Array.from({ length: 20 }, (_, i) => {
-      const padSc = String(i).padStart(2, '0');
+    return Array.from({ length: 27 }, (_, i) => {
+      const padSc = String(i + 1).padStart(2, '0');
       return {
         sceneNumber: i + 1,
         cinemaImageUrl: `/images/cinema/episode_${padEp}/scene_${padSc}.webp`,
@@ -165,7 +165,7 @@ const buildLiveActionScenes = (epNum: number): LiveActionScene[] => {
   }
 
   return epData.images.map((img, idx) => {
-    const isTitleCard = img.type === 'title_card' || idx === 0;
+    const isTitleCard = img.type === 'title_card';
     const textKo = isTitleCard
       ? `제 ${epNum}화: ${meta?.titleKo || img.narrationKo || ''}`
       : (img.narrationKo || '');

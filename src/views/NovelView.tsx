@@ -25,6 +25,7 @@ import { useCardSkins } from '../hooks/useCardSkins';
 import { getCharacterArtPrompt } from '../content/characterArtPrompts';
 import { ENGLISH_NOVEL_MAP } from '../content/englishNovelMapping';
 import WEBTOON_MANIFEST from '../content/webtoonEpisodeManifest.json';
+import CINEMA_MANIFEST from '../content/cinemaEpisodeManifest.json';
 import {
   WebtoonPanelCard,
   WebtoonSpeechBubble,
@@ -57,6 +58,7 @@ interface WebtoonManifestEpisode {
 }
 
 const WEBTOON_DATA = WEBTOON_MANIFEST as unknown as Record<string, WebtoonManifestEpisode>;
+const CINEMA_DATA = CINEMA_MANIFEST as unknown as Record<string, WebtoonManifestEpisode>;
 
 interface NovelViewProps {
   language: Language;
@@ -253,24 +255,28 @@ export const NovelView: React.FC<NovelViewProps> = ({
     });
   };
 
-  // Get cartoon image info for a specific episode and scene index (0..N)
+  const activeCartoonData = cartoonArtStyle === 'liveaction' ? CINEMA_DATA : WEBTOON_DATA;
+
+  // Get cartoon image info for a specific episode and scene index
   const getCartoonImageInfo = (epNum: number, sceneIdx: number): WebtoonManifestImage | undefined => {
-    const epData = WEBTOON_DATA[String(epNum)];
+    const epData = activeCartoonData[String(epNum)];
     if (!epData || !epData.images) return undefined;
     return epData.images.find(img => img.index === sceneIdx);
   };
 
-  const totalEpisodeScenes = Math.max(
-    1,
-    (WEBTOON_DATA[String(currentEpisodeNum)]?.images?.length || 21) - 1
-  );
+  const currentEpisodeImages = activeCartoonData[String(currentEpisodeNum)]?.images || [];
+  const episodeSceneIndices = currentEpisodeImages.length > 0
+    ? currentEpisodeImages.map(img => img.index)
+    : Array.from({ length: 27 }, (_, i) => i + 1);
+  const minEpisodeSceneIndex = episodeSceneIndices[0] ?? 0;
+  const totalEpisodeScenes = episodeSceneIndices[episodeSceneIndices.length - 1] ?? 27;
 
   // Get cartoon scene image URL candidate pointing to local webtoon or live-action cinema assets
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
     const epPad = pad2(epNum);
     const scPad = pad2(sceneIdx);
     const cacheBust = '?v=conquest2009_v10';
-    const epData = WEBTOON_DATA[String(epNum)];
+    const epData = activeCartoonData[String(epNum)];
     const imgInfo = epData?.images?.find(img => img.index === sceneIdx);
     if (imgInfo?.type === 'ending_promo') {
       return `${imgInfo.localArtUrl || imgInfo.imageUrl}${cacheBust}`;
@@ -1716,7 +1722,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
               {/* Vertical Scroll Webtoon Strip View */}
               {cartoonDisplayMode === 'scroll' ? (
                 <div className="space-y-4 sm:space-y-6 w-full">
-                  {Array.from({ length: totalEpisodeScenes + 1 }, (_, i) => i).map((scNum) => {
+                  {episodeSceneIndices.map((scNum) => {
                     const attempt = sceneImgAttempts[`${currentEpisodeNum}_${scNum}`] || 0;
                     const isFailedAll = attempt > 10;
                     const imgUrl = getCartoonSceneUrl(currentEpisodeNum, scNum, attempt);
@@ -1758,7 +1764,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                 /* Single Slide Mode View */
                 <div className="w-full border-y border-x-0 border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] overflow-hidden px-0 py-3 space-y-3">
                   {(() => {
-                    const scNum = Math.min(activeSlideIndex, totalEpisodeScenes);
+                    const scNum = Math.max(minEpisodeSceneIndex, Math.min(activeSlideIndex, totalEpisodeScenes));
                     const attempt = sceneImgAttempts[`${currentEpisodeNum}_${scNum}`] || 0;
                     const isFailedAll = attempt > 10;
                     const imgUrl = getCartoonSceneUrl(currentEpisodeNum, scNum, attempt);
@@ -1777,7 +1783,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             {scNum === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(scNum)} / ${pad2(totalEpisodeScenes)}`}
                           </span>
                           <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1">
-                            {Array.from({ length: totalEpisodeScenes + 1 }, (_, i) => i).map(n => (
+                            {episodeSceneIndices.map(n => (
                               <button
                                 key={n}
                                 onClick={() => setActiveSlideIndex(n)}
@@ -1822,11 +1828,11 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         {/* Prev / Next Slide Navigation Buttons */}
                         <div className="flex items-center justify-between px-3 sm:px-4 pt-2">
                           <button
-                            onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
-                            disabled={scNum <= 0}
+                            onClick={() => setActiveSlideIndex(prev => Math.max(minEpisodeSceneIndex, prev - 1))}
+                            disabled={scNum <= minEpisodeSceneIndex}
                             className={cn(
                               "min-h-[44px] px-4 py-2 border rounded-sm font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-colors",
-                              scNum <= 0 ? "opacity-50 cursor-not-allowed bg-[#f1eeee] border-[rgba(15,0,0,0.12)]" : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
+                              scNum <= minEpisodeSceneIndex ? "opacity-50 cursor-not-allowed bg-[#f1eeee] border-[rgba(15,0,0,0.12)]" : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
                             )}
                           >
                             <ChevronLeft size={16} />
@@ -2304,7 +2310,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
             {/* Prev Scene Arrow */}
             <button
-              onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev > 0 ? prev - 1 : totalEpisodeScenes))}
+              onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev > minEpisodeSceneIndex ? prev - 1 : totalEpisodeScenes))}
               className="min-h-[44px] min-w-[44px] absolute left-2 top-1/2 -translate-y-1/2 p-3 bg-[#201d1d] hover:bg-black text-[#fdfcfc] rounded-sm border border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors flex items-center justify-center z-30"
               title="Previous Scene"
             >
@@ -2313,7 +2319,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
             {/* Next Scene Arrow */}
             <button
-              onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev < totalEpisodeScenes ? prev + 1 : 0))}
+              onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev < totalEpisodeScenes ? prev + 1 : minEpisodeSceneIndex))}
               className="min-h-[44px] min-w-[44px] absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-[#201d1d] hover:bg-black text-[#fdfcfc] rounded-sm border border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors flex items-center justify-center z-30"
               title="Next Scene"
             >
