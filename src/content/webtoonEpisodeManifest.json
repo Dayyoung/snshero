@@ -18862,13 +18862,13 @@
         "background": "a frozen mountain canyon bridge and icy waterfall cliff",
         "dialogues": [
           {
-            "speakerKo": "발리안",
-            "speakerEn": "Balian",
+            "speakerKo": "카단",
+            "speakerEn": "Kadan",
             "textKo": "“숙부님... 제가 알렉산다르의 아들 카단입니다.” 카단이 무릎을 꿇자 발리안은 거친 손으로 소년의 뺨을 어루만졌다. 발리안은 열여덟 해 전 눈보라 치던 다리 절벽에서 죽지 않았다.",
             "textEn": "\"Uncle... I am Kadan, son of Aleksandar.\" As Kadan sank to one knee, Balian reached out a weathered hand to cradle the boy's cheek with rough tenderness. Balian had not perished beneath the blizzard-swept bridge chasm eighteen winters ago.",
             "bubbleType": "thought",
             "position": "bottom-left",
-            "characterCardId": 43
+            "characterCardId": 0
           }
         ],
         "sfxCues": [
@@ -19013,13 +19013,13 @@
         "background": "a subterranean cavern with ancient chains and golden rune circles",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "이그니스",
+            "speakerEn": "Ignis",
             "textKo": "“어디로 도망치려 하느냐. 황궁의 지하를 더럽힌 죄수 놈들아!” 카단은 맞서 싸우는 대신, 품속에서 꺼낸 어머니 엘윈의 서한과 비밀 일지를 이그니스의 발밑으로 던졌다.",
             "textEn": "\"Where do you think you are fleeing, vile convicts who dare defile the imperial vaults?\" Rather than raising his weapon, Kadan reached into his tunic, retrieved Lady Elwin's final missive and secret ledger, and tossed them deliberately at Ignis's polished boots.",
             "bubbleType": "shout",
             "position": "bottom-left",
-            "characterCardId": 41
+            "characterCardId": 2
           }
         ],
         "sfxCues": [
@@ -19266,13 +19266,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "이그니스",
-            "speakerEn": "Ignis",
+            "speakerKo": "발리안",
+            "speakerEn": "Balian",
             "textKo": "“엄지손가락을 그렇게 치켜세우면 불꽃이 네 손목 혈관을 태운단다.”",
             "textEn": "\"If you raise your thumb in that posture, the backdraft will scorch the tendons of your wrist, my child.\"",
             "bubbleType": "speech",
             "position": "top-right",
-            "characterCardId": 11
+            "characterCardId": 1
           }
         ],
         "sfxCues": [
@@ -19334,13 +19334,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "이그니스",
+            "speakerEn": "Ignis",
             "textKo": "“거짓말이다... 저 자는 흉악한 사형수일 뿐이다! 죄수의 세치 혀와 잔기술 따위는 내 핏줄의 증거가 될 수 없어!”",
             "textEn": "\"Lies... this man is nothing more than a condemned felon! The cunning tongue and petty tricks of a prisoner cannot prove noble blood!\"",
             "bubbleType": "shout",
             "position": "bottom-right",
-            "characterCardId": 41
+            "characterCardId": 2
           }
         ],
         "sfxCues": [
@@ -19737,13 +19737,13 @@
         "background": "",
         "dialogues": [
           {
-            "speakerKo": "카단",
-            "speakerEn": "Kadan",
+            "speakerKo": "메두사 고르고",
+            "speakerEn": "Medusa Gorgo",
             "textKo": "“벨페고르를 비참하게 죽인 살인마들이 바로 네놈들이었구나!” 카단은 숨이 막혀 헐떡이면서도 맑은 눈빛으로 고르고를 응시했다.",
             "textEn": "\"Murderers who slaughtered my Belphegor in cold blood!\" Though suffocating beneath her grip, Kadan held Gorgo's manic gaze with unblinking clarity.",
             "bubbleType": "shout",
             "position": "bottom-left",
-            "characterCardId": 41
+            "characterCardId": 6
           }
         ],
         "sfxCues": [
