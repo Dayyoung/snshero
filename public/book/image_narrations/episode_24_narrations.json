@@ -1063,13 +1063,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "바르토",
+          "speakerEn": "Barto",
           "textKo": "바르토가 흉포한 미소를 지으며 둔기를 내리찍었다. “쥐새끼들이 용케도 선대의 보물창고를 찾아냈구나! 그 전설의 방패를 바치고 목을 내놓아라!”",
           "textEn": "\"The northern rats unearthed the vault for us! Surrender the relics and offer your necks!\"",
           "bubbleType": "shout",
           "position": "bottom-left",
-          "characterCardId": 41
+          "characterCardId": 47
         }
       ],
       "sfxCues": [

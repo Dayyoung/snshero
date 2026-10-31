@@ -690,13 +690,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
           "textKo": "“일찍이 바람섬의 현자 에올루스 경에게서 배운 음파의 길을 기억하라. 살아 숨 쉬는 생명체가 공기를 가를 때, 바람은 그 자리를 비워두지 못하는 법이다!”",
           "textEn": "Remember the path of acoustics taught by Lord Aeolus of the Wind Isle! No living being can cut through the air without leaving a void in the gale!\"",
           "bubbleType": "shout",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 50
         }
       ],
       "sfxCues": [
@@ -1306,13 +1306,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
           "textKo": "“그에게는 눈처럼 영민하고 바람처럼 자유로운 외동딸 실리아가 있다고 들었다. 만약 섀도우렐름의 그림자가 그곳까지 닿았다면 장차 천하가 거대한 전화에 휩싸일 게다.”",
           "textEn": "It is said he has a daughter named Silia, sharp as diamond and free as the sea breeze. If the Shadow Realm touches her, war will engulf the world.\"",
           "bubbleType": "speech",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 50
         }
       ],
       "sfxCues": [

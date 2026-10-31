@@ -1096,13 +1096,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "우르삭",
+          "speakerEn": "Ursac",
           "textKo": "“가식 부리지 마라, 애송이! 아버지가 승리하면 네 목부터 베어 말뚝에 꽂을 것이다!”",
           "textEn": "\"Save your false pity, boy! When my father sweeps this hill, your severed skull shall crown a watchpost!\"",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 41
+          "characterCardId": 47
         }
       ],
       "sfxCues": [
@@ -1462,13 +1462,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "티타니아",
+          "speakerEn": "Titania",
           "textKo": "“나는 누군가의 전리품이나 보물이 아니야, 카단. 네가 남쪽에서 돌아왔을 때, 그때 내가 널 선택할지 다시 물어봐.”",
           "textEn": "\"I am neither prize nor chattel to be gifted, Kadan. When you return from the southern courts, ask me then whether I choose you.\"",
           "bubbleType": "speech",
           "position": "top-right",
-          "characterCardId": 41
+          "characterCardId": 64
         }
       ],
       "sfxCues": [

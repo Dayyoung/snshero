@@ -504,13 +504,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "메두사 고르고",
-          "speakerEn": "Medusa Gorgo",
+          "speakerKo": "발타자르",
+          "speakerEn": "Balthazar",
           "textKo": "발타자르가 난간을 짚으며 광기 어린 비웃음을 터뜨렸다. “어리석은 하층민 놈들과 반역자 기사들이여! 감히 황제의 궁정에 발을 들이다니, 오늘 밤 네놈들의 목을 베어 내궁 정원의 거름으로 삼아주마!”",
           "textEn": "Forward, Ignis.\"",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 89
+          "characterCardId": 45
         }
       ],
       "sfxCues": [
@@ -632,13 +632,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
+          "speakerKo": "발타자르",
+          "speakerEn": "Balthazar",
           "textKo": "발타자르가 조소했다. “명예 따위는 패배자들의 변명일 뿐이다! 힘이야말로 이 제국의 절대적인 법이다!”",
           "textEn": "How dare you set foot in the imperial gardens! Tonight, your severed heads shall fertilize my rose beds!\"",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 11
+          "characterCardId": 45
         }
       ],
       "sfxCues": [
@@ -1155,13 +1155,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
+          "speakerKo": "발타자르",
+          "speakerEn": "Balthazar",
           "textKo": "발타자르가 피 묻은 입술을 떨며 메마른 목소리로 중얼거렸다. “이그니스... 루시안 재상은... 단순한 반역자가 아니다... 그의 등 뒤에는... 나인섀도우의 진정한 군주, 심연의 대공 벨페고르가 버티고 있다...”",
           "textEn": "Crashing onto the flagstones, Balthazar lay mortally wounded, coughing black blood. Kneeling beside his former mentor, Ignis spoke through clenched teeth. \"Why... Why did you surrender your soul to Lucian's deceit, Count?",
           "bubbleType": "thought",
           "position": "bottom-left",
-          "characterCardId": 11
+          "characterCardId": 45
         }
       ],
       "sfxCues": [

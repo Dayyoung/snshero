@@ -266,13 +266,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
+          "speakerKo": "황궁 귀족들",
+          "speakerEn": "Courtiers",
           "textKo": "귀족들이 자리에서 일어나 열광적으로 박수를 보냈다. “보라, 발리안 경의 피를 이어받은 순백의 화염이다! 황실의 가장 순결한 검이 바로 저기에 있도다!”",
           "textEn": "Nobles rose to their feet in frantic adulation. \"Behold! The pure white fire inherited from Lord Balian himself! The most immaculate blade of the crown stands before us!\"",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 11
+          "characterCardId": 61
         }
       ],
       "sfxCues": [

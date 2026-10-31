@@ -923,13 +923,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
+          "speakerKo": "실비아",
+          "speakerEn": "Sylvia",
           "textKo": "실비아가 눈물을 닦으며 카단과 실리아를 올려다보았다. “빛의 기사님... 왕녀 전하... 저를 구해주셨군요...”",
           "textEn": "Tears spilling down her cheeks, Sylvia looked upon her deliverers in awe. \"Knights of the Light...",
           "bubbleType": "thought",
           "position": "bottom-left",
-          "characterCardId": 62
+          "characterCardId": 63
         }
       ],
       "sfxCues": [

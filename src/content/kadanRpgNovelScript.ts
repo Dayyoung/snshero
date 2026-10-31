@@ -4013,7 +4013,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_04/scene_21.webp",
           "narrationKo": "“야! 너 미쳤어? 날 내려놓고 도망쳐! 저놈들은 살인귀들이야!”",
           "narrationEn": "\"Are you insane? Leave me and run! They will slaughter you!\"",
-          "speakerKo": "카단",
+          "speakerKo": "길가메시",
           "speakerEn": "Kadan",
           "dialogueKo": "“야! 너 미쳤어? 날 내려놓고 도망쳐! 저놈들은 살인귀들이야!”",
           "dialogueEn": "\"Are you insane? Leave me and run! They will slaughter you!\""
@@ -4092,7 +4092,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_04/scene_25.webp",
           "narrationKo": "“활을 쏴라! 저 촌뜨기 놈까지 모조리 강물에 수장시켜라!”",
           "narrationEn": "\"Loose the quarrels! Drown the savage dog and the prince together!\" the pursuing leader roared.",
-          "speakerKo": "카단",
+          "speakerKo": "암살자 두목",
           "speakerEn": "Kadan",
           "dialogueKo": "“활을 쏴라! 저 촌뜨기 놈까지 모조리 강물에 수장시켜라!”",
           "dialogueEn": "\"Loose the quarrels! Drown the savage dog and the prince together!\" the pursuing leader roared."
@@ -5153,7 +5153,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_05/scene_23.webp",
           "narrationKo": "“일찍이 바람섬의 현자 에올루스 경에게서 배운 음파의 길을 기억하라. 살아 숨 쉬는 생명체가 공기를 가를 때, 바람은 그 자리를 비워두지 못하는 법이다!”",
           "narrationEn": "Remember the path of acoustics taught by Lord Aeolus of the Wind Isle! No living being can cut through the air without leaving a void in the gale!\"",
-          "speakerKo": "카단",
+          "speakerKo": "론돌",
           "speakerEn": "Kadan",
           "dialogueKo": "“일찍이 바람섬의 현자 에올루스 경에게서 배운 음파의 길을 기억하라. 살아 숨 쉬는 생명체가 공기를 가를 때, 바람은 그 자리를 비워두지 못하는 법이다!”",
           "dialogueEn": "Remember the path of acoustics taught by Lord Aeolus of the Wind Isle! No living being can cut through the air without leaving a void in the gale!\""
@@ -5771,7 +5771,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_05/scene_43.webp",
           "narrationKo": "“그에게는 눈처럼 영민하고 바람처럼 자유로운 외동딸 실리아가 있다고 들었다. 만약 섀도우렐름의 그림자가 그곳까지 닿았다면 장차 천하가 거대한 전화에 휩싸일 게다.”",
           "narrationEn": "It is said he has a daughter named Silia, sharp as diamond and free as the sea breeze. If the Shadow Realm touches her, war will engulf the world.\"",
-          "speakerKo": "카단",
+          "speakerKo": "론돌",
           "speakerEn": "Kadan",
           "dialogueKo": "“그에게는 눈처럼 영민하고 바람처럼 자유로운 외동딸 실리아가 있다고 들었다. 만약 섀도우렐름의 그림자가 그곳까지 닿았다면 장차 천하가 거대한 전화에 휩싸일 게다.”",
           "dialogueEn": "It is said he has a daughter named Silia, sharp as diamond and free as the sea breeze. If the Shadow Realm touches her, war will engulf the world.\""
@@ -6296,7 +6296,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_06/scene_17.webp",
           "narrationKo": "“손목에 힘이 너무 들어가 있어! 방패는 쇳덩이가 아니라 살아 숨 쉬는 가죽이어야 한단 말이다! 네 아비 알렉산다르는 두 자루 칼을 쥘 때 날아가는 독수리의 깃털처럼 가볍게 쥐었단 말이다!”",
           "narrationEn": "Your father Aleksandar held his twin blades as light as eagle down!\"",
-          "speakerKo": "카단",
+          "speakerKo": "그림리",
           "speakerEn": "Kadan",
           "dialogueKo": "“손목에 힘이 너무 들어가 있어! 방패는 쇳덩이가 아니라 살아 숨 쉬는 가죽이어야 한단 말이다! 네 아비 알렉산다르는 두 자루 칼을 쥘 때 날아가는 독수리의 깃털처럼 가볍게 쥐었단 말이다!”",
           "dialogueEn": "Your father Aleksandar held his twin blades as light as eagle down!\""
@@ -6474,7 +6474,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_06/scene_27.webp",
           "narrationKo": "“너는 오직 팔다리의 근육과 뼈의 힘으로만 절벽을 오르려 하는구나, 아이야. 그러니 산이 너를 밀어내는 것이다.”",
           "narrationEn": "\"You climb with brute muscle alone, child. That is why the mountain rejects you.\"",
-          "speakerKo": "카단",
+          "speakerKo": "성진 은자",
           "speakerEn": "Kadan",
           "dialogueKo": "“너는 오직 팔다리의 근육과 뼈의 힘으로만 절벽을 오르려 하는구나, 아이야. 그러니 산이 너를 밀어내는 것이다.”",
           "dialogueEn": "\"You climb with brute muscle alone, child. That is why the mountain rejects you.\""
@@ -6543,7 +6543,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_06/scene_30.webp",
           "narrationKo": "“천지 만물의 호흡에 귀를 기울이지 않고 제 고집으로만 부딪치는데, 산인들 어찌 너의 무례한 발길을 너그럽게 받아주겠느냐? 네 손에 쥔 칼과 방패도 이와 조금도 다르지 않다.”",
           "narrationEn": "The same is true of the steel in your hand.\" Without touching the rock with his hands, Malfurion walked lightly up the sheer vertical wall.",
-          "speakerKo": "카단",
+          "speakerKo": "성진 은자",
           "speakerEn": "Kadan",
           "dialogueKo": "“천지 만물의 호흡에 귀를 기울이지 않고 제 고집으로만 부딪치는데, 산인들 어찌 너의 무례한 발길을 너그럽게 받아주겠느냐? 네 손에 쥔 칼과 방패도 이와 조금도 다르지 않다.”",
           "dialogueEn": "The same is true of the steel in your hand.\" Without touching the rock with his hands, Malfurion walked lightly up the sheer vertical wall."
@@ -6914,7 +6914,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_06/scene_43.webp",
           "narrationKo": "“별을 세느라 등 뒤에 선 동료의 발소리를 놓친다면, 그 방패는 대체 누구를 위한 것이냐?”",
           "narrationEn": "\"If you count the stars so intently that you miss the tread of your comrade behind you, whom does that shield protect?\"",
-          "speakerKo": "카단",
+          "speakerKo": "론돌",
           "speakerEn": "Kadan",
           "dialogueKo": "“별을 세느라 등 뒤에 선 동료의 발소리를 놓친다면, 그 방패는 대체 누구를 위한 것이냐?”",
           "dialogueEn": "\"If you count the stars so intently that you miss the tread of your comrade behind you, whom does that shield protect?\""
@@ -7941,7 +7941,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_07/scene_37.webp",
           "narrationKo": "“가식 부리지 마라, 애송이! 아버지가 승리하면 네 목부터 베어 말뚝에 꽂을 것이다!”",
           "narrationEn": "\"Save your false pity, boy! When my father sweeps this hill, your severed skull shall crown a watchpost!\"",
-          "speakerKo": "카단",
+          "speakerKo": "우르삭",
           "speakerEn": "Kadan",
           "dialogueKo": "“가식 부리지 마라, 애송이! 아버지가 승리하면 네 목부터 베어 말뚝에 꽂을 것이다!”",
           "dialogueEn": "\"Save your false pity, boy! When my father sweeps this hill, your severed skull shall crown a watchpost!\""
@@ -8148,7 +8148,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_07/scene_49.webp",
           "narrationKo": "“나는 누군가의 전리품이나 보물이 아니야, 카단. 네가 남쪽에서 돌아왔을 때, 그때 내가 널 선택할지 다시 물어봐.”",
           "narrationEn": "\"I am neither prize nor chattel to be gifted, Kadan. When you return from the southern courts, ask me then whether I choose you.\"",
-          "speakerKo": "카단",
+          "speakerKo": "티타니아",
           "speakerEn": "Kadan",
           "dialogueKo": "“나는 누군가의 전리품이나 보물이 아니야, 카단. 네가 남쪽에서 돌아왔을 때, 그때 내가 널 선택할지 다시 물어봐.”",
           "dialogueEn": "\"I am neither prize nor chattel to be gifted, Kadan. When you return from the southern courts, ask me then whether I choose you.\""
@@ -8364,7 +8364,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_08/scene_08.webp",
           "narrationKo": "경매상이 굵은 쇠사슬을 휘두르며 소리쳤다. “단돈 은화 세 닢에 이 미친 괴물을 데려갈 용사 없소? 가까이 갔다간 대가리가 깨질 테니 조심들 하시오!”",
           "narrationEn": "The chief auctioneer cracked his iron chain against the dirt. \"Three silver pieces! Any gallant soul willing to claim this mad demon for three silver coins? Stand clear unless you fancy having your skulls caved in!\"",
-          "speakerKo": "내레이션",
+          "speakerKo": "경매상",
           "speakerEn": "Narration",
           "dialogueKo": "경매상이 굵은 쇠사슬을 휘두르며 소리쳤다. “단돈 은화 세 닢에 이 미친 괴물을 데려갈 용사 없소? 가까이 갔다간 대가리가 깨질 테니 조심들 하시오!”",
           "dialogueEn": "The chief auctioneer cracked his iron chain against the dirt. \"Three silver pieces! Any gallant soul willing to claim this mad demon for three silver coins? Stand clear unless you fancy having your skulls caved in!\""
@@ -8394,7 +8394,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_08/scene_11.webp",
           "narrationKo": "경매상이 사색이 되어 소리 질렀다. “이봐, 애송이! 뼈도 못 추리고 짓밟히고 싶어서 환장했어? 당장 물러서!”",
           "narrationEn": "The auctioneer turned pale, shrieking in horror. \"Boy! Are you possessed? Back away before you are trampled into red paste!\"",
-          "speakerKo": "카단",
+          "speakerKo": "경매상",
           "speakerEn": "Kadan",
           "dialogueKo": "경매상이 사색이 되어 소리 질렀다. “이봐, 애송이! 뼈도 못 추리고 짓밟히고 싶어서 환장했어? 당장 물러서!”",
           "dialogueEn": "The auctioneer turned pale, shrieking in horror. \"Boy! Are you possessed? Back away before you are trampled into red paste!\""
@@ -8542,7 +8542,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_08/scene_18.webp",
           "narrationKo": "곡물 상인이 몽둥이를 흔들며 악을 썼다. “이 도둑년아! 네놈이 방금 내 밀가루 자루를 훔쳐 숨겼지? 경비대를 불러 당장 감옥에 처넣겠다!”",
           "narrationEn": "The merchant brandished an ash truncheon, his face purple with rage. \"Thieving gutter-rat! You crept behind my grain sacks to steal flour! I'll hand you over to the garrison dungeons!\"",
-          "speakerKo": "실리아",
+          "speakerKo": "곡물 상인",
           "speakerEn": "Celia",
           "dialogueKo": "곡물 상인이 몽둥이를 흔들며 악을 썼다. “이 도둑년아! 네놈이 방금 내 밀가루 자루를 훔쳐 숨겼지? 경비대를 불러 당장 감옥에 처넣겠다!”",
           "dialogueEn": "The merchant brandished an ash truncheon, his face purple with rage. \"Thieving gutter-rat! You crept behind my grain sacks to steal flour! I'll hand you over to the garrison dungeons!\""
@@ -9307,7 +9307,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_09/scene_05.webp",
           "narrationKo": "황궁의 사회관이 황금 나팔을 불며 목청을 높였다. “와일드랜드에서 온 미천한 부랑자가 감히 황실 백색 화염 기사단의 명예에 도전장을 내밀었도다! 기사단장 이그니스 경의 자비 없는 심판을 보라!”",
           "narrationEn": "The court herald blew his gilded trumpet, his voice booming over the assembly. \"A vagabond wretch from the Wildlands dares challenge the sacred honor of the White Flame Order! Witness the immaculate judgment of High Commander Ignis!\"",
-          "speakerKo": "카단",
+          "speakerKo": "황궁 사회관",
           "speakerEn": "Kadan",
           "dialogueKo": "황궁의 사회관이 황금 나팔을 불며 목청을 높였다. “와일드랜드에서 온 미천한 부랑자가 감히 황실 백색 화염 기사단의 명예에 도전장을 내밀었도다! 기사단장 이그니스 경의 자비 없는 심판을 보라!”",
           "dialogueEn": "The court herald blew his gilded trumpet, his voice booming over the assembly. \"A vagabond wretch from the Wildlands dares challenge the sacred honor of the White Flame Order! Witness the immaculate judgment of High Commander Ignis!\""
@@ -10545,7 +10545,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_10/scene_09.webp",
           "narrationKo": "귀족들이 자리에서 일어나 열광적으로 박수를 보냈다. “보라, 발리안 경의 피를 이어받은 순백의 화염이다! 황실의 가장 순결한 검이 바로 저기에 있도다!”",
           "narrationEn": "Nobles rose to their feet in frantic adulation. \"Behold! The pure white fire inherited from Lord Balian himself! The most immaculate blade of the crown stands before us!\"",
-          "speakerKo": "이그니스",
+          "speakerKo": "황궁 귀족들",
           "speakerEn": "Ignis",
           "dialogueKo": "귀족들이 자리에서 일어나 열광적으로 박수를 보냈다. “보라, 발리안 경의 피를 이어받은 순백의 화염이다! 황실의 가장 순결한 검이 바로 저기에 있도다!”",
           "dialogueEn": "Nobles rose to their feet in frantic adulation. \"Behold! The pure white fire inherited from Lord Balian himself! The most immaculate blade of the crown stands before us!\""
@@ -13417,7 +13417,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_12/scene_27.webp",
           "narrationKo": "근위대 장교가 카단의 굳건한 방어에 이를 갈며 칼을 내리쳤다. “애송이 놈이 감히 황실 기병대의 진격을 가로막느냐! 네놈의 방패째로 베어버리마!”",
           "narrationEn": "An imperial officer swung his broadsword furiously against Kadan's guard. \"A vagrant pup dares block the imperial vanguard? I shall cleave your shield in two!\"",
-          "speakerKo": "카단",
+          "speakerKo": "근위대 장교",
           "speakerEn": "Kadan",
           "dialogueKo": "근위대 장교가 카단의 굳건한 방어에 이를 갈며 칼을 내리쳤다. “애송이 놈이 감히 황실 기병대의 진격을 가로막느냐! 네놈의 방패째로 베어버리마!”",
           "dialogueEn": "An imperial officer swung his broadsword furiously against Kadan's guard. \"A vagrant pup dares block the imperial vanguard? I shall cleave your shield in two!\""
@@ -16237,7 +16237,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_15/scene_07.webp",
           "narrationKo": "어부가 거친 숨을 몰아쉬며 화물을 탁자 위에 내려놓았다. “방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 쏜살같이 사라졌습니다! 수신인에 분명히 레오나르 장군님의 존함이 적혀 있었습니다.”",
           "narrationEn": "Panting heavily, the fisherman set the container down atop the heavy trestle table. \"Just moments ago, a black-sailed cutter slipped through the fog, hurled this crate onto the jetty, and vanished into the darkness! General Leonar's honored name is carved distinctly across the lid!\"",
-          "speakerKo": "카단",
+          "speakerKo": "어부",
           "speakerEn": "Kadan",
           "dialogueKo": "어부가 거친 숨을 몰아쉬며 화물을 탁자 위에 내려놓았다. “방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 쏜살같이 사라졌습니다! 수신인에 분명히 레오나르 장군님의 존함이 적혀 있었습니다.”",
           "dialogueEn": "Panting heavily, the fisherman set the container down atop the heavy trestle table. \"Just moments ago, a black-sailed cutter slipped through the fog, hurled this crate onto the jetty, and vanished into the darkness! General Leonar's honored name is carved distinctly across the lid!\""
@@ -17977,7 +17977,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_16/scene_33.webp",
           "narrationKo": "암살 대장이 흉포한 살기를 뿜어내며 소리쳤다. “역적 놈들과 황궁의 배신자를 한 놈도 남기지 말고 몰살해라! 저택과 배를 모조리 불태워 증거를 인멸하라!”",
           "narrationEn": "The inquisition commander barked with vicious malice. \"Slaughter the northern rebels and the imperial turncoat without mercy! Burn the manor and every ship to ash to leave zero evidence behind!\"",
-          "speakerKo": "카단",
+          "speakerKo": "암살 대장",
           "speakerEn": "Kadan",
           "dialogueKo": "암살 대장이 흉포한 살기를 뿜어내며 소리쳤다. “역적 놈들과 황궁의 배신자를 한 놈도 남기지 말고 몰살해라! 저택과 배를 모조리 불태워 증거를 인멸하라!”",
           "dialogueEn": "The inquisition commander barked with vicious malice. \"Slaughter the northern rebels and the imperial turncoat without mercy! Burn the manor and every ship to ash to leave zero evidence behind!\""
@@ -23313,7 +23313,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_21/scene_27.webp",
           "narrationKo": "한 어린아이가 카단의 무쇠 방패를 작은 손으로 만지며 울먹였다. “형아... 기사 아저씨들이 우리 집을 불태웠어요... 엄마는 어디로 간 거예요?”",
           "narrationEn": "A small girl touched Kadan's battered iron shield with her tiny fingers, weeping softly. \"Mister knight... The men in armor set fire to our home... Where has my mother gone?\"",
-          "speakerKo": "카단",
+          "speakerKo": "피난민 아이",
           "speakerEn": "Kadan",
           "dialogueKo": "한 어린아이가 카단의 무쇠 방패를 작은 손으로 만지며 울먹였다. “형아... 기사 아저씨들이 우리 집을 불태웠어요... 엄마는 어디로 간 거예요?”",
           "dialogueEn": "A small girl touched Kadan's battered iron shield with her tiny fingers, weeping softly. \"Mister knight... The men in armor set fire to our home... Where has my mother gone?\""
@@ -23547,7 +23547,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_21/scene_32.webp",
           "narrationKo": "감찰대장이 창고 문을 걷어차며 비열한 조소를 흘렸다. “숨어 있는 쥐새끼들이 감히 살아남아 있었군! 반역자들의 씨를 말려 바다에 던져라!”",
           "narrationEn": "Kicking down the outer door, the inquisition commander sneered in cruel triumph. \"So the vermin survived beneath the stones! Exterminate the traitors and feed their bones to the sea!\"",
-          "speakerKo": "루시안",
+          "speakerKo": "감찰대장",
           "speakerEn": "Lucian",
           "dialogueKo": "감찰대장이 창고 문을 걷어차며 비열한 조소를 흘렸다. “숨어 있는 쥐새끼들이 감히 살아남아 있었군! 반역자들의 씨를 말려 바다에 던져라!”",
           "dialogueEn": "Kicking down the outer door, the inquisition commander sneered in cruel triumph. \"So the vermin survived beneath the stones! Exterminate the traitors and feed their bones to the sea!\""
@@ -23654,7 +23654,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_21/scene_37.webp",
           "narrationKo": "“이그니스! 네놈이 정녕 황궁의 은혜를 저버리고 반역자들의 하수인이 되었단 말이냐! 루시안 재상 각하께서 네놈의 목에 제국 최고의 현상금을 거셨다!”",
           "narrationEn": "\"Ignis! Have you truly renounced the grace of the throne to become a lackey for northern rebels! Minister Lucian has placed the empire's greatest bounty upon your head!\"",
-          "speakerKo": "이그니스",
+          "speakerKo": "감찰대장",
           "speakerEn": "Ignis",
           "dialogueKo": "“이그니스! 네놈이 정녕 황궁의 은혜를 저버리고 반역자들의 하수인이 되었단 말이냐! 루시안 재상 각하께서 네놈의 목에 제국 최고의 현상금을 거셨다!”",
           "dialogueEn": "\"Ignis! Have you truly renounced the grace of the throne to become a lackey for northern rebels! Minister Lucian has placed the empire's greatest bounty upon your head!\""
@@ -26949,7 +26949,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_24/scene_34.webp",
           "narrationKo": "바르토가 흉포한 미소를 지으며 둔기를 내리찍었다. “쥐새끼들이 용케도 선대의 보물창고를 찾아냈구나! 그 전설의 방패를 바치고 목을 내놓아라!”",
           "narrationEn": "\"The northern rats unearthed the vault for us! Surrender the relics and offer your necks!\"",
-          "speakerKo": "카단",
+          "speakerKo": "바르토",
           "speakerEn": "Kadan",
           "dialogueKo": "바르토가 흉포한 미소를 지으며 둔기를 내리찍었다. “쥐새끼들이 용케도 선대의 보물창고를 찾아냈구나! 그 전설의 방패를 바치고 목을 내놓아라!”",
           "dialogueEn": "\"The northern rats unearthed the vault for us! Surrender the relics and offer your necks!\""
@@ -28006,7 +28006,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_25/scene_30.webp",
           "narrationKo": "실비아가 눈물을 닦으며 카단과 실리아를 올려다보았다. “빛의 기사님... 왕녀 전하... 저를 구해주셨군요...”",
           "narrationEn": "Tears spilling down her cheeks, Sylvia looked upon her deliverers in awe. \"Knights of the Light...",
-          "speakerKo": "실리아",
+          "speakerKo": "실비아",
           "speakerEn": "Celia",
           "dialogueKo": "실비아가 눈물을 닦으며 카단과 실리아를 올려다보았다. “빛의 기사님... 왕녀 전하... 저를 구해주셨군요...”",
           "dialogueEn": "Tears spilling down her cheeks, Sylvia looked upon her deliverers in awe. \"Knights of the Light..."
@@ -28885,7 +28885,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_26/scene_17.webp",
           "narrationKo": "발타자르가 난간을 짚으며 광기 어린 비웃음을 터뜨렸다. “어리석은 하층민 놈들과 반역자 기사들이여! 감히 황제의 궁정에 발을 들이다니, 오늘 밤 네놈들의 목을 베어 내궁 정원의 거름으로 삼아주마!”",
           "narrationEn": "Forward, Ignis.\"",
-          "speakerKo": "메두사 고르고",
+          "speakerKo": "발타자르",
           "speakerEn": "Medusa Gorgo",
           "dialogueKo": "발타자르가 난간을 짚으며 광기 어린 비웃음을 터뜨렸다. “어리석은 하층민 놈들과 반역자 기사들이여! 감히 황제의 궁정에 발을 들이다니, 오늘 밤 네놈들의 목을 베어 내궁 정원의 거름으로 삼아주마!”",
           "dialogueEn": "Forward, Ignis.\""
@@ -28973,7 +28973,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_26/scene_21.webp",
           "narrationKo": "발타자르가 조소했다. “명예 따위는 패배자들의 변명일 뿐이다! 힘이야말로 이 제국의 절대적인 법이다!”",
           "narrationEn": "How dare you set foot in the imperial gardens! Tonight, your severed heads shall fertilize my rose beds!\"",
-          "speakerKo": "이그니스",
+          "speakerKo": "발타자르",
           "speakerEn": "Ignis",
           "dialogueKo": "발타자르가 조소했다. “명예 따위는 패배자들의 변명일 뿐이다! 힘이야말로 이 제국의 절대적인 법이다!”",
           "dialogueEn": "How dare you set foot in the imperial gardens! Tonight, your severed heads shall fertilize my rose beds!\""
@@ -29450,7 +29450,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_26/scene_38.webp",
           "narrationKo": "발타자르가 피 묻은 입술을 떨며 메마른 목소리로 중얼거렸다. “이그니스... 루시안 재상은... 단순한 반역자가 아니다... 그의 등 뒤에는... 나인섀도우의 진정한 군주, 심연의 대공 벨페고르가 버티고 있다...”",
           "narrationEn": "Crashing onto the flagstones, Balthazar lay mortally wounded, coughing black blood. Kneeling beside his former mentor, Ignis spoke through clenched teeth. \"Why... Why did you surrender your soul to Lucian's deceit, Count?",
-          "speakerKo": "이그니스",
+          "speakerKo": "발타자르",
           "speakerEn": "Ignis",
           "dialogueKo": "발타자르가 피 묻은 입술을 떨며 메마른 목소리로 중얼거렸다. “이그니스... 루시안 재상은... 단순한 반역자가 아니다... 그의 등 뒤에는... 나인섀도우의 진정한 군주, 심연의 대공 벨페고르가 버티고 있다...”",
           "dialogueEn": "Crashing onto the flagstones, Balthazar lay mortally wounded, coughing black blood. Kneeling beside his former mentor, Ignis spoke through clenched teeth. \"Why... Why did you surrender your soul to Lucian's deceit, Count?"
@@ -31976,7 +31976,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_28/scene_47.webp",
           "narrationKo": "늙은 황제가 비틀거리며 다가와 카단의 어깨에 손을 얹었다. “고결한 기사의 영혼이... 제국과 백성들을 구원하였구나...”",
           "narrationEn": "Mortally wounded by the backlash, Lucian had fled through the subterranean conduits, while Artus dissolved into the shadows.",
-          "speakerKo": "카단",
+          "speakerKo": "황제",
           "speakerEn": "Kadan",
           "dialogueKo": "늙은 황제가 비틀거리며 다가와 카단의 어깨에 손을 얹었다. “고결한 기사의 영혼이... 제국과 백성들을 구원하였구나...”",
           "dialogueEn": "Mortally wounded by the backlash, Lucian had fled through the subterranean conduits, while Artus dissolved into the shadows."
@@ -32262,7 +32262,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_29/scene_07.webp",
           "narrationKo": "원로원 의장이 양피지 칙령을 받들어 올리며 고했다. “바람 속삭임 섬의 왕녀 전하여, 황제 폐하의 칙명으로 대륙 동부 연맹과 황실의 임시 섭정, ‘바람의 여왕’으로 즉위해 주실 것을 간청드립니다!”",
           "narrationEn": "\"Ignis is not dead.",
-          "speakerKo": "실리아",
+          "speakerKo": "원로원 의장",
           "speakerEn": "Celia",
           "dialogueKo": "원로원 의장이 양피지 칙령을 받들어 올리며 고했다. “바람 속삭임 섬의 왕녀 전하여, 황제 폐하의 칙명으로 대륙 동부 연맹과 황실의 임시 섭정, ‘바람의 여왕’으로 즉위해 주실 것을 간청드립니다!”",
           "dialogueEn": "\"Ignis is not dead."
@@ -32526,7 +32526,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_29/scene_22.webp",
           "narrationKo": "원로원 의장 역시 떨리는 손으로 양피지 칙령을 가슴에 품으며 깊이 고개를 숙였다. “왕녀 전하의 숭고한 뜻을 받들겠습니다. 황실의 모든 의용군과 기사단은 오직 왕녀 전하와 성기사의 방패를 따를 것입니다.”",
           "narrationEn": "A roar of tears, cheers, and heartfelt reverence erupted across the metropolis.",
-          "speakerKo": "실리아",
+          "speakerKo": "원로원 의장",
           "speakerEn": "Celia",
           "dialogueKo": "원로원 의장 역시 떨리는 손으로 양피지 칙령을 가슴에 품으며 깊이 고개를 숙였다. “왕녀 전하의 숭고한 뜻을 받들겠습니다. 황실의 모든 의용군과 기사단은 오직 왕녀 전하와 성기사의 방패를 따를 것입니다.”",
           "dialogueEn": "A roar of tears, cheers, and heartfelt reverence erupted across the metropolis."
@@ -32806,7 +32806,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_29/scene_35.webp",
           "narrationKo": "아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 사문의 독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”",
           "narrationEn": "\"Ignis is showing us the path. This is the structural flaw in their necrotic conduit.\"",
-          "speakerKo": "루시안",
+          "speakerKo": "아라크네",
           "speakerEn": "Lucian",
           "dialogueKo": "아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 사문의 독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”",
           "dialogueEn": "\"Ignis is showing us the path. This is the structural flaw in their necrotic conduit.\""
@@ -34696,7 +34696,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_31/scene_18.webp",
           "narrationKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 유사강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”",
           "narrationEn": "\"Heh-heh! The northern knight who shattered the palace gates graces my humble den!",
-          "speakerKo": "카단",
+          "speakerKo": "보가트",
           "speakerEn": "Kadan",
           "dialogueKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 유사강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”",
           "dialogueEn": "\"Heh-heh! The northern knight who shattered the palace gates graces my humble den!"
@@ -34783,7 +34783,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_31/scene_21.webp",
           "narrationKo": "“금화 따위는 시시해! 내기를 하자, 기사 양반! 내 주사위 놀음에서 네놈이 이기면 나룻배 백 척을 무상으로 내어주지.”",
           "narrationEn": "\"Name your price.",
-          "speakerKo": "카단",
+          "speakerKo": "보가트",
           "speakerEn": "Kadan",
           "dialogueKo": "“금화 따위는 시시해! 내기를 하자, 기사 양반! 내 주사위 놀음에서 네놈이 이기면 나룻배 백 척을 무상으로 내어주지.”",
           "dialogueEn": "\"Name your price."
@@ -34833,7 +34833,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_31/scene_26.webp",
           "narrationKo": "보가트가 금반지를 낀 손가락으로 수염을 꼬며 비열하게 웃었다. “북방의 늑대 알렉산다르의 제자라더니, 배짱 하나는 두둑하군! 하지만 이 도박판은 힘으로 이기는 곳이 아니야. 운명에 네 모가지를 걸어보란 말이다!”",
           "narrationEn": "Do you dare accept the wager?\" Cilia leveled her staff, her voice ringing in anger. \"A despicable cheat! We will not gamble human lives upon a table!\"",
-          "speakerKo": "카단",
+          "speakerKo": "보가트",
           "speakerEn": "Kadan",
           "dialogueKo": "보가트가 금반지를 낀 손가락으로 수염을 꼬며 비열하게 웃었다. “북방의 늑대 알렉산다르의 제자라더니, 배짱 하나는 두둑하군! 하지만 이 도박판은 힘으로 이기는 곳이 아니야. 운명에 네 모가지를 걸어보란 말이다!”",
           "dialogueEn": "Do you dare accept the wager?\" Cilia leveled her staff, her voice ringing in anger. \"A despicable cheat! We will not gamble human lives upon a table!\""
@@ -34941,7 +34941,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_31/scene_32.webp",
           "narrationKo": "“키히힉! 12다! 완벽한 만점이지! 네놈이 아무리 용을 써도 동점 아니면 패배다! 어서 네 왼팔을 모루 위에 올려놓아라!”",
           "narrationEn": "\"Heh-heh-heh!",
-          "speakerKo": "카단",
+          "speakerKo": "보가트",
           "speakerEn": "Kadan",
           "dialogueKo": "“키히힉! 12다! 완벽한 만점이지! 네놈이 아무리 용을 써도 동점 아니면 패배다! 어서 네 왼팔을 모루 위에 올려놓아라!”",
           "dialogueEn": "\"Heh-heh-heh!"
@@ -35266,7 +35266,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_31/scene_44.webp",
           "narrationKo": "보가트의 얼굴이 흙빛으로 변하며 턱이 덜덜 떨렸다. “마, 말도 안 돼! 주사위가 쪼개져서 13이 나오다니... 사기다! 이놈들을 모조리 쳐라!”",
           "narrationEn": "All pips face the ceiling. The wager is mine.\" Bogart's greenish skin paled as his jowls quivered in disbelief. \"Im-impossible!",
-          "speakerKo": "카단",
+          "speakerKo": "보가트",
           "speakerEn": "Kadan",
           "dialogueKo": "보가트의 얼굴이 흙빛으로 변하며 턱이 덜덜 떨렸다. “마, 말도 안 돼! 주사위가 쪼개져서 13이 나오다니... 사기다! 이놈들을 모조리 쳐라!”",
           "dialogueEn": "All pips face the ceiling. The wager is mine.\" Bogart's greenish skin paled as his jowls quivered in disbelief. \"Im-impossible!"
@@ -35362,7 +35362,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_31/scene_47.webp",
           "narrationKo": "도박판을 지켜보던 부랑배들이 웅성거리며 동요했다. “보가트 두목이 자석 주사위를 쓰고 있었잖아! 우리 돈을 사기로 털어간 거였어!” 고블린들의 사기가 바닥으로 떨어졌다.",
           "narrationEn": "Guards, butcher them all!\"",
-          "speakerKo": "카단",
+          "speakerKo": "도박꾼들",
           "speakerEn": "Kadan",
           "dialogueKo": "도박판을 지켜보던 부랑배들이 웅성거리며 동요했다. “보가트 두목이 자석 주사위를 쓰고 있었잖아! 우리 돈을 사기로 털어간 거였어!” 고블린들의 사기가 바닥으로 떨어졌다.",
           "dialogueEn": "Guards, butcher them all!\""
@@ -35402,7 +35402,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_31/scene_51.webp",
           "narrationKo": "보가트는 겁에 질려 오줌을 지리며 연신 머리를 조아렸다. “사, 살려주십시오! 나룻배 백 척... 아니 이백 척을 당장 내어드리겠습니다!”",
           "narrationEn": "I could sever your head for your fraud, but I grant you your life.",
-          "speakerKo": "카단",
+          "speakerKo": "보가트",
           "speakerEn": "Kadan",
           "dialogueKo": "보가트는 겁에 질려 오줌을 지리며 연신 머리를 조아렸다. “사, 살려주십시오! 나룻배 백 척... 아니 이백 척을 당장 내어드리겠습니다!”",
           "dialogueEn": "I could sever your head for your fraud, but I grant you your life."
@@ -36173,7 +36173,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_32/scene_29.webp",
           "narrationKo": "“카단... 내가... 내가 잠시 흔들렸어요...” 카단이 자신의 품속에서 이그니스의 따스한 유리 불씨를 꺼내 실리아의 손바닥 위에 얹어주었다.",
           "narrationEn": "Grasping Cilia's trembling shoulders, Kadan shook her with desperate conviction.",
-          "speakerKo": "카단",
+          "speakerKo": "실리아",
           "speakerEn": "Kadan",
           "dialogueKo": "“카단... 내가... 내가 잠시 흔들렸어요...” 카단이 자신의 품속에서 이그니스의 따스한 유리 불씨를 꺼내 실리아의 손바닥 위에 얹어주었다.",
           "dialogueEn": "Grasping Cilia's trembling shoulders, Kadan shook her with desperate conviction."
@@ -41591,7 +41591,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_37/scene_10.webp",
           "narrationKo": "북방 돌격대장 토르발트가 늑대의 갈기를 쥐며 화답했다. “형제들이여, 늑대의 송곳니를 보여주어라! 카단이 옥좌를 부술 때까지 단 한 놈의 마수도 살려보내지 마라!” 북방 전사들의 함성이 성채 하층부를 가득 메웠다.",
           "narrationEn": "Grant no quarter until the young paladin brings down the tyrant!\" Thousands of northern warriors banged their axes against their shields, their battle cries shaking the citadel walls and sealing the upper galleries against enemy reinforcements. Hearing the distant roar of battle at their backs, Kadan and Princess Cilia pushed forward through the upper arched colonnade.",
-          "speakerKo": "루시안",
+          "speakerKo": "토르발트",
           "speakerEn": "Lucian",
           "dialogueKo": "북방 돌격대장 토르발트가 늑대의 갈기를 쥐며 화답했다. “형제들이여, 늑대의 송곳니를 보여주어라! 카단이 옥좌를 부술 때까지 단 한 놈의 마수도 살려보내지 마라!” 북방 전사들의 함성이 성채 하층부를 가득 메웠다.",
           "dialogueEn": "Grant no quarter until the young paladin brings down the tyrant!\" Thousands of northern warriors banged their axes against their shields, their battle cries shaking the citadel walls and sealing the upper galleries against enemy reinforcements. Hearing the distant roar of battle at their backs, Kadan and Princess Cilia pushed forward through the upper arched colonnade."
@@ -41660,7 +41660,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_37/scene_13.webp",
           "narrationKo": "카르낙이 핏발 선 눈을 번뜩이며 포효했다. “이곳은 성채의 심장이다! 반역자 놈들아, 한 발자국도 지나갈 수 없다! 네놈들의 살점을 뜯어 제단의 피의 제물로 바치겠다!”",
           "narrationEn": "Karnak bared his fangs, his bloodshot eyes burning with unholy madness.",
-          "speakerKo": "메두사 고르고",
+          "speakerKo": "카르낙",
           "speakerEn": "Medusa Gorgo",
           "dialogueKo": "카르낙이 핏발 선 눈을 번뜩이며 포효했다. “이곳은 성채의 심장이다! 반역자 놈들아, 한 발자국도 지나갈 수 없다! 네놈들의 살점을 뜯어 제단의 피의 제물로 바치겠다!”",
           "dialogueEn": "Karnak bared his fangs, his bloodshot eyes burning with unholy madness."
@@ -42229,7 +42229,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_37/scene_38.webp",
           "narrationKo": "카르낙이 부러진 검을 내려놓으며 속삭였다. “그대의 방패는 진정... 대륙을 지탱할 산맥이로군... 루시안의 옥좌 뒤편에... 나인섀도우의 세 봉인이 숨겨져 있다... 부디 그 어둠을 부숴다오...”",
           "narrationEn": "Lay down your arms and await the breaking of the dawn.\"",
-          "speakerKo": "카단",
+          "speakerKo": "카르낙",
           "speakerEn": "Kadan",
           "dialogueKo": "카르낙이 부러진 검을 내려놓으며 속삭였다. “그대의 방패는 진정... 대륙을 지탱할 산맥이로군... 루시안의 옥좌 뒤편에... 나인섀도우의 세 봉인이 숨겨져 있다... 부디 그 어둠을 부숴다오...”",
           "dialogueEn": "Lay down your arms and await the breaking of the dawn.\""
@@ -45360,7 +45360,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_40/scene_27.webp",
           "narrationKo": "펜릴 왕이 카단의 잔을 채워주며 껄껄 웃었다. “북방의 설원으로 돌아가거든 내 언제든 사냥한 멧돼지 다리를 짊어지고 네 오두막을 찾아가마. 알렉산다르 형제의 무덤에 좋은 북방주를 부어주어야지.”",
           "narrationEn": "\"I shall never forget your kindness.",
-          "speakerKo": "카단",
+          "speakerKo": "펜릴",
           "speakerEn": "Kadan",
           "dialogueKo": "펜릴 왕이 카단의 잔을 채워주며 껄껄 웃었다. “북방의 설원으로 돌아가거든 내 언제든 사냥한 멧돼지 다리를 짊어지고 네 오두막을 찾아가마. 알렉산다르 형제의 무덤에 좋은 북방주를 부어주어야지.”",
           "dialogueEn": "\"I shall never forget your kindness."
@@ -45478,7 +45478,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_40/scene_34.webp",
           "narrationKo": "“약속을 지켰네요, 카단. 정말로 봄이 왔어요.” 카단이 부드럽게 웃으며 실리아의 손을 꼭 잡았다.",
           "narrationEn": "\"We kept our promise, Kadan.",
-          "speakerKo": "카단",
+          "speakerKo": "실리아",
           "speakerEn": "Kadan",
           "dialogueKo": "“약속을 지켰네요, 카단. 정말로 봄이 왔어요.” 카단이 부드럽게 웃으며 실리아의 손을 꼭 잡았다.",
           "dialogueEn": "\"We kept our promise, Kadan."

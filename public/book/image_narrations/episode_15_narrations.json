@@ -202,13 +202,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "어부",
+          "speakerEn": "Fisherman",
           "textKo": "어부가 거친 숨을 몰아쉬며 화물을 탁자 위에 내려놓았다. “방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 쏜살같이 사라졌습니다! 수신인에 분명히 레오나르 장군님의 존함이 적혀 있었습니다.”",
           "textEn": "Panting heavily, the fisherman set the container down atop the heavy trestle table. \"Just moments ago, a black-sailed cutter slipped through the fog, hurled this crate onto the jetty, and vanished into the darkness! General Leonar's honored name is carved distinctly across the lid!\"",
           "bubbleType": "shout",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 48
         }
       ],
       "sfxCues": [

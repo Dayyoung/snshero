@@ -138,13 +138,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "황궁 사회관",
+          "speakerEn": "Court Herald",
           "textKo": "황궁의 사회관이 황금 나팔을 불며 목청을 높였다. “와일드랜드에서 온 미천한 부랑자가 감히 황실 백색 화염 기사단의 명예에 도전장을 내밀었도다! 기사단장 이그니스 경의 자비 없는 심판을 보라!”",
           "textEn": "The court herald blew his gilded trumpet, his voice booming over the assembly. \"A vagabond wretch from the Wildlands dares challenge the sacred honor of the White Flame Order! Witness the immaculate judgment of High Commander Ignis!\"",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 41
+          "characterCardId": 48
         }
       ],
       "sfxCues": [

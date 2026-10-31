@@ -301,13 +301,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
+          "speakerKo": "토르발트",
+          "speakerEn": "Thorvald",
           "textKo": "북방 돌격대장 토르발트가 늑대의 갈기를 쥐며 화답했다. “형제들이여, 늑대의 송곳니를 보여주어라! 카단이 옥좌를 부술 때까지 단 한 놈의 마수도 살려보내지 마라!” 북방 전사들의 함성이 성채 하층부를 가득 메웠다.",
           "textEn": "Grant no quarter until the young paladin brings down the tyrant!\" Thousands of northern warriors banged their axes against their shields, their battle cries shaking the citadel walls and sealing the upper galleries against enemy reinforcements. Hearing the distant roar of battle at their backs, Kadan and Princess Cilia pushed forward through the upper arched colonnade.",
           "bubbleType": "shout",
           "position": "bottom-left",
-          "characterCardId": 61
+          "characterCardId": 47
         }
       ],
       "sfxCues": [
@@ -394,13 +394,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "메두사 고르고",
-          "speakerEn": "Medusa Gorgo",
+          "speakerKo": "카르낙",
+          "speakerEn": "Karnak",
           "textKo": "카르낙이 핏발 선 눈을 번뜩이며 포효했다. “이곳은 성채의 심장이다! 반역자 놈들아, 한 발자국도 지나갈 수 없다! 네놈들의 살점을 뜯어 제단의 피의 제물로 바치겠다!”",
           "textEn": "Karnak bared his fangs, his bloodshot eyes burning with unholy madness.",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 89
+          "characterCardId": 71
         }
       ],
       "sfxCues": [
@@ -1203,13 +1203,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "카르낙",
+          "speakerEn": "Karnak",
           "textKo": "카르낙이 부러진 검을 내려놓으며 속삭였다. “그대의 방패는 진정... 대륙을 지탱할 산맥이로군... 루시안의 옥좌 뒤편에... 나인섀도우의 세 봉인이 숨겨져 있다... 부디 그 어둠을 부숴다오...”",
           "textEn": "Lay down your arms and await the breaking of the dawn.\"",
           "bubbleType": "thought",
           "position": "bottom-left",
-          "characterCardId": 41
+          "characterCardId": 71
         }
       ],
       "sfxCues": [

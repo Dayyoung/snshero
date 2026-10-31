@@ -864,13 +864,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
           "textKo": "“카단... 내가... 내가 잠시 흔들렸어요...” 카단이 자신의 품속에서 이그니스의 따스한 유리 불씨를 꺼내 실리아의 손바닥 위에 얹어주었다.",
           "textEn": "Grasping Cilia's trembling shoulders, Kadan shook her with desperate conviction.",
           "bubbleType": "thought",
           "position": "top-right",
-          "characterCardId": 41
+          "characterCardId": 62
         }
       ],
       "sfxCues": [

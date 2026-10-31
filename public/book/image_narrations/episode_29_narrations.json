@@ -190,13 +190,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
+          "speakerKo": "원로원 의장",
+          "speakerEn": "Senate Chancellor",
           "textKo": "원로원 의장이 양피지 칙령을 받들어 올리며 고했다. “바람 속삭임 섬의 왕녀 전하여, 황제 폐하의 칙명으로 대륙 동부 연맹과 황실의 임시 섭정, ‘바람의 여왕’으로 즉위해 주실 것을 간청드립니다!”",
           "textEn": "\"Ignis is not dead.",
           "bubbleType": "shout",
           "position": "bottom-right",
-          "characterCardId": 62
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
@@ -637,13 +637,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
+          "speakerKo": "원로원 의장",
+          "speakerEn": "Senate Chancellor",
           "textKo": "원로원 의장 역시 떨리는 손으로 양피지 칙령을 가슴에 품으며 깊이 고개를 숙였다. “왕녀 전하의 숭고한 뜻을 받들겠습니다. 황실의 모든 의용군과 기사단은 오직 왕녀 전하와 성기사의 방패를 따를 것입니다.”",
           "textEn": "A roar of tears, cheers, and heartfelt reverence erupted across the metropolis.",
           "bubbleType": "speech",
           "position": "bottom-left",
-          "characterCardId": 62
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
@@ -1032,13 +1032,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
+          "speakerKo": "아라크네",
+          "speakerEn": "Arachne",
           "textKo": "아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 사문의 독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”",
           "textEn": "\"Ignis is showing us the path. This is the structural flaw in their necrotic conduit.\"",
           "bubbleType": "shout",
           "position": "bottom-right",
-          "characterCardId": 61
+          "characterCardId": 71
         }
       ],
       "sfxCues": [

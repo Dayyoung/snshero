@@ -498,13 +498,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
           "textKo": "“손목에 힘이 너무 들어가 있어! 방패는 쇳덩이가 아니라 살아 숨 쉬는 가죽이어야 한단 말이다! 네 아비 알렉산다르는 두 자루 칼을 쥘 때 날아가는 독수리의 깃털처럼 가볍게 쥐었단 말이다!”",
           "textEn": "Your father Aleksandar held his twin blades as light as eagle down!\"",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 41
+          "characterCardId": 74
         }
       ],
       "sfxCues": [
@@ -800,13 +800,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "성진 은자",
+          "speakerEn": "Star Hermit",
           "textKo": "“너는 오직 팔다리의 근육과 뼈의 힘으로만 절벽을 오르려 하는구나, 아이야. 그러니 산이 너를 밀어내는 것이다.”",
           "textEn": "\"You climb with brute muscle alone, child. That is why the mountain rejects you.\"",
           "bubbleType": "speech",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 66
         }
       ],
       "sfxCues": [
@@ -887,13 +887,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "성진 은자",
+          "speakerEn": "Star Hermit",
           "textKo": "“천지 만물의 호흡에 귀를 기울이지 않고 제 고집으로만 부딪치는데, 산인들 어찌 너의 무례한 발길을 너그럽게 받아주겠느냐? 네 손에 쥔 칼과 방패도 이와 조금도 다르지 않다.”",
           "textEn": "The same is true of the steel in your hand.\" Without touching the rock with his hands, Malfurion walked lightly up the sheer vertical wall.",
           "bubbleType": "speech",
           "position": "bottom-left",
-          "characterCardId": 41
+          "characterCardId": 66
         }
       ],
       "sfxCues": [
@@ -1270,13 +1270,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
           "textKo": "“별을 세느라 등 뒤에 선 동료의 발소리를 놓친다면, 그 방패는 대체 누구를 위한 것이냐?”",
           "textEn": "\"If you count the stars so intently that you miss the tread of your comrade behind you, whom does that shield protect?\"",
           "bubbleType": "speech",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 50
         }
       ],
       "sfxCues": [

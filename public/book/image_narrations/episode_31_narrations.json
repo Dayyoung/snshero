@@ -521,13 +521,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "보가트",
+          "speakerEn": "Bogart",
           "textKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 유사강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”",
           "textEn": "\"Heh-heh! The northern knight who shattered the palace gates graces my humble den!",
           "bubbleType": "shout",
           "position": "bottom-left",
-          "characterCardId": 41
+          "characterCardId": 77
         }
       ],
       "sfxCues": [
@@ -608,13 +608,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "보가트",
+          "speakerEn": "Bogart",
           "textKo": "“금화 따위는 시시해! 내기를 하자, 기사 양반! 내 주사위 놀음에서 네놈이 이기면 나룻배 백 척을 무상으로 내어주지.”",
           "textEn": "\"Name your price.",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 41
+          "characterCardId": 77
         }
       ],
       "sfxCues": [
@@ -753,13 +753,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "보가트",
+          "speakerEn": "Bogart",
           "textKo": "보가트가 금반지를 낀 손가락으로 수염을 꼬며 비열하게 웃었다. “북방의 늑대 알렉산다르의 제자라더니, 배짱 하나는 두둑하군! 하지만 이 도박판은 힘으로 이기는 곳이 아니야. 운명에 네 모가지를 걸어보란 말이다!”",
           "textEn": "Do you dare accept the wager?\" Cilia leveled her staff, her voice ringing in anger. \"A despicable cheat! We will not gamble human lives upon a table!\"",
           "bubbleType": "shout",
           "position": "bottom-left",
-          "characterCardId": 41
+          "characterCardId": 77
         }
       ],
       "sfxCues": [
@@ -927,13 +927,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "보가트",
+          "speakerEn": "Bogart",
           "textKo": "“키히힉! 12다! 완벽한 만점이지! 네놈이 아무리 용을 써도 동점 아니면 패배다! 어서 네 왼팔을 모루 위에 올려놓아라!”",
           "textEn": "\"Heh-heh-heh!",
           "bubbleType": "shout",
           "position": "top-left",
-          "characterCardId": 41
+          "characterCardId": 77
         }
       ],
       "sfxCues": [
@@ -1281,13 +1281,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "보가트",
+          "speakerEn": "Bogart",
           "textKo": "보가트의 얼굴이 흙빛으로 변하며 턱이 덜덜 떨렸다. “마, 말도 안 돼! 주사위가 쪼개져서 13이 나오다니... 사기다! 이놈들을 모조리 쳐라!”",
           "textEn": "All pips face the ceiling. The wager is mine.\" Bogart's greenish skin paled as his jowls quivered in disbelief. \"Im-impossible!",
           "bubbleType": "shout",
           "position": "top-left",
-          "characterCardId": 41
+          "characterCardId": 77
         }
       ],
       "sfxCues": [
@@ -1368,13 +1368,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "도박꾼들",
+          "speakerEn": "Gamblers",
           "textKo": "도박판을 지켜보던 부랑배들이 웅성거리며 동요했다. “보가트 두목이 자석 주사위를 쓰고 있었잖아! 우리 돈을 사기로 털어간 거였어!” 고블린들의 사기가 바닥으로 떨어졌다.",
           "textEn": "Guards, butcher them all!\"",
           "bubbleType": "shout",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 48
         }
       ],
       "sfxCues": [
@@ -1490,13 +1490,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "보가트",
+          "speakerEn": "Bogart",
           "textKo": "보가트는 겁에 질려 오줌을 지리며 연신 머리를 조아렸다. “사, 살려주십시오! 나룻배 백 척... 아니 이백 척을 당장 내어드리겠습니다!”",
           "textEn": "I could sever your head for your fraud, but I grant you your life.",
           "bubbleType": "shout",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 77
         }
       ],
       "sfxCues": [

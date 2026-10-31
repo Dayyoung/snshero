@@ -225,13 +225,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
+          "speakerKo": "경매상",
+          "speakerEn": "Auctioneer",
           "textKo": "경매상이 굵은 쇠사슬을 휘두르며 소리쳤다. “단돈 은화 세 닢에 이 미친 괴물을 데려갈 용사 없소? 가까이 갔다간 대가리가 깨질 테니 조심들 하시오!”",
           "textEn": "The chief auctioneer cracked his iron chain against the dirt. \"Three silver pieces! Any gallant soul willing to claim this mad demon for three silver coins? Stand clear unless you fancy having your skulls caved in!\"",
           "bubbleType": "shout",
           "position": "top-left",
-          "characterCardId": 41
+          "characterCardId": 48
         }
       ],
       "sfxCues": [
@@ -312,13 +312,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "경매상",
+          "speakerEn": "Auctioneer",
           "textKo": "경매상이 사색이 되어 소리 질렀다. “이봐, 애송이! 뼈도 못 추리고 짓밟히고 싶어서 환장했어? 당장 물러서!”",
           "textEn": "The auctioneer turned pale, shrieking in horror. \"Boy! Are you possessed? Back away before you are trampled into red paste!\"",
           "bubbleType": "shout",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 48
         }
       ],
       "sfxCues": [
@@ -521,13 +521,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
+          "speakerKo": "곡물 상인",
+          "speakerEn": "Grain Merchant",
           "textKo": "곡물 상인이 몽둥이를 흔들며 악을 썼다. “이 도둑년아! 네놈이 방금 내 밀가루 자루를 훔쳐 숨겼지? 경비대를 불러 당장 감옥에 처넣겠다!”",
           "textEn": "The merchant brandished an ash truncheon, his face purple with rage. \"Thieving gutter-rat! You crept behind my grain sacks to steal flour! I'll hand you over to the garrison dungeons!\"",
           "bubbleType": "shout",
           "position": "bottom-left",
-          "characterCardId": 62
+          "characterCardId": 48
         }
       ],
       "sfxCues": [

@@ -806,8 +806,8 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "피난민 아이",
+          "speakerEn": "Refugee Child",
           "textKo": "한 어린아이가 카단의 무쇠 방패를 작은 손으로 만지며 울먹였다. “형아... 기사 아저씨들이 우리 집을 불태웠어요... 엄마는 어디로 간 거예요?”",
           "textEn": "A small girl touched Kadan's battered iron shield with her tiny fingers, weeping softly. \"Mister knight... The men in armor set fire to our home... Where has my mother gone?\"",
           "bubbleType": "thought",
@@ -951,13 +951,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
+          "speakerKo": "감찰대장",
+          "speakerEn": "Inquisitor Captain",
           "textKo": "감찰대장이 창고 문을 걷어차며 비열한 조소를 흘렸다. “숨어 있는 쥐새끼들이 감히 살아남아 있었군! 반역자들의 씨를 말려 바다에 던져라!”",
           "textEn": "Kicking down the outer door, the inquisition commander sneered in cruel triumph. \"So the vermin survived beneath the stones! Exterminate the traitors and feed their bones to the sea!\"",
           "bubbleType": "shout",
           "position": "top-left",
-          "characterCardId": 61
+          "characterCardId": 45
         }
       ],
       "sfxCues": [
@@ -1102,13 +1102,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
+          "speakerKo": "감찰대장",
+          "speakerEn": "Inquisitor Captain",
           "textKo": "“이그니스! 네놈이 정녕 황궁의 은혜를 저버리고 반역자들의 하수인이 되었단 말이냐! 루시안 재상 각하께서 네놈의 목에 제국 최고의 현상금을 거셨다!”",
           "textEn": "\"Ignis! Have you truly renounced the grace of the throne to become a lackey for northern rebels! Minister Lucian has placed the empire's greatest bounty upon your head!\"",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 11
+          "characterCardId": 45
         }
       ],
       "sfxCues": [

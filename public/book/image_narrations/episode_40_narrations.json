@@ -776,13 +776,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "펜릴",
+          "speakerEn": "Fenrir",
           "textKo": "펜릴 왕이 카단의 잔을 채워주며 껄껄 웃었다. “북방의 설원으로 돌아가거든 내 언제든 사냥한 멧돼지 다리를 짊어지고 네 오두막을 찾아가마. 알렉산다르 형제의 무덤에 좋은 북방주를 부어주어야지.”",
           "textEn": "\"I shall never forget your kindness.",
           "bubbleType": "speech",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 81
         }
       ],
       "sfxCues": [
@@ -985,13 +985,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
           "textKo": "“약속을 지켰네요, 카단. 정말로 봄이 왔어요.” 카단이 부드럽게 웃으며 실리아의 손을 꼭 잡았다.",
           "textEn": "\"We kept our promise, Kadan.",
           "bubbleType": "speech",
           "position": "bottom-left",
-          "characterCardId": 41
+          "characterCardId": 62
         }
       ],
       "sfxCues": [

@@ -836,13 +836,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "근위대 장교",
+          "speakerEn": "Royal Guard Officer",
           "textKo": "근위대 장교가 카단의 굳건한 방어에 이를 갈며 칼을 내리쳤다. “애송이 놈이 감히 황실 기병대의 진격을 가로막느냐! 네놈의 방패째로 베어버리마!”",
           "textEn": "An imperial officer swung his broadsword furiously against Kadan's guard. \"A vagrant pup dares block the imperial vanguard? I shall cleave your shield in two!\"",
           "bubbleType": "shout",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 45
         }
       ],
       "sfxCues": [

@@ -1446,13 +1446,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "황제",
+          "speakerEn": "Emperor",
           "textKo": "늙은 황제가 비틀거리며 다가와 카단의 어깨에 손을 얹었다. “고결한 기사의 영혼이... 제국과 백성들을 구원하였구나...”",
           "textEn": "Mortally wounded by the backlash, Lucian had fled through the subterranean conduits, while Artus dissolved into the shadows.",
           "bubbleType": "thought",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 50
         }
       ],
       "sfxCues": [

@@ -980,13 +980,13 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
+          "speakerKo": "암살 대장",
+          "speakerEn": "Assassin Leader",
           "textKo": "암살 대장이 흉포한 살기를 뿜어내며 소리쳤다. “역적 놈들과 황궁의 배신자를 한 놈도 남기지 말고 몰살해라! 저택과 배를 모조리 불태워 증거를 인멸하라!”",
           "textEn": "The inquisition commander barked with vicious malice. \"Slaughter the northern rebels and the imperial turncoat without mercy! Burn the manor and every ship to ash to leave zero evidence behind!\"",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 41
+          "characterCardId": 44
         }
       ],
       "sfxCues": [
