@@ -77,6 +77,14 @@ end tell
 def check_and_clear_error() -> bool:
     js = """
     (() => {
+        // Dismiss cookie consent banner if present
+        const cookieBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText && b.innerText.includes('동의함'));
+        if (cookieBtn) {
+            cookieBtn.click();
+            const banner = cookieBtn.closest('div[role="region"], div[role="alert"], .glue-cookie-notification-bar') || cookieBtn.parentElement;
+            if (banner) banner.remove();
+        }
+
         const hasWarning = document.body.innerText.includes('비정상적인 활동') || document.body.innerText.includes('비정상');
         let deleted = 0;
         document.querySelectorAll('button').forEach(b => {
@@ -225,8 +233,11 @@ def trigger_generate_hardware_return(prompt_text: str) -> bool:
         apple_script = '''
 tell application "Google Chrome"
     repeat with w in windows
-        repeat with t in tabs of w
+        repeat with i from 1 to count of tabs of w
+            set t to tab i of w
             if URL of t contains "flow.google.com/project/72ee6e60-2819-43a6-bb8c-700a7d599bdf" then
+                set active tab index of w to i
+                set index of w to 1
                 execute t javascript "document.querySelector('div.ProseMirror').focus();"
             end if
         end repeat
