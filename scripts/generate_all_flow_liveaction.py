@@ -135,22 +135,29 @@ def build_liveaction_prompt(cut: dict) -> str:
     # Action sentence
     novel_raw = cut.get("novelTextEn", "").strip()
     action = novel_raw.split(".")[0] + "." if "." in novel_raw else novel_raw
-    if len(action) > 170:
-        action = action[:170] + "..."
+    action = re.sub(r'(?i)anime\s*(style|illustration)?', '', action).strip()
+    if len(action) > 130:
+        action = action[:130] + "..."
 
     # Location description
     loc = cut.get("location", {})
     loc_name = loc.get("nameEn", "")
-    loc_desc = loc.get("descriptionEn", "").split(",")[0]
+    loc_desc_raw = loc.get("descriptionEn", "").split(",")[0]
+    loc_desc = re.sub(r'(?i)anime\s*(environment\s*(concept\s*art\s*)?(of|showing)?|style\s*)?', '', loc_desc_raw).strip()
+    if len(loc_desc) > 80:
+        loc_desc = loc_desc[:80] + "..."
+
     narration = cut.get("dialogue", {}).get("summarized6sLineEn", "")
+    if len(narration) > 80:
+        narration = narration[:80] + "..."
 
     # Character names
     char_names = [c.get("nameEn", "") for c in cut.get("characters", []) if c.get("nameEn")]
 
     if not char_names:
         prompt = (
-            f"[70MM IMAX PHOTOREALISTIC LIVE-ACTION CINEMA FILM STILL | 16:9 WIDESCREEN] "
-            f"Masterpiece theatrical dark-fantasy architectural environment cinema still shot on ARRI Alexa 65 anamorphic lenses, Kodak Vision3 500T 35mm film. "
+            f"[70MM IMAX PHOTOREALISTIC LIVE-ACTION CINEMA FILM STILL | 16:9] "
+            f"Theatrical dark-fantasy architectural cinema still shot on ARRI Alexa 65 anamorphic, Kodak Vision3 500T. "
             f"Grand panoramic architectural landscape establishing shot of {loc_name}. {action} Setting: {loc_desc}. "
             f"Deep male narrator: '{narration}'. "
             f"Volumetric atmospheric rim lighting, cinematic depth of field, hyper-detailed fantasy architecture. "
@@ -174,18 +181,16 @@ def build_liveaction_prompt(cut: dict) -> str:
             dna_prompt = f"VISUAL DNA: {dna_prompt}. "
 
         prompt = (
-            f"[70MM IMAX PHOTOREALISTIC LIVE-ACTION CINEMA FILM STILL | 16:9 WIDESCREEN] "
-            f"Masterpiece theatrical dark-fantasy live-action cinema still shot on ARRI Alexa 65 anamorphic lenses, Kodak Vision3 500T 35mm film. "
+            f"[70MM IMAX PHOTOREALISTIC LIVE-ACTION CINEMA FILM STILL | 16:9] "
+            f"Theatrical dark-fantasy live-action cinema still shot on ARRI Alexa 65 anamorphic, Kodak Vision3 500T. "
             f"Real living human actors with authentic skin pores, natural skin texture, subsurface scattering, weathered leather and forged steel armor. "
             f"{dna_prompt}"
             f"SCENE: {char_str} in {loc_name}. {action} Setting: {loc_desc}. "
             f"MANDATORY SILENCE: All characters keep mouths completely closed in solemn silence (zero lip movement). "
             f"Deep male narrator: '{narration}'. "
-            f"Volumetric atmospheric rim lighting, cinematic depth of field. STRICT ZERO ANIME, STRICT ZERO CARTOON, ZERO CEL-SHADING, NO TEXT."
+            f"Volumetric atmospheric rim lighting, cinematic depth of field. "
+            f"STRICT ZERO ANIME, STRICT ZERO CARTOON, ZERO CEL-SHADING, NO TEXT."
         )
-
-    if len(prompt) > 700:
-        prompt = prompt[:695] + " NO TEXT."
 
     return prompt.strip()
 

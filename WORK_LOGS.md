@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-31 09:35 KST] [Google Flow 70mm 실사 시네마 제21화 29컷 전수 완공 (70mm IMAX 1376x768 WebP/JPEG) & 제22~40화 연속 가동]
+- **요청 사항**:
+  - "애니메이션/실사 이미지 작업 재시작", "flow도 실사이미지 40화까지 연속생성"
+- **작업 개요 및 구현 내역**:
+  1. **Google Flow 실사 시네마 제21화 29컷 100% 전수 완공**:
+     - 제21화 CUT01~CUT29(29컷) 전수를 Google Flow를 통해 70mm IMAX 실사 시네마(1376x768 JPEG 원본 및 WebP q92)로 100% 생성 완공.
+     - `public/anime-character-sheets/cutscenes_liveaction/ep21_landscape/images/` 및 `public/images/cinema/episode_21/`에 완벽 연동.
+  2. **프롬프트 엔진 고도화**:
+     - 순수 배경/건축 샷에서 인물 키워드 원천 배제 (`PURE SCENIC ARCHITECTURE SHOT`, `ABSOLUTELY NO ACTORS, NO PEOPLE, ZERO HUMANS IN FRAME`).
+     - 프롬프트 버짓팅 최적화로 `VISUAL DNA`, `MANDATORY SILENCE`, `STRICT ZERO ANIME` 지침 온전 보존.
+  3. **자동화 파이프라인 및 보고**:
+     - 로컬 Git 커밋 완료 (`9dff8b1b4`: `feat: complete Episode 21 Flow 70mm liveaction cinema cutscenes`).
+     - 구글 폼 작업 보고 제출 완료 (`Google Flow 실사 시네마 21화 29컷 전수 생성 완료`).
+     - 제22화부터 제40화까지 무중단 연속 생성 백그라운드 태스크 가동 (`task-7714`).
+
 ## [2026-10-30 08:05 KST] [8화 웹툰 28씬 완공 (Visual DNA 정밀 반영 & 10px 헤일로 레드 도트 AI 화자 마커) & 잔여 20씬 쿼터 리셋 스케줄 등록]
 - **요청 사항**:
   - "원본 케릭터시트처럼 여성케릭터는 글래머러스하고 노출이 있는 섹시한의상/ 남성케릭터는 근육질에 무기가 잘 돋보이게 표현해줘. 케릭터시트 이미지를 직접 첨부하면 제일좋고. 지금 대사하는 케릭터에 고유색상의 빨간점을 표시하고 있는거 맞어?"
