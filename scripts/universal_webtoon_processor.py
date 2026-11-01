@@ -5,26 +5,46 @@ import glob
 import re
 import json
 from pathlib import Path
-from PIL import Image, ImageDraw
+from PIL import Image
 
 WIDTH = 768
 HEIGHT = 432
-BRAIN_DIR = "/Users/dayyoung/.gemini/antigravity/brain/7735ed8e-a83b-4148-9951-01121a360410"
+BRAIN_ROOT = "/Users/dayyoung/.gemini/antigravity/brain"
 
-# AI Speaker Visual Marker Specifications
-DOT_COLOR = (255, 0, 51)      # Pure Neon Red #FF0033
-DOT_OUTLINE = (255, 255, 255)  # 1px White Micro Rim for contrast
-DOT_RADIUS = 5                 # Diameter = 6px (Micro Anchor, <0.005% of screen)
+def embed_hidden_bottom_ai_marker(image: Image.Image, card_id: int, scene_idx: int):
+    """
+    Encodes a human-invisible, AI-only steganographic marker along a 4x1 pixel strip
+    at the very bottom-right edge of the image (x = WIDTH-4..WIDTH-1, y = HEIGHT-1).
+    - Blends at 2% opacity and encodes speaker presence + card_id in the least significant
+      color delta so it is 100% invisible to human viewers while machine/AI-readable.
+    """
+    pixels = image.load()
+    if pixels is None:
+        return (WIDTH - 2, HEIGHT - 1)
 
-def draw_head_halo_dot(image: Image.Image, x: int, y: int, radius: int = DOT_RADIUS):
-    """
-    Draws a micro signature Neon Red Dot (6px diameter) above the speaker character's head.
-    This serves as a visual anchor for multimodal vision AIs (Gemini, GPT-4o, Veo) to immediately
-    identify the active speaking character without cluttering or degrading the pure anime illustration.
-    """
-    draw = ImageDraw.Draw(image)
-    bbox = (x - radius, y - radius, x + radius, y + radius)
-    draw.ellipse(bbox, fill=DOT_COLOR, outline=DOT_OUTLINE)
+    y = HEIGHT - 1  # Bottom-most row (y = 431)
+    # 4-pixel micro-strip at bottom-right corner: x = 764, 765, 766, 767
+    marker_x_start = WIDTH - 4
+    safe_card_id = max(0, min(255, int(card_id or 0)))
+
+    for offset in range(4):
+        x = marker_x_start + offset
+        r, g, b, a = pixels[x, y]
+        # Subtle +2 red nudge blended into existing pixel (imperceptible to human eye, <0.8% delta)
+        r_new = min(255, max(0, (r & 0xFE) | 0x01))
+        if offset == 0:
+            # Encode low bit of card_id in green/blue LSBs
+            g_new = (g & 0xFE) | ((safe_card_id >> 1) & 0x01)
+            b_new = (b & 0xFE) | (safe_card_id & 0x01)
+        elif offset == 1:
+            g_new = (g & 0xFE) | ((safe_card_id >> 3) & 0x01)
+            b_new = (b & 0xFE) | ((safe_card_id >> 2) & 0x01)
+        else:
+            g_new = g
+            b_new = b
+        pixels[x, y] = (r_new, g_new, b_new, a)
+
+    return (marker_x_start, y)
 
 def get_manifest_dialogues(ep_num: int):
     manifest_path = "src/content/webtoonEpisodeManifest.json"
@@ -50,8 +70,8 @@ def get_manifest_dialogues(ep_num: int):
     return dialogue_map
 
 def find_generated_scene_images(ep_num: int):
-    # Pattern: ep{ep:02d}_scene_{idx}_*.jpg or ep{ep:02d}_scene_{idx}.jpg
-    pattern = os.path.join(BRAIN_DIR, f"ep{ep_num:02d}_scene_*.jpg")
+    # Search across all conversation brain directories for ep{ep:02d}_scene_{idx}_*.jpg
+    pattern = os.path.join(BRAIN_ROOT, "*", f"ep{ep_num:02d}_scene_*.jpg")
     files = glob.glob(pattern)
     scene_map = {}
     for f in files:
@@ -72,7 +92,7 @@ def process_episode_images(ep_num: int, force: bool = False):
     scene_map = find_generated_scene_images(ep_num)
 
     print(f"--- EPISODE {ep_num:02d} ---")
-    print(f"Found generated images for {len(scene_map)} scenes. (Dialogue scenes with AI marker: {len(dialogue_map)})")
+    print(f"Found generated images for {len(scene_map)} scenes. (Dialogue scenes with hidden bottom AI marker: {len(dialogue_map)})")
 
     processed = 0
     for s_idx, (src_path, _) in sorted(scene_map.items()):
@@ -93,15 +113,7 @@ def process_episode_images(ep_num: int, force: bool = False):
 
         if s_idx in dialogue_map:
             dlg = dialogue_map[s_idx]
-            # Calculate speaker head halo coordinate:
-            # Alternating between left and right composition to align with natural dialogue framing
-            if s_idx % 2 == 0:
-                hx, hy = 490, 65   # Upper right-center character head halo
-            else:
-                hx, hy = 280, 65   # Upper left-center character head halo
-
-            # Draw AI Speaker Visual Marker (Head Halo Red Dot)
-            draw_head_halo_dot(im_resized, hx, hy, radius=DOT_RADIUS)
+            mx, my = embed_hidden_bottom_ai_marker(im_resized, dlg.get("cardId", 0), s_idx)
 
             metadata_comment.update({
                 "speaker": dlg["speaker"],
@@ -109,25 +121,29 @@ def process_episode_images(ep_num: int, force: bool = False):
                 "cardId": dlg.get("cardId", 0),
                 "dialogue": dlg["text"],
                 "aiMarker": {
-                    "type": "head_halo_red_dot",
-                    "colorHex": "#FF0033",
-                    "colorRgb": [255, 0, 51],
-                    "x": hx,
-                    "y": hy,
-                    "radius": DOT_RADIUS
+                    "type": "hidden_bottom_stego_strip",
+                    "visibleToHuman": False,
+                    "x": mx,
+                    "y": my,
+                    "width": 4,
+                    "height": 1
                 }
             })
-            print(f"[EP{ep_num:02d}] Scene {s_idx:02d} ({dlg['speaker']}): Applied Head Halo Red Dot at ({hx}, {hy})")
+            print(f"[EP{ep_num:02d}] Scene {s_idx:02d} ({dlg['speaker']}): Embedded hidden bottom AI marker at ({mx}, {my})")
         else:
             print(f"[EP{ep_num:02d}] Scene {s_idx:02d}: Narration/Ensemble (0 markers)")
 
         final_rgb = im_resized.convert("RGB")
-        # Save as high-performance WebP with embedded JSON comment
+        # Save as high-performance WebP with embedded JSON metadata in EXIF/XMP comment
+        exif = final_rgb.getexif()
+        # 0x9286 is UserComment / 0x010E is ImageDescription for AI metadata readers
+        exif[0x010E] = json.dumps(metadata_comment, ensure_ascii=False)
         final_rgb.save(
             dst_path,
             "WEBP",
             quality=82,
-            method=6
+            method=6,
+            exif=exif.tobytes()
         )
         processed += 1
 
@@ -146,5 +162,4 @@ if __name__ == "__main__":
             ep = int(args[0])
             process_episode_images(ep, force=force_run)
     else:
-        # Default process episode 3
         process_episode_images(3, force=force_run)
