@@ -42,21 +42,15 @@ export const resolveKadanArtStyleUrl = (
 ): string => {
   if (!rawUrl) return '';
   const cleanUrl = rawUrl.split('?')[0];
-  if (mode === 'liveaction') {
-    let mapped = cleanUrl
-      .replace('/images/webtoon/episode_', '/images/cinema/episode_')
-      .replace('/images/storybook/ep_', '/images/storybook_liveaction/ep_');
-    mapped = mapped.replace(/\/images\/cinema\/episode_(\d+)\/scene_(\d+)\.webp/, (_, ep, sc) => {
-      const scNum = parseInt(sc, 10);
-      const safeNum = scNum <= 0 ? 1 : ((scNum - 1) % 20) + 1;
-      return `/images/cinema/episode_${ep}/scene_${String(safeNum).padStart(2, '0')}.webp`;
-    });
-    return `${mapped}?v=conquest2009_v10`;
-  }
-  const mapped = cleanUrl
-    .replace('/images/cinema/episode_', '/images/webtoon/episode_')
-    .replace('/images/storybook_liveaction/ep_', '/images/storybook/ep_');
-  return `${mapped}?v=conquest2009_v10`;
+  const mapped =
+    mode === 'liveaction'
+      ? cleanUrl
+          .replace('/images/webtoon/episode_', '/images/cinema/episode_')
+          .replace('/images/storybook/ep_', '/images/storybook_liveaction/ep_')
+      : cleanUrl
+          .replace('/images/cinema/episode_', '/images/webtoon/episode_')
+          .replace('/images/storybook_liveaction/ep_', '/images/storybook/ep_');
+  return `${mapped}?v=conquest2009_v11`;
 };
 
 export interface KadanRpgProgress {

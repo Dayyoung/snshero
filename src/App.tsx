@@ -209,6 +209,7 @@ const PacpikView = safeLazy(loadViewSafely('PacpikView'), 'PacpikView');
 const BenchmarkView = safeLazy(loadViewSafely('BenchmarkView'), 'BenchmarkView');
 const GwentView = safeLazy(loadViewSafely('GwentView'), 'GwentView');
 const CinemaView = safeLazy(loadViewSafely('CinemaView'), 'CinemaView');
+const ScriptView = safeLazy(loadViewSafely('ScriptView'), 'ScriptView');
 const WebMcpActiveBadge = safeLazy(
   loadComponentSafely('WebMcpActiveBadge'),
   'WebMcpActiveBadge'
@@ -651,6 +652,7 @@ function AppContent() {
         webtoon: isKo ? '공식 웹툰 (눈히어로.com - 카단의 여정)' : "Official Webtoon (SNSHero.com - Kadan's Journey)",
         movie: isKo ? '공식 애니메이션 40화 (눈히어로.com - 카단의 여정)' : "Official Animation 40 Episodes (SNSHero.com - Kadan's Journey)",
         cinema: isKo ? '공식 무비 40화 (눈히어로.com - 카단의 여정)' : "Official Movie 40 Episodes (SNSHero.com - Kadan's Journey)",
+        script: isKo ? '공식 Flow 실사 컷씬 대본 & 6초 동영상 프롬프트' : "Flow Live-Action Cutscene Script & 6s Video Prompts",
         'stock-market': isKo ? 'SNS 주식 거래소' : 'SNS Stock Market',
         'card-marketplace': isKo ? '카드 P2P 거래소' : 'Card P2P Marketplace',
         'prediction-market': isKo ? '승부 예측 시장' : 'Prediction Market',
@@ -1838,6 +1840,7 @@ function AppContent() {
       view === 'share' ||
       view === 'movie' ||
       view === 'cinema' ||
+      view === 'script' ||
       view === 'anime' ||
       view === 'novel';
 
@@ -6571,6 +6574,16 @@ function AppContent() {
             showCustomAlert={showCustomAlert}
           />
         );
+      case 'script':
+        return (
+          <ScriptView
+            language={language}
+            onNavigate={setView}
+            playSfx={playSfx}
+            currentSeason={currentSeason}
+            showCustomAlert={showCustomAlert}
+          />
+        );
       case 'mall':
         return (
           <MallView
@@ -6724,7 +6737,7 @@ function AppContent() {
   }
 
     const isPlayingBattle = (view === 'play' && (playGameState === 'playing' || playGameState === 'searching' || playGameState === 'preMatch')) || view === 'card-play' || (view === 'main' && isRpgInBattle);
-    const showNavbar = (view !== 'reddit' && view !== 'bench' && view !== 'gwent' && view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'cinema' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
+    const showNavbar = (view !== 'reddit' && view !== 'bench' && view !== 'gwent' && view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'script' && view !== 'anime' && view !== 'movie' && view !== 'cinema' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
     const isMainTab = view === 'home' || view === 'mydeck' || view === 'shop' || view === 'play' || view === 'main';
     
 
@@ -7359,7 +7372,7 @@ function AppContent() {
           />
 
         {/* Global Chat Floating Button */}
-         {view !== 'reddit' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'card-play' && view !== 'play' && !isPlayingBattle && !isGlobalPopupOpen && (
+         {view !== 'reddit' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'script' && view !== 'card-play' && view !== 'play' && !isPlayingBattle && !isGlobalPopupOpen && (
           <>
 
           <AnimatePresence>

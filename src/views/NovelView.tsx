@@ -25,7 +25,6 @@ import { useCardSkins } from '../hooks/useCardSkins';
 import { getCharacterArtPrompt } from '../content/characterArtPrompts';
 import { ENGLISH_NOVEL_MAP } from '../content/englishNovelMapping';
 import WEBTOON_MANIFEST from '../content/webtoonEpisodeManifest.json';
-import CINEMA_MANIFEST from '../content/cinemaEpisodeManifest.json';
 import {
   WebtoonPanelCard,
   WebtoonSpeechBubble,
@@ -58,7 +57,6 @@ interface WebtoonManifestEpisode {
 }
 
 const WEBTOON_DATA = WEBTOON_MANIFEST as unknown as Record<string, WebtoonManifestEpisode>;
-const CINEMA_DATA = CINEMA_MANIFEST as unknown as Record<string, WebtoonManifestEpisode>;
 
 interface NovelViewProps {
   language: Language;
@@ -262,28 +260,29 @@ export const NovelView: React.FC<NovelViewProps> = ({
     });
   };
 
-  const activeCartoonData = cartoonArtStyle === 'liveaction' ? CINEMA_DATA : WEBTOON_DATA;
-
-  // Get cartoon image info for a specific episode and scene index
+  // Get cartoon image info for a specific episode and scene index (0..N)
   const getCartoonImageInfo = (epNum: number, sceneIdx: number): WebtoonManifestImage | undefined => {
-    const epData = activeCartoonData[String(epNum)];
+    const epData = WEBTOON_DATA[String(epNum)];
     if (!epData || !epData.images) return undefined;
     return epData.images.find(img => img.index === sceneIdx);
   };
 
-  const currentEpisodeImages = activeCartoonData[String(currentEpisodeNum)]?.images || [];
+  const currentEpisodeImages = WEBTOON_DATA[String(currentEpisodeNum)]?.images || [];
   const episodeSceneIndices = currentEpisodeImages.length > 0
     ? currentEpisodeImages.map(img => img.index)
-    : Array.from({ length: 27 }, (_, i) => i + 1);
+    : Array.from({ length: 21 }, (_, i) => i);
   const minEpisodeSceneIndex = episodeSceneIndices[0] ?? 0;
-  const totalEpisodeScenes = episodeSceneIndices[episodeSceneIndices.length - 1] ?? 27;
+  const totalEpisodeScenes = episodeSceneIndices[episodeSceneIndices.length - 1] ?? Math.max(
+    1,
+    (WEBTOON_DATA[String(currentEpisodeNum)]?.images?.length || 21) - 1
+  );
 
   // Get cartoon scene image URL candidate pointing to local webtoon or live-action cinema assets
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
     const epPad = pad2(epNum);
     const scPad = pad2(sceneIdx);
-    const cacheBust = '?v=conquest2009_v10';
-    const epData = activeCartoonData[String(epNum)];
+    const cacheBust = '?v=conquest2009_v11';
+    const epData = WEBTOON_DATA[String(epNum)];
     const imgInfo = epData?.images?.find(img => img.index === sceneIdx);
     if (imgInfo?.type === 'ending_promo') {
       return `${imgInfo.localArtUrl || imgInfo.imageUrl}${cacheBust}`;
@@ -1691,6 +1690,18 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     </span>
                   </button>
                   <button
+                    type="button"
+                    onClick={() => {
+                      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                      onNavigate('script' as ViewType);
+                    }}
+                    className="min-h-[44px] px-3 py-1.5 text-xs font-bold border border-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm transition-colors cursor-pointer flex items-center gap-1.5"
+                    title={language === 'ko' ? 'Flow 실사 컷씬 대본 및 6초 동영상 프롬프트 화면(/script)' : 'Flow Live-Action Cutscene Script & 6s Video Prompts (/script)'}
+                  >
+                    <MessageSquare size={14} />
+                    <span>{language === 'ko' ? '📜 대본 화면 (/script)' : '📜 Script (/script)'}</span>
+                  </button>
+                  <button
                     onClick={() => {
                       if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       onNavigate('anime');
@@ -1763,7 +1774,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         sceneIndex={scNum}
                         totalScenes={totalEpisodeScenes}
                         imgUrl={imgUrl}
-                        localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v10` : undefined)}
+                        localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v11` : undefined)}
                         isKeyClimax={imgInfo?.isKeyClimax}
                         narrationText={sentenceText || ''}
                         dialogues={imgInfo?.dialogues}
@@ -1830,7 +1841,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                           sceneIndex={scNum}
                           totalScenes={totalEpisodeScenes}
                           imgUrl={imgUrl}
-                          localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v10` : undefined)}
+                          localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009_v11` : undefined)}
                           isKeyClimax={imgInfo?.isKeyClimax}
                           narrationText={sentenceText || ''}
                           dialogues={imgInfo?.dialogues}

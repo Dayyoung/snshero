@@ -28,7 +28,7 @@ import {
 import { MovieVfxCanvas, MovieVfxType } from './MovieVfxCanvas';
 import { movieAudio, MovieBgmTheme, MovieSfxType } from '../../lib/MovieAudioSynthesizer';
 import { MOVIE_EPISODES, getCharacterPortraitUrl } from '../../content/movieEpisodeMapping';
-import CINEMA_MANIFEST from '../../content/cinemaEpisodeManifest.json';
+import WEBTOON_MANIFEST from '../../content/webtoonEpisodeManifest.json';
 import { triggerHaptic } from '../../lib/haptic';
 
 export type CinemaLutPreset = 'imax-70mm' | 'cold-blizzard' | 'warm-torch' | 'noir-grain';
@@ -103,7 +103,7 @@ const LUT_PRESETS: Array<{ id: CinemaLutPreset; labelKo: string; labelEn: string
 ];
 
 const buildLiveActionScenes = (epNum: number): LiveActionScene[] => {
-  const manifest = CINEMA_MANIFEST as unknown as Record<
+  const manifest = WEBTOON_MANIFEST as unknown as Record<
     string,
     {
       episodeNumber: number;

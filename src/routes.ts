@@ -305,6 +305,14 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionKo: '눈히어로.com - 카단의 여정 고품질 풀컬러 판타지 RPG 웹툰을 감상하세요.',
     descriptionEn: "Read the high-quality full-color fantasy RPG webtoon 'SNSHero.com - Kadan's Journey'.",
   },
+  script: {
+    path: '/script',
+    aliases: ['/scripts', '/cutscene-script', '/flow-script'],
+    titleKo: '공식 Flow 실사 컷씬 대본 & 6초 동영상 프롬프트 - 눈히어로.com',
+    titleEn: "Flow Live-Action Cutscene Script & 6s Video Prompts - SNSHero.com",
+    descriptionKo: '40부작 Flow 실사 컷씬별 배경시트, 캐릭터시트, 소품시트, 대사 및 6초 동영상 생성 프롬프트 대본 화면입니다.',
+    descriptionEn: "Browse all 40-episode Flow live-action cutscenes with background sheets, character sheets, prop sheets, dialogues, and 6-second video prompts.",
+  },
   pacpik: {
     path: '/pacpik',
     aliases: ['/pacpik.html'],
@@ -440,6 +448,7 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
   if (cleanPath.startsWith('/novel/s1-') || cleanPath.startsWith('/book/')) return 'novel';
   if (cleanPath.startsWith('/movie/') || cleanPath.startsWith('/animation/')) return 'movie';
   if (cleanPath.startsWith('/cinema/') || cleanPath.startsWith('/live-cinema/')) return 'cinema';
+  if (cleanPath === '/script' || cleanPath.startsWith('/script/')) return 'script';
   if (cleanPath.startsWith('/main/')) return 'main';
   if (
     cleanPath === '/play' &&
