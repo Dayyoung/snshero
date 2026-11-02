@@ -2,6 +2,48 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 20:13 KST] [마일스톤 3 반복 2: #play 아케이드 110선 바람/공기(air/wind) 원소 필터 정상화 및 회귀 검증 강화 완료]
+- **작업자**: `worker_m3_it2` (Implementer / QA Specialist)
+- **작업 개요**:
+  - `src/landing/views/PlaySection.tsx`:
+    - `renderArcadeView()` 내 카드 원소 필터링 시 `CARD_DATABASE` 21..30번 카드(`element: 'air'`)를 `'wind'`로 정상화(`rawEl === 'air' ? 'wind' : rawEl`)하여 `[바람 (Wind)]` 필터 칩 선택 시 10장 정상 매치 및 UI 렌더링.
+    - 11개 전 진영 각각 10장씩 정확히 일치하며 총 110장, 0 오버랩 불변식 확립.
+  - `tests/adversarial_m3_play_game_loop.ts`:
+    - `playRpgState`, `setActiveTab` import 추가.
+    - `ADV.M3.ARCADE.2`: 렌더링된 HTML 뷰에서 `playRpgState.arcadeQuery = '카단'` 검색 시 41번 카단 포함 및 카탈로그 축소 검증으로 업그레이드.
+    - `ADV.M3.ARCADE.5` 신규 추가: 11대 진영(water, fire, wind, earth, human, undead, elf, dwarf, monster, robot, dragon) 전수 순회하며 `renderPlaySection()` 결과 11개 진영 각 10장, 총 110장, 0 오버랩 파티션 불변식 영구 테스트.
+  - `tests/e2e/tier1_feature_coverage.ts`:
+    - `T1.PLAY.5` 단언문에 `PlaySection.tsx` 내 `'air'`/`'wind'` 원소 동의어 처리 검증 가드 추가.
+  - `tests/adversarial_challenger_m3_1_verification.ts`:
+    - `ADV.CHAL.BTL.5` 단일 카드 플립 테스트 시 AI 턴의 의도치 않은 카운터 플립 방지를 위해 `playRpgState.opponentHand = []` 초기화 보정 (34/34 단언문 100% 통과).
+- **검증 결과**:
+  - `tests/challenger_m3_9_2_empirical_stress.ts`: **21/21 PASS (100.0%)** (`CHAL.FILTER.1` 완벽 통과)
+  - `tests/adversarial_m3_play_game_loop.ts`: **28/28 PASS (100.0%)** (신규 ADV.M3.ARCADE.5 포함)
+  - `tests/adversarial_challenger_m3_landing.ts`: **22/22 PASS (100.0%)**
+  - `tests/adversarial_challenger_m3_1_verification.ts`: **34/34 PASS (100.0%)**
+  - `tests/e2e/run_all.ts`: **76/76 PASS (100.0%)**
+  - `npx tsc --noEmit`: **0 errors (exit code 0)**
+  - `npm run build`: **성공 (exit code 0, dist/index.html 45.15 KB < 50 KB, React 런타임 0%)**
+- **구글 폼 보고**: submit_report.py 전송 완료 (부서: 개발, 과제: `[M3-It2] #play 아케이드 110선 바람/공기 원소 필터 정상화 및 회귀 검증 강화`, 상태: 작업완료).
+- **로컬 커밋 해시**: `a12faf540` (로컬 커밋 완료, git push 미수행).
+
+## [2026-11-02 19:57 KST] [마일스톤 3 적대적 검증: #play 2D 타일·대화·배틀 루프 및 자동 진행 오라클 검증 완료 — 판정: APPROVE]
+- **작업자**: `challenger_m3_9_1` (Milestone 3 Challenger 1 / Empirical Challenger)
+- **작업 개요**:
+  - `tests/adversarial_challenger_m3_1_verification.ts` 독립 적대적 검증 하네스 신규 작성 및 전수 실행 (34개 단언문):
+    - 2D 타일 맵 이동 경계 클램핑: 코너 4개 방향 및 극한값(-999, -999) 클램핑 정상 판정, 8대 전 대륙 리전(elwin, red-cliff, mana-caves, southern-road, taiho, shadow-palace, wind-island, final-citadel) 장애물 타일 진입 차단 0회 침범 확인, 제자리/장애물 대상 `moveHeroToTile` 정상 거부.
+    - 에피소드 대화 트리거 & 선택지: 일반 타일 이동 시 대화 미발동, 이벤트 타일 안착 시 `dialogue` 진입 확인, 40개 전 챕터 소설 스크립트 및 2~3지 선택지 100% 탑재 확인, 카운트다운 타이머(수동 5.0초 vs 자동 1.5초) 및 SNS 코인/버프 보너스 부여 정상 동작, 대화 완료 시 3x3 배틀 전환 검증.
+    - 3x3 전술 카드 배틀 루프 & 플립 엔진: 9슬롯 초기화, 중복 배치 거부, 상/하/좌/우 4방향 카드 플립 역전 및 그리드 경계(col 0 좌측, col 2 우측) 행 줄바꿈 플립 방지 격리 확인, 승리 시 활성 덱 5개 카드 전원에 정확한 50 EXP 지급(`awardBattleVictoryExp(50)`) 오라클 통과, 반복 사냥(`repeatHunting`) 토글 검증.
+    - `hero_kadan_rpg_auto_mode` 무인 진행 & 15초 유휴 타이머: `IdleAutoPlayManager` 15,000ms 타임아웃 및 `#home` 등 외부 화면에서 `#play` 리다이렉트 hook 동작 검증, 이미 `#play` 화면에 위치할 경우 불필요한 새로고침 없이 인플레이스 자동 모드 활성화 검증, `runAutoStep` 연속 실행으로 맵 탐색 -> 대화 선택 -> 3x3 배틀 완주 -> 2챕터 승계 전 과정 무인 자율 완결 확인.
+- **검증 결과**:
+  - `tests/adversarial_challenger_m3_1_verification.ts`: **34/34 PASS (100.0%)**
+  - `tests/adversarial_m3_play_game_loop.ts`: **27/27 PASS (100.0%)**
+  - `tests/e2e/run_all.ts`: **76/76 PASS (100.0%)**
+  - `npx tsc --noEmit`: **0 errors (exit code 0)**
+  - `npm run build`: **성공 (exit code 0, dist/index.html 45.15 KB < 50 KB, React 런타임 0%)**
+- **구글 폼 보고**: submit_report.py 전송 완료 (부서: 개발, 상태: 작업완료).
+- **최종 판정**: **APPROVE (승인)**.
+
 ## [2026-11-02 19:45 KST] [마일스톤 3: #play 2D 타일 어드벤처 맵·에피소드 대화·3x3 전술 배틀 루프 및 Poki 110 아케이드 패리티 구현 완료]
 - **작업자**: `worker_m3_9` (Implementer / QA Specialist)
 - **작업 개요**:
