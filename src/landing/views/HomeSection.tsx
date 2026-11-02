@@ -2,7 +2,7 @@
  * src/landing/views/HomeSection.tsx
  *
  * Responsive vertical scroll Home section for SNSHero Static Landing.
- * Features SnowHero introduction, web novel, web game, anime showcases,
+ * Features SnowHero introduction, 4 core media pillars (web novel, web game, webtoon, anime),
  * and official external serialization links with '[절찬 연재중]' badges.
  * Pure TypeScript template string generator (Zero React runtime).
  */
@@ -33,7 +33,7 @@ export function renderHomeSection(): string {
               <span class="text-[#201d1d] border-b-2 border-[#201d1d]">카단과 성진호흡의 원클릭 AI 배틀</span>
             </h1>
             <p class="text-xs sm:text-sm md:text-base text-stone-600 leading-relaxed max-w-2xl m-0">
-              눈히어로(SnowHero)는 110종의 고유 영웅 카드와 40부작 공식 판타지 웹소설·웹툰·애니메이션 시네마가 유기적으로 연결된 차세대 웹 카드 게임입니다.
+              눈히어로(SnowHero)는 110종의 고유 영웅 카드와 40부작 공식 판타지 웹소설·웹게임·웹툰·애니메이션 시네마가 유기적으로 연결된 차세대 웹 카드 게임입니다.
               서버 로그인 없이 브라우저 로컬스토리지(LocalStorage)에 육성 데이터가 영구 보존됩니다.
             </p>
             <div class="flex flex-wrap items-center gap-3 pt-2">
@@ -93,7 +93,7 @@ export function renderHomeSection(): string {
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-[#201d1d]">네이버 웹소설</span>
                   <span class="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded-sm tracking-wider">
-                    절찬 연재중
+                    [절찬 연재중]
                   </span>
                 </div>
                 <h3 class="text-sm font-bold text-[#201d1d] m-0">카단과 아케인 에코즈 40부작</h3>
@@ -102,7 +102,8 @@ export function renderHomeSection(): string {
                 </p>
               </div>
               <a
-                href="http://novel.naver.com/challenge/list?novelId=1250635"
+                href="${EXTERNAL_LINKS.naverNovel}"
+                data-url="http://novel.naver.com/challenge/list?novelId=1250635"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="w-full py-3 px-4 bg-[#201d1d] text-[#fdfcfc] text-center text-xs font-bold rounded-sm min-h-[44px] hover:opacity-90 transition-opacity no-underline flex items-center justify-center"
@@ -117,7 +118,7 @@ export function renderHomeSection(): string {
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-[#201d1d]">네이버 웹툰</span>
                   <span class="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded-sm tracking-wider">
-                    절찬 연재중
+                    [절찬 연재중]
                   </span>
                 </div>
                 <h3 class="text-sm font-bold text-[#201d1d] m-0">SNS히어로 레볼루션 웹툰 40화</h3>
@@ -126,7 +127,8 @@ export function renderHomeSection(): string {
                 </p>
               </div>
               <a
-                href="https://comic.naver.com/challenge/list?titleId=856677"
+                href="${EXTERNAL_LINKS.naverWebtoon}"
+                data-url="https://comic.naver.com/challenge/list?titleId=856677"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="w-full py-3 px-4 bg-[#201d1d] text-[#fdfcfc] text-center text-xs font-bold rounded-sm min-h-[44px] hover:opacity-90 transition-opacity no-underline flex items-center justify-center"
@@ -141,7 +143,7 @@ export function renderHomeSection(): string {
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-[#201d1d]">문피아 웹소설</span>
                   <span class="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded-sm tracking-wider">
-                    절찬 연재중
+                    [절찬 연재중]
                   </span>
                 </div>
                 <h3 class="text-sm font-bold text-[#201d1d] m-0">아케인의 영웅들 (문피아 독점관)</h3>
@@ -150,7 +152,8 @@ export function renderHomeSection(): string {
                 </p>
               </div>
               <a
-                href="https://nlink.munpia.com/link/munpia/novel/616551"
+                href="${EXTERNAL_LINKS.munpiaNovel}"
+                data-url="https://nlink.munpia.com/link/munpia/novel/616551"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="w-full py-3 px-4 bg-[#201d1d] text-[#fdfcfc] text-center text-xs font-bold rounded-sm min-h-[44px] hover:opacity-90 transition-opacity no-underline flex items-center justify-center"
@@ -162,42 +165,71 @@ export function renderHomeSection(): string {
         </div>
       </section>
 
-      <!-- 3. Core Media Pillars: 웹소설 · 웹게임 · 애니메이션 쇼케이스 -->
+      <!-- 3. Core 4 Media Pillars: 웹소설 · 웹게임 · 웹툰 · 애니메이션 쇼케이스 -->
       <section class="w-full bg-[#fdfcfc] border-b border-[rgba(15,0,0,0.12)] py-12 px-4 sm:px-6 md:px-8 lg:px-12">
         <div class="w-full max-w-7xl mx-auto space-y-8">
           <div class="text-center space-y-2 max-w-2xl mx-auto">
-            <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-[#201d1d] m-0">눈히어로 트릴로지 미디어 생태계</h2>
+            <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-[#201d1d] m-0">눈히어로 4대 핵심 미디어 생태계</h2>
             <p class="text-xs sm:text-sm text-stone-600 m-0">
-              하나의 세계관 아래 완벽히 연동되는 3대 핵심 미디어: 웹소설, 원클릭 웹게임, 시네마틱 애니메이션.
+              하나의 세계관 아래 유기적으로 연결되는 4대 핵심 미디어: 웹소설, 원클릭 웹게임, 비주얼 웹툰, 시네마틱 애니메이션.
             </p>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Pillar 1: 웹소설 -->
-            <div class="border border-[rgba(15,0,0,0.12)] p-6 bg-white rounded-none space-y-3">
-              <div class="text-2xl">📜</div>
-              <h3 class="text-base font-bold text-[#201d1d] m-0">40부작 공식 웹소설</h3>
-              <p class="text-xs text-stone-600 leading-relaxed m-0">
-                11개 종족 110명 영웅들의 탄생과 운명, 카단의 성진호흡 수련과 암흑 군주들과의 전쟁을 다룬 40부작 완결 스토리라인.
-              </p>
+            <div class="border border-[rgba(15,0,0,0.12)] p-6 bg-white rounded-none space-y-3 flex flex-col justify-between">
+              <div class="space-y-3">
+                <div class="text-2xl">📜</div>
+                <h3 class="text-base font-bold text-[#201d1d] m-0">40부작 공식 웹소설</h3>
+                <p class="text-xs text-stone-600 leading-relaxed m-0">
+                  11개 종족 110명 영웅들의 탄생과 운명, 카단의 성진호흡 수련과 암흑 군주들과의 전쟁을 다룬 40부작 완결 스토리라인.
+                </p>
+              </div>
+              <div class="pt-2">
+                <span class="text-[10px] text-stone-500 font-bold uppercase tracking-wider">NOVEL · 40 EPISODES</span>
+              </div>
             </div>
 
             <!-- Pillar 2: 웹게임 -->
-            <div class="border border-[rgba(15,0,0,0.12)] p-6 bg-white rounded-none space-y-3">
-              <div class="text-2xl">⚔️</div>
-              <h3 class="text-base font-bold text-[#201d1d] m-0">원클릭 AI 카드 웹게임</h3>
-              <p class="text-xs text-stone-600 leading-relaxed m-0">
-                3x3 전술 보드에서 상하좌우(N·E·S·W) 수치와 속성 역상성을 파훼하는 두뇌 싸움. 최대 100레벨 카드 육성 및 스탯 커스터마이징.
-              </p>
+            <div class="border border-[rgba(15,0,0,0.12)] p-6 bg-white rounded-none space-y-3 flex flex-col justify-between">
+              <div class="space-y-3">
+                <div class="text-2xl">⚔️</div>
+                <h3 class="text-base font-bold text-[#201d1d] m-0">원클릭 AI 카드 웹게임</h3>
+                <p class="text-xs text-stone-600 leading-relaxed m-0">
+                  3x3 전술 보드에서 상하좌우(N·E·S·W) 수치와 속성 역상성을 파훼하는 두뇌 싸움. 최대 100레벨 카드 육성 및 스탯 커스터마이징.
+                </p>
+              </div>
+              <div class="pt-2">
+                <span class="text-[10px] text-stone-500 font-bold uppercase tracking-wider">GAME · 110 CARDS</span>
+              </div>
             </div>
 
-            <!-- Pillar 3: 애니메이션 -->
-            <div class="border border-[rgba(15,0,0,0.12)] p-6 bg-white rounded-none space-y-3">
-              <div class="text-2xl">🎬</div>
-              <h3 class="text-base font-bold text-[#201d1d] m-0">시네마틱 애니메이션</h3>
-              <p class="text-xs text-stone-600 leading-relaxed m-0">
-                7등신 실사형 풀바디 연출과 40개 전편 MP4 비디오, 입체 오디오 BGM 및 다국어 자막 시스템이 탑재된 극장식 시네마.
-              </p>
+            <!-- Pillar 3: 웹툰 -->
+            <div class="border border-[rgba(15,0,0,0.12)] p-6 bg-white rounded-none space-y-3 flex flex-col justify-between">
+              <div class="space-y-3">
+                <div class="text-2xl">🎨</div>
+                <h3 class="text-base font-bold text-[#201d1d] m-0">840컷+ 비주얼 웹툰</h3>
+                <p class="text-xs text-stone-600 leading-relaxed m-0">
+                  2,049컷 이상의 고해상도 다크 판타지 컷씬과 캐릭터 대사 말풍선, 박진감 넘치는 전투 타격 효과음(SFX)이 살아있는 비주얼 코믹스.
+                </p>
+              </div>
+              <div class="pt-2">
+                <span class="text-[10px] text-stone-500 font-bold uppercase tracking-wider">WEBTOON · 840+ PANELS</span>
+              </div>
+            </div>
+
+            <!-- Pillar 4: 애니메이션 -->
+            <div class="border border-[rgba(15,0,0,0.12)] p-6 bg-white rounded-none space-y-3 flex flex-col justify-between">
+              <div class="space-y-3">
+                <div class="text-2xl">🎬</div>
+                <h3 class="text-base font-bold text-[#201d1d] m-0">시네마틱 애니메이션</h3>
+                <p class="text-xs text-stone-600 leading-relaxed m-0">
+                  7등신 실사형 풀바디 연출과 40개 전편 MP4 비디오, 입체 오디오 BGM 및 다국어 자막 시스템이 탑재된 극장식 시네마.
+                </p>
+              </div>
+              <div class="pt-2">
+                <span class="text-[10px] text-stone-500 font-bold uppercase tracking-wider">ANIME · 40 MP4 FILMS</span>
+              </div>
             </div>
           </div>
         </div>

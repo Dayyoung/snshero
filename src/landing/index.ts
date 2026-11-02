@@ -14,67 +14,44 @@ import { renderSidebar } from './components/Sidebar';
 import { renderModals } from './components/Modals';
 import { renderFooter } from './components/Footer';
 import { renderHomeSection } from './views/HomeSection';
+import { renderMyDeckSection } from './views/MyDeckSection';
+import { renderPlaySection, handlePlayAction, stopPlayTts } from './views/PlaySection';
+import { renderCardSection, setSelectedCardId, setElementFilter, setOwnedFilter } from './views/CardSection';
+import { renderShopSection, executeShopPurchase, setUserCoins, getUserCoins } from './views/ShopSection';
+import { cardNurtureStore } from './services/cardNurtureStore';
 
 interface LandingState {
   activeView: ViewKey;
   activeModal: ModalKey;
   isSidebarOpen: boolean;
+  selectedDeckCardId?: number;
 }
 
 const state: LandingState = {
   activeView: 'home',
   activeModal: null,
   isSidebarOpen: false,
+  selectedDeckCardId: 1,
 };
 
 function renderActiveViewContent(view: ViewKey): string {
   if (view === 'home') {
     return renderHomeSection();
   }
+  if (view === 'deck') {
+    return renderMyDeckSection(state.selectedDeckCardId || 1);
+  }
+  if (view === 'play') {
+    return renderPlaySection();
+  }
+  if (view === 'card') {
+    return renderCardSection();
+  }
+  if (view === 'shop') {
+    return renderShopSection();
+  }
 
-  const titles: Record<ViewKey, { ko: string; desc: string }> = {
-    home: { ko: '홈 (Home)', desc: '눈히어로 공식 소개 및 연재관' },
-    deck: { ko: '마이덱 (My Deck)', desc: '현재 내 5장 덱 구성 및 Deck TP / Total TP 확인' },
-    play: { ko: '플레이 (Play Theater)', desc: '40부작 웹툰 씬 뷰어 및 오디오 나레이션' },
-    card: { ko: '카드 수집 및 육성 (Card Collection & Nurture)', desc: '110종 카드 수집율 및 1~100레벨 카드 육성 엔진' },
-    shop: { ko: '상점 (Card Shop)', desc: '일반/매직/희귀 카드팩 및 공식 굿즈/아이템 상점' },
-  };
-
-  const current = titles[view] || { ko: view, desc: '섹션 안내' };
-
-  return `
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-10 font-mono">
-      <section class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 sm:p-8 rounded-none shadow-none space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.08)] gap-2">
-          <div>
-            <span class="text-[11px] text-stone-500 uppercase tracking-widest">[VIEW: ${view.toUpperCase()}]</span>
-            <h1 class="text-lg sm:text-xl font-bold text-[#201d1d] m-0">${current.ko}</h1>
-          </div>
-          <span class="px-2 py-1 bg-[#f1eeee] text-[#646262] text-xs font-semibold rounded-sm">
-            Milestone 3 준비 완료
-          </span>
-        </div>
-        <p class="text-xs sm:text-sm text-stone-600 leading-relaxed m-0">
-          ${current.desc} 기능의 전체 인터랙티브 시스템(카드 육성, 1~100Lv 레벨업, 스탯 배분, 덱 TP 계산기, 상점 8종)이 Milestone 3에서 완벽히 연동됩니다.
-        </p>
-        <div class="pt-4 flex flex-wrap gap-3">
-          <a
-            href="/home"
-            class="px-5 py-3 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center no-underline"
-          >
-            기존 카드 배틀 게임 바로가기 (/home) →
-          </a>
-          <button
-            type="button"
-            data-nav="home"
-            class="px-4 py-3 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-semibold rounded-sm min-h-[44px] inline-flex items-center justify-center hover:bg-[#e8e5e5] transition-colors"
-          >
-            ← 홈으로 돌아가기
-          </button>
-        </div>
-      </section>
-    </div>
-  `;
+  return renderHomeSection();
 }
 
 function renderApp(): void {
@@ -120,11 +97,17 @@ function handleEventDelegation(event: Event): void {
   const action = target.getAttribute('data-action');
 
   if (nav) {
+    if (state.activeView === 'play' && nav !== 'play') {
+      stopPlayTts();
+    }
     state.activeView = nav;
     state.isSidebarOpen = false;
     window.location.hash = nav;
     renderApp();
   } else if (modal) {
+    if (state.activeView === 'play') {
+      stopPlayTts();
+    }
     state.activeModal = modal;
     state.isSidebarOpen = false;
     renderApp();
@@ -137,6 +120,59 @@ function handleEventDelegation(event: Event): void {
   } else if (action === 'close-modal') {
     state.activeModal = null;
     renderApp();
+  } else if (action === 'select-deck-card') {
+    const cardIdStr = target.getAttribute('data-card-id');
+    if (cardIdStr) {
+      state.selectedDeckCardId = parseInt(cardIdStr, 10);
+      renderApp();
+    }
+  } else if (action && action.startsWith('play-')) {
+    handlePlayAction(action, target as HTMLElement);
+    renderApp();
+  } else if (action === 'select-card') {
+    const cardId = Number(target.getAttribute('data-card-id'));
+    if (cardId) {
+      setSelectedCardId(cardId);
+      renderApp();
+    }
+  } else if (action === 'close-card-inspector') {
+    setSelectedCardId(null);
+    renderApp();
+  } else if (action === 'nurture-card') {
+    const cardId = Number(target.getAttribute('data-card-id'));
+    const expGain = Number(target.getAttribute('data-exp') || '50');
+    if (cardId) {
+      cardNurtureStore.nurtureCard(cardId, expGain);
+      renderApp();
+    }
+  } else if (action === 'allocate-stat') {
+    const cardId = Number(target.getAttribute('data-card-id'));
+    const direction = target.getAttribute('data-direction') as 'top' | 'right' | 'bottom' | 'left';
+    if (cardId && direction) {
+      cardNurtureStore.allocateStat(cardId, direction);
+      renderApp();
+    }
+  } else if (action === 'filter-card-element') {
+    const el = target.getAttribute('data-element') || 'all';
+    setElementFilter(el);
+    renderApp();
+  } else if (action === 'filter-card-owned') {
+    const owned = target.getAttribute('data-filter') as 'all' | 'owned' | 'unowned';
+    setOwnedFilter(owned || 'all');
+    renderApp();
+  } else if (action === 'buy-shop-item') {
+    const itemId = target.getAttribute('data-item-id');
+    if (itemId) {
+      const res = executeShopPurchase(itemId);
+      if (!res.success) {
+        alert(res.message);
+      }
+      renderApp();
+    }
+  } else if (action === 'free-charge-coin') {
+    const cur = getUserCoins();
+    setUserCoins(cur + 1000);
+    renderApp();
   }
 }
 
@@ -148,6 +184,8 @@ function handleGlobalKeydown(event: KeyboardEvent): void {
     } else if (state.isSidebarOpen) {
       state.isSidebarOpen = false;
       renderApp();
+    } else if (state.activeView === 'play') {
+      stopPlayTts();
     }
   }
 }
@@ -162,14 +200,43 @@ function mountLanding(): void {
 
   // Register event listeners
   document.addEventListener('click', handleEventDelegation);
+  document.addEventListener('change', (event: Event) => {
+    const target = event.target as HTMLElement;
+    const action = target?.getAttribute('data-action');
+    if (action && action.startsWith('play-')) {
+      handlePlayAction(action, target);
+      renderApp();
+    }
+  });
+  document.addEventListener('input', (event: Event) => {
+    const target = event.target as HTMLElement;
+    const action = target?.getAttribute('data-action');
+    if (action && action === 'play-scrub-scene') {
+      handlePlayAction(action, target);
+      renderApp();
+    }
+  });
+
   window.addEventListener('keydown', handleGlobalKeydown);
   window.addEventListener('hashchange', () => {
     const currentHash = window.location.hash.replace('#', '') as ViewKey;
     if (validViews.includes(currentHash) && currentHash !== state.activeView) {
+      if (state.activeView === 'play' && currentHash !== 'play') {
+        stopPlayTts();
+      }
       state.activeView = currentHash;
       renderApp();
     }
   });
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('snshero_card_nurture_updated', () => {
+      renderApp();
+    });
+    window.addEventListener('snshero_sns_updated', () => {
+      renderApp();
+    });
+  }
 
   renderApp();
 }

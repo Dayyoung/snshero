@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 15:15 KST] [마일스톤 3 구현: 핵심 5대 화면 및 카드 육성 시스템 완성 (Features 12~17)]
+- **작업자**: `teamwork_worker` (worker_m3_1)
+- **작업 개요**:
+  - `src/landing/services/cardNurtureStore.ts`: 1~100Lv EXP 성장 곡선(`expToNext = level * 100`), 레벨업 시 1 스탯 포인트 지급, 4방향(N, E, S, W) 스탯 배분, 미사용 스탯 포인트 레드닷(`hasUnspentPoints`), 출격 5장 N+E+S+W 스탯 합산 덱 TP(기본 80 TP) 및 전체 보유 카드 누적 Total TP(기본 80 TP) 계산, `hero_card_nurturing` 로컬스토리지 자동 영구 저장 및 손상 JSON 복구 엔진.
+  - `src/landing/services/webtoonCatalog.ts`: 40부작 공식 판타지 웹툰 전편 메타데이터, 총 씬 수(47~61컷), 이미지 경로 리졸버(`/images/webtoon/episode_XX/scene_YY.webp`), 대표 내레이션 수록 경량 카탈로그.
+  - `src/landing/views/HomeSection.tsx`: 상하 스크롤 눈히어로 소개, 4대 미디어 필러(웹소설, 웹게임, 웹툰, 애니메이션) 4컬럼 반응형 그리드, 네이버 웹소설/네이버 웹툰/문피아 공식 연재 링크 및 `[절찬 연재중]` 배지 연동.
+  - `src/landing/views/MyDeckSection.tsx`: 활성 5개 덱 슬롯 그리드, 실시간 덱 TP(80 TP) 및 전체 TP(80 TP) 메트릭 대시보드, 3티어 비주얼 에셋(상반신, 7등신 풀바디 컷아웃, SD), 선택 카드 상세 인스펙터, 카드 육성 연동 버튼. (불필요한 BattleHUD 및 Joystick 일체 배제).
+  - `src/landing/views/PlaySection.tsx`: 엄격한 5개 컨트롤 버튼(`닫기`, `이전`, `다음`, `나레이션`, `TTS`), 초기 TTS 비활성(OFF, `isTtsActive: false`) 엄격 준수, 씬 이동 시 TTS OFF 불변성 유지, 40부작 웹툰 씬 뷰어, 스크러버, 40회차 캐러셀.
+  - `src/landing/views/CardSection.tsx`: '카드' 섹션 네이밍, 수집율 표시(`수집율: XX / 110 (XX.X%)`), 110종 영웅 종합 그리드, 미배분 포인트 플랫 레드닷, 선택 카드 1~100Lv EXP 육성 및 4방향(상단 N, 우측 E, 하단 S, 좌측 W) 스탯 강화 인스펙터, 속성/보유 필터.
+  - `src/landing/views/ShopSection.tsx`: 정확한 8종 필수 상품(`일반 카드팩`, `매직 카드팩`, `희귀 카드팩`, `아이템 팩`, `광고 제거`, `공식 소설`, `공식 동영상`, `코인 충전`), 불필요한 사행성 클러터 아이템 0건, 카드팩 구매 시 도감 카드 해금 및 수집율/Total TP 즉시 동기화, `hero_sns` 로컬스토리지 코인 잔액 및 무료 충전 연동.
+  - `src/landing/index.ts`: 5대 핵심 화면 통합 라우팅 및 뷰 마운트, 문서 레벨 이벤트 위임, 뷰 전환 시 TTS 안전 중단(`stopPlayTts()`), 키보드/해시 변경 리스너.
+- **검증 결과**:
+  1. `npx tsc --noEmit`: 0 errors (타입스크립트 컴파일 무결성 100% 검증)
+  2. `npm run build`: 성공 (exit code 0, `dist/index.html` 43 KB 경량 번들, React 런타임 0%)
+  3. `npx tsx tests/e2e/run_all.ts --milestone M3`: **43/43 전수 통과 (100.0% PASS)**
+  4. `npx tsx tests/e2e/run_all.ts --milestone M1`: **9/9 전수 통과 (100.0% PASS, 회귀 없음)**
+  5. `npx tsx tests/e2e/run_all.ts --milestone M2`: **13/13 전수 통과 (100.0% PASS, 회귀 없음)**
+  6. `npx tsx tests/e2e/run_all.ts` (전체 테스트): **69/69 전수 통과 (100.0% PASS)**
+- **보고서 제출**: 구글 폼 완료 보고서 제출 완료 (`skills/report-ex/scripts/submit_report.py`).
+
 ## [2026-11-02 14:35 KST] [마일스톤 2 구현: 반응형 셸, 6+8 내비게이션, 모달 및 3티어 캐릭터 에셋 전수 완료]
 - **작업자**: `teamwork_worker` (worker_m2)
 - **작업 개요**:

@@ -17,6 +17,17 @@ export const EXTERNAL_LINKS = {
   badgeText: '절찬 연재중',
 } as const;
 
+export const SHOP_8_ITEMS = [
+  '일반 카드팩',
+  '매직 카드팩',
+  '희귀 카드팩',
+  '아이템 팩',
+  '광고 제거',
+  '공식 소설',
+  '공식 동영상',
+  '코인 충전',
+] as const;
+
 export interface BonusStats {
   top: number;
   right: number;
@@ -39,9 +50,10 @@ export interface NurtureState {
   ownedCardIds: number[];
   getDeckTP: () => number;
   getTotalTP: () => number;
-  nurtureCard: (cardId: number) => { expGained: number; leveledUp: boolean; newLevel: number };
+  nurtureCard: (cardId: number, expGain?: number) => { expGained: number; leveledUp: boolean; newLevel: number };
   allocateStat: (cardId: number, direction: 'top' | 'right' | 'bottom' | 'left') => boolean;
   hasUnspentPoints: (cardId: number) => boolean;
   saveToStorage: () => void;
   loadFromStorage: () => void;
 }
+
