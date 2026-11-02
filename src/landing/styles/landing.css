@@ -1,14 +1,226 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   OpenCode Terminal-Flat Design Tokens (DESIGN.md Canonical Palette)
+   ========================================================================== */
 :root {
-  --landing-cream: #fdfcfc;
-  --landing-ink: #201d1d;
-  --landing-line: rgba(15, 0, 0, 0.12);
+  --opencode-canvas: #fdfcfc;
+  --opencode-ink: #201d1d;
+  --opencode-ink-deep: #0f0000;
+  --opencode-charcoal: #302c2c;
+  --opencode-body: #424245;
+  --opencode-mute: #646262;
+  --opencode-stone: #6e6e73;
+  --opencode-ash: #9a9898;
+  --opencode-surface-soft: #f8f7f7;
+  --opencode-surface-card: #f1eeee;
+  --opencode-surface-dark: #201d1d;
+  --opencode-surface-dark-elevated: #302c2c;
+  --opencode-hairline: rgba(15, 0, 0, 0.12);
+  --opencode-hairline-strong: #646262;
+  --opencode-hairline-dark: rgba(255, 255, 255, 0.12);
+}
+
+/* ==========================================================================
+   Global Reset & Fluid Viewport Resilience (320px ~ 3840px)
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
+  width: 100%;
+  min-height: 100vh;
   margin: 0;
-  background-color: var(--landing-cream);
-  color: var(--landing-ink);
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: var(--opencode-canvas);
+  color: var(--opencode-ink);
+  font-family: 'JetBrains Mono', 'Berkeley Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#landing-root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   Ergonomic 44px+ Mobile Touch Target Standard
+   ========================================================================== */
+.touch-target,
+button,
+[role="button"],
+a.btn,
+.nav-link,
+.action-btn,
+.nav-item-btn,
+.sidebar-item-btn {
+  min-height: 44px;
+  box-sizing: border-box;
+  touch-action: manipulation;
+}
+
+/* ==========================================================================
+   OpenCode Terminal-Flat Utility Classes (0px Container, 4px Interactive)
+   ========================================================================== */
+/* Flat Containers: 0px Border Radius, 1px Hairline */
+.terminal-container {
+  border: 1px solid var(--opencode-hairline);
+  border-radius: 0px;
+  background-color: var(--opencode-canvas);
+}
+
+/* Primary Button: 4px Radius, Dark Ink Fill */
+.btn-terminal-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 20px;
+  border-radius: 4px;
+  border: 1px solid var(--opencode-ink);
+  background-color: var(--opencode-ink);
+  color: var(--opencode-canvas);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+.btn-terminal-primary:hover {
+  opacity: 0.92;
+}
+.btn-terminal-primary:active {
+  background-color: var(--opencode-ink-deep);
+}
+
+/* Secondary Button: 4px Radius, Hairline Outlined */
+.btn-terminal-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--opencode-hairline);
+  background-color: var(--opencode-canvas);
+  color: var(--opencode-ink);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+.btn-terminal-secondary:hover {
+  background-color: var(--opencode-surface-soft);
+}
+
+/* Nav Item Button: Fluid Height, Hairline Active Bottom Line */
+.btn-nav-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: var(--opencode-body);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-nav-item:hover {
+  color: var(--opencode-ink);
+  background-color: var(--opencode-surface-soft);
+}
+.btn-nav-item.active {
+  color: var(--opencode-ink);
+  font-weight: 700;
+  border-color: var(--opencode-hairline);
+  background-color: var(--opencode-surface-card);
+}
+
+/* Terminal Hero Card (Mockup): Dark Flat Surface */
+.terminal-hero-card {
+  border: 1px solid var(--opencode-charcoal);
+  border-radius: 0px;
+  background-color: var(--opencode-surface-dark);
+  color: var(--opencode-canvas);
+  padding: 32px 24px;
+}
+
+/* Badges: 4px Radius, Monospace Caption */
+.badge-terminal {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.badge-terminal-dark {
+  background-color: var(--opencode-surface-dark);
+  color: var(--opencode-canvas);
+  border: 1px solid var(--opencode-charcoal);
+}
+.badge-terminal-live {
+  background-color: #201d1d;
+  color: #30d158;
+  border: 1px solid #30d158;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints (@media queries for 320px+, 768px+, 1024px+)
+   ========================================================================== */
+/* Mobile Compact (< 768px) */
+@media (max-width: 767px) {
+  .desktop-nav-cluster {
+    display: none !important;
+  }
+  .mobile-nav-toggle {
+    display: inline-flex !important;
+  }
+}
+
+/* Tablet (768px ~ 1023px) */
+@media (min-width: 768px) {
+  .section-padding {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+/* Desktop Widescreen (1024px+) */
+@media (min-width: 1024px) {
+  .desktop-nav-cluster {
+    display: inline-flex !important;
+  }
+  .mobile-nav-toggle {
+    display: none !important;
+  }
+  .section-padding {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
 }

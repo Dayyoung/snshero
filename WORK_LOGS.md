@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 14:35 KST] [마일스톤 2 구현: 반응형 셸, 6+8 내비게이션, 모달 및 3티어 캐릭터 에셋 전수 완료]
+- **작업자**: `teamwork_worker` (worker_m2)
+- **작업 개요**:
+  - `src/landing/types.ts`: `ViewKey`, `ModalKey`, `TOP_NAV_ITEMS` (6개), `SIDE_NAV_ITEMS` (8개), `EXTERNAL_LINKS` (네이버 웹소설/웹툰, 문피아, 절찬 연재중 배지), 카드 육성 인터페이스 정의.
+  - `src/landing/styles/landing.css`: OpenCode Terminal-Flat 디자인 토큰, 유동 뷰포트 리셋(`overflow-x-hidden`, `w-full`, `box-sizing`), 44px+ 모바일 터치 타깃(`min-h-[44px]`), 0px 컨테이너 / 4px 인터랙티브 모서리 반경, 1px 헤어라인, @media 브레이크포인트(768px `md:`, 1024px `lg:`).
+  - `src/landing/components/Header.tsx`: 상단 내비게이션 정확한 6개 항목(홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰), `md:`, `lg:`, `min-h-[44px]` 터치 규격 완벽 준수.
+  - `src/landing/components/Sidebar.tsx`: 사이드 내비게이션 정확한 8개 항목(로그인, 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰, 커뮤니티), 오프캔버스 드로어, 백드롭 오버레이, 상단 우측 `[x]` 닫기 컨트롤, `min-h-[44px]` 터치 타깃.
+  - `src/landing/components/Modals.tsx`: 쇼핑몰(`mall`), 커뮤니티(`community`), 로그인(`login`) 준비 모달, `fixed inset-0 z-50 backdrop bg-black/50`, `[x]` 및 `닫기` 44px+ 컨트롤, 로컬스토리지 100% 영구 보존 안내.
+  - `src/landing/components/Footer.tsx`: OpenCode 터미널 플랫 링크 및 저작권 정보 푸터.
+  - `src/landing/services/assetCatalog.ts`: 110종 영웅 3단계 비주얼 자산 카탈로그(7등신 cutouts, 상반신 busts/seat, 3등신 SD 스프라이트 cards1.png/cards2.png), 우선순위 폴백 체인, 인라인 SVG 데이터 URI 생성기.
+  - `src/landing/views/HomeSection.tsx`: 상하 스크롤 눈히어로 소개, 웹소설·웹게임·애니메이션 쇼케이스, 네이버 웹소설/네이버 웹툰/문피아 공식 연재 링크 및 `[절찬 연재중]` 배지 연동.
+  - `src/landing/index.ts`: 단독 정적 랜딩 부트스트랩 오케스트레이터, 이벤트 위임, 초기 `activeModal: null` 및 온보딩 팝업 전면 차단(Zero Onboarding Popups).
+- **검증 결과**:
+  1. `npx tsc --noEmit`: 0 errors (컴파일 무결성 100% 검증)
+  2. `npm run build`: 성공 (exit code 0, `dist/index.html` 35 KB 경량 번들, `vendor-react` 0건)
+  3. `npx tsx tests/e2e/run_all.ts --milestone M2`: **13/13 전수 통과 (100.0% PASS)**
+  4. `npx tsx tests/e2e/run_all.ts --milestone M1`: **9/9 전수 통과 (100.0% PASS, 회귀 없음)**
+- **보고서 제출**: 구글 폼 완료 보고서 제출 완료 (`skills/report-ex/scripts/submit_report.py`).
+
 ## [2026-11-02 14:12 KST] [마일스톤 1 반복 3 포렌식 무결성 감사 (Forensic Integrity Audit) 완료 - 판정: CLEAN]
 - **감사 대상**:
   - `scripts/post-build.js`
