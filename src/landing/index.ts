@@ -340,16 +340,12 @@ export function handleEventDelegation(event: Event): void {
     setSelectedCardId(null);
     renderApp();
   } else if (action === 'nurture-card') {
-    const cardId = Number(target.getAttribute('data-card-id'));
-    const expGain = Number(target.getAttribute('data-exp') || '50');
-    if (cardId) {
-      cardNurtureStore.nurtureCard(cardId, expGain);
-      renderApp();
-    }
+    // Prohibited: free EXP buttons completely eliminated in Milestone 4.
+    // Ignored to prevent cheat injection.
   } else if (action === 'allocate-stat') {
     const cardId = Number(target.getAttribute('data-card-id'));
     const direction = target.getAttribute('data-direction') as 'top' | 'right' | 'bottom' | 'left';
-    if (cardId && direction) {
+    if (cardId && direction && cardNurtureStore.isCardOwned(cardId)) {
       cardNurtureStore.allocateStat(cardId, direction);
       renderApp();
     }

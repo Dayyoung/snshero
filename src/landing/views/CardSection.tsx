@@ -75,6 +75,9 @@ export function renderCardSection(): string {
   const selectedDbCard = localState.selectedCardId
     ? CARD_DATABASE[localState.selectedCardId]
     : null;
+  const isSelectedCardOwned = localState.selectedCardId
+    ? cardNurtureStore.isCardOwned(localState.selectedCardId)
+    : false;
 
   return `
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 font-mono text-[#201d1d] select-none">
@@ -212,10 +215,10 @@ export function renderCardSection(): string {
                 <img
                   src="${selectedAsset.bustPngUrl}"
                   alt="${selectedAsset.nameKo}"
-                  class="max-w-full max-h-full object-contain"
+                  class="max-w-full max-h-full object-contain ${isSelectedCardOwned ? '' : 'grayscale opacity-60'}"
                   onerror="this.src='${selectedAsset.seatUrl}'; this.onerror=null;"
                 />
-                ${cardNurtureStore.hasUnspentPoints(selectedCard.cardId) ? `
+                ${isSelectedCardOwned && cardNurtureStore.hasUnspentPoints(selectedCard.cardId) ? `
                   <span class="absolute top-2 right-2 px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded-sm shadow-none">
                     스탯 UP!
                   </span>
@@ -231,55 +234,71 @@ export function renderCardSection(): string {
                   <span class="px-2 py-0.5 bg-[#f1eeee] text-[#201d1d] text-[10px] font-bold rounded-sm uppercase">
                     ${selectedAsset.faction} · ${selectedAsset.rarity}
                   </span>
+                  <span class="px-2 py-0.5 ${
+                    isSelectedCardOwned
+                      ? 'bg-emerald-700 text-[#fdfcfc]'
+                      : 'bg-stone-300 text-stone-700'
+                  } text-[10px] font-bold rounded-sm">
+                    ${isSelectedCardOwned ? '[보유]' : '[미보유]'}
+                  </span>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-bold text-[#201d1d] m-0">
                   ${selectedAsset.nameKo} (${selectedAsset.nameEn})
                 </h2>
                 <div class="text-xs text-stone-600">
-                  현재 레벨: <strong class="text-sm text-[#201d1d]">Lv.${selectedCard.level} / 100</strong>
+                  ${
+                    isSelectedCardOwned
+                      ? `현재 레벨: <strong class="text-sm text-[#201d1d]">Lv.${selectedCard.level} / 100</strong>`
+                      : `상태: <strong class="text-sm text-stone-500">미보유 (Lv.1 대기 중)</strong>`
+                  }
                 </div>
 
-                <!-- EXP Progress Bar -->
-                <div class="w-full sm:w-64 space-y-1">
-                  <div class="flex justify-between text-[10px] text-stone-500">
-                    <span>경험치 (EXP)</span>
-                    <span>${selectedCard.exp} / ${selectedCard.expToNext}</span>
+                ${
+                  isSelectedCardOwned
+                    ? `
+                  <!-- EXP Progress Bar (Owned) -->
+                  <div class="w-full sm:w-64 space-y-1">
+                    <div class="flex justify-between text-[10px] text-stone-500">
+                      <span>경험치 (EXP)</span>
+                      <span>${selectedCard.exp} / ${selectedCard.expToNext}</span>
+                    </div>
+                    <div class="w-full bg-[#f1eeee] h-2 rounded-sm overflow-hidden">
+                      <div
+                        class="bg-emerald-600 h-full transition-all duration-300"
+                        style="width: ${selectedCard.level >= 100 ? 100 : Math.min(100, Math.floor((selectedCard.exp / selectedCard.expToNext) * 100))}%"
+                      ></div>
+                    </div>
                   </div>
-                  <div class="w-full bg-[#f1eeee] h-2 rounded-sm overflow-hidden">
-                    <div
-                      class="bg-emerald-600 h-full transition-all duration-300"
-                      style="width: ${selectedCard.level >= 100 ? 100 : Math.min(100, Math.floor((selectedCard.exp / selectedCard.expToNext) * 100))}%"
-                    ></div>
-                  </div>
-                </div>
 
-                <!-- Nurture Buttons -->
-                <div class="pt-2 flex flex-wrap gap-2 justify-center sm:justify-start">
-                  <button
-                    type="button"
-                    data-action="nurture-card"
-                    data-card-id="${selectedCard.cardId}"
-                    data-exp="50"
-                    ${selectedCard.level >= 100 ? 'disabled' : ''}
-                    class="px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center cursor-pointer ${
-                      selectedCard.level >= 100 ? 'opacity-50 cursor-not-allowed' : ''
-                    }"
-                  >
-                    ${selectedCard.level >= 100 ? '최대 레벨 도달 (Lv.100 MAX)' : '카드 육성하기 (+50 EXP)'}
-                  </button>
-                  <button
-                    type="button"
-                    data-action="nurture-card"
-                    data-card-id="${selectedCard.cardId}"
-                    data-exp="500"
-                    ${selectedCard.level >= 100 ? 'disabled' : ''}
-                    class="px-4 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-semibold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] flex items-center justify-center cursor-pointer ${
-                      selectedCard.level >= 100 ? 'opacity-50 cursor-not-allowed' : ''
-                    }"
-                  >
-                    10회 연속 육성 (+500 EXP)
-                  </button>
-                </div>
+                  <!-- Battle Victory EXP Guide Notice -->
+                  <div class="pt-2">
+                    <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-xs text-stone-600 flex items-center gap-2">
+                      <span class="text-emerald-700 font-bold">[EXP 획득 가이드]</span>
+                      <span>경험치는 카드 배틀 승리 시 덱 출격 카드 5장에 자동 지급됩니다 (회당 50 경험치).</span>
+                      <a href="#play" class="ml-auto px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm hover:opacity-90 transition-opacity">배틀하러 가기</a>
+                    </div>
+                  </div>
+                `
+                    : `
+                  <!-- Nurturing Locked Notice (Unowned) -->
+                  <div class="p-3 bg-[#f8f7f7] border border-dashed border-stone-300 rounded-none text-xs text-stone-600 space-y-1.5 max-w-md">
+                    <div class="font-bold text-[#201d1d] flex items-center gap-1.5">
+                      <span>🔒 미보유 카드 (육성 잠김)</span>
+                    </div>
+                    <div>
+                      상점에서 카드 팩을 구매하여 영웅을 영입하세요. 육성은 카드 획득 후 진행할 수 있습니다.
+                    </div>
+                    <div class="pt-1">
+                      <a
+                        href="#shop"
+                        class="inline-flex items-center justify-center px-3 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 no-underline min-h-[44px] cursor-pointer"
+                      >
+                        상점에서 카드 팩 구매하기 ➔
+                      </a>
+                    </div>
+                  </div>
+                `
+                }
               </div>
             </div>
 
@@ -298,24 +317,40 @@ export function renderCardSection(): string {
           <div class="space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[rgba(15,0,0,0.08)]">
               <div>
-                <span class="text-[11px] text-stone-500 uppercase tracking-wider">4방향 스탯 인핸스먼트</span>
-                <h3 class="text-base font-bold text-[#201d1d] m-0">방향별 능력치 배분</h3>
+                <span class="text-[11px] text-stone-500 uppercase tracking-wider">
+                  ${isSelectedCardOwned ? '4방향 스탯 인핸스먼트' : '기본 능력치 정보 (도감 조회)'}
+                </span>
+                <h3 class="text-base font-bold text-[#201d1d] m-0">
+                  ${isSelectedCardOwned ? '방향별 능력치 배분' : '4방향 기본 능력치'}
+                </h3>
               </div>
               <div class="flex items-center gap-2">
                 <span class="text-xs text-stone-600">미분배 스탯 포인트:</span>
                 <span class="px-2.5 py-1 ${
-                  selectedCard.statPoints > 0 ? 'bg-red-600 text-white' : 'bg-[#f1eeee] text-[#201d1d]'
+                  isSelectedCardOwned && selectedCard.statPoints > 0
+                    ? 'bg-red-600 text-white'
+                    : 'bg-[#f1eeee] text-[#201d1d]'
                 } text-xs font-bold rounded-sm">
-                  ${selectedCard.statPoints} P
+                  ${isSelectedCardOwned ? `${selectedCard.statPoints} P` : '0 P (미보유)'}
                 </span>
               </div>
             </div>
 
-            ${selectedCard.statPoints > 0 ? `
+            ${
+              isSelectedCardOwned && selectedCard.statPoints > 0
+                ? `
               <div class="p-3 bg-[#fff7ed] border border-amber-300 rounded-none text-xs text-amber-800">
                 [!] 보유 중인 스탯 포인트(${selectedCard.statPoints}P)가 있습니다. 원하는 방향의 [+] 버튼을 눌러 스탯을 강화하세요.
               </div>
-            ` : ''}
+            `
+                : !isSelectedCardOwned
+                ? `
+              <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-xs text-stone-600">
+                [안내] 미보유 카드는 기본 능력치 조회가 가능하며, 상점에서 카드 팩을 구매하여 영웅을 영입하세요.
+              </div>
+            `
+                : ''
+            }
 
             <!-- 4-Way Grid Layout -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -323,96 +358,160 @@ export function renderCardSection(): string {
               <div class="p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none space-y-2">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-[#201d1d]">상단 (Top / N)</span>
-                  <span class="text-xs font-semibold text-emerald-700">+${selectedCard.bonusStats.top} 보너스</span>
+                  <span class="text-xs font-semibold text-emerald-700">
+                    ${isSelectedCardOwned ? `+${selectedCard.bonusStats.top} 보너스` : '기본'}
+                  </span>
                 </div>
                 <div class="text-xl font-bold text-[#201d1d]">
-                  ${(selectedDbCard?.top || 0) + selectedCard.bonusStats.top}
+                  ${isSelectedCardOwned ? (selectedDbCard?.top || 0) + selectedCard.bonusStats.top : (selectedDbCard?.top || 0)}
                   <span class="text-xs text-stone-500 font-normal">(기본 ${selectedDbCard?.top || 0})</span>
                 </div>
-                <button
-                  type="button"
-                  data-action="allocate-stat"
-                  data-card-id="${selectedCard.cardId}"
-                  data-direction="top"
-                  ${selectedCard.statPoints <= 0 ? 'disabled' : ''}
-                  class="w-full py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center cursor-pointer ${
-                    selectedCard.statPoints <= 0 ? 'opacity-40 cursor-not-allowed' : ''
-                  }"
-                >
-                  + 상단(N) 강화
-                </button>
+                ${
+                  isSelectedCardOwned
+                    ? `
+                  <button
+                    type="button"
+                    data-action="allocate-stat"
+                    data-card-id="${selectedCard.cardId}"
+                    data-direction="top"
+                    ${selectedCard.statPoints <= 0 ? 'disabled' : ''}
+                    class="w-full py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center cursor-pointer ${
+                      selectedCard.statPoints <= 0 ? 'opacity-40 cursor-not-allowed' : ''
+                    }"
+                  >
+                    + 상단(N) 강화
+                  </button>
+                `
+                    : `
+                  <button
+                    type="button"
+                    disabled
+                    class="w-full py-2 bg-stone-200 text-stone-400 text-xs font-semibold rounded-sm opacity-50 cursor-not-allowed min-h-[44px] flex items-center justify-center"
+                  >
+                    미보유 (강화 불가)
+                  </button>
+                `
+                }
               </div>
 
               <!-- Right (E) Stat -->
               <div class="p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none space-y-2">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-[#201d1d]">우측 (Right / E)</span>
-                  <span class="text-xs font-semibold text-emerald-700">+${selectedCard.bonusStats.right} 보너스</span>
+                  <span class="text-xs font-semibold text-emerald-700">
+                    ${isSelectedCardOwned ? `+${selectedCard.bonusStats.right} 보너스` : '기본'}
+                  </span>
                 </div>
                 <div class="text-xl font-bold text-[#201d1d]">
-                  ${(selectedDbCard?.right || 0) + selectedCard.bonusStats.right}
+                  ${isSelectedCardOwned ? (selectedDbCard?.right || 0) + selectedCard.bonusStats.right : (selectedDbCard?.right || 0)}
                   <span class="text-xs text-stone-500 font-normal">(기본 ${selectedDbCard?.right || 0})</span>
                 </div>
-                <button
-                  type="button"
-                  data-action="allocate-stat"
-                  data-card-id="${selectedCard.cardId}"
-                  data-direction="right"
-                  ${selectedCard.statPoints <= 0 ? 'disabled' : ''}
-                  class="w-full py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center cursor-pointer ${
-                    selectedCard.statPoints <= 0 ? 'opacity-40 cursor-not-allowed' : ''
-                  }"
-                >
-                  + 우측(E) 강화
-                </button>
+                ${
+                  isSelectedCardOwned
+                    ? `
+                  <button
+                    type="button"
+                    data-action="allocate-stat"
+                    data-card-id="${selectedCard.cardId}"
+                    data-direction="right"
+                    ${selectedCard.statPoints <= 0 ? 'disabled' : ''}
+                    class="w-full py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center cursor-pointer ${
+                      selectedCard.statPoints <= 0 ? 'opacity-40 cursor-not-allowed' : ''
+                    }"
+                  >
+                    + 우측(E) 강화
+                  </button>
+                `
+                    : `
+                  <button
+                    type="button"
+                    disabled
+                    class="w-full py-2 bg-stone-200 text-stone-400 text-xs font-semibold rounded-sm opacity-50 cursor-not-allowed min-h-[44px] flex items-center justify-center"
+                  >
+                    미보유 (강화 불가)
+                  </button>
+                `
+                }
               </div>
 
               <!-- Bottom (S) Stat -->
               <div class="p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none space-y-2">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-[#201d1d]">하단 (Bottom / S)</span>
-                  <span class="text-xs font-semibold text-emerald-700">+${selectedCard.bonusStats.bottom} 보너스</span>
+                  <span class="text-xs font-semibold text-emerald-700">
+                    ${isSelectedCardOwned ? `+${selectedCard.bonusStats.bottom} 보너스` : '기본'}
+                  </span>
                 </div>
                 <div class="text-xl font-bold text-[#201d1d]">
-                  ${(selectedDbCard?.bottom || 0) + selectedCard.bonusStats.bottom}
+                  ${isSelectedCardOwned ? (selectedDbCard?.bottom || 0) + selectedCard.bonusStats.bottom : (selectedDbCard?.bottom || 0)}
                   <span class="text-xs text-stone-500 font-normal">(기본 ${selectedDbCard?.bottom || 0})</span>
                 </div>
-                <button
-                  type="button"
-                  data-action="allocate-stat"
-                  data-card-id="${selectedCard.cardId}"
-                  data-direction="bottom"
-                  ${selectedCard.statPoints <= 0 ? 'disabled' : ''}
-                  class="w-full py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center cursor-pointer ${
-                    selectedCard.statPoints <= 0 ? 'opacity-40 cursor-not-allowed' : ''
-                  }"
-                >
-                  + 하단(S) 강화
-                </button>
+                ${
+                  isSelectedCardOwned
+                    ? `
+                  <button
+                    type="button"
+                    data-action="allocate-stat"
+                    data-card-id="${selectedCard.cardId}"
+                    data-direction="bottom"
+                    ${selectedCard.statPoints <= 0 ? 'disabled' : ''}
+                    class="w-full py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center cursor-pointer ${
+                      selectedCard.statPoints <= 0 ? 'opacity-40 cursor-not-allowed' : ''
+                    }"
+                  >
+                    + 하단(S) 강화
+                  </button>
+                `
+                    : `
+                  <button
+                    type="button"
+                    disabled
+                    class="w-full py-2 bg-stone-200 text-stone-400 text-xs font-semibold rounded-sm opacity-50 cursor-not-allowed min-h-[44px] flex items-center justify-center"
+                  >
+                    미보유 (강화 불가)
+                  </button>
+                `
+                }
               </div>
 
               <!-- Left (W) Stat -->
               <div class="p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none space-y-2">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-[#201d1d]">좌측 (Left / W)</span>
-                  <span class="text-xs font-semibold text-emerald-700">+${selectedCard.bonusStats.left} 보너스</span>
+                  <span class="text-xs font-semibold text-emerald-700">
+                    ${isSelectedCardOwned ? `+${selectedCard.bonusStats.left} 보너스` : '기본'}
+                  </span>
                 </div>
                 <div class="text-xl font-bold text-[#201d1d]">
-                  ${(selectedDbCard?.left || 0) + selectedCard.bonusStats.left}
+                  ${isSelectedCardOwned ? (selectedDbCard?.left || 0) + selectedCard.bonusStats.left : (selectedDbCard?.left || 0)}
                   <span class="text-xs text-stone-500 font-normal">(기본 ${selectedDbCard?.left || 0})</span>
                 </div>
-                <button
-                  type="button"
-                  data-action="allocate-stat"
-                  data-card-id="${selectedCard.cardId}"
-                  data-direction="left"
-                  ${selectedCard.statPoints <= 0 ? 'disabled' : ''}
-                  class="w-full py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center cursor-pointer ${
-                    selectedCard.statPoints <= 0 ? 'opacity-40 cursor-not-allowed' : ''
-                  }"
-                >
-                  + 좌측(W) 강화
-                </button>
+                ${
+                  isSelectedCardOwned
+                    ? `
+                  <button
+                    type="button"
+                    data-action="allocate-stat"
+                    data-card-id="${selectedCard.cardId}"
+                    data-direction="left"
+                    ${selectedCard.statPoints <= 0 ? 'disabled' : ''}
+                    class="w-full py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center cursor-pointer ${
+                      selectedCard.statPoints <= 0 ? 'opacity-40 cursor-not-allowed' : ''
+                    }"
+                  >
+                    + 좌측(W) 강화
+                  </button>
+                `
+                    : `
+                  <button
+                    type="button"
+                    disabled
+                    class="w-full py-2 bg-stone-200 text-stone-400 text-xs font-semibold rounded-sm opacity-50 cursor-not-allowed min-h-[44px] flex items-center justify-center"
+                  >
+                    미보유 (강화 불가)
+                  </button>
+                `
+                }
               </div>
             </div>
           </div>
@@ -472,7 +571,7 @@ export function renderCardSection(): string {
                       ></span>
                     ` : ''}
                     <span class="px-1.5 py-0.5 ${isOwned ? 'bg-[#201d1d] text-[#fdfcfc]' : 'bg-stone-300 text-stone-700'} font-semibold rounded-sm">
-                      ${isOwned ? `Lv.${cardData.level}` : '미보유'}
+                      ${isOwned ? `[보유] Lv.${cardData.level}` : '[미보유]'}
                     </span>
                   </div>
                 </div>
@@ -482,7 +581,7 @@ export function renderCardSection(): string {
                   <img
                     src="${asset.sdUrl}"
                     alt="${asset.nameKo}"
-                    class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-200"
+                    class="max-w-full max-h-full object-contain ${isOwned ? '' : 'grayscale opacity-60'} group-hover:scale-105 transition-transform duration-200"
                     loading="lazy"
                     onerror="this.src='${asset.seatUrl}'; this.onerror=null;"
                   />

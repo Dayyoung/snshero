@@ -159,9 +159,7 @@ export function initPlayRpgState(): void {
     }
 
     const savedRepeat = localStorage.getItem('hero_repeat_hunting');
-    if (savedRepeat === 'true') {
-      playRpgState.repeatHunting = true;
-    }
+    playRpgState.repeatHunting = savedRepeat === 'true';
 
     const savedChapter = localStorage.getItem('hero_kadan_rpg_chapter');
     if (savedChapter) {
@@ -550,20 +548,37 @@ export function finalizeBattle(): void {
   } else if (pScore < oScore) {
     playRpgState.battleWinner = 'opponent';
     playRpgState.battleMessage = `패배 (스코어 ${pScore} : ${oScore}). 재도전하거나 덱을 보강하세요.`;
+    if (playRpgState.repeatHunting) {
+      setTimeout(() => {
+        initBattle();
+      }, 1500);
+    }
   } else {
     playRpgState.battleWinner = 'draw';
     playRpgState.battleMessage = `무승부 (스코어 ${pScore} : ${oScore}).`;
+    if (playRpgState.repeatHunting) {
+      setTimeout(() => {
+        initBattle();
+      }, 1500);
+    }
   }
 }
 
 /**
  * Award 50 EXP upon victory and persist progress
  */
-export function finishBattleAndAwardExp(): { expAwarded: number; deckCount: number } {
-  const result = (cardNurtureStore as any).awardBattleVictoryExp(50);
+export function finishBattleAndAwardExp(): { expAwarded: number; deckCount: number; updatedCards?: number[] } {
+  const result = cardNurtureStore.awardBattleVictoryExp
+    ? cardNurtureStore.awardBattleVictoryExp(50)
+    : (cardNurtureStore as any).awardBattleVictoryExp(50);
 
-  // If autoMode is active, automatically advance to next chapter
-  if (playRpgState.autoMode) {
+  // If repeat hunting is active, immediately repeat battle
+  if (playRpgState.repeatHunting) {
+    setTimeout(() => {
+      initBattle();
+    }, 1500);
+  } else if (playRpgState.autoMode) {
+    // If autoMode is active without repeat hunting, advance to next chapter
     setTimeout(() => {
       advanceNextChapter();
     }, 1500);
@@ -609,9 +624,13 @@ export function toggleAutoMode(): boolean {
  */
 export function toggleRepeatHunting(): boolean {
   playRpgState.repeatHunting = !playRpgState.repeatHunting;
-  try {
-    localStorage.setItem('hero_repeat_hunting', String(playRpgState.repeatHunting));
-  } catch {}
+  if (cardNurtureStore.setRepeatHunting) {
+    cardNurtureStore.setRepeatHunting(playRpgState.repeatHunting);
+  } else {
+    try {
+      localStorage.setItem('hero_repeat_hunting', String(playRpgState.repeatHunting));
+    } catch {}
+  }
   return playRpgState.repeatHunting;
 }
 

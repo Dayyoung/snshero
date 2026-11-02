@@ -38,6 +38,7 @@ import {
   getDemoPlayStep,
   type DemoPlayStep
 } from '../lib/demoPlayService';
+import { cardNurtureStore } from '../landing/services/cardNurtureStore';
 
 export interface ElementDef {
   nameKo: string;
@@ -298,6 +299,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   const [boardShields, setBoardShields] = useState<boolean[]>(() => Array(9).fill(false));
   const [playerHand, setPlayerHand] = useState<CardData[]>([]);
   const [opponentHand, setOpponentHand] = useState<CardData[]>([]);
+  const [isRepeatHunting, setIsRepeatHunting] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_repeat_hunting') === 'true';
+    } catch {
+      return false;
+    }
+  });
   // 상대 카드덱 접기/펼치기 상태 (기본은 접은 상태: false)
   const [isOpponentDeckExpanded, setIsOpponentDeckExpanded] = useState<boolean>(false);
   const [turn, setTurn] = useState<'player' | 'ai'>('player');
@@ -1134,6 +1142,11 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
             });
           }
           if (onEarnXp) onEarnXp(50);
+          try {
+            cardNurtureStore.awardBattleVictoryExp(50);
+          } catch (err) {
+            console.warn('[MobileCardPlayScreen] cardNurtureStore.awardBattleVictoryExp error:', err);
+          }
 
           // If mission battle target: handle drop or enhancement
           if (effectiveTargetCardId && addCard) {
@@ -1420,13 +1433,22 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
   useEffect(() => {
     if (!gameOver || !winner) return;
-    if (autoCloseOnComplete) {
+    if (autoCloseOnComplete && !isRepeatHunting) {
       const timer = setTimeout(() => {
         handleExitGame();
       }, 1600);
       return () => clearTimeout(timer);
     }
-  }, [gameOver, winner, autoCloseOnComplete, handleExitGame]);
+  }, [gameOver, winner, autoCloseOnComplete, isRepeatHunting, handleExitGame]);
+
+  // Repeat Hunting Auto-Rematch Hook
+  useEffect(() => {
+    if (!gameOver || !winner || !isRepeatHunting) return;
+    const timer = setTimeout(() => {
+      initMatchDecks();
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [gameOver, winner, isRepeatHunting, initMatchDecks]);
 
   // 브라우저/스마트폰 물리 뒤로가기 버튼/제스처 시 게임 재시작 방지 및 안전한 종료
   useEffect(() => {
@@ -1473,7 +1495,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     }
 
     // 3) RPG 자동완료 모드인 경우
-    if (autoCloseOnComplete) {
+    if (autoCloseOnComplete && !isRepeatHunting) {
       setRematchCountdown(null);
       setTutorialShopCountdown(null);
       return;
@@ -2531,6 +2553,31 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   </div>
                 </div>
               )}
+
+              {/* Repeat Hunting Toggle Option */}
+              <div className="w-full my-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const nextState = !isRepeatHunting;
+                    setIsRepeatHunting(nextState);
+                    try {
+                      localStorage.setItem('hero_repeat_hunting', String(nextState));
+                      if (cardNurtureStore.setRepeatHunting) {
+                        cardNurtureStore.setRepeatHunting(nextState);
+                      }
+                    } catch {}
+                  }}
+                  className={`w-full min-h-[44px] py-2 px-3 text-xs font-bold rounded-sm cursor-pointer flex items-center justify-center gap-1.5 transition-colors font-mono ${
+                    isRepeatHunting
+                      ? 'bg-emerald-800 text-white border border-emerald-600'
+                      : 'bg-[#f1eeee] text-[#201d1d] border border-[#0f0000]/12 hover:bg-[#e8e5e5]'
+                  }`}
+                >
+                  <span>🔁</span>
+                  <span>{language === 'ko' ? `반복 사냥 [ ${isRepeatHunting ? 'ON (자동 재시작)' : 'OFF'} ]` : `Repeat Hunting [ ${isRepeatHunting ? 'ON' : 'OFF'} ]`}</span>
+                </button>
+              </div>
 
               {/* Actions */}
               <div className="flex flex-col sm:flex-row items-center gap-2 w-full mt-2">

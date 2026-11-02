@@ -67,6 +67,10 @@ export interface NurtureState {
   getDeckTP: () => number;
   getTotalTP: () => number;
   nurtureCard: (cardId: number, expGain?: number) => { expGained: number; leveledUp: boolean; newLevel: number };
+  awardBattleVictoryExp?: (expGain?: number) => { expAwarded: number; deckCount: number; updatedCards: number[] };
+  getCard?: (cardId: number) => CardNurtureData;
+  setRepeatHunting?: (enabled: boolean) => void;
+  isRepeatHuntingActive?: () => boolean;
   allocateStat: (cardId: number, direction: 'top' | 'right' | 'bottom' | 'left') => boolean;
   hasUnspentPoints: (cardId: number) => boolean;
   saveToStorage: () => void;

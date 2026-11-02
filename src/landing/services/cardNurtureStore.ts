@@ -24,6 +24,7 @@ import { INITIAL_SKILLS } from '../../constants';
 
 export const STORAGE_KEY = 'hero_card_nurturing';
 export const DECK_STORAGE_KEY = 'hero_deck';
+export const REPEAT_HUNTING_KEY = 'hero_repeat_hunting';
 
 export interface CardNurtureStoragePayload {
   cards: Record<number, CardNurtureData>;
@@ -39,6 +40,7 @@ export class CardNurtureStore implements NurtureState {
   activeDeckIds: number[] = [1, 2, 3, 4, 5]; // Active 5 cards in squad (slots 0..4)
   storageKey = STORAGE_KEY;
   deckStorageKey = DECK_STORAGE_KEY;
+  repeatHuntingKey = REPEAT_HUNTING_KEY;
 
   // Alias for contract compatibility
   get deckCardIds(): number[] {
@@ -77,6 +79,23 @@ export class CardNurtureStore implements NurtureState {
     const dbCard = CARD_DATABASE[cardId];
     if (!dbCard) return 8;
     return (dbCard.top || 0) + (dbCard.right || 0) + (dbCard.bottom || 0) + (dbCard.left || 0);
+  }
+
+  /**
+   * Safe getter for card nurture data
+   */
+  getCard(cardId: number): CardNurtureData {
+    return (
+      this.cards[cardId] || {
+        cardId,
+        level: 1,
+        exp: 0,
+        expToNext: 100,
+        statPoints: 0,
+        bonusStats: { top: 0, right: 0, bottom: 0, left: 0 },
+        totalBonus: 0,
+      }
+    );
   }
 
   /**
@@ -224,6 +243,10 @@ export class CardNurtureStore implements NurtureState {
    * Nurture card: grants EXP, triggers level-up with stat points, enforces max level 100 cap
    */
   nurtureCard(cardId: number, expGain: number = 50): { expGained: number; leveledUp: boolean; newLevel: number } {
+    if (!Number.isInteger(cardId) || cardId < 1 || cardId > 110 || !this.isCardOwned(cardId)) {
+      return { expGained: 0, leveledUp: false, newLevel: this.cards[cardId]?.level || 1 };
+    }
+
     let card = this.cards[cardId];
     if (!card) {
       this.cards[cardId] = {
@@ -267,9 +290,58 @@ export class CardNurtureStore implements NurtureState {
   }
 
   /**
+   * Battle Victory EXP Hook (Milestone 4):
+   * On player victory, awards EXP (default 50) exclusively to active deck cards that are owned.
+   */
+  awardBattleVictoryExp(expGain: number = 50): { expAwarded: number; deckCount: number; updatedCards: number[] } {
+    this.ensureValidDeck();
+    const updatedCards: number[] = [];
+    for (const cardId of this.activeDeckIds) {
+      if (this.isCardOwned(cardId)) {
+        this.nurtureCard(cardId, expGain);
+        updatedCards.push(cardId);
+      }
+    }
+    this.saveToStorage();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('snshero_battle_exp_awarded', {
+          detail: { expAwarded: expGain, updatedCards },
+        })
+      );
+    }
+    return { expAwarded: expGain, deckCount: this.activeDeckIds.length, updatedCards };
+  }
+
+  /**
+   * Repeat Hunting Loop (Milestone 4)
+   */
+  setRepeatHunting(enabled: boolean): void {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      localStorage.setItem(this.repeatHuntingKey, enabled ? 'true' : 'false');
+    } catch {}
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('snshero_repeat_hunting_changed', { detail: { enabled } }));
+    }
+  }
+
+  isRepeatHuntingActive(): boolean {
+    if (typeof localStorage === 'undefined') return false;
+    try {
+      return localStorage.getItem(this.repeatHuntingKey) === 'true';
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Allocate 1 stat point to specified direction ('top' | 'right' | 'bottom' | 'left')
    */
   allocateStat(cardId: number, direction: 'top' | 'right' | 'bottom' | 'left'): boolean {
+    if (!this.isCardOwned(cardId) || !['top', 'right', 'bottom', 'left'].includes(direction)) {
+      return false;
+    }
     const card = this.cards[cardId];
     if (!card || card.statPoints <= 0) {
       return false;
@@ -287,6 +359,9 @@ export class CardNurtureStore implements NurtureState {
    * Check if a card has unspent stat points (triggers red dot indicator)
    */
   hasUnspentPoints(cardId: number): boolean {
+    if (!this.isCardOwned(cardId)) {
+      return false;
+    }
     const card = this.cards[cardId];
     return !!card && card.statPoints > 0;
   }
@@ -296,15 +371,43 @@ export class CardNurtureStore implements NurtureState {
    */
   addCard(cardId: number): boolean {
     if (!Number.isInteger(cardId) || cardId < 1 || cardId > 110) return false;
+    let added = false;
     if (!this.ownedCardIds.includes(cardId)) {
       this.ownedCardIds.push(cardId);
       this.ownedCardIds.sort((a, b) => a - b);
       this.ensureValidDeck();
-      this.saveToStorage();
-      this.dispatchUpdateEvent(cardId);
-      return true;
+      added = true;
     }
-    return false;
+    this.syncCardToHeroInventory(cardId);
+    this.saveToStorage();
+    this.dispatchUpdateEvent(cardId);
+    return added;
+  }
+
+  private syncCardToHeroInventory(cardId: number): void {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      const season = localStorage.getItem('hero_current_season') || 'season1';
+      const rawInv = localStorage.getItem('hero_inventory');
+      const inv: Record<string, any> = rawInv ? JSON.parse(rawInv) : {};
+      const key = String(cardId);
+      if (!inv[key]) {
+        inv[key] = {
+          cardIndex: cardId,
+          id: cardId,
+          quantity: 1,
+          rarity: CARD_DATABASE[cardId]?.rarity || 'bronze',
+        };
+      } else {
+        inv[key].quantity = (inv[key].quantity || 0) + 1;
+      }
+      const serialized = JSON.stringify(inv);
+      localStorage.setItem('hero_inventory', serialized);
+      localStorage.setItem(`hero_inventory_${season}`, serialized);
+      localStorage.setItem(`hero_inventory_guest_${season}`, serialized);
+    } catch (e) {
+      console.warn('Failed to sync to hero_inventory:', e);
+    }
   }
 
   /**
@@ -426,13 +529,13 @@ export class CardNurtureStore implements NurtureState {
           }
           if (Array.isArray(parsed.ownedCardIds) && parsed.ownedCardIds.length > 0) {
             this.ownedCardIds = Array.from(new Set(parsed.ownedCardIds))
-              .filter((id): id is number => typeof id === 'number' && id >= 1 && id <= 110)
+              .filter((id): id is number => typeof id === 'number' && Number.isInteger(id) && id >= 1 && id <= 110)
               .sort((a, b) => a - b);
           }
           const savedDeck = parsed.activeDeckIds || parsed.deckCardIds;
           if (Array.isArray(savedDeck) && savedDeck.length === 5) {
             this.activeDeckIds = savedDeck.filter(
-              (id): id is number => typeof id === 'number' && id >= 1 && id <= 110
+              (id): id is number => typeof id === 'number' && Number.isInteger(id) && id >= 1 && id <= 110
             );
           }
         }
