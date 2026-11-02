@@ -124,12 +124,21 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
   return `
     <div
       id="deck-swap-drawer-backdrop"
-      class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+      class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="deck-swap-drawer-title"
     >
-      <div class="relative w-full max-w-4xl bg-[#fdfcfc] border border-[#201d1d] shadow-2xl rounded-none flex flex-col max-h-[90dvh] overflow-hidden">
+      <!-- Dedicated Drawer Backdrop Sibling -->
+      <div
+        id="deck-swap-backdrop"
+        data-action="close-deck-swap-drawer"
+        class="fixed inset-0 bg-black/60 cursor-pointer transition-opacity"
+        aria-hidden="true"
+      ></div>
+
+      <!-- Drawer Dialog Content Box -->
+      <div class="relative z-10 w-full max-w-4xl bg-[#fdfcfc] border border-[#201d1d] shadow-2xl rounded-none flex flex-col max-h-[90dvh] overflow-hidden">
         <!-- Drawer Header -->
         <div class="flex items-center justify-between p-4 sm:p-5 border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7]">
           <div>

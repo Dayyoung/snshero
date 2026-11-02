@@ -473,11 +473,20 @@ export function renderHomeSection(): string {
       ${inspectedId && inspectedAsset && inspectedStats ? `
         <div
           id="home-card-inspect-modal"
-          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs font-mono select-none"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 font-mono select-none"
           role="dialog"
           aria-modal="true"
         >
-          <div class="relative bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] max-w-lg w-full p-6 sm:p-8 rounded-none shadow-none space-y-6">
+          <!-- Dedicated Backdrop Overlay Sibling -->
+          <div
+            id="home-card-inspect-backdrop"
+            data-action="close-home-card-inspector"
+            class="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-pointer transition-opacity"
+            aria-hidden="true"
+          ></div>
+
+          <!-- Modal Dialog Content Box -->
+          <div class="relative z-10 bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] max-w-lg w-full p-6 sm:p-8 rounded-none shadow-none space-y-6">
             <!-- Close [x] Top Right -->
             <button
               type="button"

@@ -217,7 +217,27 @@ export function navigateTo(targetView: ViewKey, options?: RouteOptions): void {
 }
 
 export function handleEventDelegation(event: Event): void {
-  const target = (event.target as HTMLElement).closest('[data-nav], [data-modal], [data-action], a[href^="#"], a[href="/home"]');
+  const rawTarget = event.target as HTMLElement | null;
+  if (!rawTarget) return;
+
+  // Direct Backdrop Click Fallback (Dual Defense Layer 2)
+  if (rawTarget.id === 'home-card-inspect-modal' || rawTarget.id === 'home-card-inspect-backdrop') {
+    setInspectedHomeCardId(null);
+    renderApp();
+    return;
+  }
+  if (rawTarget.id === 'deck-swap-drawer-backdrop' || rawTarget.id === 'deck-swap-backdrop') {
+    setEditingSlotIndex(null);
+    renderApp();
+    return;
+  }
+  if (rawTarget.id === 'landing-modal-overlay') {
+    state.activeModal = null;
+    renderApp();
+    return;
+  }
+
+  const target = rawTarget.closest('[data-nav], [data-modal], [data-action], a[href^="#"], a[href="/home"]');
   if (!target) return;
 
   const nav = target.getAttribute('data-nav') as ViewKey | null;
