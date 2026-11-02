@@ -144,6 +144,7 @@ export function nextScene(): void {
  * Jump to a specific episode (1..40).
  */
 export function setEpisode(epNum: number): void {
+  if (typeof epNum !== 'number' || isNaN(epNum)) epNum = 1;
   const clamped = Math.max(1, Math.min(40, Math.floor(epNum)));
   playState.currentEpisode = clamped;
   playState.currentScene = 0;
@@ -158,6 +159,7 @@ export function setEpisode(epNum: number): void {
  */
 export function setScene(sceneIdx: number): void {
   const currentEp = getWebtoonEpisode(playState.currentEpisode);
+  if (typeof sceneIdx !== 'number' || isNaN(sceneIdx)) sceneIdx = 0;
   const clamped = Math.max(0, Math.min(currentEp.totalScenes - 1, Math.floor(sceneIdx)));
   playState.currentScene = clamped;
 

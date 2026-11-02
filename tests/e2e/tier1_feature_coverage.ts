@@ -81,7 +81,33 @@ export async function runTier1Tests(): Promise<TestResult[]> {
       if (!handlesHome || !preservesIndex) {
         return { pass: false, message: 'scripts/post-build.js missing /home route preservation logic' };
       }
-      return { pass: true, message: 'scripts/post-build.js preserves root index and generates /home' };
+
+      // Empirical post-build output verification if dist exists
+      const distIndex = readProjectFile('dist/index.html');
+      const distHome = readProjectFile('dist/home.html');
+      if (distIndex && distHome) {
+        if (!distIndex.includes('id="landing-root"') || distIndex.includes('vendor-react')) {
+          return { pass: false, message: 'dist/index.html is not a clean static landing page' };
+        }
+        if (!distHome.includes('id="root"') || !/assets\/home-[A-Za-z0-9_-]+\.js/.test(distHome)) {
+          return { pass: false, message: 'dist/home.html does not load SPA game bundle' };
+        }
+
+        const spaRoutes = ['dist/deck/index.html', 'dist/movie/index.html', 'dist/reddit/index.html', 'dist/404.html'];
+        for (const routePath of spaRoutes) {
+          const content = readProjectFile(routePath);
+          if (content) {
+            if (content.includes('landing-root') || /assets\/main-[A-Za-z0-9_-]+\.js/.test(content)) {
+              return { pass: false, message: `${routePath} is corrupted with static landing template` };
+            }
+            if (!content.includes('id="root"') || !/assets\/home-[A-Za-z0-9_-]+\.js/.test(content)) {
+              return { pass: false, message: `${routePath} is missing SPA #root or home-*.js entry` };
+            }
+          }
+        }
+      }
+
+      return { pass: true, message: 'scripts/post-build.js preserves root index and generates /home with SPA subroutes' };
     })
   );
 

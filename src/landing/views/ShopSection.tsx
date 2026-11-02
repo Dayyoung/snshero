@@ -124,7 +124,7 @@ export function getUserCoins(): number {
     return 1000;
   }
   const val = parseInt(raw, 10);
-  return isNaN(val) ? 1000 : val;
+  return isNaN(val) ? 1000 : Math.max(0, val);
 }
 
 export function setUserCoins(amount: number): void {

@@ -162,7 +162,7 @@ export class CardNurtureStore implements NurtureState {
    * Add a new card to owned inventory (e.g. from shop or rewards)
    */
   addCard(cardId: number): boolean {
-    if (cardId < 1 || cardId > 110) return false;
+    if (!Number.isInteger(cardId) || cardId < 1 || cardId > 110) return false;
     if (!this.ownedCardIds.includes(cardId)) {
       this.ownedCardIds.push(cardId);
       this.ownedCardIds.sort((a, b) => a - b);

@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 15:45 KST] [마일스톤 4 하드닝: Tier 5 화이트박스 방어 코드 보강 및 최종 검증 완료]
+- **작업자**: `teamwork_worker` (worker_m4_1)
+- **작업 개요**:
+  - `src/landing/services/cardNurtureStore.ts`: `addCard(cardId: number)` 메서드에 `!Number.isInteger(cardId)` 방어 가드 추가하여 `NaN`, 무한대 및 소수점(e.g. `1.5`) 입력 시 인벤토리 오염 원천 차단.
+  - `src/landing/views/PlaySection.tsx`: `setEpisode(epNum: number)` 및 `setScene(sceneIdx: number)`에 `typeof !== 'number' || isNaN()` 가드를 적용하여 `Math.max`/`Math.min` 계산 시 `NaN` 전파 및 에셋 URL(`/images/webtoon/episode_NaN/scene_00.webp`) 훼손 방지.
+  - `src/landing/views/ShopSection.tsx`: `getUserCoins()` 메서드에서 파싱된 코인 수치에 `Math.max(0, val)` 클램핑을 적용하여 사전 오염된 음수 로컬스토리지 값(`hero_sns`) 유입 시 0 이상으로 안전 보호.
+- **검증 결과**:
+  1. `npx tsc --noEmit`: 0 errors (타입스크립트 컴파일 무결성 100% 검증)
+  2. `npm run build`: 성공 (exit code 0, `dist/index.html` 43 KB 경량 번들 < 50 KB 준수)
+  3. `npx tsx tests/adversarial_tier5_m4_suite.ts`: **23/23 전수 통과 (100.0% PASS)**
+  4. `npx tsx tests/adversarial_tier5_dom_assets_challenger2.ts`: **25/25 전수 통과 (100.0% PASS)**
+  5. `npx tsx tests/e2e/run_all.ts` (마스터 E2E 전체 스위트): **69/69 전수 통과 (100.0% PASS)**
+- **보고서 제출**: 구글 폼 완료 보고서 제출 완료 (`skills/report-ex/scripts/submit_report.py`).
+
 ## [2026-11-02 15:15 KST] [마일스톤 3 구현: 핵심 5대 화면 및 카드 육성 시스템 완성 (Features 12~17)]
 - **작업자**: `teamwork_worker` (worker_m3_1)
 - **작업 개요**:
