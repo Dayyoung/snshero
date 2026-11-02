@@ -17724,3 +17724,33 @@
   - `npm run build`: Exit code 0 완료.
   - 번들 격리 검증: `dist/index.html` 내 React/TensorFlow/Firebase 청크 0개 (JS 크기 1.78 KB), `dist/home.html` 및 `dist/deck/index.html`에 React 게임 번들 정상 연결.
 - **구글 폼 보고서 제출**: 완료 (`submit_report.py` 제출 성공).
+
+
+## [2026-11-02 17:58 KST] [Challenger 2 Milestone 1 Iteration 2 Gate 경로 우선순위 및 딥링크 해소 실증 검증 완료 (판정: APPROVE)]
+- **요청 사항**:
+  - Challenger 2 Milestone 1 Iteration 2 Gate (challenger_m1_it2_2) 실증 검증 수행.
+  - `/play?ep=1`, `/play?episode=40`, `/play?ch=2`, `/play?chapter=10`의 `'main'` 해소 검증.
+  - 정적 `/play`의 `'play'` 해소 검증.
+  - `#play?ep=1` 해시 쿼리 추출 검증.
+  - 적대적 라우트 프로브 실행 및 명시적 판정(APPROVE/REQUEST_CHANGES) 제출.
+- **주요 검증 내역**:
+  1. **경로 우선순위 및 딥링크 해소 실증 검증 (`tests/adversarial_route_probe_challenger2.ts`, 53/53 전수 통과)**:
+     - `/play?ep=1`, `/play?episode=40`, `/play?ch=2`, `/play?chapter=10` -> `'main'` 정상 분기 확인.
+     - 쿼리 없는 정적 `/play` -> `'play'` 정상 분기 확인.
+     - `#play?ep=1`, `#play?episode=40`, `#play?ch=2`, `#play?chapter=10` 해시 쿼리 파라미터 정상 추출 및 `'main'` 분기 확인.
+     - 쿼리 없는 정적 `#play` -> `'play'` 정상 분기 확인.
+     - 트레일링 슬래시(`/play/?ep=1`, `/play/`), 멀티 쿼리, 부분 문자열 위양성 격리(`epoch=1`, `channel=2`, `chapter_id=10`), 에피소드 빈값 폴백 전수 검증 통과.
+  2. **정적 빌드 아티팩트 및 템플릿 무결성 검증**:
+     - `dist/home.html`: React SPA 마스터 템플릿 보존 확인 (47,208 bytes, `#root` 존재, 리다이렉트 스텁 0건).
+     - `dist/404.html`: SPA 폴백 템플릿 보존 확인 (47,208 bytes, `#root` 존재, 리다이렉트 스텁 0건).
+     - `dist/movie/ep-1/index.html`: 비디오 프리렌더 마크업 보존 확인 (`#root`, 유튜브 `iframe` 존재, 리다이렉트 스텁 0건).
+     - `dist/home/index.html`, `dist/deck/index.html`, `dist/play/index.html`, `dist/card/index.html`, `dist/shop/index.html`: 레거시 단독 경로 리다이렉트 스텁 정상 생성 확인.
+     - `scripts/post-build.js` 멱등성 검증 완료 (재실행 시 `dist/home.html` SHA-256 일치).
+  3. **테스트 및 빌드 무결성**:
+     - `tests/adversarial_route_probe_challenger2.ts`: 53/53 PASS (100.0%)
+     - `tests/adversarial_m1_challenger2.ts`: 38/38 PASS (100.0%)
+     - `tests/e2e/run_all.ts --milestone M1`: 16/16 PASS (100.0%)
+     - `npx tsc --noEmit`: 0 errors (Exit code 0)
+     - `npm run build`: Exit code 0
+  4. **최종 판정**: **APPROVE** (모든 게이트 요건 100% 충족)
+- **보고서 제출**: 구글 폼 제출 완료 (`[개발] Challenger 2 Milestone 1 Iteration 2 Gate 검증 -> 작업완료`).
