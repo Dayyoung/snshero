@@ -897,7 +897,8 @@ function renderArcadeView(): string {
     const card = CARD_DATABASE[id];
     if (!card) continue;
 
-    const el = card.element?.toLowerCase() || 'water';
+    const rawEl = card.element?.toLowerCase() || 'water';
+    const el = rawEl === 'air' ? 'wind' : rawEl;
     const titleMatch = card.title?.toLowerCase().includes(query) || (card.desc && card.desc.toLowerCase().includes(query));
     const elMatch = selectedElement === 'all' || el === selectedElement;
 

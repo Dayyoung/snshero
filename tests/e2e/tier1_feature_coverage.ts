@@ -396,7 +396,11 @@ export async function runTier1Tests(): Promise<TestResult[]> {
       if (!hasControls) {
         return { pass: false, message: 'Play section media control bar buttons incomplete' };
       }
-      return { pass: true, message: 'Streamlined media controls and minigame access verified' };
+      const handlesAirWindSynonym = playSection.includes("'air'") && playSection.includes("'wind'");
+      if (!handlesAirWindSynonym) {
+        return { pass: false, message: 'PlaySection.tsx does not map air/wind element synonym for cards 21..30' };
+      }
+      return { pass: true, message: 'Streamlined media controls, minigame arcade catalog and wind/air mapping verified' };
     })
   );
 

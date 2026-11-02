@@ -55,6 +55,7 @@ import { KADAN_RPG_EVENTS, getKadanRpgRegion, getKadanRpgEncounter } from '../sr
 import { KADAN_RPG_NOVEL_SCRIPTS } from '../src/content/kadanRpgNovelScript';
 import { cardNurtureStore } from '../src/landing/services/cardNurtureStore';
 import { playState, renderPlaySection, toggleTts, nextScene, prevScene } from '../src/landing/views/PlaySection';
+import { playRpgState, setActiveTab } from '../src/landing/services/playRpgEngine';
 import { shouldTriggerAmbush } from '../src/lib/rpg/kadanRpgAmbush';
 
 // ---------------------------------------------------------------------------
@@ -394,19 +395,25 @@ assert(
   `${validCards110} cards`
 );
 
-// 6.2 Minigame search filter narrows list accurately
-const query = '아쿠아';
-const filtered = Object.values(CARD_DATABASE).filter(
-  (c) => c.title.includes(query) || (c.title_en && c.title_en.toLowerCase().includes('aqua')) || (c.desc && c.desc.includes(query))
-);
+// 6.2 Minigame search filter narrows list accurately in rendered view
+setActiveTab('arcade');
+playRpgState.arcadeElement = 'all';
+playRpgState.arcadeQuery = '카단';
+const kadanSearchHtml = renderPlaySection();
+const hasKadanCard = kadanSearchHtml.includes('data-card-id="41"');
+let kadanMatches = 0;
+for (let id = 1; id <= 110; id++) {
+  if (kadanSearchHtml.includes(`data-card-id="${id}"`)) kadanMatches++;
+}
 assert(
   'ADV.M3.ARCADE.2',
   'Arcade Search Filter',
-  'Searching "아쿠아" matches at least 1 canonical card',
-  filtered.length > 0,
-  '> 0 results',
-  `${filtered.length} matches`
+  'Searching "카단" narrows rendered arcade catalog and includes Hero #41',
+  hasKadanCard && kadanMatches >= 1 && kadanMatches < 110,
+  'Hero #41 present and matches < 110',
+  `Matches: ${kadanMatches}, Hero #41 found: ${hasKadanCard}`
 );
+playRpgState.arcadeQuery = '';
 
 // 6.3 Minigame random roll die selects valid card ID 1..110
 const rolledId = Math.floor(Math.random() * 110) + 1;
@@ -433,6 +440,52 @@ assert(
   '100dvh & min-h-[44px]',
   'Verified'
 );
+
+// 6.5 Elemental chip partition invariant across all 11 factions (10 cards each, total 110, zero overlaps)
+setActiveTab('arcade');
+const factions = [
+  'water', 'fire', 'wind', 'earth', 'human', 'undead',
+  'elf', 'dwarf', 'monster', 'robot', 'dragon'
+];
+
+let totalPartitionCount = 0;
+let partitionOverlap = false;
+const seenCards = new Set<number>();
+const factionCounts: Record<string, number> = {};
+
+for (const f of factions) {
+  playRpgState.arcadeQuery = '';
+  playRpgState.arcadeElement = f;
+  const filteredHtml = renderPlaySection();
+
+  let count = 0;
+  for (let id = 1; id <= 110; id++) {
+    if (filteredHtml.includes(`data-card-id="${id}"`)) {
+      count++;
+      if (seenCards.has(id)) {
+        partitionOverlap = true;
+      }
+      seenCards.add(id);
+    }
+  }
+  factionCounts[f] = count;
+  totalPartitionCount += count;
+}
+
+const allFactionsExactly10 = factions.every((f) => factionCounts[f] === 10);
+assert(
+  'ADV.M3.ARCADE.5',
+  'Elemental Chip Invariant',
+  'All 11 factions each contain exactly 10 cards summing to 110 with 0 overlaps (including Wind/Air cards 21..30)',
+  allFactionsExactly10 && totalPartitionCount === 110 && !partitionOverlap,
+  '11 factions x 10 = 110 cards, 0 overlaps',
+  `Total: ${totalPartitionCount}, Overlap: ${partitionOverlap}, Counts: ${JSON.stringify(factionCounts)}`
+);
+
+// Reset state after test
+playRpgState.arcadeElement = 'all';
+playRpgState.arcadeQuery = '';
+setActiveTab('adventure');
 
 // ===========================================================================
 // SUITE 7: Cross-Feature Invariants & Regression Safety
