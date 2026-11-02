@@ -2,6 +2,36 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 14:02 KST] [마일스톤 1 반복 3: 중첩 SPA 라우트 .html 생성 및 Vite dev/preview 서버 rewrite 완결]
+- **작업자**: `teamwork_worker` (Milestone 1 Iteration 3)
+- **작업 개요**:
+  - `scripts/post-build.js`: `if (!route.includes('/'))` 가드를 제거하고 모든 중첩 라우트(`wiki/card`, `r/hanguk`, `r/hanguk/comments/...`)에 대해 상위 디렉토리 재귀 생성 후 `dist/${route}.html`을 생성하도록 구현 (`dist/index.html` 덮어쓰기 방지 가드 완벽 유지).
+  - `vite.config.ts`: `isSpaRoute(pathname)` 판별기를 추가하고 `mpa-dev-rewrite-plugin`을 업데이트하여, dev 환경에서는 모든 SPA 라우트를 `/home.html`로 rewrite하고, preview 환경에서는 사전 렌더링된 HTML(`index.html` 또는 `.html`) 또는 `/home.html`로 정밀 rewrite하여 트레일링 슬래시 누락 중첩 라우트 접근 시 정적 랜딩으로 잘못 폴백되던 결함 근본 해결 (`/` 및 `/index.html`은 독립 정적 랜딩 보존).
+- **검증 결과**:
+  1. `npx tsc --noEmit`: 0 errors
+  2. `npm run build`: 성공 (exit code 0)
+  3. `npx tsx tests/adversarial_route_edge_cases.ts`: **76/76 전수 통과 (100.0% PASS)** (이전 실패 3개 항목: LIVE-HTTP-24, LIVE-HTTP-26, LIVE-HTTP-28 완전 해결)
+  4. `npx tsx tests/adversarial_m1_build_pipeline.ts`: **64/64 전수 통과 (100.0% PASS)**
+  5. `npx tsx tests/e2e/run_all.ts --milestone M1`: **9/9 전수 통과 (100.0% PASS)**
+  6. `npx tsx tests/challenger_m1_adversarial.ts`: **52/52 전수 통과 (100.0% PASS)**
+- **구글 폼 보고서 제출**: 연동 스크립트 실행 완료.
+
+## [2026-11-02 13:42 KST] [마일스톤 1 반복 2 포렌식 무결성 감사 (Forensic Integrity Audit) 완료 - 판정: CLEAN]
+- **감사 대상**:
+  - `scripts/generate-news-seo.ts`
+  - `scripts/generate-video-seo.ts`
+  - `scripts/post-build.js`
+  - `tests/e2e/tier1_feature_coverage.ts`
+- **검증 및 포렌식 분석 결과**:
+  1. **하드코딩 모의값 및 가짜 구현 검사**: 통과 (PASS). `resolveSpaBaseTemplate()` 5단계 베이스 템플릿 탐색 알고리즘 및 SPA 서브라우트 정적 보호 로직 정상 구현 확인.
+  2. **독립 프로덕션 빌드 검증**: `npx tsc --noEmit` 0에러, `npm run build` 성공 (43.03s, 59개 SPA 서브라우트 정상 생성).
+  3. **적대적 스트레스 테스트 검증**: `npx tsx tests/adversarial_m1_build_pipeline.ts` 64/64 단언 전수 통과 (100.0% PASS).
+  4. **마일스톤 1 E2E 테스트 검증**: `npx tsx tests/e2e/run_all.ts --milestone M1` 9/9 단언 전수 통과 (100.0% PASS).
+  5. **챌린저 실측 프로브 검증**: `npx tsx tests/challenger_m1_adversarial.ts` 52/52 프로브 전수 통과 (100.0% PASS).
+  6. **파일시스템 불변성 검증**: `dist/` 내 `#landing-root` HTML 파일 정확히 1개(`dist/index.html`), `public/` 내 `#landing-root` 0개 확인.
+- **최종 판정**: **CLEAN** (무결성 위반 0건)
+- **보고서 제출**: 구글 폼 완료 보고서 제출 완료 (`skills/report-ex/scripts/submit_report.py`).
+
 ## [2026-11-02 12:42 KST] [독립 정적 랜딩 페이지 및 /home 분리 4-Tier Master E2E 테스트 스위트 구축 및 TEST_READY.md 발행]
 - **요청 사항**:
   - `TEST_INFRA.md` 작성 (오페이크 박스, 요구사항 기반 테스트 철학, 4-Tier 테스트 케이스 매핑: Tier 1 기능 커버리지, Tier 2 경계/코너 케이스, Tier 3 교차 기능 조합, Tier 4 실제 유저 시나리오).

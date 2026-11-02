@@ -37,6 +37,72 @@ const MIME_TYPES: Record<string, string> = {
   '.wasm': 'application/wasm',
 };
 
+/**
+ * 주어진 요청 경로가 독립 정적 랜딩(/, /index.html)이나 API, 정적 자산이 아닌
+ * SPA 게임 애플리케이션 라우트(home.html 기반)인지 정확하게 판별합니다.
+ */
+function isSpaRoute(pathname: string): boolean {
+  if (!pathname) return false;
+
+  // 1. 연속된 슬래시 정규화 (예: //wiki///card -> /wiki/card)
+  const normalized = pathname.replace(/\/+/g, '/');
+
+  // 2. 루트(/) 및 정적 랜딩(index.html)은 절대 SPA 라우트로 간주하지 않음 (순수 랜딩 보존)
+  if (normalized === '/' || normalized === '/index.html') {
+    return false;
+  }
+
+  // 3. Vite 개발 서버 내부 경로, HMR, 소스코드, 모듈 경로 제외
+  if (
+    normalized.startsWith('/@') ||
+    normalized.startsWith('/src/') ||
+    normalized.startsWith('/node_modules/')
+  ) {
+    return false;
+  }
+
+  // 4. API 엔드포인트 및 시스템 헬스체크 경로 제외
+  if (
+    normalized.startsWith('/api/') ||
+    normalized.startsWith('/api-mlx/') ||
+    normalized === '/api' ||
+    normalized === '/health' ||
+    normalized === '/api/health' ||
+    normalized === '/version' ||
+    normalized === '/api/version' ||
+    normalized === '/version.json'
+  ) {
+    return false;
+  }
+
+  // 5. 번들된 비-SPA 독립 정적 사이트 및 특별 정적 HTML 파일 제외
+  if (
+    normalized === '/mall' || normalized.startsWith('/mall/') ||
+    normalized === '/gwent' || normalized.startsWith('/gwent/') ||
+    normalized === '/ai' || normalized.startsWith('/ai/') ||
+    normalized === '/mlx-chat.html' ||
+    normalized.startsWith('/anime-character-sheets/') ||
+    normalized.startsWith('/pacpik') ||
+    normalized.startsWith('/gotest') ||
+    normalized === '/about-news.html' ||
+    normalized === '/editorial-guidelines.html' ||
+    normalized === '/CNAME'
+  ) {
+    return false;
+  }
+
+  // 6. 파일 확장자를 가진 정적 리소스 요청 제외 (.js, .css, .png, .jpg, .webp, .svg, .json, .ico, .mp4, etc.)
+  // 단, /home.html 등 명시적 HTML 파일 요청은 Vite가 자체 서빙하도록 통과
+  const lastSegment = normalized.split('/').pop() || '';
+  if (lastSegment.includes('.')) {
+    return false;
+  }
+
+  // 7. 위의 예외를 통과한 모든 확장자 없는 애플리케이션 경로는 SPA 라우트임!
+  // 예: /home, /deck, /play, /shop, /wiki, /wiki/card, /r/hanguk, /r/hanguk/comments/..., /movie/ep-1
+  return true;
+}
+
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   const publicDir = path.resolve(process.cwd(), 'public');
@@ -53,7 +119,10 @@ export default defineConfig(({mode}) => {
             if (!req.url) return next();
             const [pathname, search] = req.url.split('?');
             const query = search ? `?${search}` : '';
-            if (pathname === '/home' || pathname === '/home/') {
+            const normalized = (pathname || '').replace(/\/+/g, '/');
+
+            // Dev 모드: SPA 라우트 요청 시 home.html로 rewrite하여 Vite dev HMR 번들 서빙
+            if (isSpaRoute(normalized)) {
               req.url = `/home.html${query}`;
             }
             next();
@@ -64,8 +133,25 @@ export default defineConfig(({mode}) => {
             if (!req.url) return next();
             const [pathname, search] = req.url.split('?');
             const query = search ? `?${search}` : '';
-            if (pathname === '/home' || pathname === '/home/') {
-              req.url = `/home.html${query}`;
+            const normalized = (pathname || '').replace(/\/+/g, '/');
+
+            // Preview 모드: SPA 라우트 요청 시 dist/ 내 사전 렌더링된 정적 파일 우선 매핑
+            if (isSpaRoute(normalized)) {
+              const cleanPath = normalized.replace(/^\/+/, '').replace(/\/+$/, '');
+              const distDir = path.resolve(process.cwd(), 'dist');
+
+              // 1. 디렉토리 index.html이 존재하는 경우 (예: dist/wiki/card/index.html, dist/r/hanguk/index.html)
+              if (cleanPath && fs.existsSync(path.join(distDir, cleanPath, 'index.html'))) {
+                req.url = `/${cleanPath}/index.html${query}`;
+              }
+              // 2. 단일 .html 파일이 존재하는 경우 (예: dist/deck.html, dist/home.html)
+              else if (cleanPath && fs.existsSync(path.join(distDir, `${cleanPath}.html`))) {
+                req.url = `/${cleanPath}.html${query}`;
+              }
+              // 3. 사전 렌더링되지 않은 동적 SPA 라우트의 경우 SPA 셸(home.html)로 폴백
+              else {
+                req.url = `/home.html${query}`;
+              }
             }
             next();
           });

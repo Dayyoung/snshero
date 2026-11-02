@@ -202,8 +202,9 @@ if (fs.existsSync(spaTemplatePath)) {
     }
 
     const publicStaticIndex = path.join(publicDir, route, 'index.html');
-    if (fs.existsSync(publicStaticIndex)) {
-      // Do not overwrite real static games/pages that already exist in public/
+    // Only skip dedicated non-SPA static sites (e.g., mirrored Shopify mall in public/mall)
+    const isDedicatedStaticSite = route === 'mall' || route.startsWith('mall/');
+    if (isDedicatedStaticSite && fs.existsSync(publicStaticIndex)) {
       continue;
     }
 
@@ -212,22 +213,30 @@ if (fs.existsSync(spaTemplatePath)) {
       fs.mkdirSync(routeDir, { recursive: true });
     }
 
+    // 1. Determine HTML content for the route
+    let targetHtml = cleanBaseHtml;
     if (route === 'bench' || route === 'benchmark' || route === 'shbp') {
-      fs.writeFileSync(path.join(routeDir, 'index.html'), cleanBenchHtml, 'utf8');
-      fs.writeFileSync(path.join(distDir, `${route}.html`), cleanBenchHtml, 'utf8');
+      targetHtml = cleanBenchHtml;
     } else if (route === 'novel' || route === 'book' || route === 'webtoon') {
       const routeCanonical = `https://snshero.com/${route}`;
-      const routeHtml = cleanNovelHtml
+      targetHtml = cleanNovelHtml
         .replace(/<link\s+rel="canonical"\s+href=".*?"\s*\/?>/, `<link rel="canonical" href="${routeCanonical}" />`)
         .replace(/<meta\s+property="og:url"\s+content=".*?"\s*\/?>/, `<meta property="og:url" content="${routeCanonical}" />`)
         .replace(/<meta\s+property="twitter:url"\s+content=".*?"\s*\/?>/, `<meta property="twitter:url" content="${routeCanonical}" />`);
-      fs.writeFileSync(path.join(routeDir, 'index.html'), routeHtml, 'utf8');
-      fs.writeFileSync(path.join(distDir, `${route}.html`), routeHtml, 'utf8');
-    } else {
-      fs.writeFileSync(path.join(routeDir, 'index.html'), cleanBaseHtml, 'utf8');
-      if (!route.includes('/')) {
-        fs.writeFileSync(path.join(distDir, `${route}.html`), cleanBaseHtml, 'utf8');
+    }
+
+    // 2. Write directory index: dist/[route]/index.html
+    fs.writeFileSync(path.join(routeDir, 'index.html'), targetHtml, 'utf8');
+
+    // 3. Write clean URL extensionless file: dist/[route].html for ALL routes (flat & nested)
+    const flatHtmlPath = path.join(distDir, `${route}.html`);
+    // Strict isolation guard: never overwrite dist/index.html (the standalone static landing page)
+    if (flatHtmlPath !== indexPath && path.relative(distDir, flatHtmlPath) !== 'index.html') {
+      const flatHtmlDir = path.dirname(flatHtmlPath);
+      if (!fs.existsSync(flatHtmlDir)) {
+        fs.mkdirSync(flatHtmlDir, { recursive: true });
       }
+      fs.writeFileSync(flatHtmlPath, targetHtml, 'utf8');
     }
   }
   console.log(`[post-build] Generated ${routes.length} static SPA route fallback pages (including .html root clean URLs)`);
@@ -252,7 +261,10 @@ if (fs.existsSync(templateFor404)) {
 // 6. Run Google News SEO & AdSense Static Prerenderer
 try {
   console.log('[post-build] Running Google News SEO & AdSense static generator...');
-  execSync('npx tsx scripts/generate-news-seo.ts', { stdio: 'inherit' });
+  execSync(`npx tsx scripts/generate-news-seo.ts --template "${spaTemplatePath}"`, {
+    stdio: 'inherit',
+    env: { ...process.env, SPA_TEMPLATE_PATH: spaTemplatePath }
+  });
 } catch (e) {
   console.warn('[post-build] Warning: Google News SEO generator encountered an issue:', e.message);
 }
@@ -260,7 +272,10 @@ try {
 // 7. Run Google Video SEO/GEO/AEO Static Prerenderer (Animation 40 + Movie 40)
 try {
   console.log('[post-build] Running Google Video SEO/GEO/AEO static generator...');
-  execSync('npx tsx scripts/generate-video-seo.ts', { stdio: 'inherit' });
+  execSync(`npx tsx scripts/generate-video-seo.ts --template "${spaTemplatePath}"`, {
+    stdio: 'inherit',
+    env: { ...process.env, SPA_TEMPLATE_PATH: spaTemplatePath }
+  });
 } catch (e) {
   console.warn('[post-build] Warning: Google Video SEO generator encountered an issue:', e.message);
 }
