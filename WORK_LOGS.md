@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 18:45 KST] [마일스톤 2 챌린저 1 (#home 로고·쿨카드덱 및 #deck 슬롯 편집 패리티) 독립 적대적 검증 완료]
+- **작업자**: `challenger_m2_9_1` (Empirical Challenger: critic, specialist)
+- **작업 개요**:
+  - `tests/challenger_m2_deep_stress.ts` 신규 작성 및 전수 스트레스 테스트 실행:
+    - 슬롯 카드 교체 불변식(Cross-slot swap, Self-slot idempotency, Set size === 5 엄격 보장, 100회 랜덤 퍼뮤테이션 퍼징 검증).
+    - 비보유 카드(ID 99) 및 비정상 슬롯 인덱스/카드 ID(-1, 5, 100, 2.5, NaN, undefined) 거부 검증.
+    - LocalStorage 손상 데이터 복구(null, 짧은 배열, 중복 ID 배열, 범위 초과 ID, 문자열 숫자, 구문 오류 JSON 파싱 복구).
+    - DOM 계약 검증: `/logo-ko.png` inside `a[href="#home"]` (min-h-[44px]), 부채꼴 대칭 회전(-12deg~+12deg), 희귀도 발광 보더, 나침반 스탯, 미사용 스탯 레드닷(+pt), `[영웅 교체]` 버튼, 7등신 풀바디 컷아웃 및 팝업 인스펙터, 실시간 Deck TP 갱신.
+    - ESC 키 LIFO 닫기 계층 구조(인스펙터 모달 -> 슬롯 교체 드로어 -> 세컨더리 모달 -> 사이드바) 정적 및 동적 분석 검증.
+- **검증 결과**:
+  - `npx tsx tests/adversarial_m2_home_deck.ts`: **28/28 PASS (100.0%)**
+  - `npx tsx tests/challenger_m2_adversarial.ts`: **30/30 PASS (100.0%)**
+  - `npx tsx tests/challenger_m2_deep_stress.ts`: **29/29 PASS (100.0%)**
+  - `npx tsx tests/e2e/run_all.ts --milestone M2`: **11/11 PASS (100.0%)**
+  - `npx tsx tests/adversarial_route_edge_cases.ts`: **76/76 PASS (100.0%)**
+  - `npx tsx tests/adversarial_m1_build_pipeline.ts`: **64/64 PASS (100.0%)**
+  - `npx tsc --noEmit`: 0 errors (exit code 0)
+  - `npm run build`: 성공 (exit code 0, 4,346 modules transformed)
+  - 누적 단언문: **238/238 assertions 전수 통과 (100.0%)**
+- **최종 판정**: **APPROVE** (모든 마일스톤 2 계약 및 적대적 불변식 통과)
+- **구글 폼 보고**: submit_report.py 전송 완료 (작업완료).
+- **커밋 해시**: `c28c626f2` (로컬 커밋 완료, git push 미수행).
+
 ## [2026-11-02 18:35 KST] [마일스톤 2: 홈 공식 로고·쿨 카드 덱 5인 부채꼴 프리뷰 및 마이덱 슬롯 편집 패리티 구현 완료]
 - **작업자**: `worker_m2_9` (Implementer / QA Specialist)
 - **작업 개요**:
