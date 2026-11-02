@@ -1,157 +1,209 @@
-# Adversarial Verification & Challenge Report — Challenger 2 (Milestone 2 & 3)
+# Adversarial Verification Report: Milestone 2 (3-Tier Asset Catalog & Modal Lifecycle)
 
-**Author**: Challenger 2 (`critic`, `specialist`)  
-**Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/challenger_m2_2/`  
-**Parent Orchestrator ID**: `f84aca46-e09f-4967-b5d1-281f855a924e`  
-**Verification Scope**: Full E2E Test Suite Execution, Binary Format Integrity (`card100_gemini.png`), and Total Web Payload Reduction  
-**Date**: 2026-10-18T02:32:00Z  
+- **Agent**: `teamwork_challenger` (`challenger_m2_2`)
+- **Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/challenger_m2_2/`
+- **Recipient**: `7b342c7a-1d74-43d7-a388-5ffc926b3969`
+- **Timestamp**: 2026-11-02T05:47:00Z
+- **Verdict**: **APPROVE**
 
 ---
 
 ## 1. Observation
 
-### 1.1 Full E2E Test Suite Execution (`tests/e2e_character_assets/runner.py`)
-- **Direct Execution Command**:
-  ```bash
-  python3 tests/e2e_character_assets/runner.py --verbose
-  python3 tests/e2e_character_assets/runner.py --json
-  ```
-- **Exit Code**: `0`
-- **Result Metrics**:
-  - Total Assertions: **50**
-  - Passed Assertions: **50**
-  - Failed Assertions: **0**
-  - Warnings: **0**
-  - Pass Rate: **100.0%**
-  - Total Execution Duration: **0.26s – 0.34s**
-- **Tier-by-Tier Assertion Breakdown**:
-  - **Tier 1 (Feature Coverage & Asset Integrity)**: 25 / 25 PASS (`T1.F2.1`–`T1.F2.6`, `T1.F3.1`–`T1.F3.7`, `T1.F4.1`–`T1.F4.7`, `T1.F5.1`–`T1.F5.5`). All 110 seat files, 2 primary sheets, 2 master sheets, and 11 faction sheets decoded cleanly.
-  - **Tier 2 (Boundary & Corner Cases)**: 14 / 14 PASS (`T2.F7.1`–`T2.F7.5`, `T2.F2.1`–`T2.F2.4`, `T2.F6.1`–`T2.F6.5`). All size budgets met, magic bytes verified on all 125 PNG files, grid transitions (ID 100->101, terminal ID 110) verified, rows 1–9 of `cards2.png` preserved.
-  - **Tier 3 (Cross-Feature & Coordinate Alignment)**: 6 / 6 PASS (`T3.F6.1`–`T3.F6.6`). Exhaustive coordinate formulas for all 110 IDs matched `src/lib/utils.ts`, horizontal placement matched, visual similarity between seat portraits and sliced cells confirmed.
-  - **Tier 4 (Real-World Scenarios & Traffic Audit)**: 5 / 5 PASS (`T4.F1.1`–`T4.F1.5`). CardItem tints/emblems, rarity hierarchy (50 Bronze, 32 Silver, 28 Gold with 11 Bosses at Gold apex), Canvas blitting geometry, fallback cascade, and traffic budget confirmed.
+### 1.1 Physical File Inventory & Format Integrity Across All 110 Cards
+Direct empirical audit of all 110 cards referenced by `src/landing/services/assetCatalog.ts` confirmed 100% physical existence and valid binary magic headers:
+- **7-Head Cutouts** (`/public/anime-character-sheets/cutouts/{pad3}_{nameEn}.png`):
+  - Expected: 110 files.
+  - Present: 110 files (0 missing).
+  - Magic byte validation: 110 / 110 match PNG magic `\x89PNG\r\n\x1a\n`.
+- **Torso / Bust PNGs** (`/public/anime-character-sheets/busts/{pad3}_bust.png`):
+  - Expected: 110 files.
+  - Present: 110 files (0 missing).
+  - Magic byte validation: 110 / 110 match PNG magic `\x89PNG\r\n\x1a\n`.
+- **Torso / Bust JPGs** (`/public/anime-character-sheets/busts/{pad3}_bust.jpg`):
+  - Expected: 110 files.
+  - Present: 110 files (0 missing).
+  - Magic byte validation: 110 / 110 match JPG magic `\xff\xd8\xff`.
+- **3-Head SD / Chibi Portraits** (`/public/seat/{nameEn}.png`):
+  - Expected: 110 files.
+  - Present: 111 files (110 matching expected names + 1 legacy alias `Aila_the_Demon_Hunter.png`).
+  - Magic byte validation: 111 / 111 match PNG magic.
+- **Master Composite Sprite Sheets**:
+  - `public/cards1.png`: 1,399.4 KB, valid PNG signature.
+  - `public/cards2.png`: 1,605.6 KB, valid PNG signature.
 
-### 1.2 Forensic Integrity & Alpha Channel Challenge on `public/card100_gemini.png`
-- **Magic Byte Inspection**:
-  - First 8 bytes: `\x89PNG\r\n\x1a\n` (`0x89 0x50 0x4E 0x47 0x0D 0x0A 0x1A 0x0A`).
-  - Legacy JPEG signature (`\xFF\xD8`) was completely absent.
-  - No `JFIF` or `Exif` header metadata present.
-- **Chunk Stream & CRC-32 Validation**:
-  - Sequentially parsed chunks:
-    1. `IHDR` (length: 13 bytes) — `width=1024, height=1024, bit_depth=8, color_type=3 (indexed color), comp=0, filt=0, interlace=0`.
-    2. `PLTE` (length: 768 bytes) — 256 3-byte RGB palette entries.
-    3. `tRNS` (length: 256 bytes) — 256 1-byte alpha transparency values for every palette entry.
-    4. `IDAT` (length: 65,536 bytes) — first compressed image scanline stream.
-    5. `IDAT` (length: 46,455 bytes) — second compressed image scanline stream.
-    6. `IEND` (length: 0 bytes) — standard PNG termination chunk.
-  - Computed `zlib.crc32` across all chunk types and chunk payloads matched the encoded 4-byte CRC-32 fields with **0 CRC errors**.
-- **Alpha Channel & RGBA Mode Verification**:
-  - Raw Pillow Image Mode: `'P'` with `'transparency'` in `img.info` (256-byte transparency table).
-  - Explicit RGBA Conversion (`img.convert("RGBA")`): Yields 4-channel 32-bit RGBA image (`mode='RGBA'`, `size=(1024, 1024)`).
-  - Alpha Channel Extrema (`alpha.getextrema()`): `(99, 255)`.
-  - Non-opaque alpha pixel count: **1,048,565 pixels** have alpha in `[99, 254]`, confirming genuine alpha transparency.
-- **Cell Alignment & Character Parity**:
-  - Sliced all 110 grid cells (`102.4 x 93.09 px` per cell) across 10 columns and 11 rows.
-  - Compared each cell against its corresponding remastered portrait in `public/seat/*.png` using normalized 2D cross-correlation:
-    - Minimum correlation: **0.9952**
-    - Maximum correlation: **0.9995**
-    - Average correlation: **0.9987**
-  - Confirmed 0 coordinate drift, 0 misaligned cells, and 0 missing characters.
+### 1.2 Lookup Utilities & Coordinate Alignment Math
+- `getCharacterAsset(id)` mapping:
+  - IDs 1–100 correctly assign `sourceSheet: '/cards1.png'` with `col = (id - 1) % 10`, `row = floor((id - 1) / 10)`.
+  - IDs 101–110 correctly assign `sourceSheet: '/cards2.png'` with `col = (id - 101) % 10`, `row = 0`.
+  - Grid percentages `xPercent = col * (100 / 9)` and `yPercent = row * (100 / 9)` produce exact coordinates for 10x10 sprites.
+  - Card Korean names in catalog (`CHARACTER_BASE_NAMES`) match `src/cardDatabase.ts` (`CARD_DATABASE[id].title`) with 100% parity (0 mismatches across 110 cards).
+- Boundary fuzzing resilience:
+  - Underflow IDs (`0`, `-1`, `-9999`) safely clamp to ID 1 without crashing.
+  - Overflow IDs (`111`, `99999`) safely clamp to ID 110 without crashing.
+  - Falsy inputs (`NaN`, `null`, `undefined`) default safely to ID 1.
+  - String numeric input (`'50'`) correctly coerces to ID 50.
+  - `getAllCharacterAssets()` returns exactly 110 elements covering IDs 1 through 110 in sequential order.
 
-### 1.3 Total Web Payload Reduction Audit
-- **Comparative Baseline (Commit `7be8ae3e` prior to remastering)**:
-  | Category | Baseline Files | Baseline Total | Current Files | Current Total | Net Savings | Reduction % |
-  |---|---|---|---|---|---|---|
-  | **Master Sheets** (`cards1`, `cards2`, `card100`, `card100_gemini`) | 4 | 7,925,339 B (7.56 MB) | 4 | 845,887 B (0.81 MB) | 7,079,452 B | **-89.3%** |
-  | **Faction Sheets** (11 sheets) | 11 | 2,608,592 B (2.49 MB) | 11 | 322,538 B (0.31 MB) | 2,286,054 B | **-87.6%** |
-  | **Seat Portraits** (110 individual files) | 110 | 2,388,064 B (2.28 MB) | 110 | 618,193 B (0.59 MB) | 1,769,871 B | **-74.1%** |
-  | **Grand Aggregate Total** | **125** | **12,921,995 B (12.32 MB)** | **125** | **1,786,618 B (1.70 MB)** | **11,135,377 B (10.62 MB)** | **-86.2%** |
-- **Budget Compliance Check (All 125 Assets)**:
-  - Every individual seat portrait in `public/seat/*.png` (110 files): strictly within `[4,098 B, 8,653 B]` (all $\le 35,840$ B budget).
-  - Every master sheet (4 files): strictly $\le 819,200$ B budget (maximum: `cards2.png` at 468,157 B).
-  - Every faction sheet (11 files): strictly $\le 307,200$ B budget (maximum: `character_sheet_beast.png` at 31,377 B).
-  - Total asset payload: **1,786,618 bytes (1.70 MB)**, which is **83.1% below the 10.11 MB project ceiling** (`10,598,400 B`).
+### 1.3 Multi-Tier Fallback Cascade & SVG Data URI Safety
+- `getAssetCandidates(id, tier)` returns prioritized 4-candidate fallback chains:
+  - `'7head'`: `[cutoutUrl, bustPngUrl, seatUrl, fallbackSvgDataUri]`
+  - `'bust'`: `[bustPngUrl, bustJpgUrl, seatUrl, fallbackSvgDataUri]`
+  - `'3head'`: `[sdUrl, seatUrl, spriteSheet, fallbackSvgDataUri]`
+- `attachImageFallback(img, cardId, tier)` was empirically verified:
+  - Error cascade sequentially advances through all 4 candidates upon successive `onerror` events.
+  - Clears `img.onerror = null` after the terminal SVG data URI to prevent infinite retry loops.
+- `generateTerminalFlatPlaceholder(name, faction)`:
+  - Produces valid `data:image/svg+xml;utf8,<svg ...>` strings.
+  - Properly escapes HTML/XML special characters (`&`, `<`, `>`) preventing XSS injection.
+  - Safely falls back to dark terminal palette (`#201d1d`) if faction is unrecognized.
 
-### 1.4 Non-Character Minigame Assets & Corruption Repair Verification
-- **`cards2.png` Rows 1–9 Preservation**:
-  - Verified region `(0, 100, 1000, 1000)` against baseline `cards2.png`. Normalized cross-correlation is **0.9797**, confirming that all 90 legacy minigame sprites remain intact and uncorrupted under 256-color palette quantization.
-- **Corrupted Faction Sheets Repaired**:
-  - `character_sheet_fire.png`: 28,760 B, clean `\x89PNG\r\n\x1a\n` header, decodes cleanly at `2560x296`.
-  - `character_sheet_hobbit.png`: 29,904 B, clean `\x89PNG\r\n\x1a\n` header, decodes cleanly at `2560x296`.
-  - `character_sheet_mecha.png`: 28,557 B, clean `\x89PNG\r\n\x1a\n` header, decodes cleanly at `2560x296`.
-  - All UTF-8 replacement byte corruptions (`\xef\xbf\xbdPNG`) have been permanently eradicated.
+### 1.4 Modal Controls & Zero-Popup Verification
+- Modal dismissal controls (`renderModals` in `src/landing/components/Modals.tsx`):
+  - All 3 modals (`mall`, `community`, `login`) render an explicit top-right `[x]` button with `data-action="close-modal"` and `min-h-[44px] min-w-[44px]`.
+  - All 3 modals render a bottom `닫기 (Close)` button with `data-action="close-modal"` and `min-h-[44px]`.
+  - Keyboard `Escape` listener in `src/landing/index.ts` cleanly resets `state.activeModal = null`.
+  - `renderModals(null)` safely renders empty string `""`.
+- Zero onboarding popup audit:
+  - `src/landing/index.ts` initializes with `activeModal: null` and `isSidebarOpen: false`.
+  - Zero calls to `alert()`, `confirm()`, `prompt()`.
+  - Zero legacy tutorial overlay triggers (`showTutorial`, `onboarding`, `FirstVisitModal`).
+  - `index.html` loads only static markup, canonical meta, and `src/landing/index.ts`.
 
-### 1.5 TypeScript Type-Check & Production Build
-- `npx tsc --noEmit`: Exited with code `0`, 0 errors.
-- `npm run build`: Exited with code `0`, completed in 16.98s, generated 52 SPA fallback routes and 390 Google News SEO articles.
+### 1.5 Adversarial Test Probe Execution Results
+Authored and executed standalone adversarial test probe `tests/e2e/test_m2_assets_modals_adversarial.ts`:
+```
+======================================================================
+  Milestone 2 Adversarial Probe Results (Assets, Modals, Zero Popups)  
+======================================================================
+
+[✓ PASS] Physical File Existence & Magic Byte Audit (110 Cutouts, 110 Bust PNGs, 110 Bust JPGs, 110 Seats)
+       ↳ Cutouts missing: 0 / 110
+       ↳ Bust PNGs missing: 0 / 110
+       ↳ Bust JPGs missing: 0 / 110
+       ↳ Seat PNGs missing: 0 / 110
+       ↳ Corrupted files: 0
+[✓ PASS] Master Sprite Sheets Verification (cards1.png & cards2.png)
+       ↳ cards1.png: valid=true, size=1399.4 KB
+       ↳ cards2.png: valid=true, size=1605.6 KB
+[✓ PASS] Sprite Sheet Coordinate Grid Math (10x10 cards1, row 0 cards2)
+       ↳ All 110 cards align with 10x10 sprite layout
+[✓ PASS] Fallback Candidate Chains & Inline SVG Generator Safety
+       ↳ Sample SVG Data-URI valid: true
+       ↳ Adversarial XSS string properly escaped: true
+       ↳ Candidate chain failures across 110 cards: 0
+[✓ PASS] Lookup Utility Boundary & Fuzzing Clamping (0, -999, 9999, NaN, null)
+       ↳ Boundary fuzzing errors: 0
+       ↳ getAllCharacterAssets() count: 110 (expected 110)
+[✓ PASS] Modal Rendering & 44px+ Dismiss Controls (mall, community, login)
+       ↳ All 3 modals render [x] and 닫기 buttons with min-h-[44px]
+[⚠ WARN] Modal Backdrop Click Dismissal Behavior
+       ↳ Backdrop overlay has data-action="close-modal": false
+       ↳ index.ts checks for landing-modal-overlay click: false
+       ↳ Backdrop click does NOT dismiss modal; user must click [x], 닫기, or press Escape
+[✓ PASS] Zero-Popup & Onboarding Suppression Guard on First Visit
+       ↳ Initial activeModal is null: true
+       ↳ Initial sidebar is closed: true
+       ↳ Zero alert/confirm calls: true
+       ↳ Zero legacy tutorial overlays: true
+
+----------------------------------------------------------------------
+Passed: 7 | Failed: 0 | Warned: 1
+----------------------------------------------------------------------
+```
+
+### 1.6 Official Test Suite & Type Check Results
+- `npx tsx tests/e2e/run_all.ts --milestone M2`: 13/13 assertions PASS (100.0%).
+- `npx tsx tests/e2e/run_all.ts --milestone M1`: 9/9 assertions PASS (100.0%).
+- `npx tsc --noEmit`: Exited with code 0 (zero TypeScript errors).
 
 ---
 
 ## 2. Logic Chain
 
-1. **Empirical Reproduction of E2E Suite**:
-   Direct execution of `python3 tests/e2e_character_assets/runner.py` confirmed 50/50 passing assertions. White-box inspection of `tier1_feature_coverage.py`, `tier2_boundary_corner.py`, `tier3_coordinate_alignment.py`, and `tier4_real_world.py` verified that test assertions are active, strict, and mathematically bound to the asset files on disk, with 0 mocked or trivial passing checks.
-2. **Definitive Rejection of the JPEG Disguise**:
-   Inspection of `public/card100_gemini.png` binary data proved the file is a genuine PNG: magic bytes `\x89PNG\r\n\x1a\n`, valid `IHDR`, `PLTE`, `tRNS`, `IDAT`, and `IEND` chunks, with 100% valid CRC-32 checksums. The legacy JPEG SOI marker (`\xFF\xD8`) previously present in git commit `d5a43f0a` was completely eliminated.
-3. **Resolution of Alpha Channel Integrity**:
-   The `tRNS` chunk supplies a 256-byte alpha lookup table that Pillow recognizes as transparency data. Conversion to RGBA produces genuine 4-channel image data with alpha channel values spanning `[99, 255]`. Browser canvas and CSS image renderers natively support 8-bit paletted PNGs with `tRNS` chunks.
-4. **Coordinate and Visual Parity**:
-   Center-crop aspect-fill mapping into `card100_gemini.png` cells achieved cross-correlation similarity scores between 0.9952 and 0.9995 with the remastered portraits, ensuring zero cropping drift or bleeding across cell boundaries.
-5. **Significant Web Performance Gains**:
-   Comparing the current asset payload with git commit `7be8ae3e` revealed an absolute payload reduction of 11,135,377 bytes (10.62 MB, an 86.17% overall reduction). Every single file conforms to the size caps specified in `PROJECT.md` and `ORIGINAL_REQUEST.md`.
+1. **Physical Asset Completeness**:
+   - `PROJECT.md` Feature 7 and `ORIGINAL_REQUEST.md` mandate complete visual coverage of all 110 characters across cutouts, busts, and SD sprites.
+   - Every file path generated by `getCharacterAsset(1..110)` was tested against the filesystem: all 110 cutouts, 110 bust PNGs, 110 bust JPGs, and 110 seats physically exist with valid headers.
+   - Conclusion: Asset availability is 100% complete with 0 missing files.
+
+2. **Fault-Tolerant Fallback Strategy**:
+   - Web applications can experience sporadic network drops or CDN latency.
+   - `assetCatalog.ts` provides a 4-tier candidate chain ending in an embedded data URI SVG, and `attachImageFallback` cascades through candidates automatically and unbinds `onerror` at the terminal node.
+   - Conclusion: Zero broken image risk even under network partitioning.
+
+3. **Modal Dismissal & User Ergonomics**:
+   - `DESIGN.md` requires visible top-layer dismiss controls with `min-h-[44px]` touch targets.
+   - Modals provide both top-right `[x]` (44x44px) and bottom `닫기` (min-h-[44px]) controls, plus `Escape` keyboard handling.
+   - Zero auto-popup triggers or onboarding modals exist on initial load.
+   - Conclusion: Modal dismissal and zero-popup requirements are satisfied.
+
+4. **Adversarial Finding Analysis (Backdrop Click Dismissal)**:
+   - `Modals.tsx` renders `<div id="landing-modal-overlay">` without `data-action="close-modal"`, and `index.ts` event delegation only triggers dismissal when a clicked element matches `[data-action="close-modal"]`.
+   - Consequently, clicking directly on the dark backdrop does not close the modal; the user must click `[x]`, `닫기`, or press `Escape`.
+   - While backdrop dismissal is a common web UX convenience, it does not violate any acceptance criterion in `ORIGINAL_REQUEST.md`, `PROJECT.md`, or `DESIGN.md` (which mandate explicit `[x]` and `[SKIP]` controls). Thus, it is classified as an **Advisory UX Note** rather than a blocking failure.
 
 ---
 
 ## 3. Caveats
 
-- **Scope Boundary Compliance**: Challenger 2 performed exclusively read-only inspections of source files and assets. All verification scripts and diagnostic outputs were kept strictly within `.agents/teamwork/challenger_m2_2/`.
-- **Git Push Policy**: As required by `GEMINI.md`, no remote `git push` was performed.
+1. **Backdrop Click Behavior**: Modal closure currently requires clicking the `[x]` button, `닫기` button, or pressing `Escape`. Clicking on the backdrop overlay does not dismiss the modal. This is recommended as a non-breaking UX enhancement during Milestone 3.
+2. **Review-Only Scope**: In adherence to agent role constraints, no production files were modified by the challenger. Only verification test files were authored under `tests/e2e/`.
 
 ---
 
 ## 4. Conclusion
 
-**FINAL VERDICT: CONFIRM_CORRECT**
+**Verdict: APPROVE**
 
-Milestone 2 (Sprite Sheet Assembly & Synchronization) and Milestone 3 (Web Traffic Palette Optimization) deliverables submitted by Worker M2 have been **empirically challenged, forensically audited, and 100% verified**:
-1. `tests/e2e_character_assets/runner.py` passes 50/50 assertions with exit code 0.
-2. `public/card100_gemini.png` is an authentic PNG with valid chunk CRCs, true alpha channel support, and exact 1:1 cell synchronization with remastered portraits.
-3. Total character asset web payload was reduced by **86.17%** (from 12.92 MB down to 1.70 MB), with all 125 files strictly satisfying individual budget limits.
-4. TypeScript compilation (`npx tsc --noEmit`) and production bundling (`npm run build`) pass cleanly with 0 errors.
+Milestone 2 implementation is robust, complete, and empirically verified:
+- All 110 cards have physical cutouts, bust PNGs, bust JPGs, and seat portraits on disk with valid binary headers.
+- Multi-tier fallback cascades and inline SVG data URI generators operate flawlessly.
+- All modals provide compliant 44px+ touch target dismiss controls.
+- First visit triggers zero auto-popups or onboarding storms.
+- 100% of Milestone 2 E2E test assertions pass (13/13).
+- TypeScript compilation passes with zero errors.
 
 ---
 
 ## 5. Verification Method
 
-To independently reproduce Challenger 2's empirical findings:
+To independently reproduce and verify this audit:
 
-```bash
-# 1. Run the official 4-tier E2E test harness (50 assertions):
-python3 tests/e2e_character_assets/runner.py --verbose
+1. **Execute Milestone 2 Adversarial Probe**:
+   ```bash
+   npx tsx tests/e2e/test_m2_assets_modals_adversarial.ts
+   ```
+   *Expected output*: 7 PASS, 1 WARN, 0 FAIL.
 
-# 2. Run Challenger 2's independent adversarial verification test script:
-python3 .agents/teamwork/challenger_m2_2/adversarial_verification.py
+2. **Execute Full Milestone 2 E2E Suite**:
+   ```bash
+   npx tsx tests/e2e/run_all.ts --milestone M2
+   ```
+   *Expected output*: 13 / 13 assertions PASS (100.0%).
 
-# 3. Verify card100_gemini.png magic header, chunk CRCs, and alpha channel:
-python3 -c "
-import struct, zlib
-from PIL import Image
+3. **Verify Physical Asset Files Across All 110 Cards**:
+   ```bash
+   npx tsx -e "
+   import { getCharacterAsset } from './src/landing/services/assetCatalog';
+   import fs from 'fs';
+   import path from 'path';
 
-with open('public/card100_gemini.png', 'rb') as f:
-    data = f.read()
+   let missing = 0;
+   for (let i = 1; i <= 110; i++) {
+     const a = getCharacterAsset(i);
+     if (!fs.existsSync(path.join('public', a.cutoutUrl))) missing++;
+     if (!fs.existsSync(path.join('public', a.bustPngUrl))) missing++;
+     if (!fs.existsSync(path.join('public', a.bustJpgUrl))) missing++;
+     if (!fs.existsSync(path.join('public', a.seatUrl))) missing++;
+   }
+   console.log('Total missing files across 440 asset checks:', missing);
+   process.exit(missing === 0 ? 0 : 1);
+   "
+   ```
+   *Expected output*: `Total missing files across 440 asset checks: 0`.
 
-assert data[:8] == b'\x89PNG\r\n\x1a\n', 'Invalid PNG magic bytes'
-assert not data.startswith(b'\xff\xd8'), 'Disguised JPEG found'
-
-img = Image.open('public/card100_gemini.png')
-assert img.format == 'PNG' and img.size == (1024, 1024)
-rgba = img.convert('RGBA')
-assert rgba.mode == 'RGBA'
-a_min, a_max = rgba.split()[3].getextrema()
-assert a_min < 255, 'Lacks alpha transparency'
-print(f'card100_gemini.png verified: genuine PNG, alpha extrema ({a_min}, {a_max})')
-"
-
-# 4. Verify TypeScript and production build:
-npx tsc --noEmit
-npm run build
-```
+4. **Verify TypeScript Compilation**:
+   ```bash
+   npx tsc --noEmit
+   ```
+   *Expected output*: Exit code 0.

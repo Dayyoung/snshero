@@ -1,52 +1,69 @@
-# BRIEFING — 2026-10-18T02:28:00Z
+# BRIEFING — 2026-11-02T05:46:00Z
 
 ## Mission
-Adversarially verify full E2E test suite execution, file format integrity (especially card100_gemini.png RGBA/PNG authenticity), and total character asset web payload reduction.
+Conduct empirical adversarial verification on the 3-Tier Character Visual Assets Catalog across all 110 cards (cutouts, busts, SD sprites), fallback mechanisms, modal dismissal integrity, and zero onboarding popup behavior.
 
 ## 🔒 My Identity
-- Archetype: EMPIRICAL CHALLENGER
+- Archetype: empirical challenger
 - Roles: critic, specialist
-- Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/challenger_m2_2/
-- Original parent: f84aca46-e09f-4967-b5d1-281f855a924e
-- Milestone: Milestone 2 & 3
+- Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/challenger_m2_2
+- Original parent: 7b342c7a-1d74-43d7-a388-5ffc926b3969
+- Milestone: M2
 - Instance: 2 of 2
 
 ## 🔒 Key Constraints
 - Review-only — do NOT modify implementation code
-- Empirical verification mandatory — run tests directly and do not trust worker claims
-- Must deliver clear verdict: CONFIRM_CORRECT or REPORT_ANOMALY
+- Empirical verification mandatory — must run code and tests ourselves
+- Output handoff report to `.agents/teamwork/challenger_m2_2/handoff.md`
+- Issue an unambiguous verdict (APPROVE / REQUEST_CHANGES)
+- Mandatory Google Form report submission upon completion
+- Strictly preserve local commit only (no git push)
 
 ## Current Parent
-- Conversation ID: f84aca46-e09f-4967-b5d1-281f855a924e
-- Updated: 2026-10-18T02:28:00Z
+- Conversation ID: 7b342c7a-1d74-43d7-a388-5ffc926b3969
+- Updated: 2026-11-02T05:46:00Z
 
 ## Review Scope
-- **Files to review**: `tests/e2e_character_assets/runner.py`, `public/card100_gemini.png`, all character assets under `public/`, `worker_m2/handoff.md`, `PROJECT.md`, `TEST_READY.md`
-- **Interface contracts**: PROJECT.md, TEST_READY.md
-- **Review criteria**: E2E test execution & 100% pass rate (50 assertions across 4 tiers), genuine PNG/RGBA verification on card100_gemini.png, payload reduction calculation, reproducibility.
+- **Files reviewed**:
+  - `src/landing/services/assetCatalog.ts` (3-tier catalog, lookup utilities, inline SVG generator, image fallback cascade)
+  - `src/landing/components/Modals.tsx` (mall, community, login modals)
+  - `src/landing/index.ts` (event delegation, zero-popup guard)
+  - Physical assets in `public/anime-character-sheets/cutouts/`, `public/anime-character-sheets/busts/`, `public/seat/`, `public/cards1.png`, `public/cards2.png`
+- **Adversarial Test Probe**:
+  - `tests/e2e/test_m2_assets_modals_adversarial.ts` (8 adversarial challenges executed, 7 PASS, 1 WARN, 0 FAIL)
+- **Review criteria**:
+  - Empirical verification of physical file presence for all 110 cards (110 cutouts, 110 bust PNGs, 110 bust JPGs, 110 seats)
+  - Verification of asset mapping correctness and 10x10 sprite coordinates
+  - Verification of multi-tier fallback cascade & inline SVG data URIs
+  - Verification of modal dismissal integrity (x, 닫기, Esc, and backdrop audit)
+  - Zero initial onboarding popup confirmation
+
+## Key Decisions Made
+- Unambiguous Verdict: **APPROVE**.
+- All 110 character assets physically exist on disk with valid magic bytes (PNG `\x89PNG`, JPG `\xff\xd8\xff`).
+- 100% of Milestone 2 E2E assertions pass (`npx tsx tests/e2e/run_all.ts --milestone M2`: 13/13).
+- `npx tsc --noEmit` passes with 0 errors.
+- Documented 1 constructive advisory warning: Backdrop click does not dismiss modals (users dismiss via top-right `[x]`, bottom `닫기`, or `Escape`).
+
+## Artifact Index
+- `.agents/teamwork/challenger_m2_2/handoff.md` — Final empirical handoff report
+- `tests/e2e/test_m2_assets_modals_adversarial.ts` — Adversarial test probe script
+- `.agents/teamwork/challenger_m2_2/progress.md` — Liveness progress heartbeat
 
 ## Attack Surface
 - **Hypotheses tested**:
-  1. Does `runner.py` achieve 50/50 pass rate with exit code 0? (CONFIRMED: Exit Code 0, 50/50 PASS)
-  2. Is `card100_gemini.png` a genuine PNG and does it possess a valid alpha channel? (CONFIRMED: PNG magic bytes `\x89PNG\r\n\x1a\n`, valid chunk structure with `IHDR`, `PLTE`, `tRNS`, `IDAT`, `IEND`, all CRC-32 checksums valid, zero JPEG markers, PIL mode `P` with `transparency`, converts to RGBA with alpha channel extrema `(99, 255)`)
-  3. Are all 110 cells in `card100_gemini.png` aligned with remastered seat portraits? (CONFIRMED: Min correlation 0.9952, avg 0.9987)
-  4. Did web payload reduction meet the target? (CONFIRMED: 12.92 MB baseline -> 1.70 MB current, 86.17% reduction, 11.14 MB saved)
-  5. Are all 125 character PNG files within individual budget bounds? (CONFIRMED: All 110 seats in [4KB, 35KB], all 4 master sheets <= 800KB, all 11 faction sheets <= 300KB)
-  6. Were cards2 rows 1-9 minigame sprites preserved? (CONFIRMED: Visual correlation 0.9797 under 256-color palette quantization)
-  7. Are the 3 previously corrupted faction sheets repaired? (CONFIRMED: Clean PNG headers on `fire`, `hobbit`, `mecha`)
-- **Vulnerabilities found**: 0 defects found in Worker M2's deliverable.
-- **Untested angles**: None. Full verification pipeline executed.
+  1. Hypothesis: Missing physical files or broken naming in 110-card catalog -> REFUTED. All 110 cutouts, 110 bust PNGs, 110 bust JPGs, and 110 seats exist with valid magic bytes.
+  2. Hypothesis: Malformed sprite coordinates or out-of-bounds percentages -> REFUTED. Math strictly aligns with 10x10 layout.
+  3. Hypothesis: Lookup utility crashes on negative/NaN/null/float IDs -> REFUTED. Resilient clamping to [1, 110].
+  4. Hypothesis: Fallback cascade failure on missing images -> REFUTED. Verified 4-step cascade to SVG data URI.
+  5. Hypothesis: XSS vulnerability in SVG placeholder generator -> REFUTED. Entity escaping verified.
+  6. Hypothesis: Modal dismiss buttons fail 44px+ touch target -> REFUTED. `min-h-[44px]` present on all [x] and 닫기 buttons.
+  7. Hypothesis: Backdrop click dismisses modal -> CONFIRMED FAILURE (WARN). Backdrop lacks `data-action="close-modal"`.
+  8. Hypothesis: Initial visit triggers auto-popup/tutorial storm -> REFUTED. Initial state cleanly set to `null` with 0 popups.
+- **Vulnerabilities found**:
+  - Modal backdrop click does not trigger modal close. Does not violate acceptance criteria because [x] and 닫기 exist with 44px+ touch targets, but is a minor UX gap.
+- **Untested angles**:
+  - Real browser rendering of SVG data URIs on older Safari/WebViews (addressed via standard data-uri specification).
 
 ## Loaded Skills
-- None
-
-## Key Decisions Made
-- Confirmed full satisfaction of Milestone 2 & 3 deliverables.
-- Final verdict: CONFIRM_CORRECT.
-
-## Artifact Index
-- DISPATCH.md — incoming dispatch instructions
-- progress.md — liveness heartbeat and progress tracking
-- adversarial_verification.py — independent 6-point verification test harness
-- verification_results.json — test output data
-- handoff.md — final 5-component handoff report
+- None specified
