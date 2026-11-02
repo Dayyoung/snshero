@@ -1,47 +1,42 @@
-# DISPATCH: test_writer_e2e
+# Dispatch: E2E Test Writer (E2E Testing Track)
 
-- **Role**: E2E Testing Track Writer
-- **Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/`
-- **Scope**: E2E Test Suite Creation for DESIGN.md Terminal-Flat Visual Unification
-- **Inputs**:
-  - `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md` (specifically ## 2026-10-18T10:08:37Z)
-  - `/Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/TEST_INFRA.md`
-  - `/Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/PROJECT.md`
-  - `/Users/dayyoung/project/snshero/DESIGN.md`
-- **Exclusive Write Ownership**:
-  - `tests/e2e_design_system/*`
-  - `/Users/dayyoung/project/snshero/TEST_READY.md`
-- **Output Requirements**:
-  - Create comprehensive 4-Tier test suite in `tests/e2e_design_system/` (Tier 1: Feature Coverage, Tier 2: Boundary & Corner, Tier 3: Pairwise Combinations, Tier 4: Real-World Scenarios)
-  - Create runnable runner script `tests/e2e_design_system/run_all_e2e_tests.py`
-  - Publish `/Users/dayyoung/project/snshero/TEST_READY.md` with coverage summary and run command
-  - Write handoff report in `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/handoff.md`
+- Role: E2E Test Suite Creator (`teamwork_test_writer`)
+- Working Directory: /Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/
+- Original Request: /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md
+- Project Scope: /Users/dayyoung/project/snshero/PROJECT.md
 
-## 2026-10-18T10:25:54Z
-You are the E2E Testing Track Writer for SNSHero Revolution.
-Your working directory is: /Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/
-You MUST read the authoritative user request at:
-/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md (specifically the latest request under ## 2026-10-18T10:08:37Z).
+## Mission
+You are the dedicated E2E Test Writer in the E2E Testing Track.
+Your objective is to design and implement a comprehensive, requirement-driven, opaque-box E2E test suite covering all features in `PROJECT.md § Feature Inventory` and all acceptance criteria in `ORIGINAL_REQUEST.md` (R1 to R5).
 
-Reference specifications:
-- /Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/TEST_INFRA.md
-- /Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/PROJECT.md
-- /Users/dayyoung/project/snshero/DESIGN.md
-- /Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/DISPATCH.md
+### Tasks:
+1. Create `/Users/dayyoung/project/snshero/TEST_INFRA.md` following the template in Project Pattern:
+   - Test Philosophy: opaque-box, requirement-driven, 0 internal module dependencies.
+   - Feature Inventory with coverage mappings (Tiers 1-4).
+   - Test Architecture & runner instructions.
+2. Implement the automated test runner and test cases under `tests/e2e/` (e.g. using Node.js / Playwright / TypeScript scripts):
+   - **Tier 1 - Feature Coverage**: >=5 test cases per feature covering representative happy-path inputs for all 5 requirements (R1..R5).
+   - **Tier 2 - Boundary & Corner Cases**: >=5 boundary/edge test cases per feature (invalid routes, missing localStorage keys, max level 100 boundaries, empty state, rapid clicks, network disconnect).
+   - **Tier 3 - Cross-Feature Combinations**: Pairwise coverage (e.g., card nurture + deck TP calculation, shop purchase + deck, play TTS toggle + webtoon scene change, navigation between / and /home).
+   - **Tier 4 - Real-World Application Scenarios**: Realistic end-to-end user journeys (first-time visitor browsing landing page, navigating to cards, nurturing cards up to level 100, allocating stats, checking deck TP update, verifying localStorage persistence across refresh, opening shop).
+3. Verify that the test runner executes cleanly and produces clear, structured pass/fail reports.
+4. When the test suite and runner are completely implemented and ready to test against the upcoming implementation, publish `/Users/dayyoung/project/snshero/TEST_READY.md` at project root with:
+   - Test Runner command: e.g. `npx tsx tests/e2e/run_all.ts` or `npm run test:e2e` (or python script)
+   - Coverage Summary table (Tiers 1-4 counts)
+   - Feature Checklist
+5. Write your handoff report to `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/handoff.md` and message the orchestrator.
 
-Your Exclusive Write Ownership:
-- `tests/e2e_design_system/*`
-- `/Users/dayyoung/project/snshero/TEST_READY.md`
 
-Your Task:
-1. Build the complete, autonomous, requirement-driven opaque-box E2E test harness under `tests/e2e_design_system/`:
-   - `tier1_feature_coverage.py`: Category-Partition test suite covering all 22+ views. Verifies 0 banned classes (`bg-gradient-to-`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, `animate-ping`, `animate-bounce`), strict monospace typography (`font-mono`, 0 `font-sans`), 2-tier border radius, and flat surfaces with 1px hairlines. (>=50 assertions).
-   - `tier2_boundary_corner.py`: Boundary Value Analysis. Verifies minimum 44px touch target height (`min-h-[44px]`) on all interactive buttons, tabs, pagination, and header CTAs; verifies every modal/drawer exposes a visible top-layer `[x]` / `[SKIP]` button; verifies 375px mobile viewport overflow resilience (0 horizontal scroll overflow). (>=50 assertions).
-   - `tier3_cross_feature.py`: Pairwise Combinatorial Testing. Verifies view transitions between Battle, Deck, Shop, Ranking, Novel, and Settings; verifies LocalStorage key persistence (`hero_*`); verifies 100% `safeLazy` dynamic glob imports in `App.tsx` with zero directory index imports. (>=10 composite assertions).
-   - `tier4_realworld_workload.py`: Real-World Workload Testing. Simulates end-to-end player journeys across all 6 real-world scenarios from `TEST_INFRA.md`, verifying zero viewport intrusion over active game boards/canvases/media and zero console errors.
-   - `run_all_e2e_tests.py`: Master test runner that runs all 4 tiers, formats results with clear colored CLI reports, and returns exit code 0 when all tests pass.
-2. Publish `/Users/dayyoung/project/snshero/TEST_READY.md` at project root with runner command, tier breakdown, and feature checklist.
-3. Write your handoff report in `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/handoff.md`.
-4. Send a message to parent reporting completion and pointing to `TEST_READY.md` and `handoff.md`.
+## 2026-11-02T03:33:26Z
+당신은 E2E 테스트 작성 에이전트(teamwork_test_writer)입니다.
+작업 디렉토리: /Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/
+원본 요구사항: /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md
+프로젝트 명세: /Users/dayyoung/project/snshero/PROJECT.md
+작업 지침서: /Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/DISPATCH.md
 
-HARD CONSTRAINT: You write tests and test infra only. DO NOT modify application source code in `src/`.
+반드시 ORIGINAL_REQUEST.md, PROJECT.md, DISPATCH.md를 먼저 읽으십시오.
+임무:
+1. /Users/dayyoung/project/snshero/TEST_INFRA.md를 작성하십시오. (오페이크 박스, 요구사항 기반 테스트 철학, 4-Tier 테스트 케이스 매핑: Tier 1 기능 커버리지, Tier 2 경계/코너 케이스, Tier 3 교차 기능 조합, Tier 4 실제 유저 시나리오)
+2. `tests/e2e/` 디렉토리에 실행 가능한 자동화 테스트 러너 및 테스트 스위트 코드를 구현하십시오. (Node.js/Playwright/TypeScript 기반으로 브라우저 렌더링, 반응형, 6대/8대 메뉴, 쇼핑몰/커뮤니티/로그인 모달, 홈 섹션 외부 링크 '절찬 연재중' 배지, 마이덱 TP 계산, 플레이 섹션 5버튼/TTS OFF, 카드 섹션 1~100Lv 육성, 스탯 포인트 분배, 빨간 점 인디케이터, 로컬스토리지 새로고침 영구 보존, 상점 8개 항목, 첫 접속 온보딩 팝업 0건 등을 전수 검증)
+3. 테스트 스위트 구현이 완료되면 프로젝트 루트에 `/Users/dayyoung/project/snshero/TEST_READY.md`를 발행하십시오.
+4. handoff.md를 작성하고 완료 보고 메시지를 보내십시오.

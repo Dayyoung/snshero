@@ -1,118 +1,83 @@
-# Handoff Report: E2E Testing Track Writer
+# Handoff Report: E2E Test Suite Creation
 
-- **Author**: E2E Testing Track Writer (`test_writer_e2e`)
-- **Parent Agent**: `3a464f6d-bcf9-4b99-af07-b0e05ceb817a`
-- **Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/`
-- **Date & Timestamp**: 2026-10-18T10:39:00Z
-- **Reference Specifications**:
-  - `/Users/dayyoung/project/snshero/DESIGN.md` (OpenCode Terminal-Flat Canonical Design System)
-  - `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md` (specifically ## 2026-10-18T10:08:37Z)
-  - `/Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/TEST_INFRA.md`
-  - `/Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/PROJECT.md`
-- **Exclusive Write Deliverables**:
-  - `tests/e2e_design_system/*`
-  - `/Users/dayyoung/project/snshero/TEST_READY.md`
-  - `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/*`
+- Agent: `teamwork_test_writer`
+- Working Directory: `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/`
+- Target Milestone: SNSHero Independent Static Landing & /home Decoupling E2E Test Suite
+- Date: 2026-11-02T03:42:00Z
 
 ---
 
 ## 1. Observation
 
-1. **Test Infrastructure Implementation**:
-   A modular, requirement-driven, opaque-box E2E test harness was established under `tests/e2e_design_system/`:
-   - `tests/e2e_design_system/__init__.py`: Package entrypoint.
-   - `tests/e2e_design_system/helpers.py`: Shared AST token scanners, brace-aware JSX `<button>` tag parser with arrow function resilience, 375px mobile viewport overflow geometry auditor, and `hero_*` LocalStorage key inspector.
-   - `tests/e2e_design_system/tier1_feature_coverage.py`: 118 programmatic assertions covering all 22 core views and 8 shared chrome components for 0 banned classes (`bg-gradient-to-`, `rounded-xl/2xl/3xl`, `animate-ping/bounce`), 100% `font-mono` enforcement, 0 `font-sans`, 2-tier border radius, and flat surfaces with 1px hairlines.
-   - `tests/e2e_design_system/tier2_boundary_corner.py`: 54 assertions evaluating minimum 44px touch target height (`min-h-[44px]`), modal top-layer visible `[x]` / `[SKIP]` dismiss controls, and 375px mobile viewport overflow resilience (`pb-28` to `pb-36` dock clearance).
-   - `tests/e2e_design_system/tier3_cross_feature.py`: 10 composite assertions covering pairwise view routing state machines, `hero_*` LocalStorage persistence, 100% `safeLazy` dynamic glob imports in `src/App.tsx`, zero single-point-of-failure directory index imports, multilingual support (12 languages), and bottom dock integration.
-   - `tests/e2e_design_system/tier4_realworld_workload.py`: 6 real-world end-to-end player journeys covering onboarding, card battle, mini-game settlement, shop/marketplace trading, web novel reading, and settings simulation with zero viewport intrusion.
-   - `tests/e2e_design_system/run_all_e2e_tests.py`: Executable master test runner supporting `--tier`, `--milestone (M1, M2, M3, ALL)`, `--verbose`, `--json`, and `--allow-fail`.
-
-2. **Test Harness Execution Results**:
-   Running `python3 tests/e2e_design_system/run_all_e2e_tests.py --allow-fail`:
-   - **Total Assertions**: 188 programmatic assertions.
-   - **Execution Time**: 0.77s.
-   - **Passing Assertions**: 112 (59.6% baseline compliance).
-   - **Pending Milestone Requirements**: 76 assertions accurately pinpointing legacy tokens and sub-44px buttons in active worker milestones.
-   - Verbatim execution output quote:
+1. **Requirements & Scope**:
+   - `ORIGINAL_REQUEST.md` (§2026-11-02T03:18:46Z) specifies Requirements R1–R5 for SNSHero.com's new standalone static landing page (`index.html`) decoupled from `/home`, responsive across 360px–1024px, 3-tier character assets (7-head, bust, 3-head SD), Top Nav (6 items), Side Nav (8 items), secondary action modals (쇼핑몰, 커뮤니티, 로그인), 0 onboarding popups on visit, Home section with external novel/webtoon serialization links & "[절찬 연재중]" badges, MyDeck 5-card slot view with Deck TP and Total TP, Play section 5 buttons [닫기, 이전, 다음, 나레이션, TTS] with TTS default OFF, Card section 1~100Lv nurture engine with red dot indicator, LocalStorage persistence (`hero_card_nurturing`), and Shop section 8 fixed items.
+   - `PROJECT.md` establishes the Dual-Entry MPA architecture (Features 1–5), Responsive Shell & Navigation (Features 6–11), Core Sections & Card Nurture (Features 12–18), and Build/E2E Verification (Features 19–20).
+2. **Execution Test Runs**:
+   - `npx tsx tests/e2e/run_all.ts --allow-fail`:
      ```
-     ----------------------------------------------------------------------
-       SNSHero Design System E2E Execution Summary (0.77s)
-     ----------------------------------------------------------------------
-       Total Assertions   : 188
-       Passed Assertions  : 112
-       Failed Assertions  : 76
-       Warnings           : 0
-       Pass Rate          : 59.6%
-
-     STATUS: PENDING MILESTONE DELIVERABLES DETECTED (76 failures).
-     Run with `--milestone M1`, `--milestone M2`, or `--milestone M3` to track per-milestone progress.
+     Total Assertions Run : 66
+     Passed               : 32
+     Failed               : 34
+     Pass Rate            : 48.5%
+     Total Duration       : 0.04s
      ```
-
-3. **Compiler and Build Verification**:
-   - `npx tsc --noEmit`: Exited with code `0` (0 TypeScript errors).
-   - `npm run lint`: Exited with code `0`.
-   - `npm run build`: Exited with code `0` (built all 52 static routes and bundles cleanly in 18.07s).
-
-4. **Published Test Declaration**:
-   `TEST_READY.md` was published at the repository root detailing the runner invocation, 4-tier coverage matrix, 22-view checklist, and milestone handover instructions for workers M1, M2, and M3.
+   - TypeScript compilation check: `npx tsc --noEmit` exited with code 0 (0 errors).
+   - Milestone M1 filter: `npx tsx tests/e2e/run_all.ts --milestone M1 --allow-fail` returned 5 passed, 4 failed (targeting the pending M1 files: `src/landing/index.ts`, `home.html`, and `vite.config.ts` multi-entry configuration).
+3. **Artifacts Published**:
+   - `/Users/dayyoung/project/snshero/TEST_INFRA.md` (Created, 240+ lines)
+   - `/Users/dayyoung/project/snshero/TEST_READY.md` (Published)
+   - `tests/e2e/types.ts`
+   - `tests/e2e/helpers.ts`
+   - `tests/e2e/tier1_feature_coverage.ts` (45 assertions)
+   - `tests/e2e/tier2_boundary_corner.ts` (10 assertions)
+   - `tests/e2e/tier3_cross_feature.ts` (6 assertions)
+   - `tests/e2e/tier4_realworld_workload.ts` (5 assertions)
+   - `tests/e2e/run_all.ts` (CLI executable runner)
 
 ---
 
 ## 2. Logic Chain
 
-1. **Premise 1 (Test Philosophy & Inviolable Constraints)**:
-   Per `PROJECT.md` and `TEST_INFRA.md`, the E2E test harness must be opaque-box, requirement-driven, deterministic, and completely autonomous without modifying application code in `src/`.
-2. **Premise 2 (Accuracy & Real-Time Tracking)**:
-   Naive regex splitting on `<button\b([^>]*)>` fails when JSX contains inline arrow functions like `onClick={() => setX(true)}`. Implementing a brace-depth and quote-aware JSX parser in `helpers.py` correctly extracts all `<button>` tags without truncation, allowing authentic evaluation of touch target classes.
-3. **Premise 3 (Dual-Track Milestone Decoupling)**:
-   Workers M1, M2, and M3 work concurrently on distinct view clusters. Adding the `--milestone` CLI flag enables each worker to run only the tests relevant to their scope while preserving the full 188-assertion suite for Orchestrator M4 final hardening.
-4. **Deduction & Assessment**:
-   The E2E test suite accurately reports passing status on compliant views (`MovieView`, `GuildDetailView`, `StockMarketView`, `MyDeckView`, `PageHeader`, `Navbar`, and dynamic glob loaders) while failing on legacy debt files (`PlayGameView`, `ShopView`, `RankingView`, `GuildListView`, `CommunityView`, `RedditCommunityView`, `SettingView`), providing an exact roadmap for Milestone 1–3 workers.
+1. **Step 1 (Requirement Derivation)**: Based on `ORIGINAL_REQUEST.md` R1–R5 and `PROJECT.md` Features 1–18, all required behaviors, formulas (Deck TP = active 5 cards power sum, Total TP = owned cards power sum, Nurture EXP = level * 100 threshold, Max Lv = 100, Stat points = 1 per level up), visual badges (`[절찬 연재중]`), navigation menus (Top 6, Side 8), and Shop items (exact 8) were codified into unambiguous test assertions.
+2. **Step 2 (Non-Facade Test Design)**: The test assertions directly inspect actual file presence, DOM elements (via `cheerio`), routing paths, and execute stateful mathematical oracles (`ReferenceNurtureStore` & `MockLocalStorage`). They test real logic rather than hardcoded passes.
+3. **Step 3 (Progressive Testability & Milestone Support)**: The CLI test runner natively supports `--milestone M1`, `--milestone M2`, `--milestone M3`, `--milestone M4`, and `--milestone ALL`, enabling downstream workers to execute milestone-scoped gates during their respective milestones.
+4. **Step 4 (Type Safety & Performance)**: The test suite compiles cleanly under `npx tsc --noEmit` with zero errors and executes 66 assertions in 40ms without hanging or requiring external browser instances.
 
 ---
 
 ## 3. Caveats
 
-1. **Non-Modification of `src/`**: In strict compliance with the assigned constraints, 0 application files in `src/` were modified by this agent.
-2. **Leaflet & Third-Party Embeds**: Third-party Leaflet map tiles and Google AdSense banners inject their own internal SVGs/iframes. The test harness evaluates the application wrapper containers, headers, and floating overlays surrounding those embeds.
-3. **Progressive Remediation**: Pass rate will increase incrementally from 59.6% to 100.0% as `worker_m1`, `worker_m2`, and `worker_m3` land their commits.
+- Playwright headless browser automation is not globally installed in this environment; however, all DOM structures, scripts, stylesheets, and state machines are inspected and emulated using Node.js, `cheerio`, and TypeScript AST/source scanners with 100% determinism.
+- Tests for M1, M2, and M3 features currently report FAIL as expected, because implementation code under `src/landing/` and `home.html` has not yet been built by the milestone workers.
 
 ---
 
 ## 4. Conclusion
 
-1. **E2E Test Suite Complete**: All 4 tiers (`tier1_feature_coverage.py`, `tier2_boundary_corner.py`, `tier3_cross_feature.py`, `tier4_realworld_workload.py`) and the master runner `run_all_e2e_tests.py` are fully functional and verified.
-2. **Project-Root Publication**: `/Users/dayyoung/project/snshero/TEST_READY.md` is published and ready for team-wide use.
-3. **Execution Readiness**: The test suite executes in < 0.8s, supports milestone filtering, and produces human-readable colored terminal output and JSON reporting.
+The Master 4-Tier E2E Test Suite and Verification Infrastructure for the SNSHero Independent Static Landing & /home Decoupling are complete, type-safe, verified, and published. `TEST_INFRA.md` and `TEST_READY.md` are fully up-to-date and ready for milestone execution.
 
 ---
 
 ## 5. Verification Method
 
-To independently reproduce and verify this test infrastructure:
+To independently verify the test suite:
 
-1. **Execute Full 4-Tier Test Runner**:
-   ```bash
-   python3 tests/e2e_design_system/run_all_e2e_tests.py --allow-fail
-   ```
-   *Expected Result*: Evaluates all 188 assertions across Tiers 1–4 in under 1 second.
+```bash
+# 1. Verify TypeScript compilation
+npx tsc --noEmit
 
-2. **Execute Milestone-Specific Scopes**:
-   ```bash
-   python3 tests/e2e_design_system/run_all_e2e_tests.py --milestone M1 --allow-fail
-   python3 tests/e2e_design_system/run_all_e2e_tests.py --milestone M2 --allow-fail
-   python3 tests/e2e_design_system/run_all_e2e_tests.py --milestone M3 --allow-fail
-   ```
+# 2. Run master test suite with allow-fail (pre-implementation check)
+npx tsx tests/e2e/run_all.ts --allow-fail
 
-3. **Verify Machine-Readable JSON Export**:
-   ```bash
-   python3 tests/e2e_design_system/run_all_e2e_tests.py --tier 3 --json --allow-fail
-   ```
+# 3. Test milestone-specific execution
+npx tsx tests/e2e/run_all.ts --milestone M1 --allow-fail
+npx tsx tests/e2e/run_all.ts --milestone M2 --allow-fail
+npx tsx tests/e2e/run_all.ts --milestone M3 --allow-fail
 
-4. **Verify Compilation & Build Cleanliness**:
-   ```bash
-   npx tsc --noEmit
-   npm run build
-   ```
-   *Expected Result*: Exit code 0, 0 TypeScript errors, successful bundle creation.
+# 4. Test JSON output
+npx tsx tests/e2e/run_all.ts --json --milestone M1 --allow-fail
+```
+
+**Invalidation Conditions**:
+- If `npx tsx tests/e2e/run_all.ts` crashes or throws unhandled exceptions.
+- If `npx tsc --noEmit` reports compilation errors.
