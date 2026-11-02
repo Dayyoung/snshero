@@ -2,21 +2,32 @@
  * Tier 4: Real-World Workload Scenarios (6 Assertions across Realistic End-to-End User Journeys)
  *
  * Mapped to PROJECT.md Features and Milestones M1..M6.
+ * Direct Production Integration: Zero Test Doubles.
  */
 
 import {
   readProjectFile,
   projectPathExists,
   runTestAssertion,
-  ReferenceHashRouter,
-  ReferenceIdleAutoPlayManager,
-  ReferenceNurtureStore,
-  ReferenceShopManager,
-  ReferenceAdSenseManager,
   MockLocalStorage,
+  setupTestEnvironment,
 } from './helpers';
 import { TestResult, EXTERNAL_LINKS } from './types';
 import { CARD_DATABASE } from '../../src/cardDatabase';
+
+// Genuine Production Deliverable Imports
+import { normalizeHashRoute } from '../../src/landing/services/hashRouter';
+import { IdleAutoPlayManager } from '../../src/landing/services/idleAutoPlayManager';
+import { CardNurtureStore, cardNurtureStore } from '../../src/landing/services/cardNurtureStore';
+import {
+  executeShopPurchase,
+  exchangeGoldForSns,
+  getUserCoins,
+  setUserCoins,
+  getUserGold,
+  setUserGold,
+} from '../../src/landing/views/ShopSection';
+import { getAdPlacements } from '../../src/landing/services/adsenseManager';
 
 export async function runTier4Tests(): Promise<TestResult[]> {
   const results: TestResult[] = [];
@@ -31,8 +42,7 @@ export async function runTier4Tests(): Promise<TestResult[]> {
       if (!indexHtml) return { pass: false, message: 'index.html not found' };
 
       // 2. Routing defaults to #home
-      const router = new ReferenceHashRouter();
-      const initialRoute = router.normalizeHashRoute('');
+      const initialRoute = normalizeHashRoute('');
       if (initialRoute !== '#home') {
         return { pass: false, message: `Initial route should be #home, got ${initialRoute}` };
       }
@@ -48,7 +58,8 @@ export async function runTier4Tests(): Promise<TestResult[]> {
       }
 
       // 4. Verify 5-card deck power calculation
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       const deckTP = oracle.getDeckTP();
       if (deckTP <= 0) {
         return { pass: false, message: `Invalid initial deck TP: ${deckTP}` };
@@ -63,8 +74,8 @@ export async function runTier4Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T4.W1.2', 4, 'End-to-End Workload', 'M1', '15-Second Inactivity Workload: Auto-Play Navigation to #play and Flag Init', async () => {
-      const mockStorage = new MockLocalStorage();
-      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage, 15000);
+      const mockStorage = setupTestEnvironment();
+      const idleManager = new IdleAutoPlayManager({ timeoutMs: 15000 });
 
       // User arrives on page and remains idle
       // 5 seconds pass
@@ -100,7 +111,8 @@ export async function runTier4Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T4.W1.3', 4, 'End-to-End Workload', 'M3', 'Core RPG Gameplay Loop: Tile Movement -> Battle Victory EXP -> Repeat Hunting', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       const initialExpCard1 = oracle.cards[1].exp;
 
       // 1. Check tile map and dialog components exist
@@ -142,8 +154,8 @@ export async function runTier4Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T4.W1.4', 4, 'End-to-End Workload', 'M4', 'Deck Strategy & Owned Card Nurturing Loop: Slot Swapping and Stat Allocation', async () => {
-      const mockStorage = new MockLocalStorage();
-      const oracle = new ReferenceNurtureStore(mockStorage);
+      const mockStorage = setupTestEnvironment();
+      const oracle = new CardNurtureStore();
 
       // Initial Deck: [1, 2, 3, 4, 5]
       const initialTP = oracle.getDeckTP();
@@ -179,7 +191,7 @@ export async function runTier4Tests(): Promise<TestResult[]> {
 
       // Reload from storage to verify full persistence
       oracle.saveToStorage();
-      const reloadedOracle = new ReferenceNurtureStore(mockStorage);
+      const reloadedOracle = new CardNurtureStore();
       reloadedOracle.loadFromStorage();
 
       if (reloadedOracle.activeDeckIds[0] !== 6) {
@@ -198,31 +210,28 @@ export async function runTier4Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T4.W1.5', 4, 'End-to-End Workload', 'M5', 'Commercial Economy: Gold-to-SNS Exchange, Pack Purchase & Reveal Modal Dual-Write', async () => {
-      const mockStorage = new MockLocalStorage();
-      mockStorage.setItem('hero_sns', '50');     // Very low SNS
-      mockStorage.setItem('hero_gold', '15000'); // Ample Gold
-
-      const nurtureStore = new ReferenceNurtureStore(mockStorage);
-      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
+      const mockStorage = setupTestEnvironment();
+      setUserCoins(50);     // Very low SNS
+      setUserGold(15000);  // Ample Gold
 
       // Step 1: Exchange 5,000 Gold for 1,000 SNS
-      const exchange = shop.exchangeGoldForSns(5000);
+      const exchange = exchangeGoldForSns(5000);
       if (!exchange.success || exchange.snsGranted !== 1000) {
         return { pass: false, message: 'Gold exchange failed in workload' };
       }
-      if (shop.getBalances().sns !== 1050) {
-        return { pass: false, message: `Expected 1050 SNS, got ${shop.getBalances().sns}` };
+      if (getUserCoins() !== 1050) {
+        return { pass: false, message: `Expected 1050 SNS, got ${getUserCoins()}` };
       }
 
       // Step 2: Buy Magic Pack (800 SNS)
-      const packRes = shop.purchaseCardPack('magic');
-      if (!packRes.success || packRes.revealedCards.length !== 3) {
+      const packRes = executeShopPurchase('pack_magic');
+      if (!packRes.success || !packRes.revealedCards || packRes.revealedCards.length !== 3) {
         return { pass: false, message: 'Pack purchase failed' };
       }
 
       // Step 3: Check dual-write in both systems
       const firstCard = packRes.revealedCards[0];
-      if (!nurtureStore.isCardOwned(firstCard.cardId)) {
+      if (!cardNurtureStore.isCardOwned(firstCard.cardId)) {
         return { pass: false, message: 'Rolled card missing in nurture store' };
       }
       const rawInv = mockStorage.getItem('hero_inventory') || '';
@@ -231,8 +240,8 @@ export async function runTier4Tests(): Promise<TestResult[]> {
       }
 
       // Step 4: Verify remaining balance: 1050 - 800 = 250 SNS
-      if (shop.getBalances().sns !== 250) {
-        return { pass: false, message: `Expected 250 remaining SNS, got ${shop.getBalances().sns}` };
+      if (getUserCoins() !== 250) {
+        return { pass: false, message: `Expected 250 remaining SNS, got ${getUserCoins()}` };
       }
 
       return { pass: true, message: 'Gold exchange, pack reveal modal data, and dual-write verified' };
@@ -244,24 +253,23 @@ export async function runTier4Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T4.W1.6', 4, 'End-to-End Workload', 'M5', 'Responsive Multi-Device Workload: Desktop Gutters (1440px) vs Mobile Banner (375px)', async () => {
-      const mockStorage = new MockLocalStorage();
-      const ads = new ReferenceAdSenseManager(mockStorage);
+      const mockStorage = setupTestEnvironment();
 
       // Desktop Session (1440px wide)
-      const desktop = ads.getPlacements(1440);
+      const desktop = getAdPlacements(1440);
       if (!desktop.desktopLeft || !desktop.desktopRight || desktop.mobileTop) {
         return { pass: false, message: 'Desktop side gutter placement failed at 1440px' };
       }
 
       // Tablet / Mobile Session (375px wide)
-      const mobile = ads.getPlacements(375);
+      const mobile = getAdPlacements(375);
       if (mobile.desktopLeft || mobile.desktopRight || !mobile.mobileTop) {
         return { pass: false, message: 'Mobile top banner placement failed at 375px' };
       }
 
       // User purchases Ad-Removal
       mockStorage.setItem('hero_ad_removed', 'true');
-      const vipSession = ads.getPlacements(1440);
+      const vipSession = getAdPlacements(1440);
       if (vipSession.desktopLeft || vipSession.desktopRight || vipSession.mobileTop) {
         return { pass: false, message: 'VIP user still receives ads' };
       }

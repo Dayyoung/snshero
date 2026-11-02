@@ -10,12 +10,8 @@ import {
   projectPathExists,
   parseHtml,
   runTestAssertion,
-  ReferenceHashRouter,
-  ReferenceIdleAutoPlayManager,
-  ReferenceNurtureStore,
-  ReferenceShopManager,
-  ReferenceAdSenseManager,
   MockLocalStorage,
+  setupTestEnvironment,
 } from './helpers';
 import {
   TestResult,
@@ -30,6 +26,30 @@ import {
 } from './types';
 import { CARD_DATABASE } from '../../src/cardDatabase';
 
+// Genuine Production Deliverable Imports
+import {
+  normalizeHashRoute,
+  getLegacyRedirect,
+} from '../../src/landing/services/hashRouter';
+import {
+  IdleAutoPlayManager,
+} from '../../src/landing/services/idleAutoPlayManager';
+import {
+  CardNurtureStore,
+  cardNurtureStore,
+} from '../../src/landing/services/cardNurtureStore';
+import {
+  executeShopPurchase,
+  exchangeGoldForSns,
+  getUserCoins,
+  setUserCoins,
+  getUserGold,
+  setUserGold,
+} from '../../src/landing/views/ShopSection';
+import {
+  getAdPlacements,
+} from '../../src/landing/services/adsenseManager';
+
 export async function runTier1Tests(): Promise<TestResult[]> {
   const results: TestResult[] = [];
 
@@ -39,9 +59,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.HASH.1', 1, 'Hash Routing Core', 'M1', 'Hash Route Canonical Set (#home, #deck, #play, #card, #shop)', async () => {
-      const router = new ReferenceHashRouter();
       for (const expectedHash of HASH_ROUTES) {
-        const normalized = router.normalizeHashRoute(expectedHash);
+        const normalized = normalizeHashRoute(expectedHash);
         if (normalized !== expectedHash) {
           return { pass: false, message: `Expected ${expectedHash}, normalized to ${normalized}` };
         }
@@ -64,9 +83,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.HASH.3', 1, 'Legacy Route Elimination', 'M1', 'Legacy Route /home and /main Redirection to Hash Routes', async () => {
-      const router = new ReferenceHashRouter();
-      const redirectHome = router.getLegacyRedirect('/home');
-      const redirectMain = router.getLegacyRedirect('/main');
+      const redirectHome = getLegacyRedirect('/home');
+      const redirectMain = getLegacyRedirect('/main');
 
       if (redirectHome !== '#home') {
         return { pass: false, message: `Legacy route /home should redirect to #home, got ${redirectHome}` };
@@ -80,7 +98,6 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.HASH.4', 1, 'Legacy Route Elimination', 'M1', 'Legacy Route Set (/deck, /play, /shop, /card) Complete Elimination', async () => {
-      const router = new ReferenceHashRouter();
       const testCases: Array<[string, string]> = [
         ['/deck', '#deck'],
         ['/play', '#play'],
@@ -89,7 +106,7 @@ export async function runTier1Tests(): Promise<TestResult[]> {
       ];
 
       for (const [legacy, expectedHash] of testCases) {
-        const redirected = router.getLegacyRedirect(legacy);
+        const redirected = getLegacyRedirect(legacy);
         if (redirected !== expectedHash) {
           return { pass: false, message: `Legacy route ${legacy} did not resolve to ${expectedHash}: got ${redirected}` };
         }
@@ -115,8 +132,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.IDLE.1', 1, 'Idle Auto-Play', 'M1', '15-Second (15,000ms) User Inactivity Countdown Contract', async () => {
-      const mockStorage = new MockLocalStorage();
-      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage, 15000);
+      const mockStorage = setupTestEnvironment();
+      const idleManager = new IdleAutoPlayManager({ timeoutMs: 15000 });
 
       // Advance 10,000ms - should not trigger
       const tick10s = idleManager.tick(10000);
@@ -136,8 +153,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.IDLE.2', 1, 'Idle Auto-Play', 'M1', 'Redirect Destination URL Target Verification', async () => {
-      const mockStorage = new MockLocalStorage();
-      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage);
+      const mockStorage = setupTestEnvironment();
+      const idleManager = new IdleAutoPlayManager();
       const res = idleManager.tick(15000);
 
       const expectedUrl = 'https://dayyoung-macbookpro.tail3717a4.ts.net/#play';
@@ -150,8 +167,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.IDLE.3', 1, 'Idle Auto-Play', 'M1', 'Auto-Mode Flag Persistence (hero_kadan_rpg_auto_mode)', async () => {
-      const mockStorage = new MockLocalStorage();
-      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage);
+      const mockStorage = setupTestEnvironment();
+      const idleManager = new IdleAutoPlayManager();
       idleManager.tick(15000);
 
       const flag = mockStorage.getItem(IDLE_AUTO_PLAY_CONFIG.autoModeStorageKey);
@@ -164,8 +181,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.IDLE.4', 1, 'Idle Auto-Play', 'M1', 'User Interaction Timer Reset Action', async () => {
-      const mockStorage = new MockLocalStorage();
-      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage);
+      const mockStorage = setupTestEnvironment();
+      const idleManager = new IdleAutoPlayManager();
 
       idleManager.tick(12000); // 12s elapsed
       idleManager.handleUserInteraction(); // User clicks or taps
@@ -223,7 +240,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.HOME.3', 1, 'Home Section Branding', 'M2', 'Deck Combat Power (CP) Calculation Display', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       const deckTP = oracle.getDeckTP();
       if (typeof deckTP !== 'number' || deckTP <= 0) {
         return { pass: false, message: `Invalid Deck TP calculation: ${deckTP}` };
@@ -275,7 +293,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.DECK.2', 1, 'My Deck Editing', 'M2', 'Card Slot Swapping from Owned Inventory', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       oracle.addCard(6); // Add Card 6 to owned inventory
 
       // Replace slot 0 (Card 1) with Card 6
@@ -299,7 +318,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.DECK.3', 1, 'My Deck Editing', 'M2', 'Real-Time Deck TP Dynamic Recalculation', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       const baseTP = oracle.getDeckTP();
 
       // Nurture an active deck card (Card 2) and allocate stat point
@@ -316,7 +336,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.DECK.4', 1, 'My Deck Editing', 'M2', 'Total TP Inventory Power Calculation', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       const initialTotal = oracle.getTotalTP();
 
       // Add newly acquired card (Card 7, base power = 13)
@@ -332,8 +353,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.DECK.5', 1, 'My Deck Editing', 'M2', 'LocalStorage Sync for Active Deck (hero_deck)', async () => {
-      const mockStorage = new MockLocalStorage();
-      const oracle = new ReferenceNurtureStore(mockStorage);
+      const mockStorage = setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       oracle.setDeckCard(1, 4);
       oracle.saveToStorage();
 
@@ -421,7 +442,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.CARD.2', 1, 'Card Nurturing', 'M4', 'Strict Owned-Only Nurturing Restriction (isCardOwned Guard)', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       // Card 50 is not owned by default
       const isOwned = oracle.isCardOwned(50);
       if (isOwned) {
@@ -454,7 +476,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.CARD.4', 1, 'Card Nurturing', 'M4', 'Battle Victory EXP Gating Hook (50 EXP per Victory)', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       const initialExp1 = oracle.cards[1].exp;
 
       // Simulate match victory
@@ -471,7 +494,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.CARD.5', 1, 'Card Nurturing', 'M4', 'Repeat Hunting (반복 사냥) Auto-Loop Match Completion Flag', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       oracle.setRepeatHunting(true);
       if (!oracle.isRepeatHuntingActive()) {
         return { pass: false, message: 'Failed to activate repeat hunting state' };
@@ -487,7 +511,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.CARD.6', 1, 'Card Nurturing', 'M4', '1~100Lv EXP Curve & 4-Way Stat Point Allocation', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       // Level up Card 1 (needs 100 EXP)
       oracle.nurtureCard(1, 100);
       if (oracle.cards[1].level !== 2 || oracle.cards[1].statPoints !== 1) {
@@ -528,15 +553,15 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.SHOP.2', 1, 'Shop Restoration', 'M5', 'Card Pack Purchase & Animated Reveal Modal Interface', async () => {
-      const nurtureStore = new ReferenceNurtureStore();
-      const shop = new ReferenceShopManager(nurtureStore);
+      setupTestEnvironment();
+      setUserCoins(1000);
 
-      const res = shop.purchaseCardPack('normal');
+      const res = executeShopPurchase('pack_normal');
       if (!res.success) {
-        return { pass: false, message: `Card pack purchase failed: ${res.error}` };
+        return { pass: false, message: `Card pack purchase failed: ${res.message}` };
       }
-      if (res.revealedCards.length !== 3) {
-        return { pass: false, message: `Expected 3 revealed cards, got ${res.revealedCards.length}` };
+      if (!res.revealedCards || res.revealedCards.length !== 3) {
+        return { pass: false, message: `Expected 3 revealed cards, got ${res.revealedCards?.length}` };
       }
       return { pass: true, message: 'Card pack purchase produces 3 revealed cards for animated modal' };
     })
@@ -544,17 +569,16 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.SHOP.3', 1, 'Shop Restoration', 'M5', 'Inventory Dual-Write (cardNurtureStore & hero_inventory)', async () => {
-      const mockStorage = new MockLocalStorage();
-      const nurtureStore = new ReferenceNurtureStore(mockStorage);
-      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
+      const mockStorage = setupTestEnvironment();
+      setUserCoins(1000);
 
-      const res = shop.purchaseCardPack('magic');
-      if (!res.success) return { pass: false, message: 'Purchase failed' };
+      const res = executeShopPurchase('pack_magic');
+      if (!res.success || !res.revealedCards) return { pass: false, message: 'Purchase failed' };
 
       const rolledCardId = res.revealedCards[0].cardId;
 
       // 1. Check cardNurtureStore owned list
-      if (!nurtureStore.isCardOwned(rolledCardId)) {
+      if (!cardNurtureStore.isCardOwned(rolledCardId)) {
         return { pass: false, message: `Card ${rolledCardId} missing in cardNurtureStore owned cards` };
       }
 
@@ -570,15 +594,14 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.SHOP.4', 1, 'Shop Restoration', 'M5', 'Currency Balance Debit/Credit (hero_sns, hero_earned_sns, hero_gold)', async () => {
-      const mockStorage = new MockLocalStorage();
-      const nurtureStore = new ReferenceNurtureStore(mockStorage);
-      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
+      setupTestEnvironment();
+      setUserCoins(1000);
 
-      const initialSns = shop.getBalances().sns; // 1000
-      const res = shop.purchaseCardPack('normal'); // cost 300
+      const initialSns = getUserCoins(); // 1000
+      const res = executeShopPurchase('pack_normal'); // cost 300
       if (!res.success) return { pass: false, message: 'Purchase failed' };
 
-      const afterSns = shop.getBalances().sns;
+      const afterSns = getUserCoins();
       if (afterSns !== initialSns - 300) {
         return { pass: false, message: `Expected ${initialSns - 300} SNS balance, got ${afterSns}` };
       }
@@ -588,28 +611,27 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.SHOP.5', 1, 'Shop Restoration', 'M5', 'Non-Free Currency Replenishment (In-Game hero_gold to hero_sns Exchange)', async () => {
-      const mockStorage = new MockLocalStorage();
-      const nurtureStore = new ReferenceNurtureStore(mockStorage);
-      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
+      setupTestEnvironment();
+      setUserGold(10000);
+      setUserCoins(1000);
 
-      const initialGold = shop.getBalances().gold; // 10,000
-      const initialSns = shop.getBalances().sns;   // 1,000
+      const initialGold = getUserGold(); // 10,000
+      const initialSns = getUserCoins();   // 1,000
 
       // Exchange 5,000 Gold -> 1,000 SNS
-      const exchange = shop.exchangeGoldForSns(5000);
+      const exchange = exchangeGoldForSns(5000);
       if (!exchange.success) {
-        return { pass: false, message: `Gold exchange failed: ${exchange.error}` };
+        return { pass: false, message: `Gold exchange failed: ${exchange.message}` };
       }
       if (exchange.snsGranted !== 1000) {
         return { pass: false, message: `Expected 1000 SNS granted, got ${exchange.snsGranted}` };
       }
 
-      const newBalances = shop.getBalances();
-      if (newBalances.gold !== initialGold - 5000) {
-        return { pass: false, message: `Gold balance not debited: got ${newBalances.gold}` };
+      if (getUserGold() !== initialGold - 5000) {
+        return { pass: false, message: `Gold balance not debited: got ${getUserGold()}` };
       }
-      if (newBalances.sns !== initialSns + 1000) {
-        return { pass: false, message: `SNS balance not credited: got ${newBalances.sns}` };
+      if (getUserCoins() !== initialSns + 1000) {
+        return { pass: false, message: `SNS balance not credited: got ${getUserCoins()}` };
       }
 
       return { pass: true, message: 'Non-free gold-to-SNS currency replenishment exchange verified' };
@@ -622,10 +644,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.ADS.1', 1, 'Responsive AdSense', 'M5', 'Desktop Viewport (>= 1024px) Left/Right Side Gutters Placement', async () => {
-      const mockStorage = new MockLocalStorage();
-      const ads = new ReferenceAdSenseManager(mockStorage);
-
-      const desktop = ads.getPlacements(1280);
+      setupTestEnvironment();
+      const desktop = getAdPlacements(1280);
       if (!desktop.desktopLeft || !desktop.desktopRight) {
         return { pass: false, message: 'Desktop left and right gutters not active at 1280px width' };
       }
@@ -638,10 +658,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.ADS.2', 1, 'Responsive AdSense', 'M5', 'Mobile/Tablet Viewport (< 1024px) Top Banner Placement', async () => {
-      const mockStorage = new MockLocalStorage();
-      const ads = new ReferenceAdSenseManager(mockStorage);
-
-      const mobile = ads.getPlacements(375);
+      setupTestEnvironment();
+      const mobile = getAdPlacements(375);
       if (!mobile.mobileTop) {
         return { pass: false, message: 'Mobile top banner not active on 375px mobile viewport' };
       }
@@ -655,9 +673,8 @@ export async function runTier1Tests(): Promise<TestResult[]> {
   results.push(
     await runTestAssertion('T1.ADS.3', 1, 'Responsive AdSense', 'M5', 'Non-Obstructing Layout Guarantee (Zero Playfield Overlap)', async () => {
       // AdSense gutters must render in margins/gutters outside the active game board
-      const mockStorage = new MockLocalStorage();
-      const ads = new ReferenceAdSenseManager(mockStorage);
-      const placements = ads.getPlacements(1440);
+      setupTestEnvironment();
+      const placements = getAdPlacements(1440);
       if (!placements.desktopLeft || !placements.desktopRight) {
         return { pass: false, message: 'Desktop layout failed placement test' };
       }
@@ -667,12 +684,11 @@ export async function runTier1Tests(): Promise<TestResult[]> {
 
   results.push(
     await runTestAssertion('T1.ADS.4', 1, 'Responsive AdSense', 'M5', 'VIP Ad-Removal Guard (hero_ad_removed Suppression)', async () => {
-      const mockStorage = new MockLocalStorage();
+      const mockStorage = setupTestEnvironment();
       mockStorage.setItem('hero_ad_removed', 'true');
-      const ads = new ReferenceAdSenseManager(mockStorage);
 
-      const desktop = ads.getPlacements(1440);
-      const mobile = ads.getPlacements(375);
+      const desktop = getAdPlacements(1440);
+      const mobile = getAdPlacements(375);
 
       if (desktop.desktopLeft || desktop.desktopRight || desktop.mobileTop) {
         return { pass: false, message: 'Desktop ads not suppressed when hero_ad_removed is true' };

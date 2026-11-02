@@ -53,39 +53,19 @@ interface LandingState {
   selectedDeckCardId?: number;
 }
 
-export const VALID_VIEWS: readonly ViewKey[] = ['home', 'deck', 'play', 'card', 'shop'] as const;
-
-export const HASH_VIEW_MAP: Record<string, ViewKey> = {
-  home: 'home',
-  'main-lobby': 'home',
-  deck: 'deck',
-  mydeck: 'deck',
-  play: 'play',
-  main: 'play',
-  battle: 'play',
-  card: 'card',
-  cards: 'card',
-  mission: 'card',
-  missions: 'card',
-  companion: 'card',
-  shop: 'shop',
-  store: 'shop',
-};
-
-export const LEGACY_PATH_MAP: Record<string, ViewKey> = {
-  '/home': 'home',
-  '/main-lobby': 'home',
-  '/deck': 'deck',
-  '/mydeck': 'deck',
-  '/play': 'play',
-  '/main': 'play',
-  '/card': 'card',
-  '/cards': 'card',
-  '/mission': 'card',
-  '/missions': 'card',
-  '/shop': 'shop',
-  '/store': 'shop',
-};
+import {
+  VALID_VIEWS,
+  HASH_ROUTES,
+  LEGACY_ROUTES,
+  HASH_VIEW_MAP,
+  LEGACY_PATH_MAP,
+  LEGACY_ROUTE_MAPPING,
+  parseRoute,
+  normalizeHashRoute,
+  isLegacyRoute,
+  getLegacyRedirect,
+} from './services/hashRouter';
+export * from './services/hashRouter';
 
 const state: LandingState = {
   activeView: 'home',
@@ -95,32 +75,6 @@ const state: LandingState = {
 };
 
 let isProgrammaticRouting = false;
-
-/**
- * Parses the current URL hash or legacy pathname into a valid ViewKey.
- * Defaults to 'home' if empty or unrecognized.
- */
-export function parseRoute(hashString?: string, pathnameString?: string): ViewKey {
-  const rawHash = (hashString !== undefined ? hashString : (typeof window !== 'undefined' ? window.location.hash : ''))
-    .replace(/^#\/?/, '')
-    .split('?')[0]
-    .replace(/\/$/, '')
-    .toLowerCase();
-
-  if (rawHash && rawHash in HASH_VIEW_MAP) {
-    return HASH_VIEW_MAP[rawHash];
-  }
-
-  const cleanPath = (pathnameString !== undefined ? pathnameString : (typeof window !== 'undefined' ? window.location.pathname : ''))
-    .replace(/\/$/, '')
-    .toLowerCase();
-
-  if (cleanPath && cleanPath in LEGACY_PATH_MAP) {
-    return LEGACY_PATH_MAP[cleanPath];
-  }
-
-  return 'home';
-}
 
 function renderActiveViewContent(view: ViewKey): string {
   if (view === 'home') return renderHomeSection();

@@ -441,10 +441,12 @@ console.log('\n--- SECTION 3: Rapid AutoMode Toggle Concurrency Stress ---');
 let toggleDeadlock = false;
 let activeMode = false;
 let activeTimer: number | null = null;
+let togglesCompleted = 0;
 
 for (let i = 0; i < 1000; i++) {
   // Flip mode
   activeMode = !activeMode;
+  togglesCompleted++;
 
   if (activeMode) {
     // Start auto timer (1.5s)
@@ -457,13 +459,20 @@ for (let i = 0; i < 1000; i++) {
   }
 }
 
+// Verify that prior to cleanup, exactly 1 active timer remains from the 1,000th toggle
+const activeTimersPreCleanup = harness.getTotalActiveTimers();
+
 // Clean up
 if (activeTimer !== null) {
   harness.clearTimeout(activeTimer);
   activeTimer = null;
 }
 
-assert('Rapid Toggle Stress', '1,000 rapid autoMode toggles complete without deadlock', true);
+assert(
+  'Rapid Toggle Stress',
+  '1,000 rapid autoMode toggles complete without deadlock',
+  togglesCompleted === 1000 && !toggleDeadlock && activeMode === false && activeTimersPreCleanup === 1
+);
 assert('Rapid Toggle Stress', 'All timer references cleanly disposed post-stress', harness.getTotalActiveTimers() === 0);
 
 // =========================================================================

@@ -2,18 +2,29 @@
  * Tier 3: Cross-Feature Combinations & State Machine (7 Assertions across Cross-Feature Synergies)
  *
  * Mapped to PROJECT.md Features and Milestones M1..M6.
+ * Direct Production Integration: Zero Test Doubles.
  */
 
 import {
   runTestAssertion,
-  ReferenceHashRouter,
-  ReferenceIdleAutoPlayManager,
-  ReferenceNurtureStore,
-  ReferenceShopManager,
-  ReferenceAdSenseManager,
   MockLocalStorage,
+  setupTestEnvironment,
 } from './helpers';
 import { TestResult } from './types';
+
+// Genuine Production Deliverable Imports
+import { normalizeHashRoute } from '../../src/landing/services/hashRouter';
+import { IdleAutoPlayManager } from '../../src/landing/services/idleAutoPlayManager';
+import { CardNurtureStore } from '../../src/landing/services/cardNurtureStore';
+import {
+  executeShopPurchase,
+  exchangeGoldForSns,
+  getUserCoins,
+  setUserCoins,
+  getUserGold,
+  setUserGold,
+} from '../../src/landing/views/ShopSection';
+import { getAdPlacements } from '../../src/landing/services/adsenseManager';
 
 export async function runTier3Tests(): Promise<TestResult[]> {
   const results: TestResult[] = [];
@@ -23,15 +34,14 @@ export async function runTier3Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T3.C1.1', 3, 'Routing & Idle Synergy', 'M1', 'Hash Navigation Action Resets Idle Auto-Play Timer', async () => {
-      const mockStorage = new MockLocalStorage();
-      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage, 15000);
-      const router = new ReferenceHashRouter();
+      const mockStorage = setupTestEnvironment();
+      const idleManager = new IdleAutoPlayManager({ timeoutMs: 15000 });
 
       // User spends 11 seconds on #home
       idleManager.tick(11000);
 
       // User clicks navigation to #deck
-      const targetHash = router.normalizeHashRoute('#deck');
+      const targetHash = normalizeHashRoute('#deck');
       if (targetHash !== '#deck') {
         return { pass: false, message: 'Hash normalization failed for #deck' };
       }
@@ -56,7 +66,8 @@ export async function runTier3Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T3.C1.2', 3, 'Gameplay & Nurture Synergy', 'M3', 'Battle Victory EXP Hook -> Level Up -> Stat Point -> Deck TP Dynamic Sync', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       const initialDeckTP = oracle.getDeckTP();
 
       // Card 1 in active deck needs 100 EXP to level up from Lv 1 -> Lv 2
@@ -92,9 +103,8 @@ export async function runTier3Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T3.C1.3', 3, 'Economy & Nurturing Synergy', 'M5', 'Shop Pack Purchase -> Dual-Write -> Owned Nurturing Gate Unlocked', async () => {
-      const mockStorage = new MockLocalStorage();
-      const nurtureStore = new ReferenceNurtureStore(mockStorage);
-      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
+      const mockStorage = setupTestEnvironment();
+      const nurtureStore = new CardNurtureStore();
 
       // Verify Card 20 is initially unowned
       const cardId = 20;
@@ -110,7 +120,6 @@ export async function runTier3Tests(): Promise<TestResult[]> {
 
       // Purchase card pack that unlocks Card 20
       nurtureStore.addCard(cardId);
-      mockStorage.setItem('hero_inventory', JSON.stringify(nurtureStore.ownedCardIds));
 
       // Now Card 20 is owned: verify dual-write
       if (!nurtureStore.isCardOwned(cardId)) {
@@ -136,41 +145,37 @@ export async function runTier3Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T3.C1.4', 3, 'Economy Balance Synergy', 'M5', 'Gold-to-SNS Exchange Debits Gold, Credits SNS, and Unlocks Pack Purchase', async () => {
-      const mockStorage = new MockLocalStorage();
+      const mockStorage = setupTestEnvironment();
       // Set low SNS (100) and high Gold (10,000)
-      mockStorage.setItem('hero_sns', '100');
-      mockStorage.setItem('hero_gold', '10000');
-
-      const nurtureStore = new ReferenceNurtureStore(mockStorage);
-      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
+      setUserCoins(100);
+      setUserGold(10000);
 
       // Attempt normal pack purchase (cost 300) -> should fail due to 100 SNS
-      const failPurchase = shop.purchaseCardPack('normal');
+      const failPurchase = executeShopPurchase('pack_normal');
       if (failPurchase.success) {
         return { pass: false, message: 'Purchase succeeded unexpectedly with insufficient SNS' };
       }
 
       // Replenish SNS via Non-Free Gold Exchange: 5,000 Gold -> 1,000 SNS
-      const exchangeRes = shop.exchangeGoldForSns(5000);
+      const exchangeRes = exchangeGoldForSns(5000);
       if (!exchangeRes.success) {
-        return { pass: false, message: `Gold exchange failed: ${exchangeRes.error}` };
+        return { pass: false, message: `Gold exchange failed: ${exchangeRes.message}` };
       }
 
       // Balances must be: Gold = 5,000, SNS = 1,100
-      const balances = shop.getBalances();
-      if (balances.gold !== 5000 || balances.sns !== 1100) {
-        return { pass: false, message: `Post-exchange balances incorrect: Gold=${balances.gold}, SNS=${balances.sns}` };
+      if (getUserGold() !== 5000 || getUserCoins() !== 1100) {
+        return { pass: false, message: `Post-exchange balances incorrect: Gold=${getUserGold()}, SNS=${getUserCoins()}` };
       }
 
       // Now pack purchase succeeds!
-      const successPurchase = shop.purchaseCardPack('normal');
-      if (!successPurchase.success || successPurchase.revealedCards.length !== 3) {
+      const successPurchase = executeShopPurchase('pack_normal');
+      if (!successPurchase.success || !successPurchase.revealedCards || successPurchase.revealedCards.length !== 3) {
         return { pass: false, message: 'Purchase failed after replenishing SNS from gold exchange' };
       }
 
       // Balance debited by 300: 1,100 - 300 = 800
-      if (shop.getBalances().sns !== 800) {
-        return { pass: false, message: `Expected 800 SNS after purchase, got ${shop.getBalances().sns}` };
+      if (getUserCoins() !== 800) {
+        return { pass: false, message: `Expected 800 SNS after purchase, got ${getUserCoins()}` };
       }
 
       return { pass: true, message: 'Gold exchange debits gold, credits SNS, and unlocks pack purchase cleanly' };
@@ -182,7 +187,8 @@ export async function runTier3Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T3.C1.5', 3, 'Battle Loop Synergy', 'M4', 'Repeat Hunting Loop Executes Consecutive Battles and Accrues EXP', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       oracle.setRepeatHunting(true);
 
       const initialExp = oracle.cards[1].exp;
@@ -209,25 +215,24 @@ export async function runTier3Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T3.C1.6', 3, 'Responsive AdSense Synergy', 'M5', 'Responsive AdSense Dynamic Viewport Transition (1440px <-> 375px)', async () => {
-      const mockStorage = new MockLocalStorage();
-      const ads = new ReferenceAdSenseManager(mockStorage);
+      const mockStorage = setupTestEnvironment();
 
       // Desktop: 1440px -> Side Gutters
-      const desktop = ads.getPlacements(1440);
+      const desktop = getAdPlacements(1440);
       if (!desktop.desktopLeft || !desktop.desktopRight || desktop.mobileTop) {
         return { pass: false, message: 'Desktop placement mismatch' };
       }
 
       // User resizes window to mobile: 375px -> Top Banner
-      const mobile = ads.getPlacements(375);
+      const mobile = getAdPlacements(375);
       if (mobile.desktopLeft || mobile.desktopRight || !mobile.mobileTop) {
         return { pass: false, message: 'Mobile placement mismatch after resize' };
       }
 
       // User purchases Ad-Removal -> Both viewports suppress ads completely
       mockStorage.setItem('hero_ad_removed', 'true');
-      const vipDesktop = ads.getPlacements(1440);
-      const vipMobile = ads.getPlacements(375);
+      const vipDesktop = getAdPlacements(1440);
+      const vipMobile = getAdPlacements(375);
 
       if (vipDesktop.desktopLeft || vipDesktop.desktopRight || vipMobile.mobileTop) {
         return { pass: false, message: 'Ads not suppressed after VIP purchase' };
@@ -242,7 +247,6 @@ export async function runTier3Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T3.C1.7', 3, 'Routing Synergy', 'M1', 'Legacy Route Direct URL Entry -> Hash Normalization -> Active View Sync', async () => {
-      const router = new ReferenceHashRouter();
       const legacyEntries: Array<[string, string]> = [
         ['/home', '#home'],
         ['/deck', '#deck'],
@@ -253,7 +257,7 @@ export async function runTier3Tests(): Promise<TestResult[]> {
       ];
 
       for (const [legacy, expectedHash] of legacyEntries) {
-        const redirected = router.normalizeHashRoute(legacy);
+        const redirected = normalizeHashRoute(legacy);
         if (redirected !== expectedHash) {
           return { pass: false, message: `Direct entry of ${legacy} failed to normalize to ${expectedHash}` };
         }

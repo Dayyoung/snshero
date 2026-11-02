@@ -67,6 +67,8 @@ export class IdleAutoPlayManager {
   private lastActivityTime: number = 0;
   private lastResetTime: number = 0;
   private isTracking: boolean = false;
+  private currentIdleMs: number = 0;
+  private isAutoPlayActive: boolean = false;
 
   private boundActivityHandler: (event?: Event) => void;
   private boundVisibilityHandler: () => void;
@@ -144,7 +146,45 @@ export class IdleAutoPlayManager {
     const now = Date.now();
     this.lastActivityTime = now;
     this.lastResetTime = now;
+    this.currentIdleMs = 0;
     this.scheduleTimer(this.timeoutMs);
+  }
+
+  public handleUserInteraction(): void {
+    this.currentIdleMs = 0;
+    this.isAutoPlayActive = false;
+    this.resetTimer();
+  }
+
+  public getIdleTime(): number {
+    return this.currentIdleMs;
+  }
+
+  public isTriggered(): boolean {
+    return this.isAutoPlayActive;
+  }
+
+  public tick(deltaMs: number): { redirected: boolean; targetUrl?: string; autoModeSet: boolean } {
+    this.currentIdleMs += deltaMs;
+    if (this.currentIdleMs >= this.timeoutMs) {
+      this.isAutoPlayActive = true;
+      this.executeIdleTransition();
+      const autoModeSet = typeof localStorage !== 'undefined'
+        ? localStorage.getItem('hero_kadan_rpg_auto_mode') === 'true'
+        : false;
+      return {
+        redirected: true,
+        targetUrl: this.targetUrl,
+        autoModeSet,
+      };
+    }
+    const autoModeSet = typeof localStorage !== 'undefined'
+      ? localStorage.getItem('hero_kadan_rpg_auto_mode') === 'true'
+      : false;
+    return {
+      redirected: false,
+      autoModeSet,
+    };
   }
 
   public triggerNow(): void {

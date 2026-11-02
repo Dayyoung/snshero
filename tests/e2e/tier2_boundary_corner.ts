@@ -2,18 +2,29 @@
  * Tier 2: Boundary Value Analysis & Corner Cases (12 Assertions across Core Boundaries)
  *
  * Mapped to PROJECT.md Features and Milestones M1..M6.
+ * Direct Production Integration: Zero Test Doubles.
  */
 
 import {
   runTestAssertion,
-  ReferenceHashRouter,
-  ReferenceIdleAutoPlayManager,
-  ReferenceNurtureStore,
-  ReferenceShopManager,
-  ReferenceAdSenseManager,
   MockLocalStorage,
+  setupTestEnvironment,
 } from './helpers';
 import { TestResult } from './types';
+
+// Genuine Production Deliverable Imports
+import { normalizeHashRoute } from '../../src/landing/services/hashRouter';
+import { IdleAutoPlayManager } from '../../src/landing/services/idleAutoPlayManager';
+import { CardNurtureStore } from '../../src/landing/services/cardNurtureStore';
+import {
+  executeShopPurchase,
+  exchangeGoldForSns,
+  getUserCoins,
+  setUserCoins,
+  getUserGold,
+  setUserGold,
+} from '../../src/landing/views/ShopSection';
+import { getAdPlacements } from '../../src/landing/services/adsenseManager';
 
 export async function runTier2Tests(): Promise<TestResult[]> {
   const results: TestResult[] = [];
@@ -23,7 +34,8 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B1.1', 2, 'Max Level Boundary', 'M4', 'Level 100 Cap & Zero Level 101 Overflow', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       oracle.cards[1].level = 100;
       oracle.cards[1].exp = 10000;
       oracle.cards[1].statPoints = 0;
@@ -48,7 +60,8 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B1.2', 2, 'Level 1 Baseline', 'M4', 'Level 1 Baseline State & Zero Residual Bonuses', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       const card = oracle.cards[1];
       if (card.level !== 1 || card.exp !== 0 || card.statPoints !== 0 || card.totalBonus !== 0) {
         return { pass: false, message: `Initial state not clean: ${JSON.stringify(card)}` };
@@ -65,7 +78,8 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B2.1', 2, 'Owned Gating Boundary', 'M4', 'Unowned Card Nurturing Rejection & Zero EXP Leakage', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       // Card 110 is unowned
       const unownedId = 110;
       if (oracle.isCardOwned(unownedId)) {
@@ -89,13 +103,16 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B3.1', 2, 'Idle Timer Boundary', 'M1', 'Exact 14,999ms vs 15,000ms Inactivity Transition Boundary', async () => {
-      const mockStorage = new MockLocalStorage();
-      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage, 15000);
+      const mockStorage = setupTestEnvironment();
+      const idleManager = new IdleAutoPlayManager({ timeoutMs: 15000 });
 
       // Advance to 14,999ms
       const subThreshold = idleManager.tick(14999);
       if (subThreshold.redirected) {
         return { pass: false, message: 'Idle auto-play triggered at 14,999ms (before 15,000ms threshold)' };
+      }
+      if (idleManager.isTriggered()) {
+        return { pass: false, message: 'Boundary violation: isTriggered true at 14,999ms' };
       }
       if (mockStorage.getItem('hero_kadan_rpg_auto_mode') === 'true') {
         return { pass: false, message: 'Auto mode flag set prematurely before 15,000ms' };
@@ -105,6 +122,9 @@ export async function runTier2Tests(): Promise<TestResult[]> {
       const exactThreshold = idleManager.tick(1);
       if (!exactThreshold.redirected) {
         return { pass: false, message: 'Idle auto-play failed to trigger at exactly 15,000ms' };
+      }
+      if (!idleManager.isTriggered()) {
+        return { pass: false, message: 'Boundary violation: isTriggered false at 15,000ms' };
       }
       if (mockStorage.getItem('hero_kadan_rpg_auto_mode') !== 'true') {
         return { pass: false, message: 'Auto mode flag not set at 15,000ms threshold' };
@@ -119,14 +139,18 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B3.2', 2, 'Idle Timer Boundary', 'M1', 'Last-Second User Activity Resets Idle Countdown Safely', async () => {
-      const mockStorage = new MockLocalStorage();
-      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage, 15000);
+      const mockStorage = setupTestEnvironment();
+      const idleManager = new IdleAutoPlayManager({ timeoutMs: 15000 });
 
       // Advance to 14,900ms (100ms before timeout)
       idleManager.tick(14900);
 
       // User performs touch gesture
       idleManager.handleUserInteraction();
+
+      if (idleManager.getIdleTime() !== 0) {
+        return { pass: false, message: 'handleUserInteraction did not reset idle timer to 0' };
+      }
 
       // Advance another 5,000ms (total elapsed 19,900ms, but reset occurred at 14,900ms)
       const res = idleManager.tick(5000);
@@ -135,6 +159,9 @@ export async function runTier2Tests(): Promise<TestResult[]> {
       }
       if (idleManager.getIdleTime() !== 5000) {
         return { pass: false, message: `Expected idle time 5,000ms post-reset, got ${idleManager.getIdleTime()}` };
+      }
+      if (idleManager.isTriggered()) {
+        return { pass: false, message: 'Premature trigger after interaction reset' };
       }
 
       return { pass: true, message: 'Last-second user interaction resets timer and cancels auto-redirect' };
@@ -146,23 +173,20 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B4.1', 2, 'Shop Currency Boundary', 'M5', 'Insufficient Balance Pack Purchase Safe Rejection', async () => {
-      const mockStorage = new MockLocalStorage();
+      setupTestEnvironment();
       // Set SNS balance to 100 (less than 300 normal pack cost)
-      mockStorage.setItem('hero_sns', '100');
+      setUserCoins(100);
 
-      const nurtureStore = new ReferenceNurtureStore(mockStorage);
-      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
-
-      const purchase = shop.purchaseCardPack('normal');
+      const purchase = executeShopPurchase('pack_normal');
       if (purchase.success) {
         return { pass: false, message: 'Purchase succeeded with insufficient balance' };
       }
-      if (purchase.revealedCards.length > 0) {
+      if (purchase.revealedCards && purchase.revealedCards.length > 0) {
         return { pass: false, message: 'Cards revealed despite failed purchase' };
       }
 
       // Balance must remain untouched at 100
-      const currentSns = shop.getBalances().sns;
+      const currentSns = getUserCoins();
       if (currentSns !== 100) {
         return { pass: false, message: `Balance mutated upon failed purchase: ${currentSns}` };
       }
@@ -176,28 +200,24 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B4.2', 2, 'Shop Currency Boundary', 'M5', 'Invalid or Insufficient Gold Exchange Safe Rejection', async () => {
-      const mockStorage = new MockLocalStorage();
-      mockStorage.setItem('hero_gold', '2000'); // Less than standard 5000 exchange
-      mockStorage.setItem('hero_sns', '500');
-
-      const nurtureStore = new ReferenceNurtureStore(mockStorage);
-      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
+      setupTestEnvironment();
+      setUserGold(2000); // Less than standard 5000 exchange
+      setUserCoins(500);
 
       // Attempt 1: Exchanging 0 gold
-      const zeroRes = shop.exchangeGoldForSns(0);
+      const zeroRes = exchangeGoldForSns(0);
       if (zeroRes.success) {
         return { pass: false, message: 'Zero gold exchange allowed' };
       }
 
       // Attempt 2: Exchanging 5000 gold with only 2000 available
-      const overRes = shop.exchangeGoldForSns(5000);
+      const overRes = exchangeGoldForSns(5000);
       if (overRes.success) {
         return { pass: false, message: 'Exchange succeeded despite insufficient gold balance' };
       }
 
       // Balances preserved
-      const balances = shop.getBalances();
-      if (balances.gold !== 2000 || balances.sns !== 500) {
+      if (getUserGold() !== 2000 || getUserCoins() !== 500) {
         return { pass: false, message: 'Balances mutated on invalid gold exchange' };
       }
 
@@ -210,17 +230,16 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B5.1', 2, 'AdSense Breakpoint Boundary', 'M5', '1023px Mobile Banner vs 1024px Desktop Gutters Breakpoint', async () => {
-      const mockStorage = new MockLocalStorage();
-      const ads = new ReferenceAdSenseManager(mockStorage);
+      setupTestEnvironment();
 
       // 1023px: Just below desktop breakpoint -> Mobile Top Banner active, Gutters inactive
-      const at1023 = ads.getPlacements(1023);
+      const at1023 = getAdPlacements(1023);
       if (!at1023.mobileTop || at1023.desktopLeft || at1023.desktopRight) {
         return { pass: false, message: `1023px breakpoint mismatch: ${JSON.stringify(at1023)}` };
       }
 
       // 1024px: Exact desktop breakpoint -> Desktop Gutters active, Mobile Top Banner inactive
-      const at1024 = ads.getPlacements(1024);
+      const at1024 = getAdPlacements(1024);
       if (at1024.mobileTop || !at1024.desktopLeft || !at1024.desktopRight) {
         return { pass: false, message: `1024px breakpoint mismatch: ${JSON.stringify(at1024)}` };
       }
@@ -234,13 +253,12 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B5.2', 2, 'AdSense VIP Boundary', 'M5', 'VIP Ad-Removal Guard Full Screen Width Coverage (320px..3840px)', async () => {
-      const mockStorage = new MockLocalStorage();
+      const mockStorage = setupTestEnvironment();
       mockStorage.setItem('hero_ad_removed', 'true');
-      const ads = new ReferenceAdSenseManager(mockStorage);
 
       const testWidths = [320, 375, 768, 1023, 1024, 1440, 1920, 2560, 3840];
       for (const w of testWidths) {
-        const placement = ads.getPlacements(w);
+        const placement = getAdPlacements(w);
         if (placement.desktopLeft || placement.desktopRight || placement.mobileTop) {
           return { pass: false, message: `Ad unit leaked at viewport width ${w}px despite VIP removal` };
         }
@@ -258,11 +276,10 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B6.1', 2, 'Hash Route Fallback', 'M1', 'Malformed or Unknown Hash Route Fallback to #home', async () => {
-      const router = new ReferenceHashRouter();
       const invalidRoutes = ['', '#', '#random_invalid_view', '#unknown/path', '#404'];
 
       for (const invalid of invalidRoutes) {
-        const resolved = router.normalizeHashRoute(invalid);
+        const resolved = normalizeHashRoute(invalid);
         if (resolved !== '#home') {
           return { pass: false, message: `Route '${invalid}' should normalize to #home, got '${resolved}'` };
         }
@@ -276,10 +293,10 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B7.1', 2, 'Storage Boundary', 'M4', 'Corrupted hero_card_nurturing JSON Fallback without Crash', async () => {
-      const mockStorage = new MockLocalStorage();
+      const mockStorage = setupTestEnvironment();
       mockStorage.setItem('hero_card_nurturing', 'INVALID_JSON_CORRUPTED_{{{{');
 
-      const oracle = new ReferenceNurtureStore(mockStorage);
+      const oracle = new CardNurtureStore();
       let didThrow = false;
       try {
         oracle.loadFromStorage();
@@ -302,7 +319,8 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // =========================================================================
   results.push(
     await runTestAssertion('T2.B7.2', 2, 'Stat Point Boundary', 'M4', 'Zero Stat Points Allocation Safe Rejection', async () => {
-      const oracle = new ReferenceNurtureStore();
+      setupTestEnvironment();
+      const oracle = new CardNurtureStore();
       // Fresh Card 1 has 0 stat points
       const card = oracle.cards[1];
       if (card.statPoints !== 0) {
