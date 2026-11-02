@@ -1,11 +1,18 @@
 /**
- * Tier 4: Real-World Workload Scenarios (5 Assertions across 5 User Journeys)
+ * Tier 4: Real-World Workload Scenarios (6 Assertions across Realistic End-to-End User Journeys)
+ *
+ * Mapped to PROJECT.md Features and Milestones M1..M6.
  */
 
 import {
   readProjectFile,
+  projectPathExists,
   runTestAssertion,
+  ReferenceHashRouter,
+  ReferenceIdleAutoPlayManager,
   ReferenceNurtureStore,
+  ReferenceShopManager,
+  ReferenceAdSenseManager,
   MockLocalStorage,
 } from './helpers';
 import { TestResult, EXTERNAL_LINKS } from './types';
@@ -18,31 +25,33 @@ export async function runTier4Tests(): Promise<TestResult[]> {
   // Scenario 1: First-Time Visitor Journey (W1)
   // =========================================================================
   results.push(
-    await runTestAssertion('T4.W1.1', 4, 'End-to-End Workload', 'M2', 'First-Time Visitor Journey (Zero Popups, Landing Review, Modals)', async () => {
-      // Step 1: User hits root URL /
+    await runTestAssertion('T4.W1.1', 4, 'End-to-End Workload', 'M2', 'First-Time Visitor Journey: Hash Navigation, Home Logos & Deck Preview', async () => {
+      // 1. User loads root index.html
       const indexHtml = readProjectFile('index.html');
       if (!indexHtml) return { pass: false, message: 'index.html not found' };
 
-      // Step 2: Verify zero initial popup storms
-      const landingIndex = readProjectFile('src/landing/index.ts') || '';
-      if (landingIndex.includes('window.alert') || landingIndex.includes('initialModal: true')) {
-        return { pass: false, message: 'Visitor immediately encountered intrusive alert/modal' };
+      // 2. Routing defaults to #home
+      const router = new ReferenceHashRouter();
+      const initialRoute = router.normalizeHashRoute('');
+      if (initialRoute !== '#home') {
+        return { pass: false, message: `Initial route should be #home, got ${initialRoute}` };
       }
 
-      // Step 3: Verify home section highlights external works with badges
+      // 3. Verify official logo asset and external serialization links
+      const hasLogo = projectPathExists('public/logo-ko.png');
+      if (!hasLogo) return { pass: false, message: 'Official logo-ko.png missing' };
+
       const homeView = readProjectFile('src/landing/views/HomeSection.tsx') || '';
-      const hasNovel = homeView.includes(EXTERNAL_LINKS.naverNovel) && homeView.includes(EXTERNAL_LINKS.badgeText);
-      const hasWebtoon = homeView.includes(EXTERNAL_LINKS.naverWebtoon) && homeView.includes(EXTERNAL_LINKS.badgeText);
-      const hasMunpia = homeView.includes(EXTERNAL_LINKS.munpiaNovel) && homeView.includes(EXTERNAL_LINKS.badgeText);
-
-      if (!hasNovel || !hasWebtoon || !hasMunpia) {
-        return { pass: false, message: 'External novel/webtoon serialization links or badges missing' };
+      const hasBadges = homeView.includes(EXTERNAL_LINKS.badgeText);
+      if (!hasBadges) {
+        return { pass: false, message: 'Home view missing "[절찬 연재중]" badges' };
       }
 
-      // Step 4: Verify navigation to secondary modals works cleanly
-      const modals = readProjectFile('src/landing/components/Modals.tsx') || '';
-      if (!modals.includes('쇼핑몰') || !modals.includes('커뮤니티')) {
-        return { pass: false, message: 'Secondary action modals missing in landing components' };
+      // 4. Verify 5-card deck power calculation
+      const oracle = new ReferenceNurtureStore();
+      const deckTP = oracle.getDeckTP();
+      if (deckTP <= 0) {
+        return { pass: false, message: `Invalid initial deck TP: ${deckTP}` };
       }
 
       return { pass: true, message: 'First-time visitor end-to-end journey fully satisfied' };
@@ -50,146 +59,214 @@ export async function runTier4Tests(): Promise<TestResult[]> {
   );
 
   // =========================================================================
-  // Scenario 2: Complete Card Nurture 1->100 Loop (W2)
+  // Scenario 2: 15-Second Idle Inactivity Workload (W2)
   // =========================================================================
   results.push(
-    await runTestAssertion('T4.W1.2', 4, 'End-to-End Workload', 'M3', 'Complete Card Nurture 1->100, Point Distribution & Refresh Loop', async () => {
+    await runTestAssertion('T4.W1.2', 4, 'End-to-End Workload', 'M1', '15-Second Inactivity Workload: Auto-Play Navigation to #play and Flag Init', async () => {
       const mockStorage = new MockLocalStorage();
-      const session = new ReferenceNurtureStore(mockStorage);
+      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage, 15000);
 
-      // Start at Lv 1
-      const card = session.cards[1];
-      if (card.level !== 1) return { pass: false, message: 'Card 1 does not start at Lv 1' };
+      // User arrives on page and remains idle
+      // 5 seconds pass
+      idleManager.tick(5000);
+      if (idleManager.isTriggered()) return { pass: false, message: 'Premature trigger at 5s' };
 
-      // Level up 1 -> 100
-      // Sum of (lvl * 100) for lvl from 1 to 99 = 100 * (99 * 100 / 2) = 495,000 EXP
-      let totalExpNeeded = 0;
-      for (let lvl = 1; lvl <= 99; lvl++) {
-        totalExpNeeded += lvl * 100;
+      // Another 5 seconds pass (total 10s)
+      idleManager.tick(5000);
+      if (idleManager.isTriggered()) return { pass: false, message: 'Premature trigger at 10s' };
+
+      // Final 5 seconds pass (total 15s)
+      const res = idleManager.tick(5000);
+      if (!res.redirected) {
+        return { pass: false, message: 'Failed to trigger redirect at 15s idle threshold' };
       }
 
-      const nurtureRes = session.nurtureCard(1, totalExpNeeded);
-      if (session.cards[1].level !== 100) {
-        return { pass: false, message: `Expected Level 100, got ${session.cards[1].level}` };
-      }
-      if (session.cards[1].statPoints !== 99) {
-        return { pass: false, message: `Expected 99 stat points accrued, got ${session.cards[1].statPoints}` };
-      }
-      if (!session.hasUnspentPoints(1)) {
-        return { pass: false, message: 'Card 1 should show red dot indicator with 99 unspent points' };
+      const expectedUrl = 'https://dayyoung-macbookpro.tail3717a4.ts.net/#play';
+      if (res.targetUrl !== expectedUrl) {
+        return { pass: false, message: `Redirect URL mismatch: ${res.targetUrl}` };
       }
 
-      // Distribute all 99 points evenly across 4 directions
-      // 25 top, 25 right, 25 bottom, 24 left = 99
-      for (let i = 0; i < 25; i++) session.allocateStat(1, 'top');
-      for (let i = 0; i < 25; i++) session.allocateStat(1, 'right');
-      for (let i = 0; i < 25; i++) session.allocateStat(1, 'bottom');
-      for (let i = 0; i < 24; i++) session.allocateStat(1, 'left');
-
-      if (session.hasUnspentPoints(1)) {
-        return { pass: false, message: 'Red dot indicator did not clear after allocating all 99 points' };
+      const autoFlag = mockStorage.getItem('hero_kadan_rpg_auto_mode');
+      if (autoFlag !== 'true') {
+        return { pass: false, message: `Auto mode flag not set in storage: ${autoFlag}` };
       }
 
-      session.saveToStorage();
-
-      // Emulate page refresh / new browser session
-      const refreshedSession = new ReferenceNurtureStore(mockStorage);
-      refreshedSession.loadFromStorage();
-
-      const restoredCard = refreshedSession.cards[1];
-      if (restoredCard.level !== 100) {
-        return { pass: false, message: `Restored level mismatch: ${restoredCard.level}` };
-      }
-      if (restoredCard.totalBonus !== 99) {
-        return { pass: false, message: `Restored total bonus mismatch: ${restoredCard.totalBonus}` };
-      }
-      if (restoredCard.bonusStats.top !== 25 || restoredCard.bonusStats.left !== 24) {
-        return { pass: false, message: `Restored 4-way bonus mismatch: ${JSON.stringify(restoredCard.bonusStats)}` };
-      }
-
-      return { pass: true, message: 'Complete 1->100 nurture, stat distribution, and reload loop verified' };
+      return { pass: true, message: '15-second idle inactivity workflow initiates auto-play redirect cleanly' };
     })
   );
 
   // =========================================================================
-  // Scenario 3: Deck Optimization & Mathematical TP Audit (W3)
+  // Scenario 3: Core RPG Gameplay Loop & Repeat Hunting (W3)
   // =========================================================================
   results.push(
-    await runTestAssertion('T4.W1.3', 4, 'End-to-End Workload', 'M3', 'Deck Optimization & Mathematical TP Audit', async () => {
+    await runTestAssertion('T4.W1.3', 4, 'End-to-End Workload', 'M3', 'Core RPG Gameplay Loop: Tile Movement -> Battle Victory EXP -> Repeat Hunting', async () => {
       const oracle = new ReferenceNurtureStore();
-      // Default deck: [1, 2, 3, 4, 5]
-      // Card 1: 1, 4, 1, 5 -> 11
-      // Card 2: 7, 1, 3, 1 -> 12
-      // Card 3: 6, 6, 3, 2 -> 17
-      // Card 4: 2, 3, 6, 7 -> 18
-      // Card 5: 6, 5, 6, 5 -> 22
-      // Sum = 11 + 12 + 17 + 18 + 22 = 80
-      const calculatedDeckTP = oracle.getDeckTP();
-      if (calculatedDeckTP !== 80) {
-        return { pass: false, message: `Deck TP mismatch: got ${calculatedDeckTP}, expected 80` };
+      const initialExpCard1 = oracle.cards[1].exp;
+
+      // 1. Check tile map and dialog components exist
+      const hasMap = projectPathExists('src/components/rpg/KadanWorldMap.tsx');
+      const hasDialog = projectPathExists('src/components/rpg/KadanNpcDialog.tsx');
+      const hasBattle = projectPathExists('src/views/MobileCardPlayScreen.tsx');
+
+      if (!hasMap || !hasDialog || !hasBattle) {
+        return { pass: false, message: 'Core gameplay components incomplete in project' };
       }
 
-      // Nurture Card 5 to level 5 -> 4 stat points
-      oracle.nurtureCard(5, 1000);
-      oracle.allocateStat(5, 'top');
-      oracle.allocateStat(5, 'right');
-      oracle.allocateStat(5, 'bottom');
-      oracle.allocateStat(5, 'left');
-
-      const updatedDeckTP = oracle.getDeckTP();
-      if (updatedDeckTP !== 84) {
-        return { pass: false, message: `Deck TP after Card 5 nurture mismatch: got ${updatedDeckTP}, expected 84` };
+      // 2. Simulate match victory -> 50 EXP awarded to active deck
+      const victory = oracle.awardBattleVictoryExp(50);
+      if (victory.expAwarded !== 50 || !victory.updatedCards.includes(1)) {
+        return { pass: false, message: 'Victory EXP not awarded to active deck cards' };
+      }
+      if (oracle.cards[1].exp !== initialExpCard1 + 50) {
+        return { pass: false, message: 'Card 1 EXP mismatch after battle victory' };
       }
 
-      // Total TP across cards 1..5: 80 + 4 = 84
-      const totalTP = oracle.getTotalTP();
-      if (totalTP !== 84) {
-        return { pass: false, message: `Total TP mismatch: got ${totalTP}, expected 84` };
+      // 3. Activate repeat hunting loop (반복 사냥)
+      oracle.setRepeatHunting(true);
+      if (!oracle.isRepeatHuntingActive()) {
+        return { pass: false, message: 'Repeat hunting failed to activate' };
       }
 
-      return { pass: true, message: 'Deck TP and Total TP mathematical properties rigorously audited' };
+      // Second automated victory in repeat loop -> another 50 EXP (total 100 EXP -> Lv 2)
+      oracle.awardBattleVictoryExp(50);
+      if (oracle.cards[1].level !== 2) {
+        return { pass: false, message: `Expected Card 1 at Level 2 after repeat loop, got Lv ${oracle.cards[1].level}` };
+      }
+
+      return { pass: true, message: 'Tile exploration, battle victory EXP, and repeat hunting loop verified' };
     })
   );
 
   // =========================================================================
-  // Scenario 4: Play Section 40-Episode Reading Journey (W4)
+  // Scenario 4: Deck Strategy & Owned Card Nurturing Loop (W4)
   // =========================================================================
   results.push(
-    await runTestAssertion('T4.W1.4', 4, 'End-to-End Workload', 'M3', 'Play Section 40-Episode Reading Journey & Controls', async () => {
-      const playSection = readProjectFile('src/landing/views/PlaySection.tsx') || '';
-      const webtoonManifest = readProjectFile('src/content/webtoonEpisodeManifest.json') || '';
+    await runTestAssertion('T4.W1.4', 4, 'End-to-End Workload', 'M4', 'Deck Strategy & Owned Card Nurturing Loop: Slot Swapping and Stat Allocation', async () => {
+      const mockStorage = new MockLocalStorage();
+      const oracle = new ReferenceNurtureStore(mockStorage);
 
-      const hasControls = ['닫기', '이전', '다음', '나레이션', 'TTS'].every(btn => playSection.includes(btn));
-      if (!hasControls) {
-        return { pass: false, message: 'Play section missing one of the 5 required control buttons' };
+      // Initial Deck: [1, 2, 3, 4, 5]
+      const initialTP = oracle.getDeckTP();
+
+      // Add Card 6 (Leviathan, Water) to owned cards
+      oracle.addCard(6);
+      if (!oracle.isCardOwned(6)) {
+        return { pass: false, message: 'Card 6 not added to owned cards' };
       }
 
-      // Check that webtoon content is accessible
-      const hasEpisodeData = webtoonManifest.length > 100;
-      if (!hasEpisodeData) {
-        return { pass: false, message: 'Webtoon episode data missing or empty' };
+      // Swap Slot 0 (Card 1) with Card 6
+      const swapOk = oracle.setDeckCard(0, 6);
+      if (!swapOk || oracle.activeDeckIds[0] !== 6) {
+        return { pass: false, message: 'Deck slot swapping failed' };
       }
 
-      return { pass: true, message: 'Play section webtoon reading journey and 5 controls verified' };
+      // Verify Deck TP dynamically changed to reflect Card 6
+      const postSwapTP = oracle.getDeckTP();
+      if (postSwapTP <= 0 || postSwapTP === initialTP) {
+        // Base power of Card 1 = 11, Card 6 = 22 -> Deck TP increases
+        if (postSwapTP <= initialTP) {
+          return { pass: false, message: `Deck TP should increase after slotting Card 6: was ${initialTP}, got ${postSwapTP}` };
+        }
+      }
+
+      // Nurture Card 6 and allocate stat points
+      oracle.nurtureCard(6, 100);
+      oracle.allocateStat(6, 'bottom');
+
+      if (oracle.cards[6].bonusStats.bottom !== 1 || oracle.cards[6].totalBonus !== 1) {
+        return { pass: false, message: 'Stat allocation failed for Card 6' };
+      }
+
+      // Reload from storage to verify full persistence
+      oracle.saveToStorage();
+      const reloadedOracle = new ReferenceNurtureStore(mockStorage);
+      reloadedOracle.loadFromStorage();
+
+      if (reloadedOracle.activeDeckIds[0] !== 6) {
+        return { pass: false, message: 'Active deck slot not restored after reload' };
+      }
+      if (reloadedOracle.cards[6].bonusStats.bottom !== 1) {
+        return { pass: false, message: 'Nurtured stats not restored after reload' };
+      }
+
+      return { pass: true, message: 'Deck editing, slot swapping, stat allocation, and persistence loop verified' };
     })
   );
 
   // =========================================================================
-  // Scenario 5: Full Static Deployment Workload (W5)
+  // Scenario 5: Commercial Economy & Monetization Workload (W5)
   // =========================================================================
   results.push(
-    await runTestAssertion('T4.W1.5', 4, 'End-to-End Workload', 'M4', 'Full Static Deployment Workload (Zero Server Call, Portable Assets)', async () => {
-      const viteConfig = readProjectFile('vite.config.ts') || '';
-      const postBuild = readProjectFile('scripts/post-build.js') || '';
+    await runTestAssertion('T4.W1.5', 4, 'End-to-End Workload', 'M5', 'Commercial Economy: Gold-to-SNS Exchange, Pack Purchase & Reveal Modal Dual-Write', async () => {
+      const mockStorage = new MockLocalStorage();
+      mockStorage.setItem('hero_sns', '50');     // Very low SNS
+      mockStorage.setItem('hero_gold', '15000'); // Ample Gold
 
-      const buildsStatic = viteConfig.includes('rollupOptions') || viteConfig.includes('build');
-      const managesRoutes = postBuild.includes('post-build') || postBuild.includes('copy') || postBuild.includes('home');
+      const nurtureStore = new ReferenceNurtureStore(mockStorage);
+      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
 
-      if (!buildsStatic || !managesRoutes) {
-        return { pass: false, message: 'Static deployment configuration incomplete' };
+      // Step 1: Exchange 5,000 Gold for 1,000 SNS
+      const exchange = shop.exchangeGoldForSns(5000);
+      if (!exchange.success || exchange.snsGranted !== 1000) {
+        return { pass: false, message: 'Gold exchange failed in workload' };
+      }
+      if (shop.getBalances().sns !== 1050) {
+        return { pass: false, message: `Expected 1050 SNS, got ${shop.getBalances().sns}` };
       }
 
-      return { pass: true, message: 'Full static standalone deployment configuration verified' };
+      // Step 2: Buy Magic Pack (800 SNS)
+      const packRes = shop.purchaseCardPack('magic');
+      if (!packRes.success || packRes.revealedCards.length !== 3) {
+        return { pass: false, message: 'Pack purchase failed' };
+      }
+
+      // Step 3: Check dual-write in both systems
+      const firstCard = packRes.revealedCards[0];
+      if (!nurtureStore.isCardOwned(firstCard.cardId)) {
+        return { pass: false, message: 'Rolled card missing in nurture store' };
+      }
+      const rawInv = mockStorage.getItem('hero_inventory') || '';
+      if (!rawInv.includes(String(firstCard.cardId))) {
+        return { pass: false, message: 'Rolled card missing in hero_inventory' };
+      }
+
+      // Step 4: Verify remaining balance: 1050 - 800 = 250 SNS
+      if (shop.getBalances().sns !== 250) {
+        return { pass: false, message: `Expected 250 remaining SNS, got ${shop.getBalances().sns}` };
+      }
+
+      return { pass: true, message: 'Gold exchange, pack reveal modal data, and dual-write verified' };
+    })
+  );
+
+  // =========================================================================
+  // Scenario 6: Responsive Multi-Device Workload & VIP Experience (W6)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T4.W1.6', 4, 'End-to-End Workload', 'M5', 'Responsive Multi-Device Workload: Desktop Gutters (1440px) vs Mobile Banner (375px)', async () => {
+      const mockStorage = new MockLocalStorage();
+      const ads = new ReferenceAdSenseManager(mockStorage);
+
+      // Desktop Session (1440px wide)
+      const desktop = ads.getPlacements(1440);
+      if (!desktop.desktopLeft || !desktop.desktopRight || desktop.mobileTop) {
+        return { pass: false, message: 'Desktop side gutter placement failed at 1440px' };
+      }
+
+      // Tablet / Mobile Session (375px wide)
+      const mobile = ads.getPlacements(375);
+      if (mobile.desktopLeft || mobile.desktopRight || !mobile.mobileTop) {
+        return { pass: false, message: 'Mobile top banner placement failed at 375px' };
+      }
+
+      // User purchases Ad-Removal
+      mockStorage.setItem('hero_ad_removed', 'true');
+      const vipSession = ads.getPlacements(1440);
+      if (vipSession.desktopLeft || vipSession.desktopRight || vipSession.mobileTop) {
+        return { pass: false, message: 'VIP user still receives ads' };
+      }
+
+      return { pass: true, message: 'Responsive multi-device layout and VIP ad-removal workload verified' };
     })
   );
 

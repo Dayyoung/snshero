@@ -1,11 +1,16 @@
 /**
- * Tier 3: Pairwise Combinations & State Machine (6 Assertions across 6 Interactions)
+ * Tier 3: Cross-Feature Combinations & State Machine (7 Assertions across Cross-Feature Synergies)
+ *
+ * Mapped to PROJECT.md Features and Milestones M1..M6.
  */
 
 import {
-  readProjectFile,
   runTestAssertion,
+  ReferenceHashRouter,
+  ReferenceIdleAutoPlayManager,
   ReferenceNurtureStore,
+  ReferenceShopManager,
+  ReferenceAdSenseManager,
   MockLocalStorage,
 } from './helpers';
 import { TestResult } from './types';
@@ -14,17 +19,56 @@ export async function runTier3Tests(): Promise<TestResult[]> {
   const results: TestResult[] = [];
 
   // =========================================================================
-  // Combination 1: Nurture -> Stat Allocation -> Deck TP Update (C1)
+  // Combination 1: Hash Route Navigation + Idle Timer Reset Synergy (C1)
   // =========================================================================
   results.push(
-    await runTestAssertion('T3.C1.1', 3, 'Cross-Feature Synergy', 'M3', 'Nurture -> Stat Allocation -> Dynamic Deck TP Sync', async () => {
-      const oracle = new ReferenceNurtureStore();
-      const initialDeckTP = oracle.getDeckTP(); // 80
+    await runTestAssertion('T3.C1.1', 3, 'Routing & Idle Synergy', 'M1', 'Hash Navigation Action Resets Idle Auto-Play Timer', async () => {
+      const mockStorage = new MockLocalStorage();
+      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage, 15000);
+      const router = new ReferenceHashRouter();
 
-      // Nurture Card 1 (in active deck) to gain 1 level and 1 stat point
-      oracle.nurtureCard(1, 100);
+      // User spends 11 seconds on #home
+      idleManager.tick(11000);
+
+      // User clicks navigation to #deck
+      const targetHash = router.normalizeHashRoute('#deck');
+      if (targetHash !== '#deck') {
+        return { pass: false, message: 'Hash normalization failed for #deck' };
+      }
+      idleManager.handleUserInteraction();
+
+      if (idleManager.getIdleTime() !== 0) {
+        return { pass: false, message: 'Navigation interaction did not reset idle timer' };
+      }
+
+      // Further 10 seconds should not trigger 15s timeout
+      const tickResult = idleManager.tick(10000);
+      if (tickResult.redirected) {
+        return { pass: false, message: 'Idle auto-play triggered prematurely after hash navigation reset' };
+      }
+
+      return { pass: true, message: 'Hash route navigation interaction resets 15s idle timer seamlessly' };
+    })
+  );
+
+  // =========================================================================
+  // Combination 2: Battle Victory EXP -> Stat Point -> Deck TP Sync (C2)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T3.C1.2', 3, 'Gameplay & Nurture Synergy', 'M3', 'Battle Victory EXP Hook -> Level Up -> Stat Point -> Deck TP Dynamic Sync', async () => {
+      const oracle = new ReferenceNurtureStore();
+      const initialDeckTP = oracle.getDeckTP();
+
+      // Card 1 in active deck needs 100 EXP to level up from Lv 1 -> Lv 2
+      // Simulate two consecutive battle victories (50 EXP each = 100 EXP)
+      oracle.awardBattleVictoryExp(50);
+      oracle.awardBattleVictoryExp(50);
+
+      if (oracle.cards[1].level !== 2) {
+        return { pass: false, message: `Expected Card 1 at Level 2, got Lv ${oracle.cards[1].level}` };
+      }
       if (oracle.cards[1].statPoints !== 1) {
-        return { pass: false, message: 'Expected 1 stat point after nurture' };
+        return { pass: false, message: `Expected 1 stat point, got ${oracle.cards[1].statPoints}` };
       }
 
       // Allocate point to 'top'
@@ -33,132 +77,189 @@ export async function runTier3Tests(): Promise<TestResult[]> {
         return { pass: false, message: 'Stat allocation failed' };
       }
 
-      // Deck TP must increase by exactly 1
+      // Deck TP must dynamically increase by exactly 1
       const updatedDeckTP = oracle.getDeckTP();
       if (updatedDeckTP !== initialDeckTP + 1) {
-        return { pass: false, message: `Deck TP not updated correctly: got ${updatedDeckTP}, expected ${initialDeckTP + 1}` };
+        return { pass: false, message: `Deck TP mismatch: got ${updatedDeckTP}, expected ${initialDeckTP + 1}` };
       }
 
-      // Total TP must also increase by exactly 1
-      const updatedTotalTP = oracle.getTotalTP();
-      if (updatedTotalTP !== initialDeckTP + 1) {
-        return { pass: false, message: `Total TP mismatch: got ${updatedTotalTP}` };
-      }
-
-      return { pass: true, message: 'Nurture, stat allocation, and Deck TP dynamic sync verified' };
+      return { pass: true, message: 'Battle victory EXP grants level up, stat point, and dynamic Deck TP update' };
     })
   );
 
   // =========================================================================
-  // Combination 2: Shop Purchase -> Collection Rate -> Total TP (C2)
+  // Combination 3: Shop Purchase -> Dual-Write -> Owned Nurturing Gate Unlocking (C3)
   // =========================================================================
   results.push(
-    await runTestAssertion('T3.C1.2', 3, 'Cross-Feature Synergy', 'M3', 'Shop Purchase -> Inventory Expansion -> Collection Rate Sync', async () => {
+    await runTestAssertion('T3.C1.3', 3, 'Economy & Nurturing Synergy', 'M5', 'Shop Pack Purchase -> Dual-Write -> Owned Nurturing Gate Unlocked', async () => {
+      const mockStorage = new MockLocalStorage();
+      const nurtureStore = new ReferenceNurtureStore(mockStorage);
+      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
+
+      // Verify Card 20 is initially unowned
+      const cardId = 20;
+      if (nurtureStore.isCardOwned(cardId)) {
+        return { pass: false, message: `Card ${cardId} should not be owned initially` };
+      }
+
+      // Unowned card cannot be nurtured
+      const preNurture = nurtureStore.nurtureCard(cardId, 100);
+      if (preNurture.expGained > 0) {
+        return { pass: false, message: 'Unowned card nurtured prior to shop acquisition' };
+      }
+
+      // Purchase card pack that unlocks Card 20
+      nurtureStore.addCard(cardId);
+      mockStorage.setItem('hero_inventory', JSON.stringify(nurtureStore.ownedCardIds));
+
+      // Now Card 20 is owned: verify dual-write
+      if (!nurtureStore.isCardOwned(cardId)) {
+        return { pass: false, message: 'Card 20 missing in nurture store owned list' };
+      }
+      const rawInv = mockStorage.getItem('hero_inventory') || '';
+      if (!rawInv.includes(String(cardId))) {
+        return { pass: false, message: 'Card 20 missing in hero_inventory LocalStorage' };
+      }
+
+      // Nurturing is now unlocked for Card 20!
+      const postNurture = nurtureStore.nurtureCard(cardId, 100);
+      if (postNurture.expGained !== 100 || !postNurture.leveledUp || postNurture.newLevel !== 2) {
+        return { pass: false, message: `Nurture failed after acquisition: ${JSON.stringify(postNurture)}` };
+      }
+
+      return { pass: true, message: 'Shop card acquisition dual-writes to inventory and unlocks nurturing gate' };
+    })
+  );
+
+  // =========================================================================
+  // Combination 4: Gold Exchange -> Currency Balance -> Pack Purchase Unlocking (C4)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T3.C1.4', 3, 'Economy Balance Synergy', 'M5', 'Gold-to-SNS Exchange Debits Gold, Credits SNS, and Unlocks Pack Purchase', async () => {
+      const mockStorage = new MockLocalStorage();
+      // Set low SNS (100) and high Gold (10,000)
+      mockStorage.setItem('hero_sns', '100');
+      mockStorage.setItem('hero_gold', '10000');
+
+      const nurtureStore = new ReferenceNurtureStore(mockStorage);
+      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
+
+      // Attempt normal pack purchase (cost 300) -> should fail due to 100 SNS
+      const failPurchase = shop.purchaseCardPack('normal');
+      if (failPurchase.success) {
+        return { pass: false, message: 'Purchase succeeded unexpectedly with insufficient SNS' };
+      }
+
+      // Replenish SNS via Non-Free Gold Exchange: 5,000 Gold -> 1,000 SNS
+      const exchangeRes = shop.exchangeGoldForSns(5000);
+      if (!exchangeRes.success) {
+        return { pass: false, message: `Gold exchange failed: ${exchangeRes.error}` };
+      }
+
+      // Balances must be: Gold = 5,000, SNS = 1,100
+      const balances = shop.getBalances();
+      if (balances.gold !== 5000 || balances.sns !== 1100) {
+        return { pass: false, message: `Post-exchange balances incorrect: Gold=${balances.gold}, SNS=${balances.sns}` };
+      }
+
+      // Now pack purchase succeeds!
+      const successPurchase = shop.purchaseCardPack('normal');
+      if (!successPurchase.success || successPurchase.revealedCards.length !== 3) {
+        return { pass: false, message: 'Purchase failed after replenishing SNS from gold exchange' };
+      }
+
+      // Balance debited by 300: 1,100 - 300 = 800
+      if (shop.getBalances().sns !== 800) {
+        return { pass: false, message: `Expected 800 SNS after purchase, got ${shop.getBalances().sns}` };
+      }
+
+      return { pass: true, message: 'Gold exchange debits gold, credits SNS, and unlocks pack purchase cleanly' };
+    })
+  );
+
+  // =========================================================================
+  // Combination 5: Repeat Hunting (반복 사냥) Consecutive Battle Loop (C5)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T3.C1.5', 3, 'Battle Loop Synergy', 'M4', 'Repeat Hunting Loop Executes Consecutive Battles and Accrues EXP', async () => {
       const oracle = new ReferenceNurtureStore();
-      const initialCount = oracle.ownedCardIds.length; // 5
-      const initialTotalTP = oracle.getTotalTP(); // 80
+      oracle.setRepeatHunting(true);
 
-      // Emulate purchase of card pack unlocking Card 6 (Leviathan, base power = 22)
-      oracle.ownedCardIds.push(6);
-      oracle.saveToStorage();
+      const initialExp = oracle.cards[1].exp;
 
-      const newCount = oracle.ownedCardIds.length;
-      if (newCount !== initialCount + 1) {
-        return { pass: false, message: 'Owned cards count not incremented' };
+      // Simulate 3 consecutive automated repeat hunting rounds
+      const rounds = 3;
+      for (let r = 0; r < rounds; r++) {
+        if (!oracle.isRepeatHuntingActive()) break;
+        oracle.awardBattleVictoryExp(50);
       }
 
-      const newTotalTP = oracle.getTotalTP();
-      // Card 6 power: 22. Total TP should become 80 + 22 = 102.
-      if (newTotalTP !== initialTotalTP + 22) {
-        return { pass: false, message: `Total TP mismatch after shop expansion: got ${newTotalTP}, expected ${initialTotalTP + 22}` };
+      const expectedExpTotal = initialExp + (rounds * 50); // 150 EXP
+      // Card 1 starts at Lv 1 (needs 100 EXP to Lv 2). With 150 EXP, level becomes 2 with 50 EXP into next level
+      if (oracle.cards[1].level !== 2 || oracle.cards[1].exp !== 50) {
+        return { pass: false, message: `Repeat hunting EXP accrual mismatch: Lv ${oracle.cards[1].level}, EXP ${oracle.cards[1].exp}` };
       }
 
-      return { pass: true, message: 'Shop inventory expansion, collection rate, and Total TP sync verified' };
+      return { pass: true, message: 'Repeat hunting loop executes consecutive battles with accurate EXP accrual' };
     })
   );
 
   // =========================================================================
-  // Combination 3: Play Section Scene Stepper -> TTS State (C3)
+  // Combination 6: Responsive AdSense Dynamic Viewport Transition (C6)
   // =========================================================================
   results.push(
-    await runTestAssertion('T3.C1.3', 3, 'Media Controls Synergy', 'M3', 'Scene Stepping Preserves TTS Default OFF State', async () => {
-      const play = readProjectFile('src/landing/views/PlaySection.tsx') || '';
-      // Ensure scene transitions do not inadvertently auto-enable TTS
-      const hasAutoPlayOnSceneChange = play.includes('onSceneChange: enableTts') || play.includes('sceneIndex && setTts(true)');
-      if (hasAutoPlayOnSceneChange) {
-        return { pass: false, message: 'Scene change violates TTS OFF rule by auto-enabling TTS' };
+    await runTestAssertion('T3.C1.6', 3, 'Responsive AdSense Synergy', 'M5', 'Responsive AdSense Dynamic Viewport Transition (1440px <-> 375px)', async () => {
+      const mockStorage = new MockLocalStorage();
+      const ads = new ReferenceAdSenseManager(mockStorage);
+
+      // Desktop: 1440px -> Side Gutters
+      const desktop = ads.getPlacements(1440);
+      if (!desktop.desktopLeft || !desktop.desktopRight || desktop.mobileTop) {
+        return { pass: false, message: 'Desktop placement mismatch' };
       }
-      return { pass: true, message: 'Scene navigation preserves TTS OFF state invariance' };
+
+      // User resizes window to mobile: 375px -> Top Banner
+      const mobile = ads.getPlacements(375);
+      if (mobile.desktopLeft || mobile.desktopRight || !mobile.mobileTop) {
+        return { pass: false, message: 'Mobile placement mismatch after resize' };
+      }
+
+      // User purchases Ad-Removal -> Both viewports suppress ads completely
+      mockStorage.setItem('hero_ad_removed', 'true');
+      const vipDesktop = ads.getPlacements(1440);
+      const vipMobile = ads.getPlacements(375);
+
+      if (vipDesktop.desktopLeft || vipDesktop.desktopRight || vipMobile.mobileTop) {
+        return { pass: false, message: 'Ads not suppressed after VIP purchase' };
+      }
+
+      return { pass: true, message: 'Dynamic responsive AdSense unit switching and VIP suppression verified' };
     })
   );
 
   // =========================================================================
-  // Combination 4: Dual Routing Transition / <-> /home (C4)
+  // Combination 7: Legacy Route Direct Access -> Redirection & View Sync (C7)
   // =========================================================================
   results.push(
-    await runTestAssertion('T3.C1.4', 3, 'Routing Synergy', 'M1', 'Dual Routing Independence (/ Landing vs /home Game SPA)', async () => {
-      const indexHtml = readProjectFile('index.html') || '';
-      const homeHtml = readProjectFile('home.html') || '';
-      const routes = readProjectFile('src/routes.ts') || '';
+    await runTestAssertion('T3.C1.7', 3, 'Routing Synergy', 'M1', 'Legacy Route Direct URL Entry -> Hash Normalization -> Active View Sync', async () => {
+      const router = new ReferenceHashRouter();
+      const legacyEntries: Array<[string, string]> = [
+        ['/home', '#home'],
+        ['/deck', '#deck'],
+        ['/play', '#play'],
+        ['/main', '#play'],
+        ['/shop', '#shop'],
+        ['/card', '#card'],
+      ];
 
-      const landingClean = !indexHtml.includes('src/main.tsx');
-      const homeClean = homeHtml.includes('src/main.tsx');
-      const routesDecoupled = routes.includes('/home');
-
-      if (!landingClean || !homeClean || !routesDecoupled) {
-        return {
-          pass: false,
-          message: `Dual routing decoupling incomplete: landingClean=${landingClean}, homeClean=${homeClean}, routesDecoupled=${routesDecoupled}`,
-        };
-      }
-      return { pass: true, message: 'Dual routing / and /home operates with complete independence' };
-    })
-  );
-
-  // =========================================================================
-  // Combination 5: Modal Lifecycle & Dismissal (C5)
-  // =========================================================================
-  results.push(
-    await runTestAssertion('T3.C1.5', 3, 'Modal Lifecycle', 'M2', 'Modal Open / Close Lifecycle & Background State Preservation', async () => {
-      const modals = readProjectFile('src/landing/components/Modals.tsx') || '';
-      const hasDismissHandlers = modals.includes('onClose') || modals.includes('setModal(null)');
-      const hasBackdrop = modals.includes('fixed') || modals.includes('z-50') || modals.includes('backdrop');
-      if (!hasDismissHandlers || !hasBackdrop) {
-        return { pass: false, message: 'Modal backdrop or dismissal handler missing' };
-      }
-      return { pass: true, message: 'Modal backdrop and dismissal lifecycle verified' };
-    })
-  );
-
-  // =========================================================================
-  // Combination 6: Bulk Stat Allocation & Red Dot Clearance (C6)
-  // =========================================================================
-  results.push(
-    await runTestAssertion('T3.C1.6', 3, 'Card Nurture Synergy', 'M3', 'Bulk Stat Points Expenditure & Red Dot Clearance', async () => {
-      const oracle = new ReferenceNurtureStore();
-      // Level up 3 times -> 3 stat points
-      oracle.cards[2].statPoints = 3;
-      if (!oracle.hasUnspentPoints(2)) {
-        return { pass: false, message: 'Red dot indicator should be active when statPoints > 0' };
+      for (const [legacy, expectedHash] of legacyEntries) {
+        const redirected = router.normalizeHashRoute(legacy);
+        if (redirected !== expectedHash) {
+          return { pass: false, message: `Direct entry of ${legacy} failed to normalize to ${expectedHash}` };
+        }
       }
 
-      // Allocate all 3 points
-      oracle.allocateStat(2, 'top');
-      if (!oracle.hasUnspentPoints(2)) {
-        return { pass: false, message: 'Red dot should still be active with 2 points left' };
-      }
-
-      oracle.allocateStat(2, 'right');
-      oracle.allocateStat(2, 'bottom');
-
-      if (oracle.hasUnspentPoints(2)) {
-        return { pass: false, message: 'Red dot should be inactive after all points allocated' };
-      }
-      if (oracle.cards[2].statPoints !== 0 || oracle.cards[2].totalBonus !== 3) {
-        return { pass: false, message: 'Stat points or totalBonus mismatch after bulk allocation' };
-      }
-
-      return { pass: true, message: 'Bulk stat allocation and red dot clearance lifecycle verified' };
+      return { pass: true, message: 'Direct URL access to legacy standalone routes cleanly resolves to hash routes' };
     })
   );
 

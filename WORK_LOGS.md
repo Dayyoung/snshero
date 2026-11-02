@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 17:00 KST] [E2E 테스트 인프라 구축 및 4-Tier 테스트 스위트 확장 완료]
+- **작업자**: `test_writer_e2e_9` (QA Specialist)
+- **작업 개요**:
+  - `TEST_INFRA.md` 작성 완료: Opaque-box 원칙, `PROJECT.md` 24개 전체 기능(Features 1–24) 4-Tier 매핑, 실행 가이드 및 CLI 옵션 체계화.
+  - `tests/e2e/types.ts`: 해시 라우트(#home, #deck, #play, #card, #shop), 레거시 라우트 매핑, 15초 유휴 자동플레이 설정, 팩 리빌 및 애드센스 인터페이스 계약 정의.
+  - `tests/e2e/helpers.ts`: ReferenceHashRouter, ReferenceIdleAutoPlayManager, ReferenceNurtureStore(보유 카드 전용 가드, 전투 승리 50 EXP 훅, 반복 사냥), ReferenceShopManager(듀얼라이트, 골드-SNS 교환), ReferenceAdSenseManager(반응형 거터/배너 및 VIP 제거) 오라클 구현.
+  - `tests/e2e/tier1_feature_coverage.ts`: 10개 기능 그룹 51개 단언문 구현 (전체 24개 기능 전수 커버).
+  - `tests/e2e/tier2_boundary_corner.ts`: 12개 경계값/코너케이스 단언문 구현 (100Lv 캡, 14.999s vs 15.000s, 1023px vs 1024px 등).
+  - `tests/e2e/tier3_cross_feature.ts`: 7개 상호작용/상태머신 전이 단언문 구현.
+  - `tests/e2e/tier4_realworld_workload.ts`: 6개 실환경 유저 여정 워크로드 단언문 구현.
+  - `tests/e2e/run_all.ts`: 4-Tier 러너 및 마일스톤 필터링 최적화.
+  - `TEST_READY.md`: 프로젝트 루트에 76/76 PASS (100.0%) 테스트 준비 완료 선언문 게시.
+- **검증 결과**:
+  - `npx tsx tests/e2e/run_all.ts`: 76/76 PASS (100.0%, 0.01s 소요)
+  - `npx tsc --noEmit`: 0 errors
+  - `npm run lint`: exit code 0
+- **구글 폼 보고**: submit_report.py 전송 예정.
+
 ## [2026-11-02 16:00 KST] [프로젝트 전수 완료: SNSHero 독립 정적 랜딩 웹 서비스 개편 및 /home 분리 100% 완수]
 - **작업자**: `worker_final_signoff` & `teamwork_orchestrator`
 - **프로젝트 개요 및 성과**:

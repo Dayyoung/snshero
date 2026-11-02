@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * SNSHero Independent Static Landing & /home Decoupling Master 4-Tier E2E Test Runner.
+ * SNSHero Hash-Based SPA Migration & Full Feature Parity Master 4-Tier E2E Test Runner.
  *
  * Usage:
  *   npx tsx tests/e2e/run_all.ts
@@ -12,6 +12,8 @@
  *   npx tsx tests/e2e/run_all.ts --milestone M2
  *   npx tsx tests/e2e/run_all.ts --milestone M3
  *   npx tsx tests/e2e/run_all.ts --milestone M4
+ *   npx tsx tests/e2e/run_all.ts --milestone M5
+ *   npx tsx tests/e2e/run_all.ts --milestone M6
  *   npx tsx tests/e2e/run_all.ts --milestone ALL
  *   npx tsx tests/e2e/run_all.ts --verbose
  *   npx tsx tests/e2e/run_all.ts --json
@@ -62,10 +64,10 @@ function parseCliArgs(): RunOptions {
 
 function printBanner(options: RunOptions) {
   console.log(`\n${BOLD}${CYAN}======================================================================${RESET}`);
-  console.log(`${BOLD}${CYAN}  SNSHero Independent Static Landing & /home Decoupling E2E Runner   ${RESET}`);
+  console.log(`${BOLD}${CYAN}  SNSHero Hash-Based SPA Migration & Full Feature Parity E2E Runner   ${RESET}`);
   console.log(`${BOLD}${CYAN}======================================================================${RESET}`);
   console.log(`Working Directory : ${REPO_ROOT}`);
-  console.log(`Target Scope      : Static Landing (index.html), /home Decoupling, Card Nurture`);
+  console.log(`Target Scope      : Hash Routes, Idle Auto-Play, Gameplay Parity, Shop & AdSense`);
   const tierStr = options.tier ? `TIER ${options.tier}` : 'ALL TIERS (1..4)';
   const msStr = options.milestone || 'ALL';
   console.log(`Execution Scope   : ${tierStr} | Milestone: ${msStr}`);

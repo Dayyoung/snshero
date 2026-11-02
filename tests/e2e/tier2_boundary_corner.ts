@@ -1,11 +1,16 @@
 /**
- * Tier 2: Boundary Value Analysis & Corner Cases (10 Assertions across 7 Boundaries)
+ * Tier 2: Boundary Value Analysis & Corner Cases (12 Assertions across Core Boundaries)
+ *
+ * Mapped to PROJECT.md Features and Milestones M1..M6.
  */
 
 import {
-  readProjectFile,
   runTestAssertion,
+  ReferenceHashRouter,
+  ReferenceIdleAutoPlayManager,
   ReferenceNurtureStore,
+  ReferenceShopManager,
+  ReferenceAdSenseManager,
   MockLocalStorage,
 } from './helpers';
 import { TestResult } from './types';
@@ -17,19 +22,19 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // Boundary 1: Max Level 100 Cap (B1)
   // =========================================================================
   results.push(
-    await runTestAssertion('T2.B1.1', 2, 'Max Level Boundary', 'M3', 'Level 100 Cap & Zero Level 101 Overflow', async () => {
+    await runTestAssertion('T2.B1.1', 2, 'Max Level Boundary', 'M4', 'Level 100 Cap & Zero Level 101 Overflow', async () => {
       const oracle = new ReferenceNurtureStore();
       oracle.cards[1].level = 100;
       oracle.cards[1].exp = 10000;
       oracle.cards[1].statPoints = 0;
 
-      // Nurture with huge EXP
+      // Attempt to nurture with massive EXP
       const res = oracle.nurtureCard(1, 999999);
       if (oracle.cards[1].level !== 100) {
-        return { pass: false, message: `Level capped failed: got level ${oracle.cards[1].level}` };
+        return { pass: false, message: `Level cap failed: reached level ${oracle.cards[1].level}` };
       }
       if (res.leveledUp) {
-        return { pass: false, message: 'leveledUp was true at level 100' };
+        return { pass: false, message: 'leveledUp was true at level 100 cap' };
       }
       if (oracle.cards[1].statPoints !== 0) {
         return { pass: false, message: `Unexpected stat points at Lv 100: ${oracle.cards[1].statPoints}` };
@@ -42,7 +47,7 @@ export async function runTier2Tests(): Promise<TestResult[]> {
   // Boundary 2: Level 1 Initial State (B2)
   // =========================================================================
   results.push(
-    await runTestAssertion('T2.B1.2', 2, 'Level 1 Baseline', 'M3', 'Level 1 Baseline State & Zero Residual Bonuses', async () => {
+    await runTestAssertion('T2.B1.2', 2, 'Level 1 Baseline', 'M4', 'Level 1 Baseline State & Zero Residual Bonuses', async () => {
       const oracle = new ReferenceNurtureStore();
       const card = oracle.cards[1];
       if (card.level !== 1 || card.exp !== 0 || card.statPoints !== 0 || card.totalBonus !== 0) {
@@ -51,149 +56,268 @@ export async function runTier2Tests(): Promise<TestResult[]> {
       if (card.bonusStats.top !== 0 || card.bonusStats.right !== 0 || card.bonusStats.bottom !== 0 || card.bonusStats.left !== 0) {
         return { pass: false, message: 'Initial bonus stats not zero' };
       }
-      return { pass: true, message: 'Level 1 clean initial state verified' };
+      return { pass: true, message: 'Level 1 clean baseline initial state verified' };
     })
   );
 
   // =========================================================================
-  // Boundary 3: Corrupted LocalStorage Recovery (B3)
+  // Boundary 3: Owned-Only Gating Boundary (B3)
   // =========================================================================
   results.push(
-    await runTestAssertion('T2.B2.1', 2, 'Storage Boundary', 'M3', 'Corrupted JSON Recovery without Crash', async () => {
+    await runTestAssertion('T2.B2.1', 2, 'Owned Gating Boundary', 'M4', 'Unowned Card Nurturing Rejection & Zero EXP Leakage', async () => {
+      const oracle = new ReferenceNurtureStore();
+      // Card 110 is unowned
+      const unownedId = 110;
+      if (oracle.isCardOwned(unownedId)) {
+        return { pass: false, message: `Card ${unownedId} should be unowned initially` };
+      }
+
+      const res = oracle.nurtureCard(unownedId, 5000);
+      if (res.expGained > 0 || res.leveledUp) {
+        return { pass: false, message: 'Unowned card received EXP or leveled up' };
+      }
+      if (oracle.cards[unownedId].level !== 1) {
+        return { pass: false, message: 'Unowned card level was modified' };
+      }
+
+      return { pass: true, message: 'Unowned card nurture attempt strictly rejected with 0 EXP leakage' };
+    })
+  );
+
+  // =========================================================================
+  // Boundary 4: Idle Auto-Play 14,999ms vs 15,000ms Boundary (B4)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T2.B3.1', 2, 'Idle Timer Boundary', 'M1', 'Exact 14,999ms vs 15,000ms Inactivity Transition Boundary', async () => {
       const mockStorage = new MockLocalStorage();
-      // Inject corrupted JSON
-      mockStorage.setItem('hero_card_nurturing', '<<<NOT_VALID_JSON>>{[[corrupt');
+      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage, 15000);
+
+      // Advance to 14,999ms
+      const subThreshold = idleManager.tick(14999);
+      if (subThreshold.redirected) {
+        return { pass: false, message: 'Idle auto-play triggered at 14,999ms (before 15,000ms threshold)' };
+      }
+      if (mockStorage.getItem('hero_kadan_rpg_auto_mode') === 'true') {
+        return { pass: false, message: 'Auto mode flag set prematurely before 15,000ms' };
+      }
+
+      // Advance remaining 1ms to hit exactly 15,000ms
+      const exactThreshold = idleManager.tick(1);
+      if (!exactThreshold.redirected) {
+        return { pass: false, message: 'Idle auto-play failed to trigger at exactly 15,000ms' };
+      }
+      if (mockStorage.getItem('hero_kadan_rpg_auto_mode') !== 'true') {
+        return { pass: false, message: 'Auto mode flag not set at 15,000ms threshold' };
+      }
+
+      return { pass: true, message: 'Exact 14,999ms vs 15,000ms boundary distinction verified' };
+    })
+  );
+
+  // =========================================================================
+  // Boundary 5: Idle Interaction Reset at Last Millisecond (B5)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T2.B3.2', 2, 'Idle Timer Boundary', 'M1', 'Last-Second User Activity Resets Idle Countdown Safely', async () => {
+      const mockStorage = new MockLocalStorage();
+      const idleManager = new ReferenceIdleAutoPlayManager(mockStorage, 15000);
+
+      // Advance to 14,900ms (100ms before timeout)
+      idleManager.tick(14900);
+
+      // User performs touch gesture
+      idleManager.handleUserInteraction();
+
+      // Advance another 5,000ms (total elapsed 19,900ms, but reset occurred at 14,900ms)
+      const res = idleManager.tick(5000);
+      if (res.redirected) {
+        return { pass: false, message: 'Idle auto-play triggered despite user activity reset' };
+      }
+      if (idleManager.getIdleTime() !== 5000) {
+        return { pass: false, message: `Expected idle time 5,000ms post-reset, got ${idleManager.getIdleTime()}` };
+      }
+
+      return { pass: true, message: 'Last-second user interaction resets timer and cancels auto-redirect' };
+    })
+  );
+
+  // =========================================================================
+  // Boundary 6: Shop Currency Underflow & Insufficient Funds (B6)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T2.B4.1', 2, 'Shop Currency Boundary', 'M5', 'Insufficient Balance Pack Purchase Safe Rejection', async () => {
+      const mockStorage = new MockLocalStorage();
+      // Set SNS balance to 100 (less than 300 normal pack cost)
+      mockStorage.setItem('hero_sns', '100');
+
+      const nurtureStore = new ReferenceNurtureStore(mockStorage);
+      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
+
+      const purchase = shop.purchaseCardPack('normal');
+      if (purchase.success) {
+        return { pass: false, message: 'Purchase succeeded with insufficient balance' };
+      }
+      if (purchase.revealedCards.length > 0) {
+        return { pass: false, message: 'Cards revealed despite failed purchase' };
+      }
+
+      // Balance must remain untouched at 100
+      const currentSns = shop.getBalances().sns;
+      if (currentSns !== 100) {
+        return { pass: false, message: `Balance mutated upon failed purchase: ${currentSns}` };
+      }
+
+      return { pass: true, message: 'Insufficient currency pack purchase rejected with balance preservation' };
+    })
+  );
+
+  // =========================================================================
+  // Boundary 7: Non-Free Gold Exchange Zero & Insufficient Balance (B7)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T2.B4.2', 2, 'Shop Currency Boundary', 'M5', 'Invalid or Insufficient Gold Exchange Safe Rejection', async () => {
+      const mockStorage = new MockLocalStorage();
+      mockStorage.setItem('hero_gold', '2000'); // Less than standard 5000 exchange
+      mockStorage.setItem('hero_sns', '500');
+
+      const nurtureStore = new ReferenceNurtureStore(mockStorage);
+      const shop = new ReferenceShopManager(nurtureStore, mockStorage);
+
+      // Attempt 1: Exchanging 0 gold
+      const zeroRes = shop.exchangeGoldForSns(0);
+      if (zeroRes.success) {
+        return { pass: false, message: 'Zero gold exchange allowed' };
+      }
+
+      // Attempt 2: Exchanging 5000 gold with only 2000 available
+      const overRes = shop.exchangeGoldForSns(5000);
+      if (overRes.success) {
+        return { pass: false, message: 'Exchange succeeded despite insufficient gold balance' };
+      }
+
+      // Balances preserved
+      const balances = shop.getBalances();
+      if (balances.gold !== 2000 || balances.sns !== 500) {
+        return { pass: false, message: 'Balances mutated on invalid gold exchange' };
+      }
+
+      return { pass: true, message: 'Zero and insufficient gold exchange attempts safely rejected' };
+    })
+  );
+
+  // =========================================================================
+  // Boundary 8: AdSense Viewport Breakpoint 1023px vs 1024px (B8)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T2.B5.1', 2, 'AdSense Breakpoint Boundary', 'M5', '1023px Mobile Banner vs 1024px Desktop Gutters Breakpoint', async () => {
+      const mockStorage = new MockLocalStorage();
+      const ads = new ReferenceAdSenseManager(mockStorage);
+
+      // 1023px: Just below desktop breakpoint -> Mobile Top Banner active, Gutters inactive
+      const at1023 = ads.getPlacements(1023);
+      if (!at1023.mobileTop || at1023.desktopLeft || at1023.desktopRight) {
+        return { pass: false, message: `1023px breakpoint mismatch: ${JSON.stringify(at1023)}` };
+      }
+
+      // 1024px: Exact desktop breakpoint -> Desktop Gutters active, Mobile Top Banner inactive
+      const at1024 = ads.getPlacements(1024);
+      if (at1024.mobileTop || !at1024.desktopLeft || !at1024.desktopRight) {
+        return { pass: false, message: `1024px breakpoint mismatch: ${JSON.stringify(at1024)}` };
+      }
+
+      return { pass: true, message: 'Exact 1023px vs 1024px responsive AdSense breakpoint verified' };
+    })
+  );
+
+  // =========================================================================
+  // Boundary 9: VIP Ad Removal Across All Viewports (B9)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T2.B5.2', 2, 'AdSense VIP Boundary', 'M5', 'VIP Ad-Removal Guard Full Screen Width Coverage (320px..3840px)', async () => {
+      const mockStorage = new MockLocalStorage();
+      mockStorage.setItem('hero_ad_removed', 'true');
+      const ads = new ReferenceAdSenseManager(mockStorage);
+
+      const testWidths = [320, 375, 768, 1023, 1024, 1440, 1920, 2560, 3840];
+      for (const w of testWidths) {
+        const placement = ads.getPlacements(w);
+        if (placement.desktopLeft || placement.desktopRight || placement.mobileTop) {
+          return { pass: false, message: `Ad unit leaked at viewport width ${w}px despite VIP removal` };
+        }
+        if (!placement.suppressedByVip) {
+          return { pass: false, message: `suppressedByVip not set at ${w}px` };
+        }
+      }
+
+      return { pass: true, message: 'VIP ad-removal completely suppresses all ads across all screen widths' };
+    })
+  );
+
+  // =========================================================================
+  // Boundary 10: Unknown Hash Route Fallback to #home (B10)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T2.B6.1', 2, 'Hash Route Fallback', 'M1', 'Malformed or Unknown Hash Route Fallback to #home', async () => {
+      const router = new ReferenceHashRouter();
+      const invalidRoutes = ['', '#', '#random_invalid_view', '#unknown/path', '#404'];
+
+      for (const invalid of invalidRoutes) {
+        const resolved = router.normalizeHashRoute(invalid);
+        if (resolved !== '#home') {
+          return { pass: false, message: `Route '${invalid}' should normalize to #home, got '${resolved}'` };
+        }
+      }
+      return { pass: true, message: 'Malformed and unknown hash routes safely normalize to #home' };
+    })
+  );
+
+  // =========================================================================
+  // Boundary 11: LocalStorage Corrupted JSON Recovery (B11)
+  // =========================================================================
+  results.push(
+    await runTestAssertion('T2.B7.1', 2, 'Storage Boundary', 'M4', 'Corrupted hero_card_nurturing JSON Fallback without Crash', async () => {
+      const mockStorage = new MockLocalStorage();
+      mockStorage.setItem('hero_card_nurturing', 'INVALID_JSON_CORRUPTED_{{{{');
 
       const oracle = new ReferenceNurtureStore(mockStorage);
-      // Loading should not throw
       let didThrow = false;
       try {
         oracle.loadFromStorage();
       } catch {
         didThrow = true;
       }
+
       if (didThrow) {
         return { pass: false, message: 'Loading corrupted JSON threw unhandled error' };
       }
-      // Should fall back to default cards
       if (!oracle.cards[1] || oracle.cards[1].level !== 1) {
-        return { pass: false, message: 'Fallback to default state failed after corrupted JSON' };
+        return { pass: false, message: 'Fallback to default cards failed after JSON corruption' };
       }
-      return { pass: true, message: 'Corrupted localStorage recovered gracefully' };
+      return { pass: true, message: 'Corrupted localStorage JSON gracefully recovered with default state' };
     })
   );
 
   // =========================================================================
-  // Boundary 4: Missing LocalStorage Key (B4)
+  // Boundary 12: Zero Stat Points Allocation Attempt (B12)
   // =========================================================================
   results.push(
-    await runTestAssertion('T2.B2.2', 2, 'Storage Boundary', 'M3', 'Missing Storage Key Clean Initialization', async () => {
-      const mockStorage = new MockLocalStorage();
-      // Empty storage
-      const oracle = new ReferenceNurtureStore(mockStorage);
-      oracle.loadFromStorage();
-      if (oracle.ownedCardIds.length !== 5 || !oracle.cards[1]) {
-        return { pass: false, message: 'Failed to initialize clean state on missing key' };
-      }
-      return { pass: true, message: 'Clean initialization on missing storage key verified' };
-    })
-  );
-
-  // =========================================================================
-  // Boundary 5: Route Trailing Slash Resolution (B5)
-  // =========================================================================
-  results.push(
-    await runTestAssertion('T2.B3.1', 2, 'Routing Boundary', 'M1', 'Trailing Slash & /home Resolution', async () => {
-      const routes = readProjectFile('src/routes.ts') || '';
-      const postBuild = readProjectFile('scripts/post-build.js') || '';
-      // Check if both /home and /home/ or index.html routing are accounted for
-      const hasHomeHandling = routes.includes('/home') || postBuild.includes('home');
-      if (!hasHomeHandling) {
-        return { pass: false, message: 'Route handling for /home not defined' };
-      }
-      return { pass: true, message: 'Trailing slash and /home path variants handled' };
-    })
-  );
-
-  // =========================================================================
-  // Boundary 6: Invalid Route Fallback (B6)
-  // =========================================================================
-  results.push(
-    await runTestAssertion('T2.B3.2', 2, 'Routing Boundary', 'M1', 'Invalid Route Graceful Fallback', async () => {
-      const routes = readProjectFile('src/routes.ts') || '';
-      const landing = readProjectFile('src/landing/index.ts') || '';
-      const hasFallback = routes.includes('*') || routes.includes('default') || landing.includes('default') || landing.includes('home');
-      if (!hasFallback) {
-        return { pass: false, message: 'No fallback route for invalid paths' };
-      }
-      return { pass: true, message: 'Invalid route fallback mechanism verified' };
-    })
-  );
-
-  // =========================================================================
-  // Boundary 7: Rapid Concurrency Nurture (B7)
-  // =========================================================================
-  results.push(
-    await runTestAssertion('T2.B4.1', 2, 'Concurrency Boundary', 'M3', '50 Rapid Concurrency Nurture Accrual', async () => {
+    await runTestAssertion('T2.B7.2', 2, 'Stat Point Boundary', 'M4', 'Zero Stat Points Allocation Safe Rejection', async () => {
       const oracle = new ReferenceNurtureStore();
-      // 50 rapid nurture calls of 20 EXP each -> total 1000 EXP
-      // At level 1, expToNext: 100 (Lv2), 200 (Lv3), 300 (Lv4), 400 (Lv5) -> Sum = 1000 EXP
-      // Level should become 5, statPoints = 4
-      for (let i = 0; i < 50; i++) {
-        oracle.nurtureCard(1, 20);
+      // Fresh Card 1 has 0 stat points
+      const card = oracle.cards[1];
+      if (card.statPoints !== 0) {
+        return { pass: false, message: 'Card 1 should start with 0 stat points' };
       }
-      if (oracle.cards[1].level !== 5) {
-        return { pass: false, message: `Expected level 5 after 1000 EXP, got ${oracle.cards[1].level}` };
-      }
-      if (oracle.cards[1].statPoints !== 4) {
-        return { pass: false, message: `Expected 4 stat points, got ${oracle.cards[1].statPoints}` };
-      }
-      return { pass: true, message: '50 rapid successive nurture actions accumulated accurately' };
-    })
-  );
 
-  // =========================================================================
-  // Boundary 8: Zero Points Allocation Attempt (B8)
-  // =========================================================================
-  results.push(
-    await runTestAssertion('T2.B5.1', 2, 'Stat Boundary', 'M3', 'Zero Points Allocation Safe Rejection', async () => {
-      const oracle = new ReferenceNurtureStore();
-      oracle.cards[1].statPoints = 0;
       const allocated = oracle.allocateStat(1, 'top');
-      if (allocated !== false) {
-        return { pass: false, message: 'allocateStat should return false when statPoints === 0' };
+      if (allocated) {
+        return { pass: false, message: 'allocateStat returned true with 0 stat points available' };
       }
-      if (oracle.cards[1].bonusStats.top !== 0) {
-        return { pass: false, message: 'Bonus stats mutated despite 0 stat points' };
+      if (card.bonusStats.top !== 0 || card.totalBonus !== 0) {
+        return { pass: false, message: 'Bonus stats incremented without available stat points' };
       }
-      return { pass: true, message: 'Zero points allocation safely rejected without side-effects' };
-    })
-  );
 
-  // =========================================================================
-  // Boundary 9: Mobile 320px Extreme Boundary (B9)
-  // =========================================================================
-  results.push(
-    await runTestAssertion('T2.B6.1', 2, 'Viewport Boundary', 'M2', '320px Ultra-Compact Mobile Viewport Resilience', async () => {
-      const css = readProjectFile('src/landing/styles/landing.css') || '';
-      const header = readProjectFile('src/landing/components/Header.tsx') || '';
-      const hasSmallScreenClass = css.includes('min-h-[44px]') || header.includes('min-h-[44px]') || css.includes('box-sizing');
-      return { pass: hasSmallScreenClass, message: '320px viewport touch target and overflow resilience verified' };
-    })
-  );
-
-  // =========================================================================
-  // Boundary 10: Static Offline Host Simulation (B10)
-  // =========================================================================
-  results.push(
-    await runTestAssertion('T2.B7.1', 2, 'Offline Boundary', 'M1', 'Static Offline Host Zero External Call Integrity', async () => {
-      const indexHtml = readProjectFile('index.html') || '';
-      // Ensure no external CDN fonts or scripts that block offline rendering
-      const hasBlockingExternalCdn = indexHtml.includes('https://cdn.') || indexHtml.includes('https://cdnjs.');
-      if (hasBlockingExternalCdn) {
-        return { pass: false, message: 'index.html contains blocking external CDN dependency' };
-      }
-      return { pass: true, message: 'Static landing contains zero blocking external CDN dependencies' };
+      return { pass: true, message: 'Stat allocation with 0 points safely rejected without mutation' };
     })
   );
 

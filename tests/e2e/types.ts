@@ -1,9 +1,11 @@
 /**
- * Types and interfaces for SNSHero Independent Static Landing & /home Decoupling E2E Test Suite.
+ * Types and interfaces for SNSHero Hash-Based SPA Migration & Full Feature Parity E2E Test Suite.
+ *
+ * Mapped to PROJECT.md 24 Features and 6 Milestones (M1..M6).
  */
 
 export type TestStatus = 'PASS' | 'FAIL' | 'WARN';
-export type MilestoneType = 'M1' | 'M2' | 'M3' | 'M4' | 'ALL';
+export type MilestoneType = 'M1' | 'M2' | 'M3' | 'M4' | 'M5' | 'M6' | 'ALL';
 
 export interface TestResult {
   testId: string;
@@ -45,20 +47,45 @@ export interface CardNurtureData {
 export interface NurtureState {
   cards: Record<number, CardNurtureData>;
   ownedCardIds: number[];
+  activeDeckIds: number[];
   getDeckTP: () => number;
   getTotalTP: () => number;
-  nurtureCard: (cardId: number) => { expGained: number; leveledUp: boolean; newLevel: number };
+  isCardOwned: (cardId: number) => boolean;
+  nurtureCard: (cardId: number, expGain?: number) => { expGained: number; leveledUp: boolean; newLevel: number };
   allocateStat: (cardId: number, direction: 'top' | 'right' | 'bottom' | 'left') => boolean;
   hasUnspentPoints: (cardId: number) => boolean;
+  setDeckCard: (slotIndex: number, cardId: number) => boolean;
+  awardBattleVictoryExp: (expGain?: number) => { expAwarded: number; updatedCards: number[] };
   saveToStorage: () => void;
   loadFromStorage: () => void;
 }
 
 export type ViewKey = 'home' | 'deck' | 'play' | 'card' | 'shop';
-export type ModalKey = 'mall' | 'community' | 'login' | null;
+export type HashRoute = '#home' | '#deck' | '#play' | '#card' | '#shop';
+export type LegacyRoute = '/home' | '/deck' | '/play' | '/main' | '/shop' | '/card';
+export type ModalKey = 'mall' | 'community' | 'login' | 'goldExchange' | 'packReveal' | null;
+
+export const HASH_ROUTES: HashRoute[] = ['#home', '#deck', '#play', '#card', '#shop'];
+export const LEGACY_ROUTES: LegacyRoute[] = ['/home', '/deck', '/play', '/main', '/shop', '/card'];
+
+export const LEGACY_ROUTE_MAPPING: Record<LegacyRoute, HashRoute> = {
+  '/home': '#home',
+  '/deck': '#deck',
+  '/play': '#play',
+  '/main': '#play',
+  '/shop': '#shop',
+  '/card': '#card',
+};
+
+export const IDLE_AUTO_PLAY_CONFIG = {
+  timeoutMs: 15000,
+  targetUrl: 'https://dayyoung-macbookpro.tail3717a4.ts.net/#play',
+  autoModeStorageKey: 'hero_kadan_rpg_auto_mode',
+} as const;
 
 export const TOP_NAV_ITEMS = ['홈', '마이덱', '플레이', '미션', '상점', '쇼핑몰'] as const;
 export const SIDE_NAV_ITEMS = ['로그인', '홈', '마이덱', '플레이', '미션', '상점', '쇼핑몰', '커뮤니티'] as const;
+
 export const SHOP_8_ITEMS = [
   '일반 카드팩',
   '매직 카드팩',
@@ -76,3 +103,26 @@ export const EXTERNAL_LINKS = {
   munpiaNovel: 'https://nlink.munpia.com/link/munpia/novel/616551',
   badgeText: '절찬 연재중',
 } as const;
+
+export interface PackRevealCard {
+  cardId: number;
+  nameKo: string;
+  nameEn: string;
+  rarity: 'Bronze' | 'Silver' | 'Gold' | 'Boss';
+  faction: string;
+  power: number;
+}
+
+export interface CurrencyBalanceState {
+  sns: number;          // hero_sns
+  earnedSns: number;    // hero_earned_sns
+  purchasedSns: number; // hero_purchased_sns
+  gold: number;         // hero_gold
+}
+
+export interface AdSensePlacementResult {
+  desktopLeft: boolean;
+  desktopRight: boolean;
+  mobileTop: boolean;
+  suppressedByVip: boolean;
+}
