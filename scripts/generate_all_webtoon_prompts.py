@@ -5,29 +5,29 @@ import re
 CHARACTER_DESCRIPTIONS = {
     "Kadan": (
         "[FIXED MODEL SHEET LOCK - KADAN (카단) — DO NOT ALTER HAIR/EYES/OUTFIT]: "
-        "18-year-old dark-fantasy anime protagonist in Demon Slayer: Kimetsu no Yaiba (ufotable) style; "
-        "FACE & HAIR: sharp determined jawline, intense glowing cyan-sapphire eyes with bold black ink eyelashes, "
-        "windblown spiky dark chestnut-brown hair with black ink-shaded tips (STRICT: NEVER blonde, NEVER silver, NEVER red hair); "
-        "SIGNATURE ACCESSORY: iconic tattered crimson-red woolen muffler wrapped tightly around his neck; "
-        "SIGNATURE OUTFIT: sleeveless charcoal-black leather adventurer vest over a dark-slate short-sleeve tunic revealing toned muscular warrior arms, "
-        "dark iron-plated forearm bracers, dark combat trousers and shin guards (STRICT: NEVER full plate armor, NEVER royal blue cape); "
-        "SIGNATURE WEAPONS: round dark-iron northern shield with a white snow-crystal emblem on his left arm, "
-        "and twin straight starlight-cyan crystalline broadswords emitting ufotable-style swirling cyan star-breathing wave arcs"
+        "18-year-old heroic anime protagonist in authentic Demon Slayer: Kimetsu no Yaiba (ufotable & Koyoharu Gotouge vivid color) style; "
+        "FACE & HAIR: well-lit warm peach-ivory skin, sharp determined jawline, intense glowing cyan-sapphire eyes with bold black ink eyelashes, "
+        "windblown spiky rich chestnut-burgundy brown hair with black ink-shaded tips (STRICT: NEVER blonde, NEVER silver, NEVER red hair); "
+        "SIGNATURE ACCESSORY: iconic vibrant crimson-vermilion woolen muffler wrapped around his neck; "
+        "SIGNATURE OUTFIT: sleeveless deep-indigo and charcoal adventurer vest over a slate-blue short-sleeve tunic revealing toned muscular warrior arms, "
+        "silver-trimmed forearm bracers, combat trousers and shin guards (STRICT: NEVER full plate armor, NEVER royal blue cape); "
+        "SIGNATURE WEAPONS: round northern iron shield with a crisp white snow-crystal emblem on his left arm, "
+        "and twin straight starlight-cyan crystalline broadswords emitting vivid ufotable ukiyo-e turquoise-blue and white star-breathing wave arcs"
     ),
     "Celia": (
         "[FIXED MODEL SHEET LOCK - CELIA (실리아) — DO NOT ALTER HAIR/EYES/OUTFIT]: "
-        "17-year-old wind priestess princess heroine in Demon Slayer: Kimetsu no Yaiba (ufotable) style; "
-        "FACE & HAIR: delicate expressive anime face, clear luminous aquamarine-emerald eyes, "
-        "long waist-length emerald-mint green hair with twin braided side-locks pinned by pink cherry-blossom hairpins (STRICT: NEVER blonde, NEVER silver-white, NEVER purple hair); "
-        "SIGNATURE OUTFIT: dark-teal and ivory priestess kimono-style battle robe with gold wind-cloud embroidery, fitted waist sash, and deep indigo pleated slit skirt; "
-        "SIGNATURE WEAPON: ornate glowing emerald-jade wind staff (녹옥 지팡이) trailing ufotable ukiyo-e style turquoise wind-breathing currents"
+        "17-year-old wind priestess princess heroine in authentic Demon Slayer: Kimetsu no Yaiba (ufotable & Koyoharu Gotouge vivid color) style; "
+        "FACE & HAIR: well-lit delicate expressive anime face, clear luminous aquamarine-emerald eyes, "
+        "long waist-length vibrant emerald-mint green hair with twin braided side-locks pinned by sakura-pink cherry-blossom hairpins (STRICT: NEVER blonde, NEVER silver-white, NEVER purple hair); "
+        "SIGNATURE OUTFIT: vivid turquoise-teal and warm ivory priestess kimono-style battle robe with bright gold wind-cloud embroidery, fitted waist sash, and rich indigo pleated slit skirt; "
+        "SIGNATURE WEAPON: ornate glowing emerald-jade wind staff (녹옥 지팡이) trailing vivid ufotable ukiyo-e turquoise-emerald wind-breathing currents"
     ),
     "Ignis": (
         "[FIXED MODEL SHEET LOCK - IGNIS (이그니스) — DO NOT ALTER HAIR/EYES/OUTFIT]: "
-        "19-year-old flame knight youth in Demon Slayer: Kimetsu no Yaiba (ufotable Rengoku-inspired) style; "
-        "FACE & HAIR: fierce sharp eyes with glowing amber-gold irises, wild spiky flame-crimson red hair with black-shaded tips (STRICT: NEVER brown, NEVER blonde hair); "
-        "SIGNATURE OUTFIT: blackened-steel and dark-crimson dragon-scale chest armor over a sleeveless black combat vest revealing scarred muscular arms, tattered dark-crimson battle cloak; "
-        "SIGNATURE WEAPON: colossal blackened-steel solar greatsword engulfed in ufotable ukiyo-e style roaring white-and-crimson flame-breathing arcs"
+        "19-year-old flame knight youth in authentic Demon Slayer: Kimetsu no Yaiba (ufotable Rengoku-inspired vivid color) style; "
+        "FACE & HAIR: well-lit face, fierce sharp eyes with glowing golden-amber irises, wild spiky blazing vermilion-crimson and golden-tipped flame hair (STRICT: NEVER brown, NEVER blonde hair); "
+        "SIGNATURE OUTFIT: crimson-and-gold dragon-scale chest armor over a sleeveless black combat vest revealing scarred muscular arms, vibrant crimson-and-white flame battle cloak; "
+        "SIGNATURE WEAPON: colossal solar greatsword engulfed in vivid ufotable ukiyo-e roaring vermilion-orange and golden-yellow flame-breathing arcs"
     ),
     "Rondol": (
         "[FIXED MODEL SHEET LOCK - RONDOL (론돌) — DO NOT ALTER HAIR/EYES/OUTFIT]: "
@@ -347,18 +347,18 @@ def build_scene_prompt(ep_num: int, img: dict) -> dict:
     if not chars:
         char_section = (
             "Featured Elements:\n"
-            "Pure dark-fantasy architectural and environmental landscape scenery in Demon Slayer (ufotable) background art style. "
+            "Authentic Demon Slayer: Kimetsu no Yaiba (Koyoharu Gotouge original color art & ufotable) architectural and environmental landscape scenery with vivid, rich, luminous colors. "
             "ABSOLUTELY NO CHARACTERS, NO PEOPLE, NO ACTORS, NO HUMANS in frame. "
             "Empty scenic panoramic environment view.\n"
         )
         aesthetic_chars = (
-            "- Pure dark-fantasy environment concept art: dramatic chiaroscuro lighting, deep moody shadows, "
-            "glowing atmospheric embers/mist, and rich ufotable cinematic depth."
+            "- Vivid Demon Slayer (ufotable & Koyoharu Gotouge) environment concept art: rich, vibrant traditional color palette, "
+            "warm glowing lantern/sunlight/moonlight illumination, luminous elemental particles, and crystal-clear visibility (NEVER overly dark or gloomy)."
         )
     else:
         char_desc_list = [CHARACTER_DESCRIPTIONS[c] for c in chars if c in CHARACTER_DESCRIPTIONS]
         if not char_desc_list:
-            char_desc_list = [f"{c}: dark-fantasy anime warrior in Demon Slayer (ufotable) style" for c in chars]
+            char_desc_list = [f"{c}: anime warrior in authentic Demon Slayer: Kimetsu no Yaiba (ufotable) vibrant color style" for c in chars]
         char_text = " | ".join(char_desc_list)
         char_section = (
             f"Featured Characters & Elements (STRICT MODEL SHEET CONSISTENCY — MAX {len(chars)} FOCAL CHARACTER(S)):\n"
@@ -367,20 +367,22 @@ def build_scene_prompt(ep_num: int, img: dict) -> dict:
             f"(exact hair color, hairstyle, eye color, outfit colors, and signature weapon). NEVER swap or blend traits between characters.\n"
         )
         aesthetic_chars = (
-            "- Razor-sharp Demon Slayer (Kimetsu no Yaiba / ufotable) character designs with bold variable-weight black sumi-e ink brush outlines, "
-            "intense expressive anime eyes, and 100% consistent model-sheet facial/hair/costume proportions."
+            "- Razor-sharp Demon Slayer (Kimetsu no Yaiba / Koyoharu Gotouge original art & ufotable) character designs with bold variable-weight black sumi-e ink brush outlines, "
+            "bright well-lit faces and warm skin tones, vivid saturated outfit colors, intense expressive anime eyes, and 100% consistent model-sheet facial/hair/costume proportions."
         )
 
     if ep_num >= 20:
         prompt = (
-            f"Generate a dramatic, dark-fantasy 16:9 cinematic anime webtoon illustration (1280x720) for Episode {ep_num} Scene {idx} of SNSHero "
-            f"in the iconic visual style of Demon Slayer: Kimetsu no Yaiba (ufotable studio).\n\n"
-            f"Art Style & Visual Aesthetic (Demon Slayer / ufotable Dark-Fantasy Aesthetic):\n"
-            f"- Masterpiece dark-fantasy anime aesthetic inspired by Demon Slayer: Kimetsu no Yaiba (ufotable): "
-            f"bold calligraphic sumi-e ink brush outlines, deep atmospheric shadows, rich dramatic chiaroscuro contrast, "
-            f"moody nocturnal/twilight/stormy color grading, and intense cinematic rim lighting (NO overly bright washed-out pastel daylight).\n"
-            f"- Signature ufotable elemental breathing visual effects: stylized ukiyo-e woodblock-wave elemental slashes, "
-            f"glowing starlight/flame/wind/lightning breathing arcs, and dynamic glowing particle embers contrasting sharply against deep dark-fantasy backgrounds.\n"
+            f"Generate a vivid, richly colored 16:9 cinematic anime webtoon illustration (1280x720) for Episode {ep_num} Scene {idx} of SNSHero "
+            f"in the authentic visual style and vibrant color palette of Demon Slayer: Kimetsu no Yaiba (Koyoharu Gotouge original color art & ufotable studio).\n\n"
+            f"Art Style & Color Palette (Authentic Demon Slayer: Kimetsu no Yaiba Original Art & ufotable Vivid Color Aesthetic):\n"
+            f"- Authentic Demon Slayer: Kimetsu no Yaiba color palette (귀멸의 칼날 원화 색감): "
+            f"vivid, rich, luminous, high-saturation traditional colors — vibrant turquoise-cyan, blazing vermilion-crimson, warm golden-amber, "
+            f"luminous emerald-jade, rich wisteria-violet, and warm glowing lantern/sunlight/moonlight illumination.\n"
+            f"- Bright, crystal-clear character & background visibility (NEVER overly dark, NEVER gloomy, NEVER underexposed or muddy grey-black): "
+            f"characters' faces, warm peach-ivory skin tones, vivid hair colors, and colorful haori/robes are clearly and vibrantly illuminated with crisp cel-shading.\n"
+            f"- Signature Koyoharu Gotouge & ufotable linework and breathing effects: bold calligraphic black sumi-e ink brush outlines framing bright, saturated colors, "
+            f"paired with dazzling colorful ukiyo-e woodblock-wave elemental breathing slashes (vivid turquoise-blue water/star waves with crisp white foam, blazing golden-vermilion flames, luminous emerald wind currents).\n"
             f"{aesthetic_chars}\n\n"
             f"Scene Narrative & Action:\n"
             f"{narration_ko}\n({narration_en})\n\n"
@@ -399,15 +401,15 @@ def build_scene_prompt(ep_num: int, img: dict) -> dict:
         )
 
     if bg:
-        prompt += f"Environment & Setting: {bg} (rendered with deep Demon Slayer ufotable atmospheric shadows and dramatic lighting)\n"
+        prompt += f"Environment & Setting: {bg} (rendered with authentic Demon Slayer: Kimetsu no Yaiba vivid color palette, warm glowing illumination, and rich saturated colors — NEVER overly dark)\n"
 
     if has_speech:
         prompt += (
             f"\nComposition Note: Dialogue scene featuring {speaker}. "
-            f"Frame {speaker} prominently with natural headroom above their head for clean composition and strict model-sheet facial clarity.\n"
+            f"Frame {speaker} prominently with bright, clear facial illumination and natural headroom above their head for clean composition and strict model-sheet facial clarity.\n"
         )
     else:
-        prompt += "\nComposition Note: Pure narrative dark-fantasy cinematic shot. Dynamic ufotable-style framing.\n"
+        prompt += "\nComposition Note: Vivid, richly colored Demon Slayer (ufotable) cinematic shot with clear, well-lit exposure.\n"
 
     prompt += "\nStrict Quality Constraint: Absolutely NO text, NO speech bubbles, NO subtitles, NO watermarks, NO UI elements."
 
@@ -441,10 +443,11 @@ def process_episode(manifest: dict, ep_num: int):
     batch_size = 6
 
     if ep_num >= 20:
-        header_line_1_tpl = "Generate {count} dark-fantasy 16:9 cinematic anime illustrations for Episode {ep:02d} (Scenes {s_start:02d} to {s_end:02d}) of SNSHero in the style of Demon Slayer: Kimetsu no Yaiba (ufotable)."
+        header_line_1_tpl = "Generate {count} vivid, richly colored 16:9 cinematic anime illustrations for Episode {ep:02d} (Scenes {s_start:02d} to {s_end:02d}) of SNSHero in the authentic style and vibrant color palette of Demon Slayer: Kimetsu no Yaiba (Koyoharu Gotouge original color art & ufotable)."
         header_line_2 = (
-            "Aesthetic & Consistency Requirement: Demon Slayer: Kimetsu no Yaiba (ufotable) dark-fantasy style — "
-            "bold black sumi-e ink brush outlines, deep moody atmospheric shadows, high-contrast rim lighting, ukiyo-e elemental breathing effects (NO overly bright daylight), "
+            "Aesthetic & Consistency Requirement: Authentic Demon Slayer: Kimetsu no Yaiba (ufotable & Koyoharu Gotouge) vivid color palette (귀멸의 칼날 원화 색감) — "
+            "bold black sumi-e ink brush outlines framing bright, vivid, richly saturated colors (vibrant turquoise-cyan, blazing vermilion-gold, luminous emerald-jade, warm lantern/ambient light), "
+            "crystal-clear well-lit character visibility (NEVER overly dark or gloomy), ukiyo-e elemental breathing effects, "
             "and 100% strict adherence to each character's [FIXED MODEL SHEET LOCK] (never alter or swap hair color, eye color, outfit, or signature weapon)."
         )
     else:

@@ -5,11 +5,62 @@ import glob
 import re
 import json
 from pathlib import Path
-from PIL import Image
+import numpy as np
+from PIL import Image, ImageEnhance
 
 WIDTH = 768
 HEIGHT = 432
 BRAIN_ROOT = "/Users/dayyoung/.gemini/antigravity/brain"
+
+def auto_crop_letterbox(im: Image.Image) -> Image.Image:
+    """Removes solid black top/bottom letterbox bars if present."""
+    rgb = im.convert("RGB")
+    arr = np.asarray(rgb, dtype=np.float32)
+    row_max = arr.max(axis=(1, 2))
+    non_black = np.where(row_max > 16.0)[0]
+    if len(non_black) > int(im.height * 0.75):
+        top = int(non_black[0])
+        bot = int(non_black[-1]) + 1
+        if top > 4 or (im.height - bot) > 4:
+            return im.crop((0, top, im.width, bot))
+    return im
+
+def apply_demon_slayer_vibrant_color_grade(im: Image.Image) -> Image.Image:
+    """
+    Authentic Demon Slayer: Kimetsu no Yaiba (ufotable & Koyoharu Gotouge original art) vivid color grading:
+    1. Auto-crops any top/bottom black letterbox bars.
+    2. Zero milky grey fog: f(0) = 0 (black sumi-e ink outlines and true blacks stay deep black).
+    3. Lifts dark midtones & shadows smoothly while infusing rich Demon Slayer color saturation
+       (vibrant turquoise/indigo, warm golden-amber, rich crimson, luminous emerald) so dark scenes
+       become vivid and clearly visible without washing out black ink lines.
+    """
+    im = auto_crop_letterbox(im)
+    rgb = im.convert("RGB")
+    arr = np.asarray(rgb, dtype=np.float32) / 255.0
+    lum = 0.299 * arr[:, :, 0] + 0.587 * arr[:, :, 1] + 0.114 * arr[:, :, 2]
+    mean_lum = float(lum.mean()) * 255.0
+
+    if mean_lum < 105.0:
+        target_norm = 98.0 / 255.0
+        cur_norm = max(0.12, mean_lum / 255.0)
+        gamma = float(np.clip(np.log(target_norm) / np.log(cur_norm), 0.48, 0.85))
+
+        # Pure gamma curve (0 stays 0) + black-toe anchor so ink lines (< 0.07) remain deep black
+        lifted = np.power(np.clip(arr, 0.0, 1.0), gamma)
+        toe_weight = np.clip((lum - 0.025) / 0.075, 0.0, 1.0)[:, :, None]
+        arr = arr * (1.0 - toe_weight) + lifted * toe_weight
+
+        # Infuse Demon Slayer rich color warmth in midtones and vibrant indigo-turquoise depth
+        mid_mask = (4.0 * lum * (1.0 - lum))[:, :, None]
+        arr[:, :, 0] = np.clip(arr[:, :, 0] + 0.035 * mid_mask[:, :, 0], 0.0, 1.0)
+        arr[:, :, 1] = np.clip(arr[:, :, 1] + 0.020 * mid_mask[:, :, 0], 0.0, 1.0)
+        arr[:, :, 2] = np.clip(arr[:, :, 2] + 0.030 * mid_mask[:, :, 0], 0.0, 1.0)
+
+    out_im = Image.fromarray((np.clip(arr, 0.0, 1.0) * 255.0).astype(np.uint8))
+    sat_factor = 1.48 if mean_lum < 60.0 else (1.34 if mean_lum < 90.0 else 1.18)
+    out_im = ImageEnhance.Color(out_im).enhance(sat_factor)
+    out_im = ImageEnhance.Contrast(out_im).enhance(1.12)
+    return out_im.convert(im.mode)
 
 def embed_hidden_bottom_ai_marker(image: Image.Image, card_id: int, scene_idx: int):
     """
@@ -103,6 +154,8 @@ def process_episode_images(ep_num: int, force: bool = False):
             continue
 
         im = Image.open(src_path).convert("RGBA")
+        if ep_num >= 20:
+            im = apply_demon_slayer_vibrant_color_grade(im)
         im_resized = im.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
 
         metadata_comment = {
