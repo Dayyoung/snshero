@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 22:04 KST] [마일스톤 5 보완: tests/adversarial_m5_shop_adsense.ts 프로덕션 직접 임포트 및 모의 파사드 완전 제거 완료]
+- **작업자**: `worker_m5_it2` (Milestone 5 Remediation Worker)
+- **작업 개요**:
+  - `tests/adversarial_m5_shop_adsense.ts`:
+    - 포렌식 감사관(auditor_m5_9_1) 적발 무결성 위반 항목 전수 해결.
+    - 테스트 더블(`ReferenceShopManager`, `ReferenceAdSenseManager`, `ReferenceNurtureStore`) 완전 제거 및 프로덕션 모듈 직접 임포트 (`ShopSection.tsx`, `adsenseManager.ts`, `cardNurtureStore.ts`).
+    - Suite 1의 자체 증명 로컬 모의 함수 `renderMockPackRevealModal` 전면 폐기 및 프로덕션 `renderPackRevealModal()`, `closePackRevealModal()` 직접 실행 및 수명주기 검증.
+    - `ADV-M5-GOLD-05`의 항진 명제(`typeof hasFreeFaucetButton === 'boolean'`) 제거 및 `hasFreeFaucetButton === false` 엄격 불변식 적용 (`ShopSection.tsx` 및 `index.ts` 무료 수도꼭지 잔존 전무 검증).
+- **검증 결과**:
+  - `tests/adversarial_m5_shop_adsense.ts`: **38/38 PASS (100.0%)** (프로덕션 직접 임포트)
+  - `tests/e2e/run_all.ts`: **76/76 PASS (100.0%)**
+  - `tests/adversarial_m1_build_pipeline.ts`: **64/64 PASS (100.0%)**
+  - `tests/adversarial_m2_user_interaction.ts`: **18/18 PASS (100.0%)**
+  - `tests/adversarial_m3_play_game_loop.ts`: **28/28 PASS (100.0%)**
+  - `tests/adversarial_m4_card_nurturing.ts`: **44/44 PASS (100.0%)**
+  - `tests/challenger_m4_9_1_empirical_invariants.ts`: **253/253 PASS (100.0%)**
+  - `tests/challenger_m4_9_2_empirical_stress.ts`: **39/39 PASS (100.0%)**
+  - `tests/challenger_m5_9_1_empirical_invariants.ts`: **37/37 PASS (100.0%)**
+  - `tests/challenger_m5_9_2_empirical_currency_adsense.ts`: **48/48 PASS (100.0%)**
+  - `npx tsc --noEmit`: **0 Errors**
+  - `npm run build`: **정상 빌드 통과 (index.html 번들 <= 50 KB, Zero React runtime)**
+  - 로컬 git 커밋: `217f21798` (git push 금지 준수)
+
 ## [2026-11-02 21:28 KST] [마일스톤 5: #shop 3-Card PackRevealModal, Dual-Write Persistence, Non-Free Gold Exchange, Responsive Google AdSense Placements 구현 완료]
 - **작업자**: `worker_m5_9` (Implementer / QA Specialist)
 - **작업 개요**:
