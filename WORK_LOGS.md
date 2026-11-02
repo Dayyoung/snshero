@@ -2,6 +2,31 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 19:04 KST] [마일스톤 2 반복 2: 모달/드로어 백드롭 클릭 닫기 이중 방어 아키텍처 구현 및 게이트 결함 수정 완료]
+- **작업자**: `worker_m2_it2` (Implementer / QA Specialist)
+- **작업 개요**:
+  - `src/landing/views/HomeSection.tsx`:
+    - `#home-card-inspect-modal` 내부에 전용 형제 백드롭 엘리먼트(`<div id="home-card-inspect-backdrop" data-action="close-home-card-inspector" class="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-pointer transition-opacity" aria-hidden="true"></div>`)를 신설.
+    - 외부 래퍼 `#home-card-inspect-modal`에서 `bg-black/60 backdrop-blur-xs`를 제거하고, 내부 다이얼로그 콘텐츠 박스에 `relative z-10`을 부여하여 내부 클릭 시 모달이 오작동으로 닫히는 현상을 완벽 차단.
+  - `src/landing/views/MyDeckSection.tsx`:
+    - `#deck-swap-drawer-backdrop` 내부에 전용 형제 백드롭 엘리먼트(`<div id="deck-swap-backdrop" data-action="close-deck-swap-drawer" class="fixed inset-0 bg-black/60 cursor-pointer transition-opacity" aria-hidden="true"></div>`)를 신설.
+    - 외부 래퍼 `#deck-swap-drawer-backdrop`에서 `bg-black/60`을 제거하고, 내부 드로어 다이얼로그 박스에 `relative z-10`을 부여하여 내부 텍스트 및 카드 조작 시 드로어가 닫히지 않도록 보호.
+  - `src/landing/index.ts`:
+    - `handleEventDelegation` 최상단에 직접 타깃 ID 검사 로직(Dual-Defense Layer 2) 추가: `rawTarget.id === 'home-card-inspect-modal' || rawTarget.id === 'home-card-inspect-backdrop'`, `rawTarget.id === 'deck-swap-drawer-backdrop' || rawTarget.id === 'deck-swap-backdrop'`, `rawTarget.id === 'landing-modal-overlay'` 클릭 시 각 오버레이를 즉시 안전하게 닫고 리렌더링.
+- **검증 결과**:
+  - `npx tsx tests/adversarial_m2_user_interaction.ts`: **18/18 PASS (100.0%)** (게이트 실패 항목 CH2.HOME.BACKDROP_CLICK, CH2.DECK.BACKDROP_CLICK 완전 해결, 내부 클릭 CH2.HOME.INSIDE_CLICK_PRESERVED 정상 통과)
+  - `npx tsx tests/adversarial_m2_home_deck.ts`: **28/28 PASS (100.0%)**
+  - `npx tsx tests/challenger_m2_adversarial.ts`: **30/30 PASS (100.0%)**
+  - `npx tsx tests/challenger_m2_deep_stress.ts`: **29/29 PASS (100.0%)**
+  - `npx tsx tests/e2e/run_all.ts --milestone M2`: **11/11 PASS (100.0%)**
+  - `npx tsx tests/adversarial_route_edge_cases.ts`: **76/76 PASS (100.0%)**
+  - `npx tsx tests/adversarial_m1_build_pipeline.ts`: **64/64 PASS (100.0%)**
+  - `npx tsc --noEmit`: 0 errors (exit code 0)
+  - `npm run build`: 성공 (exit code 0, 4,346 modules transformed, 60개 정적 fallback 페이지 생성)
+  - 총 256개 테스트 단언문 전수 통과 (100.0%).
+- **구글 폼 보고**: submit_report.py 전송 완료 (작업완료).
+- **커밋 해시**: `a73e5b6b6` (로컬 커밋 완료, git push 미수행).
+
 ## [2026-11-02 18:45 KST] [마일스톤 2 챌린저 1 (#home 로고·쿨카드덱 및 #deck 슬롯 편집 패리티) 독립 적대적 검증 완료]
 - **작업자**: `challenger_m2_9_1` (Empirical Challenger: critic, specialist)
 - **작업 개요**:
