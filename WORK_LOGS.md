@@ -2,6 +2,39 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 23:00 KST] [마일스톤 6 보완: tests/e2e/helpers.ts 5개 Reference* 테스트 더블 전면 제거 및 4-Tier 76개 전수 E2E 테스트 프로덕션 직접 연동 완료]
+- **작업자**: `worker_m6_it2` (Implementer / QA Specialist)
+- **작업 개요**:
+  - `tests/e2e/helpers.ts`:
+    - 포렌식 감사관(auditor_m6_master) 적발 무결성 위반 항목 전수 해결.
+    - 5개 `Reference*` 테스트 더블 클래스(`ReferenceHashRouter`, `ReferenceIdleAutoPlayManager`, `ReferenceNurtureStore`, `ReferenceShopManager`, `ReferenceAdSenseManager`) 100% 전면 영구 삭제 (534줄 감축).
+    - `setupTestEnvironment()` 헬퍼 추가 (필요 시 격리된 테스트 환경 구성 지원).
+  - `src/landing/services/hashRouter.ts`:
+    - 순수 SPA 해시 라우팅 및 레거시 리다이렉트 서비스 모듈 신규 분리 (`VALID_VIEWS`, `HASH_ROUTES`, `LEGACY_ROUTES`, `HASH_VIEW_MAP`, `LEGACY_PATH_MAP`, `LEGACY_ROUTE_MAPPING`, `parseRoute`, `normalizeHashRoute`, `isLegacyRoute`, `getLegacyRedirect`).
+    - `src/landing/index.ts`에서 re-export 및 라우팅 상수 일원화.
+  - `src/landing/services/idleAutoPlayManager.ts`:
+    - 결정론적 시뮬레이션 및 테스트 지원 API 추가 (`currentIdleMs`, `isAutoPlayActive`, `tick(deltaMs)`, `handleUserInteraction()`, `getIdleTime()`, `isTriggered()`).
+    - `resetTimer()` 호출 시 `currentIdleMs = 0` 동기화 보장.
+  - `tests/adversarial_challenger_m4_empirical.ts`:
+    - 라인 466의 항진 명제(`assert(..., true)`) 완전 제거.
+    - 4개 경험적 상태 변수(`togglesCompleted === 1000 && !toggleDeadlock && activeMode === false && activeTimersPreCleanup === 1`) 엄격 검증으로 교체.
+  - `tests/e2e/tier1_feature_coverage.ts`: 24개 테스트 프로덕션 모듈 직접 임포트 및 단언문 연동 (51/51 PASS).
+  - `tests/e2e/tier2_boundary_corner.ts`: 12개 테스트 프로덕션 모듈 직접 임포트 및 단언문 연동 (12/12 PASS).
+  - `tests/e2e/tier3_cross_feature.ts`: 7개 테스트 프로덕션 모듈 직접 임포트 및 단언문 연동 (7/7 PASS).
+  - `tests/e2e/tier4_realworld_workload.ts`: 6개 테스트 프로덕션 모듈 직접 임포트 및 단언문 연동 (6/6 PASS).
+- **검증 결과**:
+  - `tests/e2e/run_all.ts`: **76/76 PASS (100.0%)** (4-Tier 전수 프로덕션 연동)
+  - `tests/adversarial_challenger_m4_empirical.ts`: **34/34 PASS (100.0%)** (항진성 단언문 제거 완료)
+  - `tests/adversarial_m1_build_pipeline.ts`: **64/64 PASS (100.0%)**
+  - `tests/adversarial_m2_user_interaction.ts`: **18/18 PASS (100.0%)**
+  - `tests/adversarial_m3_play_game_loop.ts`: **28/28 PASS (100.0%)**
+  - `tests/adversarial_m4_card_nurturing.ts`: **44/44 PASS (100.0%)**
+  - `tests/adversarial_m5_shop_adsense.ts`: **38/38 PASS (100.0%)**
+  - `npx tsc --noEmit`: **0 Errors (PASS)**
+  - `npm run build`: **정상 빌드 통과 (index.html: 45,242 bytes <= 50 KB, Zero React runtime in index.html)**
+  - 로컬 git 커밋: `e3bb4da48` (git push 금지 준수)
+  - 구글 폼 보고서 제출: 완료 (`submit_report.py`)
+
 ## [2026-11-02 22:04 KST] [마일스톤 5 보완: tests/adversarial_m5_shop_adsense.ts 프로덕션 직접 임포트 및 모의 파사드 완전 제거 완료]
 - **작업자**: `worker_m5_it2` (Milestone 5 Remediation Worker)
 - **작업 개요**:
