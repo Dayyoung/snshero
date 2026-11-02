@@ -2,6 +2,33 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 19:45 KST] [마일스톤 3: #play 2D 타일 어드벤처 맵·에피소드 대화·3x3 전술 배틀 루프 및 Poki 110 아케이드 패리티 구현 완료]
+- **작업자**: `worker_m3_9` (Implementer / QA Specialist)
+- **작업 개요**:
+  - `src/landing/views/PlaySection.tsx`:
+    - 3-탭 세그먼트 아키텍처 구현: `adventure`(기본 탭), `arcade`(110선 아케이드 카탈로그), `webtoon`(40화 웹툰 플레이어).
+    - 순수 TypeScript 템플릿 스트링 렌더링 유지 (Zero React runtime in static index.html, 번들 크기 44.10 KB < 50 KB).
+    - `adventure` 탭: 2D 타일 맵 그리드(10x8), heroTile 위치 렌더링, 인카운터 핀, 지역 정보, 좌표 뱃지, 모바일 4방향 D-Pad(min-h-[44px]), 직접 타일 클릭 내비게이션, 자동 진행(Auto-play) 토글.
+    - 에피소드 대화 오버레이: 7등신 캐릭터 컷아웃(`/anime-character-sheets/cutouts/...`), 소설 스크립트 산문, 주인공 선택지 분기(스탯 보너스 부여), 카운트다운 타이머.
+    - 3x3 전술 카드 배틀 오버레이: 9개 슬롯 플립 엔진, 덱/상대 카드 정보, 승리 시 활성 덱 카드에 50 EXP 지급(`cardNurtureStore.awardBattleVictoryExp(50)`), `[🔁 반복 사냥]`, 자동 진행 챕터 연계.
+    - `arcade` 탭: 110종 Poki 미니게임(`CARD_DATABASE` ID 1..110) 카탈로그, 실시간 검색창, 속성 필터 칩, `[🎲 랜덤 플레이]` 주사위 롤러, 100dvh 전체화면 실행 모달 (44px+ 종료 버튼).
+    - `webtoon` 탭: `<section aria-label="웹툰 컨트롤 바">` 내 5개 필수 버튼(`닫기`, `이전`, `다음`, `나레이션`, `TTS`) 및 `isTtsActive: false` 기본 상태 엄격 보존.
+  - `src/landing/services/playRpgEngine.ts`:
+    - 타일 이동, 장애물 판정, 인카운터 발동(`shouldTriggerAmbush`, 3걸음 쿨다운), 대화 진행, 선택지 처리, 3x3 배틀 플립 메커니즘, 50 EXP 보상, 챕터 자동 진행 및 110종 아케이드 카탈로그 상태 관리 모듈 신규 구현.
+  - `src/landing/index.ts`:
+    - `#play` 뷰 진입 시 방향키(ArrowUp/Down/Left/Right) 및 WASD 전역 keydown 가로채기 연동.
+    - `play-arcade-search` 입력 실시간 검색 핸들러 및 자동 진행 인터벌 타이머(1400ms) 연동.
+  - `tests/adversarial_m3_play_game_loop.ts`:
+    - 7개 스위트, 27개 단언문으로 구성된 적대적 테스트 하네스 작성 및 100% 통과.
+- **검증 결과**:
+  - `npx tsx tests/adversarial_m3_play_game_loop.ts`: **27/27 PASS (100.0%)**
+  - `npx tsx tests/e2e/run_all.ts`: **76/76 PASS (100.0%)**
+  - `npx tsx tests/adversarial_challenger_m3_landing.ts`: **22/22 PASS (100.0%)**
+  - `npx tsc --noEmit`: 0 errors
+  - `npm run build`: 성공 (exit code 0, 4,346 modules transformed, dist/index.html 44.10 KB < 50 KB, React 번들 미참조)
+- **구글 폼 보고**: submit_report.py 전송 완료 (작업완료).
+- **커밋 해시**: `bdd13ec0d` (로컬 커밋 완료, git push 미수행).
+
 ## [2026-11-02 19:04 KST] [마일스톤 2 반복 2: 모달/드로어 백드롭 클릭 닫기 이중 방어 아키텍처 구현 및 게이트 결함 수정 완료]
 - **작업자**: `worker_m2_it2` (Implementer / QA Specialist)
 - **작업 개요**:
