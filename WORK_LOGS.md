@@ -2,6 +2,42 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 21:28 KST] [마일스톤 5: #shop 3-Card PackRevealModal, Dual-Write Persistence, Non-Free Gold Exchange, Responsive Google AdSense Placements 구현 완료]
+- **작업자**: `worker_m5_9` (Implementer / QA Specialist)
+- **작업 개요**:
+  - `src/landing/views/ShopSection.tsx`:
+    - 무료 수도꼭지(`coin_charge` 무료 SNS 충전 및 `+ 코인 무료 충전` 버튼) 전면 폐기.
+    - 골드 환전소(5,000 골드 -> 1,000 SNS) 신규 구현: `getUserGold()`, `setUserGold()`, `exchangeGoldForSns()`, `executeGoldExchange()`. 5,000 골드 잔액 검증 및 부족 시 잔액 불변 보호.
+    - 3-Card PackRevealModal 구현: 팩 구매 시 카드 3장 추첨(`unlockedIds`), `cardNurtureStore.addCard(cardId)` 호출(자동 듀얼 라이트), 모달 오픈(`activeRevealPack`), 컷아웃 및 초상화, 등급 뱃지, N/E/S/W 스탯, PWR 파워 수치 표시, 확인 및 닫기 버튼, 배경 오버레이 클릭 닫기 및 ESC 키보드 닫기 지원.
+    - 정밀 통화 차감(SNS): `hero_earned_sns` 선 차감 후 잔여분 `hero_purchased_sns` 차감 규칙 적용, `hero_sns` 및 `hero_sns_${season}` 동기화, `snshero_sns_updated` 이벤트 디스패치.
+  - `src/landing/services/cardNurtureStore.ts`:
+    - `syncCardToHeroInventory(cardId)`: `hero_inventory_${season}` 및 `hero_inventory_s1` 동시 기록 보장, 중복 획득 시 `quantity` +1 정상 증가, `snshero_inventory_updated` 커스텀 이벤트 디스패치.
+  - `src/landing/services/adsenseManager.ts`:
+    - Google AdSense 반응형 수명주기 매니저 신규 구현 (게시자 ID: `ca-pub-6937094123258335`).
+    - VIP 광고 제거 가드 (`hero_ad_removed === 'true'` 활성 시 320px..3840px 전 구간 광고 100% 차단).
+    - `isAdRemoved()`, `getAdPlacements()`, `renderDesktopLeftGutter()`, `renderDesktopRightGutter()`, `renderMobileTopBanner()`, `pushAdSenseTags()`.
+  - `src/landing/components/AdSenseBanners.tsx`:
+    - OpenCode Terminal-Flat 규격 반응형 애드센스 컴포넌트 신규 구현.
+    - 데스크톱 좌우 사이드 거터 (`#adsense-desktop-left`, `#adsense-desktop-right`, `hidden lg:flex`).
+    - 모바일 상단 배너 (`#adsense-mobile-top`, `block lg:hidden`).
+    - Zero-shift 레이아웃 구조 보장.
+  - `src/landing/index.ts`:
+    - 애드센스 거터 및 상단 배너 앱 쉘 마운트.
+    - `open-gold-exchange`, `execute-gold-exchange`, `close-gold-exchange`, `close-pack-reveal`, `confirm-pack-reveal` 이벤트 위임 및 배경 클릭/ESC 키 핸들러 연동.
+  - `tests/adversarial_m5_shop_adsense.ts`:
+    - 38개 적대적 테스트 단언문(팩 개봉 모달 DOM 구조 및 수명주기, SNS 통화 차감/증액 불변성, 5,000 골드 환전 검증, 듀얼 라이트 영구 보존, 반응형 1024px 브레이크포인트, VIP 광고 차단 가드 등) 전수 100% 패스 (38/38 PASS).
+- **검증 결과**:
+  - `tests/adversarial_m5_shop_adsense.ts`: **38/38 PASS (100.0%)**
+  - `tests/e2e/run_all.ts`: **76/76 PASS (100.0%)**
+  - `tests/adversarial_m1_build_pipeline.ts`: **64/64 PASS (100.0%)**
+  - `tests/adversarial_m2_user_interaction.ts`: **29/29 PASS (100.0%)**
+  - `tests/adversarial_m3_play_game_loop.ts`: **30/30 PASS (100.0%)**
+  - `tests/adversarial_m4_card_nurturing.ts`: **34/34 PASS (100.0%)**
+  - `tests/challenger_m4_9_1_empirical_invariants.ts`: **40/40 PASS (100.0%)**
+  - `tests/challenger_m4_9_2_empirical_stress.ts`: **39/39 PASS (100.0%)**
+  - `npx tsc --noEmit`: **0 Errors**
+  - `npm run build`: **정상 빌드 통과 (index.html 번들 <= 50 KB, Zero React runtime)**
+
 ## [2026-11-02 20:56 KST] [마일스톤 4: #card 캐릭터 육성 보유 캐릭터 엄격 한정·무료 EXP 치트 버튼 폐기·배틀 승리 연동 및 반복 사냥 구현 완료]
 - **작업자**: `worker_m4_9` (Implementer / QA Specialist)
 - **작업 개요**:

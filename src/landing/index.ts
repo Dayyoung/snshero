@@ -24,7 +24,24 @@ import {
 } from './views/MyDeckSection';
 import { renderPlaySection, handlePlayAction, stopPlayTts } from './views/PlaySection';
 import { renderCardSection, setSelectedCardId, setElementFilter, setOwnedFilter } from './views/CardSection';
-import { renderShopSection, executeShopPurchase, setUserCoins, getUserCoins } from './views/ShopSection';
+import {
+  renderShopSection,
+  executeShopPurchase,
+  setUserCoins,
+  getUserCoins,
+  openGoldExchangeModal,
+  closeGoldExchangeModal,
+  executeGoldExchange,
+  closePackRevealModal,
+  getActiveRevealPack,
+  isGoldExchangeModalOpen,
+} from './views/ShopSection';
+import {
+  renderDesktopLeftGutter,
+  renderDesktopRightGutter,
+  renderMobileTopBanner,
+  pushAdSenseTags,
+} from './services/adsenseManager';
 import { cardNurtureStore } from './services/cardNurtureStore';
 import { initIdleAutoPlay } from './services/idleAutoPlayManager';
 import { playRpgState, runAutoStep } from './services/playRpgEngine';
@@ -128,6 +145,9 @@ export function renderApp(): void {
         ${renderHeader(state.activeView)}
       </div>
 
+      <!-- Mobile Top AdSense Banner (viewports < 1024px) -->
+      ${renderMobileTopBanner()}
+
       <!-- Side Navigation -->
       <div id="landing-sidebar-slot">
         ${renderSidebar(state.isSidebarOpen, state.activeView)}
@@ -138,10 +158,19 @@ export function renderApp(): void {
         ${renderModals(state.activeModal)}
       </div>
 
-      <!-- Main Content Slot -->
-      <main id="landing-main-slot" class="w-full flex-1 flex flex-col">
-        ${renderActiveViewContent(state.activeView)}
-      </main>
+      <!-- Central Content Area with Desktop Side Gutters (viewports >= 1024px) -->
+      <div class="w-full flex-1 flex flex-row justify-center relative min-h-0">
+        <!-- Desktop Left Gutter -->
+        ${renderDesktopLeftGutter()}
+
+        <!-- Central Main Application Slot -->
+        <main id="landing-main-slot" class="w-full max-w-7xl flex-1 flex flex-col min-w-0">
+          ${renderActiveViewContent(state.activeView)}
+        </main>
+
+        <!-- Desktop Right Gutter -->
+        ${renderDesktopRightGutter()}
+      </div>
 
       <!-- Terminal Footer -->
       <div id="landing-footer-slot" class="w-full">
@@ -149,6 +178,8 @@ export function renderApp(): void {
       </div>
     </div>
   `;
+
+  pushAdSenseTags();
 }
 
 /**
@@ -166,6 +197,7 @@ export function renderSectionContent(view: ViewKey): void {
       sidebarSlot.innerHTML = renderSidebar(state.isSidebarOpen, view);
     }
     mainSlot.innerHTML = renderActiveViewContent(view);
+    pushAdSenseTags();
     window.scrollTo({ top: 0, behavior: 'instant' });
   } else {
     renderApp();
@@ -222,6 +254,16 @@ export function handleEventDelegation(event: Event): void {
   if (!rawTarget) return;
 
   // Direct Backdrop Click Fallback (Dual Defense Layer 2)
+  if (rawTarget.id === 'pack-reveal-modal' || rawTarget.id === 'pack-reveal-backdrop') {
+    closePackRevealModal();
+    renderApp();
+    return;
+  }
+  if (rawTarget.id === 'gold-exchange-modal' || rawTarget.id === 'gold-exchange-backdrop') {
+    closeGoldExchangeModal();
+    renderApp();
+    return;
+  }
   if (rawTarget.id === 'home-card-inspect-modal' || rawTarget.id === 'home-card-inspect-backdrop') {
     setInspectedHomeCardId(null);
     renderApp();
@@ -359,6 +401,11 @@ export function handleEventDelegation(event: Event): void {
     renderApp();
   } else if (action === 'buy-shop-item') {
     const itemId = target.getAttribute('data-item-id');
+    if (itemId === 'coin_charge' || itemId === 'gold_exchange') {
+      openGoldExchangeModal();
+      renderApp();
+      return;
+    }
     if (itemId) {
       const res = executeShopPurchase(itemId);
       if (!res.success) {
@@ -366,9 +413,21 @@ export function handleEventDelegation(event: Event): void {
       }
       renderApp();
     }
-  } else if (action === 'free-charge-coin') {
-    const cur = getUserCoins();
-    setUserCoins(cur + 1000);
+  } else if (action === 'open-gold-exchange') {
+    openGoldExchangeModal();
+    renderApp();
+  } else if (action === 'execute-gold-exchange') {
+    const res = executeGoldExchange(5000);
+    if (!res.success) {
+      console.warn(res.message);
+    }
+    closeGoldExchangeModal();
+    renderApp();
+  } else if (action === 'close-gold-exchange') {
+    closeGoldExchangeModal();
+    renderApp();
+  } else if (action === 'close-pack-reveal' || action === 'confirm-pack-reveal') {
+    closePackRevealModal();
     renderApp();
   }
 }
@@ -402,6 +461,16 @@ export function handleGlobalKeydown(event: KeyboardEvent): void {
   }
 
   if (event.key === 'Escape') {
+    if (getActiveRevealPack()) {
+      closePackRevealModal();
+      renderApp();
+      return;
+    }
+    if (isGoldExchangeModalOpen()) {
+      closeGoldExchangeModal();
+      renderApp();
+      return;
+    }
     if (getInspectedHomeCardId()) {
       setInspectedHomeCardId(null);
       renderApp();

@@ -384,7 +384,7 @@ export class CardNurtureStore implements NurtureState {
     return added;
   }
 
-  private syncCardToHeroInventory(cardId: number): void {
+  syncCardToHeroInventory(cardId: number): void {
     if (typeof localStorage === 'undefined') return;
     try {
       const season = localStorage.getItem('hero_current_season') || 'season1';
@@ -405,6 +405,15 @@ export class CardNurtureStore implements NurtureState {
       localStorage.setItem('hero_inventory', serialized);
       localStorage.setItem(`hero_inventory_${season}`, serialized);
       localStorage.setItem(`hero_inventory_guest_${season}`, serialized);
+      localStorage.setItem('hero_inventory_s1', serialized);
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('snshero_inventory_updated', {
+            detail: { cardId, quantity: inv[key].quantity, inventory: inv },
+          })
+        );
+      }
     } catch (e) {
       console.warn('Failed to sync to hero_inventory:', e);
     }

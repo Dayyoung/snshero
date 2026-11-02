@@ -60,8 +60,8 @@
 | M1 | Hash Routing & Idle Auto-Play | Hash route core (`#home`, `#deck`, `#play`, `#card`, `#shop`), legacy route elimination/redirects, 15s global idle timer | none | DONE |
 | M2 | `#home` Logos & `#deck` Editing | SNS Hero logo, Cool Card Deck fan-fold preview, Home feature retention, My Deck slot editing & card swapping | M1 | DONE |
 | M3 | `#play` Tile Game & Battle Loop | Tile game initial screen, movement episode trigger, card play transition, auto-play progression, play features | M1 | DONE |
-| M4 | `#card` Nurturing & Repeat Hunting | Owned-only nurturing restriction, removal of free EXP buttons, battle victory EXP hook, repeat hunting loop | M1 | PLANNED |
-| M5 | `#shop` Restoration & AdSense | Card pack opening reveal modal, inventory dual-write, currency debit/credit, gold exchange, responsive AdSense | M1 | PLANNED |
+| M4 | `#card` Nurturing & Repeat Hunting | Owned-only nurturing restriction, removal of free EXP buttons, battle victory EXP hook, repeat hunting loop | M1 | DONE |
+| M5 | `#shop` Restoration & AdSense | Card pack opening reveal modal, inventory dual-write, currency debit/credit, gold exchange, responsive AdSense | M1 | DONE |
 | M6 | E2E Verification & Forensic Audit | Pass 100% E2E test suite (Tiers 1-4), adversarial hardening (Tier 5), forensic integrity audit, build verification | M2, M3, M4, M5 | PLANNED |
 
 ## Interface Contracts
