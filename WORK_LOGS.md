@@ -2,6 +2,49 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 20:56 KST] [마일스톤 4: #card 캐릭터 육성 보유 캐릭터 엄격 한정·무료 EXP 치트 버튼 폐기·배틀 승리 연동 및 반복 사냥 구현 완료]
+- **작업자**: `worker_m4_9` (Implementer / QA Specialist)
+- **작업 개요**:
+  - `src/landing/types.ts`:
+    - `NurtureState` 인터페이스 확장: `awardBattleVictoryExp`, `getCard`, `setRepeatHunting`, `isRepeatHuntingActive` 메서드 시그니처 선언.
+  - `src/landing/services/cardNurtureStore.ts`:
+    - `nurtureCard`: 미보유 카드 및 범위(1..110) 밖, 비정수(float) 입력 시 EXP 획득 차단 가드 적용 (`if (!Number.isInteger(cardId) || cardId < 1 || cardId > 110 || !this.isCardOwned(cardId)) return { expGained: 0, leveledUp: false, newLevel: this.cards[cardId]?.level || 1 };`).
+    - `allocateStat`: 미보유 카드 차단 및 4방향 유효성 검증(`['top', 'right', 'bottom', 'left']`) 추가로 무효 스탯 포인트 낭비 방지.
+    - `hasUnspentPoints`: 미보유 카드는 항상 false 반환.
+    - `awardBattleVictoryExp(expGain: number = 50)`: 배틀 승리 시 활성 덱(activeDeckIds, 기본 [1, 2, 3, 4, 5]) 카드 전원에 EXP 지급 및 레벨업 처리, 상태 변경 이벤트 디스패치.
+    - `setRepeatHunting(active: boolean)` 및 `isRepeatHuntingActive()`: `hero_repeat_hunting` 로컬스토리지 키 영구 저장 및 읽기 연동.
+    - `loadFromStorage()`: `Number.isInteger(id)` 필터링으로 비정상/부동소수점 데이터 복원 차단.
+    - `addCard(cardId)`: 카드 추가 시 `hero_inventory` 로컬스토리지 동기화 보장.
+  - `src/landing/views/CardSection.tsx`:
+    - 무료 치트 버튼(`+50 EXP`, `+500 EXP`, `data-action="nurture-card"`) 원천 폐기.
+    - 터미널 플랫 가이드 알림창 탑재 (`[EXP 획득 가이드] 경험치는 카드 배틀 승리 시 덱 출격 카드 5장에 자동 지급됩니다 (회당 50 경험치).`).
+    - 미보유 카드 잠금 안내창 및 상점 바로가기(`[🔒 미보유 카드] 아직 영입하지 않은 모험가입니다. 상점(#shop)에서 소환하여 영입할 수 있습니다.`) 연동.
+    - 카드 상세/목록에 `[보유]`(emerald)/`[미보유]`(stone) 뱃지 부여 및 미보유 카드 초상화 흑백/반투명(`grayscale opacity-60`) 처리.
+    - 미보유 카드 스탯 포인트 강화 버튼 비활성화(`미보유 (강화 불가)`, `data-action="allocate-stat"` 속성 생략).
+  - `src/landing/index.ts`:
+    - `nurture-card` 클릭 액션 영구 무력화.
+    - `allocate-stat` 클릭 핸들러에 `cardNurtureStore.isCardOwned(cardId)` 가드 추가.
+  - `src/landing/services/playRpgEngine.ts`:
+    - 배틀 승리 시 `awardBattleVictoryExp(50)` 호출.
+    - `repeatHunting` 활성 시 1.5초 후 자동 다음 배틀/탐색 재경기 루프 연동.
+    - `toggleRepeatHunting` 시 `cardNurtureStore.setRepeatHunting` 양방향 동기화.
+  - `src/views/MobileCardPlayScreen.tsx`:
+    - 2D Canvas 배틀 화면 승리 시 `cardNurtureStore.awardBattleVictoryExp(50)` 호출.
+    - 결과창에 `[🔁 반복 사냥]` 토글 버튼 탑재 및 1.5초 자동 재경기 루프 연동.
+  - `tests/adversarial_m4_card_nurturing.ts`:
+    - 44개 적대적 테스트 단언문(치트 방지, 배틀 EXP 지급, 미보유 육성 차단, 반복 사냥 루프, 스탯 분배 엄격성 등) 전수 패스 (44/44 PASS).
+- **검증 결과**:
+  - `tests/adversarial_m4_card_nurturing.ts`: **44/44 PASS (100.0%)**
+  - `tests/e2e/run_all.ts`: **76/76 PASS (100.0%)**
+  - `tests/adversarial_m1_build_pipeline.ts`: **64/64 PASS (100.0%)**
+  - `tests/adversarial_m2_user_interaction.ts`: **18/18 PASS (100.0%)**
+  - `tests/adversarial_m3_play_game_loop.ts`: **28/28 PASS (100.0%)**
+  - `tests/challenger_m3_9_2_empirical_stress.ts`: **21/21 PASS (100.0%)**
+  - `npx tsc --noEmit`: **0 errors (exit code 0)**
+  - `npm run build`: **성공 (exit code 0, dist/index.html 45.15 KB < 50 KB, React 런타임 0%)**
+- **구글 폼 보고**: submit_report.py 전송 완료 (부서: 개발, 과제: `[M4] #card 캐릭터 육성 보유 캐릭터 엄격 한정·무료 EXP 치트 버튼 폐기·배틀 승리 연동 및 반복 사냥 구현`, 상태: 작업완료).
+- **로컬 커밋 해시**: `9e6742138` (로컬 커밋 완료, git push 미수행).
+
 ## [2026-11-02 20:13 KST] [마일스톤 3 반복 2: #play 아케이드 110선 바람/공기(air/wind) 원소 필터 정상화 및 회귀 검증 강화 완료]
 - **작업자**: `worker_m3_it2` (Implementer / QA Specialist)
 - **작업 개요**:
