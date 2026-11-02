@@ -2892,4 +2892,11 @@ export const id = {
     cinema_list: 'Daftar Episode',
     anime_char_sheets_btn: '110 Lembar Karakter Anime',
     anime_char_sheets_desc: '110 lembar desain karakter anime resmi, referensi SD chibi 3-kepala & prompt video AI',
+    home_serial_section_title: 'Novel Web & Webtoon Resmi',
+    home_serial_naver_novel: 'Novel Web Naver',
+    home_serial_naver_novel_desc: 'Serial Resmi Naver Challenge',
+    home_serial_naver_webtoon: 'Naver Webtoon',
+    home_serial_naver_webtoon_desc: 'Webtoon Resmi Naver Challenge',
+    home_serial_munpia_novel: 'Novel Web Munpia',
+    home_serial_munpia_novel_desc: 'Serial Novel Resmi Munpia',
 };

@@ -2892,4 +2892,11 @@ export const vi = {
     cinema_list: 'Danh sách tập',
     anime_char_sheets_btn: '110 Bản Thiết Kế Nhân Vật Anime',
     anime_char_sheets_desc: '110 bản thiết kế nhân vật anime toàn thân, đối chiếu chibi SD dễ thương & prompt video AI',
+    home_serial_section_title: 'Tiểu Thuyết & Webtoon Chính Thức',
+    home_serial_naver_novel: 'Tiểu Thuyết Naver',
+    home_serial_naver_novel_desc: 'Series Chính Thức Naver Challenge',
+    home_serial_naver_webtoon: 'Naver Webtoon',
+    home_serial_naver_webtoon_desc: 'Webtoon Chính Thức Naver Challenge',
+    home_serial_munpia_novel: 'Tiểu Thuyết Munpia',
+    home_serial_munpia_novel_desc: 'Series Tiểu Thuyết Chính Thức Munpia',
 };

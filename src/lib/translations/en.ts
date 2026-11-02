@@ -3240,4 +3240,11 @@ export const en = {
     cinema_list: 'Cinema Episodes',
     anime_char_sheets_btn: '110 Anime Character Sheets',
     anime_char_sheets_desc: 'Official 110 full-body anime model sheets, 3-head chibi SD references & AI video prompts',
+    home_serial_section_title: 'Official Web Novel & Webtoon',
+    home_serial_naver_novel: 'Naver Web Novel',
+    home_serial_naver_novel_desc: 'Naver Challenge League Series',
+    home_serial_naver_webtoon: 'Naver Webtoon',
+    home_serial_naver_webtoon_desc: 'Naver Challenge Webtoon Series',
+    home_serial_munpia_novel: 'Munpia Web Novel',
+    home_serial_munpia_novel_desc: 'Munpia Official Novel Series',
 };

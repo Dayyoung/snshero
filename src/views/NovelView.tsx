@@ -1252,6 +1252,60 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     <Maximize2 size={12} />
                     <span>{language === 'ko' ? '[소설 표지 보기]' : '[Book Cover]'}</span>
                   </button>
+                  <a
+                    href="http://novel.naver.com/challenge/list?novelId=1250635"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      triggerHaptic('light');
+                      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className="min-h-[44px] text-xs font-bold text-[#201d1d] px-2.5 py-2 border border-[rgba(15,0,0,0.12)] hover:border-[#03C75A] bg-[#fdfcfc] hover:bg-[#f8f7f7] rounded-sm inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+                    title={language === 'ko' ? '네이버 웹소설 공식 연재 바로가기' : 'Read on Naver Web Novel'}
+                  >
+                    <span className="w-4 h-4 rounded-xs bg-[#03C75A] inline-flex items-center justify-center shrink-0">
+                      <svg viewBox="0 0 24 24" className="w-2.5 h-2.5" aria-hidden="true">
+                        <path fill="#FFFFFF" d="M16.273 12.845 7.376 0H0v24h7.726V11.156L16.624 24H24V0h-7.727v12.845Z" />
+                      </svg>
+                    </span>
+                    <span>{language === 'ko' ? '네이버 웹소설' : 'Naver Novel'}</span>
+                  </a>
+                  <a
+                    href="https://comic.naver.com/challenge/list?titleId=856677"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      triggerHaptic('light');
+                      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className="min-h-[44px] text-xs font-bold text-[#201d1d] px-2.5 py-2 border border-[rgba(15,0,0,0.12)] hover:border-[#00DC64] bg-[#fdfcfc] hover:bg-[#f8f7f7] rounded-sm inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+                    title={language === 'ko' ? '네이버 웹툰 공식 연재 바로가기' : 'Read on Naver Webtoon'}
+                  >
+                    <span className="w-4 h-4 rounded-xs bg-[#00DC64] inline-flex items-center justify-center shrink-0">
+                      <svg viewBox="0 0 24 24" className="w-2.5 h-2.5" aria-hidden="true">
+                        <path fill="#FFFFFF" d="M16.273 12.845 7.376 0H0v24h7.726V11.156L16.624 24H24V0h-7.727v12.845Z" />
+                      </svg>
+                    </span>
+                    <span>{language === 'ko' ? '네이버 웹툰' : 'Naver Webtoon'}</span>
+                  </a>
+                  <a
+                    href="https://nlink.munpia.com/link/munpia/novel/616551"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      triggerHaptic('light');
+                      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className="min-h-[44px] text-xs font-bold text-[#201d1d] px-2.5 py-2 border border-[rgba(15,0,0,0.12)] hover:border-[#1351F9] bg-[#fdfcfc] hover:bg-[#f8f7f7] rounded-sm inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+                    title={language === 'ko' ? '문피아 웹소설 공식 연재 바로가기' : 'Read on Munpia Web Novel'}
+                  >
+                    <span className="w-4 h-4 rounded-xs bg-[#1351F9] inline-flex items-center justify-center shrink-0">
+                      <svg viewBox="0 0 24 24" className="w-2.5 h-2.5" aria-hidden="true">
+                        <path fill="#FFFFFF" d="M2 3h4.5l5.5 9.2L17.5 3H22v18h-4v-9.8L12.8 19h-1.6L6 11.2V21H2V3Z" />
+                      </svg>
+                    </span>
+                    <span>{language === 'ko' ? '문피아 웹소설' : 'Munpia Novel'}</span>
+                  </a>
                   {parsedContent.sourceRange && (
                     <span className="text-xs font-bold text-[#646262] px-2 py-0.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#f8f7f7]">
                       {parsedContent.sourceRange}

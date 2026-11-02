@@ -2946,4 +2946,11 @@ export const zhCN = {
     cinema_list: '影院剧集列表',
     anime_char_sheets_btn: '110人动画角色设定集',
     anime_char_sheets_desc: '基于小说《卡丹之旅》的110名角色全身原画、3头身可爱SD对照与AI视频提示词工作室',
+    home_serial_section_title: '网文小说 / 条漫官方连载',
+    home_serial_naver_novel: 'Naver 网文小说',
+    home_serial_naver_novel_desc: 'Naver 挑战联赛官方连载',
+    home_serial_naver_webtoon: 'Naver 条漫 (Webtoon)',
+    home_serial_naver_webtoon_desc: 'Naver 挑战漫画官方连载',
+    home_serial_munpia_novel: 'Munpia 网文小说',
+    home_serial_munpia_novel_desc: 'Munpia 官方小说连载',
 };

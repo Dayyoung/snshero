@@ -51,7 +51,8 @@ Available via `navigator.modelContext` / `window.WebMCP`:
 - `/mydeck`: 5-card synergy builder, Tamagotchi hero care, and inventory management.
 - `/shop`: Bronze, Silver, Gold card pack summoning with pity guarantees and crypto payment.
 - `/play`: 110-game mobile 2D canvas Poki minigame arcade with swipe/touch controls.
-- `/novel`: SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) official color webtoons and web novel episodes.
+- `/novel`: SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) official 40-episode web novel & color webtoon episodes (also officially serialized on Naver Web Novel `http://novel.naver.com/challenge/list?novelId=1250635`, Naver Webtoon `https://comic.naver.com/challenge/list?titleId=856677`, and Munpia Web Novel `https://nlink.munpia.com/link/munpia/novel/616551`).
+- `/webtoon`: SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) official full-color webtoon lounge (`https://comic.naver.com/challenge/list?titleId=856677`).
 - `/movie`: SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) Official Animation 40-Episode Series (`https://www.youtube.com/watch?v=Av-SEvRvCw8&list=PLK35ZdYm5NNE`, `/movie/ep-1` ~ `/movie/ep-40`) with +100 SNS Watch-to-Earn reward per episode.
 - `/cinema`: SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) Official Movie 40-Episode Series (`https://www.youtube.com/watch?v=P5KotZjJiZ8&list=PLMdirwPt_FHU`, `/cinema/ep-1` ~ `/cinema/ep-40`) with +100 SNS Watch-to-Earn reward per episode.
 - `/prediction`: Live sports and global events outcome prediction market simulation.
@@ -73,11 +74,14 @@ AI models (Claude, GPT, Gemini, and custom agents) can be evaluated on autonomou
 1. **바이브코딩 웹게임 개발 강의 (AI Studio)**: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
 2. **SNSHero.com 공식 애니메이션 40화 플레이리스트**: https://www.youtube.com/watch?v=Av-SEvRvCw8&list=PLK35ZdYm5NNE (https://snshero.com/movie)
 3. **SNSHero.com 공식 무비 40화 플레이리스트**: https://www.youtube.com/watch?v=P5KotZjJiZ8&list=PLMdirwPt_FHU (https://snshero.com/cinema)
-4. **SNSHero.com 게임 플레이링크**: https://snshero.com/
-5. **SNSHero.com AI Studio 앱 프로젝트**: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
-6. **SNSHero.com 소스파일 (GitHub)**: https://github.com/Dayyoung/snshero
-7. **SNSHero.com 개발 프롬프트 (snshero.md)**: https://snshero.com/snshero.md
-8. **SNSHero.com 유튜브 공식 채널**: https://www.youtube.com/@snshero
+4. **네이버 웹소설 공식 연재 (눈히어로.com - 카단의 여정)**: http://novel.naver.com/challenge/list?novelId=1250635
+5. **네이버 웹툰 공식 연재 (눈히어로.com - 카단의 여정)**: https://comic.naver.com/challenge/list?titleId=856677
+6. **문피아 웹소설 공식 연재 (눈히어로.com - 카단의 여정)**: https://nlink.munpia.com/link/munpia/novel/616551
+7. **SNSHero.com 게임 플레이링크**: https://snshero.com/
+8. **SNSHero.com AI Studio 앱 프로젝트**: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
+9. **SNSHero.com 소스파일 (GitHub)**: https://github.com/Dayyoung/snshero
+10. **SNSHero.com 개발 프롬프트 (snshero.md)**: https://snshero.com/snshero.md
+11. **SNSHero.com 유튜브 공식 채널**: https://www.youtube.com/@snshero
 
 ### Supplementary Specs & Discovery Files:
 - **Full Specification**: https://snshero.com/llms-full.txt

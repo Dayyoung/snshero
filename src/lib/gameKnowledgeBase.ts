@@ -100,6 +100,22 @@ export const GAME_KNOWLEDGE_ENTRIES: KnowledgeEntry[] = [
     summaryEn: `[110 Mission Minigame Lineup]
 - 110 diverse games (16 Classic + 78 Blitz + 16 Modes) spanning 2D, arcade, action, and puzzle genres.
 - 100% mobile-friendly one-thumb swipe/tap gestures, rewarding 10~60 SNS Points upon completion.`
+  },
+  {
+    id: 'official_webnovel_and_webtoon',
+    category: 'general',
+    keywordsKo: ['웹소설', '웹툰', '소설', '카툰', '네이버', '문피아', '연재', '카단의 여정', '챌린지리그', '도전만화', '1250635', '856677', '616551'],
+    keywordsEn: ['novel', 'webnovel', 'webtoon', 'naver', 'munpia', 'series', 'kadan', 'comic', '1250635', '856677', '616551'],
+    summaryKo: `[눈히어로.com - 카단의 여정 공식 웹소설 & 웹툰 연재처]
+- 공식 홈페이지 웹소설/웹툰: https://snshero.com/novel , https://snshero.com/webtoon
+- 네이버 웹소설 (챌린지리그 공식 연재): http://novel.naver.com/challenge/list?novelId=1250635
+- 네이버 웹툰 (도전만화 공식 연재): https://comic.naver.com/challenge/list?titleId=856677
+- 문피아 웹소설 (문피아 공식 연재): https://nlink.munpia.com/link/munpia/novel/616551`,
+    summaryEn: `[SNSHero.com - Kadan's Journey Official Web Novel & Webtoon Platforms]
+- Official Web Novel & Webtoon Hub: https://snshero.com/novel , https://snshero.com/webtoon
+- Naver Web Novel (Official Challenge League Series): http://novel.naver.com/challenge/list?novelId=1250635
+- Naver Webtoon (Official Challenge Webtoon Series): https://comic.naver.com/challenge/list?titleId=856677
+- Munpia Web Novel (Official Munpia Series): https://nlink.munpia.com/link/munpia/novel/616551`
   }
 ];
 

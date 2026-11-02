@@ -32,9 +32,9 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
       vi: "SNSHero.com - Kadan's Journey | Đấu thẻ bài Web AI một cú nhấp chuột & 110 trò chơi"
     },
     description: {
-      ko: '눈히어로.com - 카단의 여정! 설치 없이 웹 브라우저에서 바로 즐기는 원클릭 AI 카드 배틀, 40부작 판타지 소설/PDF/애니메이션/무비, 110여 종의 히어로 카드 수집, 110개 모바일 2D 캔버스 미션 게임, 1,000 SNS 웰컴 포인트 지급.',
-      en: "SNSHero.com - Kadan's Journey! Instant one-click AI card battle directly in your browser without installation. 40-episode fantasy novel/PDF/animation/movie, 110+ animated hero cards, 110 mobile 2D canvas minigames, and 1,000 SNS points welcome bonus.",
-      gb: "SNSHero.com - Kadan's Journey! Instant one-click AI card battle directly in your browser without installation. 40-episode fantasy novel/PDF/animation/movie, 110+ animated hero cards, 110 mobile 2D canvas minigames, and 1,000 SNS points welcome bonus.",
+      ko: '눈히어로.com - 카단의 여정! 설치 없이 웹 브라우저에서 바로 즐기는 원클릭 AI 카드 배틀, 네이버 웹소설·네이버 웹툰·문피아 웹소설 공식 연재 40부작 판타지 소설/웹툰/PDF/애니메이션/무비, 110여 종의 히어로 카드 수집, 110개 모바일 2D 캔버스 미션 게임, 1,000 SNS 웰컴 포인트 지급.',
+      en: "SNSHero.com - Kadan's Journey! Instant one-click AI card battle directly in your browser without installation. Official 40-episode fantasy novel/webtoon serialized on Naver Web Novel, Naver Webtoon, and Munpia, 110+ animated hero cards, 110 mobile 2D canvas minigames, and 1,000 SNS points welcome bonus.",
+      gb: "SNSHero.com - Kadan's Journey! Instant one-click AI card battle directly in your browser without installation. Official 40-episode fantasy novel/webtoon serialized on Naver Web Novel, Naver Webtoon, and Munpia, 110+ animated hero cards, 110 mobile 2D canvas minigames, and 1,000 SNS points welcome bonus.",
       ja: 'インストール不要！ブラウザですぐに遊べるAIカードバトル。110種以上のカード、110種の2Dキャンバスゲーム、1,000 SNSポイントプレゼント。',
       'zh-CN': '无需安装，浏览器即点即玩AI卡牌对战！收集110多种卡牌，畅玩110款手机2D游戏，立享1,000 SNS点数奖励。',
       'zh-TW': '無需安裝，瀏覽器即點即玩AI卡牌對戰！收集110多種卡牌，暢玩110款手機2D遊戲，立享1,000 SNS點數獎勵。',
@@ -295,44 +295,103 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   novel: {
     title: {
-      ko: '눈히어로.com - 카단의 여정 | 공식 웹소설 & 웹툰 라운지',
-      en: "SNSHero.com - Kadan's Journey | Official Webtoon & Novel Lounge",
-      gb: "SNSHero.com - Kadan's Journey | Official Webtoon & Novel Lounge",
-      ja: "SNSHero.com - Kadan's Journey | 公式ウェブトゥーン & 小説ラウンジ",
-      'zh-CN': "SNSHero.com - Kadan's Journey | 官方网络漫画与小说中心",
-      'zh-TW': "SNSHero.com - Kadan's Journey | 官方網絡漫畫與小說中心",
-      de: "SNSHero.com - Kadan's Journey | Webtoon & Roman Lounge",
-      es: "SNSHero.com - Kadan's Journey | Lounge de Webtoon y Novela",
-      fr: "SNSHero.com - Kadan's Journey | Salon Webtoon & Roman",
-      id: "SNSHero.com - Kadan's Journey | Lounge Webtoon & Novel",
-      ru: "SNSHero.com - Kadan's Journey | Лаунж Вебтунов и Новелл",
-      th: "SNSHero.com - Kadan's Journey | ห้องอ่านเว็บตูนและนิยาย",
-      vi: "SNSHero.com - Kadan's Journey | Phòng Đọc Webtoon & Tiểu Thuyết"
+      ko: '눈히어로.com - 카단의 여정 | 공식 웹소설 & 웹툰 라운지 (네이버 웹소설 · 네이버 웹툰 · 문피아)',
+      en: "SNSHero.com - Kadan's Journey | Official Webtoon & Novel Lounge (Naver & Munpia)",
+      gb: "SNSHero.com - Kadan's Journey | Official Webtoon & Novel Lounge (Naver & Munpia)",
+      ja: "SNSHero.com - Kadan's Journey | 公式ウェブトゥーン & 小説ラウンジ (NAVER / Munpia)",
+      'zh-CN': "SNSHero.com - Kadan's Journey | 官方网络漫画与小说中心 (Naver / Munpia)",
+      'zh-TW': "SNSHero.com - Kadan's Journey | 官方網絡漫畫與小說中心 (Naver / Munpia)",
+      de: "SNSHero.com - Kadan's Journey | Webtoon & Roman Lounge (Naver & Munpia)",
+      es: "SNSHero.com - Kadan's Journey | Lounge de Webtoon y Novela (Naver y Munpia)",
+      fr: "SNSHero.com - Kadan's Journey | Salon Webtoon & Roman (Naver & Munpia)",
+      id: "SNSHero.com - Kadan's Journey | Lounge Webtoon & Novel (Naver & Munpia)",
+      ru: "SNSHero.com - Kadan's Journey | Лаунж Вебтунов и Новелл (Naver и Munpia)",
+      th: "SNSHero.com - Kadan's Journey | ห้องอ่านเว็บตูนและนิยาย (Naver & Munpia)",
+      vi: "SNSHero.com - Kadan's Journey | Phòng Đọc Webtoon & Tiểu Thuyết (Naver & Munpia)"
     },
     description: {
-      ko: '눈히어로.com - 카단의 여정 공식 오리지널 스토리! 40부작 판타지 소설, PDF e-Book, 시즌제 컬러 웹툰을 감상하고 SNS 포인트를 획득하세요.',
-      en: "SNSHero.com - Kadan's Journey official story universe! Enjoy the 40-episode fantasy novel, PDF e-Book, and seasonal color webtoons while earning SNS points.",
-      gb: "SNSHero.com - Kadan's Journey official story universe! Enjoy the 40-episode fantasy novel, PDF e-Book, and seasonal color webtoons while earning SNS points.",
-      ja: 'カダンの冒険を描いた公式ウェブトゥーン＆AI小説。ストーリーを読んでSNSポイントを獲得しよう。',
-      'zh-CN': 'SNS英雄官方原创剧情！阅读卡丹冒险系列条漫与网文，轻松获得SNS点数奖励。',
-      'zh-TW': 'SNS英雄官方原創劇情！閱讀卡丹冒險系列條漫與網文，輕鬆獲得SNS點數獎勵。',
-      de: 'Offizielle SNSHero.com-Geschichte! Erlebe Webtoons und Romane und verdiene SNS-Punkte.',
-      es: '¡Universo oficial de SNSHero.com! Disfruta de webtoons y novelas mientras ganas puntos SNS.',
-      fr: 'Univers officiel de SNSHero.com ! Lisez des webtoons et des romans tout en gagnant des points SNS.',
-      id: 'Semesta cerita resmi SNSHero.com! Nikmati webtoon dan novel sambil mendapatkan poin SNS.',
-      ru: 'Официальная вселенная SNSHero.com! Читайте вебтуны и новеллы, зарабатывая очки SNS.',
-      th: 'จักรวาลเรื่องราวทางการของ SNSHero.com! เพลิดเพลินกับเว็บตูนและนิยายพร้อมรับคะแนน SNS',
-      vi: 'Vũ trụ câu chuyện chính thức của SNSHero.com! Thưởng thức webtoon và tiểu thuyết để kiếm điểm SNS.'
+      ko: '눈히어로.com - 카단의 여정 공식 오리지널 스토리! 네이버 웹소설(novelId=1250635), 네이버 웹툰(titleId=856677), 문피아 웹소설(novel/616551) 공식 연재 40부작 판타지 소설, PDF e-Book, 시즌제 컬러 웹툰을 감상하고 SNS 포인트를 획득하세요.',
+      en: "SNSHero.com - Kadan's Journey official story universe! Serialized on Naver Web Novel, Naver Webtoon, and Munpia Web Novel. Enjoy the 40-episode fantasy novel, PDF e-Book, and seasonal color webtoons while earning SNS points.",
+      gb: "SNSHero.com - Kadan's Journey official story universe! Serialized on Naver Web Novel, Naver Webtoon, and Munpia Web Novel. Enjoy the 40-episode fantasy novel, PDF e-Book, and seasonal color webtoons while earning SNS points.",
+      ja: 'カダンの冒険を描いた公式ウェブトゥーン＆小説（NAVERウェブ小説・NAVERウェブトゥーン・Munpia公式連載）。ストーリーを読んでSNSポイントを獲得しよう。',
+      'zh-CN': 'SNS英雄官方原创剧情！Naver网文、Naver条漫与Munpia官方连载，阅读卡丹冒险系列条漫与网文，轻松获得SNS点数奖励。',
+      'zh-TW': 'SNS英雄官方原創劇情！Naver網路小說、Naver網漫與Munpia官方連載，閱讀卡丹冒險系列網漫與小說，輕鬆獲得SNS點數獎勵。',
+      de: 'Offizielle SNSHero.com-Geschichte! Auf Naver Web Novel, Naver Webtoon und Munpia veröffentlicht. Erlebe Webtoons und Romane und verdiene SNS-Punkte.',
+      es: '¡Universo oficial de SNSHero.com en Naver Web Novel, Naver Webtoon y Munpia! Disfruta de webtoons y novelas mientras ganas puntos SNS.',
+      fr: 'Univers officiel de SNSHero.com sur Naver Web Novel, Naver Webtoon et Munpia ! Lisez des webtoons et des romans tout en gagnant des points SNS.',
+      id: 'Semesta cerita resmi SNSHero.com di Naver Web Novel, Naver Webtoon & Munpia! Nikmati webtoon dan novel sambil mendapatkan poin SNS.',
+      ru: 'Официальная вселенная SNSHero.com на Naver Web Novel, Naver Webtoon и Munpia! Читайте вебтуны и новеллы, зарабатывая очки SNS.',
+      th: 'จักรวาลเรื่องราวทางการของ SNSHero.com บน Naver Web Novel, Naver Webtoon และ Munpia! เพลิดเพลินกับเว็บตูนและนิยายพร้อมรับคะแนน SNS',
+      vi: 'Vũ trụ câu chuyện chính thức của SNSHero.com trên Naver Web Novel, Naver Webtoon và Munpia! Thưởng thức webtoon và tiểu thuyết để kiếm điểm SNS.'
     },
     canonicalPath: '/novel',
     schemaType: 'CreativeWorkSeries',
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
-      '@type': ['CreativeWorkSeries', 'BookSeries'],
+      '@type': ['CreativeWorkSeries', 'BookSeries', 'ComicSeries'],
       name: lang === 'ko' ? '눈히어로.com - 카단의 여정' : "SNSHero.com - Kadan's Journey",
       url: 'https://snshero.com/novel',
       inLanguage: lang,
-      genre: 'Fantasy / Adventure / Sci-Fi'
+      genre: 'Fantasy / Adventure / Sci-Fi',
+      numberOfEpisodes: 40,
+      sameAs: [
+        'http://novel.naver.com/challenge/list?novelId=1250635',
+        'https://novel.naver.com/challenge/list?novelId=1250635',
+        'https://comic.naver.com/challenge/list?titleId=856677',
+        'https://nlink.munpia.com/link/munpia/novel/616551',
+        'https://snshero.com/novel',
+        'https://snshero.com/webtoon'
+      ]
+    })
+  },
+
+  webtoon: {
+    title: {
+      ko: '눈히어로.com - 카단의 여정 | 공식 웹툰 (네이버 웹툰 · 눈히어로.com 연재)',
+      en: "SNSHero.com - Kadan's Journey | Official Webtoon (Naver Webtoon Series)",
+      gb: "SNSHero.com - Kadan's Journey | Official Webtoon (Naver Webtoon Series)",
+      ja: "SNSHero.com - Kadan's Journey | 公式ウェブトゥーン (NAVER Webtoon連載)",
+      'zh-CN': "SNSHero.com - Kadan's Journey | 官方条漫 (Naver Webtoon连载)",
+      'zh-TW': "SNSHero.com - Kadan's Journey | 官方網漫 (Naver Webtoon連載)",
+      de: "SNSHero.com - Kadan's Journey | Offizieller Webtoon (Naver Webtoon)",
+      es: "SNSHero.com - Kadan's Journey | Webtoon Oficial (Naver Webtoon)",
+      fr: "SNSHero.com - Kadan's Journey | Webtoon Officiel (Naver Webtoon)",
+      id: "SNSHero.com - Kadan's Journey | Webtoon Resmi (Naver Webtoon)",
+      ru: "SNSHero.com - Kadan's Journey | Официальный Вебтун (Naver Webtoon)",
+      th: "SNSHero.com - Kadan's Journey | เว็บตูนทางการ (Naver Webtoon)",
+      vi: "SNSHero.com - Kadan's Journey | Webtoon Chính Thức (Naver Webtoon)"
+    },
+    description: {
+      ko: '네이버 웹툰 도전만화(titleId=856677) 및 눈히어로.com에서 공식 연재 중인 《눈히어로.com - 카단의 여정》 40부작 풀컬러 판타지 웹툰! 회차 감상 시 SNS 포인트 보상을 지급합니다.',
+      en: "Read the 40-episode full-color fantasy webtoon 'SNSHero.com - Kadan's Journey', officially serialized on Naver Webtoon (titleId=856677) and SNSHero.com.",
+      gb: "Read the 40-episode full-color fantasy webtoon 'SNSHero.com - Kadan's Journey', officially serialized on Naver Webtoon (titleId=856677) and SNSHero.com.",
+      ja: 'NAVERウェブトゥーン(titleId=856677)およびSNSHero.comで公式連載中のフルカラーファンタジーウェブトゥーン『カダンの旅』。',
+      'zh-CN': '在Naver Webtoon(titleId=856677)与SNSHero.com官方连载的40集全彩奇幻条漫《卡丹之旅》。',
+      'zh-TW': '在Naver Webtoon(titleId=856677)與SNSHero.com官方連載的40集全彩奇幻網漫《卡丹之旅》。',
+      de: 'Offizieller Vollfarb-Fantasy-Webtoon auf Naver Webtoon (titleId=856677) und SNSHero.com.',
+      es: 'Webtoon oficial de fantasía a todo color en Naver Webtoon (titleId=856677) y SNSHero.com.',
+      fr: 'Webtoon officiel de fantasy en couleur sur Naver Webtoon (titleId=856677) et SNSHero.com.',
+      id: 'Webtoon fantasi penuh warna resmi di Naver Webtoon (titleId=856677) dan SNSHero.com.',
+      ru: 'Официальный полноцветный фэнтези-вебтун на Naver Webtoon (titleId=856677) и SNSHero.com.',
+      th: 'เว็บตูนแฟนตาซีสีเต็มรูปแบบอย่างเป็นทางการบน Naver Webtoon (titleId=856677) และ SNSHero.com',
+      vi: 'Webtoon giả tưởng đầy đủ màu sắc chính thức trên Naver Webtoon (titleId=856677) và SNSHero.com.'
+    },
+    canonicalPath: '/webtoon',
+    schemaType: 'ComicSeries',
+    schemaGenerator: (lang) => ({
+      '@context': 'https://schema.org',
+      '@type': ['ComicSeries', 'CreativeWorkSeries'],
+      name: lang === 'ko' ? '눈히어로.com - 카단의 여정 공식 웹툰' : "SNSHero.com - Kadan's Journey Official Webtoon",
+      url: 'https://snshero.com/webtoon',
+      inLanguage: lang,
+      genre: 'Fantasy Webtoon / Action Adventure',
+      numberOfEpisodes: 40,
+      sameAs: [
+        'https://comic.naver.com/challenge/list?titleId=856677',
+        'http://novel.naver.com/challenge/list?novelId=1250635',
+        'https://nlink.munpia.com/link/munpia/novel/616551',
+        'https://snshero.com/webtoon'
+      ]
     })
   },
 

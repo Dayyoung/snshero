@@ -2920,4 +2920,11 @@ export const de = {
     cinema_list: 'Kino-Episoden',
     anime_char_sheets_btn: '110 Anime-Charakterbögen',
     anime_char_sheets_desc: 'Offizielle 110 Ganzkörper-Charakterbögen, 3-Kopf-Chibi-SD-Referenzen & KI-Video-Prompts',
+    home_serial_section_title: 'Offizieller Web-Roman & Webtoon',
+    home_serial_naver_novel: 'Naver Web-Roman',
+    home_serial_naver_novel_desc: 'Naver Challenge League Serie',
+    home_serial_naver_webtoon: 'Naver Webtoon',
+    home_serial_naver_webtoon_desc: 'Naver Challenge Webtoon Serie',
+    home_serial_munpia_novel: 'Munpia Web-Roman',
+    home_serial_munpia_novel_desc: 'Offizielle Munpia Roman-Serie',
 };

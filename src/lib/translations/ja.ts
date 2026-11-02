@@ -2980,4 +2980,11 @@ export const ja = {
     cinema_list: 'シネマ話数一覧',
     anime_char_sheets_btn: '110人アニメ設定資料集',
     anime_char_sheets_desc: '小説『カダンの旅』基準・全110キャラ全身設定画＆3頭身キュートSD対比スタジオ',
+    home_serial_section_title: 'ウェブ小説 / ウェブトゥーン公式連載',
+    home_serial_naver_novel: 'NAVER ウェブ小説',
+    home_serial_naver_novel_desc: 'NAVERチャレンジリーグ公式連載',
+    home_serial_naver_webtoon: 'NAVER ウェブトゥーン',
+    home_serial_naver_webtoon_desc: 'NAVER挑戦漫画公式連載',
+    home_serial_munpia_novel: 'Munpia ウェブ小説',
+    home_serial_munpia_novel_desc: 'Munpia公式ウェブ小説連載',
 };

@@ -2887,4 +2887,11 @@ export const th = {
     cinema_list: 'รายการตอน',
     anime_char_sheets_btn: 'ชีตตัวละครอนิเมะ 110 คน',
     anime_char_sheets_desc: 'ภาพตั้งต้นตัวละครอนิเมะเต็มตัว 110 คน พร้อม SD 3 ส่วนสุดน่ารักและพรอมต์วิดีโอ AI',
+    home_serial_section_title: 'นิยายเว็บ & เว็บตูนอย่างเป็นทางการ',
+    home_serial_naver_novel: 'นิยายเว็บ Naver',
+    home_serial_naver_novel_desc: 'ซีรีส์ทางการบน Naver Challenge',
+    home_serial_naver_webtoon: 'เว็บตูน Naver',
+    home_serial_naver_webtoon_desc: 'เว็บตูนทางการบน Naver Challenge',
+    home_serial_munpia_novel: 'นิยายเว็บ Munpia',
+    home_serial_munpia_novel_desc: 'นิยายซีรีส์ทางการบน Munpia',
 };

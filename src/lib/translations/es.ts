@@ -2892,4 +2892,11 @@ export const es = {
     cinema_list: 'Lista de episodios',
     anime_char_sheets_btn: '110 Hojas de Personajes Anime',
     anime_char_sheets_desc: '110 hojas oficiales de diseño anime de cuerpo completo, referencias SD chibi y prompts de video IA',
+    home_serial_section_title: 'Novela Web y Webtoon Oficial',
+    home_serial_naver_novel: 'Naver Novela Web',
+    home_serial_naver_novel_desc: 'Serie Oficial Naver Challenge',
+    home_serial_naver_webtoon: 'Naver Webtoon',
+    home_serial_naver_webtoon_desc: 'Webtoon Oficial Naver Challenge',
+    home_serial_munpia_novel: 'Munpia Novela Web',
+    home_serial_munpia_novel_desc: 'Serie Oficial de Novela en Munpia',
 };

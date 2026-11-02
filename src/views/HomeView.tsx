@@ -678,6 +678,154 @@ export const HomeView: React.FC<HomeViewProps> = ({
           )}
         </div>
 
+        {/* ── 웹소설 / 웹툰 공식 연재 플랫폼 바로가기 (네이버 웹소설 · 네이버 웹툰 · 문피아 웹소설) ── */}
+        <div className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-3.5 sm:p-4 space-y-3 font-mono">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2.5">
+            <div className="flex items-center gap-2">
+              <BookOpen size={15} className="text-[#201d1d] shrink-0" />
+              <span className="text-xs sm:text-sm font-bold text-[#201d1d]">
+                {t('home_serial_section_title', language) || (language === 'ko' ? '웹소설 / 웹툰 공식 연재' : 'Official Web Novel & Webtoon')}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('light');
+                  playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                  onNavigate('novel');
+                }}
+                className="min-h-[32px] px-2.5 py-1 text-[11px] font-bold text-[#201d1d] border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors rounded-sm cursor-pointer"
+              >
+                {language === 'ko' ? '[웹소설]' : '[Novel]'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('light');
+                  playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                  onNavigate('webtoon');
+                }}
+                className="min-h-[32px] px-2.5 py-1 text-[11px] font-bold text-[#201d1d] border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors rounded-sm cursor-pointer"
+              >
+                {language === 'ko' ? '[웹툰]' : '[Webtoon]'}
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            {/* 1. 네이버 웹소설 */}
+            <a
+              href="http://novel.naver.com/challenge/list?novelId=1250635"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                triggerHaptic('light');
+                playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+              }}
+              className="min-h-[54px] p-3 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] hover:border-[#03C75A] rounded-sm flex items-center justify-between gap-2.5 transition-colors group cursor-pointer"
+              title={language === 'ko' ? '눈히어로.com - 카단의 여정 네이버 웹소설 바로가기' : "SNSHero.com - Kadan's Journey on Naver Web Novel"}
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                {/* 네이버(NAVER) 공식 그린 스퀘어 로고 */}
+                <div className="w-8 h-8 rounded-sm bg-[#03C75A] flex items-center justify-center shrink-0 border border-[#02b350]">
+                  <svg viewBox="0 0 24 24" className="w-4 h-4" aria-hidden="true">
+                    <path
+                      fill="#FFFFFF"
+                      d="M16.273 12.845 7.376 0H0v24h7.726V11.156L16.624 24H24V0h-7.727v12.845Z"
+                    />
+                  </svg>
+                </div>
+                <div className="min-w-0 text-left">
+                  <div className="text-xs sm:text-sm font-bold text-[#201d1d] truncate flex items-center gap-1.5">
+                    <span>{t('home_serial_naver_novel', language) || (language === 'ko' ? '네이버 웹소설' : 'Naver Web Novel')}</span>
+                  </div>
+                  <div className="text-[10px] text-[#646262] truncate">
+                    {t('home_serial_naver_novel_desc', language) || (language === 'ko' ? '네이버 웹소설 챌린지리그 연재' : 'Naver Challenge League Series')}
+                  </div>
+                </div>
+              </div>
+              <span className="text-xs font-bold text-[#646262] group-hover:text-[#03C75A] shrink-0">
+                [↗]
+              </span>
+            </a>
+
+            {/* 2. 네이버 웹툰 */}
+            <a
+              href="https://comic.naver.com/challenge/list?titleId=856677"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                triggerHaptic('light');
+                playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+              }}
+              className="min-h-[54px] p-3 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] hover:border-[#00DC64] rounded-sm flex items-center justify-between gap-2.5 transition-colors group cursor-pointer"
+              title={language === 'ko' ? '눈히어로.com - 카단의 여정 네이버 웹툰 바로가기' : "SNSHero.com - Kadan's Journey on Naver Webtoon"}
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                {/* 네이버 웹툰(NAVER WEBTOON) 공식 로고 배지 */}
+                <div className="w-8 h-8 rounded-sm bg-[#00DC64] flex flex-col items-center justify-center shrink-0 border border-[#00c458] leading-none">
+                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" aria-hidden="true">
+                    <path
+                      fill="#FFFFFF"
+                      d="M16.273 12.845 7.376 0H0v24h7.726V11.156L16.624 24H24V0h-7.727v12.845Z"
+                    />
+                  </svg>
+                  <span className="text-[5px] font-black text-white tracking-tighter mt-0.5">WEBTOON</span>
+                </div>
+                <div className="min-w-0 text-left">
+                  <div className="text-xs sm:text-sm font-bold text-[#201d1d] truncate flex items-center gap-1.5">
+                    <span>{t('home_serial_naver_webtoon', language) || (language === 'ko' ? '네이버 웹툰' : 'Naver Webtoon')}</span>
+                  </div>
+                  <div className="text-[10px] text-[#646262] truncate">
+                    {t('home_serial_naver_webtoon_desc', language) || (language === 'ko' ? '네이버 웹툰 도전만화 연재' : 'Naver Challenge Webtoon Series')}
+                  </div>
+                </div>
+              </div>
+              <span className="text-xs font-bold text-[#646262] group-hover:text-[#00b853] shrink-0">
+                [↗]
+              </span>
+            </a>
+
+            {/* 3. 문피아 웹소설 */}
+            <a
+              href="https://nlink.munpia.com/link/munpia/novel/616551"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                triggerHaptic('light');
+                playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+              }}
+              className="min-h-[54px] p-3 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] hover:border-[#1351F9] rounded-sm flex items-center justify-between gap-2.5 transition-colors group cursor-pointer"
+              title={language === 'ko' ? '눈히어로.com - 카단의 여정 문피아 웹소설 바로가기' : "SNSHero.com - Kadan's Journey on Munpia Web Novel"}
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                {/* 문피아(MUNPIA) 공식 블루 M 로고 배지 */}
+                <div className="w-8 h-8 rounded-sm bg-[#1351F9] flex flex-col items-center justify-center shrink-0 border border-[#0d42d9] leading-none">
+                  <svg viewBox="0 0 24 24" className="w-4 h-4" aria-hidden="true">
+                    <path
+                      fill="#FFFFFF"
+                      d="M2 3h4.5l5.5 9.2L17.5 3H22v18h-4v-9.8L12.8 19h-1.6L6 11.2V21H2V3Z"
+                    />
+                  </svg>
+                  <span className="text-[5px] font-black text-white tracking-tighter">MUNPIA</span>
+                </div>
+                <div className="min-w-0 text-left">
+                  <div className="text-xs sm:text-sm font-bold text-[#201d1d] truncate flex items-center gap-1.5">
+                    <span>{t('home_serial_munpia_novel', language) || (language === 'ko' ? '문피아 웹소설' : 'Munpia Web Novel')}</span>
+                  </div>
+                  <div className="text-[10px] text-[#646262] truncate">
+                    {t('home_serial_munpia_novel_desc', language) || (language === 'ko' ? '문피아 공식 웹소설 연재' : 'Munpia Official Novel Series')}
+                  </div>
+                </div>
+              </div>
+              <span className="text-xs font-bold text-[#646262] group-hover:text-[#1351F9] shrink-0">
+                [↗]
+              </span>
+            </a>
+          </div>
+        </div>
+
       </section>
 
 
@@ -774,6 +922,39 @@ export const HomeView: React.FC<HomeViewProps> = ({
               title={language === 'ko' ? '눈히어로.com 개발 프롬프트 명세서' : 'SNSHero.com Dev Prompt Spec'}
             >
               <span>{language === 'ko' ? '개발 프롬프트' : 'Dev Prompt'}</span>
+            </a>
+            <span>•</span>
+            <a
+              href="http://novel.naver.com/challenge/list?novelId=1250635"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+              className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
+              title={language === 'ko' ? '눈히어로.com - 카단의 여정 네이버 웹소설' : 'SNSHero.com Naver Web Novel'}
+            >
+              <span>{language === 'ko' ? '네이버 웹소설' : 'Naver Novel'}</span>
+            </a>
+            <span>•</span>
+            <a
+              href="https://comic.naver.com/challenge/list?titleId=856677"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+              className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
+              title={language === 'ko' ? '눈히어로.com - 카단의 여정 네이버 웹툰' : 'SNSHero.com Naver Webtoon'}
+            >
+              <span>{language === 'ko' ? '네이버 웹툰' : 'Naver Webtoon'}</span>
+            </a>
+            <span>•</span>
+            <a
+              href="https://nlink.munpia.com/link/munpia/novel/616551"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+              className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
+              title={language === 'ko' ? '눈히어로.com - 카단의 여정 문피아 웹소설' : 'SNSHero.com Munpia Web Novel'}
+            >
+              <span>{language === 'ko' ? '문피아 웹소설' : 'Munpia Novel'}</span>
             </a>
           </div>
           <div>© ModooSoft. All rights reserved.</div>

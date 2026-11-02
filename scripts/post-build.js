@@ -149,6 +149,38 @@ if (fs.existsSync(indexPath)) {
   const cleanBenchHtml = ensureAbsoluteAssetPaths(benchCustomHtml);
   const cleanBaseHtml = ensureAbsoluteAssetPaths(baseHtml);
 
+  // Dedicated prerendered SEO HTML for 'novel' / 'book' / 'webtoon' (Naver Web Novel, Naver Webtoon, Munpia Web Novel)
+  const novelTitle = "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) | 공식 웹소설 & 웹툰 (네이버 웹소설 · 네이버 웹툰 · 문피아)";
+  const novelDesc = "눈히어로.com - 카단의 여정 공식 40부작 판타지 웹소설 및 풀컬러 웹툰! 네이버 웹소설(novelId=1250635), 네이버 웹툰(titleId=856677), 문피아 웹소설(novel/616551) 및 눈히어로.com에서 공식 연재 중입니다.";
+  const novelPrerenderArticle = `
+    <!-- Static Crawler Pre-render for Web Novel & Webtoon Search Discovery (Naver / Munpia) -->
+    <article class="seo-novel-prerender" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); whiteSpace: nowrap; border: 0;">
+      <h1>눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 공식 웹소설 &amp; 웹툰 연재 안내</h1>
+      <p>《눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)》은 평범하고 우직한 청년 카단이 아케인 대륙의 11개 종족과 110명의 영웅들을 만나 성장하는 40부작 정통 모험 판타지 웹소설 및 풀컬러 웹툰입니다.</p>
+      <h2>공식 연재 플랫폼 바로가기 (Official Serialization Platforms)</h2>
+      <ul>
+        <li><a href="http://novel.naver.com/challenge/list?novelId=1250635" target="_blank" rel="noopener">네이버 웹소설 공식 연재 (챌린지리그 novelId=1250635)</a></li>
+        <li><a href="https://comic.naver.com/challenge/list?titleId=856677" target="_blank" rel="noopener">네이버 웹툰 공식 연재 (도전만화 titleId=856677)</a></li>
+        <li><a href="https://nlink.munpia.com/link/munpia/novel/616551" target="_blank" rel="noopener">문피아 웹소설 공식 연재 (문피아 novel/616551)</a></li>
+        <li><a href="https://snshero.com/novel">눈히어로.com 공식 웹소설 라운지 (https://snshero.com/novel)</a></li>
+        <li><a href="https://snshero.com/webtoon">눈히어로.com 공식 웹툰 라운지 (https://snshero.com/webtoon)</a></li>
+      </ul>
+    </article>
+  `;
+
+  let novelCustomHtml = baseHtml
+    .replace(/<title>.*?<\/title>/, `<title>${novelTitle}</title>`)
+    .replace(/<meta\s+name="description"\s+content=".*?"\s*\/?>/, `<meta name="description" content="${novelDesc}" />`)
+    .replace(/<meta\s+property="og:title"\s+content=".*?"\s*\/?>/, `<meta property="og:title" content="${novelTitle}" />`)
+    .replace(/<meta\s+property="og:description"\s+content=".*?"\s*\/?>/, `<meta property="og:description" content="${novelDesc}" />`)
+    .replace(/<meta\s+property="twitter:title"\s+content=".*?"\s*\/?>/, `<meta property="twitter:title" content="${novelTitle}" />`)
+    .replace(/<meta\s+property="twitter:description"\s+content=".*?"\s*\/?>/, `<meta property="twitter:description" content="${novelDesc}" />`);
+
+  if (novelCustomHtml.includes('<div id="root"></div>')) {
+    novelCustomHtml = novelCustomHtml.replace('<div id="root"></div>', `<div id="root"></div>\n${novelPrerenderArticle}`);
+  }
+  const cleanNovelHtml = ensureAbsoluteAssetPaths(novelCustomHtml);
+
   for (const route of routes) {
     const publicStaticIndex = path.join(publicDir, route, 'index.html');
     if (fs.existsSync(publicStaticIndex)) {
@@ -164,6 +196,14 @@ if (fs.existsSync(indexPath)) {
     if (route === 'bench' || route === 'benchmark' || route === 'shbp') {
       fs.writeFileSync(path.join(routeDir, 'index.html'), cleanBenchHtml, 'utf8');
       fs.writeFileSync(path.join(distDir, `${route}.html`), cleanBenchHtml, 'utf8');
+    } else if (route === 'novel' || route === 'book' || route === 'webtoon') {
+      const routeCanonical = `https://snshero.com/${route}`;
+      const routeHtml = cleanNovelHtml
+        .replace(/<link\s+rel="canonical"\s+href=".*?"\s*\/?>/, `<link rel="canonical" href="${routeCanonical}" />`)
+        .replace(/<meta\s+property="og:url"\s+content=".*?"\s*\/?>/, `<meta property="og:url" content="${routeCanonical}" />`)
+        .replace(/<meta\s+property="twitter:url"\s+content=".*?"\s*\/?>/, `<meta property="twitter:url" content="${routeCanonical}" />`);
+      fs.writeFileSync(path.join(routeDir, 'index.html'), routeHtml, 'utf8');
+      fs.writeFileSync(path.join(distDir, `${route}.html`), routeHtml, 'utf8');
     } else {
       fs.writeFileSync(path.join(routeDir, 'index.html'), cleanBaseHtml, 'utf8');
       if (!route.includes('/')) {

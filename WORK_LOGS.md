@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 09:47 KST] [메인화면 업적 및 프로필 하단 네이버 웹소설·네이버 웹툰·문피아 웹소설 로고 버튼 링크 추가 및 SEO/AEO/GEO 전면 반영]
+- **요청 사항**:
+  1. 메인화면 업적 및 프로필 밑에 웹소설/웹툰에 네이버/문피아 로고를 포함한 버튼 링크 추가:
+     - 네이버 웹소설: `http://novel.naver.com/challenge/list?novelId=1250635`
+     - 네이버 웹툰: `https://comic.naver.com/challenge/list?titleId=856677`
+     - 문피아 웹소설: `https://nlink.munpia.com/link/munpia/novel/616551`
+  2. 해당 웹소설/웹툰 연재를 SEO/AEO/GEO에 추가하여 검색 시 노출되도록 반영.
+- **작업 개요 및 구현 내역**:
+  1. **메인화면(`src/views/HomeView.tsx`) 업적 및 프로필 하단 웹소설/웹툰 연재 플랫폼 버튼 추가**:
+     - `업적 및 프로필` 영역 바로 아래에 `웹소설 / 웹툰 공식 연재` 섹션을 배치하고, 네이버(`#03C75A` N 로고), 네이버 웹툰(`#00DC64` N+WEBTOON 로고), 문피아(`#1351F9` M+MUNPIA 로고) 공식 SVG 로고 배지가 포함된 3종 외부 연재처 버튼 링크 및 내부 `[웹소설]`, `[웹툰]` 바로가기 버튼을 추가.
+     - `HomeView.tsx` 하단 푸터, `NovelView.tsx` 에피소드 헤더, `HomeCategoryHubModal.tsx` IP 미디어 라운지에도 동일하게 3종 공식 연재처 링크 연동.
+     - 12개 다국어 언어팩(`ko`, `en`, `gb`, `ja`, `zh-CN`, `zh-TW`, `de`, `es`, `fr`, `id`, `ru`, `th`, `vi`) 전수 번역 키 추가 완료.
+  2. **SEO / AEO / GEO 검색 엔진 및 AI 답변 엔진 노출 최적화 (`index.html`, `src/lib/geoManager.ts`, `src/routes.ts`, `src/lib/gameKnowledgeBase.ts`, `public/llms.txt`, `public/llms-full.txt`, `scripts/post-build.js`)**:
+     - `index.html`: 메타 설명(`description`, `og:description`, `twitter:description`), `keywords`, `Organization.sameAs`, `SiteNavigationElement`, `ItemList`, 전용 `BookSeries` & `ComicSeries` JSON-LD 구조화 데이터, `FAQPage` AEO 질의응답, 정적 크롤러 `<nav>` 링크에 네이버 웹소설·네이버 웹툰·문피아 웹소설 연재 URL을 전수 등록.
+     - `src/lib/geoManager.ts` & `src/routes.ts`: `home`, `novel`, `webtoon` 뷰의 동적 메타 태그 및 `CreativeWorkSeries` / `BookSeries` / `ComicSeries` JSON-LD `sameAs`에 3대 연재처 링크 반영.
+     - `public/llms.txt`, `public/llms-full.txt`, `src/lib/gameKnowledgeBase.ts`, `scripts/post-build.js`: AI 검색 엔진(ChatGPT Search, Perplexity, Gemini, Claude) 및 `/novel`, `/book`, `/webtoon` 정적 프리렌더링 HTML에 공식 연재처 데이터 동기화 완료.
+  3. **검증 및 보고**:
+     - `npm run build` 프로덕션 빌드 및 정적 SEO 프리렌더러 0에러 통과 확인, 로컬 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-11-02 08:10 KST] [/webtoon 실사 컷 모드 1:1 복구 및 /script Flow 실사 컷씬 대본·6초 동영상 프롬프트 화면 신규 개발]
 - **요청 사항**:
   1. `/webtoon` 실사 컷 모드 전환 시 애니메이션과 동일한 컷 수 및 전체 대사를 유지하고, Flow 이미지 대신 이전 실사 이미지로 복구.

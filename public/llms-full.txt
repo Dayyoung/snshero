@@ -66,8 +66,12 @@ Welcome to the comprehensive AI Knowledge Base for **SNSHero.com - Kadan's Journ
 
 ## 3. Media, Economy & Social Hubs
 
-### A. Webtoon & Lore Novels (`/novel`)
+### A. Webtoon & Lore Novels (`/novel` & `/webtoon`)
 - Official Web Novel & Webtoon Series: "눈히어로.com - 카단의 여정" (Korean) / "SNSHero.com - Kadan's Journey" (English).
+- Official External Serialization Platforms:
+  - **Naver Web Novel (네이버 웹소설)**: http://novel.naver.com/challenge/list?novelId=1250635
+  - **Naver Webtoon (네이버 웹툰)**: https://comic.naver.com/challenge/list?titleId=856677
+  - **Munpia Web Novel (문피아 웹소설)**: https://nlink.munpia.com/link/munpia/novel/616551
 - AI prompt lore scripts and official Part 1 e-Book PDFs available in 12 languages.
 - Reading completion awards bonus SNS points.
 
@@ -155,6 +159,15 @@ window.HeroAI.triggerShopSummon();
 6. **SNSHero.com 공식 유튜브 채널**
    - URL: https://www.youtube.com/@snshero
    - Description: 공식 개발 업데이트 브리핑, 팁, 플레이 영상 채널 (@snshero)
+7. **네이버 웹소설 공식 연재 (눈히어로.com - 카단의 여정)**
+   - URL: http://novel.naver.com/challenge/list?novelId=1250635
+   - Description: 네이버 웹소설 챌린지리그 40부작 판타지 웹소설 공식 연재처
+8. **네이버 웹툰 공식 연재 (눈히어로.com - 카단의 여정)**
+   - URL: https://comic.naver.com/challenge/list?titleId=856677
+   - Description: 네이버 웹툰 도전만화 40부작 풀컬러 판타지 웹툰 공식 연재처
+9. **문피아 웹소설 공식 연재 (눈히어로.com - 카단의 여정)**
+   - URL: https://nlink.munpia.com/link/munpia/novel/616551
+   - Description: 문피아(Munpia) 정통 모험 판타지 웹소설 공식 연재처
 
 ### Screen-Specific Navigation Links (Internal Sitelinks):
 - **실시간 구글 뉴스룸 (Reddit)**: https://snshero.com/reddit

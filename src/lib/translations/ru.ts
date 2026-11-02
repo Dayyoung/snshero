@@ -2887,4 +2887,11 @@ export const ru = {
     cinema_list: 'Список серий',
     anime_char_sheets_btn: '110 концепт-листов персонажей',
     anime_char_sheets_desc: 'Официальные листы дизайна 110 аниме-персонажей, чиби-референсы и ИИ-видео промпты',
+    home_serial_section_title: 'Официальный Веб-роман и Вебтун',
+    home_serial_naver_novel: 'Веб-роман Naver',
+    home_serial_naver_novel_desc: 'Официальная серия Naver Challenge',
+    home_serial_naver_webtoon: 'Вебтун Naver',
+    home_serial_naver_webtoon_desc: 'Официальный вебтун Naver Challenge',
+    home_serial_munpia_novel: 'Веб-роман Munpia',
+    home_serial_munpia_novel_desc: 'Официальная серия на Munpia',
 };

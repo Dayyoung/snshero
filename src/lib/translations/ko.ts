@@ -3247,4 +3247,11 @@ export const ko = {
     cinema_list: '무비 회차 목록',
     anime_char_sheets_btn: '110인 애니메이션 캐릭터 시트',
     anime_char_sheets_desc: '소설 『카단의 여정』 기반 110인 전신 원화 · 3등신 큐트 SD 병기 · AI 영상 프롬프트 스튜디오',
+    home_serial_section_title: '웹소설 / 웹툰 공식 연재',
+    home_serial_naver_novel: '네이버 웹소설',
+    home_serial_naver_novel_desc: '네이버 웹소설 챌린지리그 연재',
+    home_serial_naver_webtoon: '네이버 웹툰',
+    home_serial_naver_webtoon_desc: '네이버 웹툰 도전만화 연재',
+    home_serial_munpia_novel: '문피아 웹소설',
+    home_serial_munpia_novel_desc: '문피아 공식 웹소설 연재',
 };
