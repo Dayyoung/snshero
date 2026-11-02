@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 17:20 KST] [마일스톤 1: 클라이언트 해시 라우팅 코어, 레거시 라우트 제거 및 15초 유휴 자동 플레이 구현 완료]
+- **작업자**: `worker_m1_9` (Implementer / QA Specialist)
+- **작업 개요**:
+  - `src/landing/index.ts` & `src/routes.ts`: 클라이언트 해시 라우팅 코어(#home, #deck, #play, #card, #shop) 구현, 중앙 집중식 `parseRoute()`, `navigateTo()`, `renderSectionContent()` 구현으로 전체 DOM 쓰래싱 방지, `isProgrammaticRouting` 뮤텍스 락으로 무한 렌더 루프 원천 차단.
+  - `src/landing/types.ts`: `TOP_NAV_ITEMS` 및 `SIDE_NAV_ITEMS` 내 '미션' 명칭을 '카드'로 변경.
+  - 레거시 라우트 링크 전수 제거: `Header.tsx`, `Sidebar.tsx`, `Footer.tsx`, `Modals.tsx`, `HomeSection.tsx`, `MyDeckSection.tsx`에 존재하던 7건의 `href="/home"` 하드코딩 링크를 `href="#play"` / `data-nav="play"`로 전수 교체.
+  - 3중 레거시 리다이렉트 아키텍처:
+    1. `vite.config.ts`: 개발 및 프리뷰 서버에서 레거시 standalone 경로(`/home`, `/deck`, `/play`, `/main`, `/card`, `/shop`) 요청 시 HTTP 302로 `/#...` 리다이렉트 처리.
+    2. `scripts/post-build.js`: 정적 빌드 시 레거시 경로에 대해 경량 리다이렉트 HTML 스텁 생성(`meta refresh` + `location.replace`).
+    3. `index.html` & `home.html`: `<head>` 내 초기 정규화 스크립트를 삽입하여 빈 해시 또는 `#` 진입 시 `history.replaceState`로 히스토리 오염 없이 `/#home`으로 정규화.
+  - `src/landing/services/idleAutoPlayManager.ts`: 15초 글로벌 유휴 감지기 구현 (8개 사용자 입력 이벤트 `mousemove`, `mousedown`, `keydown`, `touchstart`, `touchmove`, `scroll`, `pointerdown`, `wheel`을 `{ capture: true, passive: true }`로 캡처, 250ms 쓰로틀링 및 15,000ms 타이머, 타임아웃 시 `hero_kadan_rpg_auto_mode = 'true'` 등 로컬스토리지 저장 후 Tailscale `#play` 이동, `#play` 화면 및 자동모드 활성 시 불필요한 새로고침 방지 가드).
+  - `src/main.tsx`: SPA 진입점에서도 `initIdleAutoPlay` 글로벌 연동.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 errors
+  - `npm run build`: 성공 (exit code 0, 60개 정적 라우트 스텁 정상 생성)
+  - `npx tsx tests/e2e/run_all.ts --milestone M1`: 16/16 PASS (100.0%)
+  - `npx tsx tests/unit_m1_idle_autoplay.ts`: 26/26 PASS (100.0%)
+- **구글 폼 보고**: submit_report.py 전송 완료 (작업완료).
+
 ## [2026-11-02 17:00 KST] [E2E 테스트 인프라 구축 및 4-Tier 테스트 스위트 확장 완료]
 - **작업자**: `test_writer_e2e_9` (QA Specialist)
 - **작업 개요**:
