@@ -158,10 +158,11 @@ export function renderModals(activeModal: ModalKey): string {
 
         <div class="space-y-2 mb-4">
           <a
-            href="/home"
+            href="#play"
+            data-nav="play"
             class="block w-full py-3 px-4 bg-[#201d1d] text-[#fdfcfc] text-center text-xs font-bold rounded-sm min-h-[44px] leading-[20px] hover:opacity-90 transition-opacity no-underline flex items-center justify-center"
           >
-            게스트로 게임 시작하기 (/home) →
+            게스트로 게임 시작하기 →
           </a>
         </div>
 

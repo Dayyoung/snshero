@@ -19,34 +19,44 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionEn: 'Discover breaking gaming news, discussions, memes, and vibrant communities on SNSHero.com.',
   },
   home: {
-    path: '/home',
-    aliases: ['/home', '/main-lobby'],
+    path: '#home',
+    aliases: ['/home', '/main-lobby', '#home', '#main-lobby'],
     titleKo: '눈히어로.com - 카단의 여정 (원클릭 AI 웹 카드 게임)',
     titleEn: "SNSHero.com - Kadan's Journey (One-Click AI Web Card Game)",
     descriptionKo: '복잡한 가입 없이 클릭 한 번으로 시작하는 AI 웹 카드 게임 눈히어로.com - 카단의 여정 로비입니다.',
     descriptionEn: "Start instantly with one click at SNSHero.com - Kadan's Journey. Collect 110+ hero cards with AI battles.",
   },
   main: {
-    path: '/main',
+    path: '#play',
+    aliases: ['/main', '#main', '#play'],
     titleKo: '눈히어로.com - 카단의 여정 - 메인 RPG',
     titleEn: "SNSHero.com - Kadan's Journey - Main RPG",
     descriptionKo: '카단이 소설 속 지도를 자동으로 이동하며 대화, 카드 전투, 보상 획득을 진행하는 눈히어로.com - 카단의 여정 메인 RPG 모드입니다.',
     descriptionEn: "Explore the map, battle AI enemies, and experience the epic RPG storyline of SNSHero.com - Kadan's Journey.",
   },
   mydeck: {
-    path: '/deck',
-    aliases: ['/mydeck'],
+    path: '#deck',
+    aliases: ['/deck', '/mydeck', '#deck', '#mydeck'],
     titleKo: '마이덱 (My Deck) - 눈히어로.com 카드 컬렉션',
     titleEn: 'My Deck - SNSHero.com Card Collection',
     descriptionKo: '수집한 영웅 카드 덱을 구성하고 강력한 장비를 장착하여 나만의 최강 시너지 조합을 설계하세요.',
     descriptionEn: 'Manage your card deck, equip items, and optimize your battle synergy on SNSHero.com.',
   },
   play: {
-    path: '/play',
+    path: '#play',
+    aliases: ['/play', '#play'],
     titleKo: '배틀 대전 (Play Battle) - 눈히어로.com 실시간 카드 배틀',
     titleEn: 'Battle Arena (Play) - SNSHero.com Real-Time Card Battle',
     descriptionKo: '인공지능(AI) 라이벌과 대적하여 실시간 자동 전투를 벌이고 랭킹 포인트와 명예를 획득하세요.',
     descriptionEn: 'Battle AI rivals in real-time card matches and earn ranking points on SNSHero.com.',
+  },
+  card: {
+    path: '#card',
+    aliases: ['/card', '/cards', '/mission', '/missions', '#card', '#cards', '#mission', '#missions'],
+    titleKo: '카드 도감 및 육성 (Card Nurturing) - 눈히어로.com',
+    titleEn: 'Card Collection & Nurturing - SNSHero.com',
+    descriptionKo: '보유한 카드를 확인하고 카드 대결을 통해 획득한 경험치로 100레벨까지 육성 및 스탯을 강화하세요.',
+    descriptionEn: 'View owned cards, level up to Lv 100 via battle victory EXP, and allocate stat points.',
   },
   'card-play': {
     path: '/card-play',
@@ -57,7 +67,8 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionEn: 'Mobile-dedicated single-screen card battle arena on SNSHero.com.',
   },
   shop: {
-    path: '/shop',
+    path: '#shop',
+    aliases: ['/shop', '#shop'],
     titleKo: '카드 상점 (Shop) - 눈히어로.com 카드 및 스킨 뽑기',
     titleEn: 'Shop - SNSHero.com Card & Skin Gacha',
     descriptionKo: 'SNS 포인트를 사용하여 등급별 카드를 소환하고 컬렉션을 완성하세요.',
@@ -420,18 +431,45 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
  * 뷰 식별자에 해당하는 고유 URL 경로를 반환합니다.
  */
 export function getViewPath(view: ViewType): string {
+  const hashRoutes: Record<string, string> = {
+    home: '#home',
+    mydeck: '#deck',
+    deck: '#deck',
+    play: '#play',
+    main: '#play',
+    card: '#card',
+    shop: '#shop',
+  };
+  if (hashRoutes[view as string]) {
+    return hashRoutes[view as string];
+  }
   const route = VIEW_ROUTES[view];
-  return route ? route.path : '/home';
+  return route ? route.path : '#home';
 }
 
 /**
  * URL 경로 및 쿼리 파라미터로부터 정확한 ViewType을 역추적합니다.
  */
-export function getViewFromPath(pathname: string, search = ''): ViewType {
+export function getViewFromPath(pathname: string, search = '', hash = ''): ViewType {
+  // 1. URL 해시(#) 파싱 우선 처리
+  const rawHash = (hash || (typeof window !== 'undefined' ? window.location.hash : ''))
+    .replace(/^#\/?/, '')
+    .split('?')[0]
+    .replace(/\/$/, '')
+    .toLowerCase();
+
+  if (rawHash) {
+    if (rawHash === 'home' || rawHash === 'main-lobby') return 'home';
+    if (rawHash === 'deck' || rawHash === 'mydeck') return 'mydeck';
+    if (rawHash === 'play' || rawHash === 'main' || rawHash === 'battle') return 'play';
+    if (rawHash === 'card' || rawHash === 'cards' || rawHash === 'mission' || rawHash === 'missions') return 'card' as ViewType;
+    if (rawHash === 'shop' || rawHash === 'store') return 'shop';
+  }
+
   const params = new URLSearchParams(search);
   const queryView = params.get('view');
   
-  // 1. 쿼리 파라미터 우선 매핑 (?view=...)
+  // 쿼리 파라미터 매핑 (?view=...)
   if (queryView) {
     if (queryView in VIEW_ROUTES) {
       return queryView as ViewType;
@@ -440,8 +478,14 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
     if (queryView === 'checkgrid' || queryView === 'tool/checkgrid') return 'tool-checkgrid';
   }
 
-  // 2. URL 경로 정규화 (끝 슬래시 제거, 소문자 변환)
+  // 2. 레거시 URL 경로 정규화 매핑
   const cleanPath = pathname.replace(/\/$/, '').toLowerCase() || '/';
+
+  if (cleanPath === '/home' || cleanPath === '/main-lobby') return 'home';
+  if (cleanPath === '/deck' || cleanPath === '/mydeck') return 'mydeck';
+  if (cleanPath === '/play' || cleanPath === '/main') return 'play';
+  if (cleanPath === '/card' || cleanPath === '/cards' || cleanPath === '/mission' || cleanPath === '/missions') return 'card' as ViewType;
+  if (cleanPath === '/shop') return 'shop';
 
   // 특수 접두사 라우팅
   if (cleanPath.startsWith('/creator/')) return 'creator';
@@ -458,11 +502,6 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
   }
   if (cleanPath.startsWith('/gotest')) return 'home';
   if (cleanPath === '/gwent' || cleanPath.startsWith('/gwent/')) return 'gwent';
-
-  // 홈 화면 매핑 (/home) - 루트(/)는 독립 정적 랜딩 페이지로 디커플링
-  if (cleanPath === '/home') {
-    return 'home';
-  }
 
   // 레딧 클론 커뮤니티 경로 매핑 (/reddit, /popular, /all, /community, /search, /submit, /r/*, /u/* 등)
   if (

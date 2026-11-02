@@ -5851,6 +5851,7 @@ function AppContent() {
             updateSns={updateSns}
           />
         );
+      case 'card':
       case 'companion':
         return (
           <CompanionView 
@@ -8002,10 +8003,11 @@ function AppContent() {
         onNeverShow={dismissContextualTutorial}
       />
       <nav id="seo-links" style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 }} aria-hidden="true">
-        <a href="/home">{t('home', language)}</a>
-        <a href="/deck">{t('mydeck', language)}</a>
-        <a href="/play">{t('play', language)}</a>
-        <a href="/shop">{t('shop', language)}</a>
+        <a href="#home">{t('home', language)}</a>
+        <a href="#deck">{t('mydeck', language)}</a>
+        <a href="#play">{t('play', language)}</a>
+        <a href="#card">{language === 'ko' ? '카드' : 'Card'}</a>
+        <a href="#shop">{t('shop', language)}</a>
         <a href="/setting">{t('setting', language)}</a>
         <a href="/wiki">Wiki</a>
       </nav>

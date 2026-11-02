@@ -7,8 +7,13 @@
 export type ViewKey = 'home' | 'deck' | 'play' | 'card' | 'shop';
 export type ModalKey = 'mall' | 'community' | 'login' | null;
 
-export const TOP_NAV_ITEMS = ['홈', '마이덱', '플레이', '미션', '상점', '쇼핑몰'] as const;
-export const SIDE_NAV_ITEMS = ['로그인', '홈', '마이덱', '플레이', '미션', '상점', '쇼핑몰', '커뮤니티'] as const;
+export const TOP_NAV_ITEMS = ['홈', '마이덱', '플레이', '카드', '상점', '쇼핑몰'] as const;
+export const SIDE_NAV_ITEMS = ['로그인', '홈', '마이덱', '플레이', '카드', '상점', '쇼핑몰', '커뮤니티'] as const;
+
+export interface RouteOptions {
+  replace?: boolean;
+  updateHash?: boolean;
+}
 
 export const EXTERNAL_LINKS = {
   naverNovel: 'http://novel.naver.com/challenge/list?novelId=1250635',

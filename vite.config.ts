@@ -115,11 +115,33 @@ export default defineConfig(({mode}) => {
       {
         name: 'mpa-dev-rewrite-plugin',
         configureServer(server: any) {
-          server.middlewares.use((req: any, _res: any, next: any) => {
+          server.middlewares.use((req: any, res: any, next: any) => {
             if (!req.url) return next();
             const [pathname, search] = req.url.split('?');
             const query = search ? `?${search}` : '';
             const normalized = (pathname || '').replace(/\/+/g, '/');
+
+            // 1. Legacy standalone routes -> 302 redirect to canonical hash routes
+            const legacyRedirects: Record<string, string> = {
+              '/home': '/#home',
+              '/main-lobby': '/#home',
+              '/deck': '/#deck',
+              '/mydeck': '/#deck',
+              '/play': '/#play',
+              '/main': '/#play',
+              '/card': '/#card',
+              '/cards': '/#card',
+              '/mission': '/#card',
+              '/missions': '/#card',
+              '/shop': '/#shop',
+            };
+
+            const cleanNormalized = normalized.replace(/\/+$/, '') || '/';
+            if (legacyRedirects[cleanNormalized]) {
+              res.writeHead(302, { Location: `${legacyRedirects[cleanNormalized]}${query}` });
+              res.end();
+              return;
+            }
 
             // Dev 모드: SPA 라우트 요청 시 home.html로 rewrite하여 Vite dev HMR 번들 서빙
             if (isSpaRoute(normalized)) {
@@ -129,11 +151,33 @@ export default defineConfig(({mode}) => {
           });
         },
         configurePreviewServer(server: any) {
-          server.middlewares.use((req: any, _res: any, next: any) => {
+          server.middlewares.use((req: any, res: any, next: any) => {
             if (!req.url) return next();
             const [pathname, search] = req.url.split('?');
             const query = search ? `?${search}` : '';
             const normalized = (pathname || '').replace(/\/+/g, '/');
+
+            // 1. Legacy standalone routes -> 302 redirect to canonical hash routes
+            const legacyRedirects: Record<string, string> = {
+              '/home': '/#home',
+              '/main-lobby': '/#home',
+              '/deck': '/#deck',
+              '/mydeck': '/#deck',
+              '/play': '/#play',
+              '/main': '/#play',
+              '/card': '/#card',
+              '/cards': '/#card',
+              '/mission': '/#card',
+              '/missions': '/#card',
+              '/shop': '/#shop',
+            };
+
+            const cleanNormalized = normalized.replace(/\/+$/, '') || '/';
+            if (legacyRedirects[cleanNormalized]) {
+              res.writeHead(302, { Location: `${legacyRedirects[cleanNormalized]}${query}` });
+              res.end();
+              return;
+            }
 
             // Preview 모드: SPA 라우트 요청 시 dist/ 내 사전 렌더링된 정적 파일 우선 매핑
             if (isSpaRoute(normalized)) {

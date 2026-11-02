@@ -47,7 +47,8 @@ export function renderFooter(): string {
             <span>[+] GitHub 오픈소스 리포지토리</span>
           </a>
           <a
-            href="/home"
+            href="#play"
+            data-nav="play"
             class="min-h-[44px] flex items-center no-underline text-[#201d1d] font-bold hover:underline"
           >
             <span>[→] 원클릭 웹게임 바로가기</span>

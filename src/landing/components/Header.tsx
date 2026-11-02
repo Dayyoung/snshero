@@ -26,7 +26,7 @@ export const TOP_NAV_DEFS: NavItemDef[] = [
   { key: 'home', label: '홈' },
   { key: 'deck', label: '마이덱' },
   { key: 'play', label: '플레이' },
-  { key: 'card', label: '미션' },
+  { key: 'card', label: '카드' },
   { key: 'shop', label: '상점' },
   { key: 'mall', label: '쇼핑몰', isModal: true },
 ];
@@ -91,13 +91,15 @@ export function renderHeader(activeView: ViewKey): string {
           ${navItemsHtml}
         </nav>
 
-        <!-- Right Action: Game SPA Launch & Quick Links -->
+        <!-- Right Action: Game Launch & Quick Links -->
         <div class="flex items-center gap-2">
           <a
-            href="/home"
+            href="#play"
+            data-nav="play"
             class="px-4 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center no-underline"
+            aria-label="플레이 게임 섹션으로 이동"
           >
-            게임 시작 (/home) →
+            게임 시작 →
           </a>
         </div>
       </div>

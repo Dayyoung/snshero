@@ -28,7 +28,7 @@ export const SIDE_NAV_DEFS: SideItemDef[] = [
   { key: 'home', label: '홈', icon: '🏠' },
   { key: 'deck', label: '마이덱', icon: '🃏' },
   { key: 'play', label: '플레이', icon: '⚔️' },
-  { key: 'card', label: '미션', icon: '📜' },
+  { key: 'card', label: '카드', icon: '📜' },
   { key: 'shop', label: '상점', icon: '🛒' },
   { key: 'mall', label: '쇼핑몰', isModal: true, modalTarget: 'mall', icon: '🏬', badge: '굿즈' },
   { key: 'community', label: '커뮤니티', isModal: true, modalTarget: 'community', icon: '💬', badge: '채널' },
@@ -137,10 +137,11 @@ export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {
         <!-- Drawer Footer Actions -->
         <div class="p-4 border-t border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] space-y-2">
           <a
-            href="/home"
+            href="#play"
+            data-nav="play"
             class="block w-full py-3 bg-[#201d1d] text-[#fdfcfc] text-center text-xs font-bold rounded-sm min-h-[44px] leading-[20px] hover:opacity-90 transition-opacity no-underline flex items-center justify-center"
           >
-            게임 시작하기 (/home) →
+            게임 시작하기 →
           </a>
           <p class="text-[10px] text-stone-500 text-center font-mono m-0">
             눈히어로.com (SNSHero.com) © 2026

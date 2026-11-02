@@ -77,7 +77,7 @@ if (fs.existsSync(metaSource)) {
 
 // 4. Generate SPA route directories with index.html for clean URL routing (SEO/AEO/GEO direct crawlable)
 const routes = [
-  'home', 'bench', 'benchmark', 'shbp', 'reddit', 'play', 'card-play', 'deck', 'mydeck', 'shop', 'battle', 'market',
+  'home', 'bench', 'benchmark', 'shbp', 'reddit', 'play', 'card', 'card-play', 'deck', 'mydeck', 'shop', 'battle', 'market',
   'rank', 'ranking', 'guild', 'novel', 'book', 'webtoon', 'script', 'animation', 'movie', 'cinema', 'event', 'companion',
   'stock', 'community', 'admin', 'status', 'profile',
   'setting', 'share', 'boost', 'creator', 'web3', 'mall',
@@ -211,6 +211,52 @@ if (fs.existsSync(spaTemplatePath)) {
     const routeDir = path.join(distDir, route);
     if (!fs.existsSync(routeDir)) {
       fs.mkdirSync(routeDir, { recursive: true });
+    }
+
+    // 0. Legacy standalone routes redirect cleanly to canonical hash routes
+    const legacyRoutesToHash = {
+      home: '#home',
+      'main-lobby': '#home',
+      deck: '#deck',
+      mydeck: '#deck',
+      play: '#play',
+      main: '#play',
+      card: '#card',
+      cards: '#card',
+      mission: '#card',
+      missions: '#card',
+      shop: '#shop',
+      store: '#shop',
+    };
+
+    if (legacyRoutesToHash[route]) {
+      const targetHash = legacyRoutesToHash[route];
+      const redirectHtml = `<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>눈히어로.com - 이동 중...</title>
+  <meta http-equiv="refresh" content="0; url=/${targetHash}">
+  <link rel="canonical" href="https://snshero.com/${targetHash}">
+  <script>
+    var search = window.location.search || '';
+    window.location.replace('/' + '${targetHash}' + search);
+  </script>
+</head>
+<body style="font-family: monospace; padding: 20px; background: #fdfcfc; color: #201d1d;">
+  <p>섹션으로 이동 중입니다: <a href="/${targetHash}">/${targetHash}</a></p>
+</body>
+</html>`;
+      fs.writeFileSync(path.join(routeDir, 'index.html'), redirectHtml, 'utf8');
+      const flatHtmlPath = path.join(distDir, `${route}.html`);
+      if (flatHtmlPath !== indexPath && path.relative(distDir, flatHtmlPath) !== 'index.html') {
+        const flatHtmlDir = path.dirname(flatHtmlPath);
+        if (!fs.existsSync(flatHtmlDir)) {
+          fs.mkdirSync(flatHtmlDir, { recursive: true });
+        }
+        fs.writeFileSync(flatHtmlPath, redirectHtml, 'utf8');
+      }
+      continue;
     }
 
     // 1. Determine HTML content for the route

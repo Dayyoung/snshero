@@ -38,10 +38,11 @@ export function renderHomeSection(): string {
             </p>
             <div class="flex flex-wrap items-center gap-3 pt-2">
               <a
-                href="/home"
+                href="#play"
+                data-nav="play"
                 class="px-6 py-3 bg-[#201d1d] text-[#fdfcfc] text-sm font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center no-underline shadow-none"
               >
-                웹게임 즉시 시작 (/home) →
+                웹게임 즉시 시작 →
               </a>
               <button
                 type="button"

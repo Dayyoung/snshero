@@ -3,12 +3,13 @@
  *
  * Standalone static landing page orchestrator for SNSHero.com.
  * Dual-entry MPA architecture: Zero React runtime, zero server dependencies.
+ * Full client-side hash routing (#home, #deck, #play, #card, #shop).
  * OpenCode Terminal-Flat design, 44px+ touch targets, responsive 360px ~ 3840px layout.
  * Enforces Zero-Onboarding-Popup guard on initial visit.
  */
 
 import './styles/landing.css';
-import { ViewKey, ModalKey } from './types';
+import { ViewKey, ModalKey, RouteOptions } from './types';
 import { renderHeader } from './components/Header';
 import { renderSidebar } from './components/Sidebar';
 import { renderModals } from './components/Modals';
@@ -19,6 +20,7 @@ import { renderPlaySection, handlePlayAction, stopPlayTts } from './views/PlaySe
 import { renderCardSection, setSelectedCardId, setElementFilter, setOwnedFilter } from './views/CardSection';
 import { renderShopSection, executeShopPurchase, setUserCoins, getUserCoins } from './views/ShopSection';
 import { cardNurtureStore } from './services/cardNurtureStore';
+import { initIdleAutoPlay } from './services/idleAutoPlayManager';
 
 interface LandingState {
   activeView: ViewKey;
@@ -27,6 +29,40 @@ interface LandingState {
   selectedDeckCardId?: number;
 }
 
+export const VALID_VIEWS: readonly ViewKey[] = ['home', 'deck', 'play', 'card', 'shop'] as const;
+
+export const HASH_VIEW_MAP: Record<string, ViewKey> = {
+  home: 'home',
+  'main-lobby': 'home',
+  deck: 'deck',
+  mydeck: 'deck',
+  play: 'play',
+  main: 'play',
+  battle: 'play',
+  card: 'card',
+  cards: 'card',
+  mission: 'card',
+  missions: 'card',
+  companion: 'card',
+  shop: 'shop',
+  store: 'shop',
+};
+
+export const LEGACY_PATH_MAP: Record<string, ViewKey> = {
+  '/home': 'home',
+  '/main-lobby': 'home',
+  '/deck': 'deck',
+  '/mydeck': 'deck',
+  '/play': 'play',
+  '/main': 'play',
+  '/card': 'card',
+  '/cards': 'card',
+  '/mission': 'card',
+  '/missions': 'card',
+  '/shop': 'shop',
+  '/store': 'shop',
+};
+
 const state: LandingState = {
   activeView: 'home',
   activeModal: null,
@@ -34,43 +70,63 @@ const state: LandingState = {
   selectedDeckCardId: 1,
 };
 
-function renderActiveViewContent(view: ViewKey): string {
-  if (view === 'home') {
-    return renderHomeSection();
-  }
-  if (view === 'deck') {
-    return renderMyDeckSection(state.selectedDeckCardId || 1);
-  }
-  if (view === 'play') {
-    return renderPlaySection();
-  }
-  if (view === 'card') {
-    return renderCardSection();
-  }
-  if (view === 'shop') {
-    return renderShopSection();
+let isProgrammaticRouting = false;
+
+/**
+ * Parses the current URL hash or legacy pathname into a valid ViewKey.
+ * Defaults to 'home' if empty or unrecognized.
+ */
+export function parseRoute(hashString?: string, pathnameString?: string): ViewKey {
+  const rawHash = (hashString !== undefined ? hashString : (typeof window !== 'undefined' ? window.location.hash : ''))
+    .replace(/^#\/?/, '')
+    .split('?')[0]
+    .replace(/\/$/, '')
+    .toLowerCase();
+
+  if (rawHash && rawHash in HASH_VIEW_MAP) {
+    return HASH_VIEW_MAP[rawHash];
   }
 
+  const cleanPath = (pathnameString !== undefined ? pathnameString : (typeof window !== 'undefined' ? window.location.pathname : ''))
+    .replace(/\/$/, '')
+    .toLowerCase();
+
+  if (cleanPath && cleanPath in LEGACY_PATH_MAP) {
+    return LEGACY_PATH_MAP[cleanPath];
+  }
+
+  return 'home';
+}
+
+function renderActiveViewContent(view: ViewKey): string {
+  if (view === 'home') return renderHomeSection();
+  if (view === 'deck') return renderMyDeckSection(state.selectedDeckCardId || 1);
+  if (view === 'play') return renderPlaySection();
+  if (view === 'card') return renderCardSection();
+  if (view === 'shop') return renderShopSection();
   return renderHomeSection();
 }
 
-function renderApp(): void {
+/**
+ * Renders the entire application DOM tree.
+ */
+export function renderApp(): void {
   const root = document.getElementById('landing-root') || document.getElementById('root');
   if (!root) return;
 
   root.innerHTML = `
     <div class="w-full min-h-screen overflow-x-hidden flex flex-col bg-[#fdfcfc] text-[#201d1d] font-mono select-none">
-      <!-- Top Navigation (Header: exact 6 items, md:, lg:, min-h-[44px]) -->
+      <!-- Top Navigation -->
       <div id="landing-header-slot" class="w-full">
         ${renderHeader(state.activeView)}
       </div>
 
-      <!-- Side Navigation (Sidebar Drawer: exact 8 items, off-canvas, backdrop, [x]) -->
+      <!-- Side Navigation -->
       <div id="landing-sidebar-slot">
         ${renderSidebar(state.isSidebarOpen, state.activeView)}
       </div>
 
-      <!-- Secondary Action Modals (쇼핑몰, 커뮤니티, 로그인) -->
+      <!-- Secondary Action Modals -->
       <div id="landing-modals-slot">
         ${renderModals(state.activeModal)}
       </div>
@@ -88,23 +144,107 @@ function renderApp(): void {
   `;
 }
 
-function handleEventDelegation(event: Event): void {
-  const target = (event.target as HTMLElement).closest('[data-nav], [data-modal], [data-action]');
+/**
+ * Smoothly updates the active section and active header/sidebar styles
+ * without full page reloads or DOM destruction.
+ */
+export function renderSectionContent(view: ViewKey): void {
+  const mainSlot = document.getElementById('landing-main-slot');
+  const headerSlot = document.getElementById('landing-header-slot');
+  const sidebarSlot = document.getElementById('landing-sidebar-slot');
+
+  if (mainSlot && headerSlot) {
+    headerSlot.innerHTML = renderHeader(view);
+    if (sidebarSlot) {
+      sidebarSlot.innerHTML = renderSidebar(state.isSidebarOpen, view);
+    }
+    mainSlot.innerHTML = renderActiveViewContent(view);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  } else {
+    renderApp();
+  }
+}
+
+/**
+ * Centralized navigation controller with reentrancy lock.
+ */
+export function navigateTo(targetView: ViewKey, options?: RouteOptions): void {
+  const resolvedView: ViewKey = VALID_VIEWS.includes(targetView) ? targetView : 'home';
+  const targetHash = `#${resolvedView}`;
+
+  // State Comparison Guard: do not re-render if already active and hash matches
+  if (state.activeView === resolvedView && window.location.hash === targetHash) {
+    return;
+  }
+
+  // Cleanup side effects of previous view
+  if (state.activeView === 'play' && resolvedView !== 'play') {
+    stopPlayTts();
+  }
+
+  state.activeView = resolvedView;
+  state.isSidebarOpen = false;
+  state.activeModal = null;
+
+  // URL Hash Synchronization with Reentrancy Lock
+  if (options?.updateHash !== false && window.location.hash !== targetHash) {
+    isProgrammaticRouting = true;
+    try {
+      if (options?.replace) {
+        window.history.replaceState({ view: resolvedView }, '', targetHash);
+      } else {
+        window.location.hash = resolvedView;
+      }
+    } finally {
+      setTimeout(() => {
+        isProgrammaticRouting = false;
+      }, 0);
+    }
+  }
+
+  renderSectionContent(resolvedView);
+
+  // Dispatch custom event for external listeners (e.g. idle timer, adsense)
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('snshero_hash_route_changed', { detail: { view: resolvedView } }));
+  }
+}
+
+export function handleEventDelegation(event: Event): void {
+  const target = (event.target as HTMLElement).closest('[data-nav], [data-modal], [data-action], a[href^="#"], a[href="/home"]');
   if (!target) return;
 
   const nav = target.getAttribute('data-nav') as ViewKey | null;
   const modal = target.getAttribute('data-modal') as ModalKey | null;
   const action = target.getAttribute('data-action');
+  const href = target.getAttribute('href');
 
-  if (nav) {
-    if (state.activeView === 'play' && nav !== 'play') {
-      stopPlayTts();
+  // Handle direct data-nav or hash anchors
+  if (nav && VALID_VIEWS.includes(nav)) {
+    event.preventDefault();
+    navigateTo(nav);
+    return;
+  }
+
+  // Intercept legacy href="/home" links
+  if (href === '/home') {
+    event.preventDefault();
+    navigateTo('home');
+    return;
+  }
+
+  // Intercept internal hash anchor clicks
+  if (href && href.startsWith('#')) {
+    const rawTarget = href.replace(/^#\/?/, '').toLowerCase();
+    const mapped = HASH_VIEW_MAP[rawTarget];
+    if (mapped) {
+      event.preventDefault();
+      navigateTo(mapped);
+      return;
     }
-    state.activeView = nav;
-    state.isSidebarOpen = false;
-    window.location.hash = nav;
-    renderApp();
-  } else if (modal) {
+  }
+
+  if (modal) {
     if (state.activeView === 'play') {
       stopPlayTts();
     }
@@ -176,7 +316,7 @@ function handleEventDelegation(event: Event): void {
   }
 }
 
-function handleGlobalKeydown(event: KeyboardEvent): void {
+export function handleGlobalKeydown(event: KeyboardEvent): void {
   if (event.key === 'Escape') {
     if (state.activeModal) {
       state.activeModal = null;
@@ -190,15 +330,29 @@ function handleGlobalKeydown(event: KeyboardEvent): void {
   }
 }
 
-function mountLanding(): void {
-  // Sync view from initial URL hash if present
-  const hash = window.location.hash.replace('#', '') as ViewKey;
-  const validViews: ViewKey[] = ['home', 'deck', 'play', 'card', 'shop'];
-  if (validViews.includes(hash)) {
-    state.activeView = hash;
+export function mountLanding(): void {
+  // 1. Initial route resolution
+  const initialView = parseRoute();
+  state.activeView = initialView;
+
+  // 2. Normalize initial URL to `#${initialView}` without creating an extra history frame
+  const targetHash = `#${initialView}`;
+  if (window.location.hash !== targetHash) {
+    try {
+      window.history.replaceState({ view: initialView }, '', targetHash);
+    } catch {
+      window.location.hash = initialView;
+    }
   }
 
-  // Register event listeners
+  // 3. Initialize Global 15-Second Idle Auto-Play Transition
+  initIdleAutoPlay({
+    timeoutMs: 15000,
+    targetUrl: 'https://dayyoung-macbookpro.tail3717a4.ts.net/#play',
+    fallbackHash: '#play',
+  });
+
+  // 4. Register Event Listeners
   document.addEventListener('click', handleEventDelegation);
   document.addEventListener('change', (event: Event) => {
     const target = event.target as HTMLElement;
@@ -218,17 +372,27 @@ function mountLanding(): void {
   });
 
   window.addEventListener('keydown', handleGlobalKeydown);
+
+  // 5. hashchange Listener (handles user manual hash edit or direct # links)
   window.addEventListener('hashchange', () => {
-    const currentHash = window.location.hash.replace('#', '') as ViewKey;
-    if (validViews.includes(currentHash) && currentHash !== state.activeView) {
-      if (state.activeView === 'play' && currentHash !== 'play') {
-        stopPlayTts();
-      }
-      state.activeView = currentHash;
-      renderApp();
+    if (isProgrammaticRouting) return;
+    const parsedView = parseRoute();
+    if (parsedView !== state.activeView) {
+      navigateTo(parsedView, { updateHash: false });
     }
   });
 
+  // 6. popstate Listener (handles browser Back / Forward buttons)
+  window.addEventListener('popstate', (event: PopStateEvent) => {
+    if (isProgrammaticRouting) return;
+    const stateView = event.state?.view as ViewKey | undefined;
+    const targetView = stateView && VALID_VIEWS.includes(stateView) ? stateView : parseRoute();
+    if (targetView !== state.activeView) {
+      navigateTo(targetView, { updateHash: false });
+    }
+  });
+
+  // 7. Custom store events
   if (typeof window !== 'undefined') {
     window.addEventListener('snshero_card_nurture_updated', () => {
       renderApp();
@@ -238,6 +402,7 @@ function mountLanding(): void {
     });
   }
 
+  // 8. Initial render
   renderApp();
 }
 

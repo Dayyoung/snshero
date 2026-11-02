@@ -128,10 +128,11 @@ export function renderMyDeckSection(selectedCardId: number = 1): string {
                 카드 육성 및 스탯 분배 (Lv.1~100) →
               </button>
               <a
-                href="/home"
+                href="#play"
+                data-nav="play"
                 class="px-4 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] inline-flex items-center justify-center no-underline"
               >
-                웹게임 출격 (/home) →
+                웹게임 출격 →
               </a>
             </div>
           </div>
@@ -395,10 +396,11 @@ export function renderMyDeckSection(selectedCardId: number = 1): string {
                   이 카드 육성하기 (EXP &amp; 스탯 배분) →
                 </button>
                 <a
-                  href="/home"
+                  href="#play"
+                  data-nav="play"
                   class="px-5 py-3 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] inline-flex items-center justify-center no-underline"
                 >
-                  실전 배틀 출격 (/home)
+                  실전 배틀 출격 →
                 </a>
               </div>
             </div>
