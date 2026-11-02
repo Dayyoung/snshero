@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root {
+  --landing-cream: #fdfcfc;
+  --landing-ink: #201d1d;
+  --landing-line: rgba(15, 0, 0, 0.12);
+}
+
+body {
+  margin: 0;
+  background-color: var(--landing-cream);
+  color: var(--landing-ink);
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}

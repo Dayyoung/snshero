@@ -17509,3 +17509,19 @@
   5. **쿼터 소진 대응**: 잔여 10씬(`scripts/batches/ep_06/batch_finish.txt`) 준비 및 모델 용량 리셋(~4시간 37분) 스케줄러 자동 알림 등록.
 - **검증 결과**: `npm run build` 프로덕션 빌드 100% 무결점 통과 (4,327개 모듈 정상 번들링).
 - **구글 폼 보고서 제출**: 완료 (`submit_report.py` 제출 성공).
+
+## [2026-11-02 12:53 KST] [마일스톤 1] 독립 정적 랜딩 웹 서비스 및 /home 디커플링 (Vite Multi-Page Application) 구현 완료
+- **작업 개요**:
+  - SNSHero.com의 메인 접속 페이지(`/` 및 `/index.html`)를 가볍고 빠른 반응형 독립 정적 페이지로 분리하고, 기존 리치 게임 SPA를 `/home` 경로로 완전 디커플링하는 Dual-Entry Vite Multi-Page Application 아키텍처 구축 완료.
+- **주요 구현 및 개선 내역**:
+  1. **`home.html` 신설**: 기존 React 19 SPA의 진입점(`/src/main.tsx`, `<div id="root"></div>`), Leaflet CSS, `#root:empty` 스플래시 스타일, 워치독 타이머, SEO/JSON-LD를 보존하고 canonical/og:url을 `https://snshero.com/home`으로 설정한 전용 HTML 진입점 생성.
+  2. **`index.html` 리팩토링**: Leaflet, React `#root:empty`, 워치독, `/src/main.tsx`를 제거하고 `/src/landing/index.ts`, `/src/landing/styles/landing.css`, `<div id="landing-root"></div>`를 로드하는 초경량 정적 진입점으로 전환. GA4, AdSense, 12개 언어 hreflang, 7개 JSON-LD 스키마 보존.
+  3. **`src/landing/index.ts` & `src/landing/styles/landing.css` 생성**: OpenCode Terminal-Flat 디자인 시스템 기반 부트스트랩 스크립트 및 스타일시트 구축.
+  4. **`vite.config.ts` 듀얼 엔트리 롤업 및 rewrite 미들웨어 탑재**: `rollupOptions.input: { main: 'index.html', home: 'home.html' }`, `manualChunks` 내 `src/landing` 분리 격리, `mpa-dev-rewrite-plugin`을 통한 dev/preview 서버 `/home` rewrite 처리.
+  5. **`scripts/post-build.js` 사후 빌드 파이프라인 분리**: `dist/index.html`을 순수 정적 랜딩으로 영구 보존하고, `dist/home.html`을 베이스 템플릿으로 사용하여 59개 SPA 서브라우트 및 `dist/404.html` 생성.
+  6. **`src/routes.ts` 라우트 정렬**: `home.path = '/home'`, `aliases: ['/home', '/main-lobby']`, `getViewPath` 기본 fallback `'/home'`, `getViewFromPath`에서 `cleanPath === '/home'` 매핑 및 `'/'` 디커플링.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 타입 무결점).
+  - `npm run build`: Exit code 0 완료.
+  - 번들 격리 검증: `dist/index.html` 내 React/TensorFlow/Firebase 청크 0개 (JS 크기 1.78 KB), `dist/home.html` 및 `dist/deck/index.html`에 React 게임 번들 정상 연결.
+- **구글 폼 보고서 제출**: 완료 (`submit_report.py` 제출 성공).

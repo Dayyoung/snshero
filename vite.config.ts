@@ -47,6 +47,31 @@ export default defineConfig(({mode}) => {
       react(), 
       tailwindcss(),
       {
+        name: 'mpa-dev-rewrite-plugin',
+        configureServer(server: any) {
+          server.middlewares.use((req: any, _res: any, next: any) => {
+            if (!req.url) return next();
+            const [pathname, search] = req.url.split('?');
+            const query = search ? `?${search}` : '';
+            if (pathname === '/home' || pathname === '/home/') {
+              req.url = `/home.html${query}`;
+            }
+            next();
+          });
+        },
+        configurePreviewServer(server: any) {
+          server.middlewares.use((req: any, _res: any, next: any) => {
+            if (!req.url) return next();
+            const [pathname, search] = req.url.split('?');
+            const query = search ? `?${search}` : '';
+            if (pathname === '/home' || pathname === '/home/') {
+              req.url = `/home.html${query}`;
+            }
+            next();
+          });
+        },
+      },
+      {
         name: 'clean-dist-assets',
         buildStart() {
           const assetsDir = path.resolve(process.cwd(), 'dist', 'assets');
@@ -556,7 +581,9 @@ export default defineConfig(({mode}) => {
                 !decodedUrl.startsWith('/node_modules/') &&
                 !decodedUrl.startsWith('/assets/') &&
                 decodedUrl !== '/' &&
-                decodedUrl !== '/index.html'
+                decodedUrl !== '/index.html' &&
+                decodedUrl !== '/home' &&
+                decodedUrl !== '/home.html'
               ) {
                 // If path directly matches a file or folder in public/
                 const candidate = decodedUrl.replace(/^\//, '');
@@ -683,11 +710,16 @@ export default defineConfig(({mode}) => {
       assetsDir: 'assets',
       emptyOutDir: false,
       rollupOptions: {
+        input: {
+          main: path.resolve(process.cwd(), 'index.html'),
+          home: path.resolve(process.cwd(), 'home.html'),
+        },
         output: {
           entryFileNames: `assets/[name]-[hash].js`,
           chunkFileNames: `assets/[name]-[hash].js`,
           assetFileNames: `assets/[name]-[hash][extname]`,
           manualChunks(id) {
+            if (id.includes('src/landing')) return undefined;
             if (id.includes('webtoonEpisodeManifest')) return 'data-webtoon';
             if (id.includes('src/lib/i18n')) return 'data-i18n';
             if (!id.includes('node_modules')) return undefined;

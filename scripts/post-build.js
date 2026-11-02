@@ -13,22 +13,29 @@ if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 }
 
-// 1. Find entry script in dist/index.html (fallback to newest index-*.js in dist/assets)
+// 1. Find entry script in dist/home.html first (SPA game bundle), then dist/index.html
 let entryScript = '';
-const builtIndexHtmlPath = path.join(distDir, 'index.html');
-if (fs.existsSync(builtIndexHtmlPath)) {
-  const indexHtmlContent = fs.readFileSync(builtIndexHtmlPath, 'utf8');
-  const scriptMatch = indexHtmlContent.match(/\/assets\/(index-[A-Za-z0-9_-]+\.js)/);
-  if (scriptMatch && scriptMatch[1]) {
-    entryScript = `/assets/${scriptMatch[1]}`;
-    console.log(`[post-build] Detected entry script from index.html: ${entryScript}`);
+const candidateHtmlPaths = [
+  path.join(distDir, 'home.html'),
+  path.join(distDir, 'index.html'),
+];
+
+for (const htmlPath of candidateHtmlPaths) {
+  if (fs.existsSync(htmlPath)) {
+    const htmlContent = fs.readFileSync(htmlPath, 'utf8');
+    const scriptMatch = htmlContent.match(/\/assets\/((?:home|main|index)-[A-Za-z0-9_-]+\.js)/);
+    if (scriptMatch && scriptMatch[1]) {
+      entryScript = `/assets/${scriptMatch[1]}`;
+      console.log(`[post-build] Detected entry script from ${path.basename(htmlPath)}: ${entryScript}`);
+      break;
+    }
   }
 }
 if (!entryScript) {
   const assetsDir = path.join(distDir, 'assets');
   if (fs.existsSync(assetsDir)) {
     const files = fs.readdirSync(assetsDir)
-      .filter(f => f.startsWith('index-') && f.endsWith('.js'))
+      .filter(f => (f.startsWith('home-') || f.startsWith('main-') || f.startsWith('index-')) && f.endsWith('.js'))
       .sort((a, b) => {
         const mtimeA = fs.statSync(path.join(assetsDir, a)).mtimeMs;
         const mtimeB = fs.statSync(path.join(assetsDir, b)).mtimeMs;
@@ -93,8 +100,16 @@ const routes = [
 ];
 
 const indexPath = path.join(distDir, 'index.html');
-if (fs.existsSync(indexPath)) {
-  const baseHtml = fs.readFileSync(indexPath, 'utf8');
+const homeHtmlPath = path.join(distDir, 'home.html');
+
+// 4. SPA Route Base Template Selection:
+// dist/index.html is preserved as the standalone static landing web service entry.
+// All SPA subroutes (deck, play, shop, etc.) and /home are generated from dist/home.html.
+const spaTemplatePath = fs.existsSync(homeHtmlPath) ? homeHtmlPath : indexPath;
+
+if (fs.existsSync(spaTemplatePath)) {
+  console.log(`[post-build] Using SPA base template: ${spaTemplatePath}`);
+  const baseHtml = fs.readFileSync(spaTemplatePath, 'utf8');
 
   // Dedicated prerendered SEO HTML for 'snshero bench'
   const benchTitle = "snshero bench - SNSHero Bench Point (SHBP) AI 1시간 공인 벤치마크 | 눈히어로.com (SNSHero.com - Kadan's Journey)";
@@ -182,6 +197,10 @@ if (fs.existsSync(indexPath)) {
   const cleanNovelHtml = ensureAbsoluteAssetPaths(novelCustomHtml);
 
   for (const route of routes) {
+    if (route === '' || route === '/' || route === 'index') {
+      continue;
+    }
+
     const publicStaticIndex = path.join(publicDir, route, 'index.html');
     if (fs.existsSync(publicStaticIndex)) {
       // Do not overwrite real static games/pages that already exist in public/
@@ -222,11 +241,12 @@ if (fs.existsSync(publicGwentDir) && !fs.existsSync(path.join(distGwentDir, 'ind
   console.log('[post-build] Synced public/gwent to dist/gwent');
 }
 
-// 5. Ensure 404.html fallback
+// 5. Ensure 404.html fallback (uses SPA template so deep links load client-side router)
 const notFoundPath = path.join(distDir, '404.html');
-if (fs.existsSync(indexPath) && !fs.existsSync(notFoundPath)) {
-  fs.copyFileSync(indexPath, notFoundPath);
-  console.log('[post-build] Generated 404.html from index.html');
+const templateFor404 = fs.existsSync(homeHtmlPath) ? homeHtmlPath : indexPath;
+if (fs.existsSync(templateFor404)) {
+  fs.copyFileSync(templateFor404, notFoundPath);
+  console.log(`[post-build] Generated 404.html from ${path.basename(templateFor404)}`);
 }
 
 // 6. Run Google News SEO & AdSense Static Prerenderer

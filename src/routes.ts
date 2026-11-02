@@ -19,8 +19,8 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionEn: 'Discover breaking gaming news, discussions, memes, and vibrant communities on SNSHero.com.',
   },
   home: {
-    path: '/',
-    aliases: ['/home'],
+    path: '/home',
+    aliases: ['/home', '/main-lobby'],
     titleKo: '눈히어로.com - 카단의 여정 (원클릭 AI 웹 카드 게임)',
     titleEn: "SNSHero.com - Kadan's Journey (One-Click AI Web Card Game)",
     descriptionKo: '복잡한 가입 없이 클릭 한 번으로 시작하는 AI 웹 카드 게임 눈히어로.com - 카단의 여정 로비입니다.',
@@ -421,7 +421,7 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
  */
 export function getViewPath(view: ViewType): string {
   const route = VIEW_ROUTES[view];
-  return route ? route.path : '/';
+  return route ? route.path : '/home';
 }
 
 /**
@@ -459,8 +459,8 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
   if (cleanPath.startsWith('/gotest')) return 'home';
   if (cleanPath === '/gwent' || cleanPath.startsWith('/gwent/')) return 'gwent';
 
-  // 홈 화면 매핑 (/ 또는 /home)
-  if (cleanPath === '/' || cleanPath === '/home') {
+  // 홈 화면 매핑 (/home) - 루트(/)는 독립 정적 랜딩 페이지로 디커플링
+  if (cleanPath === '/home') {
     return 'home';
   }
 

@@ -1,83 +1,125 @@
-# Milestone 1 Handoff Report — Core Gameplay & Battle Views (Features 1–17)
+# Milestone 1: Handoff Report — Static Architecture & MPA Decoupling
+
+- **Worker**: `teamwork_worker` (Milestone 1 Implementation)
+- **Date**: 2026-11-02T03:53:00Z
+- **Parent**: Orchestrator (`7b342c7a-1d74-43d7-a388-5ffc926b3969`)
+- **Status**: Complete (Hard Handoff)
+
+---
 
 ## 1. Observation
-- **Assigned Scope**: Implementation of Features 1–17 defined in `PROJECT.md` and `explorer_survey_1/handoff.md` across 13 designated gameplay and battle files:
-  1. `src/views/MobileCardPlayScreen.tsx`
-  2. `src/views/HomeView.tsx`
-  3. `src/views/MyDeckView.tsx`
-  4. `src/views/PlayGameView.tsx`
-  5. `src/components/battle/TacticalCommandHUD.tsx`
-  6. `src/components/battle/TacticalSynergyMatrix.tsx`
-  7. `src/components/battle/StarBreathingUltimateWidget.tsx`
-  8. `src/components/battle/ElementalTempestWidget.tsx`
-  9. `src/components/MinimalistMissionHUD.tsx`
-  10. `src/components/ResponsiveCleanHUD.tsx`
-  11. `src/components/DemoPlayHUD.tsx`
-  12. `src/components/BattleBossHUD.tsx`
-  13. `src/components/MissionGameCardHUD.tsx`
-- **Initial Baseline Audit Findings (`explorer_survey_1/handoff.md` & direct grep)**:
-  - `MobileCardPlayScreen.tsx`: 4 skill buttons (Power Boost, Shield, Burst, Auto Battle) had `h-10` (<44px minimum touch target). Smart LifeCycle toggle was `h-8 w-8`. `TacticalCommandHUD` wrapper container had `rounded-b-lg`. Active card outline had `shadow-sm`.
-  - `PlayGameView.tsx`: 44 occurrences of `bg-gradient-to-*`, 179 occurrences of `rounded-(3xl|2xl|xl|lg)`, 95 occurrences of `shadow-(2xl|xl|lg|md)`, 26 occurrences of `animate-(ping|bounce)`, and 29 occurrences of `font-sans`. Floating robot auto-battle button was a circular `rounded-full` button with `bg-gradient-to-tr` and `animate-spin` overlapping the play area; grid skills were `rounded-full` buttons with `shadow-lg`; in-game top bar buttons (Menu, Logs, Chat, AI Tactics, Element Guide, Rules) were `h-8 w-8 rounded-xl shadow-md`; versus matchup flip cards had `rounded-2xl`, `borderRadius: 20px`, `animate-ping`, and `shadow-2xl`.
-  - Shared battle HUDs: `StarBreathingUltimateWidget`, `ElementalTempestWidget`, `MinimalistMissionHUD`, `ResponsiveCleanHUD`, `DemoPlayHUD`, `BattleBossHUD`, and `MissionGameCardHUD` contained `shadow-xl/2xl/md`, `animate-bounce/pulse`, sub-44px exit/pause/help buttons, and non-canonical radii.
-- **Post-Refactoring Audit Results**:
-  - Python regex audit script across all 13 assigned files:
-    ```
-    bg-gradient-to-* -> 0 matches (100% CLEAN)
-    rounded-lg/xl/2xl/3xl -> 0 matches (100% CLEAN)
-    shadow-md/lg/xl/2xl -> 0 matches (100% CLEAN)
-    animate-ping/bounce -> 0 matches (100% CLEAN)
-    font-sans -> 0 matches (100% CLEAN)
-    ```
-  - TypeScript compiler check: `npx tsc --noEmit` exited with code 0 (0 errors).
-  - Production build: `npm run build` exited with code 0 in 19.78s (52 static SPA routes and Google News static assets successfully bundled).
-  - Google Form submission: `python3 skills/report-ex/scripts/submit_report.py` returned `Successfully submitted task: [개발] [M1 마일스톤1] 핵심 게임플레이 및 배틀 화면 터미널 플랫 디자인 시스템 전면 적용 (Features 1~17) -> 작업완료`.
-  - Local commit: `c0447e80` (`feat(design-system): Milestone 1 terminal-flat refactoring across core gameplay & battle views (Features 1-17)`), 11 files changed, 756 insertions(+), 807 deletions(-). `WORK_LOGS.md` committed at `b50c6ee6`. Zero remote git push performed.
+
+1. **`home.html` Created**:
+   - Location: `/Users/dayyoung/project/snshero/home.html` (869 lines, 45,291 bytes).
+   - Verbatim content: Contains `<title>눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) | 원클릭 AI 웹 카드 게임 & 공식 웹소설·웹툰</title>`, `<link rel="canonical" href="https://snshero.com/home" />`, `<meta property="og:url" content="https://snshero.com/home" />`, Leaflet CSS (`https://unpkg.com/leaflet@1.9.4/dist/leaflet.css`), React splash styles (`#root:empty`), watchdog script (`hero_boot_retries`), `<script type="module" src="/src/main.tsx"></script>`, and `<div id="root"></div>`.
+
+2. **`index.html` Refactored**:
+   - Location: `/Users/dayyoung/project/snshero/index.html` (812 lines).
+   - Verbatim content: Lines 718–727 replaced with:
+     ```html
+     <!-- Static Landing Stylesheet -->
+     <link rel="stylesheet" href="/src/landing/styles/landing.css" />
+     <style>
+       body { margin: 0; background-color: #fdfcfc; color: #201d1d; font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+     </style>
+     <script type="module" src="/src/landing/index.ts"></script>
+     </head>
+     <body class="bg-[#fdfcfc] text-[#201d1d] font-mono">
+       <div id="landing-root"></div>
+     ```
+   - All GA4, Google Ads, AdSense, OpenGraph, Twitter, multi-lingual hreflang (12 languages + x-default), and 7 JSON-LD schemas were completely preserved.
+
+3. **`src/landing/styles/landing.css` & `src/landing/index.ts` Created**:
+   - `src/landing/styles/landing.css`: `@import "tailwindcss";` with `--landing-cream: #fdfcfc;`, `--landing-ink: #201d1d;`, `--landing-line: rgba(15, 0, 0, 0.12);`, and JetBrains Mono monospace body font.
+   - `src/landing/index.ts`: Lightweight vanilla bootstrap code mounting `#landing-root` with an initial valid layout linking to `/home`.
+
+4. **`vite.config.ts` Multi-Page Configuration & Dev Middleware**:
+   - `plugins`: Added `mpa-dev-rewrite-plugin` for `configureServer` and `configurePreviewServer` to rewrite `/home` and `/home/` to `/home.html`.
+   - `build.rollupOptions.input`:
+     ```typescript
+     input: {
+       main: path.resolve(process.cwd(), 'index.html'),
+       home: path.resolve(process.cwd(), 'home.html'),
+     }
+     ```
+   - `manualChunks`: Added `if (id.includes('src/landing')) return undefined;` to isolate landing chunks.
+   - Public wildcard middleware: Excluded `/home` and `/home.html` from candidate file match.
+
+5. **`scripts/post-build.js` Template Decoupling**:
+   - Entry script detection: Checks `dist/home.html` first for `home-*.js`, then `dist/index.html`.
+   - Template selection: Uses `spaTemplatePath = fs.existsSync(homeHtmlPath) ? homeHtmlPath : indexPath;` to generate all 59 SPA routes (`dist/deck/index.html`, `dist/play/index.html`, `dist/shop/index.html`, etc.) and `dist/home/index.html`.
+   - Route safety: Skips `''`, `'/'`, and `'index'` so `dist/index.html` is 100% preserved as the static landing page.
+   - Fallback `dist/404.html`: Copied from `spaTemplatePath` (`dist/home.html`).
+
+6. **`src/routes.ts` Route Mapping**:
+   - `VIEW_ROUTES.home.path = '/home'`, `aliases: ['/home', '/main-lobby']`.
+   - `getViewPath(view)` fallback returns `'/home'`.
+   - `getViewFromPath(pathname, search)`: `cleanPath === '/home'` returns `'home'`. Path `'/'` is cleanly decoupled.
+
+7. **Compilation & Bundle Isolation Results**:
+   - `npx tsc --noEmit`: Exit code 0 (0 errors).
+   - `npm run build`: Exit code 0.
+   - `dist/index.html` referenced assets:
+     - `assets/main-DFC6NrKW.js`: 1.09 KB
+     - `assets/types-B5Qt9EMX.js`: 0.69 KB
+     - `assets/main-xkn4ezGR.css`: 547.40 KB
+     - Zero references to `vendor-react`, `vendor-tensorflow`, `vendor-firebase`, or `vendor-motion`.
+   - `dist/home.html` referenced assets:
+     - `assets/home--1lkYYdL.js`: 648.42 KB
+     - `assets/vendor-react-DjkHO9yN.js`: 194.35 KB
+     - `assets/vendor-firebase-CBml-Qeu.js`: 334.62 KB
+     - `assets/data-i18n-BQVLhNZr.js`: 3,600.64 KB
+
+---
 
 ## 2. Logic Chain
-1. *Constraint Alignment*: `DESIGN.md` dictates a terminal-flat aesthetic with Monospace typography (`font-mono`), two border radius levels (0px `rounded-none` for frames/modals/containers, 4px max `rounded-sm` for buttons/badges/inputs), flat solid surfaces (`#fdfcfc`, `#201d1d`, `#090d16`), 1px hairline borders (`border-stone-800`, `border-[#646262]/30`), and minimum 44px touch targets (`min-h-[44px]` or `h-11`).
-2. *Component-Level Refactoring*:
-   - In `MobileCardPlayScreen.tsx`, Features 1–4 were resolved by changing skill action buttons to `min-h-[44px] h-11 px-2.5`, upgrading Smart LifeCycle toggle to `min-h-[44px] min-w-[44px]`, flattening `TacticalCommandHUD` container to `rounded-none`, and removing `shadow-sm`.
-   - In shared HUDs (`StarBreathingUltimateWidget`, `ElementalTempestWidget`, `MinimalistMissionHUD`, `ResponsiveCleanHUD`, `DemoPlayHUD`, `BattleBossHUD`, `MissionGameCardHUD`), Features 13–17 were resolved by stripping all `shadow-xl/2xl/lg/sm`, replacing `animate-bounce` with flat badges, enforcing `min-h-11` on all toolbar/exit/pause buttons, and ensuring gauge bars use `rounded-none`.
-   - In `PlayGameView.tsx`, Features 5–12 were resolved by refactoring `BossCardItem` and portraits (Feature 5), dungeon results and clear modals (Feature 6), GPS HUD and lobby badges (Feature 7), final results summary and confirm modal (Feature 8), rules modal (Feature 9), floating battle robot & skills dock toolbar (Feature 10), coin-flip versus matchup and searching radar screen (Feature 11), 110 mission selector toolbar (Feature 12), and in-game top bar with menu modal and tactical battle logs.
-   - All prohibited gradient patterns (`bg-gradient-to-*`) were converted to solid flat background surfaces (`#201d1d` or `#fdfcfc`); prohibited radii (`rounded-3xl/2xl/xl/lg`) were converted to `rounded-none` or `rounded-sm`; all prohibited drop shadows and bounce/ping animations were removed; all `font-sans` classes were converted to `font-mono`.
-3. *Zero-Intrusion Ergonomics*: The in-game battle controls dock was restructured to a docked terminal toolbar with clear margins, ensuring zero occlusion of the 3x3 board tiles, hand cards, or turn indicators.
-4. *Verification & Preservation*: Zero changes were made to LocalStorage keys (`hero_*`), game state reducers, combat math, or deck evaluation logic. Both `npx tsc --noEmit` and `npm run build` completed with 0 errors.
+
+1. From Observation 1 & 2: By creating `home.html` containing the existing React 19 entry points (`/src/main.tsx` and `#root`) and changing `index.html` to load `/src/landing/index.ts` and `#landing-root`, the application is physically split into two distinct entry documents.
+2. From Observation 3 & 4: Setting Rollup's `input` to `{ main: 'index.html', home: 'home.html' }` and isolating `src/landing` in `manualChunks` causes Vite to compute two independent dependency trees. The `main` tree does not import React or TensorFlow, resulting in an ultra-lightweight bundle (< 2 KB of JavaScript).
+3. From Observation 4: The `mpa-dev-rewrite-plugin` middleware in Vite dev and preview servers rewrites `/home` to `/home.html` before HTML serving, ensuring seamless routing during local development.
+4. From Observation 5: In `scripts/post-build.js`, switching `spaTemplatePath` to `dist/home.html` and guarding `dist/index.html` against route overwrites ensures that all 59 SPA routes retain their full interactive React functionality while `dist/index.html` remains the pure static landing page.
+5. From Observation 6: Updating `src/routes.ts` aligns client-side history navigation with `/home`, preventing the SPA from pushing `/` back into the address bar upon view transitions.
+6. From Observation 7: The type check and production build completed with exit code 0, and automated assertions verified that `dist/index.html` has zero heavy dependencies while `dist/home.html` and all SPA routes function with the complete game bundle.
+
+---
 
 ## 3. Caveats
-- Files outside the designated Milestone 1 scope (such as views in Milestone 2 and Milestone 3: `ShopView`, `CardMarketplaceView`, `NovelView`, `SettingView`, `RankingView`, `StockMarketView`, etc.) were not touched by this worker, as they belong to parallel workers M2 and M3.
-- `HomeView.tsx` and `MyDeckView.tsx` were audited and confirmed clean of prohibited classes within the Milestone 1 scope; other workers may make route-specific feature adjustments to them if assigned.
-- No other caveats.
+
+- Milestone 1 focused strictly on Features 1–5: physical entry point decoupling, bundler configuration, post-build pipeline, and route mapping.
+- The UI components within `src/landing/` (Header, Sidebar, Modals, 5 Core Sections, Card Nurturing system) are stubbed with a valid bootstrap layout in `src/landing/index.ts` and are scheduled for full implementation in Milestones 2 and 3.
+
+---
 
 ## 4. Conclusion
-Milestone 1 (Features 1–17) is 100% complete, fully validated against `DESIGN.md`, and completely verified with 0 TypeScript compiler errors and a successful production build. All assigned gameplay and battle screens now strictly adhere to the terminal-flat design system with 44px+ touch targets and zero playfield obstruction.
+
+Milestone 1 is complete. The Dual-Entry Architecture (Vite Multi-Page Application) is fully operational:
+- Root (`/` and `/index.html`): Independent, ultra-lightweight static landing entry point loading `src/landing/index.ts` (0 heavy runtime dependencies).
+- Game SPA (`/home` and `/home.html`): Dedicated full-featured entry point loading `src/main.tsx` for the rich card battle game.
+- Build pipeline: `vite.config.ts` and `scripts/post-build.js` cleanly generate both targets with 0 errors and preserve all static SPA subroutes.
+
+---
 
 ## 5. Verification Method
-To independently verify Milestone 1:
-1. **Audit Prohibited CSS Classes**:
-   Run the following Python one-liner in the repository root:
-   ```bash
-   python3 -c "
-   import re
-   files = ['src/views/MobileCardPlayScreen.tsx', 'src/views/HomeView.tsx', 'src/views/MyDeckView.tsx', 'src/views/PlayGameView.tsx', 'src/components/battle/TacticalCommandHUD.tsx', 'src/components/battle/TacticalSynergyMatrix.tsx', 'src/components/battle/StarBreathingUltimateWidget.tsx', 'src/components/battle/ElementalTempestWidget.tsx', 'src/components/MinimalistMissionHUD.tsx', 'src/components/ResponsiveCleanHUD.tsx', 'src/components/DemoPlayHUD.tsx', 'src/components/BattleBossHUD.tsx', 'src/components/MissionGameCardHUD.tsx']
-   prohibited = [r'bg-gradient-to-\w+', r'rounded-(?:3xl|2xl|xl|lg)', r'shadow-(?:2xl|xl|lg|md)', r'animate-(?:ping|bounce)', r'font-sans']
-   hits = {f: sum(len(re.findall(p, open(f).read())) for p in prohibited) for f in files}
-   print('Violations per file:', hits)
-   assert sum(hits.values()) == 0, 'Violations detected!'
-   print('ALL 13 FILES CLEAN!')
-   "
-   ```
-2. **TypeScript Compilation Check**:
-   ```bash
-   npx tsc --noEmit
-   ```
-   *Expected result*: Exit code 0, 0 errors.
-3. **Production Bundle Build**:
-   ```bash
-   npm run build
-   ```
-   *Expected result*: Exit code 0, clean Vite build in `dist/`.
-4. **Git Log Inspection**:
-   ```bash
-   git log -n 2 --oneline
-   ```
-   *Expected result*: Commit `c0447e80` (`feat(design-system): Milestone 1 ...`) and `b50c6ee6` (`docs: record Milestone 1 ...`). Zero push to origin.
+
+To independently reproduce and verify this milestone:
+
+```bash
+# 1. Verify TypeScript types
+npx tsc --noEmit
+
+# 2. Verify production build
+npm run build
+
+# 3. Assert HTML entry points and bundle isolation
+grep -q "vendor-react" dist/index.html && echo "FAIL: React found in index.html" || echo "PASS: index.html is ultra-light"
+grep -q "/src/landing/index.ts" index.html && echo "PASS: index.html loads landing entry"
+grep -q "/src/main.tsx" home.html && echo "PASS: home.html loads main.tsx"
+grep -q "vendor-react" dist/home.html && echo "PASS: home.html loads vendor-react"
+grep -q "assets/home-" dist/home/index.html && echo "PASS: dist/home/index.html loads home script"
+grep -q "assets/home-" dist/404.html && echo "PASS: dist/404.html loads home script"
+```
+
+Invalidation conditions:
+- `dist/index.html` references `vendor-react` or any TensorFlow/Firebase chunk.
+- `dist/home.html` or `dist/home/index.html` fails to load the React SPA engine.
+- `npm run build` exits with a non-zero code.
