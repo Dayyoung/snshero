@@ -2,6 +2,38 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 18:35 KST] [마일스톤 2: 홈 공식 로고·쿨 카드 덱 5인 부채꼴 프리뷰 및 마이덱 슬롯 편집 패리티 구현 완료]
+- **작업자**: `worker_m2_9` (Implementer / QA Specialist)
+- **작업 개요**:
+  - `src/landing/views/HomeSection.tsx`:
+    - 공식 풀컬러 로고(`/logo-ko.png`)를 `#home` 브랜드 헤더에 눈에 띄게 배치, `min-h-[44px]` 터치 규격 및 스크린리더 alt 브랜딩 반영.
+    - 5인 쿨 카드 덱 부채꼴(-12°~+12° 회전) 출격 프리뷰 구현: 레어도 발광 보더, N/E/S/W 스탯 요약, 덱 종합 전투력(Deck CP/TP), 연승 불꽃 배지(`🔥 N연승`), `#deck` 다이렉트 링크.
+    - 카드 클릭 시 7등신 풀바디 컷아웃 및 상세 스탯/스킬 팝업 인스펙터 모달 연동.
+    - 4대 미디어 필러(웹소설, 웹게임, 웹툰, 애니메이션) 및 네이버 웹소설/네이버 웹툰/문피아 공식 연재 링크(`[절찬 연재중]` 배지, `md:grid-cols-3`) 보존.
+  - `src/landing/views/MyDeckSection.tsx`:
+    - 출격 5개 슬롯(`SLOT 01..05`), 4방향 컴퍼스 스탯(N, E, S, W), 미사용 스탯 레드닷(+pt), `[영웅 교체]` 버튼 제공.
+    - 보유 카드 교체 바텀시트/드로어(`cardNurtureStore.getOwnedCards()` 연동): 출격 중인 카드 비활성화(`[출격 중]`), 미출격 카드 1클릭 교체(`swap-deck-card`), 중복 편성 원천 방지(`Set(activeDeckIds).size === 5`).
+    - 실시간 덱 전투력(Deck TP) 및 전체 인벤토리 전투력(Total TP) 대시보드 갱신.
+  - `src/landing/services/cardNurtureStore.ts`:
+    - `activeDeckIds` (기본 `[1, 2, 3, 4, 5]`), `getDeckCardIds()`, `setDeckCard(slotIndex, cardId)`, `swapDeckCards()`, `getOwnedCards()`, `isCardInDeck()`, `getWinStreak()`, `getDeckTP()` 구현.
+    - LocalStorage `hero_deck` 영구 보존 및 `snshero_deck_updated` 이벤트 디스패치(`typeof window !== 'undefined'` 가드 적용).
+    - `loadFromStorage()`: 레거시 `CardData[]` 객체 배열과 `number[]` ID 배열 듀얼 포맷 자동 파싱 및 손상 JSON 안전 복구.
+  - `src/landing/index.ts`:
+    - `inspect-home-card`, `close-home-card-inspector`, `open-deck-swap-drawer`, `close-deck-swap-drawer`, `swap-deck-card` 이벤트 위임 및 Escape 키 닫기 핸들러 연동.
+  - `tests/adversarial_m2_home_deck.ts`:
+    - 6개 스위트, 28개 단언 실증 적대적 테스트 하네스 구축.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 errors
+  - `npm run build`: 성공 (exit code 0)
+  - `npx tsx tests/adversarial_m2_home_deck.ts`: **28/28 PASS (100.0%)**
+  - `npx tsx tests/challenger_m2_adversarial.ts`: **30/30 PASS (100.0%)**
+  - `npx tsx tests/e2e/run_all.ts --milestone M2`: **11/11 PASS (100.0%)**
+  - `npx tsx tests/adversarial_route_edge_cases.ts`: **76/76 PASS (100.0%)**
+  - `npx tsx tests/adversarial_m1_build_pipeline.ts`: **64/64 PASS (100.0%)**
+  - 전체 통과 단언문: **209/209 assertions 전수 통과 (100.0%)**
+- **구글 폼 보고**: submit_report.py 전송 완료 (작업완료).
+- **커밋 해시**: `5ef885aa5` (로컬 커밋 완료, git push 미수행).
+
 ## [2026-11-02 17:55 KST] [마일스톤 1 반복 2 결함 수정 (Remediation Iteration 2) 완료: dist/home.html SPA 템플릿 보존, routes.ts 쿼리 우선순위 정렬 및 비디오 SEO 연동]
 - **작업자**: `worker_m1_it2` (Implementer / QA Specialist)
 - **작업 개요**:
