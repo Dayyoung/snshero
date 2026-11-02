@@ -224,3 +224,38 @@ a.btn,
     padding-right: 48px;
   }
 }
+
+/* ==========================================================================
+   Cool Card Deck Fan-Folded Layout & Glowing Rarity Utilities
+   ========================================================================== */
+.fan-deck-card,
+.fan-card {
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, z-index 0s;
+  transform-origin: center bottom;
+  touch-action: manipulation;
+}
+.fan-deck-card:hover,
+.fan-deck-card:focus-visible,
+.fan-card:hover,
+.fan-card:focus-visible {
+  z-index: 50 !important;
+  transform: translate(calc(-50% + var(--fan-x, 0px)), calc(var(--fan-y, 0px) - 16px)) rotate(0deg) scale(1.08) !important;
+}
+
+/* Rarity Glowing Border Presets */
+.rarity-glow-bronze {
+  border-color: #b45309;
+  box-shadow: 0 0 10px rgba(180, 83, 9, 0.35);
+}
+.rarity-glow-silver {
+  border-color: #94a3b8;
+  box-shadow: 0 0 10px rgba(148, 163, 184, 0.45);
+}
+.rarity-glow-gold {
+  border-color: #eab308;
+  box-shadow: 0 0 14px rgba(234, 179, 8, 0.55);
+}
+.rarity-glow-boss {
+  border-color: #a855f7;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.65);
+}

@@ -44,6 +44,32 @@ function escapeHtml(unsafe: string): string {
     .replace(/'/g, '&#039;');
 }
 
+function resolveSpaBaseTemplate(): string {
+  // 1. Explicit CLI argument: --template <path>
+  const templateArgIdx = process.argv.indexOf('--template');
+  if (templateArgIdx !== -1 && process.argv[templateArgIdx + 1]) {
+    const customPath = path.resolve(rootDir, process.argv[templateArgIdx + 1]);
+    if (fs.existsSync(customPath)) return customPath;
+  }
+
+  // 2. Explicit Environment Variable: SPA_TEMPLATE_PATH
+  if (process.env.SPA_TEMPLATE_PATH) {
+    const envPath = path.resolve(rootDir, process.env.SPA_TEMPLATE_PATH);
+    if (fs.existsSync(envPath)) return envPath;
+  }
+
+  // 3. Compiled SPA Template (dist/home.html) - Production default
+  const distHomeHtml = path.join(distDir, 'home.html');
+  if (fs.existsSync(distHomeHtml)) return distHomeHtml;
+
+  // 4. Source SPA Entry (home.html) - Pre-build dev fallback
+  const rootHomeHtml = path.join(rootDir, 'home.html');
+  if (fs.existsSync(rootHomeHtml)) return rootHomeHtml;
+
+  // 5. Ultimate Fallback (Guard against missing home.html)
+  return path.join(distDir, 'index.html');
+}
+
 function getEpisodeList(): MovieEpisodeMeta[] {
   return Object.values(MOVIE_EPISODES).sort((a, b) => a.episodeNumber - b.episodeNumber);
 }
@@ -681,6 +707,16 @@ function writeHtmlToPublicAndDist(relDir: string, html: string) {
       fs.mkdirSync(dir, { recursive: true });
     }
     fs.writeFileSync(path.join(dir, 'index.html'), html, 'utf8');
+
+    // Also write flat .html file alongside directory for downstream clean URLs
+    if (relDir && relDir !== '.' && relDir !== '/') {
+      const flatHtmlPath = dir.endsWith('/') ? dir.slice(0, -1) + '.html' : dir + '.html';
+      const parentDir = path.dirname(flatHtmlPath);
+      if (!fs.existsSync(parentDir)) {
+        fs.mkdirSync(parentDir, { recursive: true });
+      }
+      fs.writeFileSync(flatHtmlPath, html, 'utf8');
+    }
   }
 }
 
@@ -696,12 +732,10 @@ export async function runGenerateVideoSeo() {
   }
   console.log(`[generate-video-seo] Generated sitemap-video.xml with ${episodes.length * 2 + 2} video entries.`);
 
-  // 2. 베이스 HTML 템플릿 로드 (dist/index.html 우선, 없으면 index.html)
-  const distIndexPath = path.join(distDir, 'index.html');
-  const rootIndexPath = path.join(rootDir, 'index.html');
-  const baseHtml = fs.existsSync(distIndexPath)
-    ? fs.readFileSync(distIndexPath, 'utf8')
-    : fs.readFileSync(rootIndexPath, 'utf8');
+  // 2. 베이스 HTML 템플릿 로드 (SPA 진입점인 dist/home.html 우선, 없으면 root home.html, fallback dist/index.html)
+  const baseTemplatePath = resolveSpaBaseTemplate();
+  console.log(`[generate-video-seo] Using SPA base template: ${baseTemplatePath}`);
+  const baseHtml = fs.readFileSync(baseTemplatePath, 'utf8');
 
   // 3. 시리즈 메인 허브 (/movie, /animation, /cinema) 정적 HTML 생성
   const animeHubHtml = buildSeriesHubHtml(baseHtml, 'anime', episodes);

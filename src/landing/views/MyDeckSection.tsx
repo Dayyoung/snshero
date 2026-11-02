@@ -4,6 +4,9 @@
  * Minimalist MyDeck section for SNSHero Static Landing.
  * Features:
  * - Active 5-card deck composition display (5 slots)
+ * - Interactive slot selection & card swapping from owned inventory
+ * - Interactive Card Selection Drawer/Modal (cardNurtureStore.getOwnedCards())
+ * - Duplicate prevention in active squad (cards in other slots disabled)
  * - Real-time Deck TP calculation (N+E+S+W stats sum for active 5 cards)
  * - Real-time Total TP calculation (sum across all owned cards in inventory)
  * - 3-tier character visual assets integration (bust / 3-head SD / 7-head cutout)
@@ -18,6 +21,32 @@
 import { cardNurtureStore } from '../services/cardNurtureStore';
 import { getCharacterAsset, FACTION_PALETTES } from '../services/assetCatalog';
 import { CARD_DATABASE } from '../../cardDatabase';
+
+export interface MyDeckSectionState {
+  editingSlotIndex: number | null; // 0..4 when drawer is open, null when closed
+  selectedCardId: number;          // card currently shown in bottom detail preview
+}
+
+export const deckSectionState: MyDeckSectionState = {
+  editingSlotIndex: null,
+  selectedCardId: 1,
+};
+
+export function setEditingSlotIndex(slotIndex: number | null): void {
+  deckSectionState.editingSlotIndex = slotIndex;
+}
+
+export function getEditingSlotIndex(): number | null {
+  return deckSectionState.editingSlotIndex;
+}
+
+export function setSelectedDeckCardId(cardId: number): void {
+  deckSectionState.selectedCardId = cardId;
+}
+
+export function getSelectedDeckCardId(): number {
+  return deckSectionState.selectedCardId;
+}
 
 /**
  * Get base stats (N, E, S, W) from CARD_DATABASE.
@@ -37,7 +66,7 @@ function getCardBaseStats(cardId: number): { top: number; right: number; bottom:
 /**
  * Calculate total card power (base N+E+S+W + allocated bonus stats).
  */
-function getCardEffectiveStats(cardId: number): {
+export function getCardEffectiveStats(cardId: number): {
   top: number;
   right: number;
   bottom: number;
@@ -83,9 +112,155 @@ function getCardEffectiveStats(cardId: number): {
   };
 }
 
-export function renderMyDeckSection(selectedCardId: number = 1): string {
+/**
+ * Renders the interactive Card Selection Drawer / Modal for swapping a deck slot.
+ */
+function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): string {
+  const currentSlotCardId = activeDeckIds[editingSlot] || 1;
+  const currentAsset = getCharacterAsset(currentSlotCardId);
+  const currentStats = getCardEffectiveStats(currentSlotCardId);
+  const ownedCards = cardNurtureStore.getOwnedCards();
+
+  return `
+    <div
+      id="deck-swap-drawer-backdrop"
+      class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="deck-swap-drawer-title"
+    >
+      <div class="relative w-full max-w-4xl bg-[#fdfcfc] border border-[#201d1d] shadow-2xl rounded-none flex flex-col max-h-[90dvh] overflow-hidden">
+        <!-- Drawer Header -->
+        <div class="flex items-center justify-between p-4 sm:p-5 border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7]">
+          <div>
+            <div class="inline-flex items-center gap-2 px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm tracking-wider uppercase mb-1">
+              <span>SLOT 0${editingSlot + 1} SQUAD EDIT</span>
+              <span class="text-stone-400">·</span>
+              <span>PARITY DRAWER</span>
+            </div>
+            <h3 id="deck-swap-drawer-title" class="text-base sm:text-lg font-black text-[#201d1d] m-0">
+              출격 영웅 카드 교체 (SLOT 0${editingSlot + 1})
+            </h3>
+            <p class="text-xs text-stone-500 m-0 mt-0.5">
+              현재 배치: [${currentAsset.code}] ${currentAsset.nameKo} (Lv.${currentStats.level} · ${currentStats.totalTP} TP)
+            </p>
+          </div>
+          <button
+            type="button"
+            data-action="close-deck-swap-drawer"
+            class="px-3 py-2 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer"
+            aria-label="닫기"
+          >
+            ✕ 닫기
+          </button>
+        </div>
+
+        <!-- Squad Guidance Notice (Duplicate Prevention) -->
+        <div class="px-4 sm:px-6 py-2.5 bg-[#f1eeee] border-b border-[rgba(15,0,0,0.08)] text-[11px] text-stone-600 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+          <span>💡 <strong>중복 편성 방지:</strong> 이미 다른 슬롯에 출격 중인 카드는 중복 배치할 수 없습니다.</span>
+          <span class="font-bold text-[#201d1d]">보유 카드: ${ownedCards.length}종</span>
+        </div>
+
+        <!-- Owned Cards Grid -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          ${ownedCards.map(card => {
+            const asset = getCharacterAsset(card.cardId);
+            const stats = getCardEffectiveStats(card.cardId);
+            const isCurrentSlot = card.cardId === currentSlotCardId;
+            const otherSlotIdx = activeDeckIds.indexOf(card.cardId);
+            const isAlreadyInOtherSlot = otherSlotIdx !== -1 && otherSlotIdx !== editingSlot;
+
+            return `
+              <div class="border ${isCurrentSlot ? 'border-[#201d1d] bg-[#f8f7f7]' : isAlreadyInOtherSlot ? 'border-stone-200 bg-stone-50 opacity-60' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d]'} p-4 rounded-none flex flex-col justify-between space-y-3">
+                <!-- Card Top Row -->
+                <div class="flex items-center justify-between w-full">
+                  <span class="text-[10px] font-bold px-1.5 py-0.5 ${isCurrentSlot ? 'bg-[#201d1d] text-white' : isAlreadyInOtherSlot ? 'bg-stone-300 text-stone-700' : 'bg-[#f1eeee] text-[#646262]'} rounded-sm truncate max-w-[140px]">
+                    [${asset.code}] ${asset.nameKo}
+                  </span>
+                  <span class="text-[10px] font-bold text-stone-500 uppercase">
+                    Lv.${stats.level} · ${asset.faction}
+                  </span>
+                </div>
+
+                <!-- Bust Image -->
+                <div class="w-full h-28 bg-[#f1eeee] flex items-center justify-center p-2 overflow-hidden border border-[rgba(15,0,0,0.06)] rounded-none">
+                  <img
+                    src="${asset.bustPngUrl}"
+                    alt="${asset.nameKo}"
+                    class="max-h-full max-w-full object-contain"
+                    loading="lazy"
+                    onerror="this.src='${asset.seatUrl}'; this.onerror=null;"
+                  />
+                </div>
+
+                <!-- 4-Way Stats & TP -->
+                <div class="w-full bg-[#f1eeee] border border-[rgba(15,0,0,0.08)] p-1.5 rounded-sm text-center text-[10px] text-stone-600 space-y-0.5">
+                  <div>N: <strong class="text-[#201d1d]">${stats.top}</strong> | S: <strong class="text-[#201d1d]">${stats.bottom}</strong> | W: <strong class="text-[#201d1d]">${stats.left}</strong> | E: <strong class="text-[#201d1d]">${stats.right}</strong></div>
+                  <div class="font-bold text-[#201d1d]">전투력: ${stats.totalTP} TP</div>
+                </div>
+
+                <!-- Action / Status Button (min-h-[44px]) -->
+                <div class="w-full pt-1">
+                  ${isCurrentSlot ? `
+                    <button
+                      type="button"
+                      disabled
+                      class="w-full py-2.5 bg-stone-200 text-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-default"
+                    >
+                      현재 슬롯 장착 중
+                    </button>
+                  ` : isAlreadyInOtherSlot ? `
+                    <button
+                      type="button"
+                      disabled
+                      class="w-full py-2.5 bg-stone-200 text-stone-400 text-xs font-bold rounded-sm min-h-[44px] cursor-not-allowed"
+                      title="다른 슬롯에 출격 중인 영웅은 중복 선택할 수 없습니다"
+                    >
+                      SLOT 0${otherSlotIdx + 1} 출격 중 (중복 불가)
+                    </button>
+                  ` : `
+                    <button
+                      type="button"
+                      data-action="swap-deck-card"
+                      data-slot-index="${editingSlot}"
+                      data-card-id="${card.cardId}"
+                      class="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer transition-opacity"
+                    >
+                      이 영웅으로 교체 (EQUIP) →
+                    </button>
+                  `}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- Drawer Footer -->
+        <div class="p-4 border-t border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex items-center justify-between">
+          <div class="text-[11px] text-stone-500">
+            선택 즉시 출격 덱이 갱신되며 덱 전투력(Deck TP)이 자동 재계산됩니다.
+          </div>
+          <button
+            type="button"
+            data-action="close-deck-swap-drawer"
+            class="px-5 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] min-h-[44px] cursor-pointer"
+          >
+            취소 (CANCEL)
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+export function renderMyDeckSection(selectedCardId?: number): string {
+  // Update internal selected card if provided
+  if (selectedCardId !== undefined && selectedCardId > 0) {
+    deckSectionState.selectedCardId = selectedCardId;
+  }
+
   // Active 5 cards compose the current deck slots
-  const activeDeckIds = cardNurtureStore.ownedCardIds.slice(0, 5);
+  const activeDeckIds = cardNurtureStore.getDeckCardIds();
 
   // Deck TP: Sum of N+E+S+W of the 5 active deck cards
   const deckTP = cardNurtureStore.getDeckTP();
@@ -93,12 +268,18 @@ export function renderMyDeckSection(selectedCardId: number = 1): string {
   // Total TP: Sum across all owned cards in inventory
   const totalTP = cardNurtureStore.getTotalTP();
 
-  // Detail target card (falls back to Card 1 if selected is invalid)
-  const currentSelectedId = activeDeckIds.includes(selectedCardId) ? selectedCardId : activeDeckIds[0] || 1;
+  // Detail target card
+  const currentSelectedId = activeDeckIds.includes(deckSectionState.selectedCardId)
+    ? deckSectionState.selectedCardId
+    : activeDeckIds[0] || 1;
+
   const selectedAsset = getCharacterAsset(currentSelectedId);
   const selectedStats = getCardEffectiveStats(currentSelectedId);
   const selectedDb = CARD_DATABASE[currentSelectedId] || {};
   const selectedFactionStyle = FACTION_PALETTES[selectedAsset.faction] || { bg: '#201d1d', text: '#ffffff', border: '#302c2c' };
+
+  const currentSlotOfSelected = activeDeckIds.indexOf(currentSelectedId);
+  const editingSlot = deckSectionState.editingSlotIndex;
 
   return `
     <div class="w-full flex flex-col font-mono text-[#201d1d] select-none">
@@ -195,7 +376,7 @@ export function renderMyDeckSection(selectedCardId: number = 1): string {
               </h2>
             </div>
             <div class="text-xs text-stone-500 font-mono">
-              슬롯 카드를 클릭하여 상세 정보 확인 및 육성 연동
+              슬롯의 [영웅 교체]를 클릭하여 보유 영웅으로 교체 편성
             </div>
           </div>
 
@@ -209,11 +390,8 @@ export function renderMyDeckSection(selectedCardId: number = 1): string {
 
               return `
                 <div
-                  role="button"
-                  tabindex="0"
-                  data-action="select-deck-card"
-                  data-card-id="${cardId}"
-                  class="relative border ${isSelected ? 'border-[#201d1d] bg-[#f8f7f7] shadow-sm' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]'} p-4 rounded-none flex flex-col justify-between space-y-3 cursor-pointer hover:border-[#201d1d] transition-all min-h-[300px]"
+                  data-slot-index="${index}"
+                  class="relative border ${isSelected ? 'border-[#201d1d] bg-[#f8f7f7] shadow-sm' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]'} p-4 rounded-none flex flex-col justify-between space-y-3 hover:border-[#201d1d] transition-all min-h-[340px]"
                 >
                   <!-- Top Row: Slot Number & Red Dot / Unspent Points -->
                   <div class="flex items-center justify-between w-full">
@@ -229,8 +407,15 @@ export function renderMyDeckSection(selectedCardId: number = 1): string {
                     `}
                   </div>
 
-                  <!-- Character Bust Portrait (3-Tier Asset) -->
-                  <div class="w-full h-36 bg-[#f1eeee] flex items-center justify-center p-2 overflow-hidden border border-[rgba(15,0,0,0.06)] rounded-none">
+                  <!-- Character Bust Portrait (Click to inspect) -->
+                  <div
+                    role="button"
+                    tabindex="0"
+                    data-action="select-deck-card"
+                    data-card-id="${cardId}"
+                    class="w-full h-32 bg-[#f1eeee] flex items-center justify-center p-2 overflow-hidden border border-[rgba(15,0,0,0.06)] rounded-none cursor-pointer"
+                    title="클릭하여 상세 정보 보기"
+                  >
                     <img
                       src="${asset.bustPngUrl}"
                       alt="${asset.nameKo}"
@@ -241,7 +426,13 @@ export function renderMyDeckSection(selectedCardId: number = 1): string {
                   </div>
 
                   <!-- Card Identification & Level -->
-                  <div class="w-full space-y-1">
+                  <div
+                    role="button"
+                    tabindex="0"
+                    data-action="select-deck-card"
+                    data-card-id="${cardId}"
+                    class="w-full space-y-1 cursor-pointer"
+                  >
                     <div class="flex items-center justify-between">
                       <span class="text-xs font-black text-[#201d1d] truncate">[${asset.code}] ${asset.nameKo}</span>
                       <span class="text-[11px] font-bold text-stone-700">Lv.${stats.level}</span>
@@ -259,10 +450,21 @@ export function renderMyDeckSection(selectedCardId: number = 1): string {
                     <div class="text-[10px] font-bold text-stone-600">남(S): <span class="text-[#201d1d]">${stats.bottom}</span></div>
                   </div>
 
-                  <!-- Bottom Card TP Summary Badge -->
-                  <div class="w-full pt-1 flex items-center justify-between border-t border-[rgba(15,0,0,0.08)] text-[11px]">
-                    <span class="text-stone-500 font-semibold">전투력 (TP)</span>
-                    <span class="font-black text-[#201d1d]">${stats.totalTP} TP</span>
+                  <!-- Bottom Slot Action: Card Swap Button (44px+ touch target) -->
+                  <div class="w-full pt-1 space-y-2">
+                    <div class="flex items-center justify-between text-[11px] border-t border-[rgba(15,0,0,0.08)] pt-1">
+                      <span class="text-stone-500 font-semibold">전투력</span>
+                      <span class="font-black text-[#201d1d]">${stats.totalTP} TP</span>
+                    </div>
+                    <button
+                      type="button"
+                      data-action="open-deck-swap-drawer"
+                      data-slot-index="${index}"
+                      class="w-full py-2 px-3 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center gap-1.5 cursor-pointer transition-opacity"
+                    >
+                      <span>🔄</span>
+                      <span>영웅 교체</span>
+                    </button>
                   </div>
                 </div>
               `;
@@ -388,10 +590,21 @@ export function renderMyDeckSection(selectedCardId: number = 1): string {
 
               <!-- Action Buttons -->
               <div class="flex flex-wrap items-center gap-3 pt-2">
+                ${currentSlotOfSelected !== -1 ? `
+                  <button
+                    type="button"
+                    data-action="open-deck-swap-drawer"
+                    data-slot-index="${currentSlotOfSelected}"
+                    class="px-5 py-3 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center cursor-pointer gap-1.5"
+                  >
+                    <span>🔄</span>
+                    <span>이 슬롯 영웅 교체하기 (SLOT 0${currentSlotOfSelected + 1}) →</span>
+                  </button>
+                ` : ''}
                 <button
                   type="button"
                   data-nav="card"
-                  class="flex-1 px-5 py-3 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center cursor-pointer"
+                  class="flex-1 px-5 py-3 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] inline-flex items-center justify-center cursor-pointer"
                 >
                   이 카드 육성하기 (EXP &amp; 스탯 배분) →
                 </button>
@@ -407,6 +620,9 @@ export function renderMyDeckSection(selectedCardId: number = 1): string {
           </div>
         </div>
       </section>
+
+      <!-- 4. Interactive Card Selection Drawer / Modal (Parity with DeckView) -->
+      ${editingSlot !== null ? renderDeckSwapDrawer(editingSlot, activeDeckIds) : ''}
     </div>
   `;
 }

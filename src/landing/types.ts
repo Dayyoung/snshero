@@ -50,9 +50,20 @@ export interface CardNurtureData {
   totalBonus: number;
 }
 
+export interface OwnedCardInfo extends CardNurtureData {
+  basePower: number;
+  totalTP: number;
+}
+
 export interface NurtureState {
   cards: Record<number, CardNurtureData>;
   ownedCardIds: number[];
+  deckCardIds: number[];
+  getDeckCardIds: () => number[];
+  getOwnedCards: () => OwnedCardInfo[];
+  setDeckCard: (slotIndex: number, cardId: number) => boolean;
+  swapDeckCards?: (slotA: number, slotB: number) => boolean;
+  isCardInDeck?: (cardId: number) => boolean;
   getDeckTP: () => number;
   getTotalTP: () => number;
   nurtureCard: (cardId: number, expGain?: number) => { expGained: number; leveledUp: boolean; newLevel: number };

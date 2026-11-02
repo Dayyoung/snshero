@@ -47,6 +47,32 @@ function escapeHtml(unsafe: string): string {
     .replace(/'/g, '&#039;');
 }
 
+function resolveSpaBaseTemplate(): string {
+  // 1. Explicit CLI argument: --template <path>
+  const templateArgIdx = process.argv.indexOf('--template');
+  if (templateArgIdx !== -1 && process.argv[templateArgIdx + 1]) {
+    const customPath = path.resolve(rootDir, process.argv[templateArgIdx + 1]);
+    if (fs.existsSync(customPath)) return customPath;
+  }
+
+  // 2. Explicit Environment Variable: SPA_TEMPLATE_PATH
+  if (process.env.SPA_TEMPLATE_PATH) {
+    const envPath = path.resolve(rootDir, process.env.SPA_TEMPLATE_PATH);
+    if (fs.existsSync(envPath)) return envPath;
+  }
+
+  // 3. Compiled SPA Template (dist/home.html) - Production default
+  const distHomeHtml = path.join(distDir, 'home.html');
+  if (fs.existsSync(distHomeHtml)) return distHomeHtml;
+
+  // 4. Source SPA Entry (home.html) - Pre-build dev fallback
+  const rootHomeHtml = path.join(rootDir, 'home.html');
+  if (fs.existsSync(rootHomeHtml)) return rootHomeHtml;
+
+  // 5. Ultimate Fallback (Guard against missing home.html)
+  return path.join(distDir, 'index.html');
+}
+
 /**
  * 텍스트 언어 자동 판별 (Google News 필수: 기사 언어와 사이트맵 news:language 일치)
  */
@@ -621,10 +647,11 @@ export async function runGenerateNewsSeo(): Promise<void> {
   }
   console.log('[generate-news-seo] Generated news-feed.xml and rss.xml');
 
-  // C. 템플릿 HTML 로드 (dist/index.html 우선, 없으면 root index.html)
-  const distIndexPath = path.join(distDir, 'index.html');
-  const rootIndexPath = path.join(rootDir, 'index.html');
-  const baseTemplatePath = fs.existsSync(distIndexPath) ? distIndexPath : rootIndexPath;
+  // C. SPA 베이스 템플릿 HTML 로드 (dist/home.html 우선, 없으면 root home.html)
+  // [주의] dist/index.html은 순수 정적 랜딩 페이지(#landing-root)이므로,
+  // SPA 서브라우트(/reddit, /r/news)는 반드시 React 19 SPA 번들이 포함된 home.html(#root)을 베이스로 사용해야 합니다.
+  const baseTemplatePath = resolveSpaBaseTemplate();
+  console.log(`[generate-news-seo] Using SPA base template: ${baseTemplatePath}`);
   const baseHtml = fs.readFileSync(baseTemplatePath, 'utf8');
 
   // D. 개별 기사별 정적 HTML 생성 (구버전 타임스탬프 누적 폴더 정리 후 최신 기사만 생성)
@@ -666,6 +693,12 @@ export async function runGenerateNewsSeo(): Promise<void> {
           fs.mkdirSync(dir, { recursive: true });
         }
         fs.writeFileSync(path.join(dir, 'index.html'), articleHtml, 'utf8');
+        const flatHtmlPath = dir.endsWith('/') ? dir.slice(0, -1) + '.html' : dir + '.html';
+        const parentDir = path.dirname(flatHtmlPath);
+        if (!fs.existsSync(parentDir)) {
+          fs.mkdirSync(parentDir, { recursive: true });
+        }
+        fs.writeFileSync(flatHtmlPath, articleHtml, 'utf8');
       }
     }
     generatedArticleCount++;
@@ -689,6 +722,12 @@ export async function runGenerateNewsSeo(): Promise<void> {
       fs.mkdirSync(dir, { recursive: true });
     }
     fs.writeFileSync(path.join(dir, 'index.html'), redditIndexHtml, 'utf8');
+    const flatHtmlPath = dir.endsWith('/') ? dir.slice(0, -1) + '.html' : dir + '.html';
+    const parentDir = path.dirname(flatHtmlPath);
+    if (!fs.existsSync(parentDir)) {
+      fs.mkdirSync(parentDir, { recursive: true });
+    }
+    fs.writeFileSync(flatHtmlPath, redditIndexHtml, 'utf8');
   }
   console.log('[generate-news-seo] Generated /reddit and /r/news static feed index.html files.');
 

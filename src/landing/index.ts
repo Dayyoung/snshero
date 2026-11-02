@@ -14,8 +14,14 @@ import { renderHeader } from './components/Header';
 import { renderSidebar } from './components/Sidebar';
 import { renderModals } from './components/Modals';
 import { renderFooter } from './components/Footer';
-import { renderHomeSection } from './views/HomeSection';
-import { renderMyDeckSection } from './views/MyDeckSection';
+import { renderHomeSection, setInspectedHomeCardId, getInspectedHomeCardId } from './views/HomeSection';
+import {
+  renderMyDeckSection,
+  setEditingSlotIndex,
+  getEditingSlotIndex,
+  setSelectedDeckCardId,
+  getSelectedDeckCardId,
+} from './views/MyDeckSection';
 import { renderPlaySection, handlePlayAction, stopPlayTts } from './views/PlaySection';
 import { renderCardSection, setSelectedCardId, setElementFilter, setOwnedFilter } from './views/CardSection';
 import { renderShopSection, executeShopPurchase, setUserCoins, getUserCoins } from './views/ShopSection';
@@ -260,10 +266,44 @@ export function handleEventDelegation(event: Event): void {
   } else if (action === 'close-modal') {
     state.activeModal = null;
     renderApp();
+  } else if (action === 'inspect-home-card') {
+    const cardIdStr = target.getAttribute('data-card-id');
+    if (cardIdStr) {
+      setInspectedHomeCardId(parseInt(cardIdStr, 10));
+      renderApp();
+    }
+  } else if (action === 'close-home-card-inspector') {
+    setInspectedHomeCardId(null);
+    renderApp();
+  } else if (action === 'open-deck-swap-drawer') {
+    const slotStr = target.getAttribute('data-slot-index');
+    if (slotStr !== null) {
+      setEditingSlotIndex(parseInt(slotStr, 10));
+      renderApp();
+    }
+  } else if (action === 'close-deck-swap-drawer') {
+    setEditingSlotIndex(null);
+    renderApp();
+  } else if (action === 'swap-deck-card') {
+    const slotStr = target.getAttribute('data-slot-index');
+    const cardIdStr = target.getAttribute('data-card-id');
+    if (slotStr !== null && cardIdStr) {
+      const slotIndex = parseInt(slotStr, 10);
+      const cardId = parseInt(cardIdStr, 10);
+      const success = cardNurtureStore.setDeckCard(slotIndex, cardId);
+      if (success) {
+        setSelectedDeckCardId(cardId);
+        state.selectedDeckCardId = cardId;
+        setEditingSlotIndex(null);
+      }
+      renderApp();
+    }
   } else if (action === 'select-deck-card') {
     const cardIdStr = target.getAttribute('data-card-id');
     if (cardIdStr) {
-      state.selectedDeckCardId = parseInt(cardIdStr, 10);
+      const id = parseInt(cardIdStr, 10);
+      state.selectedDeckCardId = id;
+      setSelectedDeckCardId(id);
       renderApp();
     }
   } else if (action && action.startsWith('play-')) {
@@ -305,7 +345,7 @@ export function handleEventDelegation(event: Event): void {
     if (itemId) {
       const res = executeShopPurchase(itemId);
       if (!res.success) {
-        alert(res.message);
+        console.warn(res.message);
       }
       renderApp();
     }
@@ -318,6 +358,16 @@ export function handleEventDelegation(event: Event): void {
 
 export function handleGlobalKeydown(event: KeyboardEvent): void {
   if (event.key === 'Escape') {
+    if (getInspectedHomeCardId()) {
+      setInspectedHomeCardId(null);
+      renderApp();
+      return;
+    }
+    if (getEditingSlotIndex() !== null) {
+      setEditingSlotIndex(null);
+      renderApp();
+      return;
+    }
     if (state.activeModal) {
       state.activeModal = null;
       renderApp();

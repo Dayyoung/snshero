@@ -106,6 +106,7 @@ const homeHtmlPath = path.join(distDir, 'home.html');
 // dist/index.html is preserved as the standalone static landing web service entry.
 // All SPA subroutes (deck, play, shop, etc.) and /home are generated from dist/home.html.
 const spaTemplatePath = fs.existsSync(homeHtmlPath) ? homeHtmlPath : indexPath;
+let cleanBaseHtml = '';
 
 if (fs.existsSync(spaTemplatePath)) {
   console.log(`[post-build] Using SPA base template: ${spaTemplatePath}`);
@@ -162,7 +163,11 @@ if (fs.existsSync(spaTemplatePath)) {
   };
 
   const cleanBenchHtml = ensureAbsoluteAssetPaths(benchCustomHtml);
-  const cleanBaseHtml = ensureAbsoluteAssetPaths(baseHtml);
+  cleanBaseHtml = ensureAbsoluteAssetPaths(baseHtml);
+
+  if (fs.existsSync(homeHtmlPath)) {
+    fs.writeFileSync(homeHtmlPath, cleanBaseHtml, 'utf8');
+  }
 
   // Dedicated prerendered SEO HTML for 'novel' / 'book' / 'webtoon' (Naver Web Novel, Naver Webtoon, Munpia Web Novel)
   const novelTitle = "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) | 공식 웹소설 & 웹툰 (네이버 웹소설 · 네이버 웹툰 · 문피아)";
@@ -320,8 +325,8 @@ if (fs.existsSync(publicGwentDir) && !fs.existsSync(path.join(distGwentDir, 'ind
 const notFoundPath = path.join(distDir, '404.html');
 const templateFor404 = fs.existsSync(homeHtmlPath) ? homeHtmlPath : indexPath;
 if (fs.existsSync(templateFor404)) {
-  fs.copyFileSync(templateFor404, notFoundPath);
-  console.log(`[post-build] Generated 404.html from ${path.basename(templateFor404)}`);
+  fs.writeFileSync(notFoundPath, cleanBaseHtml, 'utf8');
+  console.log(`[post-build] Generated 404.html with absolute asset paths from ${path.basename(templateFor404)}`);
 }
 
 // 6. Run Google News SEO & AdSense Static Prerenderer
