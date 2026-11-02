@@ -27,6 +27,7 @@ import { renderCardSection, setSelectedCardId, setElementFilter, setOwnedFilter 
 import { renderShopSection, executeShopPurchase, setUserCoins, getUserCoins } from './views/ShopSection';
 import { cardNurtureStore } from './services/cardNurtureStore';
 import { initIdleAutoPlay } from './services/idleAutoPlayManager';
+import { playRpgState, runAutoStep } from './services/playRpgEngine';
 
 interface LandingState {
   activeView: ViewKey;
@@ -377,6 +378,33 @@ export function handleEventDelegation(event: Event): void {
 }
 
 export function handleGlobalKeydown(event: KeyboardEvent): void {
+  if (state.activeView === 'play') {
+    if (event.key === 'ArrowUp' || event.key === 'w' || event.key === 'W') {
+      event.preventDefault();
+      handlePlayAction('play-move-up');
+      renderApp();
+      return;
+    }
+    if (event.key === 'ArrowDown' || event.key === 's' || event.key === 'S') {
+      event.preventDefault();
+      handlePlayAction('play-move-down');
+      renderApp();
+      return;
+    }
+    if (event.key === 'ArrowLeft' || event.key === 'a' || event.key === 'A') {
+      event.preventDefault();
+      handlePlayAction('play-move-left');
+      renderApp();
+      return;
+    }
+    if (event.key === 'ArrowRight' || event.key === 'd' || event.key === 'D') {
+      event.preventDefault();
+      handlePlayAction('play-move-right');
+      renderApp();
+      return;
+    }
+  }
+
   if (event.key === 'Escape') {
     if (getInspectedHomeCardId()) {
       setInspectedHomeCardId(null);
@@ -435,7 +463,7 @@ export function mountLanding(): void {
   document.addEventListener('input', (event: Event) => {
     const target = event.target as HTMLElement;
     const action = target?.getAttribute('data-action');
-    if (action && action === 'play-scrub-scene') {
+    if (action && (action === 'play-scrub-scene' || action === 'play-arcade-search')) {
       handlePlayAction(action, target);
       renderApp();
     }
@@ -472,7 +500,17 @@ export function mountLanding(): void {
     });
   }
 
-  // 8. Initial render
+  // 8. Auto-Play Runner interval for #play view
+  if (typeof window !== 'undefined') {
+    setInterval(() => {
+      if (state.activeView === 'play' && playRpgState.autoMode) {
+        runAutoStep();
+        renderApp();
+      }
+    }, 1400);
+  }
+
+  // 9. Initial render
   renderApp();
 }
 

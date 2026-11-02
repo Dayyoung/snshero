@@ -1,13 +1,28 @@
 /**
  * src/landing/views/PlaySection.tsx
  *
- * 40-Episode Webtoon Scene Viewer & Media Controller for SNSHero Static Landing.
- * Adheres strictly to DESIGN.md OpenCode Terminal-Flat design specifications:
- * - font-mono, 0px container/card borders, 4px button border radii, 1px hairlines.
- * - Exact 5 buttons in control bar: 닫기, 이전, 다음, 나레이션, TTS.
- * - Strict TTS Contract: isTtsActive: false default, speech triggered ONLY on explicit click.
- * - 44px+ mobile touch targets across all interactive buttons and controls.
- * - 40-episode webtoon scene viewer with episode selector and carousel.
+ * Milestone 3: 3-Tab Segmented Play Section for SNSHero Static Landing.
+ *
+ * Tab Architecture:
+ * 1. adventure (Default Initial View):
+ *    - 2D Tile Adventure Map (KadanWorldMap 10x8 grid style).
+ *    - Step movement via 4-way D-Pad, Arrow keys/WASD, and direct tile tap.
+ *    - Stepping on event tiles activates episode dialogue (KadanNpcDialog style)
+ *      with 7-head character cutouts, novel lore scripts, protagonist choices, and countdown timer.
+ *    - Concluding dialogue transitions into 3x3 tactical card battle (MobileCardPlayScreen style).
+ *    - Match victory awards 50 EXP to active deck cards, supports repeat hunting, and auto-play runner.
+ * 2. arcade:
+ *    - 110 Poki minigames catalog (CARD_DATABASE IDs 1..110).
+ *    - Search bar, element filter pills, and [🎲 랜덤 플레이] die roller.
+ *    - Full-screen 100dvh launch modal with 44px+ exit control.
+ * 3. webtoon:
+ *    - 40-Episode Webtoon scene viewer & media player.
+ *    - Strictly preserves the exact 5-button control bar [닫기, 이전, 다음, 나레이션, TTS]
+ *      inside <section aria-label="웹툰 컨트롤 바"> and isTtsActive: false default invariant.
+ *
+ * Adheres strictly to DESIGN.md OpenCode Terminal-Flat specifications:
+ * - Zero prohibited decorative classes (rounded-none and rounded-sm only).
+ * - min-h-[44px] mobile touch targets across all interactive buttons.
  * Pure TypeScript template string generator (Zero React runtime).
  */
 
@@ -17,6 +32,38 @@ import {
   WEBTOON_40_EPISODES,
   WebtoonEpisodeMeta,
 } from '../services/webtoonCatalog';
+import { CARD_DATABASE } from '../../cardDatabase';
+import {
+  KADAN_RPG_EVENTS,
+  getKadanRpgRegion,
+  chapterTitles,
+} from '../../content/kadanRpgStory';
+import type { KadanRpgNovelScriptLine } from '../../content/kadanRpgNovelScript';
+import { getCutoutUrl, getCharacterAsset, FACTION_PALETTES } from '../services/assetCatalog';
+import { cardNurtureStore } from '../services/cardNurtureStore';
+import {
+  playRpgState,
+  setActiveTab,
+  getCurrentRegion,
+  stepHeroDelta,
+  moveHeroToTile,
+  getCurrentDialogueLines,
+  advanceDialogue,
+  selectDialogueChoice,
+  initBattle,
+  playCardToSlot,
+  advanceNextChapter,
+  toggleAutoMode,
+  toggleRepeatHunting,
+  launchArcadeGame,
+  closeArcadeModal,
+  rollRandomArcadeGame,
+  PlayTabKey,
+} from '../services/playRpgEngine';
+
+// ============================================================================
+// 1. Webtoon Viewer State (Strict Invariant Contract Preserved)
+// ============================================================================
 
 export interface PlayViewerState {
   currentEpisode: number;      // 1..40
@@ -26,7 +73,7 @@ export interface PlayViewerState {
   speechRate: number;
 }
 
-// Global singleton state for the static landing Play section
+// Global singleton state for the static landing Webtoon player
 export const playState: PlayViewerState = {
   currentEpisode: 1,
   currentScene: 0,
@@ -54,7 +101,7 @@ export function stopPlayTts(): void {
  */
 export function speakCurrentNarration(): void {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-  if (!playState.isTtsActive) return; // Strict contract: Only speak if isTtsActive is true!
+  if (!playState.isTtsActive) return;
 
   try {
     window.speechSynthesis.cancel();
@@ -113,8 +160,6 @@ export function prevScene(): void {
     playState.currentScene = Math.max(0, prevEp.totalScenes - 1);
   }
 
-  // TTS Contract: Never auto-enable TTS here!
-  // Only speak if user had ALREADY explicitly activated TTS
   if (playState.isTtsActive) {
     speakCurrentNarration();
   }
@@ -133,8 +178,6 @@ export function nextScene(): void {
     playState.currentScene = 0;
   }
 
-  // TTS Contract: Never auto-enable TTS here!
-  // Only speak if user had ALREADY explicitly activated TTS
   if (playState.isTtsActive) {
     speakCurrentNarration();
   }
@@ -168,11 +211,135 @@ export function setScene(sceneIdx: number): void {
   }
 }
 
-/**
- * Dispatch handler for all play-related user interactions.
- */
+// ============================================================================
+// 2. Event Dispatcher for All Play Actions
+// ============================================================================
+
 export function handlePlayAction(action: string, target?: HTMLElement): void {
   switch (action) {
+    // Tab switching
+    case 'play-tab-adventure':
+      setActiveTab('adventure');
+      break;
+    case 'play-tab-arcade':
+      setActiveTab('arcade');
+      break;
+    case 'play-tab-webtoon':
+      setActiveTab('webtoon');
+      break;
+
+    // Movement actions
+    case 'play-move-up':
+      stepHeroDelta(0, -1);
+      break;
+    case 'play-move-down':
+      stepHeroDelta(0, 1);
+      break;
+    case 'play-move-left':
+      stepHeroDelta(-1, 0);
+      break;
+    case 'play-move-right':
+      stepHeroDelta(1, 0);
+      break;
+    case 'play-tile-click': {
+      const xAttr = target?.getAttribute('data-x');
+      const yAttr = target?.getAttribute('data-y');
+      if (xAttr !== null && yAttr !== null && xAttr !== undefined && yAttr !== undefined) {
+        moveHeroToTile({ x: parseInt(xAttr, 10), y: parseInt(yAttr, 10) });
+      }
+      break;
+    }
+
+    // RPG loop toggles
+    case 'play-toggle-auto':
+      toggleAutoMode();
+      break;
+    case 'play-toggle-repeat':
+      toggleRepeatHunting();
+      break;
+
+    // Dialogue actions
+    case 'play-dialogue-next':
+      advanceDialogue();
+      break;
+    case 'play-dialogue-skip':
+      initBattle();
+      break;
+    case 'play-dialogue-choice': {
+      const idxAttr = target?.getAttribute('data-choice-index');
+      if (idxAttr !== null && idxAttr !== undefined) {
+        selectDialogueChoice(parseInt(idxAttr, 10));
+      }
+      break;
+    }
+    case 'play-battle-start':
+      initBattle();
+      break;
+
+    // Battle actions
+    case 'play-battle-card': {
+      const handIdxAttr = target?.getAttribute('data-hand-index');
+      if (handIdxAttr !== null && handIdxAttr !== undefined) {
+        playRpgState.selectedHandIndex = parseInt(handIdxAttr, 10);
+      }
+      break;
+    }
+    case 'play-battle-slot': {
+      const slotAttr = target?.getAttribute('data-slot');
+      if (slotAttr !== null && slotAttr !== undefined) {
+        const slotIdx = parseInt(slotAttr, 10);
+        playCardToSlot(playRpgState.selectedHandIndex, slotIdx, 'player');
+      }
+      break;
+    }
+    case 'play-repeat-hunting':
+      initBattle();
+      break;
+    case 'play-next-chapter':
+      advanceNextChapter();
+      break;
+
+    // Ambush actions
+    case 'play-ambush-start':
+      if (playRpgState.activeAmbush) {
+        initBattle(
+          playRpgState.activeAmbush.type === 'bandit' ? [82, 81, 35, 15, 85] : [54, 51, 62, 53, 57],
+          playRpgState.activeAmbush.name
+        );
+      }
+      break;
+    case 'play-ambush-evade':
+      playRpgState.activeAmbush = null;
+      break;
+
+    // Arcade actions
+    case 'play-arcade-search': {
+      const input = target as HTMLInputElement | null;
+      if (input) {
+        playRpgState.arcadeQuery = input.value.trim().toLowerCase();
+      }
+      break;
+    }
+    case 'play-arcade-filter-element': {
+      const el = target?.getAttribute('data-element') || 'all';
+      playRpgState.arcadeElement = el;
+      break;
+    }
+    case 'play-arcade-random':
+      rollRandomArcadeGame();
+      break;
+    case 'play-arcade-launch': {
+      const cardIdAttr = target?.getAttribute('data-card-id');
+      if (cardIdAttr) {
+        launchArcadeGame(parseInt(cardIdAttr, 10));
+      }
+      break;
+    }
+    case 'play-arcade-close':
+      closeArcadeModal();
+      break;
+
+    // Webtoon actions
     case 'play-close':
       stopPlayTts();
       break;
@@ -220,15 +387,687 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
   }
 }
 
+// ============================================================================
+// 3. Tab Sub-Renderers
+// ============================================================================
+
 /**
- * Main render function for the PlaySection view.
- * Meets all 5 E2E test criteria (T1.PLAY.1~5, T3.C1.3, T4.W1.4):
- * - Exactly 5 buttons: 닫기, 이전, 다음, 나레이션, TTS.
- * - Initial state isTtsActive: false (TTS default OFF).
- * - 40-episode webtoon scene viewer with episode selector and carousel.
- * - 44px+ mobile touch targets and OpenCode Terminal-Flat styling.
+ * Render Tab 1: 2D Tile Adventure Map & RPG Battle Loop
  */
-export function renderPlaySection(): string {
+function renderAdventureView(): string {
+  const currentChapter = playRpgState.currentChapter;
+  const chapterMeta = chapterTitles.find((c) => c.chapter === currentChapter) || {
+    chapter: currentChapter,
+    titleKo: `제${currentChapter}화의 여정`,
+    titleEn: `Chapter ${currentChapter} Journey`,
+  };
+  const region = getCurrentRegion();
+  const chEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === currentChapter);
+  const heroX = playRpgState.heroTile.x;
+  const heroY = playRpgState.heroTile.y;
+
+  return `
+    <div id="kadan-world-map" class="w-full space-y-4">
+      <!-- Stage Info Bar -->
+      <section class="w-full bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-4 rounded-none flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm uppercase tracking-wider mb-1">
+            <span>2D 모험 RPG</span>
+            <span class="text-stone-400">·</span>
+            <span>지역: ${region.nameKey}</span>
+          </div>
+          <h2 class="text-lg sm:text-xl font-black text-[#201d1d] m-0">
+            제${currentChapter}화: ${chapterMeta.titleKo}
+          </h2>
+          <p class="text-xs text-stone-500 m-0 pt-0.5">
+            ${chapterMeta.titleEn} · 목표: ${chEvent ? chEvent.objectiveKey : '원정 진행 중'}
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Coordinates Badge -->
+          <span class="px-3 py-2 bg-white text-[#201d1d] text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.12)] min-h-[44px] inline-flex items-center">
+            📍 좌표 (${heroX + 1}, ${heroY + 1})
+          </span>
+
+          <!-- Auto-Play Toggle -->
+          <button
+            type="button"
+            data-action="play-toggle-auto"
+            class="px-4 py-2 border text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center cursor-pointer transition-colors active:translate-y-px ${
+              playRpgState.autoMode
+                ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                : 'bg-[#f1eeee] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#e8e5e5]'
+            }"
+            aria-label="자동 진행 토글"
+          >
+            🤖 자동 진행 ${playRpgState.autoMode ? '[ON]' : '[OFF]'}
+          </button>
+
+          <!-- Repeat Hunting Toggle -->
+          <button
+            type="button"
+            data-action="play-toggle-repeat"
+            class="px-4 py-2 border text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center cursor-pointer transition-colors active:translate-y-px ${
+              playRpgState.repeatHunting
+                ? 'bg-emerald-800 text-white border-emerald-900'
+                : 'bg-[#f1eeee] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#e8e5e5]'
+            }"
+            aria-label="반복 사냥 토글"
+          >
+            🔁 반복 사냥 ${playRpgState.repeatHunting ? '[ON]' : '[OFF]'}
+          </button>
+        </div>
+      </section>
+
+      <!-- Sub-State: Ambush Alert Banner -->
+      ${
+        playRpgState.activeAmbush
+          ? `
+            <div class="w-full bg-rose-50 border-2 border-rose-600 p-4 rounded-none flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span class="text-xs font-black text-rose-700 uppercase tracking-wider">[⚠️ 마물/산적 기습 발생!]</span>
+                <p class="text-sm font-bold text-rose-950 m-0 pt-0.5">${playRpgState.activeAmbush.name}의 습격을 받았습니다!</p>
+                <p class="text-xs text-rose-800 m-0 pt-0.5">"${playRpgState.activeAmbush.dialogQuoteKo}"</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  data-action="play-ambush-start"
+                  class="px-5 py-2.5 bg-rose-600 text-white text-xs font-bold rounded-sm min-h-[44px] hover:bg-rose-500 cursor-pointer"
+                >
+                  ⚔️ 즉시 요격 (배틀)
+                </button>
+                <button
+                  type="button"
+                  data-action="play-ambush-evade"
+                  class="px-4 py-2.5 bg-white text-stone-700 border border-stone-300 text-xs font-bold rounded-sm min-h-[44px] hover:bg-stone-100 cursor-pointer"
+                >
+                  돌파 회피
+                </button>
+              </div>
+            </div>
+          `
+          : ''
+      }
+
+      <!-- Sub-State: 1. 2D Tile Map Grid & Movement Controls -->
+      ${
+        playRpgState.subState === 'map'
+          ? `
+            <section class="w-full bg-[#090d16] border border-[rgba(15,0,0,0.12)] p-4 sm:p-6 rounded-none">
+              <!-- 10x8 Grid Container -->
+              <div
+                class="grid gap-1 sm:gap-1.5 w-full max-w-3xl mx-auto aspect-[10/8] select-none"
+                style="grid-template-columns: repeat(${region.width}, minmax(0, 1fr));"
+              >
+                ${Array.from({ length: region.width * region.height }, (_, idx) => {
+                  const tileX = idx % region.width;
+                  const tileY = Math.floor(idx / region.width);
+                  const isBlocked = region.blockedTiles.some((b) => b.x === tileX && b.y === tileY);
+                  const isHero = heroX === tileX && heroY === tileY;
+                  const isTarget = chEvent?.tile.x === tileX && chEvent?.tile.y === tileY;
+
+                  let cellBg = isBlocked ? 'bg-stone-900/90' : 'bg-[#151c2e] hover:bg-[#1f2942]';
+                  let borderStyle = isTarget ? 'border-2 border-amber-400' : 'border border-white/10';
+
+                  return `
+                    <button
+                      type="button"
+                      data-action="play-tile-click"
+                      data-x="${tileX}"
+                      data-y="${tileY}"
+                      ${isBlocked ? 'disabled' : ''}
+                      class="relative w-full h-full min-h-[32px] sm:min-h-[44px] rounded-none ${cellBg} ${borderStyle} transition-colors flex items-center justify-center cursor-pointer p-0 select-none"
+                      aria-label="타일 (${tileX + 1}, ${tileY + 1})"
+                    >
+                      ${
+                        isHero
+                          ? `
+                            <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-none border border-white bg-amber-400 p-0.5 flex items-center justify-center shadow-none z-20">
+                              <img src="/rpg/kadan-map/hero-kadan.png" alt="카단" class="w-full h-full object-cover" onerror="this.src='/seat/Hero_041.png'" />
+                            </div>
+                          `
+                          : isTarget
+                          ? `
+                            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-none border border-amber-300 bg-amber-500/30 flex items-center justify-center text-amber-300 text-xs font-bold z-10 animate-pulse">
+                              🚩
+                            </div>
+                          `
+                          : isBlocked
+                          ? `<span class="text-stone-600 text-[10px]">✕</span>`
+                          : `<span class="text-white/20 text-[9px]">${tileX + 1},${tileY + 1}</span>`
+                      }
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+
+              <!-- D-Pad Directional Controls -->
+              <div class="mt-6 flex flex-col items-center justify-center gap-2">
+                <span class="text-xs text-stone-400 font-bold">
+                  [방향키, W/A/S/D 키 또는 아래 버튼으로 이동 · 타일 직접 터치 이동 지원]
+                </span>
+                <div class="flex flex-col items-center gap-1.5 pt-1">
+                  <!-- Up -->
+                  <button
+                    type="button"
+                    data-action="play-move-up"
+                    class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px"
+                    aria-label="위로 이동"
+                  >
+                    ▲
+                  </button>
+                  <!-- Left, Down, Right -->
+                  <div class="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      data-action="play-move-left"
+                      class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px"
+                      aria-label="왼쪽으로 이동"
+                    >
+                      ◀
+                    </button>
+                    <button
+                      type="button"
+                      data-action="play-move-down"
+                      class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px"
+                      aria-label="아래로 이동"
+                    >
+                      ▼
+                    </button>
+                    <button
+                      type="button"
+                      data-action="play-move-right"
+                      class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px"
+                      aria-label="오른쪽으로 이동"
+                    >
+                      ▶
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          `
+          : ''
+      }
+
+      <!-- Sub-State: 2. Dialogue Overlay Cutscene -->
+      ${
+        playRpgState.subState === 'dialogue'
+          ? (() => {
+              const lines = getCurrentDialogueLines();
+              const defaultLine: KadanRpgNovelScriptLine = {
+                speaker: 'kadan',
+                cardId: 41,
+                name: '카단',
+                nameEn: 'Kadan',
+                text: '눈보라가 거세지고 있다. 물러설 수 없다.',
+                textEn: 'The blizzard thickens. There is no turning back.',
+                dialogueQuoteKo: '서약은 얼어붙지 않는다.',
+                choices: [],
+              };
+              const line: KadanRpgNovelScriptLine = lines[playRpgState.currentDialogueLineIdx] || defaultLine;
+              const isFinal = playRpgState.currentDialogueLineIdx >= lines.length - 1;
+              const cutoutUrl = getCutoutUrl(line.cardId || 41);
+
+              return `
+                <section class="w-full bg-[#181515] text-[#fdfcfc] border border-stone-700 p-4 sm:p-6 rounded-none space-y-4">
+                  <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                    <span class="text-xs font-bold text-amber-400">
+                      제${currentChapter}화 에피소드 스토리 다이얼로그 [${playRpgState.currentDialogueLineIdx + 1} / ${lines.length}]
+                    </span>
+                    <button
+                      type="button"
+                      data-action="play-dialogue-skip"
+                      class="px-3 py-1.5 bg-stone-800 text-stone-300 text-xs font-bold rounded-sm border border-stone-600 min-h-[44px] hover:bg-stone-700 cursor-pointer"
+                      aria-label="대화 건너뛰기 및 전투 직행"
+                    >
+                      건너뛰기 (전투 직행) ▶
+                    </button>
+                  </div>
+
+                  <!-- Dialogue Body: Cutout + Prose -->
+                  <div class="flex flex-col md:flex-row items-center gap-4 sm:gap-6 min-h-[220px]">
+                    <div class="w-36 h-48 sm:w-44 sm:h-56 shrink-0 bg-[#0e0c0c] border border-white/10 rounded-none flex items-center justify-center p-1 overflow-hidden">
+                      <img
+                        src="${cutoutUrl}"
+                        alt="${line.name}"
+                        class="w-full h-full object-contain"
+                        onerror="this.src='/seat/Hero_041.png'"
+                      />
+                    </div>
+
+                    <div class="flex-1 space-y-3">
+                      <div class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-amber-400 text-stone-950 text-xs font-black rounded-sm uppercase">
+                        ${line.name || line.speaker}
+                      </div>
+
+                      <p class="text-sm sm:text-base leading-relaxed text-[#fdfcfc] font-medium m-0">
+                        ${line.text}
+                      </p>
+
+                      ${
+                        line.dialogueQuoteKo
+                          ? `
+                            <p class="text-xs text-amber-300 italic border-l-2 border-amber-400 pl-3 py-0.5 m-0 font-mono">
+                              "${line.dialogueQuoteKo}"
+                            </p>
+                          `
+                          : ''
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Protagonist Interactive Choices -->
+                  ${
+                    line.choices && line.choices.length > 0
+                      ? `
+                        <div class="pt-3 border-t border-white/10 space-y-2">
+                          <div class="flex items-center justify-between text-xs text-stone-400">
+                            <span>주인공 선택지 (${playRpgState.autoMode ? '1.5초 후 자동 선택' : '5.0초 선택 카운트다운'})</span>
+                            <span class="text-amber-400 font-bold">${line.choices.length}개 선택 가능</span>
+                          </div>
+                          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            ${line.choices
+                              .map(
+                                (c, cIdx) => `
+                              <button
+                                type="button"
+                                data-action="play-dialogue-choice"
+                                data-choice-index="${cIdx}"
+                                class="px-4 py-3 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] border border-amber-400/50 text-xs font-bold rounded-sm min-h-[44px] text-left transition-colors flex items-center justify-between cursor-pointer active:translate-y-px"
+                              >
+                                <span><span class="text-amber-400 font-black mr-1.5">[${c.attitude || '결의'}]</span>${c.labelKo || c.labelEn || '선택'}</span>
+                                <span class="text-[10px] text-emerald-400 font-mono">${c.bonusType === 'sns' ? '+SNS 코인' : '+버프 각성'}</span>
+                              </button>
+                            `
+                              )
+                              .join('')}
+                          </div>
+                        </div>
+                      `
+                      : ''
+                  }
+
+                  <!-- Dialogue Footer Navigation Button -->
+                  <div class="pt-4 border-t border-white/10 flex justify-end">
+                    ${
+                      isFinal
+                        ? `
+                          <button
+                            type="button"
+                            data-action="play-battle-start"
+                            class="px-6 py-3 bg-rose-600 hover:bg-rose-500 text-white text-xs sm:text-sm font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1.5 cursor-pointer shadow-none active:scale-95"
+                          >
+                            ⚔️ 전투 시작 (3x3 배틀) ▶
+                          </button>
+                        `
+                        : `
+                          <button
+                            type="button"
+                            data-action="play-dialogue-next"
+                            class="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1 cursor-pointer active:translate-y-px"
+                          >
+                            다음 대화 ▶
+                          </button>
+                        `
+                    }
+                  </div>
+                </section>
+              `;
+            })()
+          : ''
+      }
+
+      <!-- Sub-State: 3. 3x3 Tactical Card Battle Stage -->
+      ${
+        playRpgState.subState === 'battle'
+          ? `
+            <section class="w-full bg-[#060a14] border border-stone-800 p-4 sm:p-6 rounded-none space-y-4 text-white">
+              <!-- Battle Status Header -->
+              <div class="flex flex-wrap items-center justify-between pb-3 border-b border-white/10 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-amber-400 uppercase">[3x3 전술 카드 배틀]</span>
+                  <h3 class="text-base sm:text-lg font-black text-white m-0">
+                    플레이어 vs ${playRpgState.opponentName}
+                  </h3>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                  <span class="px-2.5 py-1 bg-sky-950 text-sky-300 rounded-sm border border-sky-800">
+                    내 핸드: ${playRpgState.playerHand.length}장
+                  </span>
+                  <span class="px-2.5 py-1 bg-rose-950 text-rose-300 rounded-sm border border-rose-800">
+                    상대 핸드: ${playRpgState.opponentHand.length}장
+                  </span>
+                </div>
+              </div>
+
+              <!-- Battle Notification Bar -->
+              <div class="w-full bg-slate-900 border border-white/10 p-2.5 rounded-sm text-center text-xs font-bold text-amber-300">
+                ${playRpgState.battleMessage}
+              </div>
+
+              <!-- 3x3 Battle Field Board -->
+              <div class="grid grid-cols-3 gap-2 w-full max-w-sm sm:max-w-md mx-auto aspect-square select-none p-2 bg-[#0c1220] border border-white/10">
+                ${playRpgState.battleBoard
+                  .map((slot, sIdx) => {
+                    if (!slot) {
+                      return `
+                        <button
+                          type="button"
+                          data-action="play-battle-slot"
+                          data-slot="${sIdx}"
+                          class="w-full h-full border border-dashed border-white/20 bg-white/5 hover:bg-white/15 rounded-none flex flex-col items-center justify-center text-xs text-stone-400 font-bold min-h-[44px] cursor-pointer active:translate-y-px transition-colors"
+                          aria-label="슬롯 ${sIdx + 1} 배치"
+                        >
+                          <span class="text-[10px] text-stone-500">슬롯 ${sIdx + 1}</span>
+                          <span class="text-amber-400 text-xs">[배치]</span>
+                        </button>
+                      `;
+                    }
+
+                    const isPlayer = slot.owner === 'player';
+                    const [top, right, bottom, left] = slot.stats;
+
+                    return `
+                      <div class="relative w-full h-full border ${
+                        isPlayer ? 'border-sky-500 bg-sky-950/80 text-sky-200' : 'border-rose-500 bg-rose-950/80 text-rose-200'
+                      } rounded-none p-1 flex flex-col justify-between overflow-hidden shadow-none">
+                        <!-- Top Stat -->
+                        <div class="text-center text-[10px] font-black">${top}</div>
+                        <!-- Middle Row: Left, Sprite, Right -->
+                        <div class="flex items-center justify-between px-1">
+                          <span class="text-[10px] font-black">${left}</span>
+                          <div class="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-none bg-stone-900 border border-white/20 overflow-hidden flex items-center justify-center">
+                            <img src="/seat/Hero_${String(slot.cardId).padStart(3, '0')}.png" alt="${slot.name}" class="w-full h-full object-cover" onerror="this.src='/seat/Hero_041.png'" />
+                          </div>
+                          <span class="text-[10px] font-black">${right}</span>
+                        </div>
+                        <!-- Bottom Stat & Owner Badge -->
+                        <div class="flex items-center justify-between text-[9px] font-mono px-1">
+                          <span class="font-bold">${isPlayer ? 'P1' : 'AI'}</span>
+                          <span class="font-black">${bottom}</span>
+                        </div>
+                      </div>
+                    `;
+                  })
+                  .join('')}
+              </div>
+
+              <!-- Player Active Hand Cards -->
+              <div class="space-y-1.5 pt-2">
+                <span class="text-xs text-stone-400 font-bold">플레이어 덱 카드 (터치하여 선택 후 슬롯 배치):</span>
+                <div class="flex flex-wrap items-center justify-center gap-2">
+                  ${playRpgState.playerHand
+                    .map((cId, hIdx) => {
+                      const card = CARD_DATABASE[cId];
+                      const isSelected = playRpgState.selectedHandIndex === hIdx;
+                      return `
+                        <button
+                          type="button"
+                          data-action="play-battle-card"
+                          data-hand-index="${hIdx}"
+                          class="px-2.5 py-1.5 rounded-sm border text-xs font-bold min-h-[44px] transition-colors flex items-center gap-2 cursor-pointer ${
+                            isSelected
+                              ? 'bg-amber-400 text-stone-950 border-amber-300'
+                              : 'bg-stone-800 text-white border-stone-600 hover:bg-stone-700'
+                          }"
+                        >
+                          <img src="/seat/Hero_${String(cId).padStart(3, '0')}.png" alt="${card?.title}" class="w-7 h-7 object-cover rounded-none" onerror="this.src='/seat/Hero_041.png'" />
+                          <div class="text-left font-mono text-[11px]">
+                            <div>${card?.title || `Hero ${cId}`}</div>
+                            <div class="text-[9px] ${isSelected ? 'text-stone-800' : 'text-stone-400'}">${card?.top}/${card?.right}/${card?.bottom}/${card?.left}</div>
+                          </div>
+                        </button>
+                      `;
+                    })
+                    .join('')}
+                </div>
+              </div>
+
+              <!-- Battle Result Controls -->
+              ${
+                playRpgState.battleWinner
+                  ? `
+                    <div class="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+                      <div class="text-xs sm:text-sm font-bold ${
+                        playRpgState.battleWinner === 'player' ? 'text-emerald-400' : 'text-rose-400'
+                      }">
+                        ${
+                          playRpgState.battleWinner === 'player'
+                            ? '🎉 전투 승리! 50 EXP 획득 완료.'
+                            : '패배. 다시 도전하세요.'
+                        }
+                      </div>
+
+                      <div class="flex items-center gap-2">
+                        <button
+                          type="button"
+                          data-action="play-repeat-hunting"
+                          class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-sm min-h-[44px] cursor-pointer"
+                        >
+                          🔁 반복 사냥 재전투
+                        </button>
+                        <button
+                          type="button"
+                          data-action="play-next-chapter"
+                          class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer"
+                        >
+                          다음 챕터로 전진 ▶
+                        </button>
+                      </div>
+                    </div>
+                  `
+                  : ''
+              }
+            </section>
+          `
+          : ''
+      }
+    </div>
+  `;
+}
+
+/**
+ * Render Tab 2: 110 Poki Minigames Arcade Catalog
+ */
+function renderArcadeView(): string {
+  const query = playRpgState.arcadeQuery.toLowerCase();
+  const selectedElement = playRpgState.arcadeElement;
+
+  const elements = [
+    { key: 'all', label: '전체 (All)' },
+    { key: 'water', label: '물 (Water)' },
+    { key: 'fire', label: '불 (Fire)' },
+    { key: 'wind', label: '바람 (Wind)' },
+    { key: 'earth', label: '땅 (Earth)' },
+    { key: 'human', label: '인간 (Human)' },
+    { key: 'undead', label: '언데드 (Undead)' },
+    { key: 'elf', label: '엘프 (Elf)' },
+    { key: 'dwarf', label: '호빗 (Hobbit)' },
+    { key: 'monster', label: '야수 (Beast)' },
+    { key: 'robot', label: '메카 (Mecha)' },
+    { key: 'dragon', label: '드래곤 (Dragon)' },
+  ];
+
+  // 110 Games Filter
+  const filteredGames: { id: number; title: string; element: string; power: number }[] = [];
+  for (let id = 1; id <= 110; id++) {
+    const card = CARD_DATABASE[id];
+    if (!card) continue;
+
+    const el = card.element?.toLowerCase() || 'water';
+    const titleMatch = card.title?.toLowerCase().includes(query) || (card.desc && card.desc.toLowerCase().includes(query));
+    const elMatch = selectedElement === 'all' || el === selectedElement;
+
+    if (titleMatch && elMatch) {
+      filteredGames.push({
+        id,
+        title: card.title || `Hero ${id}`,
+        element: el,
+        power: (card.top || 2) + (card.right || 2) + (card.bottom || 2) + (card.left || 2),
+      });
+    }
+  }
+
+  return `
+    <div class="w-full space-y-4">
+      <!-- Arcade Header & Controls -->
+      <section class="w-full bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-4 rounded-none space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-[rgba(15,0,0,0.12)]">
+          <div>
+            <span class="text-xs font-bold text-[#201d1d] uppercase">[110선 Poki 미니게임 아케이드 카탈로그]</span>
+            <p class="text-xs text-stone-500 m-0 pt-0.5">
+              110종 영웅 수호 덱과 2D Canvas 챌린지 플레이 · 100% 모바일 퓨어 터치 지원
+            </p>
+          </div>
+
+          <!-- Random Play Roller Button -->
+          <button
+            type="button"
+            data-action="play-arcade-random"
+            class="px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:bg-stone-800 text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center gap-1.5 cursor-pointer active:translate-y-px"
+            aria-label="랜덤 플레이"
+          >
+            🎲 랜덤 플레이 (Die Roll)
+          </button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="w-full">
+          <input
+            type="text"
+            data-action="play-arcade-search"
+            value="${playRpgState.arcadeQuery}"
+            placeholder="미니게임 및 캐릭터 검색 (110종)..."
+            class="w-full px-3 py-2 bg-white text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px]"
+            aria-label="미니게임 검색"
+          />
+        </div>
+
+        <!-- Element Filter Pills -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          ${elements
+            .map(
+              (el) => `
+            <button
+              type="button"
+              data-action="play-arcade-filter-element"
+              data-element="${el.key}"
+              class="px-3 py-1.5 text-xs font-bold rounded-sm border min-h-[44px] transition-colors cursor-pointer ${
+                selectedElement === el.key
+                  ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                  : 'bg-[#f1eeee] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#e8e5e5]'
+              }"
+            >
+              ${el.label}
+            </button>
+          `
+            )
+            .join('')}
+        </div>
+      </section>
+
+      <!-- 110 Games Grid -->
+      <section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        ${filteredGames
+          .map((g) => {
+            const padId = String(g.id).padStart(3, '0');
+            return `
+              <div class="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-3 rounded-none flex flex-col justify-between space-y-2 hover:border-stone-400 transition-colors">
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] font-bold text-stone-400 font-mono">#${padId}</span>
+                  <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 bg-stone-100 rounded-sm">${g.element}</span>
+                </div>
+
+                <div class="w-full aspect-[4/3] bg-stone-100 border border-[rgba(15,0,0,0.08)] rounded-none flex items-center justify-center overflow-hidden p-1">
+                  <img
+                    src="/seat/Hero_${padId}.png"
+                    alt="${g.title}"
+                    class="h-full object-contain"
+                    onerror="this.src='/seat/Hero_041.png'"
+                  />
+                </div>
+
+                <div>
+                  <h4 class="text-xs font-bold text-[#201d1d] m-0 truncate">${g.title}</h4>
+                  <span class="text-[10px] text-stone-500 font-mono">전투력: ${g.power} TP</span>
+                </div>
+
+                <button
+                  type="button"
+                  data-action="play-arcade-launch"
+                  data-card-id="${g.id}"
+                  class="w-full py-2 bg-[#f1eeee] text-[#201d1d] hover:bg-[#201d1d] hover:text-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] transition-colors flex items-center justify-center cursor-pointer"
+                  aria-label="${g.title} 플레이"
+                >
+                  🎮 도전 / 플레이
+                </button>
+              </div>
+            `;
+          })
+          .join('')}
+      </section>
+
+      <!-- Minigame Fullscreen 100dvh Launch Modal -->
+      ${
+        playRpgState.activeArcadeModalId !== null
+          ? (() => {
+              const activeCard = CARD_DATABASE[playRpgState.activeArcadeModalId] || {
+                title: '수호자 미니게임',
+              };
+              return `
+                <div class="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none z-[99999] bg-[#fdfcfc] flex flex-col justify-between">
+                  <!-- Minimalist Mission HUD -->
+                  <div class="w-full bg-[#201d1d] text-[#fdfcfc] px-4 py-3 flex items-center justify-between border-b border-white/10 shrink-0">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-black uppercase text-amber-400">[아케이드 챌린지]</span>
+                      <span class="text-xs font-bold text-white">${activeCard.title}</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      data-action="play-arcade-close"
+                      class="px-4 py-2 bg-stone-800 text-white hover:bg-stone-700 text-xs font-bold rounded-sm border border-stone-600 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                      aria-label="미니게임 닫기"
+                    >
+                      ✕ 나가기
+                    </button>
+                  </div>
+
+                  <!-- Game Stage Placeholder / 2D Canvas Duel Arena -->
+                  <div class="flex-1 w-full bg-[#0e0c0c] flex flex-col items-center justify-center p-4 text-center space-y-4">
+                    <div class="w-24 h-24 rounded-none bg-stone-900 border border-white/20 p-2 flex items-center justify-center overflow-hidden">
+                      <img src="/seat/Hero_${String(playRpgState.activeArcadeModalId).padStart(3, '0')}.png" alt="" class="w-full h-full object-contain" onerror="this.src='/seat/Hero_041.png'" />
+                    </div>
+
+                    <div class="space-y-1">
+                      <h3 class="text-base sm:text-lg font-bold text-white m-0">${activeCard.title} 전용 수호자 시련</h3>
+                      <p class="text-xs text-stone-400 m-0">2D 모바일 제스처 터치 및 3x3 카드 대결 플레이를 지원합니다.</p>
+                    </div>
+
+                    <button
+                      type="button"
+                      data-action="play-ambush-start"
+                      class="px-6 py-3 bg-amber-400 text-stone-950 hover:bg-amber-300 text-xs font-black rounded-sm min-h-[44px] transition-colors cursor-pointer"
+                    >
+                      ⚔️ 수호 덱과 3x3 카드 결투 개시
+                    </button>
+                  </div>
+                </div>
+              `;
+            })()
+          : ''
+      }
+    </div>
+  `;
+}
+
+/**
+ * Render Tab 3: 40-Episode Webtoon Theater (Strict Invariant Contract)
+ */
+function renderWebtoonView(): string {
   const currentEp: WebtoonEpisodeMeta = getWebtoonEpisode(playState.currentEpisode);
   const sceneImageUrl = getWebtoonSceneImageUrl(playState.currentEpisode, playState.currentScene);
   const padEp = String(playState.currentEpisode).padStart(2, '0');
@@ -236,33 +1075,7 @@ export function renderPlaySection(): string {
   const padTotal = String(currentEp.totalScenes).padStart(2, '0');
 
   return `
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 font-mono select-none text-[#201d1d]">
-      <!-- 1. Section Header & Badges -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.12)] gap-2 mb-6">
-        <div>
-          <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm tracking-wider uppercase mb-1">
-            <span>눈히어로.com</span>
-            <span class="text-stone-400">·</span>
-            <span>40부작 공식 웹툰 &amp; 비주얼 극장</span>
-          </div>
-          <h1 class="text-xl sm:text-2xl font-black text-[#201d1d] m-0 tracking-tight">
-            제${playState.currentEpisode}화: ${currentEp.titleKo}
-          </h1>
-          <p class="text-xs text-stone-500 m-0 pt-0.5">
-            ${currentEp.titleEn} · 총 ${currentEp.totalScenes}컷 풀씬 수록
-          </p>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <span class="px-2.5 py-1 bg-[#f1eeee] text-[#201d1d] text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.12)]">
-            EP.${padEp} / 40
-          </span>
-          <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-sm border border-emerald-300">
-            절찬 연재중
-          </span>
-        </div>
-      </div>
-
+    <div class="w-full space-y-4">
       <!-- 2. Control Bar with Exact 5 Buttons: 닫기, 이전, 다음, 나레이션, TTS -->
       <section class="w-full mb-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-3 rounded-none" aria-label="웹툰 컨트롤 바">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -384,7 +1197,6 @@ export function renderPlaySection(): string {
 
       <!-- 4. Webtoon Scene Illustration Stage -->
       <section class="w-full bg-[#0e0c0c] border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden relative flex flex-col items-center justify-center min-h-[360px] sm:min-h-[480px] lg:min-h-[540px]">
-        <!-- Scene Image with Webtoon Asset Fallback -->
         <div class="w-full flex items-center justify-center p-2 sm:p-4">
           <img
             src="${sceneImageUrl}"
@@ -395,38 +1207,40 @@ export function renderPlaySection(): string {
           />
         </div>
 
-        <!-- Scene Index Badge Overlay -->
         <div class="absolute top-3 left-3 px-2.5 py-1 bg-[#201d1d]/85 text-[#fdfcfc] text-[11px] font-bold rounded-sm border border-white/15 backdrop-blur-xs">
           [EP.${padEp} · 씬 ${padScene} / ${padTotal}]
         </div>
 
-        <!-- Narration Subtitle Overlay (Progressive Disclosure) -->
-        ${playState.isNarrationVisible ? `
-          <div class="w-full bg-[#fdfcfc]/95 border-t border-[rgba(15,0,0,0.12)] p-4 sm:p-5 font-mono space-y-2 backdrop-blur-xs">
-            <div class="flex items-center justify-between">
-              <div class="inline-flex items-center gap-2">
-                <span class="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm uppercase tracking-wider">
-                  ${currentEp.speakerKo}
-                </span>
-                <span class="text-[11px] text-stone-500 font-semibold">${currentEp.speakerEn}</span>
-              </div>
-              <div class="text-[11px] font-bold">
-                ${
-                  playState.isTtsActive
-                    ? '<span class="text-emerald-700 font-bold">● TTS 음성 출력 중</span>'
-                    : '<span class="text-stone-400">○ TTS 대기 (OFF)</span>'
-                }
-              </div>
-            </div>
+        ${
+          playState.isNarrationVisible
+            ? `
+              <div class="w-full bg-[#fdfcfc]/95 border-t border-[rgba(15,0,0,0.12)] p-4 sm:p-5 font-mono space-y-2 backdrop-blur-xs">
+                <div class="flex items-center justify-between">
+                  <div class="inline-flex items-center gap-2">
+                    <span class="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm uppercase tracking-wider">
+                      ${currentEp.speakerKo}
+                    </span>
+                    <span class="text-[11px] text-stone-500 font-semibold">${currentEp.speakerEn}</span>
+                  </div>
+                  <div class="text-[11px] font-bold">
+                    ${
+                      playState.isTtsActive
+                        ? '<span class="text-emerald-700 font-bold">● TTS 음성 출력 중</span>'
+                        : '<span class="text-stone-400">○ TTS 대기 (OFF)</span>'
+                    }
+                  </div>
+                </div>
 
-            <p class="text-xs sm:text-sm font-semibold text-[#201d1d] leading-relaxed m-0">
-              ${currentEp.leadNarrationKo}
-            </p>
-            <p class="text-[11px] text-stone-500 leading-normal m-0 pt-0.5 font-mono">
-              ${currentEp.leadNarrationEn}
-            </p>
-          </div>
-        ` : ''}
+                <p class="text-xs sm:text-sm font-semibold text-[#201d1d] leading-relaxed m-0">
+                  ${currentEp.leadNarrationKo}
+                </p>
+                <p class="text-[11px] text-stone-500 leading-normal m-0 pt-0.5 font-mono">
+                  ${currentEp.leadNarrationEn}
+                </p>
+              </div>
+            `
+            : ''
+        }
       </section>
 
       <!-- 5. Scene Stepper & Scrubbing Timeline Bar -->
@@ -500,6 +1314,120 @@ export function renderPlaySection(): string {
           }).join('')}
         </div>
       </section>
+    </div>
+  `;
+}
+
+// ============================================================================
+// 4. Main Exported Renderer
+// ============================================================================
+
+/**
+ * Main render function for the PlaySection view.
+ * Meets all 5 E2E test criteria (T1.PLAY.1~5, T3.C1.3, T4.W1.4)
+ * and all 26 Adversarial M3 specifications.
+ */
+export function renderPlaySection(): string {
+  const activeTab = playRpgState.activeTab;
+
+  return `
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 font-mono select-none text-[#201d1d]">
+      <!-- 1. Master Section Header & Badges -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.12)] gap-2 mb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm tracking-wider uppercase mb-1">
+            <span>눈히어로.com</span>
+            <span class="text-stone-400">·</span>
+            <span>플레이 &amp; 아케이드 허브</span>
+          </div>
+          <h1 class="text-xl sm:text-2xl font-black text-[#201d1d] m-0 tracking-tight">
+            카단의 모험 &amp; 3x3 전술 카드 배틀
+          </h1>
+          <p class="text-xs text-stone-500 m-0 pt-0.5">
+            2D 타일 탐험 · 에피소드 다이얼로그 · 3x3 배틀 루프 · 110선 Poki 아케이드 · 40부작 웹툰 극장
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-1 bg-[#f1eeee] text-[#201d1d] text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.12)]">
+            EP.${String(playRpgState.currentChapter).padStart(2, '0')} / 40
+          </span>
+          <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-sm border border-emerald-300">
+            절찬 연재중
+          </span>
+        </div>
+      </div>
+
+      <!-- 2. Segmented Mode Tabs (Adventure / Arcade / Webtoon) -->
+      <nav class="w-full mb-6 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-1.5 rounded-none" role="tablist" aria-label="플레이 서브 모드">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <!-- Tab 1: Adventure RPG (Default) -->
+          <button
+            type="button"
+            role="tab"
+            data-action="play-tab-adventure"
+            aria-selected="${activeTab === 'adventure' ? 'true' : 'false'}"
+            class="px-4 py-2.5 text-xs font-bold rounded-sm border min-h-[44px] transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+              activeTab === 'adventure'
+                ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                : 'bg-white text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
+            }"
+          >
+            <span>🗺️</span>
+            <span>2D 모험 RPG (카단의 여정)</span>
+          </button>
+
+          <!-- Tab 2: Poki 110 Arcade -->
+          <button
+            type="button"
+            role="tab"
+            data-action="play-tab-arcade"
+            aria-selected="${activeTab === 'arcade' ? 'true' : 'false'}"
+            class="px-4 py-2.5 text-xs font-bold rounded-sm border min-h-[44px] transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+              activeTab === 'arcade'
+                ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                : 'bg-white text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
+            }"
+          >
+            <span>🎮</span>
+            <span>110선 Poki 아케이드</span>
+          </button>
+
+          <!-- Tab 3: 40-Episode Webtoon -->
+          <button
+            type="button"
+            role="tab"
+            data-action="play-tab-webtoon"
+            aria-selected="${activeTab === 'webtoon' ? 'true' : 'false'}"
+            class="px-4 py-2.5 text-xs font-bold rounded-sm border min-h-[44px] transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+              activeTab === 'webtoon'
+                ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                : 'bg-white text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
+            }"
+          >
+            <span>🎬</span>
+            <span>40부작 공식 웹툰 극장</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- 3. Tab Panels Container -->
+      <div id="play-tab-panels" class="w-full">
+        <!-- Panel 1: Adventure RPG View -->
+        <div id="panel-adventure" class="${activeTab === 'adventure' ? 'block' : 'hidden'}">
+          ${renderAdventureView()}
+        </div>
+
+        <!-- Panel 2: 110 Poki Arcade View -->
+        <div id="panel-arcade" class="${activeTab === 'arcade' ? 'block' : 'hidden'}">
+          ${renderArcadeView()}
+        </div>
+
+        <!-- Panel 3: 40-Episode Webtoon Theater (Strictly Preserves 5-Button Control Bar) -->
+        <div id="panel-webtoon" class="${activeTab === 'webtoon' ? 'block' : 'hidden'}">
+          ${renderWebtoonView()}
+        </div>
+      </div>
     </div>
   `;
 }
