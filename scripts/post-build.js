@@ -247,9 +247,23 @@ if (fs.existsSync(spaTemplatePath)) {
   <p>섹션으로 이동 중입니다: <a href="/${targetHash}">/${targetHash}</a></p>
 </body>
 </html>`;
+      // 0a. Write directory index redirect: dist/[route]/index.html (e.g. dist/home/index.html -> /#home)
       fs.writeFileSync(path.join(routeDir, 'index.html'), redirectHtml, 'utf8');
+
+      // 0b. Write clean flat file: dist/[route].html ONLY for non-home legacy routes.
+      // CRITICAL GUARD: dist/home.html is Vite's compiled master React SPA template containing
+      // the full application bundle, #root mount point, and early client-side hash redirect.
+      // It must strictly NEVER be overwritten with a redirect stub. Overwriting dist/home.html
+      // destroys downstream generators (dist/404.html, generate-news-seo.ts, generate-video-seo.ts).
       const flatHtmlPath = path.join(distDir, `${route}.html`);
-      if (flatHtmlPath !== indexPath && path.relative(distDir, flatHtmlPath) !== 'index.html') {
+      const isProtectedTemplate =
+        route === 'home' ||
+        flatHtmlPath === homeHtmlPath ||
+        flatHtmlPath === indexPath ||
+        path.relative(distDir, flatHtmlPath) === 'home.html' ||
+        path.relative(distDir, flatHtmlPath) === 'index.html';
+
+      if (!isProtectedTemplate) {
         const flatHtmlDir = path.dirname(flatHtmlPath);
         if (!fs.existsSync(flatHtmlDir)) {
           fs.mkdirSync(flatHtmlDir, { recursive: true });
@@ -276,8 +290,14 @@ if (fs.existsSync(spaTemplatePath)) {
 
     // 3. Write clean URL extensionless file: dist/[route].html for ALL routes (flat & nested)
     const flatHtmlPath = path.join(distDir, `${route}.html`);
-    // Strict isolation guard: never overwrite dist/index.html (the standalone static landing page)
-    if (flatHtmlPath !== indexPath && path.relative(distDir, flatHtmlPath) !== 'index.html') {
+    // Strict isolation guard: never overwrite dist/index.html (standalone landing) or dist/home.html (master SPA template)
+    const isProtectedMasterTemplate =
+      flatHtmlPath === indexPath ||
+      flatHtmlPath === homeHtmlPath ||
+      path.relative(distDir, flatHtmlPath) === 'index.html' ||
+      path.relative(distDir, flatHtmlPath) === 'home.html';
+
+    if (!isProtectedMasterTemplate) {
       const flatHtmlDir = path.dirname(flatHtmlPath);
       if (!fs.existsSync(flatHtmlDir)) {
         fs.mkdirSync(flatHtmlDir, { recursive: true });

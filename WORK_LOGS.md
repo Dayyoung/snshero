@@ -2,6 +2,33 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-02 17:55 KST] [마일스톤 1 반복 2 결함 수정 (Remediation Iteration 2) 완료: dist/home.html SPA 템플릿 보존, routes.ts 쿼리 우선순위 정렬 및 비디오 SEO 연동]
+- **작업자**: `worker_m1_it2` (Implementer / QA Specialist)
+- **작업 개요**:
+  - `scripts/post-build.js`:
+    - `legacyRoutesToHash` 반복문 내 `dist/home.html` 덮어쓰기 방지 가드(`isProtectedTemplate`) 추가: `dist/home/index.html`은 `/#home` 리다이렉트 스텁으로 유지하면서 `dist/home.html`은 Vite가 컴파일한 46KB+ React SPA 마스터 번들(`<div id="root"></div>`, `/assets/home-*.js`)을 엄격히 영구 보존.
+    - non-legacy 라우트 파일 작성 루프에도 `isProtectedMasterTemplate` 가드를 추가하여 `dist/home.html` 및 `dist/index.html`이 덮어써지지 않도록 이중 차단.
+    - `dist/404.html`, `generate-news-seo.ts`, `generate-video-seo.ts`가 온전한 React SPA 템플릿을 읽도록 보장하여, 80개 무비/시네마 에피소드 정적 페이지(e.g., `dist/movie/ep-1/index.html`)에서 `/#home` 리다이렉트 스텁이 전면 제거되고 `<div id="root">` 및 YouTube iframe 플레이어가 정상 복원됨.
+    - post-build 연속 2회 실행(idempotency) 시 `dist/home.html` 해시가 100% 동일하게 유지됨을 검증.
+  - `src/routes.ts`:
+    - `getViewFromPath()` 함수에서 `/play` 및 `/main` 경로 판별 시 `ep`, `episode`, `ch`, `chapter` 쿼리 파라미터를 정적 `/play` 반환보다 앞서 최우선 평가하도록 재정렬.
+    - 해시 쿼리(`#play?ep=1`)도 `URLSearchParams`에 병합 파싱하도록 개선.
+    - 기존 후순위에 위치하던 데드 코드(dead code) 제거.
+    - 결과: `getViewFromPath('/play', '?ep=1')`가 즉시 `'main'`으로 정확히 라우팅됨.
+  - `scripts/generate-video-seo.ts`:
+    - `resolveSpaBaseTemplate()` 및 `baseHtml`이 손상되지 않은 `dist/home.html` React SPA 마스터 템플릿을 정상 로드함을 확인 및 검증.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 errors
+  - `npm run build`: 정상 완료 (exit code 0)
+  - `dist/home.html`: 크기 47,208 bytes (>= 10,000 bytes PASS), `<div id="root"></div>` 및 entry script 정상 보존
+  - `dist/home/index.html`: `/#home` 리다이렉트 스텁 정상 유지
+  - `dist/404.html`: 크기 47,208 bytes, `#root` 포함 SPA 폴백 정상
+  - `dist/movie/ep-1/index.html`: `<div id="root">` 및 YouTube iframe 포함, `url=/#home` 리다이렉트 스텁 0건 (PASS)
+  - `getViewFromPath('/play', '?ep=1')`: `'main'` 반환 (PASS)
+  - `npx tsx tests/e2e/run_all.ts --milestone M1`: 16/16 PASS (100.0%)
+  - Explorer 3 독립 검증 하네스 5대 타깃 전수 통과: ALL 5 REMEDIATION TARGETS VERIFIED SUCCESSFULLY
+- **구글 폼 보고**: submit_report.py 전송 완료 (작업완료).
+
 ## [2026-11-02 17:20 KST] [마일스톤 1: 클라이언트 해시 라우팅 코어, 레거시 라우트 제거 및 15초 유휴 자동 플레이 구현 완료]
 - **작업자**: `worker_m1_9` (Implementer / QA Specialist)
 - **작업 개요**:
