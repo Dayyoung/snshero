@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 22:34 KST] [#play 자동플레이 속도 2배 감속·다음 상반신 이미지 로딩 완료 후 대사 진행·이전 대화 버튼 추가 및 3x3 카드 배틀 상단 불필요 텍스트 정리 & /git-push 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 자동플레이 속도 2배 감속 (`playRpgEngine.ts`, `index.ts`)**:
+    - 기존 `1400ms`마다 대사와 턴이 넘어가던 자동플레이 스텝 주기를 2배 늦춘 `AUTO_STEP_INTERVAL_MS = 2800` (`2800ms`)으로 변경하고, 선택지 대기 타이머(`1.5s -> 3.0s`) 및 전투 종료 후 전환 대기 시간(`1500ms -> 3000ms`)도 모두 2배 여유 있게 조정.
+    - `index.ts`에서 `runAutoStep(true)`가 실제로 스텝을 진행했을 때만 `renderApp()`을 호출하도록 개선하여, 이미지 다운로드 도중 불필요한 DOM 재렌더링으로 이미지 로딩이 끊기는 현상을 원천 방지.
+  - **2. 네트워크 지연 시 상반신 이미지 로딩 완료 후 대사 넘김 보장 (`playRpgEngine.ts`, `PlaySection.tsx`)**:
+    - `preloadCharacterBust()`, `preloadDialogueChapterImages()`, `isDialogueReadyToAdvance()`를 구현하여 현재 대사 화자의 DOM 이미지(`#dialogue-speaker-bust-img`)가 `complete && naturalWidth > 0` 상태인지 확인하고, 동시에 **다음 대사 화자의 상반신 이미지가 프리로딩 완료(`loadedBustUrls`)된 경우에만** 다음 대사로 넘어가도록 보장.
+  - **3. 대사 이전 버튼(`◀ 이전 대화`) 추가 (`playRpgEngine.ts`, `PlaySection.tsx`)**:
+    - `prevDialogue()` 함수 및 `play-dialogue-prev` 액션을 추가하고, 대사 모달 하단 고정 컨트롤 바에 `◀ 이전 대화` 버튼을 배치하여 언제든 이전 대사로 돌아가 다시 읽을 수 있도록 구현.
+  - **4. 3x3 카드 배틀 모달 상단 불필요 텍스트 정리 (`PlaySection.tsx`)**:
+    - 카드 플레이 시 상단을 차지하던 중복 안내 문구(`내 핸드: 5장`, `상대 핸드: 5장`, `카드를 선택한 후 3x3 전장의 빈 슬롯을 터치하세요.`, `🃏 플레이어 덱 카드 (터치 선택 후 3x3 배치): 남은 카드: 5장`)를 제거하고 상단 헤더를 컴팩트한 1줄 바 형태로 정리하여, 모바일 화면에서도 3x3 전장과 하단 1줄 내 카드덱 5장이 한눈에 선명하게 표시되도록 개선.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (4,360개 모듈 변환, 0 errors)
+  - 로컬 git 커밋 및 `/git-push` 원격 저장소 푸시: 완료
+  - 구글 폼 보고서 제출: 완료
+
 ## [2026-11-03 22:25 KST] [#play 3x3 카드 배틀 모바일 화면 내 카드덱 1줄 동적 너비(One-Row Dynamic Width) 레이아웃 적용]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

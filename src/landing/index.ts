@@ -957,14 +957,16 @@ export function mountLanding(): void {
     }
   } catch {}
 
-  // 8. Auto-Play Runner interval for #play view
+  // 8. Auto-Play Runner interval for #play view (2x slower 2800ms step + bust image load readiness gate)
   if (typeof window !== 'undefined') {
     setInterval(() => {
       if (state.activeView === 'play' && playRpgState.autoMode) {
-        runAutoStep();
-        renderApp();
+        const didStep = runAutoStep(true);
+        if (didStep) {
+          renderApp();
+        }
       }
-    }, 1400);
+    }, 700);
   }
 
   // 9. Purge stale Service Worker media caches so updated bust assets load immediately

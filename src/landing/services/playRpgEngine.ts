@@ -29,6 +29,7 @@ import {
 } from '../../content/kadanRpgStory';
 import { KADAN_RPG_NOVEL_SCRIPTS, KadanRpgNovelScriptLine, KadanRpgDialogueChoice } from '../../content/kadanRpgNovelScript';
 import { cardNurtureStore } from './cardNurtureStore';
+import { getCharacterAsset } from './assetCatalog';
 import {
   shouldTriggerAmbush,
   generateAmbushEncounter,
@@ -96,6 +97,7 @@ export interface PlayRpgState {
   selectedChoiceIdx: number | null;
   choiceTimerSec: number;
   activeBuff: string | null;
+  lastAutoStepAt: number;
 
   // Battle Sub-state
   battleBoard: (BattleSlotState | null)[]; // 9 slots
@@ -137,6 +139,7 @@ export const playRpgState: PlayRpgState = {
   selectedChoiceIdx: null,
   choiceTimerSec: 5.0,
   activeBuff: null,
+  lastAutoStepAt: 0,
 
   battleBoard: Array(9).fill(null),
   playerHand: [1, 2, 3, 4, 5],
@@ -581,6 +584,137 @@ export function resolveDialogueSpeakers(line: KadanRpgNovelScriptLine): Resolved
   };
 }
 
+const loadedBustUrls = new Set<string>();
+const loadingBustUrls = new Set<string>();
+
+export const AUTO_STEP_INTERVAL_MS = 2800; // 2x slower than previous 1400ms
+
+/**
+ * Get versioned bust URL for a character cardId
+ */
+export function getCharacterBustUrl(cardId: number): string {
+  const asset = getCharacterAsset(cardId);
+  return `${asset.bustPngUrl}?v=20261103v4`;
+}
+
+/**
+ * Preload a character's bust image and record completion so slow networks never skip ahead before image loads
+ */
+export function preloadCharacterBust(cardId: number): void {
+  if (typeof window === 'undefined' || typeof Image === 'undefined') return;
+  const asset = getCharacterAsset(cardId);
+  const url = `${asset.bustPngUrl}?v=20261103v4`;
+  if (loadedBustUrls.has(url) || loadingBustUrls.has(url)) return;
+
+  loadingBustUrls.add(url);
+  const img = new Image();
+  img.onload = () => {
+    loadingBustUrls.delete(url);
+    loadedBustUrls.add(url);
+  };
+  img.onerror = () => {
+    const fallback = asset.seatUrl;
+    if (fallback) {
+      const fbImg = new Image();
+      fbImg.onload = () => {
+        loadingBustUrls.delete(url);
+        loadedBustUrls.add(url);
+      };
+      fbImg.onerror = () => {
+        loadingBustUrls.delete(url);
+        loadedBustUrls.add(url);
+      };
+      fbImg.src = fallback;
+    } else {
+      loadingBustUrls.delete(url);
+      loadedBustUrls.add(url);
+    }
+  };
+  img.src = url;
+}
+
+/**
+ * Preload current, next, and upcoming dialogue speaker bust images for the active chapter
+ */
+export function preloadDialogueChapterImages(): void {
+  if (typeof window === 'undefined') return;
+  const lines = getCurrentDialogueLines();
+  const curIdx = playRpgState.currentDialogueLineIdx;
+
+  // Prioritize current and next 2 lines first
+  for (let i = curIdx; i < Math.min(lines.length, curIdx + 3); i++) {
+    const spk = resolveDialogueSpeakers(lines[i]);
+    const active = spk.activeSide === 'left' ? spk.left : spk.right;
+    preloadCharacterBust(active.cardId);
+  }
+
+  // Also preload remaining lines and episode opponent deck
+  for (let i = 0; i < lines.length; i++) {
+    const spk = resolveDialogueSpeakers(lines[i]);
+    const active = spk.activeSide === 'left' ? spk.left : spk.right;
+    preloadCharacterBust(active.cardId);
+  }
+  const epDeck = getEpisodeActualOpponentDeck(playRpgState.currentChapter);
+  for (const cid of epDeck.cardIds) {
+    preloadCharacterBust(cid);
+  }
+}
+
+/**
+ * Check if both the currently displayed speaker bust image AND the next dialogue speaker bust image
+ * have completely finished loading before allowing auto-play to advance.
+ */
+export function isDialogueReadyToAdvance(): boolean {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return true;
+  }
+
+  // 1. Verify current speaker bust image in the live DOM has finished loading
+  const domImg = document.getElementById('dialogue-speaker-bust-img') as HTMLImageElement | null;
+  if (domImg && (!domImg.complete || domImg.naturalWidth === 0)) {
+    return false;
+  }
+
+  const lines = getCurrentDialogueLines();
+  const curIdx = playRpgState.currentDialogueLineIdx;
+  const curLine = lines[curIdx];
+  if (curLine) {
+    const curSpk = resolveDialogueSpeakers(curLine);
+    const curActive = curSpk.activeSide === 'left' ? curSpk.left : curSpk.right;
+    const curUrl = getCharacterBustUrl(curActive.cardId);
+    if (domImg && domImg.complete && domImg.naturalWidth > 0) {
+      loadedBustUrls.add(curUrl);
+    } else if (!loadedBustUrls.has(curUrl)) {
+      preloadCharacterBust(curActive.cardId);
+      return false;
+    }
+  }
+
+  // 2. Verify the NEXT dialogue line's speaker bust image is completely loaded
+  if (curIdx + 1 < lines.length) {
+    const nextLine = lines[curIdx + 1];
+    const nextSpk = resolveDialogueSpeakers(nextLine);
+    const nextActive = nextSpk.activeSide === 'left' ? nextSpk.left : nextSpk.right;
+    const nextUrl = getCharacterBustUrl(nextActive.cardId);
+    if (!loadedBustUrls.has(nextUrl)) {
+      preloadCharacterBust(nextActive.cardId);
+      return false;
+    }
+  } else {
+    // On final line before battle, ensure opponent deck leader bust is loaded
+    const epDeck = getEpisodeActualOpponentDeck(playRpgState.currentChapter);
+    if (epDeck.cardIds[0]) {
+      const firstOpponentUrl = getCharacterBustUrl(epDeck.cardIds[0]);
+      if (!loadedBustUrls.has(firstOpponentUrl)) {
+        preloadCharacterBust(epDeck.cardIds[0]);
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 /**
  * Trigger dialogue cutscene overlay
  */
@@ -588,8 +722,10 @@ export function triggerDialogue(event: KadanRpgEvent): void {
   playRpgState.subState = 'dialogue';
   playRpgState.currentDialogueLineIdx = 0;
   playRpgState.selectedChoiceIdx = null;
-  playRpgState.choiceTimerSec = playRpgState.autoMode ? 1.5 : 5.0;
+  playRpgState.choiceTimerSec = playRpgState.autoMode ? 3.0 : 5.0;
   playRpgState.activeAmbush = null;
+  playRpgState.lastAutoStepAt = Date.now();
+  preloadDialogueChapterImages();
 }
 
 /**
@@ -626,6 +762,21 @@ export function getCurrentDialogueLines(): KadanRpgNovelScriptLine[] {
 }
 
 /**
+ * Go back to previous dialogue line
+ */
+export function prevDialogue(): { moved: boolean; lineIndex: number } {
+  if (playRpgState.currentDialogueLineIdx > 0) {
+    playRpgState.currentDialogueLineIdx -= 1;
+    playRpgState.selectedChoiceIdx = null;
+    playRpgState.choiceTimerSec = playRpgState.autoMode ? 3.0 : 5.0;
+    playRpgState.lastAutoStepAt = Date.now();
+    preloadDialogueChapterImages();
+    return { moved: true, lineIndex: playRpgState.currentDialogueLineIdx };
+  }
+  return { moved: false, lineIndex: playRpgState.currentDialogueLineIdx };
+}
+
+/**
  * Advance dialogue by one line or transition into battle
  */
 export function advanceDialogue(): { completed: boolean; readyForBattle: boolean } {
@@ -633,12 +784,15 @@ export function advanceDialogue(): { completed: boolean; readyForBattle: boolean
   if (playRpgState.currentDialogueLineIdx < lines.length - 1) {
     playRpgState.currentDialogueLineIdx += 1;
     playRpgState.selectedChoiceIdx = null;
-    playRpgState.choiceTimerSec = playRpgState.autoMode ? 1.5 : 5.0;
+    playRpgState.choiceTimerSec = playRpgState.autoMode ? 3.0 : 5.0;
+    playRpgState.lastAutoStepAt = Date.now();
+    preloadDialogueChapterImages();
     return { completed: false, readyForBattle: false };
   }
 
   // Dialogue completed: transition to battle!
   initBattle();
+  playRpgState.lastAutoStepAt = Date.now();
   return { completed: true, readyForBattle: true };
 }
 
@@ -1052,7 +1206,7 @@ export function finalizeBattle(): void {
     if (playRpgState.repeatHunting) {
       setTimeout(() => {
         initBattle();
-      }, 1500);
+      }, 3000);
     } else {
       playRpgState.autoMode = false;
       try {
@@ -1065,7 +1219,7 @@ export function finalizeBattle(): void {
     if (playRpgState.repeatHunting) {
       setTimeout(() => {
         initBattle();
-      }, 1500);
+      }, 3000);
     } else {
       playRpgState.autoMode = false;
       try {
@@ -1089,21 +1243,21 @@ export function finishBattleAndAwardExp(): { expAwarded: number; deckCount: numb
       if (playRpgState.subState === 'battle') {
         initBattle();
       }
-    }, 1500);
+    }, 3000);
   } else if (playRpgState.currentChapter >= 40) {
     // When Episode 40 finishes, automatically open the 3-second Reincarnation Popup
     setTimeout(() => {
       if (playRpgState.subState === 'battle' && playRpgState.currentChapter >= 40) {
         triggerReincarnationPopup();
       }
-    }, 1200);
+    }, 2400);
   } else if (playRpgState.autoMode) {
     // If autoMode is active without repeat hunting, advance to next chapter
     setTimeout(() => {
       if (playRpgState.subState === 'battle' && playRpgState.battleWinner) {
         advanceNextChapter();
       }
-    }, 1500);
+    }, 3000);
   }
 
   return result;
@@ -1288,10 +1442,24 @@ export function rollRandomArcadeGame(): number {
 }
 
 /**
- * Automated single step for auto-runner
+ * Automated single step for auto-runner.
+ * When `respectSpeedAndImageGate` is true (used by the periodic UI runner),
+ * enforces the 2x slower interval (2800ms) and waits until current & next bust images have finished loading.
  */
-export function runAutoStep(): void {
-  if (!playRpgState.autoMode) return;
+export function runAutoStep(respectSpeedAndImageGate: boolean = false): boolean {
+  if (!playRpgState.autoMode) return false;
+
+  if (respectSpeedAndImageGate) {
+    const now = Date.now();
+    if (playRpgState.lastAutoStepAt > 0 && now - playRpgState.lastAutoStepAt < AUTO_STEP_INTERVAL_MS) {
+      return false;
+    }
+    if (playRpgState.subState === 'dialogue' && !isDialogueReadyToAdvance()) {
+      return false;
+    }
+  }
+
+  playRpgState.lastAutoStepAt = Date.now();
 
   if (playRpgState.subState === 'map') {
     // In auto mode, immediately jump to event tile and trigger dialogue cutscene
@@ -1299,6 +1467,7 @@ export function runAutoStep(): void {
     if (chEvent) {
       playRpgState.heroTile = { ...chEvent.tile };
       triggerDialogue(chEvent);
+      return true;
     }
   } else if (playRpgState.subState === 'dialogue') {
     // If choice prompt active, auto-select option 0
@@ -1309,41 +1478,48 @@ export function runAutoStep(): void {
     } else {
       advanceDialogue();
     }
+    return true;
   } else if (playRpgState.subState === 'battle') {
     if (!playRpgState.battleWinner && playRpgState.turn === 'player') {
       // Find empty slot
       const emptyIdx = playRpgState.battleBoard.findIndex((s) => s === null);
       if (emptyIdx !== -1 && playRpgState.playerHand.length > 0) {
         playCardToSlot(0, emptyIdx, 'player');
+        return true;
       }
     } else if (playRpgState.battleWinner) {
       if (playRpgState.repeatHunting) {
         initBattle();
+        return true;
       } else if (playRpgState.battleWinner === 'player') {
         advanceNextChapter();
         // If 40th chapter triggered the 3-second Reincarnation Popup, wait for the 3s countdown!
         if (playRpgState.subState === 'reincarnation') {
-          return;
+          return true;
         }
         const nextEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === playRpgState.currentChapter);
         if (nextEvent) {
           playRpgState.heroTile = { ...nextEvent.tile };
           triggerDialogue(nextEvent);
         }
+        return true;
       } else {
         // Defeat or Draw: cannot advance to next chapter without winning (upgrade cards required)
         playRpgState.autoMode = false;
         try {
           localStorage.setItem('hero_kadan_rpg_auto_mode', 'false');
         } catch {}
+        return true;
       }
     }
   } else if (playRpgState.subState === 'reincarnation') {
     // Wait for the 3-second reincarnation popup countdown to complete
     if (playRpgState.reincarnationDeadlineMs > 0 && Date.now() >= playRpgState.reincarnationDeadlineMs) {
       completeReincarnation();
+      return true;
     }
   }
+  return false;
 }
 
 // Initial bootstrap

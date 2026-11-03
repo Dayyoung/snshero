@@ -49,6 +49,7 @@ import {
   stepHeroDelta,
   moveHeroToTile,
   getCurrentDialogueLines,
+  prevDialogue,
   advanceDialogue,
   selectDialogueChoice,
   initBattle,
@@ -67,6 +68,7 @@ import {
   completeReincarnation,
   getEpisodeActualOpponentDeck,
   getOpponentRebirthStatBonus,
+  preloadDialogueChapterImages,
   PlayTabKey,
 } from '../services/playRpgEngine';
 
@@ -268,6 +270,9 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
       break;
 
     // Dialogue actions
+    case 'play-dialogue-prev':
+      prevDialogue();
+      break;
     case 'play-dialogue-next':
       advanceDialogue();
       break;
@@ -649,6 +654,7 @@ function renderAdventureView(): string {
               const isFinal = playRpgState.currentDialogueLineIdx >= lines.length - 1;
 
               // Clean dialogue text & speaker resolution (Single alternating active speaker bust only)
+              preloadDialogueChapterImages();
               const speakers = resolveDialogueSpeakers(line);
               const activeSpeaker = speakers.activeSide === 'left' ? speakers.left : speakers.right;
               const dialogueData = extractDialogueText(line, activeSpeaker.name);
@@ -678,8 +684,10 @@ function renderAdventureView(): string {
                     } flex flex-col items-center z-20 transition-all duration-200">
                       <div class="relative w-24 h-24 sm:w-28 sm:h-28 bg-[#0d0b0b] border-2 border-amber-400 bg-amber-950/20 rounded-none overflow-hidden flex items-end justify-center">
                         <img
+                          id="dialogue-speaker-bust-img"
                           src="${activeSpeakerAsset.bustPngUrl}?v=20261103v4"
                           alt="${activeSpeaker.name}"
+                          loading="eager"
                           class="w-full h-full object-contain"
                           onerror="this.src='${activeSpeakerAsset.seatUrl}'; this.onerror=null;"
                         />
@@ -761,7 +769,7 @@ function renderAdventureView(): string {
                             ? `
                               <div class="pt-1 border-t border-white/10 space-y-1.5">
                                 <div class="flex items-center justify-between text-[11px] text-stone-400">
-                                  <span>주인공 선택지 (${playRpgState.autoMode ? '1.5초 후 자동 진행' : '선택 대기'})</span>
+                                  <span>주인공 선택지 (${playRpgState.autoMode ? '3.0초 후 자동 진행' : '선택 대기'})</span>
                                   <span class="text-amber-400 font-bold">${line.choices.length}개 선택 가능</span>
                                 </div>
                                 <div class="grid grid-cols-1 gap-1.5">
@@ -796,33 +804,48 @@ function renderAdventureView(): string {
                             class="px-3 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer"
                             aria-label="대사 창 닫기 및 플레이 중지"
                           >
-                            ✕ 닫기 (중지)
+                            ✕ 닫기
                           </button>
                           <span class="hidden sm:inline text-[11px] text-stone-400 font-mono">
                             ${playRpgState.autoMode ? '⚡ 자동 진행 중' : '수동 진행'}
                           </span>
                         </div>
-                        ${
-                          isFinal
-                            ? `
-                              <button
-                                type="button"
-                                data-action="play-battle-start"
-                                class="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs sm:text-sm font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1.5 cursor-pointer shadow-none active:scale-95"
-                              >
-                                ⚔️ 전투 시작 (3x3 배틀) ▶
-                              </button>
-                            `
-                            : `
-                              <button
-                                type="button"
-                                data-action="play-dialogue-next"
-                                class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1 cursor-pointer active:translate-y-px"
-                              >
-                                다음 대화 ▶
-                              </button>
-                            `
-                        }
+                        <div class="flex items-center gap-1.5 sm:gap-2">
+                          <button
+                            type="button"
+                            data-action="play-dialogue-prev"
+                            ${playRpgState.currentDialogueLineIdx <= 0 ? 'disabled' : ''}
+                            class="px-3 sm:px-4 py-2.5 ${
+                              playRpgState.currentDialogueLineIdx <= 0
+                                ? 'bg-stone-900 text-stone-600 border border-stone-800 cursor-not-allowed'
+                                : 'bg-stone-800 hover:bg-stone-700 text-stone-100 border border-stone-500 cursor-pointer active:translate-y-px'
+                            } text-xs font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1"
+                            aria-label="이전 대화로 이동"
+                          >
+                            ◀ 이전 대화
+                          </button>
+                          ${
+                            isFinal
+                              ? `
+                                <button
+                                  type="button"
+                                  data-action="play-battle-start"
+                                  class="px-4 sm:px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs sm:text-sm font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1.5 cursor-pointer shadow-none active:scale-95"
+                                >
+                                  ⚔️ 전투 시작 ▶
+                                </button>
+                              `
+                              : `
+                                <button
+                                  type="button"
+                                  data-action="play-dialogue-next"
+                                  class="px-4 sm:px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1 cursor-pointer active:translate-y-px"
+                                >
+                                  다음 대화 ▶
+                                </button>
+                              `
+                          }
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -832,7 +855,7 @@ function renderAdventureView(): string {
           : ''
       }
 
-      <!-- Sub-State: 3. 3x3 Tactical Card Battle Modal Popup (Mobile & Desktop Full-Screen Overlay + Original TCG Hand Cards) -->
+      <!-- Sub-State: 3. 3x3 Tactical Card Battle Modal Popup (Compact Header + 1-Row Dynamic Card Deck on Mobile) -->
       ${
         playRpgState.subState === 'battle'
           ? (() => {
@@ -844,7 +867,7 @@ function renderAdventureView(): string {
               return `
             <div
               id="play-battle-modal-root"
-              class="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 font-mono select-none overflow-y-auto"
+              class="fixed inset-0 z-50 flex items-center justify-center p-1.5 sm:p-4 font-mono select-none overflow-y-auto"
               role="dialog"
               aria-modal="true"
               aria-labelledby="battle-modal-title"
@@ -857,50 +880,34 @@ function renderAdventureView(): string {
               ></div>
 
               <!-- Battle Popup Dialog Box -->
-              <section class="relative z-10 w-full max-w-4xl my-auto max-h-[95dvh] overflow-y-auto bg-[#060a14] border-2 border-amber-400/70 p-3 sm:p-5 rounded-none space-y-3 text-white shadow-2xl">
-                <!-- Battle Status Header -->
-                <div class="flex flex-wrap items-center justify-between pb-2.5 border-b border-white/10 gap-2">
-                  <div>
-                    <div class="flex flex-wrap items-center gap-1.5">
-                      <span class="text-[11px] font-bold text-amber-400 uppercase">[${chapterLabel} · 3x3 전술 카드 배틀]</span>
-                      ${
-                        playRpgState.reincarnationLevel > 0
-                          ? `<span class="px-1.5 py-0.5 bg-purple-950 text-purple-200 border border-purple-500/70 text-[10px] font-black rounded-sm">🔥 환생 ${playRpgState.reincarnationLevel}회차 강화 · 상대 전 스탯 +${rebirthBonus}</span>`
-                          : ''
-                      }
-                    </div>
-                    <h3 id="battle-modal-title" class="text-sm sm:text-lg font-black text-white m-0 mt-0.5">
-                      플레이어 vs ${playRpgState.opponentName}
+              <section class="relative z-10 w-full max-w-4xl my-auto max-h-[96dvh] overflow-y-auto bg-[#060a14] border-2 border-amber-400/70 p-2.5 sm:p-5 rounded-none space-y-2 sm:space-y-3 text-white shadow-2xl">
+                <!-- Ultra-Compact Single-Line Battle Header (Unnecessary Top Text Removed) -->
+                <div class="flex items-center justify-between pb-1.5 border-b border-white/10 gap-2">
+                  <div class="flex items-center gap-1.5 min-w-0 truncate">
+                    <span class="px-1.5 py-0.5 bg-amber-400 text-stone-950 text-[10px] sm:text-xs font-black rounded-sm shrink-0">
+                      ${chapterLabel}
+                    </span>
+                    <h3 id="battle-modal-title" class="text-xs sm:text-base font-black text-white m-0 truncate">
+                      vs ${epDeck.leaderName} 외 (${epDeck.deckNames.slice(0, 3).join('·')})
                     </h3>
-                    <div class="text-[10px] text-stone-400 mt-0.5">
-                      회차 등장 상대 덱: ${epDeck.deckNames.join(' · ')}
-                    </div>
+                    ${
+                      playRpgState.reincarnationLevel > 0
+                        ? `<span class="px-1.5 py-0.5 bg-purple-950 text-purple-200 border border-purple-500/70 text-[9px] sm:text-[10px] font-black rounded-sm shrink-0">🔥+${rebirthBonus}</span>`
+                        : ''
+                    }
                   </div>
-                  <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
-                    <span class="px-2 py-1 bg-sky-950 text-sky-300 rounded-sm border border-sky-800">
-                      내 핸드: ${playRpgState.playerHand.length}장
-                    </span>
-                    <span class="px-2 py-1 bg-rose-950 text-rose-300 rounded-sm border border-rose-800">
-                      상대 핸드: ${playRpgState.opponentHand.length}장
-                    </span>
-                    <button
-                      type="button"
-                      data-action="play-dialogue-close"
-                      class="px-3 py-1.5 bg-rose-950/90 hover:bg-rose-900 text-rose-200 border border-rose-500/70 text-xs font-black rounded-sm min-h-[44px] cursor-pointer"
-                      aria-label="배틀 중지 및 맵으로 복귀"
-                    >
-                      ✕ 닫기 (중지)
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Battle Notification Bar -->
-                <div class="w-full bg-slate-900 border border-white/10 p-2 rounded-sm text-center text-xs font-bold text-amber-300">
-                  ${playRpgState.battleMessage}
+                  <button
+                    type="button"
+                    data-action="play-dialogue-close"
+                    class="px-2.5 py-1 bg-rose-950/90 hover:bg-rose-900 text-rose-200 border border-rose-500/70 text-xs font-black rounded-sm min-h-[38px] sm:min-h-[44px] cursor-pointer shrink-0"
+                    aria-label="배틀 중지 및 맵으로 복귀"
+                  >
+                    ✕ 닫기
+                  </button>
                 </div>
 
                 <!-- 3x3 Battle Field Board -->
-                <div class="grid grid-cols-3 gap-1.5 sm:gap-2 w-full max-w-[260px] sm:max-w-[330px] mx-auto aspect-square select-none p-1.5 sm:p-2 bg-[#0c1220] border border-white/10">
+                <div class="grid grid-cols-3 gap-1 sm:gap-2 w-full max-w-[235px] sm:max-w-[320px] mx-auto aspect-square select-none p-1 sm:p-2 bg-[#0c1220] border border-white/10">
                   ${playRpgState.battleBoard
                     .map((slot, sIdx) => {
                       if (!slot) {
@@ -912,8 +919,8 @@ function renderAdventureView(): string {
                             class="w-full h-full border border-dashed border-white/25 bg-white/5 hover:bg-white/15 rounded-none flex flex-col items-center justify-center text-xs text-stone-400 font-bold min-h-[44px] cursor-pointer active:translate-y-px transition-colors"
                             aria-label="슬롯 ${sIdx + 1} 배치"
                           >
-                            <span class="text-[10px] text-stone-500">슬롯 ${sIdx + 1}</span>
-                            <span class="text-amber-400 text-xs">[배치]</span>
+                            <span class="text-[10px] text-stone-500">${sIdx + 1}</span>
+                            <span class="text-amber-400 text-[11px] font-black">[배치]</span>
                           </button>
                         `;
                       }
@@ -962,17 +969,9 @@ function renderAdventureView(): string {
                     .join('')}
                 </div>
 
-                <!-- Player Active Hand Cards (1-Row Dynamic Card Width on Mobile & Desktop + Full Original TCG Card Design) -->
-                <div class="space-y-1.5 sm:space-y-2 pt-2 border-t border-white/10">
-                  <div class="flex items-center justify-between gap-2">
-                    <span class="text-[11px] sm:text-xs text-amber-300 font-bold truncate">
-                      🃏 플레이어 덱 카드 (터치 선택 후 3x3 배치):
-                    </span>
-                    <span class="text-[10px] sm:text-[11px] text-stone-400 font-mono shrink-0">
-                      남은 카드: ${playRpgState.playerHand.length}장
-                    </span>
-                  </div>
-                  <div class="flex flex-nowrap items-stretch justify-center gap-1 sm:gap-2.5 pt-1.5 w-full">
+                <!-- Player Active Hand Cards (1-Row Dynamic Card Width, Zero Extra Header Clutter) -->
+                <div class="pt-1.5 border-t border-white/10">
+                  <div class="flex flex-nowrap items-stretch justify-center gap-1 sm:gap-2.5 pt-1 w-full">
                     ${playRpgState.playerHand
                       .map((cId, hIdx) => {
                         const isSelected = playRpgState.selectedHandIndex === hIdx;
