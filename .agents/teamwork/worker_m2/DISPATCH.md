@@ -1,47 +1,66 @@
-## 2026-10-18T10:25:54Z
-You are Implementation Worker 2 (Milestone 2 — Economy, Social & Content Views) for SNSHero Revolution.
-Your working directory is: /Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/
-You MUST read the authoritative user request at:
-/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md (specifically the latest request under ## 2026-10-18T10:08:37Z).
+## 2026-11-02T05:25:11Z
+# Dispatch Assignment: worker_m2
 
-Reference specifications:
-- /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_2/handoff.md (Detailed line-by-line fix recipes)
-- /Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/PROJECT.md (Features 18–28)
-- /Users/dayyoung/project/snshero/DESIGN.md
-- /Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/DISPATCH.md
+## Mission
+Implement Milestone 2: Responsive Shell, Navigation & Assets (Features 6–11) based on the comprehensive specifications from `explorer_m2_1`, `explorer_m2_2`, and `explorer_m2_3`.
 
-Your Exclusive Write Ownership:
-- `src/views/ShopView.tsx`
-- `src/views/CardMarketplaceView.tsx`
-- `src/views/NovelView.tsx`
-- `src/views/MovieView.tsx`
-- `src/views/RankingView.tsx`
-- `src/views/GuildListView.tsx`
-- `src/views/GuildDetailView.tsx`
-- `src/views/CommunityView.tsx`
-- `src/views/RedditCommunityView.tsx`
-- `src/components/movie/CinematicMoviePlayer.tsx`
-- `src/components/reddit/*`
+## Deliverables & Write Ownership
+You have exclusive write ownership over:
+- `src/landing/types.ts`
+- `src/landing/styles/landing.css`
+- `src/landing/components/Header.tsx`
+- `src/landing/components/Sidebar.tsx`
+- `src/landing/components/Modals.tsx`
+- `src/landing/components/Footer.tsx`
+- `src/landing/services/assetCatalog.ts`
+- `src/landing/views/HomeSection.tsx` (M2 layout placeholder containing external serialization links for T4.W1.1)
+- `src/landing/index.ts`
 
-Your Task:
-Implement Features 18–28 according to DESIGN.md and `explorer_survey_2/handoff.md`:
-1. `ShopView.tsx`:
-   - Cleanse all 289 banned classes: replace gradients with solid `#fdfcfc` / `#201d1d` surfaces; convert `rounded-3xl/2xl/xl/lg` to `rounded-none` containers and `rounded-sm` buttons; strip all drop shadows (`shadow-*`); remove bounce/ping animations; replace `font-sans` with `font-mono`.
-   - Upgrade all 39 sub-44px buttons and modal close buttons to `min-h-[44px] min-w-[44px]`.
-2. `CardMarketplaceView.tsx`:
-   - Upgrade all 13 sub-44px buttons (including toast dismiss `[x]` at lines 951–1023 and action buttons at lines 1147, 1156, 1546) to `min-h-[44px]`.
-3. `NovelView.tsx`:
-   - Add `min-h-[44px] min-w-[44px]` to chapter drawer close `[X]` (line 1072); upgrade episode card buttons (line 1087) to `min-h-[48px]`; upgrade prompt copy buttons to 44px tap area.
-4. `MovieView.tsx` & `CinematicMoviePlayer.tsx`:
-   - Remove `shadow-2xl` from `CinematicMoviePlayer.tsx` line 687; maintain 100% 44px+ buttons.
-5. `RankingView.tsx`:
-   - Cleanse all 147 banned classes: replace gradients and `font-sans` with solid `#201d1d` / `font-mono`; convert `rounded-3xl/2xl/xl` to `rounded-none`; upgrade all 30 sub-44px buttons and modal close buttons to `min-h-[44px]`.
-6. `GuildListView.tsx`:
-   - Cleanse all 54 banned classes: replace `font-sans` with `font-mono`; convert `rounded-3xl/2xl` to `rounded-none`; upgrade all 17 sub-44px buttons to `min-h-[44px]`; match `GuildDetailView.tsx` standard.
-7. `CommunityView.tsx`:
-   - Cleanse all 82 banned classes: flatten carousel cards to `rounded-none border-[rgba(15,0,0,0.12)] bg-[#f8f7f7]`; upgrade all 68 reaction/comment buttons to `min-h-[44px] rounded-sm`; remove bounce/ping animations.
-8. `RedditCommunityView.tsx` & `src/components/reddit/*`:
-   - Replace root `font-sans` with `font-mono`; convert pill buttons (`rounded-full`) to `rounded-sm min-h-[44px]`; eliminate drop shadows across Reddit subcomponents.
-9. Verify your work with `npx tsc --noEmit` to ensure 0 TypeScript errors.
-10. Produce your handoff report in `/Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/handoff.md`.
-11. Send a message to parent reporting completion and build verification results.
+## Strict Constraints & Requirements
+1. **ZERO REACT RUNTIME IN LANDING**: Do NOT import React runtime (`vendor-react`) in `src/landing/`. All landing components must be pure TypeScript template string renderers / DOM generators. `dist/index.html` must remain ultra-lightweight (< 50 KB, target < 25 KB).
+2. **OpenCode Terminal-Flat Aesthetics**:
+   - `font-mono` on all text elements
+   - 0px border-radius on cards, panels, containers, modals (`rounded-none`)
+   - 4px border-radius on buttons, inputs, badges (`rounded-sm`)
+   - 1px hairline borders (`rgba(15, 0, 0, 0.12)` or `border-neutral-800`)
+   - Single flat cream (`#fdfcfc`) or ink (`#201d1d`) surfaces. No shadows (`shadow-none`), no multi-color gradients.
+3. **Ergonomic 44px+ Touch Targets**:
+   - Every interactive control (`button`, `a`, `[role="button"]`) must have `min-h-[44px]` and `box-sizing: border-box`.
+4. **Navigation Exact Items**:
+   - Top Nav (`Header.tsx`): Exact 6 items: `'홈'`, `'마이덱'`, `'플레이'`, `'미션'`, `'상점'`, `'쇼핑몰'`. Include `md:`, `lg:`, `min-h-[44px]`.
+   - Side Nav (`Sidebar.tsx`): Exact 8 items: `'로그인'`, `'홈'`, `'마이덱'`, `'플레이'`, `'미션'`, `'상점'`, `'쇼핑몰'`, `'커뮤니티'`. Include off-canvas drawer, backdrop, `[x]` dismiss, `min-h-[44px]`.
+5. **Secondary Action Modals (`Modals.tsx`)**:
+   - Modals for `'쇼핑몰'` (`mall`), `'커뮤니티'` (`community`), `'로그인'` (`login`).
+   - Must include `fixed inset-0 z-50 backdrop bg-black/50`, top-right `[x]` dismiss, bottom `닫기` button, and explanation that LocalStorage permanently saves 100% of game progression.
+6. **Zero Onboarding Popups**:
+   - Do NOT include `showTutorial`, `onboarding`, `FirstVisit`, `window.alert`, or `initialModal: true` in `index.ts` or `Modals.tsx`.
+   - Initial modal state must strictly be `activeModal = null`.
+7. **3-Tier Character Visual Assets Catalog (`assetCatalog.ts`)**:
+   - 110-character catalog covering:
+     - 7-head: `cutouts` (`public/anime-character-sheets/cutouts/`)
+     - Torso/bust: `bust` (`public/anime-character-sheets/busts/`) and `seat/` (`public/seat/`)
+     - 3-head SD: `sd` / `3head` (`public/seat/`, `public/cards1.png`, `public/cards2.png`)
+   - Multi-tier prioritized fallback and inline terminal-flat SVG data-URI generator.
+8. **Verification**:
+   - Run `npx tsc --noEmit` (must be 0 errors).
+   - Run `npm run build` (must succeed with exit code 0).
+   - Run `npx tsx tests/e2e/run_all.ts --milestone M2` (must be 100.0% PASS).
+   - Run `npx tsx tests/e2e/run_all.ts --milestone M1` (must remain 100.0% PASS).
+   - Submit Google Form report via `python3 skills/report-ex/scripts/submit_report.py` and record in `WORK_LOGS.md`.
+   - Commit changes via `git commit` (DO NOT git push).
+
+## Mandatory Integrity Warning
+DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
+
+## Authoritative Inputs
+- `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md`
+- `/Users/dayyoung/project/snshero/PROJECT.md`
+- `/Users/dayyoung/project/snshero/TEST_INFRA.md`
+- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_m2_1/handoff.md`
+- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_m2_2/handoff.md`
+- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_m2_3/handoff.md`
+
+## Output Requirements
+Write your handoff report to:
+`/Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/handoff.md`
+Report back via send_message when complete.

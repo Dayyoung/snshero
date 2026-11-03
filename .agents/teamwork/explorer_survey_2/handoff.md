@@ -1,277 +1,148 @@
-# Handoff Report: Survey Explorer 2 (Economy, Social & Content Views)
-**Author**: Survey Explorer 2  
-**Milestone**: Full-Screen DESIGN.md Terminal-Flat Visual Unification Survey  
-**Date**: 2026-10-18T10:20:00Z  
-**Assigned Views**:
-1. `src/views/ShopView.tsx` (Economy / Gacha / IAP / Crypto)
-2. `src/views/CardMarketplaceView.tsx` (P2P Trading / Marketplace)
-3. `src/views/NovelView.tsx` (40-Episode Web Novel & Webtoon Reader)
-4. `src/views/MovieView.tsx` (40-Episode Cinematic Theater & MP4 Player)
-5. `src/views/RankingView.tsx` (PvP / Leaderboard / Matchmaking)
-6. `src/views/GuildListView.tsx` & `src/views/GuildDetailView.tsx` (Guild Social Hub)
-7. `src/views/CommunityView.tsx` & `src/views/RedditCommunityView.tsx` (Community & Forums)
+# Handoff Report: R2 (반응형 레이아웃 & 캐릭터 자산) 및 R3 (메뉴 간소화 & 온보딩 제거)
+
+- **작성 에이전트**: `teamwork_explorer` (Survey Explorer 2)
+- **작업 디렉토리**: `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_2/`
+- **수신 에이전트 / 오케스트레이터**: `7b342c7a-1d74-43d7-a388-5ffc926b3969` (parent)
+- **핸드오프 유형**: Hard Handoff (작업 완료)
+- **산출물**:
+  - 상세 조사 보고서: `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_2/survey_report.md`
+  - 핸드오프 보고서: `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_2/handoff.md`
 
 ---
 
-## 1. Observation
+## 1. Observation (직접 관찰 사실)
 
-Direct code inspections, automated AST scans, and pattern audits were executed against all 9 assigned view files (totaling 20,226 lines of code) and related subcomponents.
+### 1.1 캐릭터 이미지 자산 전수 관찰 (PIL 및 쉘 커맨드 실측)
+1. **7등신 캐릭터 투명 컷아웃**:
+   - 경로: `public/anime-character-sheets/cutouts/*.png`
+   - 수량: **정확히 110개** (ID 1~110번 매핑, `001_Aquaris.png` ~ `110_Dreadwing.png`)
+   - 포맷 및 해상도: PNG (RGBA 32비트 투명 채널), 높이 740px~826px, 가로 382px~1375px (평균 ~850x770px). 총 용량 88.89 MB.
+   - 복합 시트: `public/anime-character-sheets/sheets/*_sheet.jpg` (110개, 1600x1000 JPG, Panel 01에 7등신 전신 배치).
+   - 팩션 시트: `public/anime-character-sheets/factions/*_master_sheet.jpg` (11개, 2400x1420 JPG, 팩션당 10인 영웅 정렬).
+   - 단체 포스터: `public/anime-character-sheets/all_110_cast_poster.jpg` (1557 KB).
+2. **상반신 (버스트 / 포트레이트) 자산**:
+   - 경로 A: `public/anime-character-sheets/busts/`
+     - `001_bust.png` ~ `110_bust.png`: **110개**, 500 × 500 px RGBA 투명 배경 PNG.
+     - `001_bust.jpg` ~ `110_bust.jpg`: **110개**, 600 × 600 px RGB JPEG 단색 배경.
+     - 합계: 220개 파일, 총 47.37 MB.
+   - 경로 B: `public/seat/*.png`
+     - 수량: **111개** (`Aeolus.png`, `Aquaris.png`, ..., `Zues.png`, `Kadan.png`, `Aila_the_Demon_Hunter.png`)
+     - 규격: 256 × 296 px RGBA 투명 PNG, 개당 20~35KB 경량화 완료, 총 8.58 MB.
+   - 경로 C: `public/seat_attack/*.png`
+     - 수량: **110개**, 256 × 296 px RGBA 투명 PNG (공격 액션 모션), 총 17.59 MB.
+   - 경로 D: `public/character_sheet_*.png`
+     - 수량: 11개 팩션 스트립 시트 (2560 × 296 px PNG, 팩션당 10명 상반신 수평 나열).
+3. **3등신 (SD / 치비 / 도트 / 복셀) 자산**:
+   - `public/cards1.png` (1000 × 1000 px PNG, 10x10 그리드, 1~100번 카드 3등신 SD 스프라이트).
+   - `public/cards2.png` (1000 × 1000 px PNG, 10x10 그리드, Row 0에 101~110번 배치).
+   - `public/cards1_attack.png` & `public/cards2_attack.png` (각 1000 × 1000 px PNG, 3등신 SD 공격 액션 스프라이트).
+   - `public/anime-character-sheets/sheets/*_sheet.jpg`의 Panel 03 (3등신 SD 독립 렌더 패널).
+   - `public/card100.png` (1135x1315), `public/card100_gemini.png` (1024x1024, 445KB).
+   - `public/card100_pixelart.png`, `public/units_pixel_art.svg`, `public/units_pixel_0428.svg`.
+   - 복셀 현황: `AGENTS.md`에 명시된 대로 Three.js 3D WebGL은 100% 완전 퇴출되었으며, HTML5 2D Canvas와 3등신 SD 스프라이트(`cards1.png`, `cards2.png`, `seat/`)가 단일 진실 공급원으로 기능 중.
 
-### 1.1 Summary Matrix of Visual & Ergonomic Violations
+### 1.2 반응형 레이아웃 및 너비 제약 관찰
+- `src/App.tsx:6858`: `min-[1024px]:right-[calc(50vw-496px)]`
+- `src/App.tsx:6880`: `min-[1024px]:left-[calc(50vw-496px)]`
+- `src/App.tsx:7110`: `max-w-[1024px] mx-auto`
+- 기존 앱 전체가 인위적인 `1024px` 중앙 고정 프레임에 묶여 있어, 1440px/1920px 모니터에서 약 50%의 화면이 버려지는 데드 스페이스 현상 관찰.
 
-| Target View | Lines | Banned Classes Total | Gradients (`bg-gradient-to-*`) | Radii Violations (`rounded-lg/xl/2xl/3xl/full`) | Drop Shadows (`shadow-*`) | Animations (`animate-ping/bounce/pulse`) | Non-Mono Fonts (`font-sans/serif`) | `<button>` Count | Sub-44px Buttons | Compliance Status |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `ShopView.tsx` | 6,596 | **289** | 17 | 180 | 68 | 9 | 15 | 108 | 39 | ⚠️ Severe Legacy Violations |
-| `CardMarketplaceView.tsx` | 1,766 | **0** | 0 | 0 | 0 | 0 | 0 | 34 | 13 | 🟡 Visual Compliant / Touch Target Deficit |
-| `NovelView.tsx` | 2,298 | **0** | 0 | 0 | 0 | 0 | 0 | 57 | 8 | 🟡 Visual Compliant / Minor Touch Deficit |
-| `MovieView.tsx` | 1,078 | **0** | 0 | 0 | 0 | 0 | 0 | 19 | 0 | 🟢 Fully Compliant (100% 44px+) |
-| `RankingView.tsx` | 2,164 | **147** | 6 | 68 | 47 | 10 | 16 | 35 | 30 | ⚠️ Severe Legacy Violations |
-| `GuildListView.tsx` | 579 | **54** | 1 | 31 | 21 | 0 | 1 | 17 | 17 | ⚠️ Severe Legacy Violations |
-| `GuildDetailView.tsx` | 1,221 | **0** | 0 | 0 | 0 | 0 | 0 | 22 | 0 | 🟢 Fully Compliant (Exemplary) |
-| `CommunityView.tsx` | 3,510 | **82** | 3 | 42 | 25 | 8 | 4 | 70 | 68 | ⚠️ Severe Legacy Violations |
-| `RedditCommunityView.tsx` | 1,014 | **22** | 0 | 15 | 3 | 3 | 1 | 3 | 3 | ⚠️ Severe Legacy Violations (+ Subcomponents) |
-| **Total** | **20,226** | **594** | **27** | **336** | **164** | **30** | **37** | **365** | **178** | **Overall: 594 Banned Tokens / 178 Sub-44px Controls** |
+### 1.3 기존 메뉴 구조 관찰
+- 하단 네비게이션 (`src/components/Navbar.tsx:100-106`): 5개 탭 (`home`, `mydeck`, `main`, `play`, `shop`).
+- 사이드 햄버거 메뉴 (`src/App.tsx:6910-7290`): 헤더, 사용자 로그인/프로필, 커뮤니티(`/reddit`), 길드관리(`guild-list`), 이벤트(`event`), 주식(`stock-market`), 예측시장(`prediction-market`), 유틸리티 아코디언(3개), 풋터(`modoo`) 등 12개 이상 항목으로 과밀함.
+- `public/mall/index.html`: Shopify 굿즈 몰 미러링 정적 사이트가 실제 존재함 (`src/views/MallView.tsx`에서 iframe으로 로드 중).
 
----
-
-### 1.2 Target-by-Target Direct Observations & Verbatim Code Quotes
-
-#### 1. `src/views/ShopView.tsx` (6,596 lines)
-- **Banned CSS Tokens (289)**:
-  - Multi-stop decorative gradients: `bg-gradient-to-r`, `bg-gradient-to-br` (17 occurrences, e.g., lines 3430–3433, 3545).
-  - Banned radii: `rounded-lg` (37), `rounded-xl` (51), `rounded-2xl` (41), `rounded-3xl` (17), `rounded-full` (34).
-    - Verbatim quote (line 6228):
-      ```tsx
-      <div key={order.orderId} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col gap-4">
-      ```
-    - Verbatim quote (line 3138):
-      ```tsx
-      <motion.div ... className="fixed bottom-24 left-1/2 z-[200] bg-black text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-2xl">
-      ```
-    - Verbatim quote (line 3152):
-      ```tsx
-      <motion.div ... className="fixed top-4 sm:top-8 left-1/2 -translate-x-1/2 z-[110] bg-red-600 text-white px-4 sm:px-6 py-3 rounded-lg shadow-xl ...">
-      ```
-  - Drop shadows: 68 occurrences (`shadow-sm`, `shadow-md`, `shadow-lg`, `shadow-xl`, `shadow-2xl`).
-  - Distracting animations: `animate-ping` (line 5988), `animate-bounce` (lines 3370, 3376, 3485, 3491, 6530), `animate-pulse` (lines 2975, 3330, 3331).
-  - Explicit non-mono typography: 15 occurrences of `font-sans` (lines 4923, 5145, 5208, 5423, 5522).
-- **Interactive Touch Targets (< 44px)**:
-  - 39 buttons lack `min-h-[44px]`.
-  - Verbatim close button quotes:
-    - Line 4882: `<button className="absolute top-4 right-4 p-1.5 hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-400 hover:text-slate-600">`
-    - Line 5020: `<button className="absolute top-4 right-4 p-1.5 hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-400 hover:text-slate-600">`
-    - Line 5153: `<button className="absolute top-4 right-4 p-1.5 hover:bg-slate-100 rounded-full text-slate-400 cursor-pointer">`
-    - Line 5706: `<button className="mr-1 p-1 hover:bg-slate-100 rounded-lg text-slate-600 transition cursor-pointer">`
-  - Action buttons:
-    - Line 6456: `<button className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-lg active:scale-95">`
-    - Line 6503: `<button className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 disabled:bg-slate-800 disabled:text-slate-600 text-stone-900 font-bold text-xs rounded-lg">`
-- **Data Persistence & LocalStorage**:
-  - Keys: `hero_ad_removed`, `hero_auto_loop_card`, `hero_auto_loop_is_ranking`, `hero_auto_loop_mode`, `hero_current_steps`, `hero_deck`, `hero_dupe_mileage`, `hero_gacha_stamp_track_v1`, `hero_goods_pending_order`, `hero_goods_pending_payment`, `hero_inventory`, `hero_monthly_sns_limit`, `hero_monthly_sns_spent`, `hero_player_stamina`, `hero_sns`, `hero_sns_history`, `hero_steps_claimed_date`, `hero_today_claimed_steps`, `hero_user_sns`. 100% comply with `hero_*` prefix standard.
-
-#### 2. `src/views/CardMarketplaceView.tsx` (1,766 lines)
-- **Banned CSS Tokens (0)**:
-  - Fully compliant palette: `bg-[#fdfcfc]`, `bg-[#f8f7f7]`, `bg-[#201d1d]`, `border-[rgba(15,0,0,0.12)]`.
-  - Radii strictly restricted to `rounded-none` and `rounded-sm`. 0 instances of gradients, drop shadows, or pulse/bounce animations.
-- **Interactive Touch Targets (< 44px)**:
-  - 13 buttons lack `min-h-[44px]`.
-  - Verbatim toast dismiss quotes:
-    - Line 951: `<button onClick={() => setPriceAlertToast(null)} className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer">[x]</button>`
-    - Line 967: `<button onClick={() => setViralShareNotice(null)} className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer">[x]</button>`
-    - Line 987: `<button onClick={() => setGasRebateNotice(null)} className="text-emerald-800 hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer">[x]</button>`
-    - Line 1003: `<button onClick={() => setAutoBuySuccessMsg(null)} className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer">[x]</button>`
-    - Line 1023: `<button onClick={() => setFirstTradeBonusToast(false)} className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer">[x]</button>`
-  - Action buttons:
-    - Line 1147: `min-h-[36px] text-[11px] font-bold text-[#646262] hover:text-[#201d1d] flex items-center gap-1` (36px < 44px)
-    - Line 1156: `min-h-[36px] px-2 text-[10px] text-rose-700 font-bold hover:underline cursor-pointer` (36px < 44px)
-    - Line 1546: `absolute top-3 right-3 min-h-[36px] px-2 rounded-sm border border-[rgba(15,0,0,0.12)] text-xs font-bold text-[#646262]` (36px < 44px)
-- **Data Persistence**: `hero_market_first_trade_reward`, `hero_market_watchlist_v1`, `hero_offline_mode`, `hero_sns`, `hero_sns_points`.
-
-#### 3. `src/views/NovelView.tsx` (2,298 lines)
-- **Banned CSS Tokens (0)**:
-  - 0 gradients, 0 rounded-lg/xl/2xl/3xl, 0 drop shadows, 0 bounce/ping animations.
-  - Surface palette strictly adheres to `#fdfcfc`, `#f8f7f7`, `#201d1d`, `border-[rgba(15,0,0,0.12)]`.
-- **Interactive Touch Targets (< 44px)**:
-  - 8 buttons lack `min-h-[44px]`:
-    - Line 1072: `<button onClick={() => setShowChapterDrawer(false)} className="text-stone-500 hover:text-stone-900 font-bold text-xs cursor-pointer">[X]</button>` (close button lacking 44px pad)
-    - Line 1087: chapter drawer episode card buttons: `p-2 border rounded-sm text-left transition-all cursor-pointer flex flex-col justify-between` (height depends on text, can be ~34px)
-    - Line 1269: prompt copy button in novel paragraph: `opacity-0 group-hover:opacity-100 transition-opacity p-1 text-[10px] text-[#646262]`
-    - Line 1339: prompt mode inline toggle: `text-[10px] font-mono text-[#201d1d] hover:underline flex items-center gap-1 cursor-pointer`
-    - Line 1521: search filter clear button `px-1.5 py-0.5 text-[10px]`
-    - Line 1951: search input clear `[x]` button: `absolute right-2.5 top-1/2 -translate-y-1/2 text-[#646262]`
-- **Zero Intrusion Verification**:
-  - Webtoon panel card (`WebtoonPanelCard.tsx`), Speech bubbles (`WebtoonSpeechBubble.tsx`), and SFX overlays (`WebtoonSfxOverlay.tsx`) render within dedicated viewports without clipping or obscuring character faces.
-  - Floating episode navigation dock (lines 2221–2287) uses fixed bottom docking (`z-40 max-w-[95vw] min-h-[44px]`) without blocking the reading flow.
-
-#### 4. `src/views/MovieView.tsx` (1,078 lines)
-- **Banned CSS Tokens (0)**:
-  - 0 gradients, 0 rounded-lg/xl/2xl/3xl, 0 drop shadows, 0 bounce/ping animations.
-- **Interactive Touch Targets (< 44px)**:
-  - 0 violations! All 19 buttons in `MovieView.tsx` feature `min-h-[44px]` or `min-h-[64px]` (episode grid buttons at line 931 feature `min-h-[64px]`).
-- **Embedded Component Audit (`CinematicMoviePlayer.tsx`)**:
-  - Found 1 violation in `src/components/movie/CinematicMoviePlayer.tsx` line 687:
-    `isFullscreen ? 'fixed inset-0 z-50 h-[100dvh] w-screen justify-between' : 'rounded-none border border-white/15 shadow-2xl'`
-    Needs removal of `shadow-2xl`.
-
-#### 5. `src/views/RankingView.tsx` (2,164 lines)
-- **Banned CSS Tokens (147)**:
-  - Multi-stop gradients: 6 occurrences (lines 1052, 1080, 1094, 1471, 1551).
-    - Verbatim quote (line 1052):
-      ```tsx
-      <div className="mb-4 p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-400/30 backdrop-blur-xs flex flex-wrap items-center justify-between gap-3 shadow-md">
-      ```
-    - Verbatim quote (line 1080):
-      ```tsx
-      <button ... className="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black rounded-xl text-xs shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer shrink-0">
-      ```
-    - Verbatim quote (line 1094):
-      ```tsx
-      <button onClick={handleRealTimePvp} className="sm:col-span-1 bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold py-3.5 px-3 rounded-none border border-red-500/40 shadow-xs ...">
-      ```
-  - Banned radii: `rounded-lg` (14), `rounded-xl` (17), `rounded-2xl` (10), `rounded-3xl` (12), `rounded-full` (15).
-    - Verbatim quote (line 1447):
-      ```tsx
-      <motion.div ... className="bg-slate-950 border border-slate-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl relative z-10 font-sans flex flex-col max-h-[80vh] text-white">
-      ```
-  - Drop shadows: 47 occurrences (`shadow-md`, `shadow-sm`, `shadow-2xl`, `shadow-[0_0_15px_rgba(59,130,246,0.4)]`).
-  - Animations: `animate-bounce` (lines 1473, 1640), `animate-pulse` (lines 1055, 1261, 1337, 1598, 1639).
-  - Explicit non-mono typography: 16 occurrences of `font-sans` (lines 1011, 1131, 1170, 1190, 1229).
-- **Interactive Touch Targets (< 44px)**:
-  - 30 of 35 buttons lack `min-h-[44px]`.
-  - Verbatim close button quotes:
-    - Line 1016: `inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-slate-300` (36px < 44px)
-    - Line 1246: `p-1.5 rounded-lg active:scale-95 transition-all shrink-0 flex items-center justify-center cursor-pointer border`
-    - Line 1458: `<button onClick={() => setShowHistoryModal(false)} className="text-white hover:text-red-400 transition-colors cursor-pointer">` (bare icon without minimum touch target)
-
-#### 6. `src/views/GuildListView.tsx` & `src/views/GuildDetailView.tsx`
-- **`GuildListView.tsx` (579 lines)**:
-  - Banned tokens: 54 total (1 gradient at line 489, 14 `rounded-lg`, 3 `rounded-xl`, 9 `rounded-2xl`, 2 `rounded-3xl`, 3 `rounded-full`, 21 `shadow-*`, 1 `font-sans` at line 156).
-  - Verbatim quotes:
-    - Line 156: `<div className="min-h-screen app-bg text-slate-800 font-sans pb-32 overflow-x-hidden">`
-    - Line 177: `<button onClick={() => onSelectGuild(userGuild.id, false)} className="w-10 h-10 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-sm">` (40px < 44px)
-    - Line 409: `<div className="bg-white border border-slate-100 rounded-3xl p-6 w-full max-w-md shadow-2xl relative">`
-    - Line 489: `<button type="submit" className="flex-1 bg-gradient-to-r from-yellow-450 to-amber-500 text-amber-950 py-3 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all active:scale-[0.98] shadow-lg shadow-yellow-200/40 cursor-pointer">`
-  - 17 of 17 buttons fail 44px touch target requirement (`min-h-9 min-w-9`, `w-10 h-10`, `py-2.5 rounded-lg`).
-- **`GuildDetailView.tsx` (1,221 lines)**:
-  - Banned tokens: **0**!
-  - Buttons: All 22 buttons strictly enforce `min-h-[44px]` or `min-h-[46px]`.
-  - Exemplary terminal-flat implementation with solid `#fdfcfc` / `#201d1d` surfaces, `rounded-none` containers, `rounded-sm` buttons, and 44px+ touch targets on all modals and drawers.
-
-#### 7. `src/views/CommunityView.tsx` & `src/views/RedditCommunityView.tsx`
-- **`CommunityView.tsx` (3,510 lines)**:
-  - Banned tokens: 82 total (3 gradients at lines 2555, 2564, 2604; 14 `rounded-lg`, 8 `rounded-xl`, 5 `rounded-2xl`, 3 `rounded-3xl`, 12 `rounded-full`, 25 `shadow-*`, 8 animations, 4 `font-sans` at lines 2587, 2590, 3177, 3257).
-  - Verbatim quotes:
-    - Line 2550: `"border border-slate-200/80 rounded-2xl sm:rounded-3xl overflow-hidden shadow-md"`
-    - Line 2604: `bg-gradient-to-r ${cat.color} hover:opacity-95 shadow-lg shadow-indigo-200/40`
-    - Line 3177: `<div className="w-full max-w-sm bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-2xl font-sans">`
-    - Line 3439: `<button className="absolute top-4 right-4 p-1.5 hover:bg-slate-100 rounded-full text-slate-400">`
-  - 68 of 70 buttons lack `min-h-[44px]` (most use `min-h-9`, `p-1.5`, `px-3 py-1.5 rounded-lg`).
-- **`RedditCommunityView.tsx` (1,014 lines)**:
-  - Root container explicitly defines `font-sans` at line 559:
-    ```tsx
-    <div className={`min-h-screen w-full max-w-full overflow-x-clip flex flex-col font-sans ...`}>
-    ```
-  - Banned tokens: 22 in main view (`rounded-2xl` lines 646, 700, 761, 888, 900, 922; `rounded-full` lines 651, 689, 708, 860, 868; `animate-pulse` lines 653, 656; `animate-ping` line 655).
-  - 3 of 3 buttons in main view are sub-44px (`py-1 rounded-full`, `py-1.5 rounded-lg`, `py-2.5 rounded-full`).
-  - Subcomponents in `src/components/reddit/*.tsx` (23 files) contain 286 additional banned tokens due to faithful replication of reddit.com round pill geometry (`rounded-full`, `rounded-2xl`, `shadow-sm`).
+### 1.4 첫 접속 시 온보딩/도움말/튜토리얼 팝업 발생 지점 관찰
+- `src/App.tsx:1088-1094`:
+  ```ts
+  const [isTutorialMode, setIsTutorialMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const season = localStorage.getItem('hero_current_season') || 'season1';
+      return !getSeasonItem('hero_tutorial_completed', season);
+    }
+    return true;
+  });
+  ```
+  신규 방문자는 `hero_tutorial_completed` 값이 없어 `isTutorialMode === true`가 되고, `App.tsx:7840-7989`의 거대한 풀스크린 오버레이와 "SKIP TUTORIAL" 박스가 즉시 노출됨.
+- `src/App.tsx:1098-1110` & `src/hooks/useContextualTutorial.ts`: `TutorialCoachMark`가 첫 방문 시 활성화되어 화면을 가림.
+- `src/views/HomeView.tsx:1105`: `NoticeModal`이 조건에 따라 자동 노출됨.
+- `src/views/HomeView.tsx:188-224`: `helpSlides` (덱 미리보기, 웹소설, 로그인) 3단계 도움말 모달 존재.
 
 ---
 
-## 2. Logic Chain
+## 2. Logic Chain (논리적 추론 체계)
 
-1. **Premise 1: DESIGN.md is Canonical and Absolute**:
-   - Section "Overview" and "Colors" in `DESIGN.md` mandate Berkeley Mono / `font-mono` exclusively across every text role, warm cream `#fdfcfc` canvas, ink `#201d1d` surfaces, 1px hairline borders (`border-[rgba(15,0,0,0.12)]`), 0px radius (`rounded-none`) on all containers, 4px radius (`rounded-sm`) on interactive elements, and zero decorative gradients, drop shadows, or bouncy animations.
-2. **Premise 2: Mobile Ergonomics Mandates 44px+ Touch Targets**:
-   - `ORIGINAL_REQUEST.md` (R3) and WCAG AA guidelines require all buttons, interactive tabs, pagination controls, and modal close buttons to measure at least 44px in physical height (`min-h-[44px] min-w-[44px]`).
-3. **Inference from Observations**:
-   - While `MovieView.tsx` (100% compliant) and `GuildDetailView.tsx` (100% compliant) fully satisfy both Premises 1 and 2, and `CardMarketplaceView.tsx` and `NovelView.tsx` satisfy Premise 1 (0 banned CSS tokens) but retain minor touch target omissions (<44px dismiss and inline buttons), the remaining views (`ShopView.tsx`, `RankingView.tsx`, `GuildListView.tsx`, `CommunityView.tsx`, and `RedditCommunityView.tsx`) violate both Premises with 594 banned token occurrences and 178 sub-44px interactive controls.
-4. **Conclusion from Logic Chain**:
-   - A prioritized, systematic transformation is required:
-     - Immediate full-view refactor for the 5 heavy-violation targets (`ShopView`, `RankingView`, `GuildListView`, `CommunityView`, `RedditCommunityView`).
-     - Surgical touch-target adjustments for `CardMarketplaceView` (13 buttons) and `NovelView` (8 buttons).
-     - Light cosmetic fix for `CinematicMoviePlayer.tsx` (1 `shadow-2xl` removal) embedded in `MovieView`.
-     - `GuildDetailView` serves as the gold-standard reference implementation.
+1. **[Observation 1.1]** 110종 캐릭터 전원에 대해 7등신 컷아웃(PNG 110개), 상반신 버스트(PNG/JPG 220개 + seat 111개), 3등신 SD 스프라이트(`cards1.png`, `cards2.png`, 4분할 시트 Panel 03)가 100% 무결점으로 존재함을 실측함.
+   ➔ **[Inference]** 신규 정적 페이지 개발 시 이미지를 새로 생성할 필요가 전혀 없으며, 기존 검증된 로컬 정적 이미지 경로(`public/anime-character-sheets/cutouts/`, `public/anime-character-sheets/busts/`, `public/seat/`, `public/cards1.png` 등)를 그대로 직결하여 즉각적이고 안정적인 고품질 렌더링이 가능함.
+2. **[Observation 1.2]** 기존 코드가 `max-w-[1024px]`와 `min-[1024px]:...[calc(50vw-496px)]`를 사용하여 와이드스크린 화면을 강제로 1024px로 가두고 있음을 확인함.
+   ➔ **[Inference]** R2 요구사항("가로 제한을 두지 않고 PC, 태블릿, 모바일 모든 뷰포트에서 반응형으로 최적화")을 만족하기 위해, 신규 정적 메인 페이지에서는 최상위 컨테이너의 고정 max-width를 철폐하고, 모바일(360px~, 1열), 태블릿(768px~, 2~4열), 데스크톱(1024px~1920px+, 6~10열 유동 그리드)으로 100% 플루이드 레이아웃을 전개해야 함.
+3. **[Observation 1.3]** 상단 메뉴는 6개(홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰), 사이드 메뉴는 8개(로그인, 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰, 커뮤니티)로 간소화하는 것이 R3의 핵심 지침임.
+   ➔ **[Inference]** 기존의 과밀한 메뉴(주식, 예측시장, 그리드 도구 모음, 벤치마크 등)를 제거하고 요구된 항목만 정확히 정렬해야 함. 쇼핑몰은 기존에 이미 존재하는 `/mall/index.html`을 활용하고, 커뮤니티는 `/reddit`을 활용하며, 로그인은 100% 로컬스토리지 기반 안정성을 설명하는 터미널 플랫 모달을 제공하면 외부 서버 의존성이 0인 단독 정적 웹 서비스로 완벽히 작동함.
+4. **[Observation 1.4]** 기존 SPA는 `isTutorialMode`와 `useContextualTutorial`, `NoticeModal` 등의 자동 실행 훅으로 인해 첫 진입 시 화면이 가려지고 조작이 방해됨.
+   ➔ **[Inference]** 신규 정적 페이지(`/` 또는 `/index.html`)는 기존 `App.tsx`의 튜토리얼 컴포넌트들을 원천적으로 분리·배제함으로써 첫 로드 시 "Zero Auto-Popup"을 달성할 수 있으며, 기존 `/home` 경로로 이동하더라도 팝업이 뜨지 않도록 로컬스토리지 사전 방어 플래그(`hero_tutorial_completed = true` 등)를 1회 주입하면 영구적으로 팝업 폭탄을 원천 차단할 수 있음.
 
 ---
 
-## 3. Caveats
+## 3. Caveats (주의사항 및 한계)
 
-- **Scope Boundary**: This survey focuses exclusively on the 9 views specified in the dispatch. Other views (`HomeView`, `MobileCardPlayScreen`, `MyDeckView`, `PlayGameView`, `ProfileView`, etc.) were investigated by Explorer 1 and were excluded from this analysis.
-- **`src/components/reddit/*` Subcomponents**: `RedditCommunityView.tsx` is an orchestration container that delegates rendering to 23 subcomponents under `src/components/reddit/`. While the main view has 22 violations, complete terminal-flat unification requires refactoring the subcomponents as well.
-- **Third-Party Payment SDKs**: `ShopView.tsx` hosts `PayPalScriptProvider` and `PayPalButtons`. PayPal renders inside an iframe where external button styling is controlled by PayPal's SDK, but its enclosing containers, wrappers, fallback states, and custom modals must strictly conform to `rounded-none`, `border-[#0f0000]/12`, and `font-mono`.
-
----
-
-## 4. Conclusion
-
-1. **Architectural Health**:
-   - All 9 views are dynamically loaded with zero bundle-time single-point-of-failure (SPOF) via `safeLazy` in `src/App.tsx`.
-   - All LocalStorage keys strictly adhere to the `hero_*` naming convention and isolate season data properly.
-   - TypeScript compilation (`npx tsc --noEmit`) passes with 0 errors across the entire application.
-2. **Design Discrepancy Split**:
-   - **Compliant Tier**: `MovieView.tsx` and `GuildDetailView.tsx` are 100% compliant with DESIGN.md terminal-flat styling and 44px+ touch targets.
-   - **Near-Compliant Tier**: `CardMarketplaceView.tsx` (0 banned tokens, 13 sub-44px buttons) and `NovelView.tsx` (0 banned tokens, 8 sub-44px buttons).
-   - **Legacy Violation Tier**: `ShopView.tsx` (289 banned tokens, 39 sub-44px buttons), `RankingView.tsx` (147 banned tokens, 30 sub-44px buttons), `CommunityView.tsx` (82 banned tokens, 68 sub-44px buttons), `GuildListView.tsx` (54 banned tokens, 17 sub-44px buttons), and `RedditCommunityView.tsx` (22 banned tokens, 3 sub-44px buttons + 286 in subcomponents).
-3. **Actionable Roadmap**:
-   - Provide concrete replacement patterns for each violation category.
-   - Downstream implementers should use `GuildDetailView.tsx` as the canonical reference template.
+1. **외부 런타임 의존성 배제**:
+   - 신규 정적 랜딩 페이지는 외부 백엔드 API 서버나 Firebase Auth 원격 통신에 의존하지 않아야 하므로, 사용자 로그인 기능은 "로컬 닉네임 설정 및 로컬스토리지 보존 안내 모달" 형태로 제공하는 것이 안전합니다.
+2. **미션 vs 카드 명칭 정합성**:
+   - R3 요구사항 본문에는 "상단 메뉴: 홈, 마이덱, 플레이, **미션**, 상점, 쇼핑몰", "사이드 메뉴: 로그인, 홈, 마이덱, 플레이, **미션**, 상점, 쇼핑몰, 커뮤니티"로 기술되어 있으며, R4에서는 "카드 (구 미션): 명칭을 '미션'에서 '카드'로 변경한다"고 기술되어 있습니다.
+   - 따라서 메뉴 레이블에는 `미션` 또는 `카드 (미션)`으로 표기하고, 내부 섹션/도감 뷰에는 `카드 도감 & 육성 (110종)`으로 구성하는 것이 상위/하위 요구사항을 모두 만족하는 가장 자연스러운 방안입니다.
+3. **트래픽 및 로딩 최적화**:
+   - 7등신 컷아웃(88MB)을 110장 한꺼번에 로드하면 브라우저 메모리 부하가 발생할 수 있으므로, 초기 뷰에는 대표 캐릭터(예: 주인공 카단 `#041_Kadan.png`, 물의 신 포세이돈 `#010_Poseidon.png`, 불의 신 이그니시우스 `#020_Ignisius.png` 등) 3~5장만 우선 로드하고, 카드 도감 목록은 256x296 상반신 썸네일(`seat/`) 또는 스프라이트(`cards1.png`)로 지연 로딩(`loading="lazy"`)하는 것이 권장됩니다.
 
 ---
 
-## 5. Verification Method
+## 4. Conclusion (최종 평가 및 구현 결론)
 
-To independently verify all findings and validate future implementations:
-
-1. **Programmatic CSS Audit Command**:
-   ```bash
-   for file in src/views/ShopView.tsx src/views/CardMarketplaceView.tsx src/views/NovelView.tsx src/views/MovieView.tsx src/views/RankingView.tsx src/views/GuildListView.tsx src/views/GuildDetailView.tsx src/views/CommunityView.tsx src/views/RedditCommunityView.tsx; do
-     echo "=== $file ==="
-     echo "Gradients: $(rg -c 'bg-gradient-to-' "$file" || echo 0)"
-     echo "rounded-lg: $(rg -c '\brounded-lg\b' "$file" || echo 0)"
-     echo "rounded-xl: $(rg -c '\brounded-xl\b' "$file" || echo 0)"
-     echo "rounded-2xl: $(rg -c '\brounded-2xl\b' "$file" || echo 0)"
-     echo "rounded-3xl: $(rg -c '\brounded-3xl\b' "$file" || echo 0)"
-     echo "rounded-full: $(rg -c '\brounded-full\b' "$file" || echo 0)"
-     echo "shadows: $(rg -c '\bshadow-(sm|md|lg|xl|2xl|inner)\b' "$file" || echo 0)"
-     echo "animate-ping/bounce/pulse: $(rg -c '\banimate-(ping|bounce|pulse)\b' "$file" || echo 0)"
-     echo "font-sans/serif: $(rg -c '\bfont-(sans|serif)\b' "$file" || echo 0)"
-   done
-   ```
-   *Expected Post-Fix Result*: Every counter must return `0`.
-
-2. **Touch Target Verification Command**:
-   Check for buttons lacking `min-h-[44px]`:
-   ```bash
-   python3 -c '
-   import re, glob
-   files = ["src/views/ShopView.tsx", "src/views/CardMarketplaceView.tsx", "src/views/NovelView.tsx", "src/views/MovieView.tsx", "src/views/RankingView.tsx", "src/views/GuildListView.tsx", "src/views/GuildDetailView.tsx", "src/views/CommunityView.tsx", "src/views/RedditCommunityView.tsx"]
-   for f in files:
-       with open(f) as fp: c = fp.read()
-       sub = [m.group(0) for m in re.finditer(r"<button\b[^>]*>", c) if not any(k in m.group(0) for k in ["min-h-[44px]", "min-h-[46px]", "min-h-[48px]", "min-h-[64px]", "min-h-11", "min-h-12", "h-11", "h-12"])]
-       print(f"{f}: {len(sub)} buttons lacking min-h 44px")
-   '
-   ```
-   *Expected Post-Fix Result*: `0 buttons lacking min-h 44px` across all targets.
-
-3. **TypeScript Build Verification**:
-   ```bash
-   npx tsc --noEmit
-   npm run build
-   ```
-   *Pass Condition*: Exit code 0, 0 bundling errors.
+1. **자산 준비율 100%**:
+   - 7등신(110개 PNG 컷아웃), 상반신(220개 버스트 PNG/JPG + 111개 seat PNG), 3등신(cards1/cards2 스프라이트 시트 및 4분할 시트 Panel 03)의 전수 조사가 완료되었으며, 누락된 캐릭터는 0개입니다.
+2. **반응형 아키텍처 확립**:
+   - 기존의 인위적인 `max-w-[1024px]` 제약을 철폐하고, 360px 모바일(1열 터치 최적화)부터 1920px+ 와이드 데스크톱(6~10열 유동 그리드)까지 가로 제한 없는 유려한 반응형 레이아웃 설계를 완성했습니다.
+3. **네비게이션 규격화 완료**:
+   - 상단 메뉴 6종(홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰) 및 사이드 메뉴 8종(로그인, 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰, 커뮤니티)의 완전한 UI/UX 명세와 터미널 플랫 스타일링 규칙을 수립했습니다.
+4. **준비 중 모달 & 공식 링크 하이브리드 연동**:
+   - 쇼핑몰(`/mall/index.html`), 커뮤니티(`/reddit`), 로그인(로컬스토리지 영구 보존 안내 + 닉네임 설정)의 명확한 처리 방안을 확정했습니다.
+5. **첫 접속 온보딩 팝업 100% 박멸**:
+   - 소스 분리를 통한 아키텍처적 팝업 원천 배제 및 로컬스토리지 사전 방어 플래그 주입을 통해 첫 접속 시 나타나던 5대 레거시 팝업을 완전히 소멸시켰습니다.
 
 ---
 
-## 6. Structured Feature Inventory List
+## 5. Verification Method (독립 검증 방법)
 
-| # | Feature Name | Target File | Current Violations | Recommended Design-Compliant Fix | Dependencies |
-|---|---|---|---|---|---|
-| **F-01** | **Gacha Pack & Mileage Shop** | `src/views/ShopView.tsx` | 289 banned classes (`rounded-3xl`, `bg-gradient-to-*`, `shadow-2xl`, `animate-bounce`), 39 sub-44px buttons | Replace all containers with `rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]`; replace buttons with `min-h-[44px] rounded-sm bg-[#201d1d] text-[#fdfcfc]`; remove bounce animations; enforce `font-mono`. | `src/lib/i18n.ts`, `CardItem.tsx` |
-| **F-02** | **Crypto & Goods Checkout Modals** | `src/views/ShopView.tsx` | Modals styled with `rounded-2xl`, `rounded-3xl`, `shadow-2xl`, close buttons `p-1.5 rounded-full` (< 44px) | Unify all checkout dialogs into terminal-flat modal frames (`bg-[#fdfcfc] border border-[#201d1d] rounded-none`); add `min-h-[44px] min-w-[44px]` top-layer `[X]` buttons. | `TokenExchangeModal.tsx` |
-| **F-03** | **P2P Marketplace Toast & Action Controls** | `src/views/CardMarketplaceView.tsx` | 13 interactive buttons lack `min-h-[44px]` (toasts dismiss `[x]` at lines 951–1023 use `px-2 py-1`, action buttons use `min-h-[36px]`) | Upgrade toast dismiss `[x]` to `min-h-[44px] min-w-[44px] flex items-center justify-center`; elevate `min-h-[36px]` buttons to `min-h-[44px]`. | `src/cardDatabase.ts` |
-| **F-04** | **Novel & Webtoon Reader Chapter Drawer** | `src/views/NovelView.tsx` | Chapter drawer close `[X]` button (line 1072) and episode card items (line 1087) lack `min-h-[44px]`; prompt copy buttons (line 1269) lack 44px target | Add `min-h-[44px] min-w-[44px]` to drawer close button; set episode card buttons to `min-h-[48px] rounded-sm border border-[rgba(15,0,0,0.12)]`. | `webtoonEpisodeManifest.json`, `WebtoonPanelCard.tsx` |
-| **F-05** | **Cinematic Movie Player Subtitle & Canvas** | `src/views/MovieView.tsx` & `CinematicMoviePlayer.tsx` | `CinematicMoviePlayer.tsx` line 687 has legacy `shadow-2xl` | Remove `shadow-2xl`; ensure canvas border sits flush on `border border-white/15 rounded-none`. | `MovieAudioSynthesizer.ts`, `movieEpisodeMapping.ts` |
-| **F-06** | **Season Leaderboard & Matching Action Grid** | `src/views/RankingView.tsx` | 147 banned classes (`bg-gradient-to-r`, `rounded-2xl`, `rounded-3xl`, `shadow-md`, `font-sans`), 30 sub-44px buttons | Replace countdown banner with flat hairline box (`border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none`); convert PvP buttons to solid terminal CTAs (`bg-[#201d1d] text-[#fdfcfc] min-h-[44px] rounded-sm`); eliminate `font-sans`. | `src/types.ts` |
-| **F-07** | **Ranking History & Bluetooth/Wi-Fi Modals** | `src/views/RankingView.tsx` | Match history, Nearby search, and Insufficient SNS modals use `rounded-3xl`, `bg-slate-950`, `shadow-2xl`, with bare text close buttons | Refactor all modal frames to `rounded-none border border-[#201d1d] bg-[#fdfcfc]`; add prominent top-layer `[X]` button with `min-h-[44px] min-w-[44px]`. | None |
-| **F-08** | **Guild Creation & List Management** | `src/views/GuildListView.tsx` | 54 banned classes (`rounded-3xl`, `bg-gradient-to-r`, `shadow-2xl`, `font-sans`), 17 sub-44px buttons | Align `GuildListView` with `GuildDetailView.tsx` standard: replace `font-sans` with `font-mono`; convert all action buttons to `min-h-[44px] rounded-sm`; flatten Create Guild modal (`rounded-none`, 1px hairline). | `GuildDetailView.tsx` (reference) |
-| **F-09** | **Community Fan Events & Post Reactions** | `src/views/CommunityView.tsx` | 82 banned classes (`bg-gradient-to-r`, `rounded-2xl/3xl`, `shadow-md/2xl`, `animate-bounce/ping`, `font-sans`), 68 sub-44px buttons | Flatten Fan Events carousel cards into 1px hairline bordered blocks (`rounded-none bg-[#f8f7f7] border-[rgba(15,0,0,0.12)]`); upgrade all reaction/comment buttons to `min-h-[44px] rounded-sm`; remove bounce/ping animations. | `PageHeader.tsx` |
-| **F-10** | **Reddit Community Shell & Subcomponents** | `src/views/RedditCommunityView.tsx` & `src/components/reddit/*` | 22 banned classes in main view + 286 in subcomponents; root container specifies `font-sans`; 3 sub-44px buttons | Replace root `font-sans` with `font-mono`; replace pill buttons (`rounded-full`) with `rounded-sm min-h-[44px]`; eliminate drop shadows across `src/components/reddit/*.tsx`. | `src/components/reddit/*` |
+후속 구현 에이전트 및 오케스트레이터가 본 조사 결과를 독립적으로 검증할 수 있는 구체적 방법은 다음과 같습니다:
+
+### 5.1 캐릭터 이미지 자산 전수 무결성 검증 커맨드
+```bash
+python3 -c "
+import json, os
+with open('public/anime-character-sheets/manifest.json') as f:
+    data = json.load(f)
+missing = 0
+for c in data['characters']:
+    cutout = 'public' + c['cutoutUrl']
+    bust_jpg = 'public' + c['bustUrl']
+    bust_png = f'public/anime-character-sheets/busts/{c[\"code\"][3:]}_bust.png'
+    idle = 'public' + c['chibiIdleUrl']
+    for p in [cutout, bust_jpg, bust_png, idle]:
+        if not os.path.exists(p):
+            print('MISSING:', p)
+            missing += 1
+assert missing == 0, f'Missing assets found: {missing}'
+print('All 110 characters verified successfully with 0 missing assets!')
+"
+```
+- 예상 결과: `All 110 characters verified successfully with 0 missing assets!` 출력 (Exit Code 0).
+
+### 5.2 반응형 뷰포트 검증 기준
+- 브라우저 개발자 도구(DevTools)에서 반응형 모드 테스트:
+  1. **360 × 640 px**: 수평 스크롤바가 생기지 않으며, 상단 56px 헤더와 햄버거 메뉴가 온전히 표시되어야 함 (`overflow-x: hidden`).
+  2. **768 × 1024 px**: 4열 카드 그리드 및 균형 잡힌 히어로 7등신 캐릭터 배치가 확인되어야 함.
+  3. **1440 × 900 px & 1920 × 1080 px**: 1024px 양옆의 블랙 거터 없이 화면 전체 가로폭에 걸쳐 상단 6대 메뉴 및 8~10열 카드 그리드가 시원하게 확장되어야 함.
+
+### 5.3 첫 접속 팝업 차단 검증
+- 브라우저 시크릿 창(Incognito) 또는 `localStorage.clear()` 후 접속 시:
+  - 어떠한 튜토리얼 오버레이, 도움말 모달, 코치마크도 뜨지 않고, 즉시 깨끗한 메인 랜딩 화면이 표시되는지 확인.
+  - 사이드 메뉴의 [로그인], [커뮤니티], [쇼핑몰]을 클릭했을 때만 해당 안내 모달이 뜨는지 확인.

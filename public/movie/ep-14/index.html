@@ -30,6 +30,37 @@
         return false;
       }
     </script>
+    <!-- Early Client-Side Hash Normalizer & Legacy Route Interceptor -->
+    <script>
+      (function() {
+        try {
+          var pathname = (window.location.pathname || '').replace(/\/$/, '').toLowerCase() || '/';
+          var hash = window.location.hash;
+          var legacyMap = {
+            '/home': '#home',
+            '/main-lobby': '#home',
+            '/deck': '#deck',
+            '/mydeck': '#deck',
+            '/play': '#play',
+            '/main': '#play',
+            '/card': '#card',
+            '/cards': '#card',
+            '/mission': '#card',
+            '/missions': '#card',
+            '/shop': '#shop'
+          };
+          if (legacyMap[pathname] && (!hash || hash === '#' || hash === '#/')) {
+            window.location.replace('/' + legacyMap[pathname]);
+          } else if (!hash || hash === '#' || hash === '#/') {
+            if (window.history && window.history.replaceState) {
+              window.history.replaceState({ view: 'home' }, '', '#home');
+            }
+          }
+        } catch (e) {
+          console.warn('[RouteNormalizer] Early normalization warning:', e);
+        }
+      })();
+    </script>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -58,7 +89,7 @@
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://snshero.com/" />
+    <meta property="twitter:url" content="https://snshero.com/home" />
     <meta property="twitter:title" content="애니메이션 제14화: 안개 호수의 손님들 (Guests of the Mist Lake) | 눈히어로.com - 카단의 여정 공식 애니메이션 40화 - 눈히어로.com" />
     <meta property="twitter:description" content="[눈히어로.com - 카단의 여정 공식 애니메이션 40화 제14화 - 안개 호수의 손님들] 물안개 짙은 호숫가에 나타난 이계의 정령사들. 수면 위에 비친 미래의 환영은 대륙을 집어삼킬 거대한 심연의 도래를 경고한다. 주요 영웅: 카단, 실리아, 카제, 아쿠아리스. 유튜브 무료 스트리밍 시청 시 +100 SNS 게임 재화 즉시 지급! (Mystic elementalists arrive across the mirror-like waters of the Mist Lake, unveiling harrowing omens of a continent-consuming void.)" />
     <meta property="twitter:image" content="https://i.ytimg.com/vi/bPuvNORsLOI/maxresdefault.jpg" />
@@ -74,9 +105,13 @@
       "alternateName": ["눈히어로.com", "SNSHero.com", "눈히어로.com - 카단의 여정", "SNSHero.com - Kadan's Journey"],
       "url": "https://snshero.com",
       "logo": "https://snshero.com/logo.png",
-      "description": "복잡한 설치나 가입 없이 웹 브라우저에서 즉시 즐기는 원클릭 AI 웹 카드 게임 눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 공식 플랫폼입니다.",
+      "description": "복잡한 설치나 가입 없이 웹 브라우저에서 즉시 즐기는 원클릭 AI 웹 카드 게임 눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 공식 플랫폼입니다. 네이버 웹소설, 네이버 웹툰, 문피아 웹소설에서 공식 판타지 세계관을 연재합니다.",
       "sameAs": [
         "https://snshero.com",
+        "http://novel.naver.com/challenge/list?novelId=1250635",
+        "https://novel.naver.com/challenge/list?novelId=1250635",
+        "https://comic.naver.com/challenge/list?titleId=856677",
+        "https://nlink.munpia.com/link/munpia/novel/616551",
         "https://www.youtube.com/@snshero",
         "https://www.youtube.com/playlist?list=PLV8H2-pD9vH0",
         "https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d",
@@ -102,6 +137,24 @@
           "name": "SNSHero.com 게임 플레이",
           "description": "설치나 가입 없이 클릭 한 번으로 즐기는 원클릭 AI 웹 카드 배틀 게임",
           "url": "https://snshero.com/"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "name": "네이버 웹소설 - 눈히어로.com - 카단의 여정",
+          "description": "네이버 웹소설 챌린지리그에서 연재 중인 《눈히어로.com - 카단의 여정》 공식 판타지 웹소설",
+          "url": "http://novel.naver.com/challenge/list?novelId=1250635"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "name": "네이버 웹툰 - 눈히어로.com - 카단의 여정",
+          "description": "네이버 웹툰 도전만화에서 연재 중인 《눈히어로.com - 카단의 여정》 공식 풀컬러 판타지 웹툰",
+          "url": "https://comic.naver.com/challenge/list?titleId=856677"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "name": "문피아 웹소설 - 눈히어로.com - 카단의 여정",
+          "description": "문피아에서 공식 연재 중인 《눈히어로.com - 카단의 여정》 정통 모험 판타지 웹소설",
+          "url": "https://nlink.munpia.com/link/munpia/novel/616551"
         },
         {
           "@type": "SiteNavigationElement",
@@ -186,65 +239,164 @@
         {
           "@type": "ListItem",
           "position": 3,
+          "name": "네이버 웹소설 - 눈히어로.com - 카단의 여정",
+          "url": "http://novel.naver.com/challenge/list?novelId=1250635",
+          "description": "네이버 웹소설 챌린지리그 공식 연재 (novelId=1250635)"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "네이버 웹툰 - 눈히어로.com - 카단의 여정",
+          "url": "https://comic.naver.com/challenge/list?titleId=856677",
+          "description": "네이버 웹툰 도전만화 공식 풀컬러 연재 (titleId=856677)"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "문피아 웹소설 - 눈히어로.com - 카단의 여정",
+          "url": "https://nlink.munpia.com/link/munpia/novel/616551",
+          "description": "문피아 공식 판타지 웹소설 연재 (novel/616551)"
+        },
+        {
+          "@type": "ListItem",
+          "position": 6,
           "name": "SNSHero.com AI Studio",
           "url": "https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d",
           "description": "Google AI Studio 앱 프로젝트"
         },
         {
           "@type": "ListItem",
-          "position": 4,
+          "position": 7,
           "name": "SNSHero.com 소스파일 (GitHub)",
           "url": "https://github.com/Dayyoung/snshero",
           "description": "GitHub 오픈소스 리포지토리 전체 코드"
         },
         {
           "@type": "ListItem",
-          "position": 5,
+          "position": 8,
           "name": "SNSHero.com 개발 프롬프트 (snshero.md)",
           "url": "https://snshero.com/snshero.md",
           "description": "AI 에이전트 개발 프롬프트 및 시스템 지침 전문"
         },
         {
           "@type": "ListItem",
-          "position": 6,
+          "position": 9,
           "name": "SNSHero.com 유튜브 채널 (@snshero)",
           "url": "https://www.youtube.com/@snshero",
           "description": "공식 유튜브 채널 개발 및 게임 플레이 영상"
         },
         {
           "@type": "ListItem",
-          "position": 7,
+          "position": 10,
           "name": "실시간 구글 뉴스룸 (/reddit)",
           "url": "https://snshero.com/reddit",
           "description": "구글 실시간 글로벌 뉴스 큐레이션 및 커뮤니티"
         },
         {
           "@type": "ListItem",
-          "position": 8,
+          "position": 11,
           "name": "마이덱 빌더 (/deck)",
           "url": "https://snshero.com/deck",
           "description": "110종 카드 덱 편성 및 성장"
         },
         {
           "@type": "ListItem",
-          "position": 9,
+          "position": 12,
           "name": "배틀 아레나 (/play)",
           "url": "https://snshero.com/play",
           "description": "실시간 DDA AI 카드 전투 및 110개 미니게임 아케이드"
         },
         {
           "@type": "ListItem",
-          "position": 10,
+          "position": 13,
           "name": "카드 상점 (/shop)",
           "url": "https://snshero.com/shop",
           "description": "최대 100회 무료 뽑기 및 상점"
         },
         {
           "@type": "ListItem",
-          "position": 11,
+          "position": 14,
           "name": "SHBP AI 벤치마크 (/bench)",
           "url": "https://snshero.com/bench",
           "description": "공식 AI 1시간 자율 플레이 벤치마크 플랫폼"
+        }
+      ]
+    }
+    </script>
+
+    <!-- 1-3. BookSeries & ComicSeries (SEO / AEO / GEO: Official Naver Web Novel, Naver Webtoon & Munpia Serialization) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": ["BookSeries", "CreativeWorkSeries"],
+          "@id": "https://snshero.com/novel#bookseries",
+          "name": "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 공식 웹소설",
+          "alternateName": ["눈히어로.com - 카단의 여정", "SNSHero.com - Kadan's Journey", "카단의 여정 웹소설", "눈히어로 웹소설"],
+          "url": "https://snshero.com/novel",
+          "image": "https://snshero.com/book/kadan_novel_cover.jpg",
+          "genre": ["Fantasy", "Adventure", "Game Fantasy", "판타지 웹소설", "모험 판타지"],
+          "inLanguage": ["ko", "en"],
+          "numberOfEpisodes": 40,
+          "author": {
+            "@type": "Organization",
+            "name": "눈히어로.com (SNSHero.com)",
+            "url": "https://snshero.com"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "눈히어로.com (SNSHero.com)",
+            "url": "https://snshero.com"
+          },
+          "description": "평범하고 우직한 청년 카단이 아케인 대륙의 11개 종족을 모험하며 힘을 일깨우고 위대한 영웅으로 거듭나는 40부작 정통 모험 판타지 웹소설. 네이버 웹소설, 문피아 웹소설 및 눈히어로.com에서 공식 연재 중입니다.",
+          "sameAs": [
+            "http://novel.naver.com/challenge/list?novelId=1250635",
+            "https://novel.naver.com/challenge/list?novelId=1250635",
+            "https://nlink.munpia.com/link/munpia/novel/616551",
+            "https://snshero.com/novel",
+            "https://snshero.com/book"
+          ],
+          "workExample": [
+            {
+              "@type": "WebPage",
+              "name": "네이버 웹소설 - 눈히어로.com - 카단의 여정",
+              "url": "http://novel.naver.com/challenge/list?novelId=1250635",
+              "publisher": { "@type": "Organization", "name": "네이버 웹소설 (Naver Web Novel)" }
+            },
+            {
+              "@type": "WebPage",
+              "name": "문피아 웹소설 - 눈히어로.com - 카단의 여정",
+              "url": "https://nlink.munpia.com/link/munpia/novel/616551",
+              "publisher": { "@type": "Organization", "name": "문피아 (Munpia)" }
+            }
+          ]
+        },
+        {
+          "@type": ["ComicSeries", "CreativeWorkSeries"],
+          "@id": "https://snshero.com/webtoon#comicseries",
+          "name": "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 공식 웹툰",
+          "alternateName": ["눈히어로.com - 카단의 여정 웹툰", "SNSHero.com - Kadan's Journey Webtoon", "카단의 여정 웹툰", "눈히어로 웹툰"],
+          "url": "https://snshero.com/webtoon",
+          "image": "https://snshero.com/book/kadan_novel_cover.jpg",
+          "genre": ["Fantasy Webtoon", "Action Adventure", "판타지 웹툰", "액션 모험"],
+          "inLanguage": ["ko", "en"],
+          "numberOfEpisodes": 40,
+          "author": {
+            "@type": "Organization",
+            "name": "눈히어로.com (SNSHero.com)",
+            "url": "https://snshero.com"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "네이버 웹툰 (Naver Webtoon) / 눈히어로.com",
+            "url": "https://comic.naver.com/challenge/list?titleId=856677"
+          },
+          "description": "《눈히어로.com - 카단의 여정》 세계관과 110명 영웅들의 서사를 풀컬러로 그린 공식 판타지 웹툰. 네이버 웹툰 도전만화 및 눈히어로.com에서 공식 연재 중입니다.",
+          "sameAs": [
+            "https://comic.naver.com/challenge/list?titleId=856677",
+            "https://snshero.com/webtoon"
+          ]
         }
       ]
     }
@@ -482,6 +634,14 @@
         },
         {
           "@type": "Question",
+          "name": "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 공식 웹소설과 웹툰은 어디에서 연재되나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "눈히어로.com - 카단의 여정 공식 40부작 판타지 웹소설과 웹툰은 눈히어로.com 공식 사이트(https://snshero.com/novel, https://snshero.com/webtoon)뿐만 아니라 네이버 웹소설(http://novel.naver.com/challenge/list?novelId=1250635), 네이버 웹툰(https://comic.naver.com/challenge/list?titleId=856677), 문피아 웹소설(https://nlink.munpia.com/link/munpia/novel/616551)에서 공식 연재되고 있습니다."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "오프라인에서도 플레이할 수 있나요?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -534,46 +694,12 @@
           "position": 6,
           "name": "PWA 오프라인 지원",
           "description": "홈 화면 추가 시 앱처럼 사용, 오프라인 플레이 가능"
-        }
-      ]
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)은 어떤 게임인가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)은 복잡한 가입이나 클라이언트 다운로드 없이 웹 브라우저에서 즉시 즐길 수 있는 원클릭 인공지능(AI) 웹 카드 게임입니다. 110여 종의 다양한 히어로 카드를 수집하고 성장시킬 수 있습니다."
-          }
         },
         {
-          "@type": "Question",
-          "name": "초보자를 위한 혜택이 있나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "신규 유저 구글 계정 연동 시 정착 지원금으로 1,000 SNS 포인트를 즉시 지급해 드리며, 최대 100회 무료 뽑기 혜택을 통해 빠르게 덱을 맞출 수 있습니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "결제 방식은 어떤 것들을 지원하나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "눈히어로.com (SNSHero.com)은 가상 자산 결제를 적극적으로 지원하여 비트코인(BTC), 이더리움(ETH), USDC 등의 암호화폐 결제를 안전하게 연동해 카드 및 아이템 상점에서 이용하실 수 있습니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "모바일에서도 플레이가 가능한가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "네, 눈히어로.com (SNSHero.com)은 PWA(Progressive Web App) 기술이 내장되어 있어 모바일 브라우저에서 '홈 화면에 추가'를 클릭하면 마치 공식 앱스토어에서 내려받은 앱처럼 오프라인 지원 및 최적화된 전체 화면으로 모바일 플레이를 즐기실 수 있습니다."
-          }
+          "@type": "ListItem",
+          "position": 7,
+          "name": "네이버 웹소설·네이버 웹툰·문피아 공식 연재",
+          "description": "네이버 웹소설(novelId=1250635), 네이버 웹툰(titleId=856677), 문피아 웹소설(novel/616551) 공식 연재"
         }
       ]
     }
@@ -680,15 +806,16 @@
         };
       })();
     </script>
-    <script type="module" crossorigin src="/assets/index-CiEXK-FA.js"></script>
+    <script type="module" crossorigin src="/assets/home-DFYkx3rn.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-react-DjkHO9yN.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-misc-DIIx50HL.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-CBml-Qeu.js">
-    <link rel="modulepreload" crossorigin href="/assets/data-i18n-CG0qdi88.js">
+    <link rel="modulepreload" crossorigin href="/assets/types-CGjtCuL_.js">
+    <link rel="modulepreload" crossorigin href="/assets/data-i18n-BQVLhNZr.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-motion-BSWiq6P9.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-icons-DdXMqgLA.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-icons-BZPrGBgY.js">
     <link rel="stylesheet" crossorigin href="/assets/vendor-misc-CIGW-MKW.css">
-    <link rel="stylesheet" crossorigin href="/assets/index-DNvMWNsC.css">
+    <link rel="stylesheet" crossorigin href="/assets/home-BXUFzXTo.css">
   
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -1051,6 +1178,18 @@
           <li>
             <h3><a href="https://snshero.com/snshero.md">SNSHero.com 개발 프롬프트 (snshero.md)</a></h3>
             <p>SNSHero.com 전체 아키텍처 및 AI 에이전트 페어 프로그래밍을 위한 종합 마스터 프롬프트 및 시스템 지침 문서 전문.</p>
+          </li>
+          <li>
+            <h3><a href="http://novel.naver.com/challenge/list?novelId=1250635" target="_blank" rel="noopener">네이버 웹소설 - 눈히어로.com - 카단의 여정</a></h3>
+            <p>네이버 웹소설 챌린지리그에서 공식 연재 중인 《눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)》 40부작 판타지 웹소설 (novelId=1250635).</p>
+          </li>
+          <li>
+            <h3><a href="https://comic.naver.com/challenge/list?titleId=856677" target="_blank" rel="noopener">네이버 웹툰 - 눈히어로.com - 카단의 여정</a></h3>
+            <p>네이버 웹툰 도전만화에서 공식 연재 중인 《눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)》 풀컬러 판타지 웹툰 (titleId=856677).</p>
+          </li>
+          <li>
+            <h3><a href="https://nlink.munpia.com/link/munpia/novel/616551" target="_blank" rel="noopener">문피아 웹소설 - 눈히어로.com - 카단의 여정</a></h3>
+            <p>문피아(Munpia)에서 공식 연재 중인 《눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)》 정통 모험 판타지 웹소설 (novel/616551).</p>
           </li>
           <li>
             <h3><a href="https://www.youtube.com/@snshero" target="_blank" rel="noopener">SNSHero.com 유튜브 채널 (@snshero)</a></h3>

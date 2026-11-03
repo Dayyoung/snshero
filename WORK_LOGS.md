@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 15:43 KST] [110종 전체 카드 수정 상반신(Bust) 즉시 반영 & 캐시 무효화, #deck 영웅 교체 기능 고도화, #play 3x3 카드 배틀 모바일 팝업화·하단 원본 카드 디자인 유지·대사창 버튼/캐릭터 위치 고정]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 110종 전체 카드 이미지 수정 상반신(Bust) 전수 적용 및 브라우저/서비스워커 캐시 즉시 갱신**:
+    - `scripts/build_110_anime_character_sheets.py`의 `CUSTOM_BUST_SPECS`를 확장(기존 17종 + `#002, #005, #010, #014, #025, #039(아틀라스), #048, #055(패치워크), #059(켈투스), #061, #062, #065, #066(말퓨온), #069, #086(레오나르), #096(시즈엔진)` 등 총 33종 정밀 보정)하고 `public/anime-character-sheets/busts/{001..110}_bust.png` 및 `.jpg`를 재생성 완료.
+    - `src/landing/components/OriginalCardHtml.ts`, `src/landing/views/PlaySection.tsx`, `src/content/cardImageVariants.ts`의 상반신 이미지 렌더링 경로에 `?v=20261103v4` 캐시 버스팅 쿼리를 적용하고, `public/sw.js`를 `snshero-media-v10-busts20261103` 및 Network-First 전략으로 업데이트하며 `src/landing/index.ts` 마운트 시 구버전 미디어 캐시를 즉시 삭제하도록 처리.
+  - **2. `#deck` 영웅 교체 기능 완벽 동작 (`MyDeckSection.tsx`, `index.ts`)**:
+    - `renderDeckSwapDrawer`에서 보유 카드가 기본 5장(`[1..5]`)일 때도 다른 슬롯과 즉시 위치를 바꿀 수 있는 `[⇄ SLOT 0X과 위치 맞교환]` 버튼을 제공하고, 동시에 110종 전체 영웅 도감에서 원하는 영웅을 바로 선택해 즉시 보유 등록 및 해당 슬롯에 장착(`[이 영웅으로 교체 (EQUIP) →]`)할 수 있도록 개선.
+  - **3. `#play` 3x3 카드 배틀 모바일/데스크톱 팝업 모달화 및 하단 핸드 카드 원본 TCG 디자인 적용 (`PlaySection.tsx`)**:
+    - 3x3 카드 배틀 스테이지(`playRpgState.subState === 'battle'`)를 전체화면 팝업 모달(`id="play-battle-modal-root"`, `fixed inset-0 z-50`)로 전환하고, 상단 스테이지 바에 `[⚔️ 3x3 카드 배틀]` 즉시 실행 버튼을 추가하여 모바일 화면에서도 스크롤 없이 카드 배틀이 즉시 팝업으로 표시되도록 개선.
+    - 카드 배틀 하단 플레이어 핸드 카드 5장을 간소화 버튼 대신 `renderOriginalCardHtml` 원본 TCG 카드 디자인(메탈 베젤, 등급 배지, 레벨, TP, 상반신 일러스트, 4방향 스탯, 파워 게이지, 스킬 배지) 그대로 렌더링.
+  - **4. `#play` 대사 진행 시 캐릭터 및 버튼 위치 100% 고정 (`PlaySection.tsx`)**:
+    - 대사 모달(`id="play-dialogue-modal-root"`)의 상단 캐릭터 초상화 위치와 상/하단 조작 버튼(`건너뛰기 ▶`, `✕ 닫기`, `다음 대화 ▶`, `⚔️ 전투 시작 ▶`)의 화면 좌표를 고정(`h-[350px] sm:h-[370px] flex flex-col justify-between`)하고, 내부 대사상자(`#100d0d` 말풍선)만 대사 길이에 맞춰 동적으로 높이(`h-auto`)가 변하도록 개선.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (4,357개 모듈 변환, 0 errors)
+  - 로컬 git 커밋: 완료 (git push 미실행 준수)
+  - 구글 폼 보고서 제출: 완료
+
 ## [2026-11-03 15:35 KST] [#deck 카드 교체 TypeError 수정 및 #book 카카오페이지/리디북스 링크 제거]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

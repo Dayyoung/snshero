@@ -1,7 +1,7 @@
-# BRIEFING — 2026-10-18T10:19:00Z
+# BRIEFING — 2026-11-02T03:25:00Z
 
 ## Mission
-Conduct an exhaustive visual, architectural, and ergonomics survey across 10 assigned targets (ProfileView, SettingView, SeasonHubView, CompanionView, EventView, StockMarketView, PredictionMarketView, WikiCardView, WorldCodexView, App.tsx chrome) against DESIGN.md, AGENTS.md, and GEMINI.md for the UI/UX terminal-flat overhaul.
+Investigate R4 (Core Screen Sections & Card Nurturing System Transition) across the codebase for the new standalone static landing web service: Home, MyDeck, Play, Card (former Mission with 100-lv nurturing & stat upgrades), and Shop (exact 8 items). Deliver comprehensive survey report and handoff.
 
 ## 🔒 My Identity
 - Archetype: explorer
@@ -11,6 +11,7 @@ Conduct an exhaustive visual, architectural, and ergonomics survey across 10 ass
 - Milestone: Explorer Phase - Asset & Compression Survey
 - Role (2026-10-18T10:12:47Z): Survey Explorer 3 (Progression, Systems, Codex & App Chrome)
 - Current Milestone: UI/UX Terminal-Flat Visual Unification Survey
+- Role (2026-11-02T03:22:13Z): Explorer Survey 3 (R4 Core Screens & Card Nurturing System Transition)
 
 ## 🔒 Key Constraints
 - Read-only investigation — do NOT implement
@@ -18,42 +19,40 @@ Conduct an exhaustive visual, architectural, and ergonomics survey across 10 ass
 - Strict budgets: public/seat/*.png <= 35KB (4KB–35KB), Master sheets <= 800KB, Faction sheets <= 300KB
 - Design compliance: Strict DESIGN.md terminal-flat rules (`font-mono`, `rounded-none` containers, `rounded-sm` buttons, 0 multi-stop gradients, 0 drop shadows, 0 animate-ping/bounce, min-h-[44px] touch targets)
 - Data integrity: 100% localStorage (`hero_*` keys), i18n support, safeLazy glob imports in App.tsx
+- Language constraint: Always reply to user in Korean
 
 ## Current Parent
-- Conversation ID: 3a464f6d-bcf9-4b99-af07-b0e05ceb817a
-- Updated: 2026-10-18T10:12:47Z
+- Conversation ID: 7b342c7a-1d74-43d7-a388-5ffc926b3969
+- Updated: 2026-11-02T03:22:13Z
 
 ## Investigation State
 - **Explored paths**:
-  - `src/views/ProfileView.tsx` (693 lines): 1 gradient, 24 rounded violations (`rounded-3xl/2xl/xl/lg/full`), 21 shadows, 1 `font-sans`, 8 sub-44px buttons, 3 modals.
-  - `src/views/SettingView.tsx` (2322 lines): 5 gradients, 82 rounded violations, 51 shadows, 4 `animate-bounce`, 2 `font-sans`, 3 modals, 1 non-prefixed LS key (`firebase_db_mode`).
-  - `src/views/SeasonHubView.tsx` (1056 lines): 14 gradients, 48 rounded violations, 10 shadows, 14 sub-44px buttons (`w-7 h-7`, `min-h-10 rounded-full`), 1 modal.
-  - `src/views/CompanionView.tsx` (725 lines): 3 gradients, 31 rounded violations, 21 shadows, 1 `font-sans`, 8 sub-44px buttons, 6 modals/overlays.
-  - `src/views/EventView.tsx` (946 lines): 7 gradients, 22 rounded violations, 16 shadows, 3 `font-sans`, 9 sub-44px buttons, 10 modals/overlays.
-  - `src/views/StockMarketView.tsx` (1629 lines): 0 gradients, 0 rounded violations, 0 shadows, 0 animate-ping/bounce, 100% `font-mono`. Exemplary DESIGN.md compliance. Minor touch target improvement on close button.
-  - `src/views/PredictionMarketView.tsx` (1590 lines): 6 gradients, 55 rounded violations, 37 shadows, 3 `animate-bounce`, 1 `font-sans`, 10 modals/overlays.
-  - `src/views/WikiCardView.tsx` (1042 lines): 1 gradient, 23 rounded violations, 12 shadows, 1 `font-sans`, 2 sub-44px buttons, 1 modal.
-  - `src/views/WorldCodexView.tsx` (450 lines): 0 gradients, 5 rounded violations (`rounded-3xl/lg/full`), 1 shadow, 8 sub-44px buttons, 1 modal.
-  - `src/App.tsx` (8343 lines): 17 gradients, 93 rounded violations, 71 shadows, 13 prohibited animations (ping/bounce), 10 `font-sans`, 14 modals/overlays, 1 non-prefixed LS key (`snshero_audio_settings`). 100% `safeLazy` view import compliance.
+  - `src/views/HomeView.tsx` (1165 lines): SnowHero intro, external serial links (Naver Web Novel: novelId=1250635, Naver Webtoon: titleId=856677, Munpia: novel/616551), media lounge shortcuts, logo assets.
+  - `src/views/MyDeckView.tsx` (3783 lines): Active deck 5 cards, `deckPower` (sum of 5 active card powers), `globalTotalPower` (total user power), `getCardPower` formula.
+  - `src/views/NovelView.tsx` (2583 lines) & `src/components/movie/CinematicMoviePlayer.tsx` (1006 lines): TTS speech synthesis, webtoon 40-episode cutscenes (`public/images/webtoon/episode_XX/scene_XX.webp`), narration overlay toggles.
+  - `src/views/PlayGameView.tsx` (18644 lines): Legacy 110 mission games, `hero_card_enhancements` (Lv+1 gacha enhancement), 110 cards collection tracking.
+  - `src/views/ShopView.tsx` (6782 lines): Legacy heavy shop with merchandise, PayPal, crypto, claw machine, and gacha; isolation of exact 8 items needed for R4.
+  - `src/cardDatabase.ts` (148 lines): 110 hero cards across 11 elemental/racial factions, base stats `[top, right, bottom, left]`, rarity tiers.
+  - `src/types.ts` (694 lines): `CardData`, `InventoryRecord`, `OwnedCard`, `Item`, `CardElement`.
+  - `src/constants.ts` (419 lines): `getCardPower` ($n+e+s+w$), `getCardStatWithBonus`.
+  - `src/content/webtoonEpisodeManifest.json`: 40 episodes x 21 cutscenes = 840 scene images.
 - **Key findings**:
-  - `StockMarketView.tsx` is already 100% refactored to DESIGN.md terminal-flat conventions.
-  - 8 views + `App.tsx` contain extensive legacy styling (`bg-gradient-to-*`, `rounded-lg/xl/2xl/3xl/full`, `shadow-*`, `animate-bounce/ping`, `font-sans`).
-  - Help modals across views consistently use sub-44px `w-8 h-8 rounded-full` or `w-7 h-7 rounded-full` close/pagination buttons.
-  - Two localStorage keys violate the `hero_*` rule: `firebase_db_mode` in `SettingView.tsx` and `snshero_audio_settings` in `App.tsx`.
-- **Unexplored areas**: None within the assigned 10 targets.
+  - **Home**: Official serial links for Naver Webtoon, Naver Web Novel, and Munpia are verified with exact URLs; required '절찬 연재중' badge specified.
+  - **MyDeck**: Clean view specification defined — 5-slot card grid, Deck TP ($5 \text{ cards}$ sum), Total TP ($\sum \text{inventory}$), eliminating all legacy modal bloat.
+  - **Play**: Streamlined to 5 buttons only (`[닫기]`, `[이전]`, `[다음]`, `[나레이션]`, `[TTS]`); webtoon image viewer; TTS default OFF (`isTtsEnabled = false`).
+  - **Card (Former Mission)**: Transitioned from game battle to 1-click Nurturing System up to Max Lv 100 ($L \times 100$ EXP formula), granting $+3\text{P}$ stat points per level, Red Dot indicator on unspent points, 4-direction stat allocation ($[+]$ buttons), persisted in `hero_card_nurturing`.
+  - **Shop**: Restricted to EXACT 8 items (일반 카드팩, 매직 카드팩, 희귀 카드팩, 아이템 팩, 광고 제거, 공식 소설, 공식 동영상, 코인 충전), eliminating all other clutter.
+- **Unexplored areas**: None within R4 scope.
 
 ## Key Decisions Made
-- Formulated clear before -> after design token mappings for all identified non-compliant classes.
-- Specified uniform modal structure: `rounded-none`, `border border-[rgba(15,0,0,0.12)]`, `bg-[#fdfcfc]`, `[x]` close button with `min-h-[44px] min-w-[44px]`.
-- Cataloged complete Feature Inventory for implementers.
+- Designed `hero_card_nurturing` schema with full backward-compatibility with `hero_inventory` and `hero_card_enhancements`.
+- Formulated deterministic level-up EXP progression ($\text{EXP}(L) = L \times 100$) and stat allocation mechanism.
+- Created concrete specifications for the 5-button minimal Play screen and exact-8-item Shop.
+- Mapped all 3 external webnovel/webtoon serialization platforms with active '절찬 연재중' badge styling.
 
 ## Artifact Index
 - `DISPATCH.md` — Incoming mission dispatch
 - `BRIEFING.md` — Persistent working memory
 - `progress.md` — Task progress & liveness heartbeat
-- `survey_analyzer.py` — Automated pattern scanner
-- `detail_auditor.py` — Line-by-line violation extractor
-- `touch_target_auditor.py` — Sub-44px touch target analyzer
-- `i18n_auditor.py` — Localization and i18n analyzer
-- `audit_raw_results.txt` — Full line-numbered violation dump
-- `handoff.md` — Comprehensive survey and specification report
+- `survey_report.md` — Comprehensive R4 survey and architectural specification report
+- `handoff.md` — 5-Component Handoff Protocol report for orchestrator and implementers

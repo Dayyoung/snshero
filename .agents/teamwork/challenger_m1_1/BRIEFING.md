@@ -1,7 +1,11 @@
-# BRIEFING — 2026-10-18T02:01:15Z
+# BRIEFING — 2026-11-02T04:04:00Z
 
 ## Mission
-Adversarially challenge and stress-test the 110 character portraits in public/seat/*.png to confirm or refute Worker M1's remastering results.
+Adversarially challenge and stress-test Milestone 1 (Independent Static Landing & /home Decoupling) implementation:
+1. Route boundary tests: `/`, `/index.html`, `/home`, `/home/`, `/home.html`, `/deck`, `/unknown` under dev/preview server and post-build static outputs.
+2. DOM collision & isolation check: `#landing-root` vs `#root`.
+3. `dist/index.html` bundle size and footprint verification (<50KB total JS).
+4. Provide clear verdict (APPROVE or REQUEST_CHANGES).
 
 ## 🔒 My Identity
 - Archetype: EMPIRICAL CHALLENGER
@@ -10,49 +14,50 @@ Adversarially challenge and stress-test the 110 character portraits in public/se
 - Original parent: f84aca46-e09f-4967-b5d1-281f855a924e
 - Milestone: Milestone 1 (110-Hero Character Illustration Remaster)
 - Instance: 1 of 1
+- Current parent: 7b342c7a-1d74-43d7-a388-5ffc926b3969
+- Current Milestone: Milestone 1 (Independent Static Landing & /home Decoupling)
 
 ## 🔒 Key Constraints
 - Review-only — do NOT modify implementation code (do not modify public/seat/*.png or game code)
 - Never place source code, tests, or data files in .agents/teamwork/
 - Must run verification code empirically; do not trust worker claims or logs
 - Deliver verdict: CONFIRM_CORRECT or REPORT_ANOMALY
+- Current Task Constraints: Review-only — do NOT modify implementation code. Test generators and probes outside .agents/teamwork/ (e.g. tests/). Deliver verdict: APPROVE or REQUEST_CHANGES.
 
 ## Current Parent
-- Conversation ID: f84aca46-e09f-4967-b5d1-281f855a924e
-- Updated: 2026-10-18T02:01:15Z
+- Conversation ID: 7b342c7a-1d74-43d7-a388-5ffc926b3969
+- Updated: 2026-11-02T04:04:00Z
 
 ## Review Scope
-- **Files to review**: public/seat/seat_1.png ~ seat_110.png (all 110 files)
-- **Interface contracts**: PROJECT.md, ORIGINAL_REQUEST.md
-- **Review criteria**: dimensions (256x296), non-blank/entropy/pixel variance, Laplacian sharpness increase, color identity preservation (MAE/SSIM) vs git baseline 94a5ac5b
+- **Files to review**: `index.html`, `home.html`, `vite.config.ts`, `scripts/post-build.js`, `src/routes.ts`, `src/landing/index.ts`, `src/landing/styles/landing.css`, built `dist/` artifacts
+- **Interface contracts**: `PROJECT.md`, `ORIGINAL_REQUEST.md`, `TEST_READY.md`
+- **Review criteria**: Route boundaries, DOM isolation (`#landing-root` vs `#root`), bundle footprint (<50KB total JS), build cleanliness, static hosting feasibility
 
 ## Key Decisions Made
-- Implemented and executed empirical stress test `tests/challenger_m1_portrait_stress.py`.
-- Evaluated non-blankness via pixel standard deviation (mean 61.59, min 45.87 > 20.0), foreground bounding boxes (~256x216), and unique colors (mean 236.8).
-- Discovered test oracle anomaly in `helpers.py:319` (`entropy >= 2.0`), which fails even on 100% of baseline cards from 94a5ac5b due to white background, and caught Worker M1's misreporting of `T1.F2.5`.
-- Verified 100% compliance across all 110 portraits: dimensions (256x296), file size budget (4,098–8,653 B), sharpness ratio (5.11x–12.92x, mean 7.69x), and identity preservation (MAE mean 3.10%, SSIM mean 0.8520).
-- Delivered verdict: `CONFIRM_CORRECT` for Milestone 1 assets with documented test oracle finding.
+- Authored and executed standalone empirical adversarial test suite: `tests/challenger_m1_adversarial.ts`.
+- Verified live HTTP endpoints on port 3000: confirmed `/` and `/index.html` return landing page with `#landing-root` and `main-*.js` (1.79 KB JS), while `/home`, `/home/`, `/home.html`, `/deck`, `/shop`, `/play` return SPA with `#root` and `home-*.js`.
+- Verified DOM separation: `#landing-root` in `index.html` vs `#root` in `home.html`, with precedence guarantees.
+- Verified bundle footprint: `dist/index.html` loads 1,831 bytes (~1.79 KB) total JS (budget: <50 KB, 48.21 KB headroom), 0 heavy runtimes.
+- Delivered verdict: `APPROVE`.
 
 ## Artifact Index
 - /Users/dayyoung/project/snshero/.agents/teamwork/challenger_m1_1/DISPATCH.md — Incoming task dispatch record
 - /Users/dayyoung/project/snshero/.agents/teamwork/challenger_m1_1/BRIEFING.md — Situational awareness and state
 - /Users/dayyoung/project/snshero/.agents/teamwork/challenger_m1_1/progress.md — Progress and heartbeat
-- /Users/dayyoung/project/snshero/tests/challenger_m1_portrait_stress.py — Standalone empirical stress test script
-- /Users/dayyoung/project/snshero/tests/challenger_m1_portrait_stress_results.json — Full metrics and test results JSON
-- /Users/dayyoung/project/snshero/.agents/teamwork/challenger_m1_1/handoff.md — Final handoff report
+- /Users/dayyoung/project/snshero/tests/challenger_m1_adversarial.ts — Empirical adversarial test suite (52 probes)
+- /Users/dayyoung/project/snshero/tests/challenger_m1_results.json — Detailed probe output and metrics
+- /Users/dayyoung/project/snshero/.agents/teamwork/challenger_m1_1/handoff.md — Final 5-component handoff report
 
 ## Attack Surface
-- **Hypotheses tested**: 
-  1. H1: Zero blank or uniform color portraits -> CONFIRMED (Std dev 45.87-75.60, foreground box ~256x216, colors 51-623).
-  2. H2: Valid dimensions (256x296) -> CONFIRMED (110/110 exact).
-  3. H3: Sharpness enhancement (Laplacian variance vs 94a5ac5b) -> CONFIRMED (+668.7% mean increase, 5.11x to 12.92x, 0 degraded).
-  4. H4: Color/identity preservation (MAE/SSIM vs 94a5ac5b) -> CONFIRMED (MAE mean 3.10%, SSIM mean 0.8520, >80% exact identical pixels).
-  5. H5: File size budget [4096, 35840] -> CONFIRMED (min 4,098 B, max 8,653 B, mean 5,619.9 B).
-  6. H6: Corrupted triad recovery (Celia, Sentinel, Hyperion Prime) -> CONFIRMED (valid headers, 256x296, +6.4x to +7.8x sharpness, MAE < 3.4%).
+- **Hypotheses tested**:
+  1. H1 (DOM Collision): `#landing-root` and `#root` can co-exist without cross-mounting -> CONFIRMED (strict separation in index.html vs home.html; precedence handles dual presence).
+  2. H2 (Route Boundaries): Live web server returns correct HTML document per route -> CONFIRMED (live HTTP probes to :3000 verified `/` -> landing, `/home` -> SPA, `/deck` -> SPA).
+  3. H3 (Bundle Size Budget): Landing JS footprint is strictly under 50KB -> CONFIRMED (1,831 bytes total JS, 0 React/TF/Firebase/Motion).
+  4. H4 (Static Subroutes Preservation): Post-build script generates all 59 SPA routes and 404 fallback without clobbering root index.html -> CONFIRMED.
 - **Vulnerabilities found**:
-  - Test runner discrepancy: `tests/e2e_character_assets/runner.py` reports FAIL for `T1.F2.5` because `check_image_entropy_and_variance` in `helpers.py:319` asserts `entropy >= 2.0`, which is an invalid threshold for isolated character portraits with light background (all 110 uncorrupted baseline cards from 94a5ac5b also fail it). Worker M1 misreported that this test passed.
+  - Vite dev server fallback caveat: While production `dist/` and preview server cleanly serve subroutes from static generated HTML, Vite dev server in-memory relies on `index.html` unless explicitly rewritten in middleware. The worker implemented rewrite for `/home` and `/home/`, which works as intended.
 - **Untested angles**:
-  - Master sprite sheets (cards1, cards2, card100, card100_gemini) and faction sheets (character_sheet_*.png) are scoped for Milestone 2.
+  - Visual rendering and full UI components of landing page (scheduled for M2 and M3).
 
 ## Loaded Skills
 - None

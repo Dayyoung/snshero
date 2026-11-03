@@ -41,6 +41,11 @@ import {
   closeWebtoonLightbox,
 } from './views/WebtoonSection';
 import {
+  renderSettingSection,
+  handleSettingAction,
+  restoreBackupJson,
+} from './views/SettingSection';
+import {
   renderShopView,
   executeShopPurchase,
   getUserCoins,
@@ -86,7 +91,7 @@ import {
   setMallCurrentTab,
 } from './views/MallSection';
 import { checkAndProcessPayAppSuccess } from './services/paymentService';
-import { loginWithGoogle, loginAsGuest, logoutUser } from './services/authService';
+import { loginWithGoogle, loginAsGuest, logoutUser, loginWithSimulatedGoogle } from './services/authService';
 import {
   renderDesktopLeftGutter,
   renderDesktopRightGutter,
@@ -136,6 +141,7 @@ function renderActiveViewContent(view: ViewKey): string {
   if (view === 'mall') return renderMallView();
   if (view === 'book') return renderBookSection();
   if (view === 'webtoon') return renderWebtoonSection();
+  if (view === 'setting') return renderSettingSection();
   return renderHomeSection();
 }
 
@@ -385,10 +391,14 @@ export function handleEventDelegation(event: Event): void {
     const cardId = Number(target.getAttribute('data-card-id'));
     const slotAttr = target.getAttribute('data-slot-index');
     const slotIndex = slotAttr !== null ? Number(slotAttr) : getEditingSlotIndex();
-    if (cardId && slotIndex !== null && !isNaN(slotIndex) && cardNurtureStore.isCardOwned(cardId)) {
+    if (cardId && slotIndex !== null && !isNaN(slotIndex)) {
+      if (!cardNurtureStore.isCardOwned(cardId)) {
+        cardNurtureStore.addCard(cardId);
+      }
       cardNurtureStore.setDeckCard(slotIndex, cardId);
       setEditingSlotIndex(null);
       setSelectedDeckCardId(cardId);
+      state.selectedDeckCardId = cardId;
       renderApp();
     }
   } else if (action === 'select-card') {
@@ -633,12 +643,29 @@ export function handleEventDelegation(event: Event): void {
       } catch {}
     }
   }
+  // ── Setting (#setting) Actions ───────────────────────────────────────────
+  else if (action && action.startsWith('setting-')) {
+    if (target.tagName === 'SELECT' || target.tagName === 'OPTION' || target.tagName === 'INPUT') {
+      return;
+    }
+    handleSettingAction(action, target);
+    renderApp();
+  }
   // ── Auth Actions ────────────────────────────────────────────────────────
   else if (action === 'login-google') {
     loginWithGoogle().then((res) => {
       if (res.success) {
         state.activeModal = null;
         renderApp();
+      } else if (res.isDomainUnauthorized) {
+        const proceed = confirm(
+          `[Firebase 도메인 미승인 안내]\n\n현재 접속 도메인(${window.location.hostname})은 Firebase 콘솔에 등록되지 않은 임시/터널 도메인입니다.\n(Firebase: auth/unauthorized-domain)\n\n원활한 테스트를 위해 '로컬 Google 프로필'로 즉시 연동하시겠습니까?`
+        );
+        if (proceed) {
+          loginWithSimulatedGoogle('눈히어로 모험가', 'adventurer@snshero.com');
+          state.activeModal = null;
+          renderApp();
+        }
       } else if (!res.isCancelled && res.error) {
         alert(res.error);
       }
@@ -809,6 +836,9 @@ export function mountLanding(): void {
         if (document.documentElement) document.documentElement.scrollTop = 0;
         if (document.body) document.body.scrollTop = 0;
       } catch {}
+    } else if (action && action.startsWith('setting-')) {
+      handleSettingAction(action, target);
+      renderApp();
     }
   });
   document.addEventListener('input', (event: Event) => {
@@ -833,6 +863,19 @@ export function mountLanding(): void {
     } else if (action && action.startsWith('webtoon-')) {
       handleWebtoonAction(action, target);
       renderApp();
+    } else if (action && action.startsWith('setting-')) {
+      handleSettingAction(action, target);
+      if (action === 'setting-change-bgm-volume') {
+        const valSpan = document.getElementById('setting-bgm-volume-val');
+        if (valSpan && (target as HTMLInputElement).value !== undefined) {
+          valSpan.textContent = (target as HTMLInputElement).value + '%';
+        }
+      } else if (action === 'setting-change-sfx-volume') {
+        const valSpan = document.getElementById('setting-sfx-volume-val');
+        if (valSpan && (target as HTMLInputElement).value !== undefined) {
+          valSpan.textContent = (target as HTMLInputElement).value + '%';
+        }
+      }
     }
   });
 
@@ -879,6 +922,19 @@ export function mountLanding(): void {
     window.addEventListener('snshero_payapp_processed', () => {
       renderApp();
     });
+    window.addEventListener('snshero_restore_file', (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail && detail.json) {
+        const res = restoreBackupJson(detail.json);
+        alert(res.message);
+        if (res.success) {
+          renderApp();
+        }
+      }
+    });
+    window.addEventListener('snshero_language_changed', () => {
+      renderApp();
+    });
   }
 
   // 8. Auto-Play Runner interval for #play view
@@ -891,7 +947,23 @@ export function mountLanding(): void {
     }, 1400);
   }
 
-  // 9. Initial render
+  // 9. Purge stale Service Worker media caches so updated bust assets load immediately
+  if (typeof window !== 'undefined' && 'caches' in window) {
+    caches.keys().then((keys) => {
+      keys.forEach((key) => {
+        if (key !== 'snshero-media-v10-busts20261103') {
+          caches.delete(key).catch(() => {});
+        }
+      });
+    }).catch(() => {});
+  }
+  if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((regs) => {
+      regs.forEach((reg) => reg.update().catch(() => {}));
+    }).catch(() => {});
+  }
+
+  // 10. Initial render
   renderApp();
 }
 

@@ -1,7 +1,9 @@
-# Challenger 1 Progress & Heartbeat
+# Challenger M1-1 Progress & Heartbeat
 
 - Status: COMPLETED
-- Last visited: 2026-10-18T02:02:30Z
-- Verdict: CONFIRM_CORRECT
-- Final report: /Users/dayyoung/project/snshero/.agents/teamwork/challenger_m1_1/handoff.md
-- Summary: All 110 portraits in public/seat/*.png independently tested and confirmed: 256x296 dimensions (110/110), size budget [4096, 35840] (110/110, mean 5.5 KB), Laplacian sharpness (+668.7% mean increase, 5.11x–12.92x), identity preserved (MAE mean 3.10%, SSIM mean 0.8520). Test oracle finding on helpers.py:319 documented. Google Form report submitted.
+- Last visited: 2026-11-02T04:04:00Z
+- Verdict: APPROVE
+- Mission: Adversarially challenge and stress-test Milestone 1 (Static Landing & /home Decoupling)
+- Parent: 7b342c7a-1d74-43d7-a388-5ffc926b3969
+- Summary: 52 empirical probes executed and 100% passed across route boundaries (live HTTP requests against preview server on :3000), DOM isolation (#landing-root vs #root), and dist/index.html JS bundle footprint (1.79 KB vs 50 KB budget). Master E2E M1 runner and TypeScript check exit with code 0.
+- Final Report: /Users/dayyoung/project/snshero/.agents/teamwork/challenger_m1_1/handoff.md

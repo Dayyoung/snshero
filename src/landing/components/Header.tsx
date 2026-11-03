@@ -32,6 +32,7 @@ export const TOP_NAV_DEFS: NavItemDef[] = [
   { key: 'mall', label: '굿즈몰' as any },
   { key: 'book', label: '웹소설' as any },
   { key: 'webtoon', label: '웹툰' as any },
+  { key: 'setting', label: '설정' as any },
 ];
 
 export function renderHeader(activeView: ViewKey): string {
@@ -96,6 +97,15 @@ export function renderHeader(activeView: ViewKey): string {
 
         <!-- Right Action: User Login & Game Launch -->
         <div class="flex items-center gap-2">
+          <a
+            href="#setting"
+            data-nav="setting"
+            class="p-2 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer no-underline ${activeView === 'setting' ? 'bg-[#201d1d] text-[#fdfcfc]' : ''}"
+            aria-label="게임 환경설정"
+            title="게임 환경설정 (소리/언어/백업)"
+          >
+            ⚙️
+          </a>
           ${(() => {
             const user = getCurrentUser();
             const isGoogle = !user.isAnonymous && user.providerId === 'google.com';

@@ -1,15 +1,13 @@
-# Progress — Survey Explorer 2 (Economy, Social & Content Views)
-Last visited: 2026-10-18T10:21:30Z
+# Progress — Survey Explorer 2 (Responsive Layout, Character Assets & Navigation/Onboarding)
+Last visited: 2026-11-02T03:32:00Z
 
 ## Status
-- [x] Initialized DISPATCH.md and updated BRIEFING.md
-- [x] Survey 1: `src/views/ShopView.tsx` (289 banned tokens, 39 sub-44px buttons)
-- [x] Survey 2: `src/views/CardMarketplaceView.tsx` (0 banned tokens, 13 sub-44px buttons)
-- [x] Survey 3: `src/views/NovelView.tsx` (0 banned tokens, 8 sub-44px buttons)
-- [x] Survey 4: `src/views/MovieView.tsx` (0 banned tokens, 0 sub-44px buttons, 1 shadow in player)
-- [x] Survey 5: `src/views/RankingView.tsx` (147 banned tokens, 30 sub-44px buttons)
-- [x] Survey 6: `src/views/GuildListView.tsx` (54 banned tokens, 17 sub-44px buttons) & `src/views/GuildDetailView.tsx` (0 banned tokens, 0 sub-44px buttons)
-- [x] Survey 7: `src/views/CommunityView.tsx` (82 banned tokens, 68 sub-44px buttons) & `src/views/RedditCommunityView.tsx` (22 banned tokens, 3 sub-44px buttons + 286 in subcomponents)
-- [x] Cross-view synthesis & Feature Inventory generation (F-01 through F-10)
-- [x] Produce `handoff.md` (Self-contained 5-component report + Feature Inventory)
-- [x] Complete task and notify parent via `send_message`
+- [x] Initialized DISPATCH.md and reviewed original requirements
+- [x] Task 1: Complete character image asset inventory (7-head cutouts, bust/portraits, 3-head SD/chibi/voxel) — 110/110 characters 100% verified with 0 missing files
+- [x] Task 2: Responsive layout architecture analysis (360px mobile, 768px tablet, 1024px~1920px+ desktop fluid widescreen, removal of artificial 1024px limit)
+- [x] Task 3: Top navigation (6 items: 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰) & Side navigation (8 items: 로그인, 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰, 커뮤니티) UI/UX design
+- [x] Task 4: Preparing modal & official link handling for Shopping Mall (/mall), Community (/reddit), Login (100% localStorage persistence & nickname setting)
+- [x] Task 5: Audit and complete elimination plan for onboarding/tutorial/help popups on first visit (zero auto-popup architecture + localStorage defense flags)
+- [x] Produce `survey_report.md` (Comprehensive 8-section investigation report)
+- [x] Produce `handoff.md` (Self-contained 5-Component Handoff Protocol report)
+- [x] Notify orchestrator via `send_message`

@@ -34,6 +34,7 @@ export const SIDE_NAV_DEFS: SideItemDef[] = [
   { key: 'mall', label: '굿즈몰' as any, icon: '🏬' },
   { key: 'book', label: '웹소설' as any, icon: '📜', badge: '40화' },
   { key: 'webtoon', label: '웹툰' as any, icon: '🎨', badge: '840컷' },
+  { key: 'setting', label: '설정' as any, icon: '⚙️', badge: '환경설정' },
   { key: 'community', label: '커뮤니티' as any, isModal: true, modalTarget: 'community', icon: '💬', badge: '채널' },
 ];
 

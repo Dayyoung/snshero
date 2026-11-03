@@ -1,23 +1,47 @@
-## 2026-10-18T02:27:13Z
-You are Reviewer 2 for Milestone 2 & 3 of the SNSHero 110-Hero Character Illustration Remaster project.
-Your working directory is: /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_2/
-You MUST read:
-1. /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md (under ## 2026-10-18T01:34:39Z)
-2. /Users/dayyoung/project/snshero/PROJECT.md
-3. /Users/dayyoung/project/snshero/TEST_READY.md
-4. /Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/handoff.md
+# Dispatch Assignment: reviewer_m2_2
 
-Your Mission:
-Review Worker M2's deliverables on faction sheets and file size optimization:
-1. Inspect all 11 public/character_sheet_*.png files (2560x296 px, 10 horizontal cards each). Verify magic headers (\x89PNG\r\n\x1a\n) on fire, hobbit, mecha.
-2. Verify strict size budgets:
-   - cards1, cards2, card100, card100_gemini MUST each be <= 819,200 bytes (800 KB).
-   - Every character_sheet_*.png MUST be <= 307,200 bytes (300 KB).
-   - Every public/seat/*.png MUST be <= 35,840 bytes (35 KB).
-3. Run verification commands:
-   - `python3 tests/e2e_character_assets/runner.py --tier 2`
-   - `python3 tests/e2e_character_assets/runner.py --tier 4`
-   - `npm run build`
-4. Deliver a clear verdict: APPROVE or REQUEST_CHANGES.
-5. Write your handoff report to: /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_2/handoff.md
-6. Notify caller with send_message.
+## Mission
+Conduct comprehensive review and verification of Modals, Asset Catalog, and Bundle Isolation for Milestone 2:
+1. Review of:
+   - `src/landing/components/Modals.tsx`: 쇼핑몰 (`mall`), 커뮤니티 (`community`), 로그인 (`login`) modals with `fixed inset-0 z-50 backdrop bg-black/50`, top-right `[x]`, bottom `닫기` button, 44px+ touch targets, and LocalStorage explanation.
+   - `src/landing/services/assetCatalog.ts`: 3-Tier character visual assets catalog covering all 110 cards (`cutouts` for 7-head, `bust` and `seat/` for torso portraits, `cards1.png` / `cards2.png` / `sd` for 3-head SD sprites), lookup utilities, fallbacks, inline SVG data-uri.
+   - `src/landing/index.ts`: Zero onboarding popup guard (`activeModal: null` initial, 0 auto-popups, no `showTutorial`/`onboarding`/`FirstVisit`).
+2. Bundle isolation check:
+   - `dist/index.html` size must be < 50 KB.
+   - `dist/index.html` must contain `#landing-root` and ZERO references to `vendor-react` or React 19 runtime.
+3. Independent test execution:
+   - `npx tsx tests/e2e/run_all.ts --milestone M2`
+   - `npx tsx tests/e2e/run_all.ts --milestone M1`
+4. Verdict: Issue an unambiguous verdict (**APPROVE** or **REQUEST_CHANGES**).
+
+## Authoritative Inputs
+- `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md`
+- `/Users/dayyoung/project/snshero/PROJECT.md`
+- `/Users/dayyoung/project/snshero/TEST_INFRA.md`
+- `/Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/handoff.md`
+
+## Output Requirements
+Write your report to:
+`/Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_2/handoff.md`
+Report back via send_message.
+
+## 2026-11-02T05:37:34Z
+[Message] timestamp=2026-11-02T05:37:34Z sender=7b342c7a-1d74-43d7-a388-5ffc926b3969 priority=MESSAGE_PRIORITY_HIGH content=You are teamwork_reviewer (reviewer_m2_2).
+Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_2/
+
+MANDATORY FIRST STEP:
+Read /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md completely.
+Also read:
+- /Users/dayyoung/project/snshero/PROJECT.md
+- /Users/dayyoung/project/snshero/TEST_INFRA.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_2/DISPATCH.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/handoff.md
+
+Task:
+Conduct code review and verification of Milestone 2 Modals (`Modals.tsx`), Asset Catalog (`assetCatalog.ts`), Zero-Popup Guard (`index.ts`), and bundle isolation (< 50 KB, 0 vendor-react).
+Run test suites: `npx tsx tests/e2e/run_all.ts --milestone M2` and `--milestone M1`.
+Issue an unambiguous verdict (APPROVE / REQUEST_CHANGES).
+
+Write your report to:
+/Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_2/handoff.md
+Send a completion message when finished.

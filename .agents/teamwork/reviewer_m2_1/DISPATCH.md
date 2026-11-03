@@ -1,22 +1,47 @@
-## 2026-10-18T02:27:13Z
+# Dispatch Assignment: reviewer_m2_1
 
-[Message] timestamp=2026-10-18T02:27:13Z sender=f84aca46-e09f-4967-b5d1-281f855a924e priority=MESSAGE_PRIORITY_HIGH content=You are Reviewer 1 for Milestone 2 & 3 of the SNSHero 110-Hero Character Illustration Remaster project.
-Your working directory is: /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_1/
-You MUST read:
-1. /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md (under ## 2026-10-18T01:34:39Z)
-2. /Users/dayyoung/project/snshero/PROJECT.md
-3. /Users/dayyoung/project/snshero/TEST_READY.md
-4. /Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/handoff.md
-
-Your Mission:
-Review Worker M2's deliverables on primary and legacy master sprite sheets:
-1. Inspect public/cards1.png (1000x1000 px, 10x10 grid for IDs 1–100, cells 100x100).
-2. Inspect public/cards2.png (1000x1000 px, IDs 101–110 in Row 0; verify Rows 1–9 are preserved).
-3. Inspect public/card100.png (1135x1315 px, 10x11 grid) and public/card100_gemini.png (1024x1024 px, verify it is a valid RGBA PNG with alpha channel).
-4. Run verification commands:
-   - `python3 tests/e2e_character_assets/runner.py --tier 1`
-   - `python3 tests/e2e_character_assets/runner.py --tier 3`
+## Mission
+Conduct comprehensive code review and independent verification of Milestone 2 (Responsive Shell, Navigation & Assets):
+1. Code review of:
+   - `src/landing/components/Header.tsx`: Exact 6 top items (`홈`, `마이덱`, `플레이`, `미션`, `상점`, `쇼핑몰`), responsive drawer toggle, `md:`, `lg:`, `min-h-[44px]` touch targets.
+   - `src/landing/components/Sidebar.tsx`: Exact 8 side items (`로그인`, `홈`, `마이덱`, `플레이`, `미션`, `상점`, `쇼핑몰`, `커뮤니티`), off-canvas drawer, backdrop, `[x]` dismiss, `min-h-[44px]`.
+   - `src/landing/styles/landing.css`: OpenCode Terminal-Flat design tokens, fluid viewport reset, 44px+ touch target rules, 0px containers / 4px interactive radius, 1px hairlines.
+2. Independent build and test execution:
    - `npx tsc --noEmit`
-5. Deliver a clear verdict: APPROVE or REQUEST_CHANGES.
-6. Write your handoff report to: /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_1/handoff.md
-7. Notify caller with send_message.
+   - `npm run build`
+   - `npx tsx tests/e2e/run_all.ts --milestone M2` (all 13 assertions)
+   - `npx tsx tests/e2e/run_all.ts --milestone M1` (regression check)
+3. Verdict: Issue an unambiguous verdict (**APPROVE** or **REQUEST_CHANGES**).
+
+## Authoritative Inputs
+- `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md`
+- `/Users/dayyoung/project/snshero/PROJECT.md`
+- `/Users/dayyoung/project/snshero/TEST_INFRA.md`
+- `/Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/handoff.md`
+
+## Output Requirements
+Write your report to:
+`/Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_1/handoff.md`
+Report back via send_message.
+
+
+## 2026-11-02T05:37:23Z
+You are teamwork_reviewer (reviewer_m2_1).
+Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_1/
+
+MANDATORY FIRST STEP:
+Read /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md completely.
+Also read:
+- /Users/dayyoung/project/snshero/PROJECT.md
+- /Users/dayyoung/project/snshero/TEST_INFRA.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_1/DISPATCH.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/handoff.md
+
+Task:
+Conduct code review and test verification of Milestone 2 (Header.tsx, Sidebar.tsx, landing.css).
+Run `npx tsc --noEmit`, `npm run build`, `npx tsx tests/e2e/run_all.ts --milestone M2`, and regression check `--milestone M1`.
+Issue an unambiguous verdict (APPROVE / REQUEST_CHANGES).
+
+Write your report to:
+/Users/dayyoung/project/snshero/.agents/teamwork/reviewer_m2_1/handoff.md
+Send a completion message when finished.

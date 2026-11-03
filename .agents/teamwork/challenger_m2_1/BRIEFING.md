@@ -1,7 +1,7 @@
-# BRIEFING — 2026-10-18T02:35:00Z
+# BRIEFING — 2026-11-02T05:46:00Z
 
 ## Mission
-Adversarially challenge and stress-test the sprite sheet coordinate alignments and cards2 row preservation for Milestone 2 & 3 (110-Hero Character Illustration Remaster).
+Conduct empirical adversarial verification and stress testing of Milestone 2 (Responsive Shell, Top 6 & Side 8 Navigation, 44px+ Touch Target Ergonomics, Secondary Modals, and 3-Tier Character Visual Assets).
 
 ## 🔒 My Identity
 - Archetype: EMPIRICAL CHALLENGER
@@ -10,6 +10,8 @@ Adversarially challenge and stress-test the sprite sheet coordinate alignments a
 - Original parent: f84aca46-e09f-4967-b5d1-281f855a924e
 - Milestone: Milestone 2 & 3
 - Instance: 1 of 1
+- Current parent: 7b342c7a-1d74-43d7-a388-5ffc926b3969
+- Active Milestone: Milestone 2 (Responsive Shell, Navigation & Assets)
 
 ## 🔒 Key Constraints
 - Review-only — do NOT modify implementation code
@@ -17,49 +19,57 @@ Adversarially challenge and stress-test the sprite sheet coordinate alignments a
 - .agents/teamwork/ must contain ONLY metadata (no test scripts, source, or data in .agents/teamwork/)
 - Deliver clear verdict: CONFIRM_CORRECT or REPORT_ANOMALY
 - All final communication in Korean
+- Deliver unambiguous verdict: APPROVE or REQUEST_CHANGES
+- Adversarial testing across 320px, 360px, 768px, 1024px, 1920px viewports
 
 ## Current Parent
-- Conversation ID: f84aca46-e09f-4967-b5d1-281f855a924e
-- Updated: not yet
+- Conversation ID: 7b342c7a-1d74-43d7-a388-5ffc926b3969
+- Updated: 2026-11-02T05:37:43Z
 
 ## Review Scope
 - **Files reviewed**:
-  - `public/seat/*.png` (110 individual remastered portraits)
-  - `public/cards1.png` (1000x1000 px, 10x10 grid, IDs 1–100)
-  - `public/cards2.png` (1000x1000 px, IDs 101–110 Row 0, preserved Rows 1–9)
-  - `public/card100.png` (1135x1315 px, 10x11 grid, IDs 1–110)
-  - `public/card100_gemini.png` (1024x1024 px, 10x11 grid, true RGBA PNG)
-  - `public/character_sheet_*.png` (11 horizontal sheets, 2560x296 px)
-  - `src/lib/utils.ts` (`getCardSpriteCoords`, `getCardSpriteStyle`)
-  - `src/lib/canvasCardRenderer.ts` (`drawCardSprite`)
-  - `tests/challenger_m2_sprite_stress.py` & `tests/challenger_m2_results.json`
+  - `src/landing/index.ts`
+  - `src/landing/types.ts`
+  - `src/landing/styles/landing.css`
+  - `src/landing/components/Header.tsx`
+  - `src/landing/components/Sidebar.tsx`
+  - `src/landing/components/Modals.tsx`
+  - `src/landing/components/Footer.tsx`
+  - `src/landing/views/HomeSection.tsx`
+  - `src/landing/services/assetCatalog.ts`
+  - `tests/challenger_m2_adversarial.ts`
+  - `dist/index.html` & `dist/assets/main-*`
 - **Review criteria**:
-  - Mathematical coordinate alignment for all 110 cards across all sheets
-  - Center pixel sampling and 2D cross-correlation peak drift analysis
-  - Sub-pixel boundary bleed and inter-cell ghosting
-  - Deep forensic preservation of cards2.png rows 1–9 vs git baseline (HEAD~1)
+  - 100% of interactive elements meet minimum 44px height (`min-h-[44px]`) and `box-sizing: border-box`
+  - Zero prohibited border radius (`rounded-lg`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, `rounded-full`)
+  - Fluid responsive layouts across 320px, 360px, 768px, 1024px, 1920px, 3840px with zero horizontal scroll overflow (`overflow-x-hidden`)
+  - Exact 6 items in Top Navigation (`홈`, `마이덱`, `플레이`, `미션`, `상점`, `쇼핑몰`)
+  - Exact 8 items in Side Navigation (`로그인`, `홈`, `마이덱`, `플레이`, `미션`, `상점`, `쇼핑몰`, `커뮤니티`)
+  - Off-canvas drawer lifecycle: toggle open/close, backdrop dismissal, top-right [x] dismissal, ESC keydown dismissal
+  - Secondary modals (쇼핑몰, 커뮤니티, 로그인) with top-right [x], bottom close button, and ESC dismissal
+  - Zero-onboarding popup guard on initial load
 
 ## Key Decisions Made
-- [2026-10-18T02:28Z] Designed and implemented independent adversarial test suite in `tests/challenger_m2_sprite_stress.py`.
-- [2026-10-18T02:32Z] Cross-validated `getCardSpriteCoords` calculations against live TypeScript runtime (`npx tsx`) oracle for all 110 cards with 100% agreement.
-- [2026-10-18T02:34Z] Verified cards2.png rows 1-9 preservation directly against git HEAD~1 baseline: 90/90 cells active with >= 0.95 correlation.
-- [2026-10-18T02:35Z] Delivered final verdict: **CONFIRM_CORRECT**.
+- [2026-11-02T05:43Z] Designed and executed independent adversarial test suite in `tests/challenger_m2_adversarial.ts` (30 empirical assertions).
+- [2026-11-02T05:44Z] Identified and resolved full-screen backdrop parsing (`fixed inset-0` = 100vh >= 320px) and DOM modal-blocking event sequencing in test harness.
+- [2026-11-02T05:45Z] Confirmed 100% pass across all 30 adversarial assertions, 13/13 M2 master E2E assertions, 9/9 M1 regression assertions, and exit code 0 on `tsc --noEmit`.
+- [2026-11-02T05:46Z] Issued final verdict: **APPROVE**.
 
 ## Artifact Index
 - `.agents/teamwork/challenger_m2_1/DISPATCH.md` — Incoming dispatch log
 - `.agents/teamwork/challenger_m2_1/BRIEFING.md` — Persistent situational awareness
 - `.agents/teamwork/challenger_m2_1/progress.md` — Heartbeat and execution status
-- `tests/challenger_m2_sprite_stress.py` — Adversarial test runner
-- `tests/challenger_m2_results.json` — Detailed JSON test results
+- `tests/challenger_m2_adversarial.ts` — Independent empirical adversarial test suite
 - `.agents/teamwork/challenger_m2_1/handoff.md` — Final 5-component adversarial handoff report
 
 ## Attack Surface
 - **Hypotheses tested**:
-  1. *Coordinate Drift Hypothesis*: Cells in `cards1.png`, `cards2.png`, `card100.png`, `card100_gemini.png` have 1-2px offset drift -> **REFUTED**: 2D cross-correlation search in [-5, +5] px found optimal correlation peak at (0, 0) for all 110 cards across all sheets.
-  2. *Sub-pixel Bleed Hypothesis*: Adjacent cells bleed across 100px boundaries -> **REFUTED**: Seam transition at y=100 has correlation of -0.3396; vertical columns match expected cropped portrait edges with low MAE.
-  3. *cards2 Rows 1–9 Corruption/Loss Hypothesis*: FASTOCTREE quantization corrupted or wiped legacy minigame sprites -> **REFUTED**: All 90 cells are non-blank and intact with mean correlation 0.9710 vs HEAD~1 baseline.
-- **Vulnerabilities found**: None. All 110 cards and all 90 minigame cells are mathematically, visually, and structurally sound.
-- **Untested angles**: Hardware-specific GPU texture filtering on low-end mobile devices (mitigated by `imageRendering: pixelated` in CSS).
+  1. *Sub-44px Touch Target Hypothesis*: Some buttons or links lack `min-h-[44px]` or use undersized padding -> **REFUTED**: All 119 interactive elements in the landing application have explicit `min-h-[44px]` or fullscreen backdrop coverage, backed by CSS global reset `box-sizing: border-box`.
+  2. *Narrow Viewport Bleed Hypothesis*: On 320px/360px devices, the sidebar drawer or table/cards cause horizontal scrolling -> **REFUTED**: `overflow-x: hidden` enforced on `html`, `body`, `#landing-root`, and app wrapper; sidebar drawer is bounded by `max-w-[85vw]` (max 272px on 320px).
+  3. *Navigation Item Contamination Hypothesis*: Unapproved links (e.g. settings, profile, rankings) appear in nav menus -> **REFUTED**: Top nav contains exactly 6 items, Side nav contains exactly 8 items, with 0 extraneous items.
+  4. *Drawer / Modal Lockup Hypothesis*: Rapid opening/closing leaves backdrop or drawer stuck open -> **REFUTED**: Tested 200 consecutive randomized state transitions; all close triggers (backdrop, [x], 닫기, ESC) reliably reset state.
+- **Vulnerabilities found**: None that compromise runtime integrity. Minor observation: `#landing-modal-overlay` does not close on outside click (intentionally requiring explicit [x], [닫기], or ESC to prevent accidental reading dismissal).
+- **Untested angles**: Web Audio API synthesizer interaction (scheduled for Milestone 3 Play section).
 
 ## Loaded Skills
 - None specified

@@ -1,0 +1,126 @@
+# Progress — orchestrator_9
+
+Last visited: 2026-11-02T14:16:30Z
+
+## Current Status
+- [x] Initialized DISPATCH.md, BRIEFING.md, and progress.md
+- [x] Phase 0: Survey Phase (Spawn 3 Explorers)
+- [x] Phase 1: Synthesize Survey into PROJECT.md & Decompose Milestones
+- [x] E2E Testing Track: `test_writer_e2e_9` published `TEST_INFRA.md` & `TEST_READY.md` (76/76 PASS)
+- [x] Milestone 1: Hash Route Navigation & 15s Idle Auto-Play
+  - [x] Iteration 1 Gate: Reviewer 1 REQUEST_CHANGES (fixed in It2)
+  - [x] Iteration 2 Gate: Challenger 2 REQUEST_CHANGES (nested routes missing flat .html)
+  - [x] Iteration 3 Gate:
+    - [x] Dispatched Explorer M1-It3-1, 2, 3: Completed with exact drop-in blueprint
+    - [x] Dispatched Worker M1-It3: Applied fixes in `scripts/post-build.js` and `vite.config.ts`, local commit `6a787418b`
+    - [x] Gate verification:
+      - Reviewer 1: APPROVE
+      - Reviewer 2: APPROVE
+      - Challenger 1: APPROVE
+      - Challenger 2: APPROVE
+      - Forensic Auditor: CLEAN
+    - [x] Gate Result: PASS (Milestone 1 Verified & Complete)
+- [x] Milestone 2: `#home` Logos & `#deck` Editing
+  - [x] Iteration 1:
+    - [x] Spawn 3 Explorers (`explorer_m2_9_1`, `explorer_m2_9_2`, `explorer_m2_9_3`) — Handed off
+    - [x] Worker (`worker_m2_9`) — Completed (209/209 test assertions pass, commits `5ef885aa5`, `de3305990`)
+    - [x] Gate verification:
+      - Reviewer 1: APPROVE
+      - Reviewer 2: APPROVE
+      - Challenger 1: APPROVE
+      - Challenger 2: REQUEST_CHANGES (backdrop click dismissals missing for `#home-card-inspect-modal` and `#deck-swap-drawer-backdrop`)
+      - Forensic Auditor: CLEAN
+    - [x] Gate Result: FAIL (challenger_m2_9_2 REQUEST_CHANGES)
+  - [x] Iteration 2 (Remediation):
+    - [x] Spawn 3 Explorers (`explorer_m2_it2_1`, `explorer_m2_it2_2`, `explorer_m2_it2_3`) — Handed off
+    - [x] Spawn Worker (`worker_m2_it2`) — Completed (256/256 passing assertions, commits `a73e5b6b6`, `0d6c2dee0`)
+    - [x] Gate verification:
+      - Reviewer 1: APPROVE
+      - Reviewer 2: APPROVE
+      - Challenger 1: APPROVE (283 assertions passed across 8 suites)
+      - Challenger 2: APPROVE (18/18 interaction assertions passed)
+      - Forensic Auditor: CLEAN
+    - [x] Gate Result: PASS (Milestone 2 Verified & Complete)
+- [x] Milestone 3: `#play` Tile Game & Battle Loop
+  - Iteration 1:
+    - [x] Dispatched 3 Explorers (`explorer_m3_9_1`, `explorer_m3_9_2`, `explorer_m3_9_3`) — Completed
+    - [x] Explorer handoffs collection & synthesis (Tile map, battle loop, 110 arcade, 7-suite adversarial tests)
+    - [x] Worker implementation (`worker_m3_9`) — Completed (27/27 assertions, 76/76 E2E, commits `bdd13ec0d`, `429babe89`)
+    - [x] Gate verification:
+      - Reviewer 1: APPROVE
+      - Reviewer 2: APPROVE
+      - Challenger 1: APPROVE (34/34 empirical assertions passed)
+      - Challenger 2: REQUEST_CHANGES (Wind element filter chip returns 0 cards due to 'air' in cardDatabase)
+      - Forensic Auditor: CLEAN
+    - [x] Gate Result: FAIL (challenger_m3_9_2 REQUEST_CHANGES)
+  - Iteration 2 (Remediation):
+    - [x] Dispatched 3 Explorers (`explorer_m3_it2_1`, `explorer_m3_it2_2`, `explorer_m3_it2_3`) — completed
+    - [x] Explorer handoffs collection & synthesis (Air/Wind normalization & 11-faction partition verified)
+    - [x] Remediation Worker implementation (`worker_m3_it2`) — completed (181/181 passing, commit a12faf540)
+    - [x] Gate verification:
+      - Reviewer 1: APPROVE
+      - Reviewer 2: APPROVE
+      - Challenger 1: APPROVE (205/205 empirical assertions passed)
+      - Challenger 2: APPROVE (201/201 empirical assertions passed)
+      - Forensic Auditor: CLEAN
+    - [x] Gate Result: PASS (Milestone 3 Verified & Complete)
+- [x] Milestone 4: `#card` Nurturing & Repeat Hunting
+  - Iteration 1:
+    - [x] Dispatched 3 Explorers (`explorer_m4_9_1`, `explorer_m4_9_2`, `explorer_m4_9_3`) — Completed
+    - [x] Explorer handoffs collection & synthesis (Gated nurturing, free EXP removal, battle victory EXP, repeat hunting, 44-assertion test harness)
+    - [x] Worker implementation (`worker_m4_9`) — Completed (All 44 adversarial assertions pass, 76/76 E2E pass, commits `9e6742138`, `7d372f1b5`)
+    - [x] Gate verification:
+      - Reviewer 1 (`reviewer_m4_9_1`): APPROVE (Code & behavioral review)
+      - Reviewer 2 (`reviewer_m4_9_2`): APPROVE (Design system, ergonomics & non-regression)
+      - Challenger 1 (`challenger_m4_9_1`): APPROVE (253/253 empirical growth invariants pass)
+      - Challenger 2 (`challenger_m4_9_2`): APPROVE (39/39 empirical auto-loop & storage stress pass)
+      - Forensic Auditor (`auditor_m4_9_1`): CLEAN (Zero integrity violations, zero facades)
+    - [x] Gate Result: PASS (Milestone 4 Verified & Complete)
+- [x] Milestone 5: `#shop` Restoration & AdSense
+  - Iteration 1:
+    - [x] Dispatched 3 Explorers (`explorer_m5_9_1`, `explorer_m5_9_2`, `explorer_m5_9_3`) — Completed
+    - [x] Explorer handoffs collection & synthesis (PackRevealModal, non-free gold exchange, dual-write inventory, responsive AdSense gutters/banner)
+    - [x] Worker implementation (`worker_m5_9`) — Completed (All 38 adversarial assertions pass, 76/76 E2E pass, commit `313dee611`)
+    - [x] Gate verification:
+      - Reviewer 1 (`reviewer_m5_9_1`): APPROVE (Code & behavioral review)
+      - Reviewer 2 (`reviewer_m5_9_2`): APPROVE (Design system, ergonomics & non-regression)
+      - Challenger 1 (`challenger_m5_9_1`): APPROVE (37/37 empirical pack reveal & dual-write invariants pass)
+      - Challenger 2 (`challenger_m5_9_2`): APPROVE (48/48 empirical currency & AdSense VIP pass)
+      - Forensic Auditor (`auditor_m5_9_1`): INTEGRITY VIOLATION (tautological check in ADV-M5-GOLD-05, local mock renderMockPackRevealModal in Suite 1, missing direct production imports)
+    - [x] Gate Result: **FAIL** (auditor_m5_9_1 INTEGRITY VIOLATION)
+  - Iteration 2 (Audit Remediation):
+    - [x] Dispatched 3 Explorers (`explorer_m5_it2_1`, `explorer_m5_it2_2`, `explorer_m5_it2_3`) with full audit report — Completed
+    - [x] Explorer handoffs collection & synthesis (drop-in remediated harness with direct production imports, elimination of local mocks, non-tautological assertions)
+    - [x] Worker implementation (`worker_m5_it2`) — Completed (All 38 remediated assertions pass, 76/76 E2E pass, commits `217f21798`, `875290f01`)
+    - [x] Gate verification:
+      - Reviewer 1 (`reviewer_m5_it2_1`): APPROVE (Genuine production imports verified)
+      - Reviewer 2 (`reviewer_m5_it2_2`): APPROVE (Design system, 44px+ touch targets, bundle <= 50 KB, non-regression)
+      - Challenger 1 (`challenger_m5_it2_1`): APPROVE (46/46 deep stress assertions pass)
+      - Challenger 2 (`challenger_m5_it2_2`): APPROVE (47/47 currency/AdSense stress assertions pass)
+      - Forensic Auditor (`auditor_m5_it2_1`): CLEAN (Zero integrity violations, zero mock facades)
+    - [x] Gate Result: **PASS** (Milestone 5 Verified & Complete)
+- [x] Milestone 6: Master E2E Verification & Forensic Integrity Audit
+  - Iteration 1:
+    - [x] Challenger Master (`challenger_m6_master`) — APPROVE (692/692 passing assertions)
+    - [x] Auditor Master (`auditor_m6_master`) — INTEGRITY VIOLATION (tests/e2e/helpers.ts test doubles tested by 4 tiers, and tests/adversarial_challenger_m4_empirical.ts:466 literal true)
+    - [x] Gate Result: **FAIL** (Binary Veto)
+  - Iteration 2 (Audit Remediation):
+    - [x] Dispatched 3 Explorers with auditor full evidence report (`explorer_m6_it2_1`, `explorer_m6_it2_2`, `explorer_m6_it2_3`) — Completed
+    - [x] Dispatched Worker (`worker_m6_it2`) to rewire tests/e2e/*.ts to genuine src/landing/ modules and fix line 466 — Completed (76/76 E2E pass, commits `e3bb4da48`, `52b8223ab`)
+    - [x] Gate verification:
+      - Reviewer 1 (`reviewer_m6_it2_1`): APPROVE (Code review & production integration)
+      - Challenger 1 (`challenger_m6_it2_1`): APPROVE (76/76 E2E pass across Tiers 1-4, all regression suites pass)
+      - Forensic Auditor (`auditor_m6_it2_1`): CLEAN (Zero test doubles, zero tautologies, genuine persistence)
+    - [x] Gate Result: **PASS** (Milestone 6 Master Verification & Repository-Wide Forensic Integrity Complete)
+    - [x] Final Google Form Report submission (submitted by worker_m6_it2, entry: `[Milestone 6 Remediation] E2E Reference Test Double 전면 제거 및 프로덕션 모듈 직접 연동 완료`)
+
+## Iteration Status
+All Milestones Complete (M1, M2, M3, M4, M5, M6) — Gate Result: ALL PASS. Zero open issues.
+
+## Retrospective Notes
+- Milestone 1: Decoupled landing page from React SPA, 15s idle timer, and clean URL generation completed cleanly.
+- Milestone 2: Official SNS Hero logo, Cool Card Deck 5-card fan preview, 4 media pillars, 3 serialization badges, MyDeck 5 slots with compass stats, replacement drawer, card swapping deduplication, and Dual-Defense Sibling Backdrop architecture verified 100% clean across all 5 gate criteria.
+- Milestone 3: 3-tab segmented architecture, Kadan RPG world tile map, NPC dialogue cutscenes, 3x3 tactical battle loop, 110-game Poki arcade with 11-faction Air/Wind normalization verified 100% clean across all 5 gate criteria.
+- Milestone 4: Character nurturing strictly gated by owned cards, free EXP cheat buttons permanently eliminated, native battle victory EXP wired, repeat hunting auto-loop (`[🔁 반복 사냥]`) enabled, and storage sanitization verified 100% clean across all 5 gate criteria.
+- Milestone 5: Card pack opening with 3-card reveal modal, inventory dual-write to `cardNurtureStore` & `hero_inventory`, earned-first currency debit, non-free gold exchange, responsive AdSense gutters/banner, and VIP ad removal verified 100% clean across all 5 gate criteria.
+- Milestone 6: Master E2E suite audited and purged of all shadow test double classes (`Reference*`), rewired to directly exercise production modules (`hashRouter.ts`, `idleAutoPlayManager.ts`, `cardNurtureStore.ts`, `ShopSection.tsx`, `adsenseManager.ts`). Zero tautologies, 0% React runtime in index.html, bundle size 44.18 KB (<= 50 KB), and CLEAN forensic integrity audit achieved across the entire repository.

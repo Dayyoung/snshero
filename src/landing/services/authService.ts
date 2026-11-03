@@ -73,6 +73,7 @@ export async function loginWithGoogle(): Promise<{
   user?: LandingUser;
   error?: string;
   isCancelled?: boolean;
+  isDomainUnauthorized?: boolean;
 }> {
   try {
     const authResult = await signInWithGoogleAccount();
@@ -104,16 +105,61 @@ export async function loginWithGoogle(): Promise<{
       return { success: false, isCancelled: true };
     }
 
+    if (authResult.isDomainUnauthorized) {
+      const currentHost = typeof window !== 'undefined' ? window.location.hostname : '';
+      return {
+        success: false,
+        isDomainUnauthorized: true,
+        error: `Firebase 승인 도메인 오류 (auth/unauthorized-domain): 현재 도메인(${currentHost})이 Firebase 콘솔에 등록되지 않은 임시/터널 도메인입니다.`,
+      };
+    }
+
     return {
       success: false,
       error: authResult.errorMessage || '구글 로그인에 실패하였습니다.',
     };
   } catch (e: any) {
+    const isDomainError = e?.message?.includes('unauthorized-domain') || e?.code === 'auth/unauthorized-domain';
+    const currentHost = typeof window !== 'undefined' ? window.location.hostname : '';
     return {
       success: false,
-      error: e?.message || '로그인 중 오류가 발생했습니다.',
+      isDomainUnauthorized: isDomainError,
+      error: isDomainError
+        ? `Firebase 승인 도메인 오류 (auth/unauthorized-domain): 현재 도메인(${currentHost})이 Firebase 콘솔에 미등록되었습니다.`
+        : e?.message || '로그인 중 오류가 발생했습니다.',
     };
   }
+}
+
+/**
+ * Log in with a simulated or local Google account for dev/tunnel domains (e.g. Tailscale *.ts.net)
+ * where Firebase Authorized Domains is restricted.
+ */
+export function loginWithSimulatedGoogle(customName?: string, customEmail?: string): { success: boolean; user: LandingUser } {
+  const name = customName?.trim() || 'Google Adventurer';
+  const email = customEmail?.trim() || `${name.toLowerCase().replace(/\s+/g, '')}@gmail.com`;
+  const uid = 'google_local_' + Math.abs(name.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)).toString(36) + '_' + Date.now().toString(36);
+  
+  const user: LandingUser = {
+    uid,
+    displayName: name,
+    email,
+    photoURL: `https://api.dicebear.com/7.x/bottts/svg?seed=${name}`,
+    isAnonymous: false,
+    providerId: 'google.com',
+  };
+
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(user));
+    localStorage.setItem(STORAGE_KEY_NAME, user.displayName);
+    localStorage.setItem(STORAGE_KEY_AVATAR, user.photoURL);
+  }
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('snshero_auth_changed'));
+  }
+
+  return { success: true, user };
 }
 
 export function loginAsGuest(customName?: string): { success: boolean; user: LandingUser } {

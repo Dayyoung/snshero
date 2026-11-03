@@ -431,3 +431,106 @@ For each of the 39 episodes (`02` through `40`), render a 24fps H.264/AAC MP4 vi
 - [ ] `src/views/CinemaView.tsx` and `src/components/movie/LiveActionCinemaPlayer.tsx` map all episodes `1..40` to `/videos/cinema/episode_XX.mp4` and `/images/cinema/episode_XX_acting/seq_XX_frame_XX.webp`.
 - [ ] `npx tsc --noEmit` exits with code 0 and `npm run build` exits with code 0.
 - [ ] Mandatory Google Form completion report is submitted via `python3 skills/report-ex/scripts/submit_report.py`, recorded in `WORK_LOGS.md`, and committed locally via `git commit` (never `git push`).
+
+## 2026-11-02T03:18:46Z
+
+SNSHero.com의 메인 접속 페이지(/ 또는 /index.html)를 가볍고 반응성이 뛰어난 독립 정적 페이지로 신규 개발하고, 기존 홈 화면은 /home으로 대체하여 실제 서비스 운영이 가능한 새로운 단독 정적 웹 서비스로 개편한다.
+
+Working directory: /Users/dayyoung/project/snshero
+Integrity mode: development
+
+## Requirements
+
+### R1. 메인 정적 랜딩 페이지 신규 개발 및 소스 완전 분리
+기존 화면 소스를 사용하지 않고 성능, 디자인 가이드, 게미피케이션을 고려하여 메인 접속 페이지(/ 또는 /index.html)를 순수 정적 웹 페이지(HTML, CSS, JS 및 이미지 리소스)로 신규 개발한다. 기존 홈 화면은 /home 경로로 접근할 수 있도록 대체하며, 신규 정적 페이지는 추후 index.html, CSS, JS 및 이미지 리소스만으로도 서버 의존성 없이 독립 운영이 가능하도록 소스를 완전히 분리한다.
+
+### R2. PC/태블릿/모바일 반응형 레이아웃 및 캐릭터 이미지 디자인
+가로 제한을 두지 않고 PC, 태블릿, 모바일 모든 뷰포트에서 반응형으로 최적화되어 표시되도록 구현한다. 모든 페이지 디자인은 새로 제작된 7등신, 상반신, 3등신 캐릭터 이미지를 적극 활용하여 연출한다.
+
+### R3. 상단 및 사이드 메뉴 간소화와 첫 접속 도움말 제거
+- 메인(상단) 메뉴: 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰만 표시하고 나머지는 표시하지 않는다.
+- 사이드 메뉴: 로그인, 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰, 커뮤니티만 표시한다.
+- 쇼핑몰, 커뮤니티, 로그인 메뉴는 준비 중 안내 모달을 표시하거나 공식 링크로 연결한다.
+- 첫 접속 시 노출되던 모든 온보딩 도움말 및 튜토리얼 팝업은 일체 제거한다.
+
+### R4. 핵심 화면별 구성 및 카드 육성 시스템 전환
+- 홈: 상하 스크롤 형태의 반응형 랜딩 페이지로 구성하며, 눈히어로 소개, 웹소설, 웹게임, 애니메이션, 네이버웹툰 웹소설, 문피아 웹소설 링크(절찬 연재중 표시)를 포함한다.
+- 마이덱: 현재 내 카드 구성, 덱 TP, 총 TP만 심플하게 표시한다.
+- 플레이: 불필요한 버튼을 제거하고 닫기, 이전, 다음, 나레이션, TTS 버튼만 심플하게 표시한다. 이미지는 웹툰 이미지만 선택 가능하게 구성하며 TTS는 기본적으로 비활성화(OFF) 상태로 제공한다.
+- 카드 (구 미션): 명칭을 '미션'에서 '카드'로 변경한다. 카드 수집율과 110개 카드리스트만 심플하게 표시하고 나머지는 제거한다. 기존 카드 대결 대신 카드 육성 시스템으로 전환하여, 육성을 진행하면 경험치를 획득하고 최대 100레벨까지 레벨업할 수 있도록 한다. 레벨업 시 스탯 포인트를 획득하며, 포인트를 보유한 카드는 빨간 점(인디케이터)으로 표시하고 클릭하여 스탯을 업그레이드할 수 있도록 한다. 카드 육성 데이터(경험치, 레벨, 스탯)는 브라우저 로컬스토리지(localStorage)에 영구 보존된다.
+- 상점: 일반 카드팩, 매직 카드팩, 희귀 카드팩, 아이템 팩, 광고 제거, 공식 소설, 공식 동영상, 코인 충전만 표시하고 나머지는 표시하지 않는다.
+
+### R5. 독립 정적 빌드 및 자동화 검증 환경
+신규 개발된 정적 페이지의 빌드 무결성을 검증하고, 브라우저 렌더링 및 주요 인터랙션(메뉴 전환, 카드 육성, 레벨업 및 로컬스토리지 보존 등)을 자동으로 테스트하는 검증 스크립트를 제공한다.
+
+## Acceptance Criteria
+
+### 정적 아키텍처 및 라우팅
+- [ ] 메인 접속 경로(/ 또는 /index.html)에서 신규 독립 정적 랜딩 페이지가 정상 렌더링되고 기존 홈 화면은 /home에서 접근 가능하다.
+- [ ] 신규 정적 페이지는 외부 런타임 서버 의존성 없이 HTML, CSS, JS, 이미지 리소스만으로 로컬 및 정적 호스팅 환경에서 정상 구동된다.
+
+### 반응형 및 비주얼 디자인
+- [ ] 모바일(360px~), 태블릿(768px~), 데스크톱(1024px~) 전 해상도에서 가로 스크롤 깨짐이나 오버플로우 없이 반응형으로 레이아웃이 정렬된다.
+- [ ] 신규 7등신, 상반신, 3등신 캐릭터 이미지가 페이지 전반에 깨짐 없이 적절한 해상도로 렌더링된다.
+- [ ] 첫 접속 시 이전 서비스의 도움말 또는 온보딩 팝업이 일체 노출되지 않는다.
+
+### 메뉴 및 핵심 화면
+- [ ] 상단 메뉴는 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰 6개 항목만 노출된다.
+- [ ] 사이드 메뉴는 로그인, 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰, 커뮤니티 8개 항목만 노출된다.
+- [ ] 쇼핑몰, 커뮤니티, 로그인 클릭 시 준비 중 모달 또는 지정된 공식 링크가 정상 동작한다.
+- [ ] 홈 섹션에서 상하 스크롤을 통해 눈히어로 소개, 웹소설, 웹게임, 애니메이션, 네이버웹툰/문피아 웹소설 링크가 정상 표시된다.
+- [ ] 마이덱 섹션에서 내 카드 구성, 덱 TP, 총 TP 정보만 간결하게 표시된다.
+- [ ] 플레이 섹션에서 닫기, 이전, 다음, 나레이션, TTS 버튼만 표시되고 웹툰 이미지 선택이 가능하며 TTS는 초기 로드 시 비활성화되어 있다.
+- [ ] 카드 섹션에서 '카드' 명칭이 적용되고 카드 수집율과 110개 카드리스트가 표시된다.
+- [ ] 카드 육성 진행 시 경험치 획득 및 100레벨까지의 레벨업이 가능하고, 포인트 획득 시 카드에 빨간 점 표시가 나타나며 클릭하여 스탯 업그레이드가 수행된다.
+- [ ] 카드 육성 및 레벨/스탯 데이터가 브라우저를 새로고침한 후에도 로컬스토리지에서 유지된다.
+- [ ] 상점 섹션에 일반 카드팩, 매직 카드팩, 희귀 카드팩, 아이템 팩, 광고 제거, 공식 소설, 공식 동영상, 코인 충전 8개 항목만 노출된다.
+
+### 자동화 검증
+- [ ] 정적 빌드 검증 또는 무결성 검사 명령이 exit code 0으로 성공한다.
+- [ ] 렌더링 및 기능 동작(메뉴 노출, 카드 레벨업/스탯, 로컬스토리지 저장)을 검증하는 자동화 스크립트가 성공적으로 수행된다.
+
+## Approved Task Prompt — 2026-11-02T07:32:49Z
+
+Replace legacy standalone page routes (`/home`, `/deck`, `/play`, `/main`, `/shop`, `/card`) with fully functional hash-based single-page sections (`#home`, `#deck`, `#play`, `#card`, `#shop`) on the main application for production deployment. The system must support core game loop parity, character nurturing gated by owned cards and battle victory EXP with repeat hunting, a 15-second idle auto-play redirect, restored shop mechanics, and responsive Google AdSense placements.
+
+Working directory: /Users/dayyoung/project/snshero
+Integrity mode: development
+
+## Requirements
+
+### R1. Hash Route Migration and Feature Parity
+- `#home` replaces the legacy `/home` screen, displaying the SNS Hero logo and Cool Card Deck logo while retaining all existing Home features.
+- `#deck` replaces the legacy `/deck` screen, supporting My Deck editing and retaining all existing Deck features.
+- `#play` replaces the legacy `/play` screen. The initial screen must start on the existing tile game screen. Navigating/moving initiates an episode. Once the episode finishes, proceed to card play as before, and enable auto-play after completion. Existing Play features must remain functional.
+- `#card` replaces the legacy `/card` screen. Character nurturing is restricted strictly to owned characters. Nurturing requires EXP earned exclusively by winning card battles. After a match ends, enable repeat hunting (`반복 사냥`). Existing Card features must remain functional.
+- `#shop` replaces the legacy `/shop` screen. Fix card pack purchase and currency recharge functionality using in-game currency balances and LocalStorage, ensuring card packs can be opened and currencies are properly credited and debited.
+- Complete replacement: Ensure `#home`, `#deck`, `#play`, `#card`, and `#shop` provide full functional parity so legacy routes (`/home`, `/deck`, `/play`, `/main`, `/shop`, `/card`) can be completely removed.
+
+### R2. Global 15-Second Idle Auto-Play Transition
+- On any screen, if user input is absent for 15 seconds or more, automatically navigate to `#play` (`https://dayyoung-macbookpro.tail3717a4.ts.net/#play`) and initiate auto-play. User interaction must reset the timer.
+
+### R3. Responsive Google AdSense Integration
+- Implement responsive Google AdSense ad units across all screens:
+  - PC / Desktop: Display Google ad units in the left and right side gutters/margins without obstructing game interface elements.
+  - Tablet & Mobile: Display a mobile banner ad unit at the top of the viewport.
+- Structure ad containers and standard placeholder script tags so publisher and slot IDs can be configured for production.
+
+## Acceptance Criteria
+
+### Navigation & Core Functional Parity
+- [ ] Navigating to `#home` displays the SNS Hero logo and Cool Card Deck logo, with all existing Home screen features operational.
+- [ ] Navigating to `#deck` allows selecting and saving My Deck configurations, with all existing Deck screen features operational.
+- [ ] Navigating to `#play` starts on the tile game screen, triggers an episode upon movement, transitions to card play when the episode ends, and supports auto-play upon completion.
+- [ ] Navigating to `#card` restricts nurturing strictly to owned characters, awards EXP only when winning card battles, and displays a repeat hunting option upon match completion.
+- [ ] Navigating to `#shop` supports card pack purchases and non-free currency replenishment using in-game LocalStorage currency balances.
+- [ ] All primary workflows on `#home`, `#deck`, `#play`, `#card`, and `#shop` operate on `index.html` hash navigation without depending on the legacy standalone routes.
+
+### Idle Auto-Play Transition
+- [ ] Remaining idle on any screen without user input for 15 seconds triggers automatic navigation to `#play` and starts auto-play.
+- [ ] Any user interaction (click, keypress, touch) resets the 15-second idle timer.
+
+### Responsive Ad Layout
+- [ ] On desktop viewports (width >= 1024px), Google AdSense ad units appear in the left and right margins/gutters.
+- [ ] On tablet and mobile viewports (width < 1024px), an ad banner unit appears at the top of the screen.
+- [ ] Ad placements do not obscure game boards, cards, touch controls, or navigation elements.

@@ -13,7 +13,7 @@ export function renderFooter(): string {
     <footer class="w-full border-t border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] font-mono mt-auto">
       <div class="w-full px-4 sm:px-6 md:px-8 lg:px-12 py-8">
         <!-- Links Grid: 1-col on mobile, 2-col on sm, 3-col on md, 6-col on lg -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 pb-8 border-b border-[rgba(15,0,0,0.12)] text-xs text-stone-600">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3 pb-8 border-b border-[rgba(15,0,0,0.12)] text-xs text-stone-600">
           <a
             href="#book"
             data-nav="book"
@@ -51,6 +51,13 @@ export function renderFooter(): string {
             class="min-h-[44px] flex items-center no-underline hover:text-[#201d1d] transition-colors"
           >
             <span>[+] 문피아 웹소설</span>
+          </a>
+          <a
+            href="#setting"
+            data-nav="setting"
+            class="min-h-[44px] flex items-center no-underline text-[#201d1d] font-bold hover:underline"
+          >
+            <span>[⚙] 환경설정</span>
           </a>
           <a
             href="#play"

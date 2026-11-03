@@ -1,0 +1,28 @@
+--- a/src/routes.ts
++++ b/src/routes.ts
+@@ -483,6 +483,13 @@
+ 
+   if (cleanPath === '/home' || cleanPath === '/main-lobby') return 'home';
+   if (cleanPath === '/deck' || cleanPath === '/mydeck') return 'mydeck';
++  // /play 또는 /main 에피소드/챕터 쿼리 파라미터 우선 평가 (메인 RPG 'main' 라우팅)
++  if (
++    (cleanPath === '/play' || cleanPath === '/main') &&
++    (params.get('ep') || params.get('episode') || params.get('ch') || params.get('chapter'))
++  ) {
++    return 'main';
++  }
+   if (cleanPath === '/play' || cleanPath === '/main') return 'play';
+   if (cleanPath === '/card' || cleanPath === '/cards' || cleanPath === '/mission' || cleanPath === '/missions') return 'card' as ViewType;
+   if (cleanPath === '/shop') return 'shop';
+@@ -495,11 +502,6 @@
+   if (cleanPath === '/script' || cleanPath.startsWith('/script/')) return 'script';
+   if (cleanPath.startsWith('/main/')) return 'main';
+   if (
+-    cleanPath === '/play' &&
+-    (params.get('ep') || params.get('episode') || params.get('ch') || params.get('chapter'))
+-  ) {
+-    return 'main';
+-  }
+   if (cleanPath.startsWith('/gotest')) return 'home';
+   if (cleanPath === '/gwent' || cleanPath.startsWith('/gwent/')) return 'gwent';
+ 

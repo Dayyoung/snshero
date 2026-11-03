@@ -1,0 +1,72 @@
+--- a/src/routes.ts
++++ b/src/routes.ts
+@@ -451,22 +451,36 @@
+  * URL 경로 및 쿼리 파라미터로부터 정확한 ViewType을 역추적합니다.
+  */
+ export function getViewFromPath(pathname: string, search = '', hash = ''): ViewType {
+-  // 1. URL 해시(#) 파싱 우선 처리
+-  const rawHash = (hash || (typeof window !== 'undefined' ? window.location.hash : ''))
++  // 1. URL 해시(#) 파싱 및 쿼리 파라미터 추출
++  const rawHashFull = hash || (typeof window !== 'undefined' ? window.location.hash : '');
++  const hashQuery = rawHashFull.includes('?') ? rawHashFull.substring(rawHashFull.indexOf('?') + 1) : '';
++  const rawHash = rawHashFull
+     .replace(/^#\/?/, '')
+     .split('?')[0]
+     .replace(/\/$/, '')
+     .toLowerCase();
+ 
++  const params = new URLSearchParams(search);
++  if (hashQuery) {
++    const hp = new URLSearchParams(hashQuery);
++    hp.forEach((val, key) => {
++      if (!params.has(key)) params.set(key, val);
++    });
++  }
++
+   if (rawHash) {
+     if (rawHash === 'home' || rawHash === 'main-lobby') return 'home';
+     if (rawHash === 'deck' || rawHash === 'mydeck') return 'mydeck';
+-    if (rawHash === 'play' || rawHash === 'main' || rawHash === 'battle') return 'play';
++    if (rawHash === 'play' || rawHash === 'main' || rawHash === 'battle') {
++      if (params.get('ep') || params.get('episode') || params.get('ch') || params.get('chapter')) {
++        return 'main';
++      }
++      return 'play';
++    }
+     if (rawHash === 'card' || rawHash === 'cards' || rawHash === 'mission' || rawHash === 'missions') return 'card' as ViewType;
+     if (rawHash === 'shop' || rawHash === 'store') return 'shop';
+   }
+ 
+-  const params = new URLSearchParams(search);
+   const queryView = params.get('view');
+   
+   // 쿼리 파라미터 매핑 (?view=...)
+@@ -483,6 +497,15 @@
+ 
+   if (cleanPath === '/home' || cleanPath === '/main-lobby') return 'home';
+   if (cleanPath === '/deck' || cleanPath === '/mydeck') return 'mydeck';
++
++  // /play 또는 /main 에피소드/챕터 쿼리 파라미터 우선 평가 (메인 RPG 'main' 라우팅)
++  if (
++    (cleanPath === '/play' || cleanPath === '/main') &&
++    (params.get('ep') || params.get('episode') || params.get('ch') || params.get('chapter'))
++  ) {
++    return 'main';
++  }
++
+   if (cleanPath === '/play' || cleanPath === '/main') return 'play';
+   if (cleanPath === '/card' || cleanPath === '/cards' || cleanPath === '/mission' || cleanPath === '/missions') return 'card' as ViewType;
+   if (cleanPath === '/shop') return 'shop';
+@@ -494,12 +517,6 @@
+   if (cleanPath.startsWith('/cinema/') || cleanPath.startsWith('/live-cinema/')) return 'cinema';
+   if (cleanPath === '/script' || cleanPath.startsWith('/script/')) return 'script';
+   if (cleanPath.startsWith('/main/')) return 'main';
+-  if (
+-    cleanPath === '/play' &&
+-    (params.get('ep') || params.get('episode') || params.get('ch') || params.get('chapter'))
+-  ) {
+-    return 'main';
+-  }
+   if (cleanPath.startsWith('/gotest')) return 'home';
+   if (cleanPath === '/gwent' || cleanPath.startsWith('/gwent/')) return 'gwent';
+ 

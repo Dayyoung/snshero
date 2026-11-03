@@ -1,193 +1,261 @@
-# Forensic Audit Report — Milestone 2 & 3 (Sprite Sheet Assembly & Web Traffic Palette Optimization)
+# Forensic Audit Report: Milestone 2 (Responsive Shell, Navigation & Assets)
 
-**Auditor**: `auditor_m2_1` (`critic`, `specialist`, `auditor`)  
-**Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/auditor_m2_1/`  
-**Target Work Product**: Commit `a159f7a8`, Worker M2 compositing/quantization scripts, binary sprite sheets (`cards1.png`, `cards2.png`, `card100.png`, `card100_gemini.png`, 11 `character_sheet_*.png`), and test suite integrity (`tests/e2e_character_assets/`)  
-**Parent Orchestrator ID**: `f84aca46-e09f-4967-b5d1-281f855a924e`  
-**Audit Mode**: `development` (per `ORIGINAL_REQUEST.md` line 54)  
-**Date**: 2026-10-18T02:32:30Z  
+- **Auditor**: `teamwork_auditor` (`auditor_m2_1`)
+- **Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/auditor_m2_1/`
+- **Recipient**: `7b342c7a-1d74-43d7-a388-5ffc926b3969`
+- **Timestamp**: 2026-11-02T05:48:00Z
+- **Work Product**: Milestone 2 Implementation (Commit `c1757ebe5`, Features 6–11)
+- **Profile**: General Project (Integrity Mode: `development`)
+- **Binary Verdict**: **CLEAN**
 
 ---
 
 ## Forensic Audit Summary
 
-**Work Product**: Milestone 2 & 3 (Commit `a159f7a8139eaeeca8a59a458fd945bcc48e6823`)  
-**Profile**: General Project  
-**Verdict**: **CLEAN**  
-
-### Phase Results
-- **[Check 1] Commit & Scope Integrity**: **PASS** — Commit `a159f7a8` modified exclusively 16 files (15 owned sprite sheets + `WORK_LOGS.md`). Zero modification of test suites (`tests/`) or production code (`src/`).
-- **[Check 2] Script Authenticity & Facade Detection**: **PASS** — `.agents/teamwork/worker_m2/assemble_and_quantize.py` implements genuine Pillow Lanczos aspect-fill cropping, exact grid math matching `utils.ts`, 256-color `FASTOCTREE` palette quantization, and `compress_level=9`. No stubs, mocks, or hardcoded results.
-- **[Check 3] Binary Magic Header & IHDR Validation**: **PASS** — All 15 sprite sheets start with the pristine 8-byte PNG signature `89 50 4E 47 0D 0A 1A 0A` and valid 13-byte `IHDR` chunks. Corrupted headers in `character_sheet_fire.png`, `hobbit.png`, `mecha.png` (`\xef\xbf\xbdPNG`) repaired. Disguised JPEG in `card100_gemini.png` replaced with genuine RGBA PNG.
-- **[Check 4] Dimensional & Cell Geometry Accuracy**: **PASS** — `cards1.png` (1000x1000), `cards2.png` (1000x1000), `card100.png` (1135x1315), `card100_gemini.png` (1024x1024), and all 11 `character_sheet_*.png` (2560x296) strictly match interface specifications.
-- **[Check 5] Cell Uniqueness & Anti-Duplication**: **PASS** — All 100 cells in `cards1.png`, 10 character cells in `cards2.png` row 0, and 10 cells in each of the 11 faction sheets are distinct non-identical images (0 duplicate cells).
-- **[Check 6] Exhaustive Cross-Asset Pixel Correspondence**: **PASS** — Independent NCC similarity across all 110 cards against `public/seat/*.png`:
-  - Faction Sheets: Min = 0.9998, Avg = 0.9999
-  - Primary Sheets (`cards1`/`cards2`): Min = 0.9914, Avg = 0.9950
-  - Legacy Master `card100.png`: Min = 0.9925, Avg = 0.9956
-  - Master `card100_gemini.png`: Min = 0.9853, Avg = 0.9915
-- **[Check 7] Legacy Asset Preservation**: **PASS** — Rows 1–9 of `cards2.png` (90 non-character cells for minigames) were preserved intact with standard deviation 81.10 and 254 unique colors.
-- **[Check 8] Web Traffic Size Budget Compliance**: **PASS** — Every master sheet is `<= 800 KB` (max: 457.2 KB), every faction sheet is `<= 300 KB` (max: 30.6 KB), and total character asset footprint is **1.70 MB** (budget `<= 10.11 MB`, **86.2% web traffic reduction**).
-- **[Check 9] Test Suite Tamper Check**: **PASS** — Zero modifications to `tests/e2e_character_assets/`. Adversarial tests confirmed test oracles strictly reject corrupted headers, synthetic blank images, and invalid coordinates.
-- **[Check 10] Independent Test Suite Execution**: **PASS** — `python3 tests/e2e_character_assets/runner.py --verbose` passed **50 / 50 assertions (100.0%, Exit Code 0)**.
-- **[Check 11] TypeScript & Production Build**: **PASS** — `npx tsc --noEmit` passed with 0 errors; `npm run build` completed in 17.47s with 0 errors.
+| Check # | Forensic Verification Check | Scope | Result | Evidence / Raw Data |
+|---|---|---|:---:|---|
+| **1** | Hardcoded Test Mocks & Fake Constants Detection | `src/landing/` | **PASS** | Grep scan for `mock`, `fake`, `dummy`, `stub`, `test`, `T1.`, `T2.` returned 0 occurrences in `src/landing/`. |
+| **2** | Facade & Dummy Implementation Detection | All 9 deliverables | **PASS** | `assetCatalog.ts`, `Header.tsx`, `Sidebar.tsx`, `Modals.tsx`, `HomeSection.tsx`, `index.ts` all implement authentic dynamic rendering and coordinate calculations. |
+| **3** | Pre-populated Verification Artifacts Detection | Workspace root | **PASS** | No pre-populated test logs or fake verification outputs exist for M2. |
+| **4** | 110-Character Metadata & Asset Authenticity | `assetCatalog.ts` | **PASS** | All 110 cards mapped to canonical names, factions, rarity, sprite coords; 110 cutouts, 110 seats, 220 busts, and 2 sprite sheets physically verified on disk. |
+| **5** | OpenCode Terminal-Flat CSS & Responsive Shell | `landing.css` | **PASS** | Strict 2-tier radii (0px container / 4px interactive), 1px hairlines, `--opencode-*` palette, 44px+ touch targets, 0 prohibited gradient/large radius classes. |
+| **6** | Exact 6 Top & 8 Side Navigation Items | `Header.tsx`, `Sidebar.tsx` | **PASS** | Header: `[홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰]`. Sidebar: `[로그인, 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰, 커뮤니티]`. |
+| **7** | Secondary Action Modals & LocalStorage Notice | `Modals.tsx` | **PASS** | Modals for `mall`, `community`, `login` with backdrop blur, 44px+ `[x]` dismiss, 44px+ `닫기` button, and clear LocalStorage persistence guarantee. |
+| **8** | Zero Initial Onboarding Popup Intrusion | `index.ts` | **PASS** | `state.activeModal = null`, `state.isSidebarOpen = false` on initial mount; 0 auto-popup triggers or alert dialogs on initial visit. |
+| **9** | Standalone Production Bundle & Zero React | `dist/index.html` | **PASS** | Size = 35,357 bytes (34.53 KB, budget < 50 KB); zero `vendor-react` script tags; `main-*.js` has 0 React runtime dependencies. |
+| **10** | Independent TypeScript Compilation | Project root | **PASS** | `npx tsc --noEmit` exited with code 0 (zero errors). |
+| **11** | Independent Production Build Execution | Project root | **PASS** | `npm run build` exited with code 0 in 37.95s, generating 59 static route files and clean MPA separation. |
+| **12** | Independent Milestone 2 E2E Test Suite | Test Harness | **PASS** | `npx tsx tests/e2e/run_all.ts --milestone M2`: 13 / 13 assertions passed (100.0% PASS). |
+| **13** | Independent Milestone 1 Regression E2E Suite | Test Harness | **PASS** | `npx tsx tests/e2e/run_all.ts --milestone M1`: 9 / 9 assertions passed (100.0% PASS). |
+| **14** | Adversarial Test Oracle Sensitivity | `adversarial_audit.ts` | **PASS** | 19 / 19 adversarial checks passed; oracle verified to fail immediately upon missing nav items or injected popup intrusions. |
 
 ---
 
 ## 1. Observation
 
-### 1.1 Git Commit `a159f7a8` Inspection
-Command: `git show --stat a159f7a8`
+### 1.1 Source Code and Structural Observations
+Direct inspection of commit `c1757ebe5` revealed 10 changed files (1,523 insertions, 23 deletions):
+- `src/landing/types.ts`: Strictly defines `TOP_NAV_ITEMS` (exact 6 items), `SIDE_NAV_ITEMS` (exact 8 items), `EXTERNAL_LINKS`, `BonusStats`, `CardNurtureData`, and `NurtureState`.
+- `src/landing/services/assetCatalog.ts`: Implements all 110 character records in `CHARACTER_BASE_NAMES` (keys 1..110), complete faction mappings in `getFactionForCardId`, mathematical coordinate calculator for `/cards1.png` and `/cards2.png`, fallback SVG data URI generator, and fallback tier candidate resolver.
+- `src/landing/styles/landing.css`: Sets root tokens `--opencode-*`, applies box-sizing reset, enforces `overflow-x: hidden`, assigns `min-height: 44px` to `.touch-target`, `button`, `[role="button"]`, `a.btn`, `.nav-item-btn`, `.sidebar-item-btn`, and establishes clean responsive rules at `768px` and `1024px`.
+- `src/landing/components/Header.tsx`: Renders exact 6 top nav items with `min-h-[44px]`, mobile sidebar toggle `[=]` with `min-h-[44px] min-w-[44px]`, brand logo, and `/home` game launch button with `min-h-[44px]`.
+- `src/landing/components/Sidebar.tsx`: Renders exact 8 side nav items with `min-h-[44px]`, guest status badge, top-right `[x]` dismiss button (`#sidebar-close-btn`) with `min-h-[44px] min-w-[44px]`, and full-screen backdrop overlay (`#sidebar-backdrop`).
+- `src/landing/components/Modals.tsx`: Renders modal dialogs for `mall`, `community`, and `login` with `fixed inset-0 z-50 backdrop bg-black/50`, top-right `[x]` dismiss control, bottom `닫기` button, 44px+ touch targets, and reassurance regarding 100% LocalStorage data persistence.
+- `src/landing/components/Footer.tsx`: Monospace footer providing 5 external links (all `min-h-[44px]`) and system status tags.
+- `src/landing/views/HomeSection.tsx`: Responsive vertical landing providing SnowHero introduction, 3-tier character visuals preview, and 3 external links with `[절찬 연재중]` badges:
+  - Naver Web Novel: `http://novel.naver.com/challenge/list?novelId=1250635`
+  - Naver Webtoon: `https://comic.naver.com/challenge/list?titleId=856677`
+  - Munpia: `https://nlink.munpia.com/link/munpia/novel/616551`
+- `src/landing/index.ts`: Orchestrates reactive state, event delegation for `data-nav`, `data-modal`, `data-action`, Escape key dismissal, and hashchange routing. Initializes `state.activeModal = null` and `state.isSidebarOpen = false` guaranteeing 0% initial onboarding popups.
+
+### 1.2 Physical Asset Verification on Local Filesystem
+Empirical examination of `public/` directories:
 ```
-commit a159f7a8139eaeeca8a59a458fd945bcc48e6823 (HEAD -> main)
-Author: Greg You <dryudryu@gmail.com>
-Date:   Sun Oct 18 11:25:13 2026 +0900
-
-    feat: complete milestone 2 & 3 sprite sheet assembly and FASTOCTREE palette optimization
-
- WORK_LOGS.md                      |  67 ++++++++++++++++++++++++++++++++++++++
- public/card100.png                | Bin 2103042 -> 158025 bytes
- public/card100_gemini.png         | Bin 997531 -> 113108 bytes
- public/cards1.png                 | Bin 2024985 -> 106597 bytes
- public/cards2.png                 | Bin 2799781 -> 468157 bytes
- public/character_sheet_beast.png  | Bin 206119 -> 31377 bytes
- public/character_sheet_dragon.png | Bin 190196 -> 28083 bytes
- public/character_sheet_earth.png  | Bin 198328 -> 29711 bytes
- public/character_sheet_elf.png    | Bin 202550 -> 30139 bytes
- public/character_sheet_fire.png   | Bin 328046 -> 28760 bytes
- public/character_sheet_hobbit.png | Bin 357013 -> 29904 bytes
- public/character_sheet_human.png  | Bin 200338 -> 30365 bytes
- public/character_sheet_mecha.png  | Bin 377201 -> 28557 bytes
- public/character_sheet_undead.png | Bin 196839 -> 27409 bytes
- public/character_sheet_water.png  | Bin 170662 -> 28834 bytes
- public/character_sheet_wind.png   | Bin 181300 -> 29399 bytes
- 16 files changed, 67 insertions(+)
+cards1.png: true (1000x1000 px)
+cards2.png: true (1000x1000 px)
+seat/ directory: 111 files (all 110 hero cards accounted for)
+anime-character-sheets/cutouts/ directory: 110 files (all 110 cutouts accounted for)
+anime-character-sheets/busts/ directory: 220 files (110 PNG + 110 JPG)
 ```
-Test suite files in `tests/e2e_character_assets/` were inspected via `stat -f "%Sm %N" -t "%Y-%m-%d %H:%M:%S" tests/e2e_character_assets/*.py`:
-- `tier2_boundary_corner.py`: 2026-10-18 10:49:19
-- `tier3_coordinate_alignment.py`: 2026-10-18 10:49:42
-- `tier4_real_world.py`: 2026-10-18 10:50:03
-- `helpers.py`: 2026-10-18 11:09:57
-- `runner.py`: 2026-10-18 11:12:59
-- `tier1_feature_coverage.py`: 2026-10-18 11:14:08
-All test files predate Worker M2's execution (11:19:00 KST). Worker M2 touched 0 test files.
 
-### 1.2 Binary Asset Dimensions, Headers & Budgets on Disk
-Measured via independent script `forensic_checker.py`:
-| Asset File | Dimensions | Format / Mode | Raw File Size | Budget Limit | Budget Margin |
-|---|---|---|---|---|---|
-| `public/cards1.png` | 1000 x 1000 | PNG / P (256 cols, tRNS) | 106,597 B (104.1 KB) | 819,200 B (800 KB) | -87.0% |
-| `public/cards2.png` | 1000 x 1000 | PNG / P (256 cols, tRNS) | 468,157 B (457.2 KB) | 819,200 B (800 KB) | -42.8% |
-| `public/card100.png` | 1135 x 1315 | PNG / P (256 cols, tRNS) | 158,025 B (154.3 KB) | 819,200 B (800 KB) | -80.7% |
-| `public/card100_gemini.png` | 1024 x 1024 | PNG / P (256 cols, tRNS) | 113,108 B (110.5 KB) | 819,200 B (800 KB) | -86.2% |
-| `character_sheet_water.png` | 2560 x 296 | PNG / P (256 cols, tRNS) | 28,834 B (28.2 KB) | 307,200 B (300 KB) | -90.6% |
-| `character_sheet_fire.png` | 2560 x 296 | PNG / P (256 cols, tRNS) | 28,760 B (28.1 KB) | 307,200 B (300 KB) | -90.6% |
-| `character_sheet_wind.png` | 2560 x 296 | PNG / P (256 cols, tRNS) | 29,399 B (28.7 KB) | 307,200 B (300 KB) | -90.4% |
-| `character_sheet_earth.png` | 2560 x 296 | PNG / P (256 cols, tRNS) | 29,711 B (29.0 KB) | 307,200 B (300 KB) | -90.3% |
-| `character_sheet_human.png` | 2560 x 296 | PNG / P (256 cols, tRNS) | 30,365 B (29.7 KB) | 307,200 B (300 KB) | -90.1% |
-| `character_sheet_undead.png` | 2560 x 296 | PNG / P (256 cols, tRNS) | 27,409 B (26.8 KB) | 307,200 B (300 KB) | -91.1% |
-| `character_sheet_elf.png` | 2560 x 296 | PNG / P (256 cols, tRNS) | 30,139 B (29.4 KB) | 307,200 B (300 KB) | -90.2% |
-| `character_sheet_hobbit.png` | 2560 x 296 | PNG / P (256 cols, tRNS) | 29,904 B (29.2 KB) | 307,200 B (300 KB) | -90.3% |
-| `character_sheet_beast.png` | 2560 x 296 | PNG / P (256 cols, tRNS) | 31,377 B (30.6 KB) | 307,200 B (300 KB) | -89.8% |
-| `character_sheet_mecha.png` | 2560 x 296 | PNG / P (256 cols, tRNS) | 28,557 B (27.9 KB) | 307,200 B (300 KB) | -90.7% |
-| `character_sheet_dragon.png` | 2560 x 296 | PNG / P (256 cols, tRNS) | 28,083 B (27.4 KB) | 307,200 B (300 KB) | -90.9% |
+### 1.3 Independent Execution Results
 
-Total Character Asset Footprint:
-- 110 Seat Portraits: 618,193 B (603.7 KB)
-- 4 Master Sprite Sheets: 845,887 B (826.1 KB)
-- 11 Faction Sheets: 322,538 B (315.0 KB)
-- **Total Asset Aggregate Payload**: **1,786,618 bytes (1.70 MB)** vs Budget **10,598,400 bytes (10.11 MB)** (86.2% web traffic reduction).
+#### A. Static Type Check (`npx tsc --noEmit`)
+```bash
+npx tsc --noEmit
+# Exit code: 0
+# Output: (zero TypeScript errors)
+```
 
-### 1.3 Pixel Synchronization & Alignment Across All 110 Cards
-Tested all 110 card IDs using Normalized Cross-Correlation (NCC) against individual seat portraits:
-- Faction Sheet Cells (110 cards): Minimum = **0.9998**, Average = **0.9999** (near perfect 1:1 match).
-- Primary Sheet Cells (100 in `cards1`, 10 in `cards2`): Minimum = **0.9914**, Average = **0.9950**.
-- Legacy Master `card100.png` (110 cards): Minimum = **0.9925**, Average = **0.9956**.
-- Master `card100_gemini.png` (110 cards): Minimum = **0.9853**, Average = **0.9915**.
-Zero alignment failures detected.
+#### B. Production Bundler (`npm run build`)
+```bash
+npm run build
+# Exit code: 0 (Built in 37.95s)
+# Output:
+# [post-build] Detected entry script from home.html: /assets/home-CSxW1U1n.js
+# [post-build] Generated 59 static SPA route fallback pages
+# [post-build] Generated 404.html from home.html
+# [post-build] Post-build completed successfully.
+```
 
-### 1.4 Cell Uniqueness & Anti-Duplication
-- `public/cards1.png`: 100 unique cell hashes out of 100 cells.
-- `public/cards2.png` row 0: 10 unique cell hashes out of 10 cells.
-- All 11 `character_sheet_*.png`: 10 unique cell hashes each (110/110 unique).
-- `cards2.png` rows 1–9: pixel standard deviation **81.10**, **254 unique colors** across the 90 minigame cells.
+#### C. Bundle Size & Zero React Runtime Inspection
+```javascript
+dist/index.html size: 35,357 bytes (34.53 KB) -> PASS (< 50 KB ceiling)
+has #landing-root: true
+has vendor-react: false
+scripts loaded in dist/index.html:
+  - https://www.googletagmanager.com/gtag/js?id=AW-980426001
+  - https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6937094123258335
+  - ./assets/main-CN7tyhgn.js (41.36 KB)
 
-### 1.5 Adversarial Test Harness Verification
-Tested `adversarial_test_harness_check.py`:
-- Synthetic UTF-8 replacement header `\xef\xbf\xbdPNG`: correctly rejected by header validator.
-- Solid white image (`std=0.00`): correctly rejected by rich illustration oracle.
-- Solid black image (`std=0.00`): correctly rejected by rich illustration oracle.
-- Solid black image vs `Aquaris.png`: similarity 0.0365 (correctly rejected).
-- Out-of-bounds/custom card routing: ID 105 correctly mapped to `/cards2.png`.
+main-CN7tyhgn.js inspection:
+  - contains React: false
+  - contains createElement: false
+  - contains useState: false
+```
 
-### 1.6 Independent Test & Build Execution
-- `python3 tests/e2e_character_assets/runner.py --verbose`: **50 / 50 PASS (100.0%, Exit Code 0)**.
-- `npx tsc --noEmit`: Exit Code 0 (0 errors).
-- `npm run lint`: Exit Code 0 (0 errors).
-- `npm run build`: Exit Code 0 (Built in 17.47s, 52 SPA routes and 390 SEO news pages generated cleanly).
+#### D. Milestone 2 E2E Suite (`npx tsx tests/e2e/run_all.ts --milestone M2`)
+```
+======================================================================
+  SNSHero Independent Static Landing & /home Decoupling E2E Runner   
+======================================================================
+Working Directory : /Users/dayyoung/project/snshero
+Target Scope      : Static Landing (index.html), /home Decoupling, Card Nurture
+Execution Scope   : ALL TIERS (1..4) | Milestone: M2
+Verbose Logging   : false
+
+=== [TIER 1] Feature Coverage & Interface Contracts ===
+  [T1.RESP.1] [M2] Mobile 360px Fluid Responsive Layout                 ✓ PASS (0.4ms)
+  [T1.RESP.2] [M2] Tablet 768px Grid / Navigation Adaptability          ✓ PASS (0.4ms)
+  [T1.RESP.3] [M2] Desktop 1024px+ Full Widescreen Layout               ✓ PASS (0.1ms)
+  [T1.RESP.4] [M2] 3-Tier Character Visual Assets Catalog               ✓ PASS (0.3ms)
+  [T1.RESP.5] [M2] Zero Onboarding & Tutorial Popups on Visit           ✓ PASS (0.3ms)
+  [T1.NAV.1] [M2] Top Navigation Contains Exact 6 Items                ✓ PASS (0.1ms)
+  [T1.NAV.2] [M2] Side Navigation Contains Exact 8 Items               ✓ PASS (0.1ms)
+  [T1.NAV.3] [M2] Shopping Mall Modal with Dismiss Control             ✓ PASS (0.1ms)
+  [T1.NAV.4] [M2] Community Modal with Dismiss Control                 ✓ PASS (0.1ms)
+  [T1.NAV.5] [M2] Login Modal with Dismiss Control                     ✓ PASS (0.1ms)
+
+=== [TIER 2] Boundary Value Analysis & Corner Cases ===
+  [T2.B6.1] [M2] 320px Ultra-Compact Mobile Viewport Resilience       ✓ PASS (0.1ms)
+
+=== [TIER 3] Pairwise Combinations & State Machine ===
+  [T3.C1.5] [M2] Modal Open / Close Lifecycle & Background State Preservation ✓ PASS (0.1ms)
+
+=== [TIER 4] Real-World Workload Scenarios ===
+  [T4.W1.1] [M2] First-Time Visitor Journey (Zero Popups, Landing Review, Modals) ✓ PASS (0.4ms)
+
+----------------------------------------------------------------------
+TEST EXECUTION SUMMARY
+----------------------------------------------------------------------
+Total Assertions Run : 13
+Passed               : 13
+Failed               : 0
+Pass Rate            : 100.0%
+Total Duration       : 0.06s
+```
+
+#### E. Milestone 1 Regression Check (`npx tsx tests/e2e/run_all.ts --milestone M1`)
+```
+======================================================================
+  SNSHero Independent Static Landing & /home Decoupling E2E Runner   
+======================================================================
+=== [TIER 1] Feature Coverage & Interface Contracts ===
+  [T1.MPA.1] [M1] Root index.html Static Landing Entry                 ✓ PASS (18.6ms)
+  [T1.MPA.2] [M1] Separate home.html Game SPA Entry                    ✓ PASS (6.7ms)
+  [T1.MPA.3] [M1] Vite Multi-Page Rollup Inputs                        ✓ PASS (0.2ms)
+  [T1.MPA.4] [M1] Post-Build Route Preservation Script                 ✓ PASS (4.2ms)
+  [T1.MPA.5] [M1] Router Decoupling / vs /home                         ✓ PASS (0.4ms)
+
+=== [TIER 2] Boundary Value Analysis & Corner Cases ===
+  [T2.B3.1] [M1] Trailing Slash & /home Resolution                    ✓ PASS (0.2ms)
+  [T2.B3.2] [M1] Invalid Route Graceful Fallback                      ✓ PASS (0.1ms)
+  [T2.B7.1] [M1] Static Offline Host Zero External Call Integrity     ✓ PASS (0.2ms)
+
+=== [TIER 3] Pairwise Combinations & State Machine ===
+  [T3.C1.4] [M1] Dual Routing Independence (/ Landing vs /home Game SPA) ✓ PASS (0.4ms)
+
+----------------------------------------------------------------------
+TEST EXECUTION SUMMARY
+----------------------------------------------------------------------
+Total Assertions Run : 9
+Passed               : 9
+Failed               : 0
+Pass Rate            : 100.0%
+Total Duration       : 0.06s
+```
 
 ---
 
 ## 2. Logic Chain
 
-1. **Absence of Malicious or Facade Shortcuts**:
-   Inspecting commit `a159f7a8` and `.agents/teamwork/worker_m2/assemble_and_quantize.py` confirms that Worker M2 wrote and executed a real image compositing and palette quantization pipeline. The script loads real image buffers from disk, crops them using Lanczos aspect-fill, pastes them into computed integer and float grid coordinates, and runs Pillow's C-accelerated `FASTOCTREE` quantization. There are no hardcoded string returns or mock objects.
+1. **Absence of Facade Code and Mocks**:
+   - Every file added in commit `c1757ebe5` was inspected line by line.
+   - No mock objects, fake pass-throughs, or dummy string constants matching test output were detected.
+   - All components actively assemble DOM elements via pure template functions and handle events.
 
-2. **Full Resolution of Milestone 2 Deficiencies**:
-   Prior to Worker M2, three faction sheets (`fire`, `hobbit`, `mecha`) failed to decode due to UTF-8 replacement bytes (`\xef\xbf\xbdPNG`), and `card100_gemini.png` was a disguised JPEG without an alpha channel. Observation 1.2 demonstrates that all 15 PNG files now start with the standard 8-byte PNG signature `89 50 4E 47 0D 0A 1A 0A`, have clean `IHDR` chunks, and decode with valid transparency (`tRNS`), resolving tests `T1.F4.5`, `T1.F4.7`, `T1.F5.2`, `T2.F2.2`, and `T2.F2.3`.
+2. **Ground-Truth Verification of 110-Character Metadata**:
+   - `ORIGINAL_REQUEST.md` and `PROJECT.md` require genuine 3-tier character visual assets (7-head cutout, torso/bust, 3-head SD sprite).
+   - In `assetCatalog.ts`, all 110 IDs are defined with genuine name mappings matching `src/cardDatabase.ts` titles and factions.
+   - The filesystem contains all 110 cutout files in `public/anime-character-sheets/cutouts/`, all 110 seat files in `public/seat/`, and 220 bust files in `public/anime-character-sheets/busts/`.
+   - The sprite sheet coordinates correctly allocate IDs 1–100 to `/cards1.png` and IDs 101–110 to `/cards2.png`.
 
-3. **Pixel Correspondence and Non-Duplication**:
-   If Worker M2 had duplicated a single placeholder cell across the sheets, the cell uniqueness check (Observation 1.4) would have found fewer than 100 unique hashes in `cards1.png` or fewer than 10 in the faction sheets. Instead, all cells are unique, and every single cell achieves > 0.985 NCC similarity with its corresponding remastered portrait in `public/seat/*.png` (Observation 1.3), resolving `T3.F6.4` and `T3.F6.5`.
+3. **Authenticity of Responsive Layout & Design System**:
+   - `landing.css` implements fluid resets (`box-sizing: border-box`, `overflow-x: hidden`, `width: 100%`) ensuring no horizontal scroll bleed across 320px, 360px, 768px, 1024px, and 4K viewports.
+   - All interactive touch targets strictly conform to `min-height: 44px`.
+   - There are zero instances of prohibited classes (`bg-gradient-to-*`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, `animate-ping`, `animate-bounce`).
+   - The design strictly adheres to OpenCode Terminal-Flat tokens (`#fdfcfc` canvas, `#201d1d` ink, 1px hairlines, 0px container radii, 4px button radii).
 
-4. **Preservation of Minigame Dependencies**:
-   `cards2.png` rows 1–9 contain 90 legacy minigame sprites needed by `PlayGameView.tsx`. Worker M2 backed up this 1000x900 pixel region before compositing row 0 and repasted it onto the canvas. Standard deviation of 81.10 and 254 unique colors confirm the minigame sprites were not erased or overwritten, resolving `T2.F6.3`.
+4. **Authenticity of Navigation & Modal Contracts**:
+   - Header declares exactly 6 items: `['홈', '마이덱', '플레이', '미션', '상점', '쇼핑몰']`.
+   - Sidebar declares exactly 8 items: `['로그인', '홈', '마이덱', '플레이', '미션', '상점', '쇼핑몰', '커뮤니티']`.
+   - Modals provide genuine dialogs with backdrop blur, `[x]` dismiss control, `닫기` button, and explanation of LocalStorage persistence.
+   - `index.ts` mounts with `activeModal = null` and `isSidebarOpen = false`, proving 0% onboarding popups on initial visit.
 
-5. **Strict File Size Budget Compliance**:
-   Observation 1.2 confirms that all 4 master sheets are well below 800 KB (the largest is 457.2 KB for `cards2.png`), all 11 faction sheets are well below 300 KB (averaging ~29 KB, a 90% traffic reduction), and the aggregate payload is 1.70 MB vs the 10.11 MB limit, resolving `T2.F7.3`, `T2.F7.4`, `T2.F7.5`, and `T4.F1.5`.
+5. **Bundle Size and Zero React Runtime Guarantee**:
+   - Production `dist/index.html` measures 35,357 bytes (34.53 KB), well below the 50 KB requirement.
+   - `dist/index.html` does NOT load `vendor-react` chunk.
+   - The entry bundle `main-CN7tyhgn.js` is pure vanilla JS (0 React imports, 0 createElement, 0 useState).
 
-6. **Test Suite Untampered and Functioning as an Objective Oracle**:
-   Timestamps and git diffs confirm that Worker M2 made zero changes to `tests/`. Adversarial stress-testing confirmed that the test oracles reject corrupted headers and flat blank images. Independent execution yielded 50/50 passing assertions.
-
-7. **Production Viability**:
-   `npx tsc --noEmit` and `npm run build` executed with exit code 0, confirming that the new binary assets and coordinate alignments cause zero bundling, type-checking, or build failures.
+6. **Adversarial Oracle Verification**:
+   - An independent adversarial test script (`adversarial_audit.ts`) confirmed that:
+     - Mutating `TOP_NAV_DEFS` by removing an item triggers immediate test rejection.
+     - Injecting an initial modal or popup into `state` triggers immediate test rejection.
+     - Out-of-bounds IDs (0, -5, 111, 999) are safely clamped to valid card IDs (1 and 110).
 
 ---
 
 ## 3. Caveats
 
-- **Scope Boundary**: This audit specifically covered Milestone 2 & 3 deliverables (commit `a159f7a8` and sprite sheet generation). Milestone 1 individual portrait remastering in `public/seat/*.png` was verified by `auditor_m1_1` and sampled here for cross-asset alignment.
-- **No Remote Git Push**: In accordance with `GEMINI.md`, all changes remain in local commits; no remote push was performed.
+1. **Interactive Scope Boundaries**: In accordance with the Project Milestone plan, Milestone 2 scope is strictly bounded to the Responsive Shell, 6+8 Navigation, Modals, 3-Tier Assets, and Zero-Popup Guard. The interactive logic for remaining sections (MyDeck 5-card slot TP calculator, Play 5-button webtoon viewer, Card 1~100Lv nurture engine with red dot indicators and LocalStorage state persistence, and Shop 8 fixed items) is scheduled for implementation in Milestone 3.
+2. **Git Commit Discipline**: In compliance with user instructions and `GEMINI.md`, changes were committed locally (commit `c1757ebe5`). `git push` was not executed.
 
 ---
 
 ## 4. Conclusion
 
-The work product delivered by Worker M2 for Milestone 2 & 3 satisfies all project requirements and constraints without integrity violations, shortcuts, or facades:
-- All 15 sprite sheets exist on disk, decode cleanly as valid PNGs, possess exact target dimensions, and preserve alpha transparency.
-- All 110 characters are synchronized across all 4 visual surfaces with exceptional pixel alignment (> 0.985 NCC).
-- Web traffic is reduced by 86.2%, strictly complying with all per-file and aggregate size budgets.
-- All 50 E2E test assertions pass independently with exit code 0.
-- TypeScript type checking and production bundling pass cleanly.
+Milestone 2 implementation is **authentic, complete, and robust**. It contains zero integrity violations, zero test mocking, zero facade code, and zero test tampering. All builds, production bundles, and 4-tier E2E suites pass with 100% success.
 
-**Final Binary Verdict**: **`CLEAN`**
+**Final Forensic Verdict**: **CLEAN**
 
 ---
 
 ## 5. Verification Method
 
-To independently reproduce and verify this audit:
+To independently reproduce this forensic audit:
 
-```bash
-# 1. Run independent forensic audit script:
-python3 .agents/teamwork/auditor_m2_1/forensic_checker.py
+1. **Verify TypeScript compilation**:
+   ```bash
+   npx tsc --noEmit
+   ```
+   *Expected result*: Exit code 0, 0 errors.
 
-# 2. Run adversarial test harness sensitivity check:
-python3 .agents/teamwork/auditor_m2_1/adversarial_test_harness_check.py
+2. **Verify Production Build & Bundle Metrics**:
+   ```bash
+   npm run build
+   node -e '
+   const fs = require("fs");
+   const html = fs.readFileSync("dist/index.html", "utf8");
+   console.log("Size:", html.length, "bytes (< 50 KB)");
+   console.log("Zero React:", !html.includes("vendor-react"));
+   '
+   ```
+   *Expected result*: Exit code 0, Size < 50 KB (~34.5 KB), Zero React = true.
 
-# 3. Run official E2E test suite:
-python3 tests/e2e_character_assets/runner.py --verbose
+3. **Verify Milestone 2 E2E Suite**:
+   ```bash
+   npx tsx tests/e2e/run_all.ts --milestone M2
+   ```
+   *Expected result*: 13 / 13 assertions pass (100.0% PASS).
 
-# 4. Run TypeScript and production build checks:
-npx tsc --noEmit
-npm run build
-```
+4. **Verify Milestone 1 Regression E2E Suite**:
+   ```bash
+   npx tsx tests/e2e/run_all.ts --milestone M1
+   ```
+   *Expected result*: 9 / 9 assertions pass (100.0% PASS).
+
+5. **Run Independent Adversarial Audit**:
+   ```bash
+   npx tsx .agents/teamwork/auditor_m2_1/adversarial_audit.ts
+   ```
+   *Expected result*: 19 / 19 checks pass.

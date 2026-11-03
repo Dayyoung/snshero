@@ -112,8 +112,9 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
   const showRedDot = options.showRedDot ?? (isOwned && cardNurtureStore.hasUnspentPoints(cardId));
   const hideStats = options.hideStats || false;
   const visualTier = options.visualTier || 'bust';
-  const primaryImgUrl = visualTier === '7head' ? asset.cutoutUrl : asset.bustPngUrl;
-  const fallbackImgUrl = visualTier === '7head' ? asset.bustPngUrl : asset.seatUrl;
+  const bustUrlWithVer = `${asset.bustPngUrl}?v=20261103v4`;
+  const primaryImgUrl = visualTier === '7head' ? asset.cutoutUrl : bustUrlWithVer;
+  const fallbackImgUrl = visualTier === '7head' ? bustUrlWithVer : asset.seatUrl;
 
   // Custom size or default container-adaptive styling
   const customClass = options.className || 'w-full aspect-[5/7] min-h-[220px]';

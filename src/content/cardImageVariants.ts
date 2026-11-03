@@ -411,8 +411,8 @@ export function getCardDisplayModeImageCandidates(
 
   if (mode === 'bust') {
     const candidates = [
-      `/anime-character-sheets/busts/${pad3}_bust.png`,
-      `/anime-character-sheets/busts/${pad3}_bust.jpg`,
+      `/anime-character-sheets/busts/${pad3}_bust.png?v=20261103v4`,
+      `/anime-character-sheets/busts/${pad3}_bust.jpg?v=20261103v4`,
     ];
     if (cutoutFile) {
       candidates.push(`/anime-character-sheets/cutouts/${cutoutFile}`);

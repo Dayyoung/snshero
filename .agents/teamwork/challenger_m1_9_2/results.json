@@ -1,0 +1,304 @@
+{
+  "timestamp": "2026-11-02T08:56:24.393Z",
+  "milestone": "M1",
+  "challenger": "challenger_m1_9_2",
+  "verdict": "APPROVE",
+  "summary": {
+    "total": 38,
+    "passed": 38,
+    "failed": 0,
+    "passRate": "100.0%"
+  },
+  "tests": [
+    {
+      "id": "CH2-STORM-1",
+      "category": "Throttle Concurrency",
+      "name": "250ms throttle restricts timer rescheduling during 500 events/sec storm",
+      "passed": true,
+      "message": "Expected 7..12 scheduleTimer calls for 1000 events over 2000ms, got 8 (ratio: 0.80%)",
+      "details": {
+        "totalEvents": 1000,
+        "scheduleTimerCalls": 8,
+        "throttleEffective": true
+      }
+    },
+    {
+      "id": "CH2-STORM-2",
+      "category": "Post-Storm Idle Count",
+      "name": "Auto-play does NOT trigger at 14,999ms post-storm",
+      "passed": true,
+      "message": "Auto-play triggered prematurely after storm: isAutoActive=false",
+      "details": {
+        "clockNow": 1700000016999,
+        "isAutoActivePre": false
+      }
+    },
+    {
+      "id": "CH2-STORM-3",
+      "category": "Post-Storm Exact Expiration",
+      "name": "Auto-play triggers at exact 15,000ms post-storm",
+      "passed": true,
+      "message": "Auto-play failed to trigger at exactly 15,000ms post-storm",
+      "details": {
+        "clockNow": 1700000017000,
+        "isAutoActivePost": true
+      }
+    },
+    {
+      "id": "CH2-BOUND-1",
+      "category": "Boundary Precision",
+      "name": "Initial remaining time is 15,000ms",
+      "passed": true,
+      "message": "Initial remaining time expected 15,000, got 15000"
+    },
+    {
+      "id": "CH2-BOUND-2",
+      "category": "Boundary Precision",
+      "name": "14,999ms boundary: MUST NOT trigger auto-play",
+      "passed": true,
+      "message": "Triggered prematurely at 14,999ms: triggerCount=0, storage=false, remaining=1",
+      "details": {
+        "triggerCount": 0,
+        "storageFlagAt14999": false,
+        "remainingAt14999": 1
+      }
+    },
+    {
+      "id": "CH2-BOUND-3",
+      "category": "Boundary Precision",
+      "name": "15,000ms boundary: MUST trigger auto-play and navigate",
+      "passed": true,
+      "message": "Failed to trigger at 15,000ms: triggerCount=1, storage=true, navigatedTarget=https://dayyoung-macbookpro.tail3717a4.ts.net/#play",
+      "details": {
+        "triggerCount": 1,
+        "storageFlagAt15000": true,
+        "navigatedTarget": "https://dayyoung-macbookpro.tail3717a4.ts.net/#play"
+      }
+    },
+    {
+      "id": "CH2-RESET-1",
+      "category": "Last-Second Interaction",
+      "name": "At 14,900ms, timer is active and has not triggered",
+      "passed": true
+    },
+    {
+      "id": "CH2-RESET-2",
+      "category": "Last-Second Interaction",
+      "name": "User interaction at 14,900ms resets remaining time to 15,000ms",
+      "passed": true,
+      "message": "Expected remaining 15,000ms, got 15000"
+    },
+    {
+      "id": "CH2-RESET-3",
+      "category": "Last-Second Interaction",
+      "name": "At 15,000ms (original deadline), auto-play is CANCELLED and does NOT trigger",
+      "passed": true,
+      "message": "Trigger count expected 0, got 0"
+    },
+    {
+      "id": "CH2-RESET-4",
+      "category": "Last-Second Interaction",
+      "name": "At 29,899ms (14,999ms post-reset), auto-play has NOT triggered",
+      "passed": true,
+      "message": "Remaining time: 1, triggerCount: 0"
+    },
+    {
+      "id": "CH2-RESET-5",
+      "category": "Last-Second Interaction",
+      "name": "At 29,900ms (exactly 15,000ms post-reset), auto-play MUST trigger",
+      "passed": true,
+      "message": "Trigger count expected 1, got 1"
+    },
+    {
+      "id": "CH2-THROTTLE-TAIL-1",
+      "category": "Throttle Tail Accuracy",
+      "name": "At 15,000ms, throttled tail event prevented early trigger and rescheduled",
+      "passed": true,
+      "message": "Expected triggerCount 0, got 0"
+    },
+    {
+      "id": "CH2-THROTTLE-TAIL-2",
+      "category": "Throttle Tail Accuracy",
+      "name": "At 15,099ms (14,999ms since last throttled activity), NOT triggered",
+      "passed": true
+    },
+    {
+      "id": "CH2-THROTTLE-TAIL-3",
+      "category": "Throttle Tail Accuracy",
+      "name": "At 15,100ms (15,000ms since throttled activity), MUST trigger",
+      "passed": true,
+      "message": "Expected triggerCount 1, got 1"
+    },
+    {
+      "id": "CH2-STORAGE-1",
+      "category": "Storage Persistence",
+      "name": "All 4 auto-play persistence flags are written to localStorage",
+      "passed": true,
+      "message": "Flags mismatch: hero_kadan_rpg_auto_mode=true, season1=true, auto_battle=true, auto_loop=true",
+      "details": {
+        "flag1": "true",
+        "flag2": "true",
+        "flag3": "true",
+        "flag4": "true"
+      }
+    },
+    {
+      "id": "CH2-EVENT-1",
+      "category": "CustomEvent Dispatch",
+      "name": "hero_kadan_rpg_auto_mode_updated custom event dispatched with { autoMode: true }",
+      "passed": true,
+      "message": "hero_kadan_rpg_auto_mode_updated event: {\"type\":\"hero_kadan_rpg_auto_mode_updated\",\"detail\":{\"autoMode\":true}}"
+    },
+    {
+      "id": "CH2-EVENT-2",
+      "category": "CustomEvent Dispatch",
+      "name": "snshero_idle_autoplay_triggered custom event dispatched with targetUrl and timestamp",
+      "passed": true,
+      "message": "snshero_idle_autoplay_triggered event: {\"type\":\"snshero_idle_autoplay_triggered\",\"detail\":{\"timestamp\":1700000092000,\"targetUrl\":\"https://dayyoung-macbookpro.tail3717a4.ts.net/#play\",\"fromUrl\":\"https://dayyoung-macbookpro.tail3717a4.ts.net/#home\"}}"
+    },
+    {
+      "id": "CH2-STORAGE-2",
+      "category": "Storage Resilience",
+      "name": "Storage QuotaExceededError does NOT crash or unhandle exception",
+      "passed": true,
+      "message": "triggerNow() threw uncaught exception on storage error"
+    },
+    {
+      "id": "CH2-ROUTE-1",
+      "category": "Redundant Reload Guard",
+      "name": "If already on #play with auto-mode active, avoid redundant reload/navigation",
+      "passed": true,
+      "message": "Unexpected navigation or triggerDetail: navigated=false, detail={\"timestamp\":1700000092000,\"fromUrl\":\"https://dayyoung-macbookpro.tail3717a4.ts.net/#home\",\"targetUrl\":\"https://dayyoung-macbookpro.tail3717a4.ts.net/#play\",\"alreadyOnPlay\":true,\"autoModeWasActive\":true}"
+    },
+    {
+      "id": "CH2-ROUTE-2",
+      "category": "In-Place Activation",
+      "name": "If already on #play without auto-mode, activate in-place without page reload",
+      "passed": true,
+      "message": "Unexpected navigation: navigated=false, detail={\"timestamp\":1700000092000,\"fromUrl\":\"https://dayyoung-macbookpro.tail3717a4.ts.net/#home\",\"targetUrl\":\"https://dayyoung-macbookpro.tail3717a4.ts.net/#play\",\"alreadyOnPlay\":true,\"autoModeWasActive\":false}"
+    },
+    {
+      "id": "CH2-ROUTE-3",
+      "category": "Localhost Fallback",
+      "name": "On localhost, fallback to relative hash #play to prevent breaking local dev server",
+      "passed": true,
+      "message": "Expected hash #play on localhost, got #play"
+    },
+    {
+      "id": "CH2-VIS-1",
+      "category": "Visibility Sync",
+      "name": "Idle time accumulates normally (10,000ms)",
+      "passed": true
+    },
+    {
+      "id": "CH2-VIS-2",
+      "category": "Visibility Sync",
+      "name": "Switching back to visible tab resets timer to 15,000ms preventing immediate redirect",
+      "passed": true,
+      "message": "Remaining time after visibility visible: 15000"
+    },
+    {
+      "id": "CH2-VIS-3",
+      "category": "Visibility Sync",
+      "name": "Auto-play does NOT trigger at 14,999ms post-visibility reset",
+      "passed": true
+    },
+    {
+      "id": "CH2-VIS-4",
+      "category": "Visibility Sync",
+      "name": "Auto-play triggers at 15,000ms post-visibility reset",
+      "passed": true
+    },
+    {
+      "id": "CH2-IDEMP-1",
+      "category": "Idempotent Start",
+      "name": "Calling start() multiple times attaches each event listener exactly once (0 duplicates)",
+      "passed": true,
+      "message": "Expected 8 added listeners, got 8"
+    },
+    {
+      "id": "CH2-IDEMP-2",
+      "category": "Clean Stop Cleanup",
+      "name": "Calling stop() removes all 8 window event listeners and document visibility listener",
+      "passed": true,
+      "message": "Listeners remaining: window=0, docVisibility=0"
+    },
+    {
+      "id": "CH2-EVENT-TYPE-mousemove",
+      "category": "Event Type Coverage",
+      "name": "Input event 'mousemove' cleanly resets 15s idle timer",
+      "passed": true,
+      "message": "Event 'mousemove' failed to reset: triggerCount=0, remaining=13000"
+    },
+    {
+      "id": "CH2-EVENT-TYPE-mousedown",
+      "category": "Event Type Coverage",
+      "name": "Input event 'mousedown' cleanly resets 15s idle timer",
+      "passed": true,
+      "message": "Event 'mousedown' failed to reset: triggerCount=0, remaining=13000"
+    },
+    {
+      "id": "CH2-EVENT-TYPE-keydown",
+      "category": "Event Type Coverage",
+      "name": "Input event 'keydown' cleanly resets 15s idle timer",
+      "passed": true,
+      "message": "Event 'keydown' failed to reset: triggerCount=0, remaining=13000"
+    },
+    {
+      "id": "CH2-EVENT-TYPE-touchstart",
+      "category": "Event Type Coverage",
+      "name": "Input event 'touchstart' cleanly resets 15s idle timer",
+      "passed": true,
+      "message": "Event 'touchstart' failed to reset: triggerCount=0, remaining=13000"
+    },
+    {
+      "id": "CH2-EVENT-TYPE-touchmove",
+      "category": "Event Type Coverage",
+      "name": "Input event 'touchmove' cleanly resets 15s idle timer",
+      "passed": true,
+      "message": "Event 'touchmove' failed to reset: triggerCount=0, remaining=13000"
+    },
+    {
+      "id": "CH2-EVENT-TYPE-scroll",
+      "category": "Event Type Coverage",
+      "name": "Input event 'scroll' cleanly resets 15s idle timer",
+      "passed": true,
+      "message": "Event 'scroll' failed to reset: triggerCount=0, remaining=13000"
+    },
+    {
+      "id": "CH2-EVENT-TYPE-pointerdown",
+      "category": "Event Type Coverage",
+      "name": "Input event 'pointerdown' cleanly resets 15s idle timer",
+      "passed": true,
+      "message": "Event 'pointerdown' failed to reset: triggerCount=0, remaining=13000"
+    },
+    {
+      "id": "CH2-EVENT-TYPE-wheel",
+      "category": "Event Type Coverage",
+      "name": "Input event 'wheel' cleanly resets 15s idle timer",
+      "passed": true,
+      "message": "Event 'wheel' failed to reset: triggerCount=0, remaining=13000"
+    },
+    {
+      "id": "CH2-REAL-CLOCK-1",
+      "category": "Real Wall-Clock Concurrency",
+      "name": "Real wall-clock: timer does not trigger prematurely at 30ms",
+      "passed": true,
+      "message": "Triggered prematurely at 30ms"
+    },
+    {
+      "id": "CH2-REAL-CLOCK-2",
+      "category": "Real Wall-Clock Concurrency",
+      "name": "Real wall-clock: user interaction at 30ms cancels trigger at original 60ms mark",
+      "passed": true,
+      "message": "Failed to cancel: triggered at 70ms wall-clock mark"
+    },
+    {
+      "id": "CH2-REAL-CLOCK-3",
+      "category": "Real Wall-Clock Concurrency",
+      "name": "Real wall-clock: triggers reliably after reset expiration (75ms post-reset)",
+      "passed": true,
+      "message": "Failed to trigger after real wall-clock reset expiration"
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+--- a/tests/adversarial_m5_shop_adsense.ts
++++ b/tests/adversarial_m5_shop_adsense.ts
+@@ -107,6 +107,16 @@
+ import { CARD_DATABASE } from '../src/cardDatabase';
+ import { cardNurtureStore, CardNurtureStore } from '../src/landing/services/cardNurtureStore';
++import {
++  executeShopPurchase,
++  renderPackRevealModal,
++  closePackRevealModal,
++  getActiveRevealPack,
++  setActiveRevealPack,
++  setUserCoins,
++  getUserCoins,
++  type RevealedCardMeta,
++} from '../src/landing/views/ShopSection';
+ import {
+   ReferenceShopManager,
+   ReferenceAdSenseManager,
+@@ -169,57 +179,25 @@
+ console.log(`${CYAN}--- [SUITE 1] 3-Card Pack Reveal Modal (PackRevealModal) DOM Structure & Lifecycles ---${RESET}`);
+ {
+-  const refNurture = new ReferenceNurtureStore(mockStorage);
+-  const refShop = new ReferenceShopManager(refNurture, mockStorage);
++  mockStorage.clear();
++  setUserCoins(5000);
++  closePackRevealModal();
+ 
+-  // 1. Pack purchase yields 3 cards
+-  const purchase = refShop.purchaseCardPack('normal');
++  // 1. Pack purchase yields 3 cards via genuine production executeShopPurchase
++  const purchase = executeShopPurchase('pack_normal');
++  const revealedCards: RevealedCardMeta[] = purchase.revealedCards || [];
+   assert(
+     'ADV-M5-PACK-01',
+     'SUITE 1',
+     'Pack purchase produces exactly 3 revealed cards with required attributes',
+     purchase.success &&
+-      purchase.revealedCards.length === 3 &&
+-      purchase.revealedCards.every(
++      revealedCards.length === 3 &&
++      revealedCards.every(
+         (c) =>
+           typeof c.cardId === 'number' &&
+           c.cardId >= 1 &&
+           c.cardId <= 110 &&
+           typeof c.nameKo === 'string' &&
+           typeof c.rarity === 'string' &&
+           typeof c.power === 'number'
+       ),
+     '3 cards with cardId, nameKo, rarity, power',
+-    `Count: ${purchase.revealedCards.length}, IDs: ${purchase.revealedCards.map((c) => c.cardId).join(',')}`
++    `Count: ${revealedCards.length}, IDs: ${revealedCards.map((c) => c.cardId).join(',')}`
+   );
+ 
+-  // 2. Check card reveal HTML template requirements (Mocking drop-in modal markup)
+-  const renderMockPackRevealModal = (cards: typeof purchase.revealedCards, isOpen: boolean) => {
+-    if (!isOpen) return '';
+-    return `
+-      <div id="pack-reveal-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono" role="dialog" aria-modal="true">
+-        <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-2xl w-full p-6 relative">
+-          <button type="button" data-action="close-pack-reveal" class="absolute top-4 right-4 min-h-[44px] min-w-[44px] text-stone-500 font-bold" aria-label="닫기">[x]</button>
+-          <div class="mb-4">
+-            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] rounded-sm">카드팩 오픈</span>
+-            <h2 class="text-lg font-bold m-0 mt-1">획득한 영웅 카드 3장</h2>
+-          </div>
+-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+-            ${cards
+-              .map(
+-                (c, i) => `
+-              <div class="pack-card-slot border border-[rgba(15,0,0,0.12)] p-3 text-center bg-[#f8f7f7] rounded-none" data-card-id="${c.cardId}" data-flipped="true">
+-                <img src="/seat/${c.cardId}.png" alt="${c.nameKo}" class="w-20 h-24 mx-auto object-cover mb-2 border border-stone-300 rounded-none" />
+-                <div class="text-xs font-bold text-[#201d1d]">${c.nameKo}</div>
+-                <div class="text-[10px] text-stone-500">${c.rarity} · PWR ${c.power}</div>
+-              </div>
+-            `
+-              )
+-              .join('')}
+-          </div>
+-          <div class="flex justify-end pt-2 border-t border-[rgba(15,0,0,0.08)]">
+-            <button type="button" data-action="confirm-pack-reveal" class="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px]">확인 및 보관함에 저장</button>
+-          </div>
+-        </div>
+-      </div>
+-    `;
+-  };
+-
+-  const modalHtml = renderMockPackRevealModal(purchase.revealedCards, true);
++  // 2. Genuine production renderPackRevealModal() call (Zero mock template)
++  const modalHtml = renderPackRevealModal();
+ 
+   assert(
+     'ADV-M5-PACK-02',
+     'SUITE 1',
+     'Modal container adheres to OpenCode Terminal-Flat design (rounded-none, font-mono, hairline)',
+     modalHtml.includes('rounded-none') && modalHtml.includes('font-mono') && modalHtml.includes('border'),
+     'Contains rounded-none and font-mono and hairline border',
+-    'Verified via DOM template inspection'
++    'Verified via production renderPackRevealModal DOM inspection'
+   );
+ 
+   assert(
+     'ADV-M5-PACK-03',
+     'SUITE 1',
+     'Modal contains exactly 3 card display slots (pack-card-slot)',
+     (modalHtml.match(/class="pack-card-slot/g) || []).length === 3,
+     '3 pack-card-slot elements',
+     `Found: ${(modalHtml.match(/class="pack-card-slot/g) || []).length}`
+   );
+ 
+   assert(
+     'ADV-M5-PACK-04',
+     'SUITE 1',
+     'Each revealed card references /seat/${id}.png and displays rarity and power',
+-    purchase.revealedCards.every((c) => modalHtml.includes(`/seat/${c.cardId}.png`) && modalHtml.includes(c.nameKo)),
++    revealedCards.every((c) => modalHtml.includes(`/seat/${c.cardId}.png`) && modalHtml.includes(c.nameKo)),
+     'All 3 card image URLs and names rendered',
+-    'Verified via DOM template string matching'
++    'Verified via production DOM string matching'
+   );
+ 
+   assert(
+@@ -284,9 +262,13 @@
+     'Verified'
+   );
+ 
++  // 3. Genuine production modal closing lifecycle
++  closePackRevealModal();
++  const closedModalHtml = renderPackRevealModal();
++
+   assert(
+     'ADV-M5-PACK-08',
+     'SUITE 1',
+-    'Modal returns empty string when isOpen is false',
+-    renderMockPackRevealModal(purchase.revealedCards, false) === '',
++    'Modal returns empty string when closed (activeRevealPack is null / closePackRevealModal called)',
++    closedModalHtml === '',
+     'Empty string',
+-    renderMockPackRevealModal(purchase.revealedCards, false)
++    closedModalHtml === '' ? 'Empty string' : closedModalHtml
+   );
+ }

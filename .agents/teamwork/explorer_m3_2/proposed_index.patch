@@ -1,0 +1,63 @@
+--- a/src/landing/index.ts
++++ b/src/landing/index.ts
+@@ -16,6 +16,7 @@ import { renderModals } from './components/Modals';
+ import { renderFooter } from './components/Footer';
+ import { renderHomeSection } from './views/HomeSection';
++import { renderPlaySection, handlePlayAction, stopPlayTts } from './views/PlaySection';
+ 
+ interface LandingState {
+   activeView: ViewKey;
+@@ -33,6 +34,9 @@ function renderActiveViewContent(view: ViewKey): string {
+   if (view === 'home') {
+     return renderHomeSection();
+   }
++  if (view === 'play') {
++    return renderPlaySection();
++  }
+ 
+   const titles: Record<ViewKey, { ko: string; desc: string }> = {
+     home: { ko: '홈 (Home)', desc: '눈히어로 공식 소개 및 연재관' },
+@@ -122,6 +126,9 @@ function handleEventDelegation(event: Event): void {
+   const action = target.getAttribute('data-action');
+ 
+   if (nav) {
++    if (state.activeView === 'play' && nav !== 'play') {
++      stopPlayTts();
++    }
+     state.activeView = nav;
+     state.isSidebarOpen = false;
+     window.location.hash = nav;
+@@ -140,6 +147,9 @@ function handleEventDelegation(event: Event): void {
+   } else if (action === 'close-modal') {
+     state.activeModal = null;
+     renderApp();
++  } else if (action && action.startsWith('play-')) {
++    handlePlayAction(action, target as HTMLElement);
++    renderApp();
+   }
+ }
+ 
+@@ -150,6 +160,8 @@ function handleGlobalKeydown(event: KeyboardEvent): void {
+     } else if (state.isSidebarOpen) {
+       state.isSidebarOpen = false;
+       renderApp();
++    } else if (state.activeView === 'play') {
++      stopPlayTts();
+     }
+   }
+ }
+@@ -164,6 +176,14 @@ function mountLanding(): void {
+   // Register event listeners
+   document.addEventListener('click', handleEventDelegation);
+   window.addEventListener('keydown', handleGlobalKeydown);
++  document.addEventListener('change', (event: Event) => {
++    const target = event.target as HTMLElement;
++    const action = target?.getAttribute('data-action');
++    if (action && action.startsWith('play-')) {
++      handlePlayAction(action, target);
++      renderApp();
++    }
++  });
+   window.addEventListener('hashchange', () => {
+     const currentHash = window.location.hash.replace('#', '') as ViewKey;
+     if (validViews.includes(currentHash) && currentHash !== state.activeView) {

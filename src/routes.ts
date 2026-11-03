@@ -82,8 +82,8 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionEn: 'Enjoy special events, roulette, and claw machines for rich rewards on SNSHero.com.',
   },
   setting: {
-    path: '/setting',
-    aliases: ['/settings'],
+    path: '#setting',
+    aliases: ['/setting', '/settings', '#setting', '#settings'],
     titleKo: '설정 (Settings) - 눈히어로.com 게임 환경설정',
     titleEn: 'Settings - SNSHero.com',
     descriptionKo: '배경음악, 볼륨 조절 및 데이터 연동, 다국어 설정을 손쉽게 변경하세요.',
@@ -439,6 +439,7 @@ export function getViewPath(view: ViewType): string {
     main: '#play',
     card: '#card',
     shop: '#shop',
+    setting: '#setting',
   };
   if (hashRoutes[view as string]) {
     return hashRoutes[view as string];
@@ -481,6 +482,7 @@ export function getViewFromPath(pathname: string, search = '', hash = ''): ViewT
     if (rawHash === 'shop' || rawHash === 'store') return 'shop';
     if (rawHash === 'book' || rawHash === 'novel') return 'novel';
     if (rawHash === 'webtoon' || rawHash === 'webtoo' || rawHash === 'cartoon' || rawHash === 'cartoonbook') return 'webtoon';
+    if (rawHash === 'setting' || rawHash === 'settings') return 'setting';
   }
 
   const queryView = params.get('view');

@@ -4,7 +4,7 @@
  * HTML, JS 번들, CSS, JSON, API 등 모든 코드/데이터는 실시간 네트워크에서 즉시 받아옵니다.
  */
 
-const MEDIA_CACHE_NAME = 'snshero-media-v6-cutscenes2026';
+const MEDIA_CACHE_NAME = 'snshero-media-v10-busts20261103';
 
 // 캐싱 대상 미디어 파일 확장자 정규식
 const MEDIA_EXT_REGEX = /\.(png|jpg|jpeg|webp|gif|svg|ico|avif|mp3|wav|ogg)(\?.*)?$/i;
@@ -40,7 +40,27 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
 
-  // 1. 이미지 및 사운드 파일: Cache-First 전략 (빠른 미디어 로딩 & 트래픽 절약)
+  // 1. 캐릭터 상반신(busts) 및 컷아웃 에셋: Network-First 전략 (업데이트된 이미지 즉시 반영)
+  if (url.pathname.includes('/anime-character-sheets/busts/') || url.pathname.includes('/anime-character-sheets/cutouts/')) {
+    event.respondWith(
+      fetch(request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(MEDIA_CACHE_NAME).then((cache) => {
+            cache.put(request, responseClone);
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        return caches.match(request).then((cachedResponse) => {
+          return cachedResponse || new Response(null, { status: 404 });
+        });
+      })
+    );
+    return;
+  }
+
+  // 2. 그 외 이미지 및 사운드 파일: Cache-First 전략 (빠른 미디어 로딩 & 트래픽 절약)
   if (MEDIA_EXT_REGEX.test(url.pathname) || MEDIA_EXT_REGEX.test(url.href)) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {

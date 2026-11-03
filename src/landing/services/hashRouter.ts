@@ -6,8 +6,8 @@
  * Full client-side hash routing (#home, #deck, #play, #card, #shop).
  */
 
-export type ViewKey = 'home' | 'deck' | 'play' | 'card' | 'shop' | 'mall' | 'book' | 'webtoon';
-export type HashRoute = '#home' | '#deck' | '#play' | '#card' | '#shop' | '#mall' | '#book' | '#webtoon';
+export type ViewKey = 'home' | 'deck' | 'play' | 'card' | 'shop' | 'mall' | 'book' | 'webtoon' | 'setting';
+export type HashRoute = '#home' | '#deck' | '#play' | '#card' | '#shop' | '#mall' | '#book' | '#webtoon' | '#setting';
 export type LegacyRoute =
   | '/home'
   | '/deck'
@@ -20,7 +20,9 @@ export type LegacyRoute =
   | '/book'
   | '/novel'
   | '/webtoon'
-  | '/cartoonbook';
+  | '/cartoonbook'
+  | '/setting'
+  | '/settings';
 
 export const VALID_VIEWS: readonly ViewKey[] = [
   'home',
@@ -31,6 +33,7 @@ export const VALID_VIEWS: readonly ViewKey[] = [
   'mall',
   'book',
   'webtoon',
+  'setting',
 ] as const;
 
 export const HASH_ROUTES: readonly HashRoute[] = [
@@ -42,6 +45,7 @@ export const HASH_ROUTES: readonly HashRoute[] = [
   '#mall',
   '#book',
   '#webtoon',
+  '#setting',
 ] as const;
 
 export const LEGACY_ROUTES: readonly LegacyRoute[] = [
@@ -57,6 +61,8 @@ export const LEGACY_ROUTES: readonly LegacyRoute[] = [
   '/novel',
   '/webtoon',
   '/cartoonbook',
+  '/setting',
+  '/settings',
 ] as const;
 
 export const HASH_VIEW_MAP: Record<string, ViewKey> = {
@@ -82,6 +88,8 @@ export const HASH_VIEW_MAP: Record<string, ViewKey> = {
   webtoo: 'webtoon',
   cartoon: 'webtoon',
   cartoonbook: 'webtoon',
+  setting: 'setting',
+  settings: 'setting',
 };
 
 export const LEGACY_PATH_MAP: Record<string, ViewKey> = {
@@ -103,6 +111,8 @@ export const LEGACY_PATH_MAP: Record<string, ViewKey> = {
   '/novel': 'book',
   '/webtoon': 'webtoon',
   '/cartoonbook': 'webtoon',
+  '/setting': 'setting',
+  '/settings': 'setting',
 };
 
 export const LEGACY_ROUTE_MAPPING: Record<LegacyRoute, HashRoute> = {
@@ -118,6 +128,8 @@ export const LEGACY_ROUTE_MAPPING: Record<LegacyRoute, HashRoute> = {
   '/novel': '#book',
   '/webtoon': '#webtoon',
   '/cartoonbook': '#webtoon',
+  '/setting': '#setting',
+  '/settings': '#setting',
 };
 
 /**

@@ -80,7 +80,7 @@ const routes = [
   'home', 'bench', 'benchmark', 'shbp', 'reddit', 'play', 'card', 'card-play', 'deck', 'mydeck', 'shop', 'battle', 'market',
   'rank', 'ranking', 'guild', 'novel', 'book', 'webtoon', 'script', 'animation', 'movie', 'cinema', 'event', 'companion',
   'stock', 'community', 'admin', 'status', 'profile',
-  'setting', 'share', 'boost', 'creator', 'web3', 'mall',
+  'setting', 'settings', 'share', 'boost', 'creator', 'web3', 'mall',
   // Wiki pages
   'wiki', 'wiki/card', 'wiki/howtoplay', 'wiki/tip',
   // Reddit Subreddits

@@ -175,67 +175,140 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
           </button>
         </div>
 
-        <!-- Squad Guidance Notice (Duplicate Prevention) -->
+        <!-- Squad Guidance Notice (Duplicate Prevention & Full Roster Selection) -->
         <div class="px-4 sm:px-6 py-2.5 bg-[#f1eeee] border-b border-[rgba(15,0,0,0.08)] text-[11px] text-stone-600 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-          <span>💡 <strong>중복 편성 방지:</strong> 이미 다른 슬롯에 출격 중인 카드는 중복 배치할 수 없습니다.</span>
-          <span class="font-bold text-[#201d1d]">보유 카드: ${ownedCards.length}종</span>
+          <span>💡 <strong>영웅 교체 안내:</strong> 보유 영웅 장착, 슬롯 간 위치 맞교환(⇄), 또는 전체 110종 영웅 중 원하는 영웅으로 즉시 교체할 수 있습니다.</span>
+          <span class="font-bold text-[#201d1d]">보유 카드: ${ownedCards.length}종 / 전체 110종</span>
         </div>
 
-        <!-- Owned Cards Grid -->
-        <div class="flex-1 overflow-y-auto p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          ${ownedCards.map(card => {
-            const asset = getCharacterAsset(card.cardId);
-            const stats = getCardEffectiveStats(card.cardId);
-            const isCurrentSlot = card.cardId === currentSlotCardId;
-            const otherSlotIdx = activeDeckIds.indexOf(card.cardId);
-            const isAlreadyInOtherSlot = otherSlotIdx !== -1 && otherSlotIdx !== editingSlot;
+        <!-- Owned & Full Roster Cards Scrollable Container -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+          <!-- 1. Owned Cards Grid -->
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between border-b border-[rgba(15,0,0,0.1)] pb-1.5">
+              <span class="text-xs font-black text-[#201d1d] uppercase">보유 영웅 목록 (${ownedCards.length}종)</span>
+              <span class="text-[11px] text-stone-500">터치하여 SLOT 0${editingSlot + 1}에 즉시 배치</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+              ${ownedCards.map(card => {
+                const stats = getCardEffectiveStats(card.cardId);
+                const isCurrentSlot = card.cardId === currentSlotCardId;
+                const otherSlotIdx = activeDeckIds.indexOf(card.cardId);
+                const isAlreadyInOtherSlot = otherSlotIdx !== -1 && otherSlotIdx !== editingSlot;
 
+                return `
+                  <div class="border ${isCurrentSlot ? 'border-[#201d1d] bg-[#f8f7f7]' : isAlreadyInOtherSlot ? 'border-stone-300 bg-stone-50' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d]'} p-2.5 sm:p-3 rounded-none flex flex-col justify-between space-y-2.5">
+                    <!-- Original TCG Card Preview -->
+                    <div
+                      ${!isCurrentSlot ? `role="button" tabindex="0" data-action="swap-deck-card" data-slot-index="${editingSlot}" data-card-id="${card.cardId}"` : ''}
+                      class="w-full ${!isCurrentSlot ? 'cursor-pointer' : ''}"
+                    >
+                      ${renderOriginalCardHtml(card.cardId, {
+                        isOwned: true,
+                        level: stats.level,
+                        hideStats: false,
+                        className: 'w-full aspect-[5/7]',
+                      })}
+                    </div>
+
+                    <!-- Action / Status Button (min-h-[44px]) -->
+                    <div class="w-full pt-0.5 space-y-1.5">
+                      ${isCurrentSlot ? `
+                        <button
+                          type="button"
+                          disabled
+                          class="w-full py-2.5 bg-stone-200 text-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-default"
+                        >
+                          현재 슬롯 장착 중
+                        </button>
+                      ` : isAlreadyInOtherSlot ? `
+                        <button
+                          type="button"
+                          disabled
+                          class="w-full py-1.5 bg-stone-200 text-stone-500 text-[10px] font-bold rounded-sm min-h-[32px] cursor-not-allowed"
+                          title="다른 슬롯에 출격 중인 영웅입니다"
+                        >
+                          SLOT 0${otherSlotIdx + 1} 출격 중 (중복 불가)
+                        </button>
+                        <button
+                          type="button"
+                          data-action="swap-deck-card"
+                          data-slot-index="${editingSlot}"
+                          data-card-id="${card.cardId}"
+                          class="w-full py-2 bg-stone-800 text-[#fdfcfc] hover:bg-[#201d1d] text-xs font-bold rounded-sm min-h-[44px] cursor-pointer transition-colors"
+                        >
+                          ⇄ SLOT 0${otherSlotIdx + 1}과 위치 맞교환
+                        </button>
+                      ` : `
+                        <button
+                          type="button"
+                          data-action="swap-deck-card"
+                          data-slot-index="${editingSlot}"
+                          data-card-id="${card.cardId}"
+                          class="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer transition-opacity"
+                        >
+                          이 영웅으로 교체 (EQUIP) →
+                        </button>
+                      `}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- 2. Additional Heroes from Full 110 Roster (Instant Recruit & Equip) -->
+          ${(() => {
+            const ownedSet = new Set(ownedCards.map(c => c.cardId));
+            const unownedIds: number[] = [];
+            for (let id = 1; id <= 110; id++) {
+              if (!ownedSet.has(id)) unownedIds.push(id);
+            }
+            if (unownedIds.length === 0) return '';
             return `
-              <div class="border ${isCurrentSlot ? 'border-[#201d1d] bg-[#f8f7f7]' : isAlreadyInOtherSlot ? 'border-stone-200 bg-stone-50 opacity-60' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d]'} p-3 rounded-none flex flex-col justify-between space-y-3">
-                <!-- Original TCG Card Preview -->
-                <div class="w-full">
-                  ${renderOriginalCardHtml(card.cardId, {
-                    isOwned: true,
-                    level: stats.level,
-                    hideStats: false,
-                    className: 'w-full aspect-[5/7]',
-                  })}
+              <div class="space-y-2.5 pt-2">
+                <div class="flex items-center justify-between border-b border-[rgba(15,0,0,0.1)] pb-1.5">
+                  <span class="text-xs font-black text-[#201d1d] uppercase">전체 영웅 도감에서 선택 교체 (${unownedIds.length}종)</span>
+                  <span class="text-[11px] text-emerald-700 font-bold">선택 즉시 보유 등록 및 SLOT 0${editingSlot + 1} 장착</span>
                 </div>
-
-                <!-- Action / Status Button (min-h-[44px]) -->
-                <div class="w-full pt-1">
-                  ${isCurrentSlot ? `
-                    <button
-                      type="button"
-                      disabled
-                      class="w-full py-2.5 bg-stone-200 text-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-default"
-                    >
-                      현재 슬롯 장착 중
-                    </button>
-                  ` : isAlreadyInOtherSlot ? `
-                    <button
-                      type="button"
-                      disabled
-                      class="w-full py-2.5 bg-stone-200 text-stone-400 text-xs font-bold rounded-sm min-h-[44px] cursor-not-allowed"
-                      title="다른 슬롯에 출격 중인 영웅은 중복 선택할 수 없습니다"
-                    >
-                      SLOT 0${otherSlotIdx + 1} 출격 중 (중복 불가)
-                    </button>
-                  ` : `
-                    <button
-                      type="button"
-                      data-action="swap-deck-card"
-                      data-slot-index="${editingSlot}"
-                      data-card-id="${card.cardId}"
-                      class="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer transition-opacity"
-                    >
-                      이 영웅으로 교체 (EQUIP) →
-                    </button>
-                  `}
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                  ${unownedIds.map(cardId => {
+                    const stats = getCardEffectiveStats(cardId);
+                    return `
+                      <div class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d] p-2.5 sm:p-3 rounded-none flex flex-col justify-between space-y-2.5">
+                        <div
+                          role="button"
+                          tabindex="0"
+                          data-action="swap-deck-card"
+                          data-slot-index="${editingSlot}"
+                          data-card-id="${cardId}"
+                          class="w-full cursor-pointer"
+                        >
+                          ${renderOriginalCardHtml(cardId, {
+                            isOwned: true,
+                            level: stats.level,
+                            hideStats: false,
+                            className: 'w-full aspect-[5/7]',
+                          })}
+                        </div>
+                        <div class="w-full pt-0.5">
+                          <button
+                            type="button"
+                            data-action="swap-deck-card"
+                            data-slot-index="${editingSlot}"
+                            data-card-id="${cardId}"
+                            class="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer transition-opacity"
+                          >
+                            이 영웅으로 교체 (EQUIP) →
+                          </button>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
                 </div>
               </div>
             `;
-          }).join('')}
+          })()}
         </div>
 
         <!-- Drawer Footer -->

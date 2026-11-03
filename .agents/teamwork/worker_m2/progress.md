@@ -1,20 +1,25 @@
 # Progress Tracker — Milestone 2 Worker
 
-Last visited: 2026-10-18T11:35:00Z
+Last visited: 2026-11-02T05:35:00Z
 
 ## Overall Status: COMPLETED
 
-### Task Checklist
-- [x] Initial baseline audit and verify TypeScript compilation (`npx tsc --noEmit`)
-- [x] 1. `CinematicMoviePlayer.tsx` & `MovieView.tsx` (Remove shadow-2xl, verify 44px+)
-- [x] 2. `CardMarketplaceView.tsx` (Upgrade 13 sub-44px buttons, toasts, actions)
-- [x] 3. `NovelView.tsx` (Upgrade 8 sub-44px buttons: chapter drawer close, episode cards, prompt copy)
-- [x] 4. `GuildListView.tsx` (Cleanse 54 banned tokens, upgrade 17 buttons to 44px, match GuildDetailView)
-- [x] 5. `RankingView.tsx` (Cleanse 147 banned tokens, upgrade 30 buttons to 44px, flatten modals)
-- [x] 6. `CommunityView.tsx` (Cleanse 82 banned tokens, upgrade 68 buttons to 44px, flatten cards/modals)
-- [x] 7. `RedditCommunityView.tsx` & `RedditQuickCreatePostBar.tsx` (Cleanse banned tokens, font-mono, 44px buttons)
-- [x] 8. Remaining 21 subcomponents in `src/components/reddit/*` (Cleanse banned tokens, font-mono, 44px buttons)
-- [x] 9. `ShopView.tsx` (Cleanse 289 banned tokens, upgrade 39 buttons to 44px, terminal-flat modals & gacha)
-- [x] 10. Automated audit verification (0 banned tokens, 0 sub-44px buttons across all 33 owned files)
-- [x] 11. `npx tsc --noEmit` and `npm run build` verification (0 errors, 17.03s build exit code 0)
-- [x] 12. Handoff report (`handoff.md`), Google Form report submission, and notification to parent
+### Milestone 2 Task Checklist
+- [x] Read ORIGINAL_REQUEST.md, PROJECT.md, TEST_INFRA.md, DISPATCH.md, and all 3 explorer handoffs
+- [x] Baseline test run (`npx tsx tests/e2e/run_all.ts --milestone M2 --allow-fail`: 2/13 passed)
+- [x] 1. Implement `src/landing/types.ts`
+- [x] 2. Implement `src/landing/styles/landing.css`
+- [x] 3. Implement `src/landing/components/Header.tsx`
+- [x] 4. Implement `src/landing/components/Sidebar.tsx`
+- [x] 5. Implement `src/landing/components/Modals.tsx`
+- [x] 6. Implement `src/landing/components/Footer.tsx`
+- [x] 7. Implement `src/landing/services/assetCatalog.ts`
+- [x] 8. Implement `src/landing/views/HomeSection.tsx` (M2 layout placeholder with external serialization links)
+- [x] 9. Implement `src/landing/index.ts` (Bootstrap shell, zero onboarding popups)
+- [x] 10. Verify TypeScript compilation (`npx tsc --noEmit`: 0 errors)
+- [x] 11. Verify Production build (`npm run build`: exit code 0, dist/index.html 35KB, 0 vendor-react)
+- [x] 12. Verify M2 E2E suite (`npx tsx tests/e2e/run_all.ts --milestone M2`: 13/13 100% PASS)
+- [x] 13. Verify M1 E2E suite regression (`npx tsx tests/e2e/run_all.ts --milestone M1`: 9/9 100% PASS)
+- [x] 14. Submit Google Form report & update `WORK_LOGS.md`
+- [x] 15. Create local git commit (`git commit`, no push: commit `c1757ebe5`)
+- [x] 16. Write `handoff.md` and send completion message to parent

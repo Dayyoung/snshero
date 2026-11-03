@@ -1,0 +1,326 @@
+{
+  "timestamp": "2026-11-02T08:55:33.185Z",
+  "total": 52,
+  "passed": 41,
+  "failed": 11,
+  "results": [
+    {
+      "category": "DOM_ISOLATION",
+      "name": "Source index.html exists",
+      "passed": true,
+      "details": "Found index.html"
+    },
+    {
+      "category": "DOM_ISOLATION",
+      "name": "Source home.html exists",
+      "passed": true,
+      "details": "Found home.html"
+    },
+    {
+      "category": "DOM_ISOLATION",
+      "name": "index.html DOM Isolation",
+      "passed": true,
+      "details": "Found #landing-root (true), no active #root div (true)"
+    },
+    {
+      "category": "DOM_ISOLATION",
+      "name": "index.html Entry Script Target",
+      "passed": true,
+      "details": "Loads /src/landing/index.ts and strictly does not load /src/main.tsx"
+    },
+    {
+      "category": "DOM_ISOLATION",
+      "name": "home.html DOM Isolation",
+      "passed": true,
+      "details": "Found #root (true), no #landing-root (true)"
+    },
+    {
+      "category": "DOM_ISOLATION",
+      "name": "home.html Entry Script Target",
+      "passed": true,
+      "details": "Loads /src/main.tsx and strictly does not load /src/landing/index.ts"
+    },
+    {
+      "category": "DOM_ISOLATION",
+      "name": "Landing Mount Pure Target",
+      "passed": true,
+      "details": "Mounts into landing-root"
+    },
+    {
+      "category": "DOM_ISOLATION",
+      "name": "Landing Mount Dual Target Precedence",
+      "passed": true,
+      "details": "Prefers landing-root over root when both present"
+    },
+    {
+      "category": "DOM_ISOLATION",
+      "name": "Landing Mount Safe No-op",
+      "passed": true,
+      "details": "Graceful null when neither container present"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "Home View Path is /home",
+      "passed": false,
+      "details": "home.path expected '/home' but got '#home'"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "Home Aliases Decoupled from /",
+      "passed": true,
+      "details": "home.aliases are [/home, /main-lobby, #home, #main-lobby]"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/home')",
+      "passed": true,
+      "details": "Resolved to 'home' (Canonical /home route)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/home/')",
+      "passed": true,
+      "details": "Resolved to 'home' (Trailing slash /home/)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/main-lobby')",
+      "passed": true,
+      "details": "Resolved to 'home' (Legacy alias /main-lobby)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/deck')",
+      "passed": true,
+      "details": "Resolved to 'mydeck' (Deck view route (maps to mydeck))"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/deck/')",
+      "passed": true,
+      "details": "Resolved to 'mydeck' (Trailing slash /deck/ (maps to mydeck))"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/mydeck')",
+      "passed": true,
+      "details": "Resolved to 'mydeck' (MyDeck alias route)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/play')",
+      "passed": true,
+      "details": "Resolved to 'play' (Play view route)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/shop')",
+      "passed": true,
+      "details": "Resolved to 'shop' (Shop view route)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/marketplace')",
+      "passed": true,
+      "details": "Resolved to 'card-marketplace' (Marketplace route)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/market')",
+      "passed": true,
+      "details": "Resolved to 'stock-market' (Market alias (stock-market))"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/novel')",
+      "passed": true,
+      "details": "Resolved to 'novel' (Novel view route)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/movie')",
+      "passed": true,
+      "details": "Resolved to 'movie' (Movie view route)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/unknown_nonexistent_xyz')",
+      "passed": true,
+      "details": "Resolved to 'home' (Unknown route graceful fallback to home)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/')",
+      "passed": true,
+      "details": "Resolved to 'home' (SPA fallback when pathname is /)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewFromPath('/home.html')",
+      "passed": true,
+      "details": "Resolved to 'home' (Direct .html access fallback to home)"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewPath('home')",
+      "passed": false,
+      "details": "Expected '/home', got '#home'"
+    },
+    {
+      "category": "ROUTE_BOUNDARY",
+      "name": "getViewPath('mydeck')",
+      "passed": false,
+      "details": "Expected '/deck', got '#deck'"
+    },
+    {
+      "category": "BUILD_ARTIFACTS",
+      "name": "dist/index.html exists",
+      "passed": true,
+      "details": "Found dist/index.html"
+    },
+    {
+      "category": "BUILD_ARTIFACTS",
+      "name": "dist/home.html exists",
+      "passed": true,
+      "details": "Found dist/home.html"
+    },
+    {
+      "category": "BUILD_ARTIFACTS",
+      "name": "dist/home/index.html exists",
+      "passed": true,
+      "details": "Found dist/home/index.html"
+    },
+    {
+      "category": "BUILD_ARTIFACTS",
+      "name": "dist/deck/index.html exists",
+      "passed": true,
+      "details": "Found dist/deck/index.html"
+    },
+    {
+      "category": "BUILD_ARTIFACTS",
+      "name": "dist/play/index.html exists",
+      "passed": true,
+      "details": "Found dist/play/index.html"
+    },
+    {
+      "category": "BUILD_ARTIFACTS",
+      "name": "dist/shop/index.html exists",
+      "passed": true,
+      "details": "Found dist/shop/index.html"
+    },
+    {
+      "category": "BUILD_ARTIFACTS",
+      "name": "dist/404.html exists",
+      "passed": true,
+      "details": "Found dist/404.html"
+    },
+    {
+      "category": "BUNDLE_ISOLATION",
+      "name": "dist/index.html Free of Heavy Runtimes",
+      "passed": true,
+      "details": "Zero React/TF/Firebase/Motion scripts referenced in landing"
+    },
+    {
+      "category": "BUNDLE_ISOLATION",
+      "name": "dist/home.html Has Home Entry Script",
+      "passed": true,
+      "details": "Found home entry: /assets/home-S-6YL4Qv.js"
+    },
+    {
+      "category": "BUNDLE_ISOLATION",
+      "name": "dist/home.html Bundle Imports React",
+      "passed": false,
+      "details": "home bundle does not import vendor-react"
+    },
+    {
+      "category": "BUNDLE_ISOLATION",
+      "name": "dist/home/index.html Inherits SPA Bundle",
+      "passed": false,
+      "details": "Missing home-*.js in dist/home/index.html: "
+    },
+    {
+      "category": "BUNDLE_ISOLATION",
+      "name": "dist/deck/index.html Inherits SPA Bundle",
+      "passed": false,
+      "details": "Missing home-*.js in dist/deck/index.html: "
+    },
+    {
+      "category": "BUNDLE_ISOLATION",
+      "name": "dist/404.html Inherits SPA Bundle for Client Routing",
+      "passed": true,
+      "details": "Loads home-*.js bundle for deep-link fallback"
+    },
+    {
+      "category": "BUNDLE_BUDGET",
+      "name": "dist/index.html Total JS Footprint < 50KB",
+      "passed": true,
+      "details": "Actual 0 bytes (0.00 KB) < 51,200 bytes budget (Margin: 50.00 KB)",
+      "metrics": {
+        "totalBytes": 0,
+        "totalKb": 0,
+        "budgetKb": 50,
+        "scripts": []
+      }
+    },
+    {
+      "category": "LIVE_HTTP_PROBE",
+      "name": "GET / (Landing root)",
+      "passed": true,
+      "details": "Status 200, contains #landing-root and main- bundle"
+    },
+    {
+      "category": "LIVE_HTTP_PROBE",
+      "name": "GET /index.html (Explicit landing)",
+      "passed": true,
+      "details": "Status 200, contains #landing-root and main- bundle"
+    },
+    {
+      "category": "LIVE_HTTP_PROBE",
+      "name": "GET /home (Decoupled Game SPA)",
+      "passed": true,
+      "details": "Status 200, contains #root and home- bundle"
+    },
+    {
+      "category": "LIVE_HTTP_PROBE",
+      "name": "GET /home/ (Trailing slash Game SPA)",
+      "passed": false,
+      "details": "Failed: status=200, root=false, script=false"
+    },
+    {
+      "category": "LIVE_HTTP_PROBE",
+      "name": "GET /home.html (Direct SPA HTML)",
+      "passed": true,
+      "details": "Status 200, contains #root and home- bundle"
+    },
+    {
+      "category": "LIVE_HTTP_PROBE",
+      "name": "GET /home with query params",
+      "passed": true,
+      "details": "Status 200, contains #root and home- bundle"
+    },
+    {
+      "category": "LIVE_HTTP_PROBE",
+      "name": "GET /deck (Subroute SPA)",
+      "passed": false,
+      "details": "Failed: status=200, root=false, script=false"
+    },
+    {
+      "category": "LIVE_HTTP_PROBE",
+      "name": "GET /deck/ (Subroute with trailing slash)",
+      "passed": false,
+      "details": "Failed: status=200, root=false, script=false"
+    },
+    {
+      "category": "LIVE_HTTP_PROBE",
+      "name": "GET /shop (Subroute SPA)",
+      "passed": false,
+      "details": "Failed: status=200, root=false, script=false"
+    },
+    {
+      "category": "LIVE_HTTP_PROBE",
+      "name": "GET /play (Subroute SPA)",
+      "passed": false,
+      "details": "Failed: status=200, root=false, script=false"
+    }
+  ]
+}

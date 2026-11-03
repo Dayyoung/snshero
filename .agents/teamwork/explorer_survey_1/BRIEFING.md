@@ -1,7 +1,8 @@
-# BRIEFING — 2026-10-18T10:13:00Z
+# BRIEFING — 2026-11-02T03:33:00Z
 
 ## Mission
-Comprehensive UI/UX design overhaul survey and specification mining for Core Gameplay & Battle Screens (`HomeView.tsx`, `MobileCardPlayScreen.tsx`, `MyDeckView.tsx`, `PlayGameView.tsx`, `PageHeader.tsx` & battle HUDs) against `DESIGN.md` OpenCode Terminal-Flat design system.
+Investigate R1 (Static Architecture, Routing, Decoupling) and R5 (Static Build & Automated Verification) for SNSHero.com.
+Propose how to implement a standalone pure static landing page for `/` and `/index.html` with zero external server runtime dependency, route the existing app to `/home`, design clear file/build separation, and establish an automated verification harness.
 
 ## 🔒 My Identity
 - Archetype: explorer (Specification Miner)
@@ -9,6 +10,10 @@ Comprehensive UI/UX design overhaul survey and specification mining for Core Gam
 - Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1
 - Original parent: f84aca46-e09f-4967-b5d1-281f855a924e
 - Milestone: Full-Screen Terminal-Flat Visual Unification & Ergonomics Overhaul
+- Roles: Explorer (Architecture & Routing Specialist) [Added 2026-11-02]
+- Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/ [Preserved]
+- Original parent: 7b342c7a-1d74-43d7-a388-5ffc926b3969 [Added 2026-11-02]
+- Milestone: Standalone Static Landing Page & /home Decoupling (R1 & R5) [Added 2026-11-02]
 
 ## 🔒 Key Constraints
 - Read-only on production source code (do not implement changes, only survey/mine specifications)
@@ -16,49 +21,41 @@ Comprehensive UI/UX design overhaul survey and specification mining for Core Gam
 - Adhere to DESIGN.md and AGENTS.md guidelines
 - Write handoff.md with 5 required sections (Observation, Logic Chain, Caveats, Conclusion, Verification Method)
 - Communicate with parent agent via send_message
+- Read-only investigation: analyze problems, synthesize findings, produce structured reports [Added 2026-11-02]
+- Zero server runtime dependency for the standalone static landing page [Added 2026-11-02]
+- Zero regression on existing SPA app features when relocated to /home [Added 2026-11-02]
 
 ## Current Parent
-- Conversation ID: 3a464f6d-bcf9-4b99-af07-b0e05ceb817a
-- Updated: 2026-10-18T10:12:47Z
+- Conversation ID: 7b342c7a-1d74-43d7-a388-5ffc926b3969
+- Updated: 2026-11-02T03:22:00Z
 
 ## Task Summary
-- **Targets**:
-  1. `src/views/HomeView.tsx`
-  2. `src/views/MobileCardPlayScreen.tsx`
-  3. `src/views/MyDeckView.tsx`
-  4. `src/views/PlayGameView.tsx`
-  5. `src/components/PageHeader.tsx` & battle HUDs (`TacticalCommandHUD.tsx`, `TacticalSynergyMatrix.tsx`, etc.)
-- **Audit Points**:
-  - Non-compliant classes: `bg-gradient-to-*`, `rounded-lg/xl/2xl/3xl/full`, `shadow-xl/2xl`, `animate-ping`, `animate-bounce`, non-mono fonts
-  - Touch targets: >= 44px (`min-h-[44px]`)
-  - Progressive disclosure & spatial layout: crowded button strips, viewport intrusion on 3x3 battle board, hand, or canvas
-  - Overlay/modal controls: presence of `[x]` close and `[SKIP]`
-  - Persistence & safety: LocalStorage keys (`hero_*`), i18n keys, safeLazy imports
-- **Deliverables**:
-  - Exhaustive `handoff.md` with 5 sections & Feature Inventory table
-  - Updated `progress.md`
-  - Notification to parent agent via `send_message`
+- Target areas:
+  1. `vite.config.ts`, `package.json`, project build scripts
+  2. `index.html`, `src/main.tsx`, `src/App.tsx`, and client routing mechanism
+  3. Static landing page architecture (pure static HTML/CSS/JS/images vs Vite multi-page app vs standalone sub-build)
+  4. Decoupling plan for `/` (static landing) vs `/home` (existing rich game application)
+  5. Automated verification harness (build integrity, headless browser rendering, interaction, localStorage persistence test)
+- Deliverables:
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/survey_report.md` [COMPLETED]
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/handoff.md` [COMPLETED]
+  - Notification to parent agent via `send_message` [NOW EXECUTING]
 
 ## Investigation State
-- **Explored paths**: `HomeView.tsx` (902 lines), `MobileCardPlayScreen.tsx` (2,728 lines), `MyDeckView.tsx` (3,619 lines), `PlayGameView.tsx` (18,648 lines), `PageHeader.tsx` (66 lines), and shared battle HUDs (`TacticalCommandHUD.tsx`, `TacticalSynergyMatrix.tsx`, `StarBreathingUltimateWidget.tsx`, `ElementalTempestWidget.tsx`, `MinimalistMissionHUD.tsx`, `ResponsiveCleanHUD.tsx`, `DemoPlayHUD.tsx`, `BattleBossHUD.tsx`, `MissionGameCardHUD.tsx`, `OpponentThreatHUD.tsx`, `OpponentHandElementHUD.tsx`).
+- **Explored paths**: `index.html`, `vite.config.ts`, `src/main.tsx`, `src/App.tsx`, `src/routes.ts`, `scripts/post-build.js`, `scripts/watch-build.js`, `scripts/start-server.sh`, character assets in `public/anime-character-sheets/cutouts/`, `public/seat/`, `public/cards1.png`, and webtoon assets in `public/images/webtoon/episode_01/`.
 - **Key findings**:
-  - `PlayGameView.tsx` holds 68 gradients, 248 forbidden radii (`3xl/2xl/xl/lg`), 134 heavy drop shadows (`2xl/xl/lg/md`), 134 distracting animations, and 40 non-mono font instances across legacy dungeon, GPS workout, story boss, and floating HUDs.
-  - `MobileCardPlayScreen.tsx` has 4 primary battle skill action buttons (lines 1950–2023) and LifeCycle toggle (line 1666) that severely fail the 44px mobile touch target standard (~24–28px height), and has `rounded-b-lg` on line 2117.
-  - `HomeView.tsx` and `PageHeader.tsx` are 95%+ and 100% compliant with `DESIGN.md`.
-  - `MyDeckView.tsx` is terminal-flat with 44px+ touch targets on all top tools.
-  - Shared HUDs (`StarBreathingUltimateWidget`, `ElementalTempestWidget`, `MinimalistMissionHUD`, `DemoPlayHUD`) contain residual `shadow-xl/2xl` and sub-44px action buttons.
-- **Unexplored areas**: None within assigned scope (all 5 targets and 11 HUDs completely surveyed).
+  - Confirmed Vite MPA dual-entry (`rollupOptions.input: { main: 'index.html', home: 'home.html' }`) is the optimal architecture with zero external server runtime dependency for `/` and seamless `/home` routing for the SPA.
+  - Designed the complete `src/landing/` directory structure and state machines (110 cards, 1~100 level-up, EXP, stat points, red dot indicator, 100% localStorage persistence, Play section webtoon viewer + TTS, Shop 8 items, Top 6 / Side 8 menus, 0% popups).
+  - Confirmed Python Playwright Chromium operates out-of-the-box for headless E2E verification.
+- **Unexplored areas**: None within R1 & R5 scope.
 
 ## Key Decisions Made
-- Built and ran automated AST/regex analysis scripts (`survey_analyzer.py`, `deep_survey.py`, `playgameview_breakdown.py`, `playgameview_inspect_middle.py`, `playgameview_inspect_early_middle.py`) to systematically map line numbers and class names.
-- Produced self-contained 5-component `handoff.md` with complete Feature Inventory and concrete line-by-line fix specifications.
+- Confirmed Vite MPA architecture with `home.html` entry point for the SPA and `index.html` for the standalone static landing page.
+- Designed dual verification harness: `scripts/verify-static-build.ts` (static integrity) and `scripts/test-static-landing-e2e.py` (Playwright browser E2E).
 
 ## Artifact Index
-- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/handoff.md` — Survey & specification report (Self-contained)
-- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/progress.md` — Liveness and execution tracker
 - `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/DISPATCH.md` — Incoming dispatch log
-- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/survey_analyzer.py` — Automated scanner script
-- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/survey_results.json` — Raw JSON metrics
-- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/deep_survey_output.json` — Deep inspection metrics
-
-
+- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/BRIEFING.md` — Agent memory
+- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/progress.md` — Heartbeat tracker
+- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/survey_report.md` — Deep technical survey report (Complete)
+- `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/handoff.md` — 5-component handoff report (Complete)

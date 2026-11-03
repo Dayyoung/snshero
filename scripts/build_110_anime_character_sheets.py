@@ -616,23 +616,39 @@ def draw_wrapped_text(
 
 
 CUSTOM_BUST_SPECS: dict[int, tuple[float, float, float]] = {
+    2:  (0.50, 0.04, 0.50),  # Naiad: tiara + face + upper dress centered (ignore left staff orb)
+    5:  (0.57, 0.04, 0.50),  # Aqualord: golden crown + bearded face + chest armor
     7:  (0.45, 0.08, 0.66),  # Gargantia: turtle head + crystal + upper shell/torso
+    10: (0.36, 0.03, 0.52),  # Poseidon: crown + bearded face + chest armor (ignore right cape)
+    14: (0.52, 0.05, 0.50),  # Pyro: flame hair + face + upper dress (ignore left lantern staff)
     16: (0.75, 0.06, 0.66),  # Muspel: fiery horned head on the right + upper lava torso
     21: (0.50, 0.01, 0.48),  # Zephyros: head + scarf + chest in center
+    25: (0.49, 0.06, 0.50),  # Aeolus: face + green robes chest (ignore left dragon staff)
     28: (0.59, 0.02, 0.52),  # Zeusphere: head + winged hair + upper armor
     32: (0.45, 0.01, 0.68),  # Gnome: pointed hat + face + beard + upper torso
+    39: (0.50, 0.02, 0.68),  # Atlas: overhead boulder + bearded head + muscular upper torso
     43: (0.53, 0.02, 0.52),  # Balian: winged helm + face + red/white cross chestplate
     44: (0.44, 0.02, 0.52),  # Kaze: head + mask + ninja chest armor
+    48: (0.54, 0.05, 0.50),  # Robinyard: red hood + face + ranger chest
     52: (0.65, 0.08, 0.64),  # Ghoul: snarling head + upper torso + shoulder spikes
+    55: (0.48, 0.02, 0.68),  # Patchwork: stitched head + massive shoulders + upper torso
     58: (0.48, 0.04, 0.62),  # Sidragosa: dragon head + neck + upper chest/wings
+    59: (0.47, 0.02, 0.54),  # Keltus: crowned skull head + necromancer pauldrons + chest
+    61: (0.47, 0.08, 0.54),  # Lucian: elf face + drawn spirit bow + upper coat
+    62: (0.50, 0.07, 0.52),  # Silia: elf face + blonde braid + green cloak chest
+    65: (0.45, 0.06, 0.52),  # Sylvania: elf face + aiming pose + upper tunic
+    66: (0.56, 0.02, 0.54),  # Malfuon: antlers + bearded face + fur mantle chest
+    69: (0.56, 0.05, 0.52),  # Gandar: elf face + shoulder quiver + elven chest armor
     76: (0.65, 0.02, 0.64),  # Brandy: officer cap + bearded face + upper coat/rifle scope
     77: (0.66, 0.02, 0.58),  # Muradi: fiery mohawk/beard face + muscular tattooed chest
     78: (0.52, 0.02, 0.64),  # Thorgrim: crown + face + beard + royal robe chest
     79: (0.54, 0.02, 0.58),  # Berryforge: sun halo + helmet face + golden beard + chest armor
     83: (0.48, 0.01, 0.56),  # Jormungandr: serpent head + upper neck coils
     84: (0.55, 0.06, 0.62),  # Griffon: eagle head + chest armor
+    86: (0.49, 0.03, 0.52),  # Leonar: white lion head + mane + tribal chest armor
     90: (0.53, 0.10, 0.68),  # Pegasus: horse head + mane + chest
     93: (0.53, 0.01, 0.52),  # Sentinel: mecha head + chest core + shoulders
+    96: (0.52, 0.02, 0.68),  # Siege Engine: cannon + mecha head + furnace chest
 }
 
 

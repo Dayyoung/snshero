@@ -30,6 +30,37 @@
         return false;
       }
     </script>
+    <!-- Early Client-Side Hash Normalizer & Legacy Route Interceptor -->
+    <script>
+      (function() {
+        try {
+          var pathname = (window.location.pathname || '').replace(/\/$/, '').toLowerCase() || '/';
+          var hash = window.location.hash;
+          var legacyMap = {
+            '/home': '#home',
+            '/main-lobby': '#home',
+            '/deck': '#deck',
+            '/mydeck': '#deck',
+            '/play': '#play',
+            '/main': '#play',
+            '/card': '#card',
+            '/cards': '#card',
+            '/mission': '#card',
+            '/missions': '#card',
+            '/shop': '#shop'
+          };
+          if (legacyMap[pathname] && (!hash || hash === '#' || hash === '#/')) {
+            window.location.replace('/' + legacyMap[pathname]);
+          } else if (!hash || hash === '#' || hash === '#/') {
+            if (window.history && window.history.replaceState) {
+              window.history.replaceState({ view: 'home' }, '', '#home');
+            }
+          }
+        } catch (e) {
+          console.warn('[RouteNormalizer] Early normalization warning:', e);
+        }
+      })();
+    </script>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -51,16 +82,16 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://snshero.com/" />
-    <meta property="og:title" content="눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) | 원클릭 AI 웹 카드 게임" />
-    <meta property="og:description" content="눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)! 복잡한 클라이언트 설치나 가입 절차 없이 클릭 한 번으로 즐기는 인공지능(AI) 웹 카드 배틀 게임과 40부작 판타지 소설·PDF·애니메이션·무비를 만나보세요! 1,000 SNS 포인트 지급 및 최대 100회 무료 뽑기 혜택을 제공합니다." />
+    <meta property="og:url" content="https://snshero.com/home" />
+    <meta property="og:title" content="눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) | 원클릭 AI 웹 카드 게임 &amp; 공식 웹소설·웹툰" />
+    <meta property="og:description" content="눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)! 복잡한 클라이언트 설치나 가입 절차 없이 클릭 한 번으로 즐기는 인공지능(AI) 웹 카드 배틀 게임과 네이버 웹소설·네이버 웹툰·문피아 웹소설 공식 연재 40부작 판타지 소설·웹툰·PDF·애니메이션·무비를 만나보세요! 1,000 SNS 포인트 지급 및 최대 100회 무료 뽑기 혜택을 제공합니다." />
     <meta property="og:image" content="https://snshero.com/logo.jpg" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://snshero.com/" />
-    <meta property="twitter:title" content="눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) | 원클릭 AI 웹 카드 게임" />
-    <meta property="twitter:description" content="눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)! 복잡한 클라이언트 설치나 가입 절차 없이 클릭 한 번으로 즐기는 인공지능(AI) 웹 카드 배틀 게임과 40부작 판타지 소설·PDF·애니메이션·무비를 만나보세요!" />
+    <meta property="twitter:url" content="https://snshero.com/home" />
+    <meta property="twitter:title" content="눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) | 원클릭 AI 웹 카드 게임 &amp; 공식 웹소설·웹툰" />
+    <meta property="twitter:description" content="눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)! 복잡한 클라이언트 설치나 가입 절차 없이 클릭 한 번으로 즐기는 인공지능(AI) 웹 카드 배틀 게임과 네이버 웹소설·네이버 웹툰·문피아 웹소설 공식 연재 40부작 판타지 소설·웹툰·PDF·애니메이션·무비를 만나보세요!" />
     <meta property="twitter:image" content="https://snshero.com/logo.jpg" />
 
     <!-- Static JSON-LD for Google Search Console & AI Engines Crawlers (SEO / AEO / GEO) -->
@@ -74,9 +105,13 @@
       "alternateName": ["눈히어로.com", "SNSHero.com", "눈히어로.com - 카단의 여정", "SNSHero.com - Kadan's Journey"],
       "url": "https://snshero.com",
       "logo": "https://snshero.com/logo.png",
-      "description": "복잡한 설치나 가입 없이 웹 브라우저에서 즉시 즐기는 원클릭 AI 웹 카드 게임 눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 공식 플랫폼입니다.",
+      "description": "복잡한 설치나 가입 없이 웹 브라우저에서 즉시 즐기는 원클릭 AI 웹 카드 게임 눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 공식 플랫폼입니다. 네이버 웹소설, 네이버 웹툰, 문피아 웹소설에서 공식 판타지 세계관을 연재합니다.",
       "sameAs": [
         "https://snshero.com",
+        "http://novel.naver.com/challenge/list?novelId=1250635",
+        "https://novel.naver.com/challenge/list?novelId=1250635",
+        "https://comic.naver.com/challenge/list?titleId=856677",
+        "https://nlink.munpia.com/link/munpia/novel/616551",
         "https://www.youtube.com/@snshero",
         "https://www.youtube.com/playlist?list=PLV8H2-pD9vH0",
         "https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d",
@@ -102,6 +137,24 @@
           "name": "SNSHero.com 게임 플레이",
           "description": "설치나 가입 없이 클릭 한 번으로 즐기는 원클릭 AI 웹 카드 배틀 게임",
           "url": "https://snshero.com/"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "name": "네이버 웹소설 - 눈히어로.com - 카단의 여정",
+          "description": "네이버 웹소설 챌린지리그에서 연재 중인 《눈히어로.com - 카단의 여정》 공식 판타지 웹소설",
+          "url": "http://novel.naver.com/challenge/list?novelId=1250635"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "name": "네이버 웹툰 - 눈히어로.com - 카단의 여정",
+          "description": "네이버 웹툰 도전만화에서 연재 중인 《눈히어로.com - 카단의 여정》 공식 풀컬러 판타지 웹툰",
+          "url": "https://comic.naver.com/challenge/list?titleId=856677"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "name": "문피아 웹소설 - 눈히어로.com - 카단의 여정",
+          "description": "문피아에서 공식 연재 중인 《눈히어로.com - 카단의 여정》 정통 모험 판타지 웹소설",
+          "url": "https://nlink.munpia.com/link/munpia/novel/616551"
         },
         {
           "@type": "SiteNavigationElement",
@@ -186,65 +239,164 @@
         {
           "@type": "ListItem",
           "position": 3,
+          "name": "네이버 웹소설 - 눈히어로.com - 카단의 여정",
+          "url": "http://novel.naver.com/challenge/list?novelId=1250635",
+          "description": "네이버 웹소설 챌린지리그 공식 연재 (novelId=1250635)"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "네이버 웹툰 - 눈히어로.com - 카단의 여정",
+          "url": "https://comic.naver.com/challenge/list?titleId=856677",
+          "description": "네이버 웹툰 도전만화 공식 풀컬러 연재 (titleId=856677)"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "문피아 웹소설 - 눈히어로.com - 카단의 여정",
+          "url": "https://nlink.munpia.com/link/munpia/novel/616551",
+          "description": "문피아 공식 판타지 웹소설 연재 (novel/616551)"
+        },
+        {
+          "@type": "ListItem",
+          "position": 6,
           "name": "SNSHero.com AI Studio",
           "url": "https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d",
           "description": "Google AI Studio 앱 프로젝트"
         },
         {
           "@type": "ListItem",
-          "position": 4,
+          "position": 7,
           "name": "SNSHero.com 소스파일 (GitHub)",
           "url": "https://github.com/Dayyoung/snshero",
           "description": "GitHub 오픈소스 리포지토리 전체 코드"
         },
         {
           "@type": "ListItem",
-          "position": 5,
+          "position": 8,
           "name": "SNSHero.com 개발 프롬프트 (snshero.md)",
           "url": "https://snshero.com/snshero.md",
           "description": "AI 에이전트 개발 프롬프트 및 시스템 지침 전문"
         },
         {
           "@type": "ListItem",
-          "position": 6,
+          "position": 9,
           "name": "SNSHero.com 유튜브 채널 (@snshero)",
           "url": "https://www.youtube.com/@snshero",
           "description": "공식 유튜브 채널 개발 및 게임 플레이 영상"
         },
         {
           "@type": "ListItem",
-          "position": 7,
+          "position": 10,
           "name": "실시간 구글 뉴스룸 (/reddit)",
           "url": "https://snshero.com/reddit",
           "description": "구글 실시간 글로벌 뉴스 큐레이션 및 커뮤니티"
         },
         {
           "@type": "ListItem",
-          "position": 8,
+          "position": 11,
           "name": "마이덱 빌더 (/deck)",
           "url": "https://snshero.com/deck",
           "description": "110종 카드 덱 편성 및 성장"
         },
         {
           "@type": "ListItem",
-          "position": 9,
+          "position": 12,
           "name": "배틀 아레나 (/play)",
           "url": "https://snshero.com/play",
           "description": "실시간 DDA AI 카드 전투 및 110개 미니게임 아케이드"
         },
         {
           "@type": "ListItem",
-          "position": 10,
+          "position": 13,
           "name": "카드 상점 (/shop)",
           "url": "https://snshero.com/shop",
           "description": "최대 100회 무료 뽑기 및 상점"
         },
         {
           "@type": "ListItem",
-          "position": 11,
+          "position": 14,
           "name": "SHBP AI 벤치마크 (/bench)",
           "url": "https://snshero.com/bench",
           "description": "공식 AI 1시간 자율 플레이 벤치마크 플랫폼"
+        }
+      ]
+    }
+    </script>
+
+    <!-- 1-3. BookSeries & ComicSeries (SEO / AEO / GEO: Official Naver Web Novel, Naver Webtoon & Munpia Serialization) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": ["BookSeries", "CreativeWorkSeries"],
+          "@id": "https://snshero.com/novel#bookseries",
+          "name": "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 공식 웹소설",
+          "alternateName": ["눈히어로.com - 카단의 여정", "SNSHero.com - Kadan's Journey", "카단의 여정 웹소설", "눈히어로 웹소설"],
+          "url": "https://snshero.com/novel",
+          "image": "https://snshero.com/book/kadan_novel_cover.jpg",
+          "genre": ["Fantasy", "Adventure", "Game Fantasy", "판타지 웹소설", "모험 판타지"],
+          "inLanguage": ["ko", "en"],
+          "numberOfEpisodes": 40,
+          "author": {
+            "@type": "Organization",
+            "name": "눈히어로.com (SNSHero.com)",
+            "url": "https://snshero.com"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "눈히어로.com (SNSHero.com)",
+            "url": "https://snshero.com"
+          },
+          "description": "평범하고 우직한 청년 카단이 아케인 대륙의 11개 종족을 모험하며 힘을 일깨우고 위대한 영웅으로 거듭나는 40부작 정통 모험 판타지 웹소설. 네이버 웹소설, 문피아 웹소설 및 눈히어로.com에서 공식 연재 중입니다.",
+          "sameAs": [
+            "http://novel.naver.com/challenge/list?novelId=1250635",
+            "https://novel.naver.com/challenge/list?novelId=1250635",
+            "https://nlink.munpia.com/link/munpia/novel/616551",
+            "https://snshero.com/novel",
+            "https://snshero.com/book"
+          ],
+          "workExample": [
+            {
+              "@type": "WebPage",
+              "name": "네이버 웹소설 - 눈히어로.com - 카단의 여정",
+              "url": "http://novel.naver.com/challenge/list?novelId=1250635",
+              "publisher": { "@type": "Organization", "name": "네이버 웹소설 (Naver Web Novel)" }
+            },
+            {
+              "@type": "WebPage",
+              "name": "문피아 웹소설 - 눈히어로.com - 카단의 여정",
+              "url": "https://nlink.munpia.com/link/munpia/novel/616551",
+              "publisher": { "@type": "Organization", "name": "문피아 (Munpia)" }
+            }
+          ]
+        },
+        {
+          "@type": ["ComicSeries", "CreativeWorkSeries"],
+          "@id": "https://snshero.com/webtoon#comicseries",
+          "name": "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 공식 웹툰",
+          "alternateName": ["눈히어로.com - 카단의 여정 웹툰", "SNSHero.com - Kadan's Journey Webtoon", "카단의 여정 웹툰", "눈히어로 웹툰"],
+          "url": "https://snshero.com/webtoon",
+          "image": "https://snshero.com/book/kadan_novel_cover.jpg",
+          "genre": ["Fantasy Webtoon", "Action Adventure", "판타지 웹툰", "액션 모험"],
+          "inLanguage": ["ko", "en"],
+          "numberOfEpisodes": 40,
+          "author": {
+            "@type": "Organization",
+            "name": "눈히어로.com (SNSHero.com)",
+            "url": "https://snshero.com"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "네이버 웹툰 (Naver Webtoon) / 눈히어로.com",
+            "url": "https://comic.naver.com/challenge/list?titleId=856677"
+          },
+          "description": "《눈히어로.com - 카단의 여정》 세계관과 110명 영웅들의 서사를 풀컬러로 그린 공식 판타지 웹툰. 네이버 웹툰 도전만화 및 눈히어로.com에서 공식 연재 중입니다.",
+          "sameAs": [
+            "https://comic.naver.com/challenge/list?titleId=856677",
+            "https://snshero.com/webtoon"
+          ]
         }
       ]
     }
@@ -482,6 +634,14 @@
         },
         {
           "@type": "Question",
+          "name": "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey) 공식 웹소설과 웹툰은 어디에서 연재되나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "눈히어로.com - 카단의 여정 공식 40부작 판타지 웹소설과 웹툰은 눈히어로.com 공식 사이트(https://snshero.com/novel, https://snshero.com/webtoon)뿐만 아니라 네이버 웹소설(http://novel.naver.com/challenge/list?novelId=1250635), 네이버 웹툰(https://comic.naver.com/challenge/list?titleId=856677), 문피아 웹소설(https://nlink.munpia.com/link/munpia/novel/616551)에서 공식 연재되고 있습니다."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "오프라인에서도 플레이할 수 있나요?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -534,46 +694,12 @@
           "position": 6,
           "name": "PWA 오프라인 지원",
           "description": "홈 화면 추가 시 앱처럼 사용, 오프라인 플레이 가능"
-        }
-      ]
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)은 어떤 게임인가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)은 복잡한 가입이나 클라이언트 다운로드 없이 웹 브라우저에서 즉시 즐길 수 있는 원클릭 인공지능(AI) 웹 카드 게임입니다. 110여 종의 다양한 히어로 카드를 수집하고 성장시킬 수 있습니다."
-          }
         },
         {
-          "@type": "Question",
-          "name": "초보자를 위한 혜택이 있나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "신규 유저 구글 계정 연동 시 정착 지원금으로 1,000 SNS 포인트를 즉시 지급해 드리며, 최대 100회 무료 뽑기 혜택을 통해 빠르게 덱을 맞출 수 있습니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "결제 방식은 어떤 것들을 지원하나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "눈히어로.com (SNSHero.com)은 가상 자산 결제를 적극적으로 지원하여 비트코인(BTC), 이더리움(ETH), USDC 등의 암호화폐 결제를 안전하게 연동해 카드 및 아이템 상점에서 이용하실 수 있습니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "모바일에서도 플레이가 가능한가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "네, 눈히어로.com (SNSHero.com)은 PWA(Progressive Web App) 기술이 내장되어 있어 모바일 브라우저에서 '홈 화면에 추가'를 클릭하면 마치 공식 앱스토어에서 내려받은 앱처럼 오프라인 지원 및 최적화된 전체 화면으로 모바일 플레이를 즐기실 수 있습니다."
-          }
+          "@type": "ListItem",
+          "position": 7,
+          "name": "네이버 웹소설·네이버 웹툰·문피아 공식 연재",
+          "description": "네이버 웹소설(novelId=1250635), 네이버 웹툰(titleId=856677), 문피아 웹소설(novel/616551) 공식 연재"
         }
       ]
     }
@@ -597,7 +723,7 @@
     <meta name="googlebot" content="index, follow" />
     <meta name="bingbot" content="index, follow" />
     <meta name="author" content="SNSHero.com Dev Team" />
-    <meta name="keywords" content="눈히어로.com, 눈히어로.com - 카단의 여정, SNSHero.com, SNSHero.com - Kadan's Journey, 카단의 여정, Kadan's Journey, snshero bench, snshero bench point, snshero shbp, AI 벤치마크, LLM 게임 벤치마크, AI 카드 게임, 웹 카드 게임, 원클릭 게임, 브라우저 게임, 카드 수집 게임, TCG, CCG, HTML5 게임, 코인 결제 게임, 암호화폐 게임, BTC 게임, ETH 게임, USDC 게임, 웹3 게임, AI 게임, 인공지능 게임, 히어로 수집" />
+    <meta name="keywords" content="눈히어로.com, 눈히어로.com - 카단의 여정, SNSHero.com, SNSHero.com - Kadan's Journey, 카단의 여정, Kadan's Journey, 네이버 웹소설, 네이버 웹툰, 문피아 웹소설, 문피아, 카단의 여정 웹소설, 카단의 여정 웹툰, 눈히어로 웹소설, 눈히어로 웹툰, Naver Web Novel, Naver Webtoon, Munpia Web Novel, snshero bench, snshero bench point, snshero shbp, AI 벤치마크, LLM 게임 벤치마크, AI 카드 게임, 웹 카드 게임, 원클릭 게임, 브라우저 게임, 카드 수집 게임, TCG, CCG, HTML5 게임, 코인 결제 게임, 암호화폐 게임, BTC 게임, ETH 게임, USDC 게임, 웹3 게임, AI 게임, 인공지능 게임, 히어로 수집" />
 
     <!-- Hreflang: 12 languages -->
     <link rel="alternate" hreflang="ko" href="https://snshero.com/" />
@@ -680,15 +806,16 @@
         };
       })();
     </script>
-    <script type="module" crossorigin src="/assets/index-CiEXK-FA.js"></script>
+    <script type="module" crossorigin src="/assets/home-DFYkx3rn.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-react-DjkHO9yN.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-misc-DIIx50HL.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-CBml-Qeu.js">
-    <link rel="modulepreload" crossorigin href="/assets/data-i18n-CG0qdi88.js">
+    <link rel="modulepreload" crossorigin href="/assets/types-CGjtCuL_.js">
+    <link rel="modulepreload" crossorigin href="/assets/data-i18n-BQVLhNZr.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-motion-BSWiq6P9.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-icons-DdXMqgLA.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-icons-BZPrGBgY.js">
     <link rel="stylesheet" crossorigin href="/assets/vendor-misc-CIGW-MKW.css">
-    <link rel="stylesheet" crossorigin href="/assets/index-DNvMWNsC.css">
+    <link rel="stylesheet" crossorigin href="/assets/home-BXUFzXTo.css">
   </head>
   <body>
     <div id="root">
@@ -730,23 +857,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#1 속보</span>
-        <span>출처: <strong>defensenews.com</strong></span>
+        <span>출처: <strong>thedefensepost.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793405400000_0" style="color: #111827; text-decoration: none;">
-          Pentagon Requests $50 Billion to Scale Mass Autonomous Drone Production
+        <a href="/r/news/comments/gnews_1793687280000_0" style="color: #111827; text-decoration: none;">
+          US Air Force Partners with Merlin to Develop Autonomous Flight Capabilities for C-130J
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Defense Secretary Hegseth urged Congress to allocate $50 billion for high-rate domestic uncrewed aircraft manufacturing, eliminating bureaucratic barriers to field autonomous swarm formations at scale.
+        Partners with Merlin under a $105 million program to integrate Autonomy Core AI flight software into military transport aircraft, enabling reduced-crew operations in contested environments.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,400</span> • <span>댓글 320개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793405400000_0" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793687280000_0" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -758,21 +885,21 @@
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#2 속보</span>
         <span>출처: <strong>thedefensepost.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793405340000_1" style="color: #111827; text-decoration: none;">
-          Lockheed Martin Adds Sentrycs Cyber-RF Tech to Sanctum Counter-Drone Platform
+        <a href="/r/news/comments/gnews_1793687220000_1" style="color: #111827; text-decoration: none;">
+          GA-ASI and Lockheed Martin Demonstrate Autonomous MQ-20 Avenger for US Navy
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Lockheed Martin partnered with Sentrycs to integrate cyber-over-radio-frequency capabilities into its Sanctum C-UAS architecture, enabling military operators to autonomously take over and safely land hostile drones.
+        Conducts joint flight demonstrations linking General Atomics&#039; MQ-20 Avenger with the Navy&#039;s Unmanned Carrier Mission Control Station to validate autonomous carrier-based command-and-control.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,365</span> • <span>댓글 316개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793405340000_1" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793687220000_1" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -782,23 +909,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#3 속보</span>
-        <span>출처: <strong>thedefensepost.com</strong></span>
+        <span>출처: <strong>breakingdefense.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793405280000_2" style="color: #111827; text-decoration: none;">
-          Airbus and Quantum Systems Integrate Counter-Drone Effector Capabilities onto Military Aircraft
+        <a href="/r/news/comments/gnews_1793687160000_2" style="color: #111827; text-decoration: none;">
+          Pentagon Adds Four Autonomous Drones and Loitering Munitions to Replicator Portfolio
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Airbus and Quantum Systems teamed up to mount autonomous counter-UAS interceptor pods on military rotorcraft and the PULSE P19 aircraft, establishing layered kinetic protection against fast-moving attack drones.
+        Unveils new tranches of uncrewed aerial systems and expendable loitering munitions selected under the Replicator program to accelerate low-cost mass production for Pacific deterrence.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,330</span> • <span>댓글 312개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793405280000_2" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793687160000_2" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -810,21 +937,21 @@
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#4 속보</span>
         <span>출처: <strong>thedefensepost.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793405220000_3" style="color: #111827; text-decoration: none;">
-          DroneShield and Overland AI Equip ULTRA Robotic Ground Vehicle With Counter-UAS Tech
+        <a href="/r/news/comments/gnews_1793687100000_3" style="color: #111827; text-decoration: none;">
+          Northrop Grumman Secures Position in Pentagon Drone Dominance Low-Cost Autonomy Push
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Overland AI and DroneShield integrated the DroneSentry-X Mk2 detection payload onto the autonomous ULTRA ground platform, protecting robotic combat formations from overhead drone threats in contested terrain.
+        Wins selection in the Pentagon&#039;s Drone Dominance program to manufacture modular, low-cost autonomous airframes capable of rapid operational fielding across multi-domain combat zones.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,295</span> • <span>댓글 308개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793405220000_3" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793687100000_3" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -836,21 +963,21 @@
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#5 속보</span>
         <span>출처: <strong>thedefensepost.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793405160000_4" style="color: #111827; text-decoration: none;">
-          Honeywell and Odys Aviation Develop Airborne Autonomous Counter-Drone Architecture
+        <a href="/r/news/comments/gnews_1793687040000_4" style="color: #111827; text-decoration: none;">
+          Pentagon Contracts Industry Partners to Coordinate Autonomous Replicator Swarms
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Honeywell Aerospace and Odys Aviation joined forces to develop the SAMURAI airborne counter-UAS system, deploying layered RF detection, tracking, and kinetic drone interceptors against hostile drone swarms.
+        Selects commercial software specialists to develop interoperable mission-autonomy layers, enabling distributed drone swarms across air and maritime domains to coordinate without central communications.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,260</span> • <span>댓글 304개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793405160000_4" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793687040000_4" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -860,23 +987,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#6 속보</span>
-        <span>출처: <strong>techtarget.com</strong></span>
+        <span>출처: <strong>defensenews.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793405100000_5" style="color: #111827; text-decoration: none;">
-          Agentic AI Demands Convergence of Structured and Unstructured Enterprise Data
+        <a href="/r/news/comments/gnews_1793686980000_5" style="color: #111827; text-decoration: none;">
+          US Air Force Plans Regular Lifecycle Upgrades to Keep Drone Wingmen Affordable
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Enterprise data architects outline how autonomous agent reasoning requires bridging traditional transactional SQL databases with unstructured vector embeddings to deliver accurate, multi-step business decisions.
+        Adopts rapid iteration acquisition models for Collaborative Combat Aircraft, updating mission software and autonomy stacks every few years while retiring airframes rather than sustaining long-term fleets.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,225</span> • <span>댓글 300개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793405100000_5" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793686980000_5" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -886,23 +1013,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#7 속보</span>
-        <span>출처: <strong>techtarget.com</strong></span>
+        <span>출처: <strong>defensenews.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793405040000_6" style="color: #111827; text-decoration: none;">
-          IBM Highlights How Agentic AI Reshapes Corporate Governance, Controls, and Trust
+        <a href="/r/news/comments/gnews_1793686920000_6" style="color: #111827; text-decoration: none;">
+          US Air Force Evaluates Northrop Grumman Autonomous Drone for Next CCA Phase
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        IBM executives detailed governance frameworks for autonomous AI agents, highlighting machine-speed security patching, operational resilience, and verifiable identity controls required as agent fleets multiply.
+        Examines Northrop Grumman&#039;s autonomous uncrewed test vehicle as a potential candidate for Increment 2 of the Collaborative Combat Aircraft program to expand electronic warfare capabilities.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,190</span> • <span>댓글 296개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793405040000_6" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793686920000_6" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -912,23 +1039,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#8 속보</span>
-        <span>출처: <strong>techtarget.com</strong></span>
+        <span>출처: <strong>siliconangle.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793404980000_7" style="color: #111827; text-decoration: none;">
-          RSAC 2026 Highlights Proliferation of Embedded End-User AI Agents
+        <a href="/r/news/comments/gnews_1793686860000_7" style="color: #111827; text-decoration: none;">
+          Automation Anywhere Deploys Enterprise AI Agents to Orchestrate Complex Workflows
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Cybersecurity and IT leaders at RSAC demonstrated that end-user AI agents have become pervasive across enterprise applications, requiring immediate oversight to prevent unmonitored shadow agent automation.
+        Introduces an AI-powered automation system featuring autonomous enterprise agents that reason over business data, make cognitive decisions, and execute multi-system enterprise operations.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,155</span> • <span>댓글 292개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793404980000_7" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793686860000_7" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -938,23 +1065,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#9 속보</span>
-        <span>출처: <strong>techtarget.com</strong></span>
+        <span>출처: <strong>siliconangle.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793404920000_8" style="color: #111827; text-decoration: none;">
-          Six Core Trends Shaping Enterprise IT Automation and Agent Deployment in 2026
+        <a href="/r/news/comments/gnews_1793686800000_8" style="color: #111827; text-decoration: none;">
+          Salesforce Launches Industries AI to Drive Autonomous Agentic Workflows Across Enterprise Clouds
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Digital transformation consultancies identify multistage agent workflows, automated operational decisions, and lower tooling friction as central pillars driving modern enterprise IT automation.
+        Embeds autonomous agent frameworks into 15 enterprise cloud platforms to execute specialized business tasks and streamline workflows across healthcare, government, and finance.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,120</span> • <span>댓글 288개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793404920000_8" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793686800000_8" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -964,23 +1091,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#10 속보</span>
-        <span>출처: <strong>techtarget.com</strong></span>
+        <span>출처: <strong>siliconangle.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793404860000_9" style="color: #111827; text-decoration: none;">
-          Enterprise Spotlight: Maturing Agentic AI and Physical AI Systems in 2026
+        <a href="/r/news/comments/gnews_1793686740000_9" style="color: #111827; text-decoration: none;">
+          Lumia Security Secures $18M to Deliver Governance and Observability for Autonomous AI Agents
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        McKinsey enterprise surveys indicate that 2026 marks the operational transition of agentic AI from isolated proofs of concept into scaled production deployments backed by rigorous cost controls and security governance.
+        Raises capital to build real-time governance and visibility control planes that monitor and constrain autonomous multi-agent interactions across enterprise software environments.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,085</span> • <span>댓글 284개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793404860000_9" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793686740000_9" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -992,21 +1119,21 @@
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#11 속보</span>
         <span>출처: <strong>thedefensepost.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793401440000_10" style="color: #111827; text-decoration: none;">
-          AEVEX and Divergent Partner to Produce 3D-Printed Autonomous Drones
+        <a href="/r/news/comments/gnews_1793682660000_10" style="color: #111827; text-decoration: none;">
+          Apium and Red Cat Partner to Advance Autonomous Drone Swarming Capabilities
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Defense contractors AEVEX and Divergent joined forces to mass-manufacture high-rate 3D-printed autonomous aerial systems, compressing production lead times for attritable combat-ready drone platforms.
+        Partners to integrate swarm intelligence software into tactical sUAS platforms, enabling decentralized multi-drone collaborative reconnaissance and target tracking with minimal human intervention.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,050</span> • <span>댓글 280개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793401440000_10" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793682660000_10" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -1016,23 +1143,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#12 속보</span>
-        <span>출처: <strong>thedefensepost.com</strong></span>
+        <span>출처: <strong>breakingdefense.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793401380000_11" style="color: #111827; text-decoration: none;">
-          F-Drones Unveils F-CAPTAIN Medium-Range Autonomous Strike UAV
+        <a href="/r/news/comments/gnews_1793682600000_11" style="color: #111827; text-decoration: none;">
+          Pentagon Autonomy Czar Faces Complex Inter-Service Bureaucracy Across Drone Programs
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Ukrainian drone maker F-Drones introduced the F-CAPTAIN, a medium-range autonomous unmanned aircraft bridging short-range FPVs and heavy UAVs, capable of operating in GPS-denied tactical environments.
+        Analyzes leadership hurdles facing the newly appointed Drone and Autonomy Czar as the Pentagon attempts to streamline fragmented autonomous acquisitions across the Army, Navy, and Air Force.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +8,015</span> • <span>댓글 276개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793401380000_11" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793682600000_11" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -1044,21 +1171,21 @@
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#13 속보</span>
         <span>출처: <strong>thedefensepost.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793401320000_12" style="color: #111827; text-decoration: none;">
-          Tonner Drones Expands Defense Capabilities With Azur Drones Acquisition
+        <a href="/r/news/comments/gnews_1793682540000_12" style="color: #111827; text-decoration: none;">
+          US Army Establishes Yuma Proving Ground as Primary Counter-Drone Autonomous Test Hub
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        French defense manufacturer Tonner Drones acquired autonomous surveillance provider Azur Drones, integrating Skeyetech autonomous docking stations for continuous military base and critical infrastructure defense.
+        Designates Yuma Proving Ground as the primary center for evaluating autonomous counter-sUAS kinetic and non-kinetic interceptors in coordination with Joint Interagency Task Force 401 under Replicator 2.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +7,980</span> • <span>댓글 272개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793401320000_12" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793682540000_12" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -1068,23 +1195,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#14 속보</span>
-        <span>출처: <strong>defensescoop.com</strong></span>
+        <span>출처: <strong>thedefensepost.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793401260000_13" style="color: #111827; text-decoration: none;">
-          Pentagon Taps Shield AI to Integrate Hivemind Swarm Autonomy into LUCAS Drones
+        <a href="/r/news/comments/gnews_1793682480000_13" style="color: #111827; text-decoration: none;">
+          Australian Startup Drone Forge Procures Airbus Flexrotor Autonomous VTOL Aircraft
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        The Department of Defense selected Shield AI to integrate Hivemind autonomous swarm software into low-cost uncrewed combat platforms, enabling decentralized multi-drone electronic attack and strike coordination.
+        Procures heavy-fuel Airbus Flexrotor autonomous vertical takeoff and landing drones equipped with Starlink satellite communications for beyond-line-of-sight maritime reconnaissance and expeditionary scouting.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +7,945</span> • <span>댓글 268개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793401260000_13" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793682480000_13" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -1094,23 +1221,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#15 속보</span>
-        <span>출처: <strong>defensescoop.com</strong></span>
+        <span>출처: <strong>breakingdefense.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793401200000_14" style="color: #111827; text-decoration: none;">
-          Pentagon Realigns Autonomous Warfare Programs Under Central Drone Czar
+        <a href="/r/news/comments/gnews_1793682420000_14" style="color: #111827; text-decoration: none;">
+          Oshkosh Defense Partners with Grid Aero to Build Autonomous Heavy-Lift Drones
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Defense leadership announced the reorganization of disparate military uncrewed systems initiatives under a newly established executive command to accelerate fielding of autonomous swarms across services.
+        Forms strategic alliance with Grid Aero to develop autonomous heavy-lift vertical takeoff uncrewed systems designed for tactical battlefield logistics and expeditionary resupply in contested theaters.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +7,910</span> • <span>댓글 264개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793401200000_14" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793682420000_14" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -1120,23 +1247,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#16 속보</span>
-        <span>출처: <strong>siliconangle.com</strong></span>
+        <span>출처: <strong>thedefensepost.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793401140000_15" style="color: #111827; text-decoration: none;">
-          Agentic AI Demands Structural WAN Redesign Across Distributed Network Edges
+        <a href="/r/news/comments/gnews_1793682360000_15" style="color: #111827; text-decoration: none;">
+          Overland AI Secures $100M to Scale Autonomous Off-Road Military Ground Systems
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Enterprise infrastructure analysts explain why autonomous AI agents necessitate shifting from centralized data architectures toward distributed, adaptive edge wide-area networks capable of supporting machine-speed inter-agent telemetry.
+        Secures capital to expand OverDrive autonomy software enabling uncrewed tactical ground vehicles to traverse complex off-road terrain without relying on satellite GPS or structured roadways.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +7,875</span> • <span>댓글 260개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793401140000_15" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793682360000_15" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -1146,23 +1273,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#17 속보</span>
-        <span>출처: <strong>thenewstack.io</strong></span>
+        <span>출처: <strong>siliconangle.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793401080000_16" style="color: #111827; text-decoration: none;">
-          The Rise of Agentic AI on Kubernetes Reshapes Cloud Infrastructure Orchestration
+        <a href="/r/news/comments/gnews_1793682300000_16" style="color: #111827; text-decoration: none;">
+          Cognition AI Deploys Devin Autonomous Software Engineering Agents into Enterprise Workflows
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Cloud engineers explore autonomous AI agent architectures deployed on Kubernetes clusters, demonstrating how AI-native orchestration models automate resource provisioning and self-healing container workflows.
+        Integrates autonomous coding agent Devin into production enterprise environments, allowing organizations to assign complex multi-step debugging and code migration tasks directly to AI agents.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +7,840</span> • <span>댓글 256개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793401080000_16" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793682300000_16" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -1172,23 +1299,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#18 속보</span>
-        <span>출처: <strong>cio.com</strong></span>
+        <span>출처: <strong>siliconangle.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793401020000_17" style="color: #111827; text-decoration: none;">
-          Microsoft Expands Sovereign Cloud Offerings for Enterprise Agentic Governance
+        <a href="/r/news/comments/gnews_1793682240000_17" style="color: #111827; text-decoration: none;">
+          Nvidia Releases Advanced Robot Simulation Tools and Isaac Lab Models for Embodied AI
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Microsoft broadened its sovereign cloud and data boundary platforms to provide regulated enterprises with compliant execution enclaves for autonomous AI agents and sensitive ERP data pipelines.
+        Launches Isaac Lab simulation frameworks and updated Project GR00T foundation models to accelerate synthetic training of autonomous humanoid and bipedal robotic fleets.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +7,805</span> • <span>댓글 252개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793401020000_17" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793682240000_17" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -1198,23 +1325,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#19 속보</span>
-        <span>출처: <strong>techtarget.com</strong></span>
+        <span>출처: <strong>thedefensepost.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793400960000_18" style="color: #111827; text-decoration: none;">
-          IBM Targets Enterprise Agentic AI Orchestration Across Legacy Systems
+        <a href="/r/news/comments/gnews_1793682180000_18" style="color: #111827; text-decoration: none;">
+          Palladyne AI and Red Cat Complete Cross-Platform Multi-Drone Autonomous Flight Trials
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        IBM unveiled advanced multi-agent orchestration frameworks in Watsonx, enabling enterprises to coordinate heterogeneous AI agents across dozens of enterprise systems including SAP, Salesforce, and ServiceNow.
+        Completes multi-drone cooperative flight tests using Palladyne Pilot AI software on Teal 2 and Black Widow drones, demonstrating decentralized collaborative object detection and tracking without central servers.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +7,770</span> • <span>댓글 248개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793400960000_18" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793682180000_18" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -1224,23 +1351,23 @@
     <article style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
       <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 8px;">
         <span style="background: #DC2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#20 속보</span>
-        <span>출처: <strong>techtarget.com</strong></span>
+        <span>출처: <strong>siliconangle.com</strong></span>
         <span>•</span>
-        <time>2026. 10. 31.</time>
+        <time>2026. 11. 3.</time>
       </div>
       <h2 style="font-size: 18px; font-weight: 800; line-height: 1.4; margin: 0 0 10px 0;">
-        <a href="/r/news/comments/gnews_1793400900000_19" style="color: #111827; text-decoration: none;">
-          Emerging Standards Anchor Enterprise Agentic Data Access and Orchestration
+        <a href="/r/news/comments/gnews_1793682120000_19" style="color: #111827; text-decoration: none;">
+          Enterprise Tech Leaders Weigh Business Value and Operational Viability of Agentic AI
         </a>
       </h2>
       <p style="font-size: 14px; color: #4B5563; line-height: 1.6; margin: 0 0 12px 0;">
-        Technology standards bodies are formalizing cross-platform agent communication protocols, establishing interoperable interfaces that govern how autonomous agents retrieve enterprise data and execute multi-step workflows.
+        Evaluates the shift from predictive machine learning models to autonomous judgment layers, examining whether enterprise agentic systems can deliver sustainable cost efficiencies and operational ROI.
       </p>
       <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #6B7280;">
         <div>
           <span>추천 +7,735</span> • <span>댓글 244개</span>
         </div>
-        <a href="/r/news/comments/gnews_1793400900000_19" style="color: #FF4500; font-weight: 700; text-decoration: none;">
+        <a href="/r/news/comments/gnews_1793682120000_19" style="color: #FF4500; font-weight: 700; text-decoration: none;">
           기사 전문 읽기 →
         </a>
       </div>
@@ -1279,6 +1406,18 @@
           <li>
             <h3><a href="https://snshero.com/snshero.md">SNSHero.com 개발 프롬프트 (snshero.md)</a></h3>
             <p>SNSHero.com 전체 아키텍처 및 AI 에이전트 페어 프로그래밍을 위한 종합 마스터 프롬프트 및 시스템 지침 문서 전문.</p>
+          </li>
+          <li>
+            <h3><a href="http://novel.naver.com/challenge/list?novelId=1250635" target="_blank" rel="noopener">네이버 웹소설 - 눈히어로.com - 카단의 여정</a></h3>
+            <p>네이버 웹소설 챌린지리그에서 공식 연재 중인 《눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)》 40부작 판타지 웹소설 (novelId=1250635).</p>
+          </li>
+          <li>
+            <h3><a href="https://comic.naver.com/challenge/list?titleId=856677" target="_blank" rel="noopener">네이버 웹툰 - 눈히어로.com - 카단의 여정</a></h3>
+            <p>네이버 웹툰 도전만화에서 공식 연재 중인 《눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)》 풀컬러 판타지 웹툰 (titleId=856677).</p>
+          </li>
+          <li>
+            <h3><a href="https://nlink.munpia.com/link/munpia/novel/616551" target="_blank" rel="noopener">문피아 웹소설 - 눈히어로.com - 카단의 여정</a></h3>
+            <p>문피아(Munpia)에서 공식 연재 중인 《눈히어로.com - 카단의 여정 (SNSHero.com - Kadan's Journey)》 정통 모험 판타지 웹소설 (novel/616551).</p>
           </li>
           <li>
             <h3><a href="https://www.youtube.com/@snshero" target="_blank" rel="noopener">SNSHero.com 유튜브 채널 (@snshero)</a></h3>
