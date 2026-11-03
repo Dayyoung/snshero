@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 13:57 KST] [#play 40화 완주 시 3초 환생 팝업 및 환생1-1화 재시작 연동, 대사/배틀 중 닫기(플레이 중지) 버튼 추가]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. `#play` 40화 완료 시 3초 환생 팝업 표시 및 `환생1-1화`부터 재시작 연동**:
+    - `src/landing/services/playRpgEngine.ts`에 `reincarnationLevel`, `reincarnationTimerSec`, `triggerReincarnationPopup()`, `completeReincarnation()`, `formatChapterLabel()` 추가 및 `localStorage`(`hero_kadan_rpg_rebirth_level`) 영구 저장 연동.
+    - 40화가 끝나면 3초 동안 환생 팝업(`#play-reincarnation-modal-root`)이 카운트다운 게이지와 함께 표시되고, 3초 경과 시 자동으로 환생 회차가 증가하며 `환생1-1화`(차수에 따라 `환생N-1화`)부터 다시 시작되도록 구현.
+  - **2. `#play` 대사 중 닫기 버튼을 통한 플레이 즉시 중지 지원**:
+    - `src/landing/services/playRpgEngine.ts`에 `closeDialogueAndStopPlay()`를 구현하여 호출 시 자동 진행(`autoMode`)을 즉시 해제(`false`)하고 대사 모달을 닫아 맵 화면으로 복귀하도록 처리.
+    - `src/landing/views/PlaySection.tsx`의 대사 모달 상단 바, 하단 바, 배경 오버레이 및 3x3 배틀 헤더에 `[✕ 닫기]` / `[✕ 닫기 (중지)]` 버튼을 추가하여 언제든 플레이를 멈출 수 있도록 개선.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (0 errors)
+  - 로컬 git 커밋: 완료 (git push 미실행 원칙 준수)
+  - 구글 폼 보고서 제출: 완료
+
 ## [2026-11-03 13:54 KST] [홈(#home) 카드 클릭 시 모바일 팝업 넘침 해결 및 상/하단 닫기 버튼 정상화]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
