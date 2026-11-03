@@ -2,6 +2,19 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 15:35 KST] [#deck 카드 교체 TypeError 수정 및 #book 카카오페이지/리디북스 링크 제거]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. `#deck` 카드 교체 시 `TypeError: y.setDeckSlot is not a function` 런타임 오류 원천 해결**:
+    - `src/landing/index.ts`의 덱 카드 교체 액션(`swap-deck-slot-card`, `swap-deck-card`)에서 잘못 호출되던 `cardNurtureStore.setDeckSlot`을 정식 메서드인 `cardNurtureStore.setDeckCard(slotIndex, cardId)`로 수정.
+    - `src/landing/services/cardNurtureStore.ts` 클래스 내에 `setDeckSlot(slotIndex: number, cardId: number): boolean` alias 메서드를 추가하여 향후 호출 시에도 100% 호환성 보장.
+  - **2. `#book` 공식 연재처에서 카카오페이지 및 리디북스 링크 제거**:
+    - `src/landing/views/BookSection.tsx` 하단 공식 연재처 바로가기 섹션에서 카카오페이지와 리디북스 링크를 완전히 삭제하고, 네이버 시리즈 및 문피아 소설 2대 공식 연재처 2열 그리드로 정돈.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (4,357개 모듈 변환, 0 errors)
+  - 로컬 git 커밋: 완료 (git push 미실행 준수)
+  - 구글 폼 보고서 제출: 완료 예정
+
 ## [2026-11-03 15:31 KST] [웹툰(#webtoon) 특수효과 글자 제거, 전체화면 모드 좌우 넘김 버튼 및 마지막 컷에서 다음화 이동 구현]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

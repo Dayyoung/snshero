@@ -386,7 +386,7 @@ export function handleEventDelegation(event: Event): void {
     const slotAttr = target.getAttribute('data-slot-index');
     const slotIndex = slotAttr !== null ? Number(slotAttr) : getEditingSlotIndex();
     if (cardId && slotIndex !== null && !isNaN(slotIndex) && cardNurtureStore.isCardOwned(cardId)) {
-      cardNurtureStore.setDeckSlot(slotIndex, cardId);
+      cardNurtureStore.setDeckCard(slotIndex, cardId);
       setEditingSlotIndex(null);
       setSelectedDeckCardId(cardId);
       renderApp();

@@ -433,7 +433,7 @@ export function renderBookSection(): string {
           <!-- External Official Serialization Links -->
           <div class="mt-8 p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none space-y-3">
             <span class="text-xs font-bold text-[#646262]">공식 연재처 바로가기:</span>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <a
                 href="${EXTERNAL_LINKS.naverNovel}"
                 target="_blank"
@@ -449,22 +449,6 @@ export function renderBookSection(): string {
                 class="px-3 py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-[#edeaea] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center text-center no-underline"
               >
                 문피아 소설 ↗
-              </a>
-              <a
-                href="https://page.kakao.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="px-3 py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-[#edeaea] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center text-center no-underline"
-              >
-                카카오페이지 ↗
-              </a>
-              <a
-                href="https://ridibooks.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="px-3 py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-[#edeaea] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center text-center no-underline"
-              >
-                리디북스 ↗
               </a>
             </div>
           </div>

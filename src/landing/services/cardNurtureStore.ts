@@ -223,6 +223,13 @@ export class CardNurtureStore implements NurtureState {
   }
 
   /**
+   * Alias for setDeckCard to guarantee backwards and cross-call compatibility.
+   */
+  setDeckSlot(slotIndex: number, cardId: number): boolean {
+    return this.setDeckCard(slotIndex, cardId);
+  }
+
+  /**
    * Swap two deck slots
    */
   swapDeckCards(slotA: number, slotB: number): boolean {
