@@ -1148,66 +1148,59 @@ function renderAdventureView(): string {
               return `
             <div
               id="play-battle-modal-root"
-              class="fixed inset-0 z-50 flex items-center justify-center p-1.5 sm:p-4 font-mono select-none overflow-y-auto"
+              class="fixed inset-0 z-50 flex flex-col justify-between bg-[#060a14] text-[#fdfcfc] font-mono select-none overflow-hidden h-[100dvh]"
               role="dialog"
               aria-modal="true"
               aria-labelledby="battle-modal-title"
             >
-              <!-- Backdrop Overlay -->
-              <div
-                data-action="play-dialogue-close"
-                class="fixed inset-0 bg-black/85 backdrop-blur-xs transition-opacity cursor-pointer"
-                aria-hidden="true"
-              ></div>
-
-              <!-- Battle Popup Dialog Box -->
-              <section class="relative z-10 w-full max-w-4xl my-auto max-h-[96dvh] overflow-y-auto bg-[#060a14] border-2 border-amber-400/70 p-2.5 sm:p-5 rounded-none space-y-2 sm:space-y-3 text-white shadow-2xl">
-                <!-- Ultra-Compact Single-Line Battle Header (Unnecessary Top Text Removed) -->
-                <div class="flex items-center justify-between pb-1.5 border-b border-white/10 gap-2">
-                  <div class="flex items-center gap-1.5 min-w-0 truncate">
-                    <span class="px-1.5 py-0.5 bg-amber-400 text-stone-950 text-[10px] sm:text-xs font-black rounded-sm shrink-0">
-                      ${chapterLabel}
-                    </span>
-                    <h3 id="battle-modal-title" class="text-xs sm:text-base font-black text-white m-0 truncate">
-                      vs ${epDeck.leaderName} ${tr('외', '& others', '他')} (${epDeck.deckNames.slice(0, 3).join('·')})
-                    </h3>
-                    ${
-                      playRpgState.reincarnationLevel > 0
-                        ? `<span class="px-1.5 py-0.5 bg-purple-950 text-purple-200 border border-purple-500/70 text-[9px] sm:text-[10px] font-black rounded-sm shrink-0">🔥+${rebirthBonus}</span>`
-                        : ''
-                    }
-                  </div>
-                  <button
-                    type="button"
-                    data-action="play-dialogue-close"
-                    class="px-2.5 py-1 bg-rose-950/90 hover:bg-rose-900 text-rose-200 border border-rose-500/70 text-xs font-black rounded-sm min-h-[38px] sm:min-h-[44px] cursor-pointer shrink-0"
-                    aria-label="${tr('배틀 중지 및 맵으로 복귀', 'Exit Battle & Return to Map', 'バトルを中断してマップへ戻る')}"
-                  >
-                    ✕ ${tr('닫기', 'Close', '閉じる')}
-                  </button>
+              <!-- 1. 상단 바: 챕터 / 대결 상대 / 닫기 버튼 -->
+              <header class="w-full shrink-0 flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3 border-b border-white/10 bg-[#0c1222]/95 z-20">
+                <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 truncate">
+                  <span class="px-2 py-0.5 bg-amber-400 text-stone-950 text-[10px] sm:text-xs font-black rounded-sm shrink-0">
+                    ${chapterLabel}
+                  </span>
+                  <h3 id="battle-modal-title" class="text-xs sm:text-sm md:text-base font-black text-white m-0 truncate">
+                    vs ${epDeck.leaderName} ${tr('외', '& others', '他')} (${epDeck.deckNames.slice(0, 3).join('·')})
+                  </h3>
+                  ${
+                    playRpgState.reincarnationLevel > 0
+                      ? `<span class="px-1.5 py-0.5 bg-purple-950 text-purple-200 border border-purple-500/70 text-[9px] sm:text-[10px] font-black rounded-sm shrink-0">🔥+${rebirthBonus}</span>`
+                      : ''
+                  }
                 </div>
+                <button
+                  type="button"
+                  data-action="play-dialogue-close"
+                  class="px-3 py-1.5 bg-rose-950/90 hover:bg-rose-900 text-rose-200 border border-rose-500/70 text-xs font-black rounded-sm min-h-[44px] cursor-pointer shrink-0 flex items-center gap-1 active:translate-y-px"
+                  aria-label="${tr('배틀 중지 및 맵으로 복귀', 'Exit Battle & Return to Map', 'バトルを中断してマップへ戻る')}"
+                >
+                  ✕ ${tr('닫기', 'Close', '閉じる')}
+                </button>
+              </header>
 
-                <!-- Real-time Turn Status & Cadence Bar -->
-                <div class="flex items-center justify-between px-2.5 py-1.5 bg-black/60 border border-white/10 text-xs rounded-xs font-mono select-none">
+              <!-- 2. 중앙 메인: 턴 안내 바 + 3x3 전장 보드 필드 + 전투 승패 결과 -->
+              <main class="flex-1 w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-3 py-1 sm:py-3 overflow-y-auto space-y-2 sm:space-y-3">
+                <!-- 실시간 턴 안내 및 캐던스 바 -->
+                <div class="w-full flex items-center justify-between px-3 py-1.5 bg-[#0e1628] border border-white/10 text-xs rounded-none font-mono select-none">
                   <div class="flex items-center gap-2 min-w-0">
-                    <span class="px-2 py-0.5 text-[10px] font-black rounded-xs shrink-0 ${
+                    <span class="px-2 py-0.5 text-[10px] sm:text-[11px] font-black rounded-xs shrink-0 ${
                       playRpgState.turn === 'player'
                         ? 'bg-sky-500 text-slate-950 animate-pulse'
                         : 'bg-rose-500 text-white animate-pulse'
                     }">
                       ${playRpgState.turn === 'player' ? tr('▶ 내 턴 (P1)', '▶ YOUR TURN (P1)', '▶ 自ターン (P1)') : tr('⏳ 상대 턴 (AI)', "⏳ OPPONENT'S TURN", '⏳ 相手ターン (AI)')}
                     </span>
-                    <span class="text-[11px] text-stone-300 truncate">
+                    <span class="text-[11px] sm:text-xs text-stone-300 truncate">
                       ${playRpgState.battleMessage || tr('카드를 선택한 후 빈 슬롯을 터치하세요.', 'Select a card and touch an empty slot.', 'カードを選択して空きスロットをタッチしてください。')}
                     </span>
                   </div>
-                  <div class="text-[11px] font-bold text-amber-400 shrink-0">
+                  <div class="text-[11px] sm:text-xs font-bold text-amber-400 shrink-0">
                     P1(${playRpgState.playerHand.length}) : AI(${playRpgState.opponentHand.length})
                   </div>
                 </div>
 
-                <!-- 3x3 Battle Field Board -->
-                <div class="grid grid-cols-3 gap-1 sm:gap-2 w-full max-w-[235px] sm:max-w-[320px] mx-auto aspect-square select-none p-1 sm:p-2 bg-[#0c1220] border border-white/10">
+                <!-- 3x3 Battle Field Board (중앙에 큼직하고 시원하게) -->
+                <div class="grid grid-cols-3 gap-1.5 sm:gap-2.5 w-full max-w-[270px] sm:max-w-[340px] md:max-w-[380px] mx-auto aspect-square select-none p-1.5 sm:p-2.5 bg-[#0c1220] border-2 border-amber-400/60 shadow-2xl">
                   ${playRpgState.battleBoard
                     .map((slot, sIdx) => {
                       if (!slot) {
@@ -1307,49 +1300,12 @@ function renderAdventureView(): string {
                     .join('')}
                 </div>
 
-                <!-- Player Active Hand Cards (1-Row Dynamic Card Width with Center Board Balance & PC Min-Width) -->
-                <div class="pt-1.5 border-t border-white/10">
-                  <div class="flex flex-nowrap items-stretch justify-center gap-1 sm:gap-2.5 pt-1 w-full max-w-[390px] sm:max-w-[580px] md:max-w-[680px] lg:max-w-[740px] mx-auto">
-                    ${playRpgState.playerHand
-                      .map((cId, hIdx) => {
-                        const isSelected = playRpgState.selectedHandIndex === hIdx;
-                        return `
-                          <button
-                            type="button"
-                            data-action="play-battle-card"
-                            data-hand-index="${hIdx}"
-                            class="relative flex-1 min-w-0 sm:min-w-[96px] md:min-w-[115px] lg:min-w-[125px] max-w-[72px] sm:max-w-[125px] md:max-w-[140px] text-left p-0 bg-transparent border-0 cursor-pointer transition-transform ${
-                              isSelected
-                                ? '-translate-y-1.5 ring-2 ring-amber-400 rounded-sm z-20'
-                                : 'hover:-translate-y-0.5 opacity-95 hover:opacity-100'
-                            }"
-                          >
-                            ${
-                              isSelected
-                                ? `<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 z-40 px-1.5 sm:px-2 py-0.5 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs whitespace-nowrap border border-stone-900 shadow-sm">▼ ${tr('선택됨', 'SELECTED', '選択中')}</span>`
-                                : ''
-                            }
-                            ${renderOriginalCardHtml(cId, {
-                              isSelected,
-                              isOwned: true,
-                              showRedDot: false,
-                              size: 'responsive',
-                              visualTier: 'bust',
-                              className: 'w-full min-w-0 sm:min-w-[96px] md:min-w-[115px] lg:min-w-[125px] aspect-[5/7] max-h-[115px] sm:max-h-[175px] md:max-h-[200px]',
-                            })}
-                          </button>
-                        `;
-                      })
-                      .join('')}
-                  </div>
-                </div>
-
                 <!-- Battle Result Controls (Victory Required to Advance Chapter) -->
                 ${
                   playRpgState.battleWinner
                     ? `
-                      <div class="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
-                        <div class="text-xs sm:text-sm font-bold ${
+                      <div class="w-full bg-[#0a1020] border border-white/15 p-3 rounded-none shadow-xl flex flex-col items-center gap-2.5">
+                        <div class="text-xs sm:text-sm font-black text-center ${
                           playRpgState.battleWinner === 'player' ? 'text-emerald-400' : 'text-rose-400'
                         }">
                           ${
@@ -1363,11 +1319,11 @@ function renderAdventureView(): string {
                           }
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-2">
+                        <div class="flex flex-wrap items-center justify-center gap-2">
                           <button
                             type="button"
                             data-action="play-repeat-hunting"
-                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-sm min-h-[44px] cursor-pointer"
+                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-sm min-h-[44px] cursor-pointer active:translate-y-px"
                           >
                             ${playRpgState.battleWinner === 'player' ? tr('🔁 반복 사냥 재전투', '🔁 Repeat Battle', '🔁 反復狩り再戦') : tr('⚔️ 현재 회차 재도전', '⚔️ Retry Episode', '⚔️ 現在のエピソードに再挑戦')}
                           </button>
@@ -1377,7 +1333,7 @@ function renderAdventureView(): string {
                                 <button
                                   type="button"
                                   data-action="play-next-chapter"
-                                  class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer"
+                                  class="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs sm:text-sm font-black rounded-sm min-h-[44px] cursor-pointer active:translate-y-px shadow-lg"
                                 >
                                   ${currentChapter >= 40 ? tr('👑 40화 완주 · 환생하기 ▶', '👑 Episode 40 Clear · Reincarnate ▶', '👑 全40話完走・転生する ▶') : tr('다음 챕터로 전진 ▶', 'Next Chapter ▶', '次のチャプターへ ▶')}
                                 </button>
@@ -1386,7 +1342,7 @@ function renderAdventureView(): string {
                                 <button
                                   type="button"
                                   data-nav="card"
-                                  class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer"
+                                  class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer active:translate-y-px"
                                 >
                                   ⬆️ ${tr('카드 업그레이드 (#card)', 'Upgrade Cards (#card)', 'カード強化 (#card)')}
                                 </button>
@@ -1397,7 +1353,51 @@ function renderAdventureView(): string {
                     `
                     : ''
                 }
-              </section>
+              </main>
+
+              <!-- 3. 하단 바: Player Active Hand Cards (한 손 조작 최적화) -->
+              <footer class="w-full shrink-0 border-t border-white/10 bg-[#090f1e]/98 px-3 py-2 sm:py-3 z-20">
+                <div class="w-full max-w-2xl mx-auto flex flex-col items-center">
+                  <div class="w-full flex items-center justify-between pb-1 text-[10px] sm:text-[11px] text-stone-400 font-mono">
+                    <span>${tr('내 핸드 카드', 'My Hand Cards', '手札カード')} (${playRpgState.playerHand.length})</span>
+                    <span class="text-amber-400 font-bold">${tr('카드를 터치하여 선택 후 보드에 배치', 'Tap card to select, then tap slot', 'カードを選択してスロットへ配置')}</span>
+                  </div>
+                  <!-- 카드 덱 행 -->
+                  <div class="flex flex-nowrap items-stretch justify-center gap-1 sm:gap-2.5 w-full pt-1">
+                    ${playRpgState.playerHand
+                      .map((cId, hIdx) => {
+                        const isSelected = playRpgState.selectedHandIndex === hIdx;
+                        return `
+                          <button
+                            type="button"
+                            data-action="play-battle-card"
+                            data-hand-index="${hIdx}"
+                            class="relative flex-1 min-w-0 sm:min-w-[80px] md:min-w-[100px] max-w-[70px] sm:max-w-[110px] md:max-w-[125px] text-left p-0 bg-transparent border-0 cursor-pointer transition-transform ${
+                              isSelected
+                                ? '-translate-y-2 ring-2 ring-amber-400 rounded-sm z-20'
+                                : 'hover:-translate-y-1 opacity-95 hover:opacity-100'
+                            }"
+                          >
+                            ${
+                              isSelected
+                                ? `<span class="absolute -top-3 left-1/2 -translate-x-1/2 z-40 px-1.5 py-0.2 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs whitespace-nowrap border border-stone-900 shadow-md">▼ SELECT</span>`
+                                : ''
+                            }
+                            ${renderOriginalCardHtml(cId, {
+                              isSelected,
+                              isOwned: true,
+                              showRedDot: false,
+                              size: 'responsive',
+                              visualTier: 'bust',
+                              className: 'w-full min-w-0 sm:min-w-[80px] md:min-w-[100px] aspect-[5/7] max-h-[110px] sm:max-h-[160px] md:max-h-[185px]',
+                            })}
+                          </button>
+                        `;
+                      })
+                      .join('')}
+                  </div>
+                </div>
+              </footer>
             </div>
           `;
             })()
