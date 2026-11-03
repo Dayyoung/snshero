@@ -33,7 +33,13 @@ import {
   setOwnedFilter,
 } from './views/CardSection';
 import { renderBookSection, handleBookAction, initBookEpisodeFromUrl } from './views/BookSection';
-import { renderWebtoonSection, handleWebtoonAction, initWebtoonEpisodeFromUrl } from './views/WebtoonSection';
+import {
+  renderWebtoonSection,
+  handleWebtoonAction,
+  initWebtoonEpisodeFromUrl,
+  isWebtoonLightboxOpen,
+  closeWebtoonLightbox,
+} from './views/WebtoonSection';
 import {
   renderShopView,
   executeShopPurchase,
@@ -261,6 +267,11 @@ export function handleEventDelegation(event: Event): void {
   if (!rawTarget) return;
 
   // Direct Backdrop Click Fallback (Dual Defense Layer 2)
+  if (rawTarget.id === 'webtoon-lightbox-modal') {
+    closeWebtoonLightbox();
+    renderApp();
+    return;
+  }
   if (rawTarget.id === 'pack-reveal-modal' || rawTarget.id === 'pack-reveal-backdrop') {
     clearPackReveal();
     renderApp();
@@ -644,6 +655,28 @@ export function handleEventDelegation(event: Event): void {
 }
 
 export function handleGlobalKeydown(event: KeyboardEvent): void {
+  // Webtoon Lightbox (Fullscreen Zoom) Left / Right / ESC Keydown handling
+  if (isWebtoonLightboxOpen()) {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      handleWebtoonAction('webtoon-lightbox-prev');
+      renderApp();
+      return;
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      handleWebtoonAction('webtoon-lightbox-next');
+      renderApp();
+      return;
+    }
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeWebtoonLightbox();
+      renderApp();
+      return;
+    }
+  }
+
   if (state.activeView === 'play') {
     if (event.key === 'ArrowUp' || event.key === 'w' || event.key === 'W') {
       event.preventDefault();

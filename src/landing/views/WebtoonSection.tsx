@@ -9,7 +9,9 @@
  *   - 44px+ minimum touch targets for all interactive controls
  *
  * Displays all 40 episodes (840+ panels) of 《눈히어로.com - 카단의 여정》
- * as a vertical continuous scrolling webtoon strip with panel images and dialogues.
+ * as a vertical continuous scrolling webtoon strip with panel images and clean dialogues.
+ * Special visual effect letters (SFX cues) are cleanly removed.
+ * Fullscreen / Lightbox mode features Left/Right pagination buttons with auto-advance to next episode.
  */
 
 import { EXTERNAL_LINKS } from '../types';
@@ -26,13 +28,6 @@ export interface WebtoonDialogueItem {
   characterCardId?: number;
 }
 
-export interface WebtoonSfxItem {
-  textKo?: string;
-  textEn?: string;
-  style?: string;
-  position?: string;
-}
-
 export interface WebtoonImageItem {
   index: number;
   fileName?: string;
@@ -44,7 +39,6 @@ export interface WebtoonImageItem {
   characters?: string[];
   background?: string;
   dialogues?: WebtoonDialogueItem[];
-  sfxCues?: WebtoonSfxItem[];
   isKeyClimax?: boolean;
 }
 
@@ -60,8 +54,10 @@ const MANIFEST = WEBTOON_MANIFEST_DATA as unknown as Record<string, WebtoonManif
 
 let currentWebtoonEpisode: number = 1;
 let isWebtoonIndexOpen: boolean = false;
-let zoomedImageUrl: string | null = null;
-let zoomedCaption: string = '';
+
+// Lightbox (Fullscreen Zoom) State
+let zoomedEpisode: number = 1;
+let zoomedSceneIndex: number | null = null; // null indicates lightbox is closed
 
 export function getWebtoonEpisodeNum(): number {
   return currentWebtoonEpisode;
@@ -92,6 +88,14 @@ export function initWebtoonEpisodeFromUrl(): void {
       currentWebtoonEpisode = epNum;
     }
   }
+}
+
+export function isWebtoonLightboxOpen(): boolean {
+  return zoomedSceneIndex !== null;
+}
+
+export function closeWebtoonLightbox(): void {
+  zoomedSceneIndex = null;
 }
 
 export function handleWebtoonAction(action: string, target?: HTMLElement): void {
@@ -127,15 +131,37 @@ export function handleWebtoonAction(action: string, target?: HTMLElement): void 
   } else if (action === 'webtoon-toggle-index') {
     isWebtoonIndexOpen = !isWebtoonIndexOpen;
   } else if (action === 'webtoon-zoom-image') {
-    const url = target?.getAttribute('data-img-url');
-    const caption = target?.getAttribute('data-caption') || '';
-    if (url) {
-      zoomedImageUrl = url;
-      zoomedCaption = caption;
-    }
+    const epAttr = target?.getAttribute('data-episode');
+    const sceneAttr = target?.getAttribute('data-scene-index');
+    const epNum = epAttr ? parseInt(epAttr, 10) : currentWebtoonEpisode;
+    const sceneIdx = sceneAttr ? parseInt(sceneAttr, 10) : 0;
+    
+    zoomedEpisode = isNaN(epNum) ? currentWebtoonEpisode : Math.max(1, Math.min(40, epNum));
+    zoomedSceneIndex = isNaN(sceneIdx) ? 0 : Math.max(0, sceneIdx);
   } else if (action === 'webtoon-close-zoom') {
-    zoomedImageUrl = null;
-    zoomedCaption = '';
+    zoomedSceneIndex = null;
+  } else if (action === 'webtoon-lightbox-prev') {
+    if (zoomedSceneIndex === null) return;
+    if (zoomedSceneIndex > 0) {
+      zoomedSceneIndex -= 1;
+    } else if (zoomedEpisode > 1) {
+      // Move to the last panel of previous episode
+      zoomedEpisode -= 1;
+      setWebtoonEpisodeNum(zoomedEpisode);
+      const prevImages = MANIFEST[String(zoomedEpisode)]?.images || [];
+      zoomedSceneIndex = Math.max(0, prevImages.length - 1);
+    }
+  } else if (action === 'webtoon-lightbox-next') {
+    if (zoomedSceneIndex === null) return;
+    const curImages = MANIFEST[String(zoomedEpisode)]?.images || [];
+    if (zoomedSceneIndex < curImages.length - 1) {
+      zoomedSceneIndex += 1;
+    } else if (zoomedEpisode < 40) {
+      // Reached the end of current episode -> Advance to next episode
+      zoomedEpisode += 1;
+      setWebtoonEpisodeNum(zoomedEpisode);
+      zoomedSceneIndex = 0;
+    }
   } else if (action === 'webtoon-scroll-top') {
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -148,9 +174,177 @@ export function renderWebtoonSection(): string {
 
   const ep = currentWebtoonEpisode;
   const epData = MANIFEST[String(ep)];
-  const rawTitle = epData?.episodeTitleKo || epData?.episodeTitle || chapterTitles[ep - 1]?.titleKo || `제 ${ep}화`;
+  const rawTitle = epData?.episodeTitleKo || epData?.episodeTitle || chapterTitles[ep - 1] || `제 ${ep}화`;
   const images: WebtoonImageItem[] = epData?.images || [];
   const totalPanels = images.length;
+
+  // Build Lightbox modal HTML if active
+  let lightboxModalHtml = '';
+  if (zoomedSceneIndex !== null) {
+    const curEp = zoomedEpisode;
+    const curEpData = MANIFEST[String(curEp)];
+    const curTitle = curEpData?.episodeTitleKo || curEpData?.episodeTitle || chapterTitles[curEp - 1] || `제 ${curEp}화`;
+    const curImages = curEpData?.images || [];
+    const maxIdx = Math.max(0, curImages.length - 1);
+    const validIdx = Math.max(0, Math.min(maxIdx, zoomedSceneIndex));
+    const activeImage: WebtoonImageItem | undefined = curImages[validIdx];
+
+    const imgSrc = activeImage?.imageUrl || activeImage?.localArtUrl || '';
+    const narration = activeImage?.narrationKo || activeImage?.narrationEn || '';
+    const dialogues = activeImage?.dialogues || [];
+    const isFirstPanelOfFirstEp = curEp <= 1 && validIdx <= 0;
+    const isLastPanelOfLastEp = curEp >= 40 && validIdx >= maxIdx;
+    const isAtEpisodeEnd = validIdx >= maxIdx;
+
+    lightboxModalHtml = `
+      <div
+        id="webtoon-lightbox-modal"
+        class="fixed inset-0 z-50 bg-black/95 flex flex-col justify-between p-2 sm:p-4 font-mono select-none backdrop-blur-md"
+      >
+        <!-- Lightbox Top Controls Bar -->
+        <header class="w-full max-w-6xl mx-auto flex items-center justify-between gap-3 px-2 sm:px-4 py-2 border-b border-stone-800 text-[#fdfcfc] shrink-0">
+          <div class="flex items-center gap-2 truncate">
+            <span class="px-2 py-0.5 bg-[#fdfcfc] text-[#201d1d] text-[10px] font-bold rounded-sm tracking-wider uppercase shrink-0">
+              EP.${String(curEp).padStart(2, '0')}
+            </span>
+            <span class="text-xs sm:text-sm font-bold text-stone-200 truncate">
+              제${curEp}화 ${curTitle}
+            </span>
+            <span class="text-xs text-stone-400 font-mono shrink-0">
+              [${validIdx + 1} / ${curImages.length}]
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              data-action="webtoon-close-zoom"
+              class="px-3.5 py-2 bg-stone-800 hover:bg-stone-700 text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center gap-1 cursor-pointer transition-colors border border-stone-600"
+              title="전체화면 닫기 (ESC)"
+            >
+              <span>✕ 닫기</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Lightbox Center: Image with Left / Right Navigation Buttons -->
+        <div class="relative w-full flex-1 flex items-center justify-center my-2 overflow-hidden px-1 sm:px-16">
+          
+          <!-- Prev Button (Left) -->
+          <button
+            type="button"
+            data-action="webtoon-lightbox-prev"
+            ${isFirstPanelOfFirstEp ? 'disabled' : ''}
+            class="absolute left-2 sm:left-4 z-20 w-12 sm:w-16 h-16 sm:h-24 bg-black/60 hover:bg-black/90 text-[#fdfcfc] disabled:opacity-20 disabled:hover:bg-black/40 border border-stone-700 hover:border-white text-xl sm:text-2xl font-black rounded-sm flex items-center justify-center cursor-pointer transition-all shadow-lg active:scale-95"
+            aria-label="이전 컷 보기"
+            title="${validIdx === 0 && curEp > 1 ? '이전 화 마지막 컷으로 이동' : '이전 컷 (◀)'}"
+          >
+            ◀
+          </button>
+
+          <!-- Current Panel Image -->
+          <div class="relative max-h-full max-w-full flex items-center justify-center">
+            <img
+              src="${imgSrc}"
+              alt="제${curEp}화 컷 ${validIdx + 1}"
+              class="max-h-[60vh] sm:max-h-[72vh] md:max-h-[76vh] w-auto max-w-full object-contain border border-stone-800 shadow-2xl transition-all"
+              onerror="this.onerror=null; this.src='/images/webtoon/fallback_panel.webp';"
+            />
+          </div>
+
+          <!-- Next Button (Right) -->
+          <button
+            type="button"
+            data-action="webtoon-lightbox-next"
+            ${isLastPanelOfLastEp ? 'disabled' : ''}
+            class="absolute right-2 sm:right-4 z-20 w-12 sm:w-16 h-16 sm:h-24 bg-black/60 hover:bg-black/90 text-[#fdfcfc] disabled:opacity-20 disabled:hover:bg-black/40 border ${
+              isAtEpisodeEnd ? 'border-amber-400 text-amber-300' : 'border-stone-700 hover:border-white'
+            } text-xl sm:text-2xl font-black rounded-sm flex flex-col items-center justify-center cursor-pointer transition-all shadow-lg active:scale-95"
+            aria-label="다음 컷 보기"
+            title="${isAtEpisodeEnd ? '다음 화로 이동 (▶)' : '다음 컷 (▶)'}"
+          >
+            <span>▶</span>
+            ${
+              isAtEpisodeEnd && curEp < 40
+                ? `<span class="text-[9px] font-bold tracking-tight text-amber-300 uppercase mt-0.5">다음화</span>`
+                : ''
+            }
+          </button>
+        </div>
+
+        <!-- Lightbox Bottom Dialogue & Caption Bar -->
+        <footer class="w-full max-w-4xl mx-auto px-4 py-3 bg-stone-900/90 border border-stone-800 rounded-sm text-[#fdfcfc] space-y-2 shrink-0">
+          <div class="flex items-center justify-between text-[11px] text-stone-400 pb-1 border-b border-stone-800">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-stone-200">
+                ${validIdx === 0 ? 'TITLE CARD' : `SCENE #${String(validIdx).padStart(2, '0')}`}
+              </span>
+              ${
+                activeImage?.isKeyClimax
+                  ? `<span class="px-1.5 py-0.2 bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold rounded-sm">★ 명장면</span>`
+                  : ''
+              }
+            </div>
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="text-stone-400">컷</span>
+              <span class="text-amber-400 font-bold">${validIdx + 1}</span>
+              <span class="text-stone-500">/</span>
+              <span>${curImages.length}</span>
+              ${
+                isAtEpisodeEnd && curEp < 40
+                  ? `<span class="ml-2 px-1.5 py-0.5 bg-amber-600 text-white font-bold text-[10px] rounded-sm">▶ 누르면 다음 화 이동</span>`
+                  : ''
+              }
+            </div>
+          </div>
+
+          <!-- Dialogues & Clean Narration (Zero SFX letters) -->
+          <div class="max-h-24 sm:max-h-28 overflow-y-auto space-y-1.5 text-xs sm:text-sm pr-1">
+            ${
+              dialogues.length > 0
+                ? dialogues
+                    .map((dlg) => {
+                      const speaker = dlg.speakerKo || dlg.speakerEn || '내레이션';
+                      const text = dlg.textKo || dlg.textEn || '';
+                      const isNarration = speaker === '내레이션' || speaker === 'Narration';
+
+                      if (isNarration) {
+                        return `
+                          <div class="text-stone-300 leading-relaxed border-l-2 border-amber-500 pl-2 py-0.5">
+                            ${escapeHtml(text)}
+                          </div>
+                        `;
+                      }
+
+                      return `
+                        <div class="flex items-start gap-2 text-stone-100 leading-relaxed">
+                          <span class="px-1.5 py-0.2 bg-stone-800 text-amber-300 text-[11px] font-bold rounded-xs shrink-0">
+                            [${escapeHtml(speaker)}]
+                          </span>
+                          <span class="font-medium">
+                            “${escapeHtml(text.replace(/^[“"']+|[”"']+$/g, ''))}”
+                          </span>
+                        </div>
+                      `;
+                    })
+                    .join('')
+                : narration
+                ? `
+                <div class="text-stone-300 leading-relaxed border-l-2 border-stone-600 pl-2 py-0.5">
+                  ${escapeHtml(narration)}
+                </div>
+              `
+                : `
+                <div class="text-stone-500 text-xs italic">
+                  대사 및 내레이션이 없는 씬입니다.
+                </div>
+              `
+            }
+          </div>
+        </footer>
+      </div>
+    `;
+  }
 
   return `
     <div class="w-full flex flex-col font-mono text-[#201d1d] select-none bg-[#fdfcfc]">
@@ -216,7 +410,7 @@ export function renderWebtoonSection(): string {
                 ${Array.from({ length: 40 }, (_, idx) => {
                   const num = idx + 1;
                   const item = MANIFEST[String(num)];
-                  const title = item?.episodeTitleKo || chapterTitles[idx]?.titleKo || `제 ${num}화`;
+                  const title = item?.episodeTitleKo || chapterTitles[idx] || `제 ${num}화`;
                   return `
                     <option value="${num}" ${num === ep ? 'selected' : ''}>
                       제${num}화 - ${title}
@@ -260,7 +454,7 @@ export function renderWebtoonSection(): string {
               ${Array.from({ length: 40 }, (_, idx) => {
                 const num = idx + 1;
                 const item = MANIFEST[String(num)];
-                const title = item?.episodeTitleKo || chapterTitles[idx]?.titleKo || `제 ${num}화`;
+                const title = item?.episodeTitleKo || chapterTitles[idx] || `제 ${num}화`;
                 const isCurrent = num === ep;
                 return `
                   <button
@@ -301,7 +495,7 @@ export function renderWebtoonSection(): string {
             ${rawTitle}
           </h1>
           <p class="text-xs text-[#646262] m-0 pt-1">
-            화면을 아래로 스크롤하여 컷신과 대사를 순서대로 감상하세요. (총 ${totalPanels}컷)
+            화면을 아래로 스크롤하여 컷신과 대사를 순서대로 감상하세요. (총 ${totalPanels}컷 · 클릭 시 전체화면 좌우 넘김 지원)
           </p>
         </div>
       </section>
@@ -325,7 +519,6 @@ export function renderWebtoonSection(): string {
                     const panelBadge = isTitleCard ? 'TITLE CARD' : `SCENE ${String(sceneIndex).padStart(2, '0')}`;
                     const mainNarration = img.narrationKo || img.narrationEn || '';
                     const dialogues = img.dialogues || [];
-                    const sfxCues = img.sfxCues || [];
                     const imgSrc = img.imageUrl || img.localArtUrl || '';
 
                     return `
@@ -350,19 +543,19 @@ export function renderWebtoonSection(): string {
                             }
                           </div>
                           
-                          <!-- Zoom Button -->
+                          <!-- Zoom Fullscreen Button -->
                           <button
                             type="button"
                             data-action="webtoon-zoom-image"
-                            data-img-url="${imgSrc}"
-                            data-caption="${escapeHtml(mainNarration)}"
+                            data-episode="${ep}"
+                            data-scene-index="${sceneIndex}"
                             class="px-2 py-1 text-[11px] font-bold text-[#646262] hover:text-[#201d1d] hover:bg-[#edeaea] border border-[rgba(15,0,0,0.12)] rounded-sm cursor-pointer transition-colors"
                           >
-                            확대 🔍
+                            전체화면 🔍
                           </button>
                         </div>
 
-                        <!-- Panel Image Frame -->
+                        <!-- Panel Image Frame (Clean Image, Zero SFX letters) -->
                         <div class="relative w-full bg-[#201d1d] flex items-center justify-center overflow-hidden">
                           <img
                             src="${imgSrc}"
@@ -370,30 +563,12 @@ export function renderWebtoonSection(): string {
                             loading="lazy"
                             decoding="async"
                             data-action="webtoon-zoom-image"
-                            data-img-url="${imgSrc}"
-                            data-caption="${escapeHtml(mainNarration)}"
+                            data-episode="${ep}"
+                            data-scene-index="${sceneIndex}"
                             class="w-full h-auto block object-cover cursor-pointer hover:opacity-95 transition-opacity"
                             onerror="this.onerror=null; this.src='/images/webtoon/fallback_panel.webp';"
+                            title="클릭하여 전체화면 모드로 감상"
                           />
-
-                          <!-- Visual SFX Badge Overlay (If Any) -->
-                          ${
-                            sfxCues.length > 0
-                              ? `
-                            <div class="absolute top-3 right-3 pointer-events-none">
-                              ${sfxCues
-                                .map(
-                                  (sfx) => `
-                                <span class="inline-block px-2.5 py-1 bg-amber-500/90 text-black font-black text-xs sm:text-sm tracking-widest border border-amber-300 shadow-md">
-                                  ${escapeHtml(sfx.textKo || sfx.textEn || '')}
-                                </span>
-                              `
-                                )
-                                .join('')}
-                            </div>
-                          `
-                              : ''
-                          }
                         </div>
 
                         <!-- Dialogue & Narration Box -->
@@ -505,41 +680,8 @@ export function renderWebtoonSection(): string {
         </div>
       </main>
 
-      <!-- 4. Lightbox Zoom Modal (If Triggered) -->
-      ${
-        zoomedImageUrl
-          ? `
-        <div class="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-4 backdrop-blur-xs select-none">
-          <div class="relative max-w-4xl w-full flex flex-col items-center">
-            <!-- Close Button -->
-            <button
-              type="button"
-              data-action="webtoon-close-zoom"
-              class="self-end mb-2 px-3 py-1.5 bg-[#fdfcfc] text-[#201d1d] hover:bg-stone-200 text-xs font-bold rounded-sm cursor-pointer transition-colors"
-            >
-              [ 닫기 ✕ ]
-            </button>
-            
-            <img
-              src="${zoomedImageUrl}"
-              alt="확대 이미지"
-              class="max-h-[80vh] w-auto object-contain border border-stone-700 shadow-2xl"
-            />
-            
-            ${
-              zoomedCaption
-                ? `
-              <p class="text-xs text-stone-300 text-center mt-3 max-w-xl line-clamp-3 font-mono">
-                ${zoomedCaption}
-              </p>
-            `
-                : ''
-            }
-          </div>
-        </div>
-      `
-          : ''
-      }
+      <!-- 4. Lightbox Fullscreen Modal with Left/Right Buttons & Auto-advance -->
+      ${lightboxModalHtml}
 
     </div>
   `;
