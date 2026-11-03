@@ -314,7 +314,34 @@ export function ensureGameStarted(): void {
 /**
  * Extract clean, concise dialogue quote from script line (대사만 추출)
  */
-export function extractDialogueText(line: KadanRpgNovelScriptLine): { text: string; isNarration: boolean } {
+export function extractDialogueText(
+  line: KadanRpgNovelScriptLine,
+  preferredSpeakerName?: string
+): { text: string; isNarration: boolean } {
+  // 0. preferredSpeakerName이 지정된 경우, subCuts에서 해당 화자의 대사를 최우선 추출
+  if (preferredSpeakerName && line.subCuts && line.subCuts.length > 0) {
+    const speakerQuotes: string[] = [];
+    for (const cut of line.subCuts) {
+      const cutSpk = (cut.speakerKo || '').trim();
+      if (
+        cutSpk &&
+        (cutSpk === preferredSpeakerName ||
+          cutSpk.includes(preferredSpeakerName) ||
+          preferredSpeakerName.includes(cutSpk))
+      ) {
+        const srcText = cut.dialogueKo || cut.narrationKo || '';
+        const matches = srcText.match(/[“"][^”"]+[”"]/g);
+        if (matches && matches.length > 0) {
+          speakerQuotes.push(...matches);
+        }
+      }
+    }
+    if (speakerQuotes.length > 0) {
+      const uniqueQuotes = Array.from(new Set(speakerQuotes));
+      return { text: uniqueQuotes.join('\n\n'), isNarration: false };
+    }
+  }
+
   // 1. 이미 정제된 dialogueQuoteKo가 있는 경우 최우선 채택
   if (line.dialogueQuoteKo && line.dialogueQuoteKo.trim().length > 0) {
     let quote = line.dialogueQuoteKo.trim();
@@ -380,71 +407,153 @@ export interface ResolvedDialogueSpeakers {
   speakerTitle: string;
 }
 
-/**
- * Resolve top-left and top-right characters and identify who is speaking
- */
-export function resolveDialogueSpeakers(line: KadanRpgNovelScriptLine): ResolvedDialogueSpeakers {
+function findSpeakerInfoInLine(
+  line: KadanRpgNovelScriptLine,
+  prevCardId: number | null
+): { cardId: number; name: string; role: string } {
   const chars = line.sceneCharacters || [];
 
-  // 기본 캐릭터 1 (주인공 / 아군 측 또는 첫 번째 인물)
-  const char1 = chars[0] || {
-    cardId: line.cardId || 41,
-    nameKo: line.name || '카단',
-    roleKo: '성기사단의 후예',
-    isSpeaker: true,
+  const resolveByName = (rawName: string): { cardId: number; name: string; role: string } | null => {
+    const clean = rawName.trim();
+    if (!clean || clean === '내레이션' || clean === 'Narration') return null;
+    const foundInScene = chars.find(
+      (c) => c.nameKo === clean || clean.includes(c.nameKo) || c.nameKo.includes(clean)
+    );
+    if (foundInScene) {
+      return {
+        cardId: foundInScene.cardId || 41,
+        name: foundInScene.nameKo,
+        role: foundInScene.roleKo || '수호자',
+      };
+    }
+    for (let id = 1; id <= 110; id++) {
+      const card = CARD_DATABASE[id];
+      if (card && card.title && (card.title === clean || clean.includes(card.title))) {
+        return {
+          cardId: id,
+          name: card.title,
+          role: card.desc ? card.desc.slice(0, 36) : '수호자',
+        };
+      }
+    }
+    return null;
   };
 
-  // 기본 캐릭터 2 (상대방 / 조력자 / 적 또는 두 번째 인물)
-  let char2 = chars[1];
-  if (!char2) {
-    // 1명만 있을 경우 대비: 카단이 아니면 카단을 상대방으로, 카단이면 발리안/알렉산다르를 배치
-    const oppCardId = char1.cardId === 41 ? 43 : 41;
-    const oppName = oppCardId === 41 ? '카단' : '발리안';
-    const oppRole = oppCardId === 41 ? '성기사단의 후예' : '아케인 창술의 달인';
-    char2 = {
-      cardId: oppCardId,
-      nameKo: oppName,
-      roleKo: oppRole,
-      isSpeaker: false,
+  // 1. subCuts에서 실제 발화 캐릭터 탐색
+  const cutSpeakers: { cardId: number; name: string; role: string }[] = [];
+  if (line.subCuts && line.subCuts.length > 0) {
+    for (const cut of line.subCuts) {
+      if (cut.speakerKo) {
+        const resolved = resolveByName(cut.speakerKo);
+        if (resolved && !cutSpeakers.some((s) => s.cardId === resolved.cardId)) {
+          cutSpeakers.push(resolved);
+        }
+      }
+    }
+  }
+
+  if (cutSpeakers.length > 0) {
+    if (prevCardId !== null && cutSpeakers.length > 1 && cutSpeakers[0].cardId === prevCardId) {
+      return cutSpeakers[1];
+    }
+    return cutSpeakers[0];
+  }
+
+  // 2. line.name에 명시된 캐릭터 확인 (단, 직전 화자와 다를 때 우선)
+  const rawLineName = (line.name || '').split('·').pop()?.trim() || '';
+  const fromLineName = resolveByName(rawLineName);
+  if (fromLineName && fromLineName.cardId !== prevCardId) {
+    return fromLineName;
+  }
+
+  // 3. sceneCharacters에서 직전 화자와 다른 등장인물 우선 선택하여 자연스러운 교차 유도
+  if (chars.length > 0) {
+    if (prevCardId !== null && chars.length > 1) {
+      const diffChar = chars.find((c) => c.cardId !== prevCardId);
+      if (diffChar) {
+        return {
+          cardId: diffChar.cardId || 41,
+          name: diffChar.nameKo,
+          role: diffChar.roleKo || '수호자',
+        };
+      }
+    }
+    return {
+      cardId: chars[0].cardId || 41,
+      name: chars[0].nameKo,
+      role: chars[0].roleKo || '수호자',
     };
   }
 
-  // 발화자가 누구인지 판단 (좌측 vs 우측)
-  const lineSpeakerName = (line.name || '').trim();
-  const lineSpeakerType = line.speaker;
-  let activeSide: 'left' | 'right' = 'left';
-
-  if (lineSpeakerName.includes(char2.nameKo) || (char2.nameEn && lineSpeakerName.includes(char2.nameEn))) {
-    activeSide = 'right';
-  } else if (lineSpeakerName.includes(char1.nameKo) || (char1.nameEn && lineSpeakerName.includes(char1.nameEn))) {
-    activeSide = 'left';
-  } else if (lineSpeakerType === 'kadan' && char1.cardId === 41) {
-    activeSide = 'left';
-  } else if (lineSpeakerType === 'kadan' && char2.cardId === 41) {
-    activeSide = 'right';
-  } else if (char2.isSpeaker && !char1.isSpeaker) {
-    activeSide = 'right';
-  } else {
-    activeSide = 'left';
+  if (fromLineName) {
+    return fromLineName;
   }
 
-  const activeChar = activeSide === 'left' ? char1 : char2;
+  return {
+    cardId: line.cardId || 41,
+    name: rawLineName || '카단',
+    role: '성기사단의 후예',
+  };
+}
+
+/**
+ * Resolve active speaking character and alternate left/right side whenever character changes
+ */
+export function resolveDialogueSpeakers(line: KadanRpgNovelScriptLine): ResolvedDialogueSpeakers {
+  const allLines = getCurrentDialogueLines();
+  const idxInAll = allLines.indexOf(line);
+  const targetIdx = idxInAll >= 0 ? idxInAll : playRpgState.currentDialogueLineIdx;
+
+  let activeSide: 'left' | 'right' = 'left';
+  let prevCardId: number | null = null;
+  let currentSpeaker = {
+    cardId: line.cardId || 41,
+    name: (line.name || '카단').split('·').pop()?.trim() || '카단',
+    role: '성기사단의 후예',
+  };
+
+  if (allLines.length > 0 && targetIdx >= 0 && targetIdx < allLines.length) {
+    for (let i = 0; i <= targetIdx; i++) {
+      const spk = findSpeakerInfoInLine(allLines[i], prevCardId);
+      if (i === 0) {
+        activeSide = 'left';
+      } else if (spk.cardId !== prevCardId) {
+        activeSide = activeSide === 'left' ? 'right' : 'left';
+      }
+      prevCardId = spk.cardId;
+      currentSpeaker = spk;
+    }
+  } else {
+    currentSpeaker = findSpeakerInfoInLine(line, null);
+  }
+
+  // Opposite placeholder info for backward compatibility with ResolvedDialogueSpeakers shape
+  const chars = line.sceneCharacters || [];
+  const otherChar = chars.find((c) => c.cardId !== currentSpeaker.cardId) || {
+    cardId: currentSpeaker.cardId === 41 ? 43 : 41,
+    nameKo: currentSpeaker.cardId === 41 ? '발리안' : '카단',
+    roleKo: currentSpeaker.cardId === 41 ? '아케인 창술의 달인' : '성기사단의 후예',
+  };
+
+  const activeInfo: DialogueSpeakerInfo = {
+    name: currentSpeaker.name,
+    cardId: currentSpeaker.cardId,
+    role: currentSpeaker.role,
+    isActive: true,
+  };
+
+  const inactiveInfo: DialogueSpeakerInfo = {
+    name: otherChar.nameKo,
+    cardId: otherChar.cardId || 43,
+    role: otherChar.roleKo || '동료',
+    isActive: false,
+  };
 
   return {
-    left: {
-      name: char1.nameKo,
-      cardId: char1.cardId || 41,
-      role: char1.roleKo || '동료',
-      isActive: activeSide === 'left',
-    },
-    right: {
-      name: char2.nameKo,
-      cardId: char2.cardId || 43,
-      role: char2.roleKo || '동료',
-      isActive: activeSide === 'right',
-    },
+    left: activeSide === 'left' ? activeInfo : inactiveInfo,
+    right: activeSide === 'right' ? activeInfo : inactiveInfo,
     activeSide,
-    speakerTitle: activeChar.roleKo || '수호자',
+    speakerTitle: currentSpeaker.role || '수호자',
   };
 }
 

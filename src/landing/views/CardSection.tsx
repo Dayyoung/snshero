@@ -287,13 +287,14 @@ export function renderCardSection(): string {
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
               <!-- Top Row: Original Card Preview & Level/EXP -->
               <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-                <!-- Original Card Preview Component -->
+                <!-- Original Card Preview Component (7-Head Full-Body in Card Detail Modal) -->
                 <div class="w-44 sm:w-52 shrink-0">
                   ${renderOriginalCardHtml(selectedCard.cardId, {
                     isOwned: isSelectedCardOwned,
                     level: isSelectedCardOwned ? selectedCard.level : 1,
                     bonusStats: isSelectedCardOwned ? selectedCard.bonusStats : { top: 0, right: 0, bottom: 0, left: 0 },
                     hideStats: false,
+                    visualTier: '7head',
                   })}
                 </div>
 

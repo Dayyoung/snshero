@@ -403,6 +403,7 @@ export function renderHomeSection(): string {
                   level: inspectedStats.level,
                   hideStats: false,
                   className: 'w-full aspect-[5/7]',
+                  visualTier: '7head',
                 })}
               </div>
               <div class="w-full flex-1 h-52 sm:h-56 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 overflow-hidden">

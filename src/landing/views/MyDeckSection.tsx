@@ -315,6 +315,7 @@ function renderDeckCardDetailModal(cardId: number): string {
                 level: stats.level,
                 hideStats: false,
                 className: 'w-full aspect-[5/7]',
+                visualTier: '7head',
               })}
             </div>
             <div class="w-full flex-1 h-56 sm:h-64 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 overflow-hidden">

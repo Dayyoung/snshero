@@ -28,6 +28,7 @@ export interface OriginalCardRenderOptions {
   action?: string;
   showRedDot?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'responsive';
+  visualTier?: '7head' | 'bust';
 }
 
 const FACTION_SURFACES: Record<string, { bg: string; windowBg: string; accent: string; darkText: string }> = {
@@ -110,6 +111,9 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
   const isSelected = options.isSelected || false;
   const showRedDot = options.showRedDot ?? (isOwned && cardNurtureStore.hasUnspentPoints(cardId));
   const hideStats = options.hideStats || false;
+  const visualTier = options.visualTier || 'bust';
+  const primaryImgUrl = visualTier === '7head' ? asset.cutoutUrl : asset.bustPngUrl;
+  const fallbackImgUrl = visualTier === '7head' ? asset.bustPngUrl : asset.seatUrl;
 
   // Custom size or default container-adaptive styling
   const customClass = options.className || 'w-full aspect-[5/7] min-h-[220px]';
@@ -184,14 +188,14 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
           <polygon points="50,14 81,68 19,68" fill="none" stroke="${factionTheme.accent}" stroke-width="0.8" />
         </svg>
 
-        <!-- Character Art (Bust or SD) -->
+        <!-- Character Art (7-Head Cutout or Bust) -->
         <div class="relative z-10 w-full h-full flex items-center justify-center p-1.5 overflow-hidden">
           <img
-            src="${asset.bustPngUrl}"
+            src="${primaryImgUrl}"
             alt="${asset.nameKo}"
             class="max-w-full max-h-full object-contain filter drop-shadow-none ${isOwned ? '' : 'grayscale opacity-70'} group-hover/orig-card:scale-105 transition-transform duration-200"
             loading="lazy"
-            onerror="this.src='${asset.seatUrl}'; this.onerror=null;"
+            onerror="this.src='${fallbackImgUrl}'; this.onerror=null;"
           />
         </div>
 

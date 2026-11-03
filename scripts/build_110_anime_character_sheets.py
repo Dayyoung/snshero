@@ -615,16 +615,58 @@ def draw_wrapped_text(
     return cy
 
 
+CUSTOM_BUST_SPECS: dict[int, tuple[float, float, float]] = {
+    7:  (0.45, 0.08, 0.66),  # Gargantia: turtle head + crystal + upper shell/torso
+    16: (0.75, 0.06, 0.66),  # Muspel: fiery horned head on the right + upper lava torso
+    21: (0.50, 0.01, 0.48),  # Zephyros: head + scarf + chest in center
+    28: (0.59, 0.02, 0.52),  # Zeusphere: head + winged hair + upper armor
+    32: (0.45, 0.01, 0.68),  # Gnome: pointed hat + face + beard + upper torso
+    43: (0.53, 0.02, 0.52),  # Balian: winged helm + face + red/white cross chestplate
+    44: (0.44, 0.02, 0.52),  # Kaze: head + mask + ninja chest armor
+    52: (0.65, 0.08, 0.64),  # Ghoul: snarling head + upper torso + shoulder spikes
+    58: (0.48, 0.04, 0.62),  # Sidragosa: dragon head + neck + upper chest/wings
+    76: (0.65, 0.02, 0.64),  # Brandy: officer cap + bearded face + upper coat/rifle scope
+    77: (0.66, 0.02, 0.58),  # Muradi: fiery mohawk/beard face + muscular tattooed chest
+    78: (0.52, 0.02, 0.64),  # Thorgrim: crown + face + beard + royal robe chest
+    79: (0.54, 0.02, 0.58),  # Berryforge: sun halo + helmet face + golden beard + chest armor
+    83: (0.48, 0.01, 0.56),  # Jormungandr: serpent head + upper neck coils
+    84: (0.55, 0.06, 0.62),  # Griffon: eagle head + chest armor
+    90: (0.53, 0.10, 0.68),  # Pegasus: horse head + mane + chest
+    93: (0.53, 0.01, 0.52),  # Sentinel: mecha head + chest core + shoulders
+}
+
+
 def extract_head_hair_bust(anime_cutout: Image.Image, cid: int) -> Image.Image:
     """
     Standardized Head & Chest Bust Extractor with Robust Percentile Head-Centering:
     - Extracts the head, neck, shoulders, and chest/upper torso (~45% of total character height).
+    - Uses explicit custom bounding specs for wide-weapon or asymmetrical poses.
     - Uses robust percentile trimming (p10..p90) on the head/face zone (5%~22% height) to eliminate
       stray weapon tips, magic sparks, or background wing outliers.
     - Centers the 1:1 square canvas PRECISELY on the character's facial/head axis so that every character's
       head is positioned at the exact 50% horizontal center.
     """
     aw, ah = anime_cutout.size
+    if cid in CUSTOM_BUST_SPECS:
+        cx_r, y0_r, y1_r = CUSTOM_BUST_SPECS[cid]
+        y0 = max(0, int(round(ah * y0_r)))
+        y1 = min(ah, int(round(ah * y1_r)))
+        crop_h = max(40, y1 - y0)
+        target_w = crop_h
+        head_cx = aw * cx_r
+        x0 = int(round(head_cx - target_w / 2))
+        x1 = x0 + target_w
+
+        crop_canvas = Image.new("RGBA", (target_w, crop_h), (0, 0, 0, 0))
+        src_x0 = max(0, x0)
+        src_x1 = min(aw, x1)
+        src_y0 = max(0, y0)
+        src_y1 = min(ah, y1)
+
+        sub = anime_cutout.crop((src_x0, src_y0, src_x1, src_y1))
+        crop_canvas.paste(sub, (src_x0 - x0, src_y0 - y0), sub)
+        return crop_canvas
+
     cut_arr = np.array(anime_cutout)
     fg = cut_arr[:, :, 3] > 20
     ys, xs = np.where(fg)

@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 13:46 KST] [#card 17종 상반신 크롭 교정, 카드정보 모달 7등신 표시, #play 대사창 상반신 교차 표시 및 3x3 카드 깨짐 수정]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. `#card` 17종 카드 상반신(Bust) 머리 잘림 및 신체 일부 표시 오류 정밀 교정**:
+    - 대상 카드(17종): `7(가르간티아), 16(무스펠), 21(제피로스), 28(제우스피어), 32(그놈), 43(발리안), 44(카제), 52(구울), 58(사이드라고사), 76(브란디), 77(무라디), 78(토그림), 79(베리포지), 83(요르문간드), 84(그리폰), 90(페가수스), 93(센티넬)`.
+    - 거대 무기/날개/등껍질 수정/비대칭 포즈로 인해 자동 상반신 추출 시 머리가 잘리거나 무기/뿔만 표시되던 문제를 해결하기 위해 `scripts/build_110_anime_character_sheets.py`에 `CUSTOM_BUST_SPECS` 정밀 바운딩 좌표를 적용하고 `public/anime-character-sheets/busts/{cid:03d}_bust.png` 및 `.jpg` 17종을 전수 재생성.
+  - **2. `#card` 카드 클릭 시 나오는 카드 상세정보 모달 7등신(`cutouts`) 표시 적용**:
+    - `src/landing/components/OriginalCardHtml.ts`에 `visualTier?: '7head' | 'bust'` 옵션을 추가하여 기본 도감 그리드에서는 상반신(`bustPngUrl`)을 유지하고, `CardSection.tsx`(`#card-nurture-modal-root`), `HomeSection.tsx`, `MyDeckSection.tsx`의 카드 상세정보 모달에서는 7등신 풀바디(`cutoutUrl`)로 표시되도록 개선.
+  - **3. `#play` 대사창(Dialogue Modal) 상반신 표시 및 발언 캐릭터 단독 좌/우 교차 표시**:
+    - `src/landing/services/playRpgEngine.ts`의 `resolveDialogueSpeakers` 및 `extractDialogueText`를 개선하여 각 씬의 `subCuts` 실제 발화 캐릭터를 추적하고, 캐릭터가 바뀔 때마다 좌(`left`) ➔ 우(`right`) ➔ 좌(`left`) 번갈아가며 위치가 전환되도록 구현.
+    - `src/landing/views/PlaySection.tsx`의 `#play-dialogue-modal-root`에서 `[발언 중]` 및 `[경청]` 텍스트 배지를 완전히 제거하고, 현재 발언 중인 캐릭터 1명만 상반신 이미지(`bustPngUrl`)로 좌/우 1곳에 번갈아 표시되도록 수정.
+  - **4. `#play` 3x3 카드 플레이 시 카드 이미지 깨짐 현상 수정**:
+    - `src/landing/views/PlaySection.tsx`의 3x3 배틀 보드 슬롯, 플레이어 핸드 카드, 아케이드 목록 등에서 존재하지 않는 `/seat/Hero_xxx.png` 경로를 참조하여 이미지가 깨지던 문제를 `getCharacterAsset(cardId).bustPngUrl` (fallback `seatUrl`)로 전수 교체하여 상반신 일러스트와 4방향 스탯이 선명하게 표시되도록 수정.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (0 errors)
+  - 로컬 git 커밋: 완료 (git push 미실행 원칙 준수)
+  - 구글 폼 보고서 제출: 완료
+
 ## [2026-11-03 13:45 KST] [웹소설(#book) 및 웹툰(#webtoon) 뷰 복구, 홈 바로가기 연동 및 4대 핵심 생태계 항목 제거]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

@@ -528,7 +528,7 @@ function renderAdventureView(): string {
                         isHero
                           ? `
                             <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-none border border-white bg-amber-400 p-0.5 flex items-center justify-center shadow-none z-20">
-                              <img src="/rpg/kadan-map/hero-kadan.png" alt="카단" class="w-full h-full object-cover" onerror="this.src='/seat/Hero_041.png'" />
+                              <img src="/rpg/kadan-map/hero-kadan.png" alt="카단" class="w-full h-full object-cover" onerror="this.src='/seat/Kadan.png'; this.onerror=null;" />
                             </div>
                           `
                           : isTarget
@@ -613,13 +613,11 @@ function renderAdventureView(): string {
               const line: KadanRpgNovelScriptLine = lines[playRpgState.currentDialogueLineIdx] || defaultLine;
               const isFinal = playRpgState.currentDialogueLineIdx >= lines.length - 1;
 
-              // Clean dialogue text & speaker resolution
-              const dialogueData = extractDialogueText(line);
+              // Clean dialogue text & speaker resolution (Single alternating active speaker bust only)
               const speakers = resolveDialogueSpeakers(line);
-              const leftCutoutUrl = getCutoutUrl(speakers.left.cardId);
-              const rightCutoutUrl = getCutoutUrl(speakers.right.cardId);
-
               const activeSpeaker = speakers.activeSide === 'left' ? speakers.left : speakers.right;
+              const dialogueData = extractDialogueText(line, activeSpeaker.name);
+              const activeSpeakerAsset = getCharacterAsset(activeSpeaker.cardId);
 
               return `
                 <div
@@ -635,74 +633,23 @@ function renderAdventureView(): string {
                     aria-hidden="true"
                   ></div>
 
-                  <!-- Dialogue Box Container with Top Left/Right Characters -->
-                  <div class="relative z-10 w-full max-w-xl text-[#fdfcfc] rounded-none pt-16 sm:pt-20">
+                  <!-- Dialogue Box Container with Single Alternating Left/Right Active Speaker Bust -->
+                  <div class="relative z-10 w-full max-w-xl text-[#fdfcfc] rounded-none pt-20 sm:pt-24">
                     
-                    <!-- Top-Left Character Card -->
-                    <div class="absolute top-0 left-3 sm:left-6 flex flex-col items-center z-20 transition-all duration-200 ${
-                      speakers.activeSide === 'left' ? 'scale-105' : 'opacity-60 scale-95'
-                    }">
-                      <div class="relative w-20 h-24 sm:w-28 sm:h-32 bg-[#0d0b0b] ${
-                        speakers.activeSide === 'left'
-                          ? 'border-2 border-amber-400 bg-amber-950/20 shadow-[0_0_15px_rgba(251,191,36,0.35)]'
-                          : 'border border-white/20'
-                      } rounded-none overflow-hidden flex items-end justify-center">
+                    <!-- Single Active Speaking Character (Alternates Left / Right when speaker changes) -->
+                    <div class="absolute top-0 ${
+                      speakers.activeSide === 'left' ? 'left-3 sm:left-6' : 'right-3 sm:right-6'
+                    } flex flex-col items-center z-20 transition-all duration-200">
+                      <div class="relative w-24 h-24 sm:w-28 sm:h-28 bg-[#0d0b0b] border-2 border-amber-400 bg-amber-950/20 rounded-none overflow-hidden flex items-end justify-center">
                         <img
-                          src="${leftCutoutUrl}"
-                          alt="${speakers.left.name}"
-                          class="w-full h-full object-contain ${speakers.activeSide === 'left' ? '' : 'grayscale-[35%]'}"
-                          onerror="this.src='/seat/Hero_041.png'"
+                          src="${activeSpeakerAsset.bustPngUrl}"
+                          alt="${activeSpeaker.name}"
+                          class="w-full h-full object-contain"
+                          onerror="this.src='${activeSpeakerAsset.seatUrl}'; this.onerror=null;"
                         />
-                        ${
-                          speakers.activeSide === 'left'
-                            ? `<div class="absolute top-1 left-1 px-1.5 py-0.5 bg-amber-400 text-stone-950 text-[10px] font-black rounded-sm tracking-wider">
-                                [발언 중]
-                              </div>`
-                            : `<div class="absolute top-1 left-1 px-1.5 py-0.5 bg-stone-800 text-stone-400 text-[9px] font-bold rounded-sm">
-                                [경청]
-                              </div>`
-                        }
                       </div>
-                      <div class="mt-1 px-2 py-0.5 text-center ${
-                        speakers.activeSide === 'left'
-                          ? 'bg-amber-400 text-stone-950 font-black'
-                          : 'bg-[#201d1d] text-stone-400 font-bold border border-white/10'
-                      } text-[11px] sm:text-xs rounded-sm max-w-[85px] sm:max-w-[120px] truncate shadow-sm">
-                        ${speakers.left.name}
-                      </div>
-                    </div>
-
-                    <!-- Top-Right Character Card -->
-                    <div class="absolute top-0 right-3 sm:right-6 flex flex-col items-center z-20 transition-all duration-200 ${
-                      speakers.activeSide === 'right' ? 'scale-105' : 'opacity-60 scale-95'
-                    }">
-                      <div class="relative w-20 h-24 sm:w-28 sm:h-32 bg-[#0d0b0b] ${
-                        speakers.activeSide === 'right'
-                          ? 'border-2 border-amber-400 bg-amber-950/20 shadow-[0_0_15px_rgba(251,191,36,0.35)]'
-                          : 'border border-white/20'
-                      } rounded-none overflow-hidden flex items-end justify-center">
-                        <img
-                          src="${rightCutoutUrl}"
-                          alt="${speakers.right.name}"
-                          class="w-full h-full object-contain ${speakers.activeSide === 'right' ? '' : 'grayscale-[35%]'}"
-                          onerror="this.src='/seat/Hero_043.png'"
-                        />
-                        ${
-                          speakers.activeSide === 'right'
-                            ? `<div class="absolute top-1 right-1 px-1.5 py-0.5 bg-amber-400 text-stone-950 text-[10px] font-black rounded-sm tracking-wider">
-                                [발언 중]
-                              </div>`
-                            : `<div class="absolute top-1 right-1 px-1.5 py-0.5 bg-stone-800 text-stone-400 text-[9px] font-bold rounded-sm">
-                                [경청]
-                              </div>`
-                        }
-                      </div>
-                      <div class="mt-1 px-2 py-0.5 text-center ${
-                        speakers.activeSide === 'right'
-                          ? 'bg-amber-400 text-stone-950 font-black'
-                          : 'bg-[#201d1d] text-stone-400 font-bold border border-white/10'
-                      } text-[11px] sm:text-xs rounded-sm max-w-[85px] sm:max-w-[120px] truncate shadow-sm">
-                        ${speakers.right.name}
+                      <div class="mt-1 px-2.5 py-0.5 text-center bg-amber-400 text-stone-950 font-black text-[11px] sm:text-xs rounded-sm max-w-[110px] sm:max-w-[140px] truncate">
+                        ${activeSpeaker.name}
                       </div>
                     </div>
 
@@ -872,25 +819,41 @@ function renderAdventureView(): string {
 
                     const isPlayer = slot.owner === 'player';
                     const [top, right, bottom, left] = slot.stats;
+                    const slotAsset = getCharacterAsset(slot.cardId);
 
                     return `
-                      <div class="relative w-full h-full border ${
-                        isPlayer ? 'border-sky-500 bg-sky-950/80 text-sky-200' : 'border-rose-500 bg-rose-950/80 text-rose-200'
+                      <div class="relative w-full h-full border-2 ${
+                        isPlayer ? 'border-sky-400 bg-sky-950/90 text-sky-100' : 'border-rose-500 bg-rose-950/90 text-rose-100'
                       } rounded-none p-1 flex flex-col justify-between overflow-hidden shadow-none">
-                        <!-- Top Stat -->
-                        <div class="text-center text-[10px] font-black">${top}</div>
-                        <!-- Middle Row: Left, Sprite, Right -->
-                        <div class="flex items-center justify-between px-1">
-                          <span class="text-[10px] font-black">${left}</span>
-                          <div class="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-none bg-stone-900 border border-white/20 overflow-hidden flex items-center justify-center">
-                            <img src="/seat/Hero_${String(slot.cardId).padStart(3, '0')}.png" alt="${slot.name}" class="w-full h-full object-cover" onerror="this.src='/seat/Hero_041.png'" />
-                          </div>
-                          <span class="text-[10px] font-black">${right}</span>
+                        <!-- Character Bust Background Art -->
+                        <div class="absolute inset-0 z-0 flex items-center justify-center p-1.5 opacity-95 pointer-events-none">
+                          <img
+                            src="${slotAsset.bustPngUrl}"
+                            alt="${slotAsset.nameKo}"
+                            class="w-full h-full object-contain"
+                            onerror="this.src='${slotAsset.seatUrl}'; this.onerror=null;"
+                          />
                         </div>
-                        <!-- Bottom Stat & Owner Badge -->
-                        <div class="flex items-center justify-between text-[9px] font-mono px-1">
-                          <span class="font-bold">${isPlayer ? 'P1' : 'AI'}</span>
-                          <span class="font-black">${bottom}</span>
+
+                        <!-- Top Row: Owner Badge & North Stat -->
+                        <div class="relative z-10 flex items-center justify-between w-full px-0.5">
+                          <span class="px-1 py-0.5 text-[9px] font-black rounded-xs ${
+                            isPlayer ? 'bg-sky-500 text-slate-950' : 'bg-rose-500 text-white'
+                          }">${isPlayer ? 'P1' : 'AI'}</span>
+                          <span class="min-w-[18px] h-[18px] px-1 bg-black/80 border border-white/40 text-white text-[10px] font-black flex items-center justify-center rounded-xs">${top}</span>
+                          <span class="w-4"></span>
+                        </div>
+
+                        <!-- Middle Row: West & East Stats -->
+                        <div class="relative z-10 flex items-center justify-between w-full px-0.5 my-auto">
+                          <span class="min-w-[18px] h-[18px] px-1 bg-black/80 border border-white/40 text-white text-[10px] font-black flex items-center justify-center rounded-xs">${left}</span>
+                          <span class="min-w-[18px] h-[18px] px-1 bg-black/80 border border-white/40 text-white text-[10px] font-black flex items-center justify-center rounded-xs">${right}</span>
+                        </div>
+
+                        <!-- Bottom Row: Card Name & South Stat -->
+                        <div class="relative z-10 flex items-center justify-between w-full px-0.5 bg-black/75 py-0.5">
+                          <span class="text-[9px] font-bold text-white truncate max-w-[65%]">${slotAsset.nameKo}</span>
+                          <span class="min-w-[18px] h-[18px] px-1 bg-amber-400 text-stone-950 text-[10px] font-black flex items-center justify-center rounded-xs">${bottom}</span>
                         </div>
                       </div>
                     `;
@@ -905,22 +868,30 @@ function renderAdventureView(): string {
                   ${playRpgState.playerHand
                     .map((cId, hIdx) => {
                       const card = CARD_DATABASE[cId];
+                      const handAsset = getCharacterAsset(cId);
                       const isSelected = playRpgState.selectedHandIndex === hIdx;
                       return `
                         <button
                           type="button"
                           data-action="play-battle-card"
                           data-hand-index="${hIdx}"
-                          class="px-2.5 py-1.5 rounded-sm border text-xs font-bold min-h-[44px] transition-colors flex items-center gap-2 cursor-pointer ${
+                          class="px-2.5 py-1.5 rounded-sm border text-xs font-bold min-h-[48px] transition-colors flex items-center gap-2 cursor-pointer ${
                             isSelected
                               ? 'bg-amber-400 text-stone-950 border-amber-300'
                               : 'bg-stone-800 text-white border-stone-600 hover:bg-stone-700'
                           }"
                         >
-                          <img src="/seat/Hero_${String(cId).padStart(3, '0')}.png" alt="${card?.title}" class="w-7 h-7 object-cover rounded-none" onerror="this.src='/seat/Hero_041.png'" />
+                          <div class="w-9 h-9 bg-stone-900 border border-white/20 rounded-none overflow-hidden shrink-0 flex items-center justify-center">
+                            <img
+                              src="${handAsset.bustPngUrl}"
+                              alt="${handAsset.nameKo}"
+                              class="w-full h-full object-contain"
+                              onerror="this.src='${handAsset.seatUrl}'; this.onerror=null;"
+                            />
+                          </div>
                           <div class="text-left font-mono text-[11px]">
-                            <div>${card?.title || `Hero ${cId}`}</div>
-                            <div class="text-[9px] ${isSelected ? 'text-stone-800' : 'text-stone-400'}">${card?.top}/${card?.right}/${card?.bottom}/${card?.left}</div>
+                            <div class="font-black">${handAsset.nameKo}</div>
+                            <div class="text-[9px] ${isSelected ? 'text-stone-800 font-bold' : 'text-stone-400'}">${card?.top ?? 2}/${card?.right ?? 2}/${card?.bottom ?? 2}/${card?.left ?? 2}</div>
                           </div>
                         </button>
                       `;
@@ -1078,6 +1049,7 @@ function renderArcadeView(): string {
         ${filteredGames
           .map((g) => {
             const padId = String(g.id).padStart(3, '0');
+            const gAsset = getCharacterAsset(g.id);
             return `
               <div class="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-3 rounded-none flex flex-col justify-between space-y-2 hover:border-stone-400 transition-colors">
                 <div class="flex items-center gap-2">
@@ -1087,10 +1059,10 @@ function renderArcadeView(): string {
 
                 <div class="w-full aspect-[4/3] bg-stone-100 border border-[rgba(15,0,0,0.08)] rounded-none flex items-center justify-center overflow-hidden p-1">
                   <img
-                    src="/seat/Hero_${padId}.png"
+                    src="${gAsset.bustPngUrl}"
                     alt="${g.title}"
                     class="h-full object-contain"
-                    onerror="this.src='/seat/Hero_041.png'"
+                    onerror="this.src='${gAsset.seatUrl}'; this.onerror=null;"
                   />
                 </div>
 
@@ -1121,6 +1093,7 @@ function renderArcadeView(): string {
               const activeCard = CARD_DATABASE[playRpgState.activeArcadeModalId] || {
                 title: '수호자 미니게임',
               };
+              const activeAsset = getCharacterAsset(playRpgState.activeArcadeModalId);
               return `
                 <div class="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none z-[99999] bg-[#fdfcfc] flex flex-col justify-between">
                   <!-- Minimalist Mission HUD -->
@@ -1143,7 +1116,7 @@ function renderArcadeView(): string {
                   <!-- Game Stage Placeholder / 2D Canvas Duel Arena -->
                   <div class="flex-1 w-full bg-[#0e0c0c] flex flex-col items-center justify-center p-4 text-center space-y-4">
                     <div class="w-24 h-24 rounded-none bg-stone-900 border border-white/20 p-2 flex items-center justify-center overflow-hidden">
-                      <img src="/seat/Hero_${String(playRpgState.activeArcadeModalId).padStart(3, '0')}.png" alt="" class="w-full h-full object-contain" onerror="this.src='/seat/Hero_041.png'" />
+                      <img src="${activeAsset.bustPngUrl}" alt="${activeAsset.nameKo}" class="w-full h-full object-contain" onerror="this.src='${activeAsset.seatUrl}'; this.onerror=null;" />
                     </div>
 
                     <div class="space-y-1">
