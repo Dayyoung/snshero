@@ -19,6 +19,7 @@ import { cardNurtureStore } from '../services/cardNurtureStore';
 import { getCharacterAsset } from '../services/assetCatalog';
 import { CARD_DATABASE } from '../../cardDatabase';
 import { renderOriginalCardHtml } from '../components/OriginalCardHtml';
+import { tr } from '../services/i18n';
 
 interface CardSectionState {
   selectedCardId: number | null;
@@ -88,32 +89,36 @@ export function renderCardSection(): string {
         <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.08)] gap-4">
           <div>
             <div class="inline-flex items-center gap-2 px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm tracking-wider uppercase mb-2">
-              <span>카드 도감 및 육성</span>
+              <span>${tr('카드 도감 및 육성', 'Card Codex &amp; Nurture', 'カード図鑑＆育成')}</span>
               <span class="text-stone-400">·</span>
-              <span>110종 영웅 컬렉션</span>
+              <span>${tr('110종 영웅 컬렉션', '110 Hero Collection', '全110種英雄コレクション')}</span>
             </div>
             <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#201d1d] m-0">
-              카드 (Card Collection &amp; Nurture)
+              ${tr('카드 (Card Collection &amp; Nurture)', 'Cards (Card Collection &amp; Nurture)', 'カード (Card Collection &amp; Nurture)')}
             </h1>
             <p class="text-xs sm:text-sm text-stone-600 mt-1 m-0">
-              110종의 영웅 카드를 수집하고 최대 100레벨까지 육성하세요. 레벨업 시 획득한 스탯 포인트로 4방향 파워를 강화할 수 있습니다.
+              ${tr(
+                '110종의 영웅 카드를 수집하고 최대 100레벨까지 육성하세요. 레벨업 시 획득한 스탯 포인트로 4방향 파워를 강화할 수 있습니다.',
+                'Collect all 110 hero cards and nurture them up to Lv.100. Allocate stat points earned on level-up to enhance 4-way directional power.',
+                '全110種の英雄カードを収集し、最大Lv.100まで育成しましょう。レベルアップ時に獲得したポイントで4方向ステータスを強化できます。'
+              )}
             </p>
           </div>
 
           <!-- Collection Rate & TP Summary Box -->
           <div class="flex flex-wrap sm:flex-nowrap items-center gap-3">
             <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-right min-w-[130px]">
-              <div class="text-[10px] text-stone-500 uppercase tracking-wider">카드 수집율</div>
+              <div class="text-[10px] text-stone-500 uppercase tracking-wider">${tr('카드 수집율', 'Collection Rate', 'カード収集率')}</div>
               <div class="text-sm sm:text-base font-bold text-[#201d1d]">
-                수집율: ${collection.ownedCount} / 110 (${collection.percentage}%)
+                ${tr('수집율:', 'Collected:', '収集率:')} ${collection.ownedCount} / 110 (${collection.percentage}%)
               </div>
             </div>
             <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-right min-w-[100px]">
-              <div class="text-[10px] text-stone-500 uppercase tracking-wider">덱 파워 (Deck TP)</div>
+              <div class="text-[10px] text-stone-500 uppercase tracking-wider">${tr('덱 파워 (Deck TP)', 'Deck TP', 'デッキパワー (Deck TP)')}</div>
               <div class="text-sm sm:text-base font-bold text-[#201d1d]">${deckTP} TP</div>
             </div>
             <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-right min-w-[100px]">
-              <div class="text-[10px] text-stone-500 uppercase tracking-wider">총 파워 (Total TP)</div>
+              <div class="text-[10px] text-stone-500 uppercase tracking-wider">${tr('총 파워 (Total TP)', 'Total TP', '総パワー (Total TP)')}</div>
               <div class="text-sm sm:text-base font-bold text-[#201d1d]">${totalTP} TP</div>
             </div>
           </div>
@@ -122,7 +127,7 @@ export function renderCardSection(): string {
         <!-- Collection Progress Bar -->
         <div class="space-y-1">
           <div class="flex justify-between text-[11px] text-stone-500">
-            <span>컬렉션 달성도 (${collection.ownedCount} / 110장 보유)</span>
+            <span>${tr(`컬렉션 달성도 (${collection.ownedCount} / 110장 보유)`, `Collection Progress (${collection.ownedCount} / 110 Owned)`, `コレクション達成度 (${collection.ownedCount} / 110枚保有)`)}</span>
             <span>${collection.percentage}%</span>
           </div>
           <div class="w-full bg-[#f1eeee] h-2 rounded-sm overflow-hidden">
@@ -134,7 +139,7 @@ export function renderCardSection(): string {
         <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
           <!-- Ownership Filter -->
           <div class="flex flex-wrap items-center gap-1.5">
-            <span class="text-xs text-stone-500 mr-1">분류:</span>
+            <span class="text-xs text-stone-500 mr-1">${tr('분류:', 'Filter:', '分類:')}</span>
             <button
               type="button"
               data-action="filter-card-owned"
@@ -145,7 +150,7 @@ export function renderCardSection(): string {
                   : 'bg-[#f8f7f7] text-stone-700 border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
               }"
             >
-              전체 (110)
+              ${tr('전체', 'All', 'すべて')} (110)
             </button>
             <button
               type="button"
@@ -157,7 +162,7 @@ export function renderCardSection(): string {
                   : 'bg-[#f8f7f7] text-stone-700 border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
               }"
             >
-              보유 (${collection.ownedCount})
+              ${tr('보유', 'Owned', '保有')} (${collection.ownedCount})
             </button>
             <button
               type="button"
@@ -169,7 +174,7 @@ export function renderCardSection(): string {
                   : 'bg-[#f8f7f7] text-stone-700 border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
               }"
             >
-              미보유 (${110 - collection.ownedCount})
+              ${tr('미보유', 'Unowned', '未保有')} (${110 - collection.ownedCount})
             </button>
           </div>
 
@@ -185,20 +190,20 @@ export function renderCardSection(): string {
                   : 'bg-[#f8f7f7] text-stone-600 border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
               }"
             >
-              전체 속성
+              ${tr('전체 속성', 'All Elements', '全属性')}
             </button>
             ${[
-              { key: 'water', name: '물' },
-              { key: 'fire', name: '불' },
-              { key: 'wind', name: '바람' },
-              { key: 'earth', name: '땅' },
-              { key: 'human', name: '휴먼' },
-              { key: 'undead', name: '언데드' },
-              { key: 'elf', name: '엘프' },
-              { key: 'dwarf', name: '드워프' },
-              { key: 'monster', name: '마수' },
-              { key: 'robot', name: '로봇' },
-              { key: 'dragon', name: '드래곤' },
+              { key: 'water', name: tr('물', 'Water', '水') },
+              { key: 'fire', name: tr('불', 'Fire', '火') },
+              { key: 'wind', name: tr('바람', 'Wind', '風') },
+              { key: 'earth', name: tr('땅', 'Earth', '地') },
+              { key: 'human', name: tr('휴먼', 'Human', '人間') },
+              { key: 'undead', name: tr('언데드', 'Undead', 'アンデッド') },
+              { key: 'elf', name: tr('엘프', 'Elf', 'エルフ') },
+              { key: 'dwarf', name: tr('드워프', 'Dwarf', 'ドワーフ') },
+              { key: 'monster', name: tr('마수', 'Monster', '魔獣') },
+              { key: 'robot', name: tr('로봇', 'Robot', 'ロボット') },
+              { key: 'dragon', name: tr('드래곤', 'Dragon', 'ドラゴン') },
             ].map((f) => `
               <button
                 type="button"
@@ -221,10 +226,14 @@ export function renderCardSection(): string {
       <section class="space-y-4">
         <div class="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.08)]">
           <span class="text-xs font-bold text-[#201d1d] uppercase">
-            전체 카드 목록 (${filteredCardIds.length} / 110)
+            ${tr('전체 카드 목록', 'All Cards', '全カード一覧')} (${filteredCardIds.length} / 110)
           </span>
           <span class="text-xs text-stone-500">
-            카드를 클릭하여 상세 정보 확인 및 팝업 모달에서 육성을 진행하세요.
+            ${tr(
+              '카드를 클릭하여 상세 정보 확인 및 팝업 모달에서 육성을 진행하세요.',
+              'Click any card to inspect details and allocate stat points.',
+              'カードをクリックして詳細確認およびステータス強化を行えます。'
+            )}
           </span>
         </div>
 
@@ -277,9 +286,9 @@ export function renderCardSection(): string {
                 type="button"
                 data-action="close-card-inspector"
                 class="px-3 py-2 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer"
-                aria-label="닫기"
+                aria-label="${tr('닫기', 'Close', '閉じる')}"
               >
-                ✕ 닫기
+                ✕ ${tr('닫기', 'Close', '閉じる')}
               </button>
             </div>
 
@@ -306,10 +315,10 @@ export function renderCardSection(): string {
                         ? 'bg-emerald-700 text-[#fdfcfc]'
                         : 'bg-stone-300 text-stone-700'
                     } text-xs font-bold rounded-sm">
-                      ${isSelectedCardOwned ? '[보유 카드]' : '[미보유 카드]'}
+                      ${isSelectedCardOwned ? tr('[보유 카드]', '[OWNED]', '[保有カード]') : tr('[미보유 카드]', '[UNOWNED]', '[未保有カード]')}
                     </span>
                     <span class="text-xs text-stone-600 font-bold">
-                      ${isSelectedCardOwned ? `성장 레벨: Lv.${selectedCard.level} / 100` : '상태: 미보유 (Lv.1)'}
+                      ${isSelectedCardOwned ? `${tr('성장 레벨:', 'Growth Level:', '成長レベル:')} Lv.${selectedCard.level} / 100` : tr('상태: 미보유 (Lv.1)', 'Status: Unowned (Lv.1)', '状態: 未保有 (Lv.1)')}
                     </span>
                   </div>
 
@@ -317,7 +326,7 @@ export function renderCardSection(): string {
                     <!-- EXP Progress Bar (Owned) -->
                     <div class="space-y-1">
                       <div class="flex justify-between text-xs text-stone-500">
-                        <span>경험치 (EXP)</span>
+                        <span>${tr('경험치 (EXP)', 'Experience (EXP)', '経験値 (EXP)')}</span>
                         <span>${selectedCard.exp} / ${selectedCard.expToNext}</span>
                       </div>
                       <div class="w-full bg-[#f1eeee] h-2.5 rounded-sm overflow-hidden">
@@ -329,19 +338,27 @@ export function renderCardSection(): string {
                     </div>
 
                     <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-xs text-stone-600">
-                      <span class="text-emerald-700 font-bold">[EXP 획득 가이드]</span> 배틀 승리 시 덱 출격 카드 5장에 자동 지급됩니다 (+50 EXP).
+                      <span class="text-emerald-700 font-bold">${tr('[EXP 획득 가이드]', '[EXP Guide]', '[EXP獲得ガイド]')}</span> ${tr(
+                        '배틀 승리 시 덱 출격 카드 5장에 자동 지급됩니다 (+50 EXP).',
+                        'Automatically awarded (+50 EXP) to all 5 active deck cards upon battle victory.',
+                        'バトル勝利時に出撃デッキの5枚へ自動支給されます (+50 EXP)。'
+                      )}
                     </div>
                   ` : `
                     <!-- Unowned Notice -->
                     <div class="p-3 bg-[#f8f7f7] border border-dashed border-stone-300 rounded-none text-xs text-stone-600 space-y-2">
-                      <div class="font-bold text-[#201d1d]">🔒 미보유 카드 (육성 잠김)</div>
-                      <p class="m-0 leading-relaxed">상점에서 카드 팩을 구매하여 영웅을 영입하세요. 획득 후 레벨업 및 스탯 분배가 가능합니다.</p>
+                      <div class="font-bold text-[#201d1d]">🔒 ${tr('미보유 카드 (육성 잠김)', 'Unowned Card (Locked)', '未保有カード (育成ロック)')}</div>
+                      <p class="m-0 leading-relaxed">${tr(
+                        '상점에서 카드 팩을 구매하여 영웅을 영입하세요. 획득 후 레벨업 및 스탯 분배가 가능합니다.',
+                        'Purchase card packs in the Shop to recruit this hero and unlock leveling &amp; stat allocation.',
+                        'ショップでカードパックを購入して英雄を迎え入れましょう。獲得後にレベルアップやステータス配分が可能になります。'
+                      )}</p>
                       <a
                         href="#shop"
                         data-nav="shop"
                         class="inline-flex items-center justify-center px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 no-underline min-h-[44px] cursor-pointer"
                       >
-                        상점 바로가기 ➔
+                        ${tr('상점 바로가기 ➔', 'Go to Shop ➔', 'ショップへ移動 ➔')}
                       </a>
                     </div>
                   `}
@@ -351,9 +368,9 @@ export function renderCardSection(): string {
               <!-- 4-Way Stat Enhancement Grid -->
               <div class="space-y-3 pt-2 border-t border-[rgba(15,0,0,0.08)]">
                 <div class="flex items-center justify-between">
-                  <h4 class="text-sm font-bold text-[#201d1d] m-0">4방향 스탯 인핸스먼트</h4>
+                  <h4 class="text-sm font-bold text-[#201d1d] m-0">${tr('4방향 스탯 인핸스먼트', '4-Way Stat Enhancement', '4方向ステータス強化')}</h4>
                   <div class="text-xs">
-                    <span class="text-stone-600">미분배 스탯:</span>
+                    <span class="text-stone-600">${tr('미분배 스탯:', 'Unspent Pts:', '未配分ポイント:')}</span>
                     <strong class="${isSelectedCardOwned && selectedCard.statPoints > 0 ? 'text-red-600 font-bold' : 'text-[#201d1d]'} ml-1">
                       ${isSelectedCardOwned ? `${selectedCard.statPoints} pt` : '0 pt'}
                     </strong>
@@ -362,10 +379,10 @@ export function renderCardSection(): string {
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   ${[
-                    { dir: 'top', label: '북 (N)', base: selectedDbCard?.top || 0, bonus: isSelectedCardOwned ? selectedCard.bonusStats.top : 0 },
-                    { dir: 'right', label: '동 (E)', base: selectedDbCard?.right || 0, bonus: isSelectedCardOwned ? selectedCard.bonusStats.right : 0 },
-                    { dir: 'bottom', label: '남 (S)', base: selectedDbCard?.bottom || 0, bonus: isSelectedCardOwned ? selectedCard.bonusStats.bottom : 0 },
-                    { dir: 'left', label: '서 (W)', base: selectedDbCard?.left || 0, bonus: isSelectedCardOwned ? selectedCard.bonusStats.left : 0 },
+                    { dir: 'top', label: tr('북 (N)', 'North (N)', '北 (N)'), base: selectedDbCard?.top || 0, bonus: isSelectedCardOwned ? selectedCard.bonusStats.top : 0 },
+                    { dir: 'right', label: tr('동 (E)', 'East (E)', '東 (E)'), base: selectedDbCard?.right || 0, bonus: isSelectedCardOwned ? selectedCard.bonusStats.right : 0 },
+                    { dir: 'bottom', label: tr('남 (S)', 'South (S)', '南 (S)'), base: selectedDbCard?.bottom || 0, bonus: isSelectedCardOwned ? selectedCard.bonusStats.bottom : 0 },
+                    { dir: 'left', label: tr('서 (W)', 'West (W)', '西 (W)'), base: selectedDbCard?.left || 0, bonus: isSelectedCardOwned ? selectedCard.bonusStats.left : 0 },
                   ].map((s) => `
                     <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none space-y-2 text-center">
                       <div class="text-[11px] font-bold text-stone-500 uppercase">${s.label}</div>
@@ -384,10 +401,10 @@ export function renderCardSection(): string {
                             selectedCard.statPoints <= 0 ? 'opacity-30 cursor-not-allowed' : ''
                           }"
                         >
-                          + 스탯 강화
+                          ${tr('+ 스탯 강화', '+ Enhance', '+ ステータス強化')}
                         </button>
                       ` : `
-                        <div class="py-2 text-[10px] text-stone-400 font-medium">미보유</div>
+                        <div class="py-2 text-[10px] text-stone-400 font-medium">${tr('미보유', 'Unowned', '未保有')}</div>
                       `}
                     </div>
                   `).join('')}
@@ -402,7 +419,7 @@ export function renderCardSection(): string {
                 data-action="close-card-inspector"
                 class="px-5 py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer"
               >
-                확인 (CLOSE)
+                ${tr('확인 (CLOSE)', 'Close (CLOSE)', '確認 (CLOSE)')}
               </button>
             </div>
           </div>

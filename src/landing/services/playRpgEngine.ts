@@ -1418,6 +1418,48 @@ export function advanceNextChapter(): void {
 }
 
 /**
+ * Jump directly to a selected chapter (1..40)
+ */
+export function selectChapter(targetChapter: number): void {
+  const validChapter = Math.max(1, Math.min(40, Math.floor(targetChapter)));
+  playRpgState.currentChapter = validChapter;
+  try {
+    localStorage.setItem('hero_kadan_rpg_chapter', String(validChapter));
+  } catch {}
+
+  playRpgState.subState = 'map';
+  playRpgState.ambushTriggeredInChapter = false;
+  playRpgState.activeAmbush = null;
+  playRpgState.battleWinner = null;
+  playRpgState.dialogueStep = 0;
+  playRpgState.activeEvent = null;
+  syncRegionAndTargets();
+
+  // Reset hero to region start tile
+  const region = getCurrentRegion();
+  playRpgState.heroTile = { ...region.startTile };
+  preloadDialogueChapterImages(validChapter);
+}
+
+/**
+ * Move to previous chapter
+ */
+export function selectPrevChapter(): void {
+  if (playRpgState.currentChapter > 1) {
+    selectChapter(playRpgState.currentChapter - 1);
+  }
+}
+
+/**
+ * Move to next chapter
+ */
+export function selectNextChapter(): void {
+  if (playRpgState.currentChapter < 40) {
+    selectChapter(playRpgState.currentChapter + 1);
+  }
+}
+
+/**
  * Toggle auto mode
  */
 export function toggleAutoMode(): boolean {

@@ -69,8 +69,16 @@ import {
   getEpisodeActualOpponentDeck,
   getOpponentRebirthStatBonus,
   preloadDialogueChapterImages,
+  selectChapter,
+  selectPrevChapter,
+  selectNextChapter,
   PlayTabKey,
 } from '../services/playRpgEngine';
+
+/**
+ * 40-Episode Quick Jump Drawer Open State for Adventure Tab
+ */
+let isAdventureDrawerOpen = false;
 
 /**
  * Authentic RPG Terrain Tile & Object Sprites
@@ -292,6 +300,32 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
       toggleRepeatHunting();
       break;
 
+    // Episode / Chapter Switcher Actions (Webtoon / Web Novel style)
+    case 'play-toggle-chapter-drawer':
+      isAdventureDrawerOpen = !isAdventureDrawerOpen;
+      break;
+    case 'play-prev-chapter':
+      selectPrevChapter();
+      break;
+    case 'play-next-chapter':
+      selectNextChapter();
+      break;
+    case 'play-jump-chapter': {
+      const chAttr = target?.getAttribute('data-chapter');
+      if (chAttr) {
+        selectChapter(parseInt(chAttr, 10));
+        isAdventureDrawerOpen = false;
+      }
+      break;
+    }
+    case 'play-select-chapter': {
+      const sel = target as HTMLSelectElement | null;
+      if (sel && sel.value) {
+        selectChapter(parseInt(sel.value, 10));
+      }
+      break;
+    }
+
     // Dialogue actions
     case 'play-dialogue-prev':
       prevDialogue();
@@ -456,71 +490,178 @@ function renderAdventureView(): string {
 
   return `
     <div id="kadan-world-map" class="w-full space-y-4">
-      <!-- Stage Info Bar -->
-      <section class="w-full bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-4 rounded-none flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm uppercase tracking-wider mb-1">
-            <span>2D 모험 RPG</span>
-            <span class="text-stone-400">·</span>
-            <span>지역: ${region.nameKey}</span>
-            ${
-              rebirthLevel > 0
-                ? `<span class="text-amber-400 font-black">· 👑 환생 ${rebirthLevel}회차</span>`
-                : ''
-            }
+      <!-- Stage Info Bar & Episode Switcher (Web Novel / Webtoon Style) -->
+      <section class="w-full bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-4 rounded-none space-y-3 font-mono">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm uppercase tracking-wider mb-1">
+              <span>2D 모험 RPG</span>
+              <span class="text-stone-400">·</span>
+              <span>지역: ${region.nameKey}</span>
+              ${
+                rebirthLevel > 0
+                  ? `<span class="text-amber-400 font-black">· 👑 환생 ${rebirthLevel}회차</span>`
+                  : ''
+              }
+            </div>
+            <h2 class="text-lg sm:text-xl font-black text-[#201d1d] m-0">
+              ${chapterLabel}: ${chapterMeta.titleKo}
+            </h2>
+            <p class="text-xs text-stone-500 m-0 pt-0.5">
+              ${chapterMeta.titleEn} · 목표: ${chEvent ? chEvent.objectiveKey : '원정 진행 중'}
+            </p>
           </div>
-          <h2 class="text-lg sm:text-xl font-black text-[#201d1d] m-0">
-            ${chapterLabel}: ${chapterMeta.titleKo}
-          </h2>
-          <p class="text-xs text-stone-500 m-0 pt-0.5">
-            ${chapterMeta.titleEn} · 목표: ${chEvent ? chEvent.objectiveKey : '원정 진행 중'}
-          </p>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Coordinates Badge -->
+            <span class="px-3 py-2 bg-white text-[#201d1d] text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.12)] min-h-[44px] inline-flex items-center">
+              📍 좌표 (${heroX + 1}, ${heroY + 1})
+            </span>
+
+            <!-- Auto-Play Toggle -->
+            <button
+              type="button"
+              data-action="play-toggle-auto"
+              class="px-4 py-2 border text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center cursor-pointer transition-colors active:translate-y-px ${
+                playRpgState.autoMode
+                  ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                  : 'bg-[#f1eeee] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#e8e5e5]'
+              }"
+              aria-label="자동 진행 토글"
+            >
+              🤖 자동 진행 ${playRpgState.autoMode ? '[ON]' : '[OFF]'}
+            </button>
+
+            <!-- Repeat Hunting Toggle -->
+            <button
+              type="button"
+              data-action="play-toggle-repeat"
+              class="px-4 py-2 border text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center cursor-pointer transition-colors active:translate-y-px ${
+                playRpgState.repeatHunting
+                  ? 'bg-emerald-800 text-white border-emerald-900'
+                  : 'bg-[#f1eeee] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#e8e5e5]'
+              }"
+              aria-label="반복 사냥 토글"
+            >
+              🔁 반복 사냥 ${playRpgState.repeatHunting ? '[ON]' : '[OFF]'}
+            </button>
+
+            <!-- Direct 3x3 Card Battle Popup Launch Button (Mobile & Desktop Quick Access) -->
+            <button
+              type="button"
+              data-action="play-battle-start"
+              class="px-4 py-2 bg-rose-700 hover:bg-rose-600 text-white border border-rose-800 text-xs font-black rounded-sm min-h-[44px] inline-flex items-center justify-center cursor-pointer transition-colors active:translate-y-px"
+              aria-label="3x3 카드 배틀 팝업 열기"
+            >
+              ⚔️ 3x3 카드 배틀
+            </button>
+          </div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2">
-          <!-- Coordinates Badge -->
-          <span class="px-3 py-2 bg-white text-[#201d1d] text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.12)] min-h-[44px] inline-flex items-center">
-            📍 좌표 (${heroX + 1}, ${heroY + 1})
-          </span>
-
-          <!-- Auto-Play Toggle -->
+        <!-- Webtoon/Webnovel Style Episode Selector Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-[rgba(15,0,0,0.12)]">
+          <!-- Prev Episode Button -->
           <button
             type="button"
-            data-action="play-toggle-auto"
-            class="px-4 py-2 border text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center cursor-pointer transition-colors active:translate-y-px ${
-              playRpgState.autoMode
-                ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
-                : 'bg-[#f1eeee] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#e8e5e5]'
-            }"
-            aria-label="자동 진행 토글"
+            data-action="play-prev-chapter"
+            ${currentChapter <= 1 ? 'disabled' : ''}
+            class="px-3.5 py-2 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#383333] disabled:opacity-30 disabled:hover:bg-[#201d1d] text-xs font-bold rounded-sm min-h-[44px] flex items-center gap-1 cursor-pointer transition-colors"
+            aria-label="이전 회차"
           >
-            🤖 자동 진행 ${playRpgState.autoMode ? '[ON]' : '[OFF]'}
+            ◀ 이전화
           </button>
 
-          <!-- Repeat Hunting Toggle -->
+          <!-- Dropdown Episode Selector -->
+          <div class="flex-1 min-w-[200px] max-w-sm mx-auto">
+            <select
+              id="play-chapter-select"
+              data-action="play-select-chapter"
+              class="w-full px-3 py-2 bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.2)] text-xs font-bold rounded-sm min-h-[44px] cursor-pointer focus:outline-none focus:border-[#201d1d] text-center"
+              aria-label="플레이할 회차 선택"
+            >
+              ${Array.from({ length: 40 }, (_, idx) => {
+                const num = idx + 1;
+                const meta = chapterTitles[idx] || { titleKo: `제 ${num}화` };
+                return `
+                  <option value="${num}" ${num === currentChapter ? 'selected' : ''}>
+                    제${num}화 - ${meta.titleKo}
+                  </option>
+                `;
+              }).join('')}
+            </select>
+          </div>
+
+          <!-- Next Episode Button -->
           <button
             type="button"
-            data-action="play-toggle-repeat"
-            class="px-4 py-2 border text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center cursor-pointer transition-colors active:translate-y-px ${
-              playRpgState.repeatHunting
-                ? 'bg-emerald-800 text-white border-emerald-900'
-                : 'bg-[#f1eeee] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#e8e5e5]'
-            }"
-            aria-label="반복 사냥 토글"
+            data-action="play-next-chapter"
+            ${currentChapter >= 40 ? 'disabled' : ''}
+            class="px-3.5 py-2 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#383333] disabled:opacity-30 disabled:hover:bg-[#201d1d] text-xs font-bold rounded-sm min-h-[44px] flex items-center gap-1 cursor-pointer transition-colors"
+            aria-label="다음 회차"
           >
-            🔁 반복 사냥 ${playRpgState.repeatHunting ? '[ON]' : '[OFF]'}
+            다음화 ▶
           </button>
 
-          <!-- Direct 3x3 Card Battle Popup Launch Button (Mobile & Desktop Quick Access) -->
+          <!-- 40-Episode Index Drawer Toggle Button -->
           <button
             type="button"
-            data-action="play-battle-start"
-            class="px-4 py-2 bg-rose-700 hover:bg-rose-600 text-white border border-rose-800 text-xs font-black rounded-sm min-h-[44px] inline-flex items-center justify-center cursor-pointer transition-colors active:translate-y-px"
-            aria-label="3x3 카드 배틀 팝업 열기"
+            data-action="play-toggle-chapter-drawer"
+            class="px-3 py-2 bg-[#f1eeee] hover:bg-[#e4e1e1] text-[#201d1d] border border-[rgba(15,0,0,0.15)] text-xs font-bold rounded-sm min-h-[44px] flex items-center gap-1.5 cursor-pointer transition-colors shrink-0"
+            aria-label="회차 전체 목차 토글"
           >
-            ⚔️ 3x3 카드 배틀
+            <span>📋 전체 목차</span>
+            <span class="text-[10px] text-stone-500">${isAdventureDrawerOpen ? '▲' : '▼'}</span>
           </button>
         </div>
+
+        <!-- 40-Episode Quick Jump Drawer -->
+        ${
+          isAdventureDrawerOpen
+            ? `
+              <div class="pt-3 border-t border-[rgba(15,0,0,0.12)]">
+                <div class="flex items-center justify-between pb-2 mb-2">
+                  <span class="text-xs font-black text-[#201d1d]">
+                    원하는 회차를 선택하면 해당 필드 맵과 배틀로 즉시 이동합니다 (1~40화 전편):
+                  </span>
+                  <button
+                    type="button"
+                    data-action="play-toggle-chapter-drawer"
+                    class="text-xs text-stone-500 hover:text-stone-900 font-bold p-1 cursor-pointer"
+                  >
+                    ✕ 닫기
+                  </button>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[300px] overflow-y-auto pr-1">
+                  ${Array.from({ length: 40 }, (_, idx) => {
+                    const num = idx + 1;
+                    const meta = chapterTitles[idx] || { titleKo: `제 ${num}화` };
+                    const isCur = num === currentChapter;
+                    const ev = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === num);
+                    return `
+                      <button
+                        type="button"
+                        data-action="play-jump-chapter"
+                        data-chapter="${num}"
+                        class="px-2 py-2 text-left text-xs rounded-sm border transition-colors truncate min-h-[40px] cursor-pointer flex flex-col justify-center ${
+                          isCur
+                            ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] font-black'
+                            : 'bg-white text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
+                        }"
+                        title="제${num}화 - ${meta.titleKo}"
+                      >
+                        <div class="flex items-center justify-between w-full">
+                          <span class="font-bold">제${num}화</span>
+                          <span class="text-[9px] ${isCur ? 'text-amber-400' : 'text-stone-400'} uppercase">${ev?.regionId || ''}</span>
+                        </div>
+                        <span class="text-[11px] truncate opacity-90">${meta.titleKo}</span>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `
+            : ''
+        }
       </section>
 
       <!-- Sub-State: Ambush Alert Banner -->

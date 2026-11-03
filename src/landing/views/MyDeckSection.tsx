@@ -22,6 +22,7 @@ import { cardNurtureStore } from '../services/cardNurtureStore';
 import { getCharacterAsset, FACTION_PALETTES } from '../services/assetCatalog';
 import { CARD_DATABASE } from '../../cardDatabase';
 import { renderOriginalCardHtml } from '../components/OriginalCardHtml';
+import { tr, getCurrentLanguage } from '../services/i18n';
 
 export interface MyDeckSectionState {
   editingSlotIndex: number | null; // 0..4 when drawer is open, null when closed
@@ -159,26 +160,30 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
               <span>PARITY DRAWER</span>
             </div>
             <h3 id="deck-swap-drawer-title" class="text-base sm:text-lg font-black text-[#201d1d] m-0">
-              출격 영웅 카드 교체 (SLOT 0${editingSlot + 1})
+              ${tr(`출격 영웅 카드 교체 (SLOT 0${editingSlot + 1})`, `Swap Active Hero Card (SLOT 0${editingSlot + 1})`, `出撃英雄カード入替 (SLOT 0${editingSlot + 1})`)}
             </h3>
             <p class="text-xs text-stone-500 m-0 mt-0.5">
-              현재 배치: [${currentAsset.code}] ${currentAsset.nameKo} (Lv.${currentStats.level} · ${currentStats.totalTP} TP)
+              ${tr('현재 배치:', 'Equipped:', '現在の配置:')} [${currentAsset.code}] ${currentAsset.nameKo} (Lv.${currentStats.level} · ${currentStats.totalTP} TP)
             </p>
           </div>
           <button
             type="button"
             data-action="close-deck-swap-drawer"
             class="px-3 py-2 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer"
-            aria-label="닫기"
+            aria-label="${tr('닫기', 'Close', '閉じる')}"
           >
-            ✕ 닫기
+            ✕ ${tr('닫기', 'Close', '閉じる')}
           </button>
         </div>
 
         <!-- Squad Guidance Notice (Duplicate Prevention & Full Roster Selection) -->
         <div class="px-4 sm:px-6 py-2.5 bg-[#f1eeee] border-b border-[rgba(15,0,0,0.08)] text-[11px] text-stone-600 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-          <span>💡 <strong>영웅 교체 안내:</strong> 보유 영웅 장착, 슬롯 간 위치 맞교환(⇄), 또는 전체 110종 영웅 중 원하는 영웅으로 즉시 교체할 수 있습니다.</span>
-          <span class="font-bold text-[#201d1d]">보유 카드: ${ownedCards.length}종 / 전체 110종</span>
+          <span>💡 <strong>${tr('영웅 교체 안내:', 'Swap Guide:', '英雄入替案内:')}</strong> ${tr(
+            '보유 영웅 장착, 슬롯 간 위치 맞교환(⇄), 또는 전체 110종 영웅 중 원하는 영웅으로 즉시 교체할 수 있습니다.',
+            'Equip owned heroes, swap positions between slots (⇄), or immediately equip any of the 110 heroes.',
+            '保有英雄の装着、スロット間の位置交換(⇄)、または全110種の中から任意の英雄に即時入替できます。'
+          )}</span>
+          <span class="font-bold text-[#201d1d]">${tr(`보유 카드: ${ownedCards.length}종 / 전체 110종`, `Owned: ${ownedCards.length} / 110`, `保有カード: ${ownedCards.length}種 / 全110種`)}</span>
         </div>
 
         <!-- Owned & Full Roster Cards Scrollable Container -->
@@ -186,8 +191,8 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
           <!-- 1. Owned Cards Grid -->
           <div class="space-y-2.5">
             <div class="flex items-center justify-between border-b border-[rgba(15,0,0,0.1)] pb-1.5">
-              <span class="text-xs font-black text-[#201d1d] uppercase">보유 영웅 목록 (${ownedCards.length}종)</span>
-              <span class="text-[11px] text-stone-500">터치하여 SLOT 0${editingSlot + 1}에 즉시 배치</span>
+              <span class="text-xs font-black text-[#201d1d] uppercase">${tr(`보유 영웅 목록 (${ownedCards.length}종)`, `Owned Heroes (${ownedCards.length})`, `保有英雄一覧 (${ownedCards.length}種)`)}</span>
+              <span class="text-[11px] text-stone-500">${tr(`터치하여 SLOT 0${editingSlot + 1}에 즉시 배치`, `Tap to equip in SLOT 0${editingSlot + 1}`, `タップしてSLOT 0${editingSlot + 1}に即時配置`)}</span>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
               ${ownedCards.map(card => {
@@ -219,16 +224,16 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
                           disabled
                           class="w-full py-2.5 bg-stone-200 text-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-default"
                         >
-                          현재 슬롯 장착 중
+                          ${tr('현재 슬롯 장착 중', 'Equipped in Current Slot', '現在スロット装着中')}
                         </button>
                       ` : isAlreadyInOtherSlot ? `
                         <button
                           type="button"
                           disabled
                           class="w-full py-1.5 bg-stone-200 text-stone-500 text-[10px] font-bold rounded-sm min-h-[32px] cursor-not-allowed"
-                          title="다른 슬롯에 출격 중인 영웅입니다"
+                          title="${tr('다른 슬롯에 출격 중인 영웅입니다', 'Already deployed in another slot', '別スロットに出撃中の英雄です')}"
                         >
-                          SLOT 0${otherSlotIdx + 1} 출격 중 (중복 불가)
+                          SLOT 0${otherSlotIdx + 1} ${tr('출격 중 (중복 불가)', 'Active (No Duplicates)', '出撃中 (重複不可)')}
                         </button>
                         <button
                           type="button"
@@ -237,7 +242,7 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
                           data-card-id="${card.cardId}"
                           class="w-full py-2 bg-stone-800 text-[#fdfcfc] hover:bg-[#201d1d] text-xs font-bold rounded-sm min-h-[44px] cursor-pointer transition-colors"
                         >
-                          ⇄ SLOT 0${otherSlotIdx + 1}과 위치 맞교환
+                          ⇄ ${tr(`SLOT 0${otherSlotIdx + 1}과 위치 맞교환`, `Swap with SLOT 0${otherSlotIdx + 1}`, `SLOT 0${otherSlotIdx + 1}と位置交換`)}
                         </button>
                       ` : `
                         <button
@@ -247,7 +252,7 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
                           data-card-id="${card.cardId}"
                           class="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer transition-opacity"
                         >
-                          이 영웅으로 교체 (EQUIP) →
+                          ${tr('이 영웅으로 교체 (EQUIP) →', 'Equip Hero (EQUIP) →', 'この英雄に入替 (EQUIP) →')}
                         </button>
                       `}
                     </div>
@@ -268,8 +273,8 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
             return `
               <div class="space-y-2.5 pt-2">
                 <div class="flex items-center justify-between border-b border-[rgba(15,0,0,0.1)] pb-1.5">
-                  <span class="text-xs font-black text-[#201d1d] uppercase">전체 영웅 도감에서 선택 교체 (${unownedIds.length}종)</span>
-                  <span class="text-[11px] text-emerald-700 font-bold">선택 즉시 보유 등록 및 SLOT 0${editingSlot + 1} 장착</span>
+                  <span class="text-xs font-black text-[#201d1d] uppercase">${tr(`전체 영웅 도감에서 선택 교체 (${unownedIds.length}종)`, `Select from Full Roster (${unownedIds.length})`, `全英雄図鑑から選択入替 (${unownedIds.length}種)`)}</span>
+                  <span class="text-[11px] text-emerald-700 font-bold">${tr(`선택 즉시 보유 등록 및 SLOT 0${editingSlot + 1} 장착`, `Instant unlock &amp; equip to SLOT 0${editingSlot + 1}`, `選択時に即時解放＆SLOT 0${editingSlot + 1}へ装着`)}</span>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                   ${unownedIds.map(cardId => {
@@ -299,7 +304,7 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
                             data-card-id="${cardId}"
                             class="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer transition-opacity"
                           >
-                            이 영웅으로 교체 (EQUIP) →
+                            ${tr('이 영웅으로 교체 (EQUIP) →', 'Equip Hero (EQUIP) →', 'この英雄に入替 (EQUIP) →')}
                           </button>
                         </div>
                       </div>
@@ -314,14 +319,18 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
         <!-- Drawer Footer -->
         <div class="p-4 border-t border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex items-center justify-between">
           <div class="text-[11px] text-stone-500">
-            선택 즉시 출격 덱이 갱신되며 덱 전투력(Deck TP)이 자동 재계산됩니다.
+            ${tr(
+              '선택 즉시 출격 덱이 갱신되며 덱 전투력(Deck TP)이 자동 재계산됩니다.',
+              'Active deck updates immediately and Deck TP recalculates automatically.',
+              '選択すると即座に出撃デッキが更新され、デッキ戦闘力(Deck TP)が自動再計算されます。'
+            )}
           </div>
           <button
             type="button"
             data-action="close-deck-swap-drawer"
             class="px-5 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] min-h-[44px] cursor-pointer"
           >
-            취소 (CANCEL)
+            ${tr('취소 (CANCEL)', 'Cancel (CANCEL)', 'キャンセル (CANCEL)')}
           </button>
         </div>
       </div>
@@ -372,9 +381,9 @@ function renderDeckCardDetailModal(cardId: number): string {
             type="button"
             data-action="close-deck-card-modal"
             class="px-3 py-2 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer"
-            aria-label="닫기"
+            aria-label="${tr('닫기', 'Close', '閉じる')}"
           >
-            ✕ 닫기
+            ✕ ${tr('닫기', 'Close', '閉じる')}
           </button>
         </div>
 
@@ -394,7 +403,7 @@ function renderDeckCardDetailModal(cardId: number): string {
             <div class="w-full flex-1 h-56 sm:h-64 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 overflow-hidden">
               <img
                 src="${asset.cutoutUrl}"
-                alt="${asset.nameKo} 7등신 풀바디"
+                alt="${asset.nameKo}"
                 class="max-h-full max-w-full object-contain filter drop-shadow-none"
                 loading="eager"
                 onerror="this.src='${asset.bustPngUrl}'; this.onerror=null;"
@@ -404,13 +413,22 @@ function renderDeckCardDetailModal(cardId: number): string {
 
           <!-- Description / Lore -->
           <p class="text-xs text-stone-600 leading-relaxed m-0">
-            ${(db as any).lore_ko || `${asset.faction} 속성의 강력한 정령 영웅. 3x3 보드에서 전술적 플립과 결계를 주도합니다.`}
+            ${
+              getCurrentLanguage() === 'ko'
+                ? (db as any).lore_ko || `${asset.faction} 속성의 강력한 정령 영웅. 3x3 보드에서 전술적 플립과 결계를 주도합니다.`
+                : (db as any).lore_en ||
+                  tr(
+                    `${asset.faction} 속성의 강력한 정령 영웅. 3x3 보드에서 전술적 플립과 결계를 주도합니다.`,
+                    `A powerful ${asset.faction} elemental hero leading tactical flips and wards on the 3x3 board.`,
+                    `${asset.faction}属性の強力な英雄。3x3ボードで戦術的なフリップと結界を主導します。`
+                  )
+            }
           </p>
 
           <!-- Level, EXP Bar & Stat Points -->
           <div class="border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-3.5 rounded-none space-y-2">
             <div class="flex items-center justify-between text-xs">
-              <span class="font-bold text-[#201d1d]">성장 레벨: Lv.${stats.level} / 100</span>
+              <span class="font-bold text-[#201d1d]">${tr('성장 레벨:', 'Growth Level:', '成長レベル:')} Lv.${stats.level} / 100</span>
               <span class="text-stone-500">EXP: ${stats.exp} / ${stats.expToNext}</span>
             </div>
             <div class="w-full h-2 bg-stone-200 rounded-sm overflow-hidden">
@@ -421,41 +439,46 @@ function renderDeckCardDetailModal(cardId: number): string {
             </div>
             <div class="flex items-center justify-between text-[11px] pt-0.5">
               <span class="text-stone-600">
-                미사용 스탯: <strong class="${stats.statPoints > 0 ? 'text-red-600' : 'text-[#201d1d]'}">${stats.statPoints} pt</strong>
+                ${tr('미사용 스탯:', 'Unspent Stat Pts:', '未使用ステータス:')} <strong class="${stats.statPoints > 0 ? 'text-red-600' : 'text-[#201d1d]'}">${stats.statPoints} pt</strong>
               </span>
-              <span class="text-[10px] text-stone-500 font-bold">전투력: ${stats.totalTP} TP</span>
+              <span class="text-[10px] text-stone-500 font-bold">${tr('전투력:', 'Combat Power:', '戦闘力:')} ${stats.totalTP} TP</span>
             </div>
           </div>
 
           <!-- 4-Way Compass Stats Breakdown Grid -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
             <div class="border border-[rgba(15,0,0,0.12)] bg-white p-2.5 rounded-none">
-              <div class="text-[10px] text-stone-500 font-bold uppercase">북 (N)</div>
+              <div class="text-[10px] text-stone-500 font-bold uppercase">${tr('북 (N)', 'North (N)', '北 (N)')}</div>
               <div class="text-base font-black text-[#201d1d] mt-0.5">${stats.top}</div>
-              <div class="text-[9px] text-stone-400">기본 ${baseStats.top} + 보너스 ${stats.top - baseStats.top}</div>
+              <div class="text-[9px] text-stone-400">${tr('기본', 'Base', '基本')} ${baseStats.top} + ${tr('보너스', 'Bonus', 'ボーナス')} ${stats.top - baseStats.top}</div>
             </div>
             <div class="border border-[rgba(15,0,0,0.12)] bg-white p-2.5 rounded-none">
-              <div class="text-[10px] text-stone-500 font-bold uppercase">동 (E)</div>
+              <div class="text-[10px] text-stone-500 font-bold uppercase">${tr('동 (E)', 'East (E)', '東 (E)')}</div>
               <div class="text-base font-black text-[#201d1d] mt-0.5">${stats.right}</div>
-              <div class="text-[9px] text-stone-400">기본 ${baseStats.right} + 보너스 ${stats.right - baseStats.right}</div>
+              <div class="text-[9px] text-stone-400">${tr('기본', 'Base', '基本')} ${baseStats.right} + ${tr('보너스', 'Bonus', 'ボーナス')} ${stats.right - baseStats.right}</div>
             </div>
             <div class="border border-[rgba(15,0,0,0.12)] bg-white p-2.5 rounded-none">
-              <div class="text-[10px] text-stone-500 font-bold uppercase">남 (S)</div>
+              <div class="text-[10px] text-stone-500 font-bold uppercase">${tr('남 (S)', 'South (S)', '南 (S)')}</div>
               <div class="text-base font-black text-[#201d1d] mt-0.5">${stats.bottom}</div>
-              <div class="text-[9px] text-stone-400">기본 ${baseStats.bottom} + 보너스 ${stats.bottom - baseStats.bottom}</div>
+              <div class="text-[9px] text-stone-400">${tr('기본', 'Base', '基本')} ${baseStats.bottom} + ${tr('보너스', 'Bonus', 'ボーナス')} ${stats.bottom - baseStats.bottom}</div>
             </div>
             <div class="border border-[rgba(15,0,0,0.12)] bg-white p-2.5 rounded-none">
-              <div class="text-[10px] text-stone-500 font-bold uppercase">서 (W)</div>
+              <div class="text-[10px] text-stone-500 font-bold uppercase">${tr('서 (W)', 'West (W)', '西 (W)')}</div>
               <div class="text-base font-black text-[#201d1d] mt-0.5">${stats.left}</div>
-              <div class="text-[9px] text-stone-400">기본 ${baseStats.left} + 보너스 ${stats.left - baseStats.left}</div>
+              <div class="text-[9px] text-stone-400">${tr('기본', 'Base', '基本')} ${baseStats.left} + ${tr('보너스', 'Bonus', 'ボーナス')} ${stats.left - baseStats.left}</div>
             </div>
           </div>
 
           <!-- Special Ability -->
           <div class="p-3 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none space-y-0.5">
-            <span class="text-[10px] text-stone-500 font-bold uppercase">고유 스킬</span>
+            <span class="text-[10px] text-stone-500 font-bold uppercase">${tr('고유 스킬', 'Special Skill', '固有スキル')}</span>
             <div class="text-xs font-bold text-[#201d1d]">
-              ${(db as any).ability?.description_ko || '기본 전술 능력: 표준 전장 배치'}
+              ${
+                getCurrentLanguage() === 'ko'
+                  ? (db as any).ability?.description_ko || '기본 전술 능력: 표준 전장 배치'
+                  : (db as any).ability?.description_en ||
+                    tr('기본 전술 능력: 표준 전장 배치', 'Standard Tactical Deployment', '基本戦術能力：標準戦場配置')
+              }
             </div>
           </div>
         </div>
@@ -467,7 +490,7 @@ function renderDeckCardDetailModal(cardId: number): string {
             data-action="close-deck-card-modal"
             class="px-5 py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer"
           >
-            확인 (CLOSE)
+            ${tr('확인 (CLOSE)', 'Close (CLOSE)', '確認 (CLOSE)')}
           </button>
         </div>
       </div>
@@ -509,9 +532,13 @@ export function renderMyDeckSection(selectedCardId?: number): string {
                 <span class="text-stone-400">·</span>
                 <span>5-CARD SQUAD</span>
               </div>
-              <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-[#201d1d] m-0">마이덱 (My Deck)</h1>
+              <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-[#201d1d] m-0">${tr('마이덱 (My Deck)', 'My Deck', 'マイデッキ (My Deck)')}</h1>
               <p class="text-xs sm:text-sm text-stone-600 m-0 mt-1">
-                현재 출격 배치된 5장의 영웅 덱 구성과 전술 전투력(Tactical Power) 실시간 합산
+                ${tr(
+                  '현재 출격 배치된 5장의 영웅 덱 구성과 전술 전투력(Tactical Power) 실시간 합산',
+                  'Manage your active 5-hero squad composition and real-time Tactical Power (TP)',
+                  '現在出撃配置されている5枚の英雄デッキ編成と戦術戦闘力(TP)のリアルタイム合算'
+                )}
               </p>
             </div>
           </div>
@@ -521,42 +548,50 @@ export function renderMyDeckSection(selectedCardId?: number): string {
             <!-- Metric 1: Deck TP -->
             <div class="border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-5 rounded-none flex flex-col justify-between space-y-2">
               <div class="flex items-center justify-between text-xs font-bold text-stone-500 uppercase tracking-wider">
-                <span>덱 전투력 (DECK TP)</span>
+                <span>${tr('덱 전투력 (DECK TP)', 'DECK TP', 'デッキ戦闘力 (DECK TP)')}</span>
                 <span class="px-2 py-0.5 bg-[#201d1d] text-white text-[10px] rounded-sm">5 CARDS SUM</span>
               </div>
               <div class="text-3xl sm:text-4xl font-black text-[#201d1d] tracking-tight">
                 ${deckTP} <span class="text-xs font-normal text-stone-500">TP</span>
               </div>
               <div class="text-[11px] text-stone-500">
-                현재 출격 5개 슬롯 영웅들의 N+E+S+W 스탯 총합
+                ${tr(
+                  '현재 출격 5개 슬롯 영웅들의 N+E+S+W 스탯 총합',
+                  'Sum of N+E+S+W directional stats of your 5 active squad heroes',
+                  '現在出撃中の5スロット英雄のN+E+S+Wステータス合計'
+                )}
               </div>
             </div>
 
             <!-- Metric 2: Total TP -->
             <div class="border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-5 rounded-none flex flex-col justify-between space-y-2">
               <div class="flex items-center justify-between text-xs font-bold text-stone-500 uppercase tracking-wider">
-                <span>전체 전투력 (TOTAL TP)</span>
+                <span>${tr('전체 전투력 (TOTAL TP)', 'TOTAL TP', '総合戦闘力 (TOTAL TP)')}</span>
                 <span class="px-2 py-0.5 bg-stone-700 text-white text-[10px] rounded-sm">ALL OWNED</span>
               </div>
               <div class="text-3xl sm:text-4xl font-black text-[#201d1d] tracking-tight">
                 ${totalTP} <span class="text-xs font-normal text-stone-500">TP</span>
               </div>
               <div class="text-[11px] text-stone-500">
-                인벤토리에 보유 중인 전체 영웅 카드(${cardNurtureStore.ownedCardIds.length}종)의 누적 전투력 합산
+                ${tr(
+                  `인벤토리에 보유 중인 전체 영웅 카드(${cardNurtureStore.ownedCardIds.length}종)의 누적 전투력 합산`,
+                  `Cumulative combat power across all owned hero cards (${cardNurtureStore.ownedCardIds.length})`,
+                  `インベントリに保有中の全英雄カード(${cardNurtureStore.ownedCardIds.length}種)の累積戦闘力合計`
+                )}
               </div>
             </div>
 
             <!-- Metric 3: Active Deck Slots -->
             <div class="border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-5 rounded-none flex flex-col justify-between space-y-2">
               <div class="flex items-center justify-between text-xs font-bold text-stone-500 uppercase tracking-wider">
-                <span>덱 슬롯 상태 (SLOTS)</span>
+                <span>${tr('덱 슬롯 상태 (SLOTS)', 'DECK SLOTS', 'デッキスロット状態 (SLOTS)')}</span>
                 <span class="px-2 py-0.5 bg-emerald-700 text-white text-[10px] rounded-sm">READY</span>
               </div>
               <div class="text-3xl sm:text-4xl font-black text-[#201d1d] tracking-tight">
                 ${activeDeckIds.length} <span class="text-xs font-normal text-stone-500">/ 5 SLOTS</span>
               </div>
               <div class="text-[11px] text-stone-500">
-                수집율: ${cardNurtureStore.ownedCardIds.length} / 110 (${((cardNurtureStore.ownedCardIds.length / 110) * 100).toFixed(1)}%)
+                ${tr('수집율:', 'Collection:', '収集率:')} ${cardNurtureStore.ownedCardIds.length} / 110 (${((cardNurtureStore.ownedCardIds.length / 110) * 100).toFixed(1)}%)
               </div>
             </div>
           </div>
@@ -568,13 +603,17 @@ export function renderMyDeckSection(selectedCardId?: number): string {
         <div class="w-full max-w-7xl mx-auto space-y-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2">
             <div>
-              <span class="text-[11px] text-[#646262] font-bold uppercase tracking-wider">현재 출격 슬롯</span>
+              <span class="text-[11px] text-[#646262] font-bold uppercase tracking-wider">${tr('현재 출격 슬롯', 'ACTIVE SQUAD SLOTS', '現在の出撃スロット')}</span>
               <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#201d1d] m-0">
-                활성 5개 덱 슬롯 (ACTIVE 5 DECK SLOTS)
+                ${tr('활성 5개 덱 슬롯 (ACTIVE 5 DECK SLOTS)', 'Active 5 Deck Slots (ACTIVE 5 DECK SLOTS)', '有効5デッキスロット (ACTIVE 5 DECK SLOTS)')}
               </h2>
             </div>
             <div class="text-xs text-stone-500 font-mono">
-              슬롯의 [영웅 교체]를 클릭하여 보유 영웅으로 교체 편성
+              ${tr(
+                '슬롯의 [영웅 교체]를 클릭하여 보유 영웅으로 교체 편성',
+                'Click [Swap Hero] on any slot to customize your squad',
+                'スロットの[英雄入替]をクリックして保有英雄と入替編成'
+              )}
             </div>
           </div>
 
@@ -607,7 +646,7 @@ export function renderMyDeckSection(selectedCardId?: number): string {
                     data-action="select-deck-card"
                     data-card-id="${cardId}"
                     class="w-full cursor-pointer"
-                    title="클릭하여 상세 정보 팝업 보기"
+                    title="${tr('클릭하여 상세 정보 팝업 보기', 'Click to inspect card details', 'クリックして詳細情報を表示')}"
                   >
                     ${renderOriginalCardHtml(cardId, {
                       action: 'select-deck-card',
@@ -628,7 +667,7 @@ export function renderMyDeckSection(selectedCardId?: number): string {
                       class="w-full py-2.5 px-3 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center gap-1.5 cursor-pointer transition-opacity"
                     >
                       <span>🔄</span>
-                      <span>영웅 교체</span>
+                      <span>${tr('영웅 교체', 'Swap Hero', '英雄入替')}</span>
                     </button>
                   </div>
                 </div>
