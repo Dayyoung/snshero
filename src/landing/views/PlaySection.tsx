@@ -928,11 +928,26 @@ function renderAdventureView(): string {
                       const isPlayer = slot.owner === 'player';
                       const [top, right, bottom, left] = slot.stats;
                       const slotAsset = getCharacterAsset(slot.cardId);
+                      const isJustPlaced = playRpgState.lastPlacedSlot === sIdx;
+                      const isFlipped = playRpgState.flippedSlots?.includes(sIdx);
 
                       return `
                         <div class="relative w-full h-full border-2 ${
                           isPlayer ? 'border-sky-400 bg-sky-950/90 text-sky-100' : 'border-rose-500 bg-rose-950/90 text-rose-100'
-                        } rounded-none p-1 flex flex-col justify-between overflow-hidden shadow-none">
+                        } ${
+                          isFlipped
+                            ? 'animate-card-flip ring-2 ring-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.95)]'
+                            : isJustPlaced
+                            ? 'animate-card-place ring-2 ring-amber-400 shadow-[0_0_18px_rgba(251,191,36,0.9)]'
+                            : ''
+                        } rounded-none p-1 flex flex-col justify-between overflow-hidden shadow-none transition-all">
+                          ${
+                            isFlipped
+                              ? `<span class="absolute top-0.5 left-1/2 -translate-x-1/2 z-30 px-1.5 py-0.2 bg-cyan-400 text-stone-950 text-[8px] font-black rounded-xs shadow-md animate-bounce whitespace-nowrap">⚡ FLIP!</span>`
+                              : isJustPlaced
+                              ? `<span class="absolute top-0.5 left-1/2 -translate-x-1/2 z-30 px-1 py-0.2 bg-amber-400 text-stone-950 text-[8px] font-black rounded-xs shadow-sm whitespace-nowrap">PLACE</span>`
+                              : ''
+                          }
                           <!-- Character Bust Background Art -->
                           <div class="absolute inset-0 z-0 flex items-center justify-center p-1 opacity-95 pointer-events-none">
                             <img
@@ -969,9 +984,9 @@ function renderAdventureView(): string {
                     .join('')}
                 </div>
 
-                <!-- Player Active Hand Cards (1-Row Dynamic Card Width, Zero Extra Header Clutter) -->
+                <!-- Player Active Hand Cards (1-Row Dynamic Card Width with Center Board Max-Width Constraint) -->
                 <div class="pt-1.5 border-t border-white/10">
-                  <div class="flex flex-nowrap items-stretch justify-center gap-1 sm:gap-2.5 pt-1 w-full">
+                  <div class="flex flex-nowrap items-stretch justify-center gap-1 sm:gap-2.5 pt-1 w-full max-w-[360px] sm:max-w-[440px] mx-auto">
                     ${playRpgState.playerHand
                       .map((cId, hIdx) => {
                         const isSelected = playRpgState.selectedHandIndex === hIdx;
@@ -980,7 +995,7 @@ function renderAdventureView(): string {
                             type="button"
                             data-action="play-battle-card"
                             data-hand-index="${hIdx}"
-                            class="relative flex-1 min-w-0 max-w-[23%] sm:max-w-[20%] text-left p-0 bg-transparent border-0 cursor-pointer transition-transform ${
+                            class="relative flex-1 min-w-0 max-w-[68px] sm:max-w-[80px] text-left p-0 bg-transparent border-0 cursor-pointer transition-transform ${
                               isSelected
                                 ? '-translate-y-1.5 ring-2 ring-amber-400 rounded-sm z-20'
                                 : 'hover:-translate-y-0.5 opacity-95 hover:opacity-100'
@@ -997,7 +1012,7 @@ function renderAdventureView(): string {
                               showRedDot: false,
                               size: 'responsive',
                               visualTier: 'bust',
-                              className: 'w-full min-w-0 aspect-[5/7] sm:min-h-[180px]',
+                              className: 'w-full min-w-0 aspect-[5/7] max-h-[110px] sm:max-h-[135px]',
                             })}
                           </button>
                         `;

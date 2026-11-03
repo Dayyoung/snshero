@@ -37,6 +37,7 @@ import {
   BANDIT_DECK_PRESET,
   THIEF_DECK_PRESET,
 } from '../../lib/rpg/kadanRpgAmbush';
+import { audioManager } from './audioManager';
 
 // Attach awardBattleVictoryExp and getCard to cardNurtureStore if not already present
 if (typeof (cardNurtureStore as any).getCard !== 'function') {
@@ -108,6 +109,8 @@ export interface PlayRpgState {
   battleWinner: 'player' | 'opponent' | 'draw' | null;
   battleMessage: string;
   opponentName: string;
+  lastPlacedSlot: number | null;
+  flippedSlots: number[];
 
   // Arcade Sub-state
   arcadeQuery: string;
@@ -149,6 +152,8 @@ export const playRpgState: PlayRpgState = {
   battleWinner: null,
   battleMessage: '원하는 카드를 선택한 후 3x3 전장의 빈 슬롯을 터치하세요.',
   opponentName: '섀도우렐름 척후병',
+  lastPlacedSlot: null,
+  flippedSlots: [],
 
   arcadeQuery: '',
   arcadeElement: 'all',
@@ -915,6 +920,8 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
   playRpgState.battleWinner = null;
   playRpgState.selectedHandIndex = 0;
   playRpgState.turn = 'player';
+  playRpgState.lastPlacedSlot = null;
+  playRpgState.flippedSlots = [];
 
   const rebirthBonus = getOpponentRebirthStatBonus(
     playRpgState.reincarnationLevel,
@@ -1020,12 +1027,28 @@ export function playCardToSlot(
     stats,
     name: card?.title || `Hero ${cardId}`,
   };
+  playRpgState.lastPlacedSlot = slotIdx;
+  playRpgState.flippedSlots = [];
+
+  // Play placement sound effect immediately
+  audioManager.playCardPlace();
 
   // Remove card from hand
   hand.splice(handIdx, 1);
 
   // Evaluate 4-way flips
   evaluateBoardFlips(slotIdx, owner, stats);
+
+  // Schedule visual animation cleanup after 650ms
+  if (typeof window !== 'undefined') {
+    window.setTimeout(() => {
+      if (playRpgState.lastPlacedSlot === slotIdx) {
+        playRpgState.lastPlacedSlot = null;
+      }
+      playRpgState.flippedSlots = [];
+      window.dispatchEvent(new CustomEvent('hero_rpg_board_updated'));
+    }, 650);
+  }
 
   // Check if battle completed (all 9 slots filled or hands empty)
   const isBoardFull = playRpgState.battleBoard.every((slot) => slot !== null);
@@ -1059,7 +1082,7 @@ function evaluateBoardFlips(
   placedStats: [number, number, number, number]
 ): void {
   const [top, right, bottom, left] = placedStats;
-  let flipCount = 0;
+  const flippedList: number[] = [];
 
   // 1. Top neighbor: slot - 3
   if (slot >= 3) {
@@ -1067,7 +1090,7 @@ function evaluateBoardFlips(
     const neighbor = playRpgState.battleBoard[neighborIdx];
     if (neighbor && neighbor.owner !== placedOwner && top > neighbor.stats[2]) {
       neighbor.owner = placedOwner;
-      flipCount++;
+      flippedList.push(neighborIdx);
     }
   }
 
@@ -1077,7 +1100,7 @@ function evaluateBoardFlips(
     const neighbor = playRpgState.battleBoard[neighborIdx];
     if (neighbor && neighbor.owner !== placedOwner && bottom > neighbor.stats[0]) {
       neighbor.owner = placedOwner;
-      flipCount++;
+      flippedList.push(neighborIdx);
     }
   }
 
@@ -1087,7 +1110,7 @@ function evaluateBoardFlips(
     const neighbor = playRpgState.battleBoard[neighborIdx];
     if (neighbor && neighbor.owner !== placedOwner && left > neighbor.stats[1]) {
       neighbor.owner = placedOwner;
-      flipCount++;
+      flippedList.push(neighborIdx);
     }
   }
 
@@ -1097,12 +1120,14 @@ function evaluateBoardFlips(
     const neighbor = playRpgState.battleBoard[neighborIdx];
     if (neighbor && neighbor.owner !== placedOwner && right > neighbor.stats[3]) {
       neighbor.owner = placedOwner;
-      flipCount++;
+      flippedList.push(neighborIdx);
     }
   }
 
-  if (flipCount > 0) {
-    playRpgState.battleMessage = `상대 카드 ${flipCount}장을 공명 역전(Flip)했습니다!`;
+  if (flippedList.length > 0) {
+    playRpgState.flippedSlots = flippedList;
+    playRpgState.battleMessage = `상대 카드 ${flippedList.length}장을 공명 역전(Flip)했습니다!`;
+    audioManager.playCardFlip();
   }
 }
 

@@ -947,6 +947,11 @@ export function mountLanding(): void {
         renderApp();
       }
     });
+    window.addEventListener('hero_rpg_board_updated', () => {
+      if (state.activeView === 'play') {
+        renderApp();
+      }
+    });
   }
 
   // 7.1 Start BGM if enabled

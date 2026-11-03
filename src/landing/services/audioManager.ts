@@ -442,6 +442,88 @@ class AudioManager {
     } catch {}
   }
 
+  /**
+   * Card Place effect: Played when placing a card onto the 3x3 board.
+   */
+  public playCardPlace(): void {
+    const settings = this.getSettings();
+    if (!settings.sfxEnabled || settings.sfxVolume <= 0) return;
+
+    try {
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+      audio.volume = Math.max(0.1, Math.min(1, settings.sfxVolume / 100));
+      audio.play().catch(() => {});
+    } catch {}
+
+    const ctx = this.getAudioContext();
+    if (ctx) {
+      try {
+        const now = ctx.currentTime;
+        const vol = (settings.sfxVolume / 100) * 0.28;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(45, now + 0.08);
+
+        gain.gain.setValueAtTime(vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.11);
+      } catch {}
+    }
+
+    if (settings.hapticEnabled && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate([18, 12]);
+    }
+  }
+
+  /**
+   * Card Flip effect: Played when opponent/player card is flipped / captured.
+   */
+  public playCardFlip(): void {
+    const settings = this.getSettings();
+    if (!settings.sfxEnabled || settings.sfxVolume <= 0) return;
+
+    try {
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+      audio.volume = Math.max(0.1, Math.min(1, settings.sfxVolume / 100));
+      audio.play().catch(() => {});
+    } catch {}
+
+    const ctx = this.getAudioContext();
+    if (ctx) {
+      try {
+        const now = ctx.currentTime;
+        const vol = (settings.sfxVolume / 100) * 0.25;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(260, now);
+        osc.frequency.exponentialRampToValueAtTime(720, now + 0.09);
+
+        gain.gain.setValueAtTime(vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.13);
+      } catch {}
+    }
+
+    if (settings.hapticEnabled && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate([28, 22, 28]);
+    }
+  }
+
   private dispatchAudioChangedEvent(): void {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('snshero_audio_settings_changed', {

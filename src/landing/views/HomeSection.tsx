@@ -88,11 +88,11 @@ export function renderHomeSection(): string {
               href="#home"
               data-nav="home"
               class="inline-flex items-center cursor-pointer bg-transparent transition-opacity hover:opacity-90 min-h-[44px]"
-              aria-label="눈히어로.com 공식 로고"
+              aria-label="${getCurrentLanguage() === 'ko' ? '눈히어로.com 공식 로고' : 'SNSHero.com Official Logo'}"
             >
               <img
                 src="${t('logo_src', '/logo-ko.png')}"
-                alt="눈히어로.com SNSHero Revolution 공식 로고"
+                alt="${getCurrentLanguage() === 'ko' ? '눈히어로.com SNSHero Revolution 공식 로고' : 'SNSHero.com SNSHero Revolution Official Logo'}"
                 class="h-20 sm:h-28 md:h-36 w-auto max-w-full object-contain bg-transparent filter drop-shadow-none"
                 loading="eager"
               />
