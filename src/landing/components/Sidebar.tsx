@@ -25,14 +25,16 @@ interface SideItemDef {
 }
 
 export const SIDE_NAV_DEFS: SideItemDef[] = [
-  { key: 'login', label: '로그인', isModal: true, modalTarget: 'login', icon: '🔑', badge: '안내' },
-  { key: 'home', label: '홈', icon: '🏠' },
-  { key: 'deck', label: '마이덱', icon: '🃏' },
-  { key: 'play', label: '플레이', icon: '⚔️' },
-  { key: 'card', label: '카드', icon: '📜' },
-  { key: 'shop', label: '상점', icon: '🛒' },
-  { key: 'mall', label: '쇼핑몰', isModal: true, modalTarget: 'mall', icon: '🏬', badge: '굿즈' },
-  { key: 'community', label: '커뮤니티', isModal: true, modalTarget: 'community', icon: '💬', badge: '채널' },
+  { key: 'login', label: '로그인' as any, isModal: true, modalTarget: 'login', icon: '🔑', badge: '계정' },
+  { key: 'home', label: '홈' as any, icon: '🏠' },
+  { key: 'deck', label: '마이덱' as any, icon: '🃏' },
+  { key: 'play', label: '플레이' as any, icon: '⚔️' },
+  { key: 'card', label: '카드' as any, icon: '🎴' },
+  { key: 'shop', label: '상점' as any, icon: '🛒' },
+  { key: 'mall', label: '굿즈몰' as any, icon: '🏬' },
+  { key: 'book', label: '웹소설' as any, icon: '📜', badge: '40화' },
+  { key: 'webtoon', label: '웹툰' as any, icon: '🎨', badge: '840컷' },
+  { key: 'community', label: '커뮤니티' as any, isModal: true, modalTarget: 'community', icon: '💬', badge: '채널' },
 ];
 
 export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {

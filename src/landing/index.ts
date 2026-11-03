@@ -3,7 +3,7 @@
  *
  * Standalone static landing page orchestrator for SNSHero.com.
  * Dual-entry MPA architecture: Zero React runtime, zero server dependencies.
- * Full client-side hash routing (#home, #deck, #play, #card, #shop).
+ * Full client-side hash routing (#home, #deck, #play, #card, #shop, #mall).
  * OpenCode Terminal-Flat design, 44px+ touch targets, responsive 360px ~ 3840px layout.
  * Enforces Zero-Onboarding-Popup guard on initial visit.
  */
@@ -26,37 +26,43 @@ import {
 } from './views/MyDeckSection';
 import { renderPlaySection, handlePlayAction, stopPlayTts } from './views/PlaySection';
 import { renderCardSection, setSelectedCardId, setElementFilter, setOwnedFilter } from './views/CardSection';
+import { renderBookSection, handleBookAction } from './views/BookSection';
+import { renderWebtoonSection, handleWebtoonAction } from './views/WebtoonSection';
 import {
-  renderShopSection,
+  renderShopView,
   executeShopPurchase,
-  setUserCoins,
   getUserCoins,
+  getUserGold,
   openGoldExchangeModal,
   closeGoldExchangeModal,
   executeGoldExchange,
-  closePackRevealModal,
-  getActiveRevealPack,
-  isGoldExchangeModalOpen,
-  setShopCategoryTab,
+  setShopCurrentTab,
   openCoinChargeModal,
   closeCoinChargeModal,
   selectChargeCountry,
   backToCountrySelection,
   selectChargePackage,
   executeCoinCharge,
-  openProductDetail,
-  closeProductDetail,
-  setDetailQty,
-  setDetailSize,
-  setDetailFaction,
-  proceedToShipping,
-  backToDetail,
-  proceedToGoodsCountry,
-  backToShipping,
-  selectGoodsPaymentCountry,
-  backToGoodsCountrySelection,
-  executeGoodsCheckout,
+  clearPackReveal,
 } from './views/ShopSection';
+import {
+  renderMallView,
+  openMallProductDetail,
+  closeMallModal,
+  setMallQty,
+  setMallSize,
+  setMallFaction,
+  proceedMallToShipping,
+  backMallToDetail,
+  submitMallShipping,
+  backMallToShipping,
+  selectMallCountry,
+  backMallToCountry,
+  executeMallCheckout,
+  openMallOrdersList,
+  setMallCurrentTab,
+} from './views/MallSection';
+import { checkAndProcessPayAppSuccess } from './services/paymentService';
 import { loginWithGoogle, loginAsGuest, logoutUser } from './services/authService';
 import {
   renderDesktopLeftGutter,
@@ -103,7 +109,10 @@ function renderActiveViewContent(view: ViewKey): string {
   if (view === 'deck') return renderMyDeckSection(state.selectedDeckCardId || 1);
   if (view === 'play') return renderPlaySection();
   if (view === 'card') return renderCardSection();
-  if (view === 'shop') return renderShopSection();
+  if (view === 'shop') return renderShopView();
+  if (view === 'mall') return renderMallView();
+  if (view === 'book') return renderBookSection();
+  if (view === 'webtoon') return renderWebtoonSection();
   return renderHomeSection();
 }
 
@@ -236,7 +245,7 @@ export function handleEventDelegation(event: Event): void {
 
   // Direct Backdrop Click Fallback (Dual Defense Layer 2)
   if (rawTarget.id === 'pack-reveal-modal' || rawTarget.id === 'pack-reveal-backdrop') {
-    closePackRevealModal();
+    clearPackReveal();
     renderApp();
     return;
   }
@@ -250,68 +259,54 @@ export function handleEventDelegation(event: Event): void {
     renderApp();
     return;
   }
-  if (rawTarget.id === 'deck-card-detail-modal' || rawTarget.id === 'deck-card-modal-backdrop') {
+  if (rawTarget.id === 'deck-card-inspect-modal' || rawTarget.id === 'deck-card-inspect-backdrop') {
     setInspectedDeckCardId(null);
     renderApp();
     return;
   }
-  if (rawTarget.id === 'card-nurture-modal-root' || rawTarget.id === 'card-nurture-modal-backdrop') {
-    setSelectedCardId(null);
+  if (rawTarget.id === 'coin-charge-modal') {
+    closeCoinChargeModal();
     renderApp();
     return;
   }
-  if (rawTarget.id === 'deck-swap-drawer-backdrop' || rawTarget.id === 'deck-swap-backdrop') {
-    setEditingSlotIndex(null);
-    renderApp();
-    return;
-  }
-  if (rawTarget.id === 'landing-modal-overlay') {
-    state.activeModal = null;
+  if (
+    rawTarget.id === 'mall-detail-modal' ||
+    rawTarget.id === 'mall-shipping-modal' ||
+    rawTarget.id === 'mall-country-modal' ||
+    rawTarget.id === 'mall-payment-modal' ||
+    rawTarget.id === 'mall-celebration-modal' ||
+    rawTarget.id === 'mall-crypto-modal' ||
+    rawTarget.id === 'mall-orders-modal'
+  ) {
+    closeMallModal();
     renderApp();
     return;
   }
 
-  const target = rawTarget.closest('[data-nav], [data-modal], [data-action], a[href^="#"], a[href="/home"]');
+  const target = rawTarget.closest('[data-nav], [data-modal], [data-action]') as HTMLElement | null;
   if (!target) return;
 
-  const nav = target.getAttribute('data-nav') as ViewKey | null;
-  const modal = target.getAttribute('data-modal') as ModalKey | null;
-  const action = target.getAttribute('data-action');
-  const href = target.getAttribute('href');
-
-  // Handle direct data-nav or hash anchors
-  if (nav && VALID_VIEWS.includes(nav)) {
-    event.preventDefault();
-    navigateTo(nav);
+  // Check 1: Top/Side Nav Button Navigation
+  const navKey = target.getAttribute('data-nav') as ViewKey | null;
+  if (navKey) {
+    navigateTo(navKey);
     return;
   }
 
-  // Intercept legacy href="/home" links
-  if (href === '/home') {
-    event.preventDefault();
-    navigateTo('home');
-    return;
-  }
-
-  // Intercept internal hash anchor clicks
-  if (href && href.startsWith('#')) {
-    const rawTarget = href.replace(/^#\/?/, '').toLowerCase();
-    const mapped = HASH_VIEW_MAP[rawTarget];
-    if (mapped) {
-      event.preventDefault();
-      navigateTo(mapped);
-      return;
-    }
-  }
-
-  if (modal) {
-    if (state.activeView === 'play') {
-      stopPlayTts();
-    }
-    state.activeModal = modal;
+  // Check 2: Modal Triggers
+  const modalKey = target.getAttribute('data-modal') as ModalKey | null;
+  if (modalKey) {
+    state.activeModal = modalKey;
     state.isSidebarOpen = false;
     renderApp();
-  } else if (action === 'toggle-sidebar') {
+    return;
+  }
+
+  // Check 3: Actions
+  const action = target.getAttribute('data-action');
+  if (!action) return;
+
+  if (action === 'toggle-sidebar') {
     state.isSidebarOpen = !state.isSidebarOpen;
     renderApp();
   } else if (action === 'close-sidebar') {
@@ -321,64 +316,47 @@ export function handleEventDelegation(event: Event): void {
     state.activeModal = null;
     renderApp();
   } else if (action === 'inspect-home-card') {
-    const cardIdStr = target.getAttribute('data-card-id');
-    if (cardIdStr) {
-      setInspectedHomeCardId(parseInt(cardIdStr, 10));
+    const cardId = Number(target.getAttribute('data-card-id'));
+    if (cardId) {
+      setInspectedHomeCardId(cardId);
       renderApp();
     }
-  } else if (action === 'close-home-card-inspector') {
+  } else if (action === 'close-home-card-inspect') {
     setInspectedHomeCardId(null);
     renderApp();
+  } else if (action === 'inspect-deck-card') {
+    const cardId = Number(target.getAttribute('data-card-id'));
+    if (cardId) {
+      setInspectedDeckCardId(cardId);
+      renderApp();
+    }
+  } else if (action === 'close-deck-card-inspect') {
+    setInspectedDeckCardId(null);
+    renderApp();
   } else if (action === 'open-deck-swap-drawer') {
-    const slotStr = target.getAttribute('data-slot-index');
-    if (slotStr !== null) {
-      setEditingSlotIndex(parseInt(slotStr, 10));
+    const slotIdx = Number(target.getAttribute('data-slot-index'));
+    if (!isNaN(slotIdx)) {
+      setEditingSlotIndex(slotIdx);
       renderApp();
     }
   } else if (action === 'close-deck-swap-drawer') {
     setEditingSlotIndex(null);
     renderApp();
-  } else if (action === 'swap-deck-card') {
-    const slotStr = target.getAttribute('data-slot-index');
-    const cardIdStr = target.getAttribute('data-card-id');
-    if (slotStr !== null && cardIdStr) {
-      const slotIndex = parseInt(slotStr, 10);
-      const cardId = parseInt(cardIdStr, 10);
-      const success = cardNurtureStore.setDeckCard(slotIndex, cardId);
-      if (success) {
-        setSelectedDeckCardId(cardId);
-        state.selectedDeckCardId = cardId;
-        setEditingSlotIndex(null);
-      }
-      renderApp();
-    }
   } else if (action === 'select-deck-card') {
-    const cardIdStr = target.getAttribute('data-card-id');
-    if (cardIdStr) {
-      const id = parseInt(cardIdStr, 10);
-      state.selectedDeckCardId = id;
-      setSelectedDeckCardId(id);
-      setInspectedDeckCardId(id);
-      renderApp();
-    }
-  } else if (action === 'close-deck-card-modal') {
-    setInspectedDeckCardId(null);
-    renderApp();
-  } else if (action && action.startsWith('play-')) {
-    handlePlayAction(action, target as HTMLElement);
-    renderApp();
-  } else if (action === 'select-card') {
     const cardId = Number(target.getAttribute('data-card-id'));
     if (cardId) {
-      setSelectedCardId(cardId);
+      setSelectedDeckCardId(cardId);
       renderApp();
     }
-  } else if (action === 'close-card-inspector') {
-    setSelectedCardId(null);
-    renderApp();
-  } else if (action === 'nurture-card') {
-    // Prohibited: free EXP buttons completely eliminated in Milestone 4.
-    // Ignored to prevent cheat injection.
+  } else if (action === 'swap-deck-slot-card') {
+    const cardId = Number(target.getAttribute('data-card-id'));
+    const slotIndex = getEditingSlotIndex();
+    if (cardId && slotIndex !== null && cardNurtureStore.isCardOwned(cardId)) {
+      cardNurtureStore.setDeckSlot(slotIndex, cardId);
+      setEditingSlotIndex(null);
+      setSelectedDeckCardId(cardId);
+      renderApp();
+    }
   } else if (action === 'allocate-stat') {
     const cardId = Number(target.getAttribute('data-card-id'));
     const direction = target.getAttribute('data-direction') as 'top' | 'right' | 'bottom' | 'left';
@@ -396,11 +374,6 @@ export function handleEventDelegation(event: Event): void {
     renderApp();
   } else if (action === 'buy-shop-item') {
     const itemId = target.getAttribute('data-item-id');
-    if (itemId === 'coin_charge' || itemId === 'gold_exchange') {
-      openGoldExchangeModal();
-      renderApp();
-      return;
-    }
     if (itemId) {
       const res = executeShopPurchase(itemId);
       if (!res.success) {
@@ -411,7 +384,7 @@ export function handleEventDelegation(event: Event): void {
   } else if (action === 'switch-shop-tab') {
     const tab = target.getAttribute('data-tab') as any;
     if (tab) {
-      setShopCategoryTab(tab);
+      setShopCurrentTab(tab);
       renderApp();
     }
   } else if (action === 'open-coin-charge-modal') {
@@ -437,40 +410,10 @@ export function handleEventDelegation(event: Event): void {
     backToCountrySelection();
     renderApp();
   } else if (action === 'execute-coin-charge') {
-    const method = target.getAttribute('data-method') || 'sim';
-    executeCoinCharge(method);
-    renderApp();
-  } else if (action === 'open-product-detail' || action === 'open-goods-modal') {
-    const productId = target.getAttribute('data-product-id');
-    if (productId) {
-      openProductDetail(productId);
-      renderApp();
-    }
-  } else if (action === 'close-product-detail' || action === 'close-goods-modal') {
-    closeProductDetail();
-    renderApp();
-  } else if (action === 'proceed-to-shipping') {
-    proceedToShipping();
-    renderApp();
-  } else if (action === 'back-to-detail') {
-    backToDetail();
-    renderApp();
-  } else if (action === 'back-to-shipping') {
-    backToShipping();
-    renderApp();
-  } else if (action === 'select-goods-country') {
-    const countryCode = target.getAttribute('data-country-code');
-    if (countryCode) {
-      selectGoodsPaymentCountry(countryCode);
-      renderApp();
-    }
-  } else if (action === 'back-to-goods-country') {
-    backToGoodsCountrySelection();
-    renderApp();
-  } else if (action === 'execute-goods-checkout') {
     const method = target.getAttribute('data-method') || 'test_sim';
-    executeGoodsCheckout(method);
-    renderApp();
+    executeCoinCharge(method).then(() => {
+      renderApp();
+    });
   } else if (action === 'open-gold-exchange') {
     openGoldExchangeModal();
     renderApp();
@@ -485,9 +428,90 @@ export function handleEventDelegation(event: Event): void {
     closeGoldExchangeModal();
     renderApp();
   } else if (action === 'close-pack-reveal' || action === 'confirm-pack-reveal') {
-    closePackRevealModal();
+    clearPackReveal();
     renderApp();
-  } else if (action === 'login-google') {
+  }
+  // ── Mall (공식 굿즈 몰) Actions ──────────────────────────────────────────
+  else if (action === 'switch-mall-tab') {
+    const tab = target.getAttribute('data-tab') as any;
+    if (tab) {
+      setMallCurrentTab(tab);
+      renderApp();
+    }
+  } else if (action === 'open-mall-detail') {
+    const productId = target.getAttribute('data-product-id');
+    if (productId) {
+      openMallProductDetail(productId);
+      renderApp();
+    }
+  } else if (action === 'close-mall-modal') {
+    closeMallModal();
+    renderApp();
+  } else if (action === 'change-mall-qty') {
+    const delta = parseInt(target.getAttribute('data-delta') || '0', 10);
+    const currQty = parseInt(target.parentElement?.querySelector('span')?.textContent || '1', 10);
+    setMallQty(currQty + delta);
+    renderApp();
+  } else if (action === 'select-mall-size') {
+    const size = target.getAttribute('data-size');
+    if (size) {
+      setMallSize(size);
+      renderApp();
+    }
+  } else if (action === 'change-mall-faction') {
+    const sel = target as HTMLSelectElement;
+    if (sel && sel.value) {
+      setMallFaction(sel.value);
+    }
+  } else if (action === 'proceed-mall-shipping') {
+    proceedMallToShipping();
+    renderApp();
+  } else if (action === 'back-mall-detail') {
+    backMallToDetail();
+    renderApp();
+  } else if (action === 'submit-mall-shipping') {
+    const nameInput = document.getElementById('mall-buyer-name') as HTMLInputElement | null;
+    const phoneInput = document.getElementById('mall-buyer-phone') as HTMLInputElement | null;
+    const addrInput = document.getElementById('mall-buyer-address') as HTMLInputElement | null;
+    const ok = submitMallShipping({
+      name: nameInput?.value || '',
+      phone: phoneInput?.value || '',
+      address: addrInput?.value || '',
+    });
+    if (ok) {
+      renderApp();
+    }
+  } else if (action === 'back-mall-shipping') {
+    backMallToShipping();
+    renderApp();
+  } else if (action === 'select-mall-country') {
+    const countryCode = target.getAttribute('data-country-code');
+    if (countryCode) {
+      selectMallCountry(countryCode);
+      renderApp();
+    }
+  } else if (action === 'back-mall-country') {
+    backMallToCountry();
+    renderApp();
+  } else if (action === 'execute-mall-checkout') {
+    const method = target.getAttribute('data-method') || 'test_sim';
+    executeMallCheckout(method).then(() => {
+      renderApp();
+    });
+  } else if (action === 'open-mall-orders') {
+    openMallOrdersList();
+    renderApp();
+  }
+  // ── Book (웹소설) & Webtoon (웹툰) Actions ────────────────────────────────
+  else if (action && action.startsWith('book-')) {
+    handleBookAction(action, target);
+    renderApp();
+  } else if (action && action.startsWith('webtoon-')) {
+    handleWebtoonAction(action, target);
+    renderApp();
+  }
+  // ── Auth Actions ────────────────────────────────────────────────────────
+  else if (action === 'login-google') {
     loginWithGoogle().then((res) => {
       if (res.success) {
         state.activeModal = null;
@@ -504,10 +528,6 @@ export function handleEventDelegation(event: Event): void {
     logoutUser().then(() => {
       renderApp();
     });
-  } else if (action === 'navigate-to-goods') {
-    state.activeModal = null;
-    setShopCategoryTab('GOODS');
-    navigateTo('shop');
   }
 }
 
@@ -537,21 +557,22 @@ export function handleGlobalKeydown(event: KeyboardEvent): void {
       renderApp();
       return;
     }
-  }
-
-  if (event.key === 'Escape') {
-    if (getActiveRevealPack()) {
-      closePackRevealModal();
+    if (event.key === ' ') {
+      event.preventDefault();
+      handlePlayAction('play-manual-step');
       renderApp();
       return;
     }
-    if (isGoldExchangeModalOpen()) {
-      closeGoldExchangeModal();
+  }
+
+  if (event.key === 'Escape') {
+    if (getInspectedDeckCardId()) {
+      setInspectedDeckCardId(null);
       renderApp();
       return;
     }
     closeCoinChargeModal();
-    closeProductDetail();
+    closeMallModal();
     if (getInspectedHomeCardId()) {
       setInspectedHomeCardId(null);
       renderApp();
@@ -575,6 +596,12 @@ export function handleGlobalKeydown(event: KeyboardEvent): void {
 }
 
 export function mountLanding(): void {
+  // Check for returning payment success query parameters (PayApp redirect)
+  const payResult = checkAndProcessPayAppSuccess();
+  if (payResult.handled) {
+    console.log('[SNSHero] Payment returned successfully:', payResult);
+  }
+
   // 1. Initial route resolution
   const initialView = parseRoute();
   state.activeView = initialView;
@@ -607,6 +634,12 @@ export function mountLanding(): void {
     if (action && action.startsWith('play-')) {
       handlePlayAction(action, target);
       renderApp();
+    } else if (action && action.startsWith('book-')) {
+      handleBookAction(action, target);
+      renderApp();
+    } else if (action && action.startsWith('webtoon-')) {
+      handleWebtoonAction(action, target);
+      renderApp();
     }
   });
   document.addEventListener('input', (event: Event) => {
@@ -615,29 +648,8 @@ export function mountLanding(): void {
     if (action && (action === 'play-scrub-scene' || action === 'play-arcade-search')) {
       handlePlayAction(action, target);
       renderApp();
-    }
-  });
-
-  document.addEventListener('submit', (event: Event) => {
-    const form = event.target as HTMLFormElement;
-    if (form && form.getAttribute('data-action') === 'submit-goods-order') {
-      event.preventDefault();
-      const formData = new FormData(form);
-      const buyerName = String(formData.get('buyer_name') || '').trim();
-      const buyerPhone = String(formData.get('buyer_phone') || '').trim();
-      const buyerAddress = String(formData.get('buyer_address') || '').trim();
-      const quantity = parseInt(String(formData.get('goods_qty') || '1'), 10) || 1;
-      const size = String(formData.get('goods_size') || 'M');
-      const faction = String(formData.get('goods_faction') || '');
-
-      executeGoodsOrder({
-        buyerName,
-        buyerPhone,
-        buyerAddress,
-        quantity,
-        size,
-        faction,
-      });
+    } else if (action && action.startsWith('webtoon-')) {
+      handleWebtoonAction(action, target);
       renderApp();
     }
   });
@@ -647,6 +659,7 @@ export function mountLanding(): void {
   // 5. hashchange Listener (handles user manual hash edit or direct # links)
   window.addEventListener('hashchange', () => {
     if (isProgrammaticRouting) return;
+    checkAndProcessPayAppSuccess();
     const parsedView = parseRoute();
     if (parsedView !== state.activeView) {
       navigateTo(parsedView, { updateHash: false });
@@ -672,6 +685,9 @@ export function mountLanding(): void {
       renderApp();
     });
     window.addEventListener('snshero_auth_changed', () => {
+      renderApp();
+    });
+    window.addEventListener('snshero_payapp_processed', () => {
       renderApp();
     });
   }

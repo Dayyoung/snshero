@@ -24,11 +24,14 @@ interface NavItemDef {
 }
 
 export const TOP_NAV_DEFS: NavItemDef[] = [
-  { key: 'home', label: '홈' },
-  { key: 'deck', label: '마이덱' },
-  { key: 'play', label: '플레이' },
-  { key: 'card', label: '카드' },
-  { key: 'shop', label: '상점' },
+  { key: 'home', label: '홈' as any },
+  { key: 'deck', label: '마이덱' as any },
+  { key: 'play', label: '플레이' as any },
+  { key: 'card', label: '카드' as any },
+  { key: 'shop', label: '상점' as any },
+  { key: 'mall', label: '굿즈몰' as any },
+  { key: 'book', label: '웹소설' as any },
+  { key: 'webtoon', label: '웹툰' as any },
 ];
 
 export function renderHeader(activeView: ViewKey): string {

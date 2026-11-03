@@ -1,14 +1,25 @@
 /**
  * scripts/verify_all_requirements.ts
  *
- * Comprehensive Automated Verification for SNSHero Static Landing Updates.
+ * Comprehensive Automated Verification for SNSHero Static Landing Updates:
+ *   1. #home (문구 삭제, 3개 블록 삭제, 원본 카드 디자인)
+ *   2. #deck (모바일 팝업 모달, 버튼블록 삭제, 원본 카드 디자인)
+ *   3. #play (카단의 여정 자동 진행 단독 노출, 아케이드/웹툰 삭제, 모바일 대사 팝업)
+ *   4. #card (카드 클릭 시 모바일 상세/육성 모달, 원본 카드 디자인 복구)
+ *   5. #shop 및 #mall 분리 (인게임 상점 vs 공식 실물 굿즈 몰 구분)
+ *   6. 실제 결제 구현 (PayApp Lite / PayPal / Crypto 연동 및 SIM 테스트 분리)
+ *   7. 로그인 모달 (실제 Google 로그인 / 손님 로그인)
+ *   8. LocalStorage 저장 안내 문구 UI 전역 영구 제거
  */
 
 // Mock browser global environments for node execution
 (global as any).window = {
-  location: { hash: '#home', pathname: '/', href: 'http://localhost:3000/#home' },
+  location: { hash: '#home', pathname: '/', href: 'http://localhost:3000/#home', origin: 'http://localhost:3000' },
   dispatchEvent: () => {},
   addEventListener: () => {},
+  history: {
+    replaceState: () => {},
+  },
 };
 
 const localStorageMap = new Map<string, string>();
@@ -20,6 +31,7 @@ const localStorageMap = new Map<string, string>();
 };
 (global as any).document = {
   addEventListener: () => {},
+  getElementById: () => null,
 };
 
 import { renderHomeSection } from '../src/landing/views/HomeSection';
@@ -28,12 +40,22 @@ import { renderPlaySection } from '../src/landing/views/PlaySection';
 import { playRpgState } from '../src/landing/services/playRpgEngine';
 import { renderCardSection, setSelectedCardId } from '../src/landing/views/CardSection';
 import {
-  renderShopSection,
-  openProductDetail,
-  renderProductDetailModal,
+  renderShopView,
   openCoinChargeModal,
+  selectChargeCountry,
   renderCoinChargeModal,
+  executeCoinCharge,
 } from '../src/landing/views/ShopSection';
+import {
+  renderMallView,
+  openMallProductDetail,
+  renderMallModal,
+  proceedMallToShipping,
+  submitMallShipping,
+  selectMallCountry,
+  executeMallCheckout,
+} from '../src/landing/views/MallSection';
+import { checkAndProcessPayAppSuccess } from '../src/landing/services/paymentService';
 import { renderModals } from '../src/landing/components/Modals';
 import { renderHeader } from '../src/landing/components/Header';
 import { renderSidebar } from '../src/landing/components/Sidebar';
@@ -122,51 +144,98 @@ assert(cardModalHtml.includes('card-nurture-modal-root'), '카드 클릭 시 육
 setSelectedCardId(null);
 
 console.log('\n======================================================');
-console.log('  5. #shop 및 /mall 검토 (카테고리 구분, 미니멀 상세, 즉시구매 나라/페이 팝업)');
+console.log('  5. #shop 및 #mall 분리 검토 (인게임 상점 vs 공식 실물 굿즈 몰)');
 console.log('======================================================');
-// Check HashRouter unification
-assert(HASH_VIEW_MAP['mall'] === 'shop', '#mall 해시 라우트가 shop으로 통합됨');
-assert(HASH_VIEW_MAP['goods'] === 'shop', '#goods 해시 라우트가 shop으로 통합됨');
-assert(LEGACY_PATH_MAP['/mall'] === 'shop', '/mall 레거시 경로가 shop으로 통합됨');
-assert(parseRoute('mall') === 'shop', 'parseRoute("mall") -> "shop" 통합 확인');
+// Check HashRouter distinct mapping
+assert(HASH_VIEW_MAP['shop'] === 'shop', '#shop -> shop 매핑 확인');
+assert(HASH_VIEW_MAP['mall'] === 'mall', '#mall -> mall 독립 매핑 확인');
+assert(HASH_VIEW_MAP['goods'] === 'mall', '#goods -> mall 독립 매핑 확인');
+assert(LEGACY_PATH_MAP['/shop'] === 'shop', '/shop -> shop 매핑 확인');
+assert(LEGACY_PATH_MAP['/mall'] === 'mall', '/mall -> mall 독립 매핑 확인');
+assert(parseRoute('mall') === 'mall', 'parseRoute("mall") -> "mall" 독립 확인');
 
-// Check 5 categories
-const shopHtml = renderShopSection();
+// Check #shop categories (In-Game only)
+const shopHtml = renderShopView();
 assert(
   shopHtml.includes('전체 (ALL)') &&
-    shopHtml.includes('카드팩 (PACK)') &&
-    shopHtml.includes('실물 굿즈 (GOODS)') &&
-    shopHtml.includes('아이템 (ITEM)') &&
-    shopHtml.includes('코인 충전 (COIN)'),
-  '원본 상점 기준 5대 카테고리 탭 정상 렌더링'
+    shopHtml.includes('카드팩 가챠 (PACK)') &&
+    shopHtml.includes('아이템·특전 (ITEM)') &&
+    shopHtml.includes('코인 충전 (COIN)') &&
+    shopHtml.includes('골드 환전 (SWAP)'),
+  '#shop: 원본 상점 기준 인게임 5대 카테고리 탭 정상 렌더링'
+);
+assert(!shopHtml.includes('히어로 커스텀 머그컵'), '#shop에서 실물 굿즈가 제거되어 인게임 전용으로 정돈됨');
+
+// Check #mall view & products (Physical Goods only)
+const mallHtml = renderMallView();
+assert(
+  mallHtml.includes('SNS히어로 공식 굿즈 몰') &&
+    mallHtml.includes('110장 올인원 풀세트') &&
+    mallHtml.includes('종족별 영웅 덱') &&
+    mallHtml.includes('히어로 3x3 배틀 게임테이블') &&
+    mallHtml.includes('히어로 커스텀 머그컵'),
+  '#mall: 공식 실물 굿즈 상품 라인업 정상 렌더링'
 );
 
-// Check minimal product detail
-openProductDetail('goods_mug');
-const detailHtml = renderProductDetailModal();
-assert(
-  detailHtml.includes('히어로 커스텀 머그컵') &&
-    detailHtml.includes('수량 선택') &&
-    detailHtml.includes('즉시 구매하기'),
-  '굿즈 상품 상세 모달이 미니멀 필수 정보로 정상 렌더링'
-);
-assert(
-  detailHtml.includes('proceed-to-shipping'),
-  '즉시 구매하기 클릭 시 배송지 입력 단계 지원'
-);
+// Check Header & Sidebar have both Shop and Mall
+const headerHtml = renderHeader('home');
+assert(headerHtml.includes('data-nav="shop"') && headerHtml.includes('상점'), '헤더에 상점 (#shop) 메뉴 포함');
+assert(headerHtml.includes('data-nav="mall"') && headerHtml.includes('굿즈몰'), '헤더에 굿즈몰 (#mall) 독립 메뉴 포함');
 
-// Check Coin Charge modal
-openCoinChargeModal('coin_10000');
-const chargeHtml = renderCoinChargeModal();
-assert(
-  chargeHtml.includes('1단계: 결제 국가 선택') &&
-    chargeHtml.includes('대한민국 (South Korea)') &&
-    chargeHtml.includes('암호화폐 결제'),
-  '코인 충전 국가선택 팝업 정상 렌더링'
-);
+const sidebarHtml = renderSidebar(true, 'home');
+assert(sidebarHtml.includes('data-nav="shop"') && sidebarHtml.includes('상점'), '사이드바에 상점 (#shop) 포함');
+assert(sidebarHtml.includes('data-nav="mall"') && sidebarHtml.includes('굿즈몰'), '사이드바에 굿즈몰 (#mall) 독립 포함');
 
 console.log('\n======================================================');
-console.log('  6. 로그인 모달 검토 (실제 Google/손님 로그인)');
+console.log('  6. 실제 결제 구현 & 즉시 충전 오류 해결 검증');
+console.log('======================================================');
+// Check Coin Charge modal options
+openCoinChargeModal('coin_10000');
+selectChargeCountry('ko');
+const chargeModalHtml = renderCoinChargeModal();
+assert(
+  chargeModalHtml.includes('국내 신용/체크카드 (PayApp)') &&
+    chargeModalHtml.includes('카카오페이 (Kakao Pay)') &&
+    chargeModalHtml.includes('네이버페이 (Naver Pay)') &&
+    chargeModalHtml.includes('Apple Pay'),
+  '코인 충전 결제 수단으로 PayApp Lite PG 및 간편결제 제공'
+);
+assert(
+  chargeModalHtml.includes('[개발자/시뮬레이션] 즉시 충전 (SIM - 무과금)'),
+  '테스트용 즉시 충전 버튼이 별도로 명확히 분리됨'
+);
+
+// Verify executeCoinCharge with 'test_sim' grants mock coins
+const coinsBefore = parseInt((global as any).localStorage.getItem('hero_sns') || '1000', 10);
+await executeCoinCharge('test_sim');
+const coinsAfter = parseInt((global as any).localStorage.getItem('hero_sns') || '1000', 10);
+assert(coinsAfter > coinsBefore, 'SIM 테스트 결제 클릭 시에만 즉시 충전 처리됨');
+
+// Verify Mall checkout options
+openMallProductDetail('goods_mug');
+proceedMallToShipping();
+submitMallShipping({ name: '홍길동', phone: '010-1234-5678', address: '서울시 강남구 테헤란로 123' });
+selectMallCountry('ko');
+const mallModalHtml = renderMallModal();
+assert(
+  mallModalHtml.includes('국내 신용/체크카드 (PayApp)') &&
+    mallModalHtml.includes('카카오페이 (Kakao Pay)') &&
+    mallModalHtml.includes('네이버페이 (Naver Pay)'),
+  '굿즈 몰 결제 수단으로 실제 PayApp 결제창 지원'
+);
+assert(
+  mallModalHtml.includes('[개발자/시뮬레이션] 즉시 주문 승인 (SIM - 무과금)'),
+  '굿즈 몰에서도 SIM 테스트 주문 버튼이 별도로 분리됨'
+);
+
+// Verify checkAndProcessPayAppSuccess cleans param and updates coins
+(global as any).window.location.search = '?payapp_success=3000';
+const payappRes = checkAndProcessPayAppSuccess();
+assert(payappRes.handled && payappRes.amount === 3000, 'PayApp 결제 성공 복귀 시 정상 코인 지급');
+(global as any).window.location.search = '';
+
+console.log('\n======================================================');
+console.log('  7. 로그인 모달 검토 (실제 Google/손님 로그인)');
 console.log('======================================================');
 const loginModalHtml = renderModals('login');
 assert(loginModalHtml.includes('Google 계정으로 로그인'), '실제 Google 로그인 버튼 정상 렌더링');
@@ -174,7 +243,7 @@ assert(loginModalHtml.includes('손님(게스트)으로 로그인'), '실제 손
 assert(!loginModalHtml.includes('정식 서비스 런칭 시 오픈될 예정'), '가상 로그인 안내 텍스트 완전 제거됨');
 
 console.log('\n======================================================');
-console.log('  7. "LocalStorage 에 저장된다는 내용 모두 제거" 전역 검증');
+console.log('  8. "LocalStorage 에 저장된다는 내용 모두 제거" 전역 검증');
 console.log('======================================================');
 const allRenderedHtml = [
   homeHtml,
@@ -182,6 +251,7 @@ const allRenderedHtml = [
   playHtml,
   cardHtml,
   shopHtml,
+  mallHtml,
   loginModalHtml,
   renderHeader('home'),
   renderSidebar(true, 'home'),

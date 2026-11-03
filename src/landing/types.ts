@@ -4,11 +4,11 @@
  * Core types, interface contracts, and constants for SNSHero Static Landing.
  */
 
-export type ViewKey = 'home' | 'deck' | 'play' | 'card' | 'shop';
-export type ModalKey = 'mall' | 'community' | 'login' | null;
+export type ViewKey = 'home' | 'deck' | 'play' | 'card' | 'shop' | 'mall';
+export type ModalKey = 'community' | 'login' | null;
 
-export const TOP_NAV_ITEMS = ['홈', '마이덱', '플레이', '카드', '상점', '쇼핑몰'] as const;
-export const SIDE_NAV_ITEMS = ['로그인', '홈', '마이덱', '플레이', '카드', '상점', '쇼핑몰', '커뮤니티'] as const;
+export const TOP_NAV_ITEMS = ['홈', '마이덱', '플레이', '카드', '상점', '굿즈몰'] as const;
+export const SIDE_NAV_ITEMS = ['로그인', '홈', '마이덱', '플레이', '카드', '상점', '굿즈몰', '커뮤니티'] as const;
 
 export interface RouteOptions {
   replace?: boolean;
@@ -76,4 +76,3 @@ export interface NurtureState {
   saveToStorage: () => void;
   loadFromStorage: () => void;
 }
-

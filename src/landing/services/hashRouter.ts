@@ -6,11 +6,32 @@
  * Full client-side hash routing (#home, #deck, #play, #card, #shop).
  */
 
-export type ViewKey = 'home' | 'deck' | 'play' | 'card' | 'shop';
-export type HashRoute = '#home' | '#deck' | '#play' | '#card' | '#shop';
-export type LegacyRoute = '/home' | '/deck' | '/play' | '/main' | '/shop' | '/card' | '/mall' | '/goods';
+export type ViewKey = 'home' | 'deck' | 'play' | 'card' | 'shop' | 'mall' | 'book' | 'webtoon';
+export type HashRoute = '#home' | '#deck' | '#play' | '#card' | '#shop' | '#mall' | '#book' | '#webtoon';
+export type LegacyRoute =
+  | '/home'
+  | '/deck'
+  | '/play'
+  | '/main'
+  | '/shop'
+  | '/card'
+  | '/mall'
+  | '/goods'
+  | '/book'
+  | '/novel'
+  | '/webtoon'
+  | '/cartoonbook';
 
-export const VALID_VIEWS: readonly ViewKey[] = ['home', 'deck', 'play', 'card', 'shop'] as const;
+export const VALID_VIEWS: readonly ViewKey[] = [
+  'home',
+  'deck',
+  'play',
+  'card',
+  'shop',
+  'mall',
+  'book',
+  'webtoon',
+] as const;
 
 export const HASH_ROUTES: readonly HashRoute[] = [
   '#home',
@@ -18,6 +39,9 @@ export const HASH_ROUTES: readonly HashRoute[] = [
   '#play',
   '#card',
   '#shop',
+  '#mall',
+  '#book',
+  '#webtoon',
 ] as const;
 
 export const LEGACY_ROUTES: readonly LegacyRoute[] = [
@@ -29,6 +53,10 @@ export const LEGACY_ROUTES: readonly LegacyRoute[] = [
   '/card',
   '/mall',
   '/goods',
+  '/book',
+  '/novel',
+  '/webtoon',
+  '/cartoonbook',
 ] as const;
 
 export const HASH_VIEW_MAP: Record<string, ViewKey> = {
@@ -46,8 +74,14 @@ export const HASH_VIEW_MAP: Record<string, ViewKey> = {
   companion: 'card',
   shop: 'shop',
   store: 'shop',
-  mall: 'shop',
-  goods: 'shop',
+  mall: 'mall',
+  goods: 'mall',
+  book: 'book',
+  novel: 'book',
+  webtoon: 'webtoon',
+  webtoo: 'webtoon',
+  cartoon: 'webtoon',
+  cartoonbook: 'webtoon',
 };
 
 export const LEGACY_PATH_MAP: Record<string, ViewKey> = {
@@ -63,8 +97,12 @@ export const LEGACY_PATH_MAP: Record<string, ViewKey> = {
   '/missions': 'card',
   '/shop': 'shop',
   '/store': 'shop',
-  '/mall': 'shop',
-  '/goods': 'shop',
+  '/mall': 'mall',
+  '/goods': 'mall',
+  '/book': 'book',
+  '/novel': 'book',
+  '/webtoon': 'webtoon',
+  '/cartoonbook': 'webtoon',
 };
 
 export const LEGACY_ROUTE_MAPPING: Record<LegacyRoute, HashRoute> = {
@@ -74,8 +112,12 @@ export const LEGACY_ROUTE_MAPPING: Record<LegacyRoute, HashRoute> = {
   '/main': '#play',
   '/shop': '#shop',
   '/card': '#card',
-  '/mall': '#shop',
-  '/goods': '#shop',
+  '/mall': '#mall',
+  '/goods': '#mall',
+  '/book': '#book',
+  '/novel': '#book',
+  '/webtoon': '#webtoon',
+  '/cartoonbook': '#webtoon',
 };
 
 /**
