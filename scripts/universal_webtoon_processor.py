@@ -98,8 +98,10 @@ def remove_kadan_forehead_scar_pil(im: Image.Image) -> tuple[Image.Image, int]:
     R, G, B = im_arr[:, :, 0], im_arr[:, :, 1], im_arr[:, :, 2]
 
     skin = (R > 195) & (G > 140) & (B > 90) & (R > G) & (G > B) & ((R - G) < 65) & ((G - B) > 20)
-    dark = (R < 70) & (G < 60) & (B < 65)
-    cyan = (B > R + 20) & (G > R + 10) & (B > 100) & _dilate_bool(skin, 5) & _dilate_bool(dark, 3)
+    blood_dark_scar = (R > 42) & (G <= 6) & (B <= 3) & ((R - G) >= 38)
+    dark = (R < 70) & (G < 60) & (B < 65) & (~blood_dark_scar)
+    cyan_raw = (B > R + 20) & (G > R + 10) & (B > 100)
+    cyan = cyan_raw & _dilate_bool(skin, 5) & _dilate_bool(dark, 3)
     if cyan.sum() < 5:
         return im, 0
 
@@ -126,6 +128,8 @@ def remove_kadan_forehead_scar_pil(im: Image.Image) -> tuple[Image.Image, int]:
 
             xm = int(round(0.5 * (x1 + x2)))
             ym = int(round(0.5 * (y1 + y2)))
+            if ym > int(0.72 * h) or ym < int(0.08 * h):
+                continue
             # Tight vertical band (0.22 * ed) so cyan-tinted eyebrows above the eyes are excluded
             all_eye_mask = (
                 (np.abs(np.arange(h)[:, None] - ym) <= max(6.0, 0.22 * ed))
@@ -144,10 +148,13 @@ def remove_kadan_forehead_scar_pil(im: Image.Image) -> tuple[Image.Image, int]:
             ed = xR - xL
             if ed < 13.5:
                 continue
+            xm = int(round(0.5 * (xL + xR)))
+            ym = int(round(0.5 * (yL + yR)))
             etL = float(np.percentile(ay[l_m], 10))
             etR = float(np.percentile(ay[r_m], 10))
             e_outer_L = float(np.percentile(ax[l_m], 2))
             e_outer_R = float(np.percentile(ax[r_m], 98))
+            all_eye_px = int(all_eye_mask.sum())
             et_mid = 0.5 * (etL + etR)
 
             ck_y0 = min(h, int(round(ym + 0.12 * ed)))
@@ -158,13 +165,21 @@ def remove_kadan_forehead_scar_pil(im: Image.Image) -> tuple[Image.Image, int]:
                 continue
             if skin[ck_y0:ck_y1, ck_x0:ck_x1].mean() < 0.30:
                 continue
+            nb_y0 = max(0, ym - int(round(0.15 * ed)))
+            nb_y1 = min(h, ym + int(round(0.25 * ed)))
+            nb_x0 = max(0, int(round(xL + 0.28 * ed)))
+            nb_x1 = min(w, max(nb_x0 + 2, int(round(xR - 0.28 * ed))))
+            if skin[nb_y0:nb_y1, nb_x0:nb_x1].mean() < 0.34:
+                continue
 
             fh_y0 = max(0, int(round(et_mid - 1.15 * ed)))
-            fh_y1 = max(fh_y0 + 4, int(round(max(etL, etR) - 1)))
+            fh_y1 = max(fh_y0 + 4, int(round(min(etL, etR) - 0.26 * ed)))
             fh_x0 = max(0, int(round(e_outer_L - 0.25 * ed)))
             fh_x1 = min(w, int(round(e_outer_R + 0.25 * ed)))
             f_skin = skin[fh_y0:fh_y1, fh_x0:fh_x1]
             if f_skin.mean() < 0.18 or f_skin.sum() < 25:
+                continue
+            if cyan_raw[fh_y0:fh_y1, fh_x0:fh_x1].mean() > 0.06 and cyan_raw[ck_y0:ck_y1, ck_x0:ck_x1].mean() > 0.08:
                 continue
 
             sy, sx = np.where(f_skin)
@@ -182,18 +197,32 @@ def remove_kadan_forehead_scar_pil(im: Image.Image) -> tuple[Image.Image, int]:
             fR = R[fh_y0:fh_y1, fh_x0:fh_x1]
             fG = G[fh_y0:fh_y1, fh_x0:fh_x1]
             fB = B[fh_y0:fh_y1, fh_x0:fh_x1]
-            f_dark = (fR < 55) & (fG < 42) & (fB < 48)
+            f_dark = (fR < 65) & (fG < 52) & (fB < 55) & ((fR - fG) < 30)
             maroon = (fR > 75) & ((fR - fG) > 45) & (fG < 80)
-            maroon_touch = (maroon & _dilate_bool(f_skin, 3) & (~_dilate_bool(f_dark, 1))).sum()
-            if maroon_touch >= 14 and (maroon_touch / max(10.0, ed)) >= 0.62:
-                score = int(maroon_touch) * 10 + int(all_eye_mask.sum())
-                candidates.append((score, xL, yL, xR, yR, ed, etL, etR, e_outer_L, e_outer_R))
+            s1_det = _dilate_bool(f_skin, 1) & (~f_dark)
+            s2_det = _dilate_bool(s1_det, 1) & (~f_dark)
+            m_mask = maroon & s2_det
+            top_rel = int(np.percentile(sy, 5)) + 2
+            m_mask[:top_rel, :] = False
+            mid_rel = max(1, min(fh_x1 - fh_x0 - 1, xm - fh_x0))
+            f_left_skin = int(f_skin[:, :mid_rel].sum())
+            f_right_skin = int(f_skin[:, mid_rel:].sum())
+            if min(f_left_skin, f_right_skin) < 12 or min(f_left_skin, f_right_skin) < 0.12 * max(f_left_skin, f_right_skin):
+                continue
+            m_left = int(m_mask[:, :mid_rel].sum())
+            m_right = int(m_mask[:, mid_rel:].sum())
+            maroon_touch = m_left + m_right
+            # Forehead scar is strongly asymmetric (on one side of the forehead)
+            asym_ratio = max(m_left, m_right) / max(1.0, float(min(m_left, m_right)))
+            if maroon_touch >= 14 and (maroon_touch / max(10.0, ed)) >= 0.68 and asym_ratio >= 2.8:
+                score = int(maroon_touch) * 10 + int(all_eye_px) + min(len(cy1), len(cy2)) * 6
+                candidates.append((score, xL, yL, xR, yR, ed, etL, etR, e_outer_L, e_outer_R, m_right >= m_left))
 
     candidates.sort(key=lambda x: -x[0])
     processed_centers = []
     total_repaired = 0
 
-    for score, xL, yL, xR, yR, eye_dist, eye_top_L, eye_top_R, eye_outer_L, eye_outer_R in candidates:
+    for score, xL, yL, xR, yR, eye_dist, eye_top_L, eye_top_R, eye_outer_L, eye_outer_R, clean_is_left in candidates:
         xm_int = int(round(0.5 * (xL + xR)))
         ym_int = int(round(0.5 * (yL + yR)))
         if any(abs(xm_int - px) < eye_dist * 1.2 and abs(ym_int - py) < eye_dist * 1.2 for px, py in processed_centers):
@@ -201,19 +230,20 @@ def remove_kadan_forehead_scar_pil(im: Image.Image) -> tuple[Image.Image, int]:
         processed_centers.append((xm_int, ym_int))
 
         eye_top_mid = 0.5 * (eye_top_L + eye_top_R)
-        fh_y0 = max(0, int(round(eye_top_mid - 1.15 * eye_dist)))
-        fh_y1 = max(fh_y0 + 4, int(round(max(eye_top_L, eye_top_R) + 1)))
-        fh_x0 = max(0, int(round(eye_outer_L - 0.25 * eye_dist)))
-        fh_x1 = min(w, int(round(eye_outer_R + 0.25 * eye_dist)))
+        fh_y0 = max(0, int(round(eye_top_mid - max(54.0, 1.18 * eye_dist))))
+        fh_y1 = max(fh_y0 + 4, int(round(max(eye_top_L, eye_top_R) - 0.14 * eye_dist)))
+        fh_x0 = max(0, int(round(eye_outer_L - 0.42 * eye_dist)))
+        fh_x1 = min(w, int(round(eye_outer_R + 0.48 * eye_dist)))
 
         strict_skin = (R > 200) & (G > 148) & (B > 95) & (R > G) & (G > B) & ((R - G) < 62) & ((G - B) > 24)
-        face_comp = _get_connected_component(strict_skin & (~dark), int(round(eye_top_mid - 0.2 * eye_dist)), xm_int)
+        face_comp = _get_connected_component(strict_skin & (~dark), int(round(eye_top_mid - 0.25 * eye_dist)), xm_int)
         if face_comp.sum() < 40:
             face_comp = strict_skin
 
         left_skin_cnt = face_comp[fh_y0:fh_y1, fh_x0:xm_int].sum()
         right_skin_cnt = face_comp[fh_y0:fh_y1, xm_int:fh_x1].sum()
-        clean_is_left = left_skin_cnt >= right_skin_cnt
+        if min(left_skin_cnt, right_skin_cnt) < 12:
+            continue
 
         if clean_is_left:
             clean_patch = face_comp[fh_y0:fh_y1, fh_x0:xm_int]
@@ -226,129 +256,167 @@ def remove_kadan_forehead_scar_pil(im: Image.Image) -> tuple[Image.Image, int]:
 
         med_R, med_G, med_B = np.median(clean_rgb_vals, axis=0)
         med_RG = med_R - med_G
-        true_fh_skin = (
-            face_comp
-            & (np.abs(R - med_R) < 25)
+        is_near_med = (
+            (np.abs(R - med_R) < 25)
             & (np.abs(G - med_G) < 23)
             & (np.abs(B - med_B) < 28)
             & (np.abs((R - G) - med_RG) < 16)
         )
+        is_lit_skin = (
+            (R >= med_R - 6)
+            & (G >= med_G - 6)
+            & (B >= med_B - 6)
+            & ((R - G) <= med_RG + 12)
+            & ((R - G) >= 12)
+        )
+        true_fh_skin = face_comp & (is_near_med | is_lit_skin)
 
         cs_y, cs_x = np.where(clean_patch)
-        fh_top_abs = fh_y0 + int(np.percentile(cs_y, 2))
-
         fh_fc_y, fh_fc_x = np.where(face_comp[fh_y0:fh_y1, fh_x0:fh_x1])
+        fc_top_y = (fh_y0 + int(np.percentile(fh_fc_y, 2))) if len(fh_fc_y) > 10 else (fh_y0 + int(np.percentile(cs_y, 2)))
+        fh_top_abs = fc_top_y
+        scar_top_limit = max(0, fc_top_y - int(round(0.32 * eye_dist)))
+
         if clean_is_left:
             fc_max_x = (fh_x0 + int(np.percentile(fh_fc_x, 99))) if len(fh_fc_x) > 10 else int(round(eye_outer_R))
-            scar_side_limit = max(fc_max_x, int(round(eye_outer_R + 0.08 * eye_dist)))
+            scar_side_limit = max(fc_max_x, int(round(eye_outer_R + 0.42 * eye_dist)))
         else:
             fc_min_x = (fh_x0 + int(np.percentile(fh_fc_x, 1))) if len(fh_fc_x) > 10 else int(round(eye_outer_L))
-            scar_side_limit = min(fc_min_x, int(round(eye_outer_L - 0.08 * eye_dist)))
+            scar_side_limit = min(fc_min_x, int(round(eye_outer_L - 0.42 * eye_dist)))
 
-        scar_color = ((R > 65) & ((R - G) > 34) & (G < 130) & (R > G * 1.5)) | (
-            (R > 145) & ((R - G) > 48) & (G < 195) & (np.abs(G - B) < 36)
+        scar_color_main = (
+            ((R > 65) & ((R - G) > 34) & (G < 130) & (R > G * 1.5))
+            | ((R > 145) & ((R - G) > 48) & (G < 195) & (np.abs(G - B) < 36))
         )
+        scar_color = scar_color_main | blood_dark_scar
         fh_box_mask = np.zeros((h, w), dtype=bool)
+        seed_box_mask = np.zeros((h, w), dtype=bool)
+        seed_y1 = max(fh_top_abs + 4, int(round(min(eye_top_L, eye_top_R) - 0.38 * eye_dist)))
+        upper_split_y = max(fh_top_abs + 4, int(round(min(eye_top_L, eye_top_R) - 0.52 * eye_dist)))
+        cross_pad_upper = max(6, int(round(0.32 * eye_dist)))
+        cross_pad_lower = 4
         if clean_is_left:
-            fh_box_mask[fh_top_abs:fh_y1, max(0, xm_int - 6) : min(w, scar_side_limit + 4)] = True
+            fh_box_mask[scar_top_limit:upper_split_y, max(0, xm_int - cross_pad_upper) : min(w, scar_side_limit + 4)] = True
+            fh_box_mask[upper_split_y:fh_y1, max(0, xm_int - cross_pad_lower) : min(w, scar_side_limit + 4)] = True
+            seed_box_mask[fh_top_abs:upper_split_y, max(0, xm_int - cross_pad_upper) : min(w, scar_side_limit + 4)] = True
+            seed_box_mask[upper_split_y:seed_y1, max(0, xm_int - cross_pad_lower) : min(w, scar_side_limit + 4)] = True
         else:
-            fh_box_mask[fh_top_abs:fh_y1, max(0, scar_side_limit - 3) : min(w, xm_int + 7)] = True
+            fh_box_mask[scar_top_limit:upper_split_y, max(0, scar_side_limit - 3) : min(w, xm_int + cross_pad_upper + 1)] = True
+            fh_box_mask[upper_split_y:fh_y1, max(0, scar_side_limit - 3) : min(w, xm_int + cross_pad_lower + 1)] = True
+            seed_box_mask[fh_top_abs:upper_split_y, max(0, scar_side_limit - 3) : min(w, xm_int + cross_pad_upper + 1)] = True
+            seed_box_mask[upper_split_y:seed_y1, max(0, scar_side_limit - 3) : min(w, xm_int + cross_pad_lower + 1)] = True
 
         sky_or_bg = (B > R + 15) | ((G > R + 10) & (B > 120))
         outer_hairline = _dilate_bool(sky_or_bg, 3) & dark
 
         step1_skin = _dilate_bool(face_comp, 1) & (~dark)
         step2_skin = _dilate_bool(step1_skin, 1) & (~dark)
-        scar_seeds = scar_color & fh_box_mask & step2_skin & (~_dilate_bool(sky_or_bg, 2))
+        scar_seeds = scar_color & seed_box_mask & step2_skin & (~_dilate_bool(sky_or_bg, 2))
         if scar_seeds.sum() < 5:
-            scar_seeds = scar_color & fh_box_mask & _dilate_bool(face_comp, 3) & (~_dilate_bool(sky_or_bg, 2))
+            scar_seeds = scar_color & seed_box_mask & _dilate_bool(face_comp, 3) & (~_dilate_bool(sky_or_bg, 2))
+        above_fc_mask = np.arange(h)[:, None] < fc_top_y
+        above_hairline_mask = np.zeros((h, w), dtype=bool)
+        min_clean_col_px = max(15, int(round(0.45 * max(10, fh_y1 - fc_top_y))))
+        for cx in range(fh_x0, fh_x1):
+            col_skin_ys = np.where(true_fh_skin[fh_y0:fh_y1, cx])[0] + fh_y0
+            if len(col_skin_ys) >= min_clean_col_px:
+                y_st = int(col_skin_ys.min())
+                if dark[max(0, y_st - 4) : min(h, y_st + 2), cx].any():
+                    above_hairline_mask[: y_st + 1, cx] = True
+
         scar_traversable = (
-            scar_color
+            (scar_color & (~(above_fc_mask & (R < 78))))
             & fh_box_mask
             & (~dark)
+            & (~above_hairline_mask)
             & (~_dilate_bool(sky_or_bg, 2))
-            & _dilate_bool(face_comp, int(max(14, 0.72 * eye_dist)))
+            & _dilate_bool(face_comp, int(max(18, 0.85 * eye_dist)))
         )
         scar_comp = scar_seeds.copy()
-        for _ in range(22):
+        for _ in range(48):
             scar_comp = (_dilate_bool(scar_comp, 1) & scar_traversable) | scar_comp
-        scar_with_border = (_dilate_bool(scar_comp, 1) & fh_box_mask & (~outer_hairline) & (~sky_or_bg)) | scar_comp
+        if scar_comp.any():
+            fh_top_abs = max(scar_top_limit, min(fc_top_y, int(np.where(scar_comp)[0].min()) - 1))
+        inner_scar_outline = (
+            (dark | _dilate_bool(scar_comp, 3))
+            & _dilate_bool(scar_comp, 3)
+            & _dilate_bool(face_comp, 2)
+            & (~outer_hairline)
+            & fh_box_mask
+        )
+        scar_with_border = (
+            (_dilate_bool(scar_comp, 2) & fh_box_mask & (~outer_hairline) & (~sky_or_bg))
+            | inner_scar_outline
+            | scar_comp
+        )
 
-        slope_y = (yR - yL) / max(1.0, eye_dist)
         fh_h = max(8.0, float(fh_y1 - fh_top_abs))
         orig_arr = im_arr.copy()
         repaired_mask = np.zeros((h, w), dtype=bool)
 
         for y in range(fh_top_abs, fh_y1):
             ny = (y - fh_top_abs) / fh_h
-            arch_factor = min(1.0, 0.78 + 0.38 * (ny ** 0.55))
+            arch_factor = min(1.0, 0.85 + 0.35 * (ny ** 0.55))
             if clean_is_left:
-                row_clean = true_fh_skin[y, fh_x0 : xm_int + 3]
+                row_scar_xs = np.where(scar_with_border[y, fh_x0:fh_x1])[0] + fh_x0
+                clean_limit_x = int(row_scar_xs.min()) if len(row_scar_xs) > 0 else (xm_int + 8)
+                row_clean = true_fh_skin[y, fh_x0 : max(fh_x0 + 4, clean_limit_x)]
                 if row_clean.sum() < 2:
                     row_clean_rgb = np.array([med_R, med_G, med_B])
                     x_outer_clean = xm_int - int(0.4 * eye_dist)
                 else:
                     sx_idxs = np.where(row_clean)[0] + fh_x0
                     x_outer_clean = int(np.percentile(sx_idxs, 3))
-                    row_clean_rgb = orig_arr[y, sx_idxs].mean(axis=0)
-                dx_mirror = xm_int - x_outer_clean
-                dx_limit = int(round((scar_side_limit - xm_int) * arch_factor))
-                ty_approx = max(0, min(h - 1, int(round(y + slope_y * (0.5 * dx_limit)))))
-                scar_xs = np.where(scar_with_border[ty_approx, xm_int : min(w, scar_side_limit + 4)])[0]
-                dx_scar = int(scar_xs.max()) if len(scar_xs) > 0 else 0
-                max_dx = max(min(dx_mirror, dx_limit), dx_scar)
+                    adj_idxs = sx_idxs[-min(14, len(sx_idxs)) :]
+                    row_clean_rgb = orig_arr[y, adj_idxs].mean(axis=0)
+                max_dx = int(round((scar_side_limit - xm_int) * arch_factor)) + 4
             else:
-                row_clean = true_fh_skin[y, xm_int - 2 : fh_x1]
+                row_scar_xs = np.where(scar_with_border[y, fh_x0:fh_x1])[0] + fh_x0
+                clean_limit_x = (int(row_scar_xs.max()) + 1) if len(row_scar_xs) > 0 else (xm_int - 7)
+                row_clean = true_fh_skin[y, min(fh_x1 - 4, clean_limit_x) : fh_x1]
                 if row_clean.sum() < 2:
                     row_clean_rgb = np.array([med_R, med_G, med_B])
                     x_outer_clean = xm_int + int(0.4 * eye_dist)
                 else:
-                    sx_idxs = np.where(row_clean)[0] + (xm_int - 2)
+                    sx_idxs = np.where(row_clean)[0] + min(fh_x1 - 4, clean_limit_x)
                     x_outer_clean = int(np.percentile(sx_idxs, 97))
-                    row_clean_rgb = orig_arr[y, sx_idxs].mean(axis=0)
-                dx_mirror = x_outer_clean - xm_int
-                dx_limit = int(round((xm_int - scar_side_limit) * arch_factor))
-                ty_approx = max(0, min(h - 1, int(round(y - slope_y * (0.5 * dx_limit)))))
-                scar_xs = np.where(scar_with_border[ty_approx, max(0, scar_side_limit - 3) : xm_int + 1])[0] + max(
-                    0, scar_side_limit - 3
-                )
-                dx_scar = int(xm_int - scar_xs.min()) if len(scar_xs) > 0 else 0
-                max_dx = max(min(dx_mirror, dx_limit), dx_scar)
+                    adj_idxs = sx_idxs[: min(14, len(sx_idxs))]
+                    row_clean_rgb = orig_arr[y, adj_idxs].mean(axis=0)
+                max_dx = int(round((xm_int - scar_side_limit) * arch_factor)) + 4
 
             if max_dx < 3:
                 continue
 
-            for dx in range(-6, max_dx + 1):
+            start_dx = -cross_pad_upper if y < upper_split_y else -cross_pad_lower
+            for dx in range(start_dx, max_dx + 1):
                 tx = (xm_int + dx) if clean_is_left else (xm_int - dx)
-                ty = int(round(y + slope_y * (tx - xm_int)))
+                ty = y
                 if not (0 <= tx < w and 0 <= ty < h):
                     continue
                 if true_fh_skin[ty, tx]:
                     continue
+                if not scar_with_border[ty, tx]:
+                    # Only fill a tiny enclosed gap (<= 5px) INSIDE the scar itself
+                    step_dir = 1 if clean_is_left else -1
+                    has_scar_left = any(
+                        0 <= tx - step_dir * k_l < w and scar_with_border[ty, tx - step_dir * k_l]
+                        for k_l in range(1, 5)
+                    )
+                    has_scar_right = any(
+                        0 <= tx + step_dir * k_r < w and scar_with_border[ty, tx + step_dir * k_r]
+                        for k_r in range(1, 6)
+                    )
+                    if not (has_scar_left and has_scar_right):
+                        continue
 
                 tR, tG, tB = R[ty, tx], G[ty, tx], B[ty, tx]
                 eye_top_at_tx = eye_top_L + (eye_top_R - eye_top_L) * ((tx - xL) / max(1.0, eye_dist))
                 dist_above_eye = eye_top_at_tx - ty
-                if dist_above_eye < 1.5:
+                if dist_above_eye < 2.0:
                     continue
-                if dist_above_eye < max(6.5, 0.32 * eye_dist):
+                if dist_above_eye < max(6.5, 0.34 * eye_dist):
                     is_maroon_scar = (tR > 75) and ((tR - tG) > 38) and (tG < 110)
                     if not is_maroon_scar:
-                        if (tR < 95 and tG < 68 and (tR - tG) < 35) or (tB > tR + 10):
-                            continue
-
-                if dx > 2 and not scar_with_border[ty, tx]:
-                    step_dir = 1 if clean_is_left else -1
-                    has_target_beyond = False
-                    for k_p in range(1, max(2, max_dx - dx + 2)):
-                        px_p = tx + step_dir * k_p
-                        if 0 <= px_p < w:
-                            if outer_hairline[ty, px_p] or sky_or_bg[ty, px_p]:
-                                break
-                            if scar_with_border[ty, px_p] or face_comp[ty, px_p]:
-                                has_target_beyond = True
-                                break
-                    if not has_target_beyond:
                         continue
 
                 frac = max(0.0, min(1.0, abs(dx) / max(1.0, float(max_dx))))
@@ -359,7 +427,7 @@ def remove_kadan_forehead_scar_pil(im: Image.Image) -> tuple[Image.Image, int]:
                 )
                 sx_m = max(0, min(w - 1, sx_m))
                 mirror_rgb = orig_arr[y, sx_m] if true_fh_skin[y, sx_m] else row_clean_rgb
-                im_arr[ty, tx] = 0.6 * mirror_rgb + 0.4 * row_clean_rgb
+                im_arr[ty, tx] = 0.25 * mirror_rgb + 0.75 * row_clean_rgb
                 repaired_mask[ty, tx] = True
                 total_repaired += 1
 
@@ -372,10 +440,11 @@ def remove_kadan_forehead_scar_pil(im: Image.Image) -> tuple[Image.Image, int]:
                 total_repaired += 1
 
         good_fh = true_fh_skin | repaired_mask
+        near_repaired = _dilate_bool(repaired_mask, 1)
         for _ in range(3):
             for yy in range(fh_top_abs + 1, fh_y1 - 1):
                 for xx in range(fh_x0 + 1, fh_x1 - 1):
-                    if not good_fh[yy, xx]:
+                    if not good_fh[yy, xx] and near_repaired[yy, xx]:
                         nb_good = good_fh[yy - 1 : yy + 2, xx - 1 : xx + 2]
                         if nb_good.sum() >= 5:
                             im_arr[yy, xx] = im_arr[yy - 1 : yy + 2, xx - 1 : xx + 2][nb_good].mean(axis=0)
