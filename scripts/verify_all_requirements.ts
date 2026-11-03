@@ -34,7 +34,7 @@ const localStorageMap = new Map<string, string>();
   getElementById: () => null,
 };
 
-import { renderHomeSection } from '../src/landing/views/HomeSection';
+import { renderHomeSection, setInspectedHomeCardId } from '../src/landing/views/HomeSection';
 import { renderMyDeckSection, setInspectedDeckCardId } from '../src/landing/views/MyDeckSection';
 import { renderPlaySection } from '../src/landing/views/PlaySection';
 import { playRpgState } from '../src/landing/services/playRpgEngine';
@@ -92,6 +92,23 @@ assert(
   homeHtml.includes('group/orig-card') && homeHtml.includes('북(N):'),
   '홈 덱 쇼케이스에 원본 카드 디자인(다이아몬드 나침반 스탯) 적용됨'
 );
+
+// Check Home Card Inspect Modal (Mobile overflow prevention and close button)
+setInspectedHomeCardId(1);
+const homeInspectHtml = renderHomeSection();
+assert(
+  homeInspectHtml.includes('home-card-inspect-modal') &&
+    homeInspectHtml.includes('max-h-[90dvh]') &&
+    homeInspectHtml.includes('overflow-hidden') &&
+    homeInspectHtml.includes('overflow-y-auto'),
+  '홈 카드 클릭 시 팝업이 max-h-[90dvh] 및 내부 스크롤로 모바일 넘침 방지됨'
+);
+assert(
+  homeInspectHtml.includes('[x] 닫기') &&
+    homeInspectHtml.includes('data-action="close-home-card-inspect"'),
+  '홈 카드 팝업 상단 및 하단에 닫기 버튼 정상 표시 및 액션 연결됨'
+);
+setInspectedHomeCardId(null);
 
 console.log('\n======================================================');
 console.log('  2. #deck 검토 (모바일 팝업, 2개 버튼블록 삭제, 원본카드)');

@@ -361,95 +361,101 @@ export function renderHomeSection(): string {
       ${inspectedId && inspectedAsset && inspectedStats ? `
         <div
           id="home-card-inspect-modal"
-          class="fixed inset-0 z-50 flex items-center justify-center p-4 font-mono select-none"
+          class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 font-mono select-none"
           role="dialog"
           aria-modal="true"
+          aria-labelledby="home-card-inspect-title"
         >
           <!-- Dedicated Backdrop Overlay Sibling -->
           <div
             id="home-card-inspect-backdrop"
-            data-action="close-home-card-inspector"
-            class="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-pointer transition-opacity"
+            data-action="close-home-card-inspect"
+            class="fixed inset-0 bg-black/70 backdrop-blur-xs cursor-pointer transition-opacity"
             aria-hidden="true"
           ></div>
 
-          <!-- Modal Dialog Content Box -->
-          <div class="relative z-10 bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] max-w-lg w-full p-6 sm:p-8 rounded-none shadow-none space-y-6">
-            <!-- Close [x] Top Right -->
-            <button
-              type="button"
-              data-action="close-home-card-inspector"
-              class="absolute top-4 right-4 min-h-[44px] min-w-[44px] flex items-center justify-center text-stone-500 hover:text-[#201d1d] font-bold text-sm rounded-sm cursor-pointer"
-              aria-label="닫기"
-            >
-              [x]
-            </button>
+          <!-- Modal Dialog Content Box (Fixed max-h, flex column, overflow-hidden) -->
+          <div class="relative z-10 w-full max-w-lg bg-[#fdfcfc] text-[#201d1d] border border-[#201d1d] shadow-2xl rounded-none flex flex-col max-h-[90dvh] overflow-hidden">
+            <!-- Fixed Modal Header -->
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] shrink-0">
+              <div class="pr-2 space-y-1">
+                <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase rounded-sm" style="background-color: ${inspectedFactionStyle?.bg}; color: ${inspectedFactionStyle?.text};">
+                  ${inspectedAsset.faction} · ${inspectedAsset.rarity}
+                </span>
+                <h3 id="home-card-inspect-title" class="text-base sm:text-lg font-black text-[#201d1d] m-0">
+                  [${inspectedAsset.code}] ${inspectedAsset.nameKo} <span class="text-xs font-normal text-stone-500">(${inspectedAsset.nameEn})</span>
+                </h3>
+              </div>
 
-            <!-- Modal Header -->
-            <div class="space-y-1 pr-8">
-              <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase rounded-sm" style="background-color: ${inspectedFactionStyle?.bg}; color: ${inspectedFactionStyle?.text};">
-                ${inspectedAsset.faction} · ${inspectedAsset.rarity}
-              </span>
-              <h3 class="text-xl font-black text-[#201d1d] m-0">
-                [${inspectedAsset.code}] ${inspectedAsset.nameKo} (${inspectedAsset.nameEn})
-              </h3>
+              <!-- Close [x] Button (Always visible at top-right) -->
+              <button
+                type="button"
+                data-action="close-home-card-inspect"
+                class="min-h-[44px] min-w-[44px] px-3 py-2 flex items-center justify-center bg-[#201d1d] text-[#fdfcfc] hover:bg-stone-800 text-xs font-bold rounded-sm cursor-pointer shrink-0 transition-colors"
+                aria-label="닫기"
+              >
+                [x] 닫기
+              </button>
             </div>
 
-            <!-- Card Original TCG & Cutout Dual Preview -->
-            <div class="flex flex-col sm:flex-row items-center gap-4">
-              <div class="w-36 sm:w-44 shrink-0">
-                ${renderOriginalCardHtml(inspectedId, {
-                  isOwned: true,
-                  level: inspectedStats.level,
-                  hideStats: false,
-                  className: 'w-full aspect-[5/7]',
-                  visualTier: '7head',
-                })}
+            <!-- Scrollable Content Body (Smooth scroll on mobile viewports) -->
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+              <!-- Card Original TCG & Cutout Dual Preview -->
+              <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+                <div class="w-32 sm:w-44 shrink-0 mx-auto">
+                  ${renderOriginalCardHtml(inspectedId, {
+                    isOwned: true,
+                    level: inspectedStats.level,
+                    hideStats: false,
+                    className: 'w-full aspect-[5/7]',
+                    visualTier: '7head',
+                  })}
+                </div>
+                <div class="w-full flex-1 h-44 sm:h-56 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 overflow-hidden">
+                  <img
+                    src="${inspectedAsset.cutoutUrl}"
+                    alt="${inspectedAsset.nameKo} 7등신 풀바디"
+                    class="max-h-full max-w-full object-contain filter drop-shadow-none"
+                    loading="eager"
+                    onerror="this.src='${inspectedAsset.bustPngUrl}'; this.onerror=null;"
+                  />
+                </div>
               </div>
-              <div class="w-full flex-1 h-52 sm:h-56 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 overflow-hidden">
-                <img
-                  src="${inspectedAsset.cutoutUrl}"
-                  alt="${inspectedAsset.nameKo} 7등신 풀바디"
-                  class="max-h-full max-w-full object-contain filter drop-shadow-none"
-                  loading="eager"
-                  onerror="this.src='${inspectedAsset.bustPngUrl}'; this.onerror=null;"
-                />
+
+              <!-- Compass Stats & Level -->
+              <div class="grid grid-cols-4 gap-2 text-center text-xs">
+                <div class="p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
+                  <div class="text-[10px] text-stone-500 font-bold">북 (N)</div>
+                  <div class="text-base font-black text-[#201d1d]">${inspectedStats.top}</div>
+                </div>
+                <div class="p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
+                  <div class="text-[10px] text-stone-500 font-bold">동 (E)</div>
+                  <div class="text-base font-black text-[#201d1d]">${inspectedStats.right}</div>
+                </div>
+                <div class="p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
+                  <div class="text-[10px] text-stone-500 font-bold">남 (S)</div>
+                  <div class="text-base font-black text-[#201d1d]">${inspectedStats.bottom}</div>
+                </div>
+                <div class="p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
+                  <div class="text-[10px] text-stone-500 font-bold">서 (W)</div>
+                  <div class="text-base font-black text-[#201d1d]">${inspectedStats.left}</div>
+                </div>
+              </div>
+
+              <!-- Ability & TP Summary -->
+              <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] space-y-1 text-xs">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-[#201d1d]">고유 스킬:</span>
+                  <span class="font-black text-[#201d1d]">${inspectedStats.totalTP} TP</span>
+                </div>
+                <div class="text-stone-600">
+                  ${(inspectedDb as any)?.ability?.description_ko || '기본 전술 능력: 표준 전장 배치'}
+                </div>
               </div>
             </div>
 
-            <!-- Compass Stats & Level -->
-            <div class="grid grid-cols-4 gap-2 text-center text-xs">
-              <div class="p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
-                <div class="text-[10px] text-stone-500 font-bold">북 (N)</div>
-                <div class="text-base font-black text-[#201d1d]">${inspectedStats.top}</div>
-              </div>
-              <div class="p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
-                <div class="text-[10px] text-stone-500 font-bold">동 (E)</div>
-                <div class="text-base font-black text-[#201d1d]">${inspectedStats.right}</div>
-              </div>
-              <div class="p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
-                <div class="text-[10px] text-stone-500 font-bold">남 (S)</div>
-                <div class="text-base font-black text-[#201d1d]">${inspectedStats.bottom}</div>
-              </div>
-              <div class="p-2 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
-                <div class="text-[10px] text-stone-500 font-bold">서 (W)</div>
-                <div class="text-base font-black text-[#201d1d]">${inspectedStats.left}</div>
-              </div>
-            </div>
-
-            <!-- Ability & TP Summary -->
-            <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] space-y-1 text-xs">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-[#201d1d]">고유 스킬:</span>
-                <span class="font-black text-[#201d1d]">${inspectedStats.totalTP} TP</span>
-              </div>
-              <div class="text-stone-600">
-                ${(inspectedDb as any)?.ability?.description_ko || '기본 전술 능력: 표준 전장 배치'}
-              </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex flex-wrap items-center gap-3 pt-2">
+            <!-- Fixed Modal Footer (Always visible at bottom) -->
+            <div class="p-3 sm:p-4 bg-[#f8f7f7] border-t border-[rgba(15,0,0,0.12)] shrink-0 flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 data-nav="card"
@@ -466,8 +472,8 @@ export function renderHomeSection(): string {
               </button>
               <button
                 type="button"
-                data-action="close-home-card-inspector"
-                class="py-3 px-4 bg-white text-stone-600 border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] hover:bg-stone-50 transition-colors flex items-center justify-center cursor-pointer"
+                data-action="close-home-card-inspect"
+                class="py-3 px-4 bg-white text-stone-700 border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] hover:bg-stone-100 transition-colors flex items-center justify-center cursor-pointer"
               >
                 닫기
               </button>
