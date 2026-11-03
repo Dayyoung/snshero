@@ -37,6 +37,7 @@ export interface CharacterAssetMeta {
   cutoutUrl: string;       // 7-head full body: /anime-character-sheets/cutouts/001_Aquaris.png
   bustPngUrl: string;      // Torso PNG: /anime-character-sheets/busts/001_bust.png
   bustJpgUrl: string;      // Torso JPG: /anime-character-sheets/busts/001_bust.jpg
+  sheetUrl: string;        // 1600x1000 Studio Character Sheet: /anime-character-sheets/sheets/001_Aquaris_sheet.jpg
   seatUrl: string;         // Chibi portrait: /seat/Aquaris.png
   sdUrl: string;           // 3-head SD sprite: /seat/Aquaris.png (or /anime-character-sheets/sd/001_sd.png)
   spriteSheet: '/cards1.png' | '/cards2.png';
@@ -274,6 +275,7 @@ export function getCharacterAsset(id: number): CharacterAssetMeta {
     cutoutUrl: `/anime-character-sheets/cutouts/${pad3}_${base.file}.png`,
     bustPngUrl: `/anime-character-sheets/busts/${pad3}_bust.png`,
     bustJpgUrl: `/anime-character-sheets/busts/${pad3}_bust.jpg`,
+    sheetUrl: `/anime-character-sheets/sheets/${pad3}_${base.file}_sheet.jpg?v=20261104v1`,
     seatUrl: `/seat/${base.file}.png`,
     sdUrl: `/seat/${base.file}.png`,
     spriteSheet: sourceSheet,
@@ -290,6 +292,10 @@ export function getCharacterAsset(id: number): CharacterAssetMeta {
 
 export function getCutoutUrl(cardId: number): string {
   return getCharacterAsset(cardId).cutoutUrl;
+}
+
+export function getSheetUrl(cardId: number): string {
+  return getCharacterAsset(cardId).sheetUrl;
 }
 
 export function getBustUrl(cardId: number, format: 'png' | 'jpg' = 'png'): string {

@@ -20,7 +20,12 @@
 
 import { CARD_DATABASE } from '../../cardDatabase';
 import { cardNurtureStore } from '../services/cardNurtureStore';
-import { getCharacterAsset, getLocalizedCharacterName, getLocalizedFactionName } from '../services/assetCatalog';
+import {
+  getCharacterAsset,
+  getLocalizedCharacterName,
+  getLocalizedFactionName,
+  generateTerminalFlatPlaceholder,
+} from '../services/assetCatalog';
 import { requestPayAppPayment, CRYPTO_PAYMENT_INFO } from '../services/paymentService';
 import {
   CRYPTO_COINS_CATALOG,
@@ -81,6 +86,7 @@ export interface RevealedCardMeta {
   left: number;
   bustUrl: string;
   seatUrl: string;
+  fallbackUrl: string;
   isNew: boolean;
 }
 
@@ -89,9 +95,9 @@ export interface PackRevealData {
   packName: string;
   cards: RevealedCardMeta[];
   revealedIndices: number[];
-  bestFaction: string;
+  bestFaction?: string;
   bestCard: RevealedCardMeta;
-  hasTriggeredFactionVfx: boolean;
+  hasTriggeredFactionVfx?: boolean;
 }
 
 export interface FactionVfxInfo {
@@ -779,11 +785,32 @@ export function verifyCryptoDepositStatus(): void {
   );
 }
 
+let autoRevealTimer: ReturnType<typeof setTimeout> | null = null;
+
+export function stopAutoRevealTimer(): void {
+  if (autoRevealTimer) {
+    clearTimeout(autoRevealTimer);
+    autoRevealTimer = null;
+  }
+}
+
+export function startAutoRevealTimer(onReveal: () => void): void {
+  stopAutoRevealTimer();
+  autoRevealTimer = setTimeout(() => {
+    if (activePackReveal && activePackReveal.revealedIndices.length < activePackReveal.cards.length) {
+      flipAllPackCards();
+      onReveal();
+    }
+    autoRevealTimer = null;
+  }, 1000);
+}
+
 export function getActivePackReveal(): PackRevealData | null {
   return activePackReveal;
 }
 
 export function clearPackReveal(): void {
+  stopAutoRevealTimer();
   activePackReveal = null;
 }
 
@@ -796,25 +823,21 @@ export function flipPackCard(cardIndex: number): void {
     } catch {
       // ignore audio errors
     }
-    const flippedCard = activePackReveal.cards[cardIndex];
-    if (flippedCard && flippedCard.cardId === activePackReveal.bestCard.cardId) {
-      activePackReveal.hasTriggeredFactionVfx = true;
+    if (activePackReveal.revealedIndices.length === activePackReveal.cards.length) {
+      stopAutoRevealTimer();
       try {
         audioManager.playVictoryFanfare();
       } catch {
         // ignore audio errors
       }
     }
-    if (activePackReveal.revealedIndices.length === activePackReveal.cards.length) {
-      activePackReveal.hasTriggeredFactionVfx = true;
-    }
   }
 }
 
 export function flipAllPackCards(): void {
   if (!activePackReveal) return;
+  stopAutoRevealTimer();
   activePackReveal.revealedIndices = activePackReveal.cards.map((_, i) => i);
-  activePackReveal.hasTriggeredFactionVfx = true;
   try {
     audioManager.playVictoryFanfare();
   } catch {
@@ -1125,10 +1148,8 @@ export function executeShopPurchase(productId: string): {
     packId: item.id,
     packName: item.name,
     cards: revealed,
-    revealedIndices: [], // initially facedown for dramatic flip!
-    bestFaction: best.faction,
+    revealedIndices: [], // initially facedown for 1s dramatic flip!
     bestCard: best,
-    hasTriggeredFactionVfx: false,
   };
 
   return {
@@ -1161,8 +1182,13 @@ function simulatePackDraw(
     if (pool.length === 0) pool = db;
     const picked = pool[Math.floor(Math.random() * pool.length)] || db[0];
 
-    const bustUrl = getCharacterAsset(picked.id, 'bust');
-    const seatUrl = getCharacterAsset(picked.id, 'seat');
+    const asset = getCharacterAsset(picked.id);
+    const pad3 = String(picked.id).padStart(3, '0');
+    const bustUrl = asset.bustPngUrl || `/anime-character-sheets/busts/${pad3}_bust.png`;
+    const seatUrl = asset.seatUrl || `/seat/${asset.nameEn}.png`;
+    const fallbackUrl =
+      asset.fallbackSvgDataUri ||
+      generateTerminalFlatPlaceholder(asset.nameKo || `영웅 #${picked.id}`, asset.faction || 'human');
 
     const isAlreadyOwned = cardNurtureStore.isCardOwned(picked.id);
     const isNew = !isAlreadyOwned;
@@ -1193,6 +1219,7 @@ function simulatePackDraw(
       left: picked.left,
       bustUrl,
       seatUrl,
+      fallbackUrl,
       isNew,
     });
   }
@@ -1686,53 +1713,19 @@ export function renderPackRevealModal(): string {
   if (!activePackReveal) return '';
   const packItem = ALL_SHOP_PRODUCTS.find((p) => p.id === activePackReveal?.packId);
   const localizedPackName = packItem ? getLocalizedShopProduct(packItem).name : activePackReveal.packName;
-  const vfxInfo = getFactionVfxInfo(activePackReveal.bestFaction);
   const allRevealed = activePackReveal.revealedIndices.length === activePackReveal.cards.length;
 
   return `
-    <div id="pack-reveal-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 font-mono overflow-y-auto select-none">
+    <div id="pack-reveal-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 font-mono overflow-y-auto select-none">
       
-      <!-- Faction Elemental Burst Fullscreen Background Effect -->
-      ${
-        activePackReveal.hasTriggeredFactionVfx
-          ? `
-            <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden transition-opacity duration-700 opacity-90" style="background: ${vfxInfo.bgGradient};">
-              <!-- Radial Aura Wave -->
-              <div class="absolute inset-0 flex items-center justify-center animate-ping opacity-25">
-                <div class="w-96 h-96 rounded-full border-4" style="border-color: ${vfxInfo.themeColor};"></div>
-              </div>
-              
-              <!-- Burst Floating Particles spreading everywhere -->
-              <div class="absolute inset-0 pointer-events-none">
-                ${Array.from({ length: 28 }, (_, i) => {
-                  const symbol = vfxInfo.particles[i % vfxInfo.particles.length];
-                  const top = (i * 23) % 94 + 3;
-                  const left = (i * 37) % 94 + 3;
-                  const delay = ((i % 8) * 0.15).toFixed(2);
-                  const duration = 1.2 + ((i % 5) * 0.3);
-                  return `
-                    <span
-                      class="absolute text-xl sm:text-2xl drop-shadow-[0_0_12px_${vfxInfo.themeColor}] select-none pointer-events-none animate-bounce"
-                      style="top: ${top}%; left: ${left}%; animation-delay: ${delay}s; animation-duration: ${duration}s;"
-                    >
-                      ${symbol}
-                    </span>
-                  `;
-                }).join('')}
-              </div>
-            </div>
-          `
-          : ''
-      }
-
       <!-- Main Modal Frame -->
       <div class="relative z-10 bg-[#fdfcfc] text-[#201d1d] border-2 border-stone-800 rounded-none max-w-4xl w-full p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl my-auto">
         
-        <!-- Header & Faction Burst Announcement -->
+        <!-- Header -->
         <div class="text-center space-y-2">
           <div class="flex items-center justify-center gap-2">
             <span class="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] rounded-sm">
-              ${tr('5연속 영웅 소환 의식', '5-Hero Summon Ritual', '5連召喚の儀式')}
+              ${tr('5연속 영웅 소환', '5-Hero Summon', '5連英雄召喚')}
             </span>
             <span class="text-xs font-bold text-amber-700">
               [${activePackReveal.revealedIndices.length} / ${activePackReveal.cards.length} ${tr('개봉됨', 'Opened', '開封済')}]
@@ -1743,27 +1736,13 @@ export function renderPackRevealModal(): string {
             ${localizedPackName} — ${tr('카드팩 개봉', 'Hero Pack Summon', 'パック開封')}
           </h3>
 
-          ${
-            activePackReveal.hasTriggeredFactionVfx
-              ? `
-                <!-- Faction Awakening Banner -->
-                <div class="p-2 sm:p-2.5 bg-stone-900 text-white rounded-none border border-stone-700 shadow-lg animate-pulse flex items-center justify-center gap-2">
-                  <span class="text-lg">${vfxInfo.icon}</span>
-                  <span class="text-xs sm:text-sm font-black tracking-wide" style="color: ${vfxInfo.themeColor};">
-                    ${vfxInfo.bannerText}
-                  </span>
-                </div>
-              `
-              : `
-                <p class="text-xs text-stone-500 m-0">
-                  ${tr(
-                    '카드를 터치하여 한 장씩 뒤집거나, 아래 버튼을 눌러 한 번에 개봉하세요!',
-                    'Tap each card to flip, or click Open All below to reveal the elemental burst!',
-                    'カードをタップして1枚ずつめくるか、下のボタンを押して一括開封しましょう！'
-                  )}
-                </p>
-              `
-          }
+          <p class="text-xs text-stone-500 m-0">
+            ${
+              allRevealed
+                ? tr('5장의 영웅 카드가 모두 개봉되었습니다!', 'All 5 hero cards have been revealed!', '全5枚の英雄カードが開封されました！')
+                : tr('1초 후 모든 카드가 자동으로 개봉됩니다. 카드를 터치하여 즉시 확인할 수도 있습니다.', 'All cards will reveal automatically in 1 second. You can also tap to reveal immediately.', '1秒後に全カードが自動で開封されます。タップして今すぐ確認することもできます。')
+            }
+          </p>
         </div>
 
         <!-- 5 Revealed Cards Row (Flip Effect) -->
@@ -1831,7 +1810,13 @@ export function renderPackRevealModal(): string {
 
                   <!-- Card Illustration Thumbnail -->
                   <div class="relative w-full aspect-square bg-[#ece8e8] flex items-center justify-center overflow-hidden border border-stone-200">
-                    <img src="${card.bustUrl}" alt="${locName}" class="w-full h-full object-cover" draggable="false" />
+                    <img
+                      src="${card.bustUrl}"
+                      alt="${locName}"
+                      class="w-full h-full object-cover"
+                      draggable="false"
+                      onerror="if (this.src !== '${card.seatUrl}') { this.src = '${card.seatUrl}'; } else if (this.src !== '${card.fallbackUrl}') { this.src = '${card.fallbackUrl}'; }"
+                    />
                     <!-- Faction Icon Badge -->
                     <span class="absolute top-1 left-1 px-1 py-0.2 bg-black/75 text-white text-[8px] font-black rounded-none">
                       ${locFaction}

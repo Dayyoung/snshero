@@ -70,6 +70,8 @@ import {
   clearPackReveal,
   flipPackCard,
   flipAllPackCards,
+  startAutoRevealTimer,
+  stopAutoRevealTimer,
 } from './views/ShopSection';
 import {
   renderMallView,
@@ -445,6 +447,11 @@ export function handleEventDelegation(event: Event): void {
       const res = executeShopPurchase(itemId);
       if (!res.success) {
         console.warn(res.message);
+      } else if (res.revealedCards && res.revealedCards.length > 0) {
+        // 1초 보여주고 자동으로 모두 개봉되게 타이머 가동
+        startAutoRevealTimer(() => {
+          renderApp();
+        });
       }
       renderApp();
     }
@@ -516,9 +523,11 @@ export function handleEventDelegation(event: Event): void {
       renderApp();
     }
   } else if (action === 'flip-pack-all') {
+    stopAutoRevealTimer();
     flipAllPackCards();
     renderApp();
   } else if (action === 'close-pack-reveal' || action === 'confirm-pack-reveal') {
+    stopAutoRevealTimer();
     clearPackReveal();
     renderApp();
   }
