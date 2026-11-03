@@ -421,7 +421,8 @@ export function setMallFaction(faction: string): void {
 }
 
 export function proceedMallToShipping(): void {
-  mallState.step = 'shipping';
+  // Skip buyer info & country input — go directly to payment window
+  mallState.step = 'payment';
   mallState.feedbackMsg = null;
 }
 
@@ -438,13 +439,13 @@ export function submitMallShipping(info: { name: string; phone: string; address:
   mallState.buyerName = cleanName;
   mallState.buyerPhone = cleanPhone;
   mallState.buyerAddress = cleanAddress;
-  mallState.step = 'country';
+  mallState.step = 'payment';
   mallState.feedbackMsg = null;
   return true;
 }
 
 export function backMallToShipping(): void {
-  mallState.step = 'shipping';
+  mallState.step = 'detail';
   mallState.feedbackMsg = null;
 }
 
@@ -455,7 +456,7 @@ export function selectMallCountry(countryCode: string): void {
 }
 
 export function backMallToCountry(): void {
-  mallState.step = 'country';
+  mallState.step = 'detail';
   mallState.feedbackMsg = null;
 }
 
@@ -688,6 +689,111 @@ function renderMallCheckoutModal(): string {
 
   let bodyHtml = '';
 
+  if (mallState.step === 'detail') {
+    return `
+      <div class="fixed inset-0 z-50 w-screen h-[100dvh] bg-[#0e0d11] text-[#fdfcfc] flex flex-col overflow-hidden font-mono select-none">
+        <!-- Top Fullscreen Studio Header Bar -->
+        <div class="px-3 sm:px-6 py-2.5 bg-[#201d1d] border-b border-white/15 flex items-center justify-between gap-3 shrink-0">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="px-2 py-0.5 text-xs font-bold rounded-sm shrink-0" style="background:${pal.bg};color:${pal.text};">${product.code}</span>
+            <h3 class="text-xs sm:text-base font-bold text-[#fdfcfc] truncate">${locProd.name}</h3>
+            <span class="hidden md:inline-block px-2 py-0.5 bg-white/10 text-amber-300 text-[10px] font-bold rounded-sm shrink-0">
+              1600×1000 HD · ${product.faction.toUpperCase()} · ${product.rarity}
+            </span>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="hidden sm:inline-block px-2.5 py-1 ${unlocked ? 'bg-emerald-600 text-white' : 'bg-amber-400 text-stone-950'} text-xs font-bold rounded-sm">
+              ${unlocked ? tr('✓ 라이센스 해제 완료', '✓ LICENSE UNLOCKED', '✓ ライセンス解除済') : '$10.00 (14,000원) · LICENSE'}
+            </span>
+            <button
+              type="button"
+              data-action="close-mall-modal"
+              class="min-w-[44px] min-h-[44px] px-3 flex items-center justify-center bg-white/10 hover:bg-white/20 text-xs sm:text-sm font-bold text-[#fdfcfc] rounded-sm cursor-pointer"
+              aria-label="Close fullscreen character sheet"
+            >
+              ✕ ${tr('닫기', 'Close', '閉じる')}
+            </button>
+          </div>
+        </div>
+
+        <!-- Center Fullscreen Character Sheet Viewport -->
+        <div class="flex-1 min-h-0 w-full flex items-center justify-center bg-[#141316] p-1 sm:p-3 overflow-auto">
+          <img
+            src="${product.imageUrl}"
+            alt="${locProd.name}"
+            class="max-w-full max-h-full w-auto h-auto object-contain bg-white border border-white/20"
+          />
+        </div>
+
+        <!-- Bottom Fullscreen License Unlock & Purchase Bar -->
+        <div class="px-3 sm:px-6 py-3 bg-[#201d1d] border-t border-white/15 flex flex-col lg:flex-row lg:items-center justify-between gap-3 shrink-0">
+          <div class="space-y-0.5 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="px-1.5 py-0.5 bg-amber-400 text-stone-950 text-[10px] font-bold rounded-sm shrink-0">IP LICENSE UNLOCK</span>
+              <span class="text-xs sm:text-sm font-bold text-[#fdfcfc] truncate">
+                ${tr('개당 $10.00 (14,000원) · 상업적·2차 창작 라이센스 영구 해제', '$10.00 USD · Perpetual Commercial & Derivative IP License Unlock', '$10.00 · 商用・二次創作IPライセンス永久解除')}
+              </span>
+            </div>
+            <p class="text-[11px] text-stone-300 line-clamp-1">
+              ${tr(
+                '구매 즉시 유튜브/숏폼 영상·웹툰·인디게임·굿즈 제작 라이센스 영구 해제 및 1600×1000 HD 시트·수정된 상반신·7등신 투명 원화(PNG) 다운로드 제공',
+                'Unlocks perpetual commercial & creative rights + instant download of 1600×1000 HD Sheet (JPG), Updated Bust (PNG) & 7-Head Cutout (PNG)',
+                '購入即時、動画・ウェブトゥーン・ゲーム・グッズ制作ライセンスが永久解除され、1600×1000 HDシート＆透過原画ダウンロードを提供'
+              )}
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            ${
+              unlocked
+                ? `
+              <a
+                href="${product.imageUrl}"
+                download="${product.code.replace('.', '_')}_${product.id}_CharacterSheet_1600x1000.jpg"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="min-h-[44px] px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-sm flex items-center justify-center"
+              >
+                ⬇ ${tr('시트 원본 (JPG)', 'Sheet (JPG)', 'シート (JPG)')}
+              </a>
+              <a
+                href="${product.bustUrl}"
+                download="${product.code.replace('.', '_')}_Updated_Bust.png"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="min-h-[44px] px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/25 text-[#fdfcfc] text-xs font-bold rounded-sm flex items-center justify-center"
+              >
+                ⬇ ${tr('상반신 (PNG)', 'Bust (PNG)', '上半身 (PNG)')}
+              </a>
+              <a
+                href="${product.cutoutUrl}"
+                download="${product.code.replace('.', '_')}_7Head_Cutout.png"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="min-h-[44px] px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/25 text-[#fdfcfc] text-xs font-bold rounded-sm flex items-center justify-center"
+              >
+                ⬇ ${tr('7등신 원화 (PNG)', 'Cutout (PNG)', '全身原画 (PNG)')}
+              </a>
+            `
+                : ''
+            }
+            <button
+              type="button"
+              data-action="proceed-mall-shipping"
+              class="w-full sm:w-auto min-h-[46px] px-6 py-2.5 bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs sm:text-sm font-bold font-mono rounded-sm transition cursor-pointer"
+            >
+              ${
+                unlocked
+                  ? tr('라이센스 재구매창 이동 ($10.00) →', 'Proceed to Payment ($10.00) →', '決済画面へ ($10.00) →')
+                  : tr('라이센스 해제 구매하기 ($10.00 / 14,000원) →', 'Buy License Unlock ($10.00 USD) →', 'ライセンス解除を購入 ($10.00) →')
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   if (mallState.step === 'orders_list') {
     const orders = getGoodsOrders();
     const unlockedIds = getUnlockedSheetIds();
@@ -739,237 +845,7 @@ function renderMallCheckoutModal(): string {
         </button>
       </div>
     `;
-  } else if (mallState.step === 'detail') {
-    bodyHtml = `
-      <div class="space-y-4 font-mono">
-        <!-- High-Res 1600x1000 Studio Character Sheet Preview -->
-        <div class="border border-[#201d1d] bg-[#141316] p-2">
-          <div class="flex items-center justify-between px-2 py-1.5 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold mb-2">
-            <span>${product.code} · 1600×1000 HD STUDIO CHARACTER SHEET (상반신 리마스터 반영)</span>
-            <span class="px-2 py-0.5 rounded-sm text-[10px]" style="background:${pal.bg};color:${pal.text};">${product.faction.toUpperCase()} · ${product.rarity}</span>
-          </div>
-          <div class="w-full aspect-[16/10] bg-white overflow-hidden border border-[#646262]/40">
-            <img src="${product.imageUrl}" alt="${locProd.name}" class="w-full h-full object-contain bg-white" />
-          </div>
-          <div class="grid grid-cols-2 gap-2 mt-2">
-            <div class="flex items-center gap-2.5 p-2 bg-[#201d1d] border border-white/10 text-[#fdfcfc]">
-              <img src="${product.bustUrl}" alt="Updated Bust" class="w-12 h-12 object-contain bg-white border border-[#646262]/40 shrink-0" />
-              <div class="min-w-0">
-                <div class="text-[10px] font-bold text-amber-300">PANEL 02 · 수정된 상반신</div>
-                <div class="text-[10px] text-stone-300 truncate">${tr('표정·헤어 정밀 리마스터 본', 'Updated Head & Hair Bust', '修正済み上半身ポートレート')}</div>
-              </div>
-            </div>
-            <div class="flex items-center gap-2.5 p-2 bg-[#201d1d] border border-white/10 text-[#fdfcfc]">
-              <img src="${product.cutoutUrl}" alt="7-Head Cutout" class="w-12 h-12 object-contain bg-white border border-[#646262]/40 shrink-0" />
-              <div class="min-w-0">
-                <div class="text-[10px] font-bold text-emerald-300">PANEL 01 · 7등신 전신 원화</div>
-                <div class="text-[10px] text-stone-300 truncate">${tr('투명 배경 PNG 클린 컷아웃', 'Transparent Full-Body PNG', '透過背景PNG全身原画')}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Title, Price & License Unlock Condition Box -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3.5 bg-[#f8f7f7] border border-[#201d1d]">
-          <div>
-            <span class="inline-block px-2 py-0.5 ${unlocked ? 'bg-emerald-700' : 'bg-[#201d1d]'} text-[#fdfcfc] text-[10px] font-bold rounded-sm mb-1">${locProd.badge}</span>
-            <h4 class="text-base font-bold text-[#201d1d]">${locProd.name}</h4>
-            <p class="text-[11px] text-[#646262] mt-0.5">${locProd.spec}</p>
-          </div>
-          <div class="sm:text-right shrink-0">
-            <div class="text-[10px] text-[#646262] uppercase">${tr('라이센스 해제 판매가 (개당)', 'License Unlock Price (Each)', 'ライセンス解除価格（1点）')}</div>
-            <div class="text-xl font-bold text-[#201d1d]">$10.00 <span class="text-xs font-normal text-[#646262]">(14,000원)</span></div>
-          </div>
-        </div>
-
-        <!-- License Unlock Terms Notice -->
-        <div class="p-3.5 bg-amber-50/70 border border-amber-600/40 space-y-1.5 text-xs">
-          <div class="font-bold text-amber-950 flex items-center justify-between">
-            <span>📜 ${tr('캐릭터시트 라이센스 해제 조건 (IP License Unlock Terms)', 'Character Sheet IP License Unlock Terms', 'キャラクターシート・ライセンス解除条件')}</span>
-            <span class="px-1.5 py-0.5 bg-amber-900 text-amber-50 text-[10px] rounded-sm">PERPETUAL LICENSE</span>
-          </div>
-          <p class="text-[11px] text-amber-900 leading-relaxed">${locProd.licenseTerms}</p>
-          <ul class="text-[11px] text-amber-950 space-y-0.5 pt-1">
-            <li>• ${tr('포함 파일 1: 1600×1000 HD 공식 캐릭터 설정화 시트 (수정된 상반신 Panel 02 적용본)', 'Included 1: 1600×1000 HD Official Studio Character Sheet (with updated Panel 02 bust)', '収録1：1600×1000 HD公式キャラクター設定資料シート（修正済上半身Panel 02適用）')}</li>
-            <li>• ${tr('포함 파일 2: 500×500 HD 수정된 상반신 투명 PNG & 7등신 전신 투명 PNG 원화', 'Included 2: 500×500 HD Updated Bust Transparent PNG & 7-Head Full-Body Cutout PNG', '収録2：500×500 HD修正済上半身透過PNG ＆ 7頭身全身透過PNG原画')}</li>
-            <li>• ${tr('라이센스 범위: 상업적 영상/웹툰/게임/AI 애니메이션/굿즈 제작 영구 허용 (재판매 제외)', 'License Scope: Perpetual commercial & creative use in video, webtoon, games, and merch', 'ライセンス範囲：商用動画・ウェブトゥーン・ゲーム・グッズ制作への永久利用許諾')}</li>
-          </ul>
-        </div>
-
-        ${
-          unlocked
-            ? `
-          <div class="p-3.5 bg-emerald-50 border border-emerald-600/50 space-y-2.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-emerald-950">✓ ${tr('라이센스 영구 해제 완료 · 고해상도 원본 다운로드', 'License Unlocked · Instant High-Res Downloads', 'ライセンス解除完了・高解像度原本ダウンロード')}</span>
-              <span class="text-[10px] font-bold text-emerald-800">CERT-${product.code.replace('.', '')}-ACTIVE</span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <a
-                href="${product.imageUrl}"
-                download="${product.code.replace('.', '_')}_${product.id}_CharacterSheet_1600x1000.jpg"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="min-h-[44px] px-3 py-2 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm flex items-center justify-center text-center hover:bg-[#343030]"
-              >
-                ⬇ ${tr('캐릭터시트 원본 (JPG)', 'Download Sheet (JPG)', 'シート原本 (JPG)')}
-              </a>
-              <a
-                href="${product.bustUrl}"
-                download="${product.code.replace('.', '_')}_Updated_Bust.png"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="min-h-[44px] px-3 py-2 bg-white border border-[#201d1d] text-[#201d1d] text-[11px] font-bold rounded-sm flex items-center justify-center text-center hover:bg-[#f8f7f7]"
-              >
-                ⬇ ${tr('수정된 상반신 (PNG)', 'Updated Bust (PNG)', '修正済上半身 (PNG)')}
-              </a>
-              <a
-                href="${product.cutoutUrl}"
-                download="${product.code.replace('.', '_')}_7Head_Cutout.png"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="min-h-[44px] px-3 py-2 bg-white border border-[#201d1d] text-[#201d1d] text-[11px] font-bold rounded-sm flex items-center justify-center text-center hover:bg-[#f8f7f7]"
-              >
-                ⬇ ${tr('7등신 전신 원화 (PNG)', '7-Head Cutout (PNG)', '7頭身全身原画 (PNG)')}
-              </a>
-            </div>
-          </div>
-        `
-            : ''
-        }
-
-        <div class="flex flex-col sm:flex-row gap-2 pt-1">
-          <button
-            type="button"
-            data-action="proceed-mall-shipping"
-            class="flex-1 min-h-[48px] py-3 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold font-mono rounded-sm hover:bg-[#343030] transition cursor-pointer"
-          >
-            ${
-              unlocked
-                ? tr('추가 라이센스 증서 발급 / 재결제 ($10.00) →', 'Purchase Additional License Certificate ($10.00) →', '追加ライセンス証書発行 ($10.00) →')
-                : tr('라이센스 해제 조건 동의 및 구매 진행 ($10.00) →', 'Agree to License Terms & Unlock ($10.00) →', 'ライセンス解除条件に同意して購入 ($10.00) →')
-            }
-          </button>
-          <button
-            type="button"
-            data-action="execute-mall-checkout"
-            data-method="test_sim"
-            class="sm:w-auto min-h-[48px] px-4 py-3 bg-emerald-700 text-white text-xs font-bold font-mono rounded-sm hover:bg-emerald-800 transition cursor-pointer"
-          >
-            ⚡ ${tr('1클릭 즉시 라이센스 해제 ($10.00)', '1-Click Instant Unlock ($10.00)', '1クリック即時ライセンス解除 ($10.00)')}
-          </button>
-        </div>
-      </div>
-    `;
-  } else if (mallState.step === 'shipping') {
-    bodyHtml = `
-      <div class="space-y-4 font-mono">
-        <div class="p-3 bg-[#f8f7f7] border border-[#646262]/30 flex items-center justify-between text-xs">
-          <span class="font-bold text-[#201d1d]">${locProd.name} (${tr('라이센스 해제', 'License Unlock', 'ライセンス解除')})</span>
-          <span class="font-bold text-[#201d1d]">$${pricing.productUsd.toFixed(2)} (${pricing.productKrw.toLocaleString()}원)</span>
-        </div>
-
-        ${
-          mallState.feedbackMsg
-            ? `<div class="p-3 bg-red-50 border border-red-500/40 text-xs text-red-800 font-bold">${mallState.feedbackMsg}</div>`
-            : ''
-        }
-
-        <div class="space-y-3">
-          <div>
-            <label class="block text-xs font-bold text-[#201d1d] mb-1">${tr('라이센스 등록자 성명 (또는 스튜디오/닉네임)', 'Licensee Name (or Studio / Creator Handle)', 'ライセンス登録者氏名（またはスタジオ名）')}</label>
-            <input
-              id="mall-buyer-name"
-              type="text"
-              value="${mallState.buyerName}"
-              placeholder="${tr('홍길동 / Studio Kadan (미입력 시 기본 라이센시로 자동 등록)', 'Creator Name / Studio (Optional)', '山田太郎 / Studio名')}"
-              class="w-full min-h-[44px] px-3 py-2 border border-[#201d1d] bg-white text-xs font-mono rounded-sm"
-            />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-[#201d1d] mb-1">${tr('연락처 (휴대폰 번호 · PayApp 결제 알림용)', 'Phone Number (for Payment Notification)', '連絡先電話番号')}</label>
-            <input
-              id="mall-buyer-phone"
-              type="tel"
-              value="${mallState.buyerPhone}"
-              placeholder="${tr('010-1234-5678', '+1 234 567 8900', '090-1234-5678')}"
-              class="w-full min-h-[44px] px-3 py-2 border border-[#201d1d] bg-white text-xs font-mono rounded-sm"
-            />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-[#201d1d] mb-1">${tr('이메일 또는 활용 프로젝트 메모 (디지털 라이센스 증서 표기용)', 'Email or Project Note (for Digital License Certificate)', 'メールアドレスまたは利用プロジェクトメモ')}</label>
-            <input
-              id="mall-buyer-address"
-              type="text"
-              value="${mallState.buyerAddress}"
-              placeholder="${tr('creator@example.com / 유튜브 애니메이션·웹툰·게임 프로젝트 활용', 'creator@example.com / YouTube Animation & Indie Game Project', 'creator@example.com / 動画・ゲーム制作プロジェクト')}"
-              class="w-full min-h-[44px] px-3 py-2 border border-[#201d1d] bg-white text-xs font-mono rounded-sm"
-            />
-          </div>
-        </div>
-
-        <div class="flex gap-2 pt-2">
-          <button
-            type="button"
-            data-action="back-mall-detail"
-            class="min-h-[44px] px-4 py-2 border border-[#646262]/40 bg-white text-xs font-bold text-[#201d1d] rounded-sm cursor-pointer"
-          >
-            ← ${tr('이전', 'Back', '戻る')}
-          </button>
-          <button
-            type="button"
-            data-action="submit-mall-shipping"
-            class="flex-1 min-h-[44px] py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#343030] cursor-pointer"
-          >
-            ${tr('다음: 라이센스 발급 국가 선택 →', 'Next: Select Region →', '次へ：発行地域の選択 →')}
-          </button>
-        </div>
-      </div>
-    `;
-  } else if (mallState.step === 'country') {
-    bodyHtml = `
-      <div class="space-y-4 font-mono">
-        <div class="p-3 bg-[#f8f7f7] border border-[#646262]/30 text-xs space-y-1">
-          <div class="font-bold text-[#201d1d]">${tr('라이센스 등록자', 'Licensee', '登録者')}: ${mallState.buyerName} (${mallState.buyerPhone})</div>
-          <div class="text-[11px] text-[#646262] truncate">${mallState.buyerAddress}</div>
-        </div>
-
-        <div class="space-y-2">
-          <div class="text-xs font-bold text-[#201d1d]">${tr('라이센스 발급 권역 선택 (디지털 라이센스 수수료 $0 무료)', 'Select Region (Digital License Issuance Fee $0)', 'ライセンス発行地域の選択（デジタル発行手数料 $0）')}</div>
-          <div class="space-y-2 max-h-[300px] overflow-y-auto pr-1">
-            ${MALL_SHIPPING_COUNTRIES.map((c) => {
-              const isSelected = c.code === mallState.selectedCountryCode;
-              const lc = getLocalizedCountry(c);
-              return `
-                <button
-                  type="button"
-                  data-action="select-mall-country"
-                  data-country-code="${c.code}"
-                  class="w-full p-3 text-left border ${
-                    isSelected ? 'border-[#201d1d] bg-[#201d1d]/5' : 'border-[#646262]/30 bg-white'
-                  } hover:border-[#201d1d] transition flex items-center justify-between cursor-pointer rounded-sm"
-                >
-                  <div>
-                    <div class="text-xs font-bold text-[#201d1d]">${lc.name}</div>
-                    <div class="text-[11px] text-[#646262]">${lc.regionLabel} · ${lc.deliveryDays}</div>
-                  </div>
-                  <span class="px-2 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">${tr('선택 →', 'Select →', '選択 →')}</span>
-                </button>
-              `;
-            }).join('')}
-          </div>
-        </div>
-
-        <button
-          type="button"
-          data-action="back-mall-shipping"
-          class="w-full min-h-[44px] py-2 border border-[#646262]/40 bg-white text-xs font-bold text-[#201d1d] rounded-sm cursor-pointer"
-        >
-          ← ${tr('라이센스 등록자 정보 수정', 'Edit Licensee Info', '登録者情報の修正')}
-        </button>
-      </div>
-    `;
-  } else if (mallState.step === 'payment') {
+  } else if (mallState.step === 'payment' || mallState.step === 'shipping' || mallState.step === 'country') {
     bodyHtml = `
       <div class="space-y-4 font-mono">
         <!-- Order & Price Summary -->
@@ -983,7 +859,7 @@ function renderMallCheckoutModal(): string {
             <span>$${pricing.productUsd.toFixed(2)} (${pricing.productKrw.toLocaleString()}원)</span>
           </div>
           <div class="flex items-center justify-between text-[11px] text-[#646262]">
-            <span>${tr('디지털 원본 발급 수수료', 'Digital License & Download Fee', 'デジタル原本発行手数料')} (${locCountry.name})</span>
+            <span>${tr('디지털 원본 발급 수수료', 'Digital License & Download Fee', 'デジタル原本発行手数料')}</span>
             <span>${tr('무료 ($0.00)', 'FREE ($0.00)', '無料 ($0.00)')}</span>
           </div>
           <div class="flex items-center justify-between pt-2 border-t border-[#201d1d] text-sm font-bold text-[#201d1d]">
@@ -998,7 +874,7 @@ function renderMallCheckoutModal(): string {
             : ''
         }
 
-        <!-- 4 Payment Gateways -->
+        <!-- 3 Real Payment Gateways (1-Click Removed) -->
         <div class="space-y-2.5">
           <div class="text-xs font-bold text-[#201d1d]">${tr('결제 수단 선택 (결제 즉시 라이센스 영구 해제)', 'Select Payment Method (Instant License Unlock)', '決済手段の選択（決済即時ライセンス永久解除）')}</div>
 
@@ -1040,24 +916,14 @@ function renderMallCheckoutModal(): string {
             </div>
             <span class="px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm">CRYPTO QR</span>
           </button>
-
-          <button
-            type="button"
-            data-action="execute-mall-checkout"
-            data-method="test_sim"
-            class="w-full min-h-[44px] p-2.5 border border-emerald-600/50 bg-emerald-50 text-emerald-900 hover:bg-emerald-100 transition flex items-center justify-between rounded-sm cursor-pointer"
-          >
-            <span class="text-xs font-bold">⚡ ${tr('즉시 라이센스 해제 완료 처리 (1클릭 시뮬레이션 결제)', 'Instant License Unlock (1-Click Direct Checkout)', '即時ライセンス解除完了処理（1クリック決済）')}</span>
-            <span class="px-2 py-0.5 bg-emerald-800 text-white text-[10px] font-bold rounded-sm">INSTANT UNLOCK</span>
-          </button>
         </div>
 
         <button
           type="button"
-          data-action="back-mall-country"
+          data-action="back-mall-detail"
           class="w-full min-h-[44px] py-2 border border-[#646262]/40 bg-white text-xs font-bold text-[#201d1d] rounded-sm cursor-pointer"
         >
-          ← ${tr('발급 권역 다시 선택', 'Back to Region Selection', '発行地域の再選択')}
+          ← ${tr('캐릭터시트 전체화면으로 돌아가기', 'Back to Character Sheet Fullscreen', 'キャラクターシート全画面に戻る')}
         </button>
       </div>
     `;
