@@ -28,6 +28,7 @@ import {
   resolveCryptoDepositDetails,
 } from '../services/qrCodeSvg';
 import { tr } from '../services/i18n';
+import { audioManager } from '../services/audioManager';
 
 // ============================================================================
 // Types & Interfaces
@@ -790,9 +791,19 @@ export function flipPackCard(cardIndex: number): void {
   if (!activePackReveal) return;
   if (!activePackReveal.revealedIndices.includes(cardIndex)) {
     activePackReveal.revealedIndices.push(cardIndex);
+    try {
+      audioManager.playCardFlip();
+    } catch {
+      // ignore audio errors
+    }
     const flippedCard = activePackReveal.cards[cardIndex];
     if (flippedCard && flippedCard.cardId === activePackReveal.bestCard.cardId) {
       activePackReveal.hasTriggeredFactionVfx = true;
+      try {
+        audioManager.playVictoryFanfare();
+      } catch {
+        // ignore audio errors
+      }
     }
     if (activePackReveal.revealedIndices.length === activePackReveal.cards.length) {
       activePackReveal.hasTriggeredFactionVfx = true;
@@ -804,6 +815,11 @@ export function flipAllPackCards(): void {
   if (!activePackReveal) return;
   activePackReveal.revealedIndices = activePackReveal.cards.map((_, i) => i);
   activePackReveal.hasTriggeredFactionVfx = true;
+  try {
+    audioManager.playVictoryFanfare();
+  } catch {
+    // ignore audio errors
+  }
 }
 
 // ============================================================================
@@ -1126,13 +1142,13 @@ function simulatePackDraw(
   count: number,
   minRarity: 'Bronze' | 'Silver' | 'Gold' | 'Boss'
 ): RevealedCardMeta[] {
-  const db = CARD_DATABASE;
+  const db = Object.values(CARD_DATABASE);
   const cards: RevealedCardMeta[] = [];
 
-  const bronzeCards = db.filter((c) => c.rarity === 'Bronze');
-  const silverCards = db.filter((c) => c.rarity === 'Silver');
-  const goldCards = db.filter((c) => c.rarity === 'Gold');
-  const bossCards = db.filter((c) => c.rarity === 'Boss');
+  const bronzeCards = db.filter((c) => (c.rarity || '').toLowerCase() === 'bronze');
+  const silverCards = db.filter((c) => (c.rarity || '').toLowerCase() === 'silver');
+  const goldCards = db.filter((c) => (c.rarity || '').toLowerCase() === 'gold');
+  const bossCards = goldCards.slice(0, 10);
 
   for (let i = 0; i < count; i++) {
     let pool = db;
@@ -1143,23 +1159,34 @@ function simulatePackDraw(
     }
 
     if (pool.length === 0) pool = db;
-    const picked = pool[Math.floor(Math.random() * pool.length)];
+    const picked = pool[Math.floor(Math.random() * pool.length)] || db[0];
 
     const bustUrl = getCharacterAsset(picked.id, 'bust');
     const seatUrl = getCharacterAsset(picked.id, 'seat');
 
-    const nurture = cardNurtureStore.getCardNurture(picked.id);
-    const isNew = nurture.level === 1 && nurture.exp === 0;
+    const isAlreadyOwned = cardNurtureStore.isCardOwned(picked.id);
+    const isNew = !isAlreadyOwned;
 
+    // 인벤토리에 카드 추가 및 경험치 부여
+    cardNurtureStore.addCard(picked.id);
     cardNurtureStore.addExp(picked.id, 200);
+
+    const locNameKo = picked.title || getLocalizedCharacterName(picked.id) || `영웅 #${picked.id}`;
+    const locNameEn = picked.title_en || getLocalizedCharacterName(picked.id) || `Hero #${picked.id}`;
+    const faction = picked.element || picked.race || 'Human';
+    const rarityCapitalized = (
+      picked.rarity
+        ? picked.rarity.charAt(0).toUpperCase() + picked.rarity.slice(1).toLowerCase()
+        : 'Bronze'
+    ) as 'Bronze' | 'Silver' | 'Gold' | 'Boss';
 
     cards.push({
       cardId: picked.id,
-      nameKo: picked.nameKo,
-      nameEn: picked.nameEn,
-      rarity: picked.rarity,
-      faction: picked.faction,
-      power: picked.power,
+      nameKo: locNameKo,
+      nameEn: locNameEn,
+      rarity: rarityCapitalized,
+      faction,
+      power: picked.power || 20,
       top: picked.top,
       right: picked.right,
       bottom: picked.bottom,
