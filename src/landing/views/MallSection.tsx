@@ -337,10 +337,10 @@ export function getSelectedTshirtCardId(): number {
 }
 
 export function renderMugMockupPreview(cardId: number, isThumbnail: boolean = false): string {
-  const card = CARD_DATABASE.find((c) => c.id === cardId) || CARD_DATABASE[40] || CARD_DATABASE[0];
+  const card = CARD_DATABASE[cardId] || CARD_DATABASE[41] || CARD_DATABASE[1];
   const bustUrl = getCharacterAsset(card.id, 'bust');
-  const locName = getLocalizedCharacterName(card.id) || card.nameKo;
-  const locFaction = getLocalizedFactionName(card.faction);
+  const locName = getLocalizedCharacterName(card.id) || card.title;
+  const locFaction = getLocalizedFactionName(card.element);
 
   const containerClass = isThumbnail
     ? 'relative w-full h-full flex items-center justify-center select-none overflow-hidden'
@@ -370,10 +370,10 @@ export function renderMugMockupPreview(cardId: number, isThumbnail: boolean = fa
 }
 
 export function renderTshirtMockupPreview(cardId: number, isThumbnail: boolean = false): string {
-  const card = CARD_DATABASE.find((c) => c.id === cardId) || CARD_DATABASE[40] || CARD_DATABASE[0];
+  const card = CARD_DATABASE[cardId] || CARD_DATABASE[41] || CARD_DATABASE[1];
   const bustUrl = getCharacterAsset(card.id, 'bust');
-  const locName = getLocalizedCharacterName(card.id) || card.nameKo;
-  const locFaction = getLocalizedFactionName(card.faction);
+  const locName = getLocalizedCharacterName(card.id) || card.title;
+  const locFaction = getLocalizedFactionName(card.element);
 
   const containerClass = isThumbnail
     ? 'relative w-full h-full flex items-center justify-center select-none overflow-hidden'
@@ -979,10 +979,11 @@ export function renderMallModal(): string {
                         ${tr('110종 영웅 중 머그컵에 인쇄할 카드를 선택하세요:', 'Select a hero card to print on your mug:', 'マグカップに印刷するカードを選択してください:')}
                       </div>
                       <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5 max-h-48 overflow-y-auto p-1 bg-white border border-stone-300 rounded-none">
-                        ${CARD_DATABASE.slice(0, 110)
+                        ${Object.values(CARD_DATABASE)
+                          .slice(0, 110)
                           .map((c) => {
                             const isCur = c.id === selectedMugCardId;
-                            const cName = getLocalizedCharacterName(c.id) || c.nameKo;
+                            const cName = getLocalizedCharacterName(c.id) || c.title;
                             return `
                           <button
                             type="button"
@@ -1036,10 +1037,11 @@ export function renderMallModal(): string {
                         ${tr('110종 영웅 중 티셔츠 가슴에 인쇄할 카드를 선택하세요:', 'Select a hero card to print on your T-shirt:', 'Tシャツ胸に印刷するカードを選択してください:')}
                       </div>
                       <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5 max-h-48 overflow-y-auto p-1 bg-white border border-stone-300 rounded-none">
-                        ${CARD_DATABASE.slice(0, 110)
+                        ${Object.values(CARD_DATABASE)
+                          .slice(0, 110)
                           .map((c) => {
                             const isCur = c.id === selectedTshirtCardId;
-                            const cName = getLocalizedCharacterName(c.id) || c.nameKo;
+                            const cName = getLocalizedCharacterName(c.id) || c.title;
                             return `
                           <button
                             type="button"
