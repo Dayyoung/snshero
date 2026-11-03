@@ -25,6 +25,7 @@ import {
   CRYPTO_QUICK_CHIPS,
   resolveCryptoDepositDetails,
 } from '../services/qrCodeSvg';
+import { tr } from '../services/i18n';
 
 export type MallCategoryTab = 'ALL' | 'CARD_SET' | 'APPAREL' | 'EQUIPMENT';
 
@@ -156,6 +157,129 @@ export const FACTION_OPTIONS = [
   '혼돈마족 (Demon)',
 ];
 
+function getLocalizedMallTabLabel(key: MallCategoryTab): string {
+  switch (key) {
+    case 'ALL':
+      return tr('전체 (ALL)', 'ALL', 'すべて (ALL)');
+    case 'CARD_SET':
+      return tr('실물 카드·덱 (CARD)', 'Physical Cards (CARD)', '実物カード・デッキ (CARD)');
+    case 'APPAREL':
+      return tr('굿즈·의류 (MERCH)', 'Merch & Apparel (MERCH)', 'グッズ・アパレル (MERCH)');
+    case 'EQUIPMENT':
+      return tr('배틀 매트 (TABLE)', 'Battle Mat (TABLE)', 'バトルマット (TABLE)');
+  }
+}
+
+function getLocalizedMallProduct(prod: MallGoodsProduct): MallGoodsProduct {
+  switch (prod.id) {
+    case 'goods_deck_all':
+      return {
+        ...prod,
+        name: tr('110장 올인원 풀세트 (10% 할인)', '110-Card All-in-One Full Set (10% OFF)', '110枚オールインワン・フルセット (10%割引)'),
+        badge: tr('소장용 풀컬렉션', "Collector's Full Set", 'コレクターズ・フルセット'),
+        priceText: tr('$300.00 (420,000원)', '$300.00 (₩420,000)', '$300.00 (420,000ウォン)'),
+        description: tr(
+          '11개 종족 110종 전 영웅 공식 실물 TCG 카드 완벽 패키지. 전용 하드케이스 동봉.',
+          'Complete official physical TCG card package featuring all 110 heroes across 11 factions. Includes dedicated hard case.',
+          '11種族110種すべての英雄を網羅した公式実物TCGカード完全パッケージ。専用ハードケース同梱。'
+        ),
+        shortSpec: tr(
+          '110종 전 영웅 실물 카드 전량 수록 · 350gsm 고급 독일제 코어 블랙지 · 홀로그램 포일 박스',
+          'All 110 physical hero cards · 350gsm premium German black-core cardstock · Holographic foil box',
+          '全110種英雄実物カード収録 · 350gsm高級ドイツ製ブラックコア紙 · ホログラム箔押しボックス'
+        ),
+      };
+    case 'goods_deck_faction':
+      return {
+        ...prod,
+        name: tr('종족별 영웅 덱 (10장 세트)', 'Faction Hero Deck (10-Card Set)', '種族別英雄デッキ (10枚セット)'),
+        badge: tr('종족 테마 덱', 'Faction Theme Deck', '種族テーマデッキ'),
+        priceText: tr('$30.00 (42,000원)', '$30.00 (₩42,000)', '$30.00 (42,000ウォン)'),
+        description: tr(
+          '선택한 특정 종족 영웅 10장으로 구성된 테마 스타터 덱. 11대 종족 중 자유 선택.',
+          'Themed starter deck composed of 10 heroes from your chosen faction. Choose freely from 11 major factions.',
+          '選択した特定種族の英雄10枚で構成されたテーマスターターデッキ。11大種族から自由に選択可能。'
+        ),
+        shortSpec: tr(
+          '종족별 카드 10장 + 종족 고유 슬리브 10매 동봉 · 즉시 3x3 배틀 가능 구성',
+          '10 faction cards + 10 faction sleeves included · Ready for instant 3x3 battle',
+          '種族別カード10枚 + 種族固有スリーブ10枚同梱 · すぐに3x3バトル可能な構成'
+        ),
+      };
+    case 'goods_table':
+      return {
+        ...prod,
+        name: tr('히어로 3x3 배틀 게임테이블', 'Hero 3x3 Battle Game Table Mat', 'ヒーロー 3x3 バトルゲームテーブルマット'),
+        badge: tr('전용 배틀 매트', 'Dedicated Battle Mat', '専用バトルマット'),
+        priceText: tr('$30.00 (42,000원)', '$30.00 (₩42,000)', '$30.00 (42,000ウォン)'),
+        description: tr(
+          '3x3 격자 전장과 N/E/S/W 스탯 룰이 각인된 고급 천연고무 게이밍 데스크 패브릭 매트.',
+          'Premium natural rubber gaming desk fabric mat printed with the 3x3 grid battlefield and N/E/S/W stat rules.',
+          '3x3グリッド戦場とN/E/S/Wステータスルールが刻印された高級天然ゴム・ゲーミングデスクファブリックマット。'
+        ),
+        shortSpec: tr(
+          '규격 600x350x4mm · 방수 코팅 패브릭 표면 · 미끄럼 방지 천연고무 바닥',
+          'Size 600x350x4mm · Water-repellent coated fabric surface · Non-slip natural rubber base',
+          'サイズ 600x350x4mm · 防水コーティングファブリック表面 · 滑り止め天然ゴム底面'
+        ),
+      };
+    case 'goods_mug':
+      return {
+        ...prod,
+        name: tr('히어로 커스텀 머그컵', 'Hero Custom Mug', 'ヒーロー・カスタムマグカップ'),
+        badge: tr('공식 정품', 'Official Merch', '公式正規品'),
+        priceText: tr('$10.00 (14,000원)', '$10.00 (₩14,000)', '$10.00 (14,000ウォン)'),
+        description: tr(
+          '원하는 영웅 일러스트와 칭호가 고화질 전사 인쇄된 11oz 프리미엄 세라믹 머그컵.',
+          '11oz premium ceramic mug featuring high-definition transfer printing of your favorite hero illustration and title.',
+          'お好みの英雄イラストと称号が高画質転写印刷された11ozプレミアムセラミックマグカップ。'
+        ),
+        shortSpec: tr(
+          '용량 11oz (약 330ml) · 고온 전사 세라믹 · 전자레인지/식기세척기 안심 사용',
+          'Capacity 11oz (~330ml) · High-temp transfer ceramic · Microwave & dishwasher safe',
+          '容量 11oz (約330ml) · 高温転写セラミック · 電子レンジ/食洗機対応'
+        ),
+      };
+    case 'goods_tshirt':
+      return {
+        ...prod,
+        name: tr('히어로 커스텀 티셔츠', 'Hero Custom T-Shirt', 'ヒーロー・カスタムTシャツ'),
+        badge: tr('프리미엄 코튼', 'Premium Cotton', 'プレミアムコットン'),
+        priceText: tr('$30.00 (42,000원)', '$30.00 (₩42,000)', '$30.00 (42,000ウォン)'),
+        description: tr(
+          '20수 고급 코튼 원단에 대표 영웅 풀바디 공식 일러스트가 프린팅된 공식 반팔 티셔츠.',
+          'Official short-sleeve T-shirt printed with full-body hero artwork on premium 20s combed cotton fabric.',
+          '20番手高級コットン生地に代表英雄のフルボディ公式イラストがプリントされた公式半袖Tシャツ。'
+        ),
+        shortSpec: tr(
+          '면 100% 20수 코마사 · 정사이즈 유니섹스 핏 (S/M/L) · 넥라인 보강 테이핑',
+          '100% 20s combed cotton · Regular unisex fit (S/M/L) · Reinforced neckline taping',
+          '綿100% 20番手コーマ糸 · レギュラーユニセックスフィット (S/M/L) · ネックライン補強テーピング'
+        ),
+      };
+    default:
+      return prod;
+  }
+}
+
+function getLocalizedMallFactionOption(f: string): string {
+  const map: Record<string, [string, string]> = {
+    '성진기사단 (Human)': ['Star Knights (Human)', '星辰騎士団 (Human)'],
+    '원소정령 (Spirit)': ['Elemental Spirit (Spirit)', '元素精霊 (Spirit)'],
+    '암흑심연 (Abyss)': ['Dark Abyss (Abyss)', '暗黒深淵 (Abyss)'],
+    '신성교단 (Holy)': ['Holy Order (Holy)', '神聖教団 (Holy)'],
+    '용족군단 (Dragon)': ['Dragon Legion (Dragon)', '竜族軍団 (Dragon)'],
+    '기계제국 (Mecha)': ['Mecha Empire (Mecha)', '機械帝国 (Mecha)'],
+    '수호야수 (Beast)': ['Guardian Beast (Beast)', '守護野獣 (Beast)'],
+    '고대불멸 (Undead)': ['Ancient Undead (Undead)', '古代不滅 (Undead)'],
+    '환상요정 (Fairy)': ['Fantasy Fairy (Fairy)', '幻想妖精 (Fairy)'],
+    '천상신족 (Celestial)': ['Celestial Gods (Celestial)', '天上神族 (Celestial)'],
+    '혼돈마족 (Demon)': ['Chaos Demon (Demon)', '混沌魔族 (Demon)'],
+  };
+  const found = map[f];
+  return found ? tr(f, found[0], found[1]) : f;
+}
+
 // ============================================================================
 // Internal State
 // ============================================================================
@@ -241,7 +365,13 @@ export function backMallToDetail(): void {
 
 export function submitMallShipping(info: { name: string; phone: string; address: string }): boolean {
   if (!info.name.trim() || !info.phone.trim() || !info.address.trim()) {
-    alert('받는 분 성함, 연락처, 배송지 주소를 모두 입력해주세요.');
+    alert(
+      tr(
+        '받는 분 성함, 연락처, 배송지 주소를 모두 입력해주세요.',
+        'Please enter the recipient name, phone number, and shipping address.',
+        '受取人氏名、連絡先、配送先住所をすべて入力してください。'
+      )
+    );
     return false;
   }
   buyerName = info.name.trim();
@@ -396,8 +526,11 @@ export function copyMallCryptoAddress(address: string): void {
 }
 
 export function verifyMallCryptoDeposit(): void {
-  mallCryptoVerifyNotice =
-    '블록체인 네트워크에서 입금 내역을 조회 중입니다. 송금 후 네트워크 컨펌 완료 시 주문이 자동 승인됩니다.';
+  mallCryptoVerifyNotice = tr(
+    '블록체인 네트워크에서 입금 내역을 조회 중입니다. 송금 후 네트워크 컨펌 완료 시 주문이 자동 승인됩니다.',
+    'Checking deposit on the blockchain network. Your order will be automatically approved once confirmed.',
+    'ブロックチェーンネットワークで入金履歴を照会中です。送金後、ネットワーク承認完了時に注文が自動承認されます。'
+  );
 }
 
 // ============================================================================
@@ -413,31 +546,31 @@ export function renderMallModal(): string {
       <div id="mall-orders-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
         <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full max-h-[85vh] flex flex-col p-6 shadow-none">
           <div class="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.08)]">
-            <h3 class="text-sm font-bold m-0">[주문 내역] 실물 굿즈 배송 주문</h3>
+            <h3 class="text-sm font-bold m-0">${tr('[주문 내역] 실물 굿즈 배송 주문', '[Order History] Physical Merch Orders', '[注文履歴] 実物グッズ配送注文')}</h3>
             <button type="button" data-action="close-mall-modal" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
           </div>
           <div class="flex-1 overflow-y-auto py-4 space-y-3">
             ${
               orders.length === 0
-                ? '<div class="text-center py-8 text-xs text-stone-500">아직 주문된 내역이 없습니다.</div>'
+                ? `<div class="text-center py-8 text-xs text-stone-500">${tr('아직 주문된 내역이 없습니다.', 'No orders placed yet.', 'まだ注文履歴がありません。')}</div>`
                 : orders
                     .map(
                       (ord) => `
               <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] rounded-none text-xs space-y-1">
                 <div class="flex items-center justify-between font-bold">
-                  <span>${ord.title} (${ord.quantity}개)</span>
-                  <span class="text-emerald-700 font-mono">${ord.status === 'paid' ? '결제완료' : '배송준비'}</span>
+                  <span>${ord.title} (${ord.quantity}${tr('개', ' pcs', '個')})</span>
+                  <span class="text-emerald-700 font-mono">${ord.status === 'paid' ? tr('결제완료', 'Paid', '決済完了') : tr('배송준비', 'Preparing', '配送準備中')}</span>
                 </div>
-                <div class="text-[11px] text-stone-600">주문번호: ${ord.id} · 금액: ${ord.priceKrw.toLocaleString()}원</div>
-                <div class="text-[11px] text-stone-500">받는 분: ${ord.buyerName} (${ord.buyerPhone})</div>
-                <div class="text-[10px] text-stone-500">배송지: ${ord.buyerAddress}</div>
+                <div class="text-[11px] text-stone-600">${tr('주문번호', 'Order ID', '注文番号')}: ${ord.id} · ${tr('금액', 'Amount', '金額')}: ${ord.priceKrw.toLocaleString()}${tr('원', ' KRW', 'ウォン')}</div>
+                <div class="text-[11px] text-stone-500">${tr('받는 분', 'Recipient', '受取人')}: ${ord.buyerName} (${ord.buyerPhone})</div>
+                <div class="text-[10px] text-stone-500">${tr('배송지', 'Address', '配送先')}: ${ord.buyerAddress}</div>
               </div>
             `
                     )
                     .join('')
             }
           </div>
-          <button type="button" data-action="close-mall-modal" class="w-full py-2.5 bg-[#f1eeee] hover:bg-[#e8e5e5] text-xs font-bold rounded-sm min-h-[44px]">닫기</button>
+          <button type="button" data-action="close-mall-modal" class="w-full py-2.5 bg-[#f1eeee] hover:bg-[#e8e5e5] text-xs font-bold rounded-sm min-h-[44px]">${tr('닫기', 'Close', '閉じる')}</button>
         </div>
       </div>
     `;
@@ -448,18 +581,22 @@ export function renderMallModal(): string {
       <div id="mall-celebration-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
         <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-md w-full p-6 text-center space-y-4 shadow-none">
           <div class="text-3xl">🎉</div>
-          <h3 class="text-base font-black m-0">굿즈 주문이 성공적으로 접수되었습니다!</h3>
+          <h3 class="text-base font-black m-0">${tr('굿즈 주문이 성공적으로 접수되었습니다!', 'Your merch order has been successfully placed!', 'グッズのご注文が正常に受け付けられました！')}</h3>
           <p class="text-xs text-stone-600 leading-relaxed">
-            주문번호: <strong>${lastCompletedOrder.id}</strong><br/>
-            상품: <strong>${lastCompletedOrder.title}</strong> (${lastCompletedOrder.quantity}개)<br/>
-            수령인: ${lastCompletedOrder.buyerName}님 (${lastCompletedOrder.buyerPhone})<br/>
-            배송지: ${lastCompletedOrder.buyerAddress}
+            ${tr('주문번호', 'Order ID', '注文番号')}: <strong>${lastCompletedOrder.id}</strong><br/>
+            ${tr('상품', 'Product', '商品')}: <strong>${lastCompletedOrder.title}</strong> (${lastCompletedOrder.quantity}${tr('개', ' pcs', '個')})<br/>
+            ${tr('수령인', 'Recipient', '受取人')}: ${lastCompletedOrder.buyerName} (${lastCompletedOrder.buyerPhone})<br/>
+            ${tr('배송지', 'Address', '配送先')}: ${lastCompletedOrder.buyerAddress}
           </p>
           <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] text-[11px] text-stone-600">
-            주문 승인이 완료되었으며, 상품 준비 후 발송 시 안내 문자가 발송됩니다.
+            ${tr(
+              '주문 승인이 완료되었으며, 상품 준비 후 발송 시 안내 문자가 발송됩니다.',
+              'Your order is approved. A notification will be sent once the item is shipped.',
+              '注文承認が完了しました。商品の準備ができ次第、発送案内をお送りします。'
+            )}
           </div>
           <button type="button" data-action="close-mall-modal" class="w-full py-3 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm min-h-[44px]">
-            확인 (완료)
+            ${tr('확인 (완료)', 'Confirm (Done)', '確認 (完了)')}
           </button>
         </div>
       </div>
@@ -472,10 +609,10 @@ export function renderMallModal(): string {
     mallModalStep === 'crypto_deposit' ||
     mallModalStep === 'crypto'
   ) {
-    const prod = activeDetailProduct;
+    const prod = activeDetailProduct ? getLocalizedMallProduct(activeDetailProduct) : null;
     const totalUsd = prod ? prod.priceUsd * selectedQty : 29.0;
     const totalKrw = prod ? prod.priceKrw * selectedQty : 39000;
-    const prodLabel = prod ? `${prod.name} (${selectedQty}개)` : '공식 굿즈 주문';
+    const prodLabel = prod ? `${prod.name} (${selectedQty}${tr('개', ' pcs', '個')})` : tr('공식 굿즈 주문', 'Official Merch Order', '公式グッズ注文');
 
     return `
       <div id="mall-crypto-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
@@ -483,9 +620,9 @@ export function renderMallModal(): string {
           <div class="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.08)]">
             <div>
               <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-600 text-white rounded-sm mb-1">
-                굿즈 암호화폐 결제
+                ${tr('굿즈 암호화폐 결제', 'Merch Crypto Payment', 'グッズ暗号資産決済')}
               </span>
-              <h3 class="text-sm sm:text-base font-bold m-0">⚡ 암호화폐 결제 (${prodLabel})</h3>
+              <h3 class="text-sm sm:text-base font-bold m-0">⚡ ${tr('암호화폐 결제', 'Crypto Payment', '暗号資産決済')} (${prodLabel})</h3>
             </div>
             <button type="button" data-action="close-mall-modal" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
           </div>
@@ -496,9 +633,9 @@ export function renderMallModal(): string {
                 <div class="space-y-3">
                   <div class="flex items-center justify-between">
                     <button type="button" data-action="back-mall-payment" class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1">
-                      ← 결제 수단 변경
+                      ← ${tr('결제 수단 변경', 'Change Payment Method', '決済手段を変更')}
                     </button>
-                    <span class="text-xs font-bold text-[#201d1d]">$${totalUsd.toFixed(2)} USD (${totalKrw.toLocaleString()}원)</span>
+                    <span class="text-xs font-bold text-[#201d1d]">$${totalUsd.toFixed(2)} USD (${totalKrw.toLocaleString()}${tr('원', ' KRW', 'ウォン')})</span>
                   </div>
 
                   <div class="flex flex-wrap gap-1.5 text-[11px]">
@@ -536,7 +673,7 @@ export function renderMallModal(): string {
                               </div>
                             </div>
                           </div>
-                          <span class="text-xs font-bold text-stone-500">선택 →</span>
+                          <span class="text-xs font-bold text-stone-500">${tr('선택 →', 'Select →', '選択 →')}</span>
                         </button>
                       `
                     ).join('')}
@@ -555,9 +692,9 @@ export function renderMallModal(): string {
                     <div class="space-y-3">
                       <div class="flex items-center justify-between">
                         <button type="button" data-action="back-mall-crypto-coin" class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1">
-                          ← 코인 다시 선택
+                          ← ${tr('코인 다시 선택', 'Reselect Coin', 'コインを再選択')}
                         </button>
-                        <span class="text-xs font-bold text-[#201d1d]">⚡ ${coinObj.ccy} 네트워크 선택</span>
+                        <span class="text-xs font-bold text-[#201d1d]">⚡ ${coinObj.ccy} ${tr('네트워크 선택', 'Select Network', 'ネットワーク選択')}</span>
                       </div>
                       <div class="space-y-2 max-h-60 overflow-y-auto">
                         ${coinObj.chains
@@ -571,7 +708,7 @@ export function renderMallModal(): string {
                                 class="w-full p-3.5 min-h-[48px] bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-none flex items-center justify-between transition-colors cursor-pointer text-left"
                               >
                                 <span class="font-black text-xs sm:text-sm text-[#201d1d]">${chainName} (${chainItem})</span>
-                                <span class="text-xs font-bold text-[#201d1d]">QR 생성 →</span>
+                                <span class="text-xs font-bold text-[#201d1d]">${tr('QR 생성 →', 'Generate QR →', 'QR生成 →')}</span>
                               </button>
                             `;
                           })
@@ -591,7 +728,7 @@ export function renderMallModal(): string {
                     <div class="space-y-3.5 max-h-[75vh] overflow-y-auto pr-0.5">
                       <div class="flex items-center justify-between">
                         <button type="button" data-action="back-mall-crypto-coin" class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1">
-                          ← 다른 코인/네트워크 선택
+                          ← ${tr('다른 코인/네트워크 선택', 'Select Another Coin/Network', '別のコイン/ネットワークを選択')}
                         </button>
                         <span class="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">
                           ${deposit.chain}
@@ -599,11 +736,11 @@ export function renderMallModal(): string {
                       </div>
 
                       <div class="bg-[#f8f7f7] border border-[#201d1d] rounded-none p-3 text-center space-y-1">
-                        <span class="text-[10px] text-stone-500 font-bold block uppercase tracking-wider">전송해야 할 정확한 금액</span>
+                        <span class="text-[10px] text-stone-500 font-bold block uppercase tracking-wider">${tr('전송해야 할 정확한 금액', 'Exact Amount to Send', '送金する正確な金額')}</span>
                         <div class="text-xl sm:text-2xl font-black text-[#201d1d]">
                           ${deposit.amount} <span class="text-sm font-bold text-amber-700">${deposit.ccy}</span>
                         </div>
-                        <span class="text-[10px] text-stone-600 font-bold block">네트워크: ${deposit.chain}</span>
+                        <span class="text-[10px] text-stone-600 font-bold block">${tr('네트워크', 'Network', 'ネットワーク')}: ${deposit.chain}</span>
                       </div>
 
                       <div class="flex flex-col items-center justify-center p-3 bg-white border border-[rgba(15,0,0,0.12)] rounded-none">
@@ -611,12 +748,12 @@ export function renderMallModal(): string {
                           ${deposit.qrSvg}
                         </div>
                         <span class="text-[10px] text-stone-500 mt-1.5 font-mono font-bold">
-                          지갑 앱으로 QR 코드를 스캔하여 전송하세요
+                          ${tr('지갑 앱으로 QR 코드를 스캔하여 전송하세요', 'Scan the QR code with your wallet app to send', 'ウォレットアプリでQRコードをスキャンして送金してください')}
                         </span>
                       </div>
 
                       <div class="space-y-1.5">
-                        <label class="text-[11px] font-bold text-stone-600 block">입금 전용 지갑 주소 (${deposit.chain})</label>
+                        <label class="text-[11px] font-bold text-stone-600 block">${tr('입금 전용 지갑 주소', 'Deposit Wallet Address', '入金専用ウォレットアドレス')} (${deposit.chain})</label>
                         <div class="flex items-center gap-1.5">
                           <input
                             type="text"
@@ -630,7 +767,7 @@ export function renderMallModal(): string {
                             data-address="${deposit.address}"
                             class="px-3 py-2.5 min-h-[44px] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] rounded-sm text-xs font-bold flex items-center justify-center cursor-pointer shrink-0"
                           >
-                            ${mallCryptoCopied ? '✓ 복사됨' : '복사'}
+                            ${mallCryptoCopied ? tr('✓ 복사됨', '✓ Copied', '✓ コピー済') : tr('복사', 'Copy', 'コピー')}
                           </button>
                         </div>
                       </div>
@@ -647,10 +784,10 @@ export function renderMallModal(): string {
                           data-action="verify-mall-crypto-deposit"
                           class="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-sm min-h-[44px] cursor-pointer"
                         >
-                          ⚡ 입금 완료 즉시 확인 (수동 새로고침)
+                          ⚡ ${tr('입금 완료 즉시 확인 (수동 새로고침)', 'Verify Deposit Now (Manual Refresh)', '入金完了を即時確認 (手動更新)')}
                         </button>
                         <button type="button" data-action="close-mall-modal" class="w-full py-2.5 bg-[#f1eeee] hover:bg-[#e8e5e5] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] cursor-pointer">
-                          결제 취소 (닫기)
+                          ${tr('결제 취소 (닫기)', 'Cancel Payment (Close)', '決済キャンセル (閉じる)')}
                         </button>
                       </div>
                     </div>
@@ -665,8 +802,9 @@ export function renderMallModal(): string {
 
   if (!activeDetailProduct) return '';
 
-  const totalUsd = activeDetailProduct.priceUsd * selectedQty;
-  const totalKrw = activeDetailProduct.priceKrw * selectedQty;
+  const localizedDetailProd = getLocalizedMallProduct(activeDetailProduct);
+  const totalUsd = localizedDetailProd.priceUsd * selectedQty;
+  const totalKrw = localizedDetailProd.priceKrw * selectedQty;
 
   // Step 1: Detail
   if (mallModalStep === 'detail') {
@@ -675,37 +813,37 @@ export function renderMallModal(): string {
         <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full max-h-[90vh] flex flex-col p-6 shadow-none">
           <div class="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.08)]">
             <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] rounded-sm">
-              ${activeDetailProduct.badge}
+              ${localizedDetailProd.badge}
             </span>
             <button type="button" data-action="close-mall-modal" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
           </div>
 
           <div class="flex-1 overflow-y-auto py-4 space-y-4">
             <div class="w-full h-44 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-3">
-              <img src="${activeDetailProduct.image}" alt="${activeDetailProduct.name}" class="max-h-full max-w-full object-contain" />
+              <img src="${localizedDetailProd.image}" alt="${localizedDetailProd.name}" class="max-h-full max-w-full object-contain" />
             </div>
 
             <div>
-              <h2 class="text-base font-black text-[#201d1d] m-0">${activeDetailProduct.name}</h2>
+              <h2 class="text-base font-black text-[#201d1d] m-0">${localizedDetailProd.name}</h2>
               <div class="text-sm font-black text-emerald-800 mt-1">
-                ${activeDetailProduct.priceText}
+                ${localizedDetailProd.priceText}
               </div>
               <p class="text-xs text-stone-600 mt-2 leading-relaxed m-0">
-                ${activeDetailProduct.description}
+                ${localizedDetailProd.description}
               </p>
             </div>
 
             <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] text-[11px] text-stone-600">
-              <span class="font-bold text-[#201d1d]">제품 사양:</span> ${activeDetailProduct.shortSpec}
+              <span class="font-bold text-[#201d1d]">${tr('제품 사양:', 'Specifications:', '製品仕様:')}</span> ${localizedDetailProd.shortSpec}
             </div>
 
             <!-- Options -->
             <div class="space-y-3 pt-2 border-t border-[rgba(15,0,0,0.08)]">
               ${
-                activeDetailProduct.id === 'goods_tshirt'
+                localizedDetailProd.id === 'goods_tshirt'
                   ? `
                 <div>
-                  <label class="block text-xs font-bold text-stone-700 mb-1">사이즈 선택 (Size):</label>
+                  <label class="block text-xs font-bold text-stone-700 mb-1">${tr('사이즈 선택 (Size):', 'Select Size:', 'サイズ選択 (Size):')}</label>
                   <div class="flex gap-2">
                     ${['S (90)', 'M (95)', 'L (100)', 'XL (105)']
                       .map(
@@ -725,13 +863,13 @@ export function renderMallModal(): string {
               }
 
               ${
-                activeDetailProduct.id === 'goods_deck_faction'
+                localizedDetailProd.id === 'goods_deck_faction'
                   ? `
                 <div>
-                  <label class="block text-xs font-bold text-stone-700 mb-1">종족 선택 (Faction):</label>
+                  <label class="block text-xs font-bold text-stone-700 mb-1">${tr('종족 선택 (Faction):', 'Select Faction:', '種族選択 (Faction):')}</label>
                   <select data-action="change-mall-faction" class="w-full p-2.5 bg-white border border-stone-300 text-xs font-mono rounded-sm">
                     ${FACTION_OPTIONS.map(
-                      (f) => `<option value="${f}" ${selectedFaction === f ? 'selected' : ''}>${f}</option>`
+                      (f) => `<option value="${f}" ${selectedFaction === f ? 'selected' : ''}>${getLocalizedMallFactionOption(f)}</option>`
                     ).join('')}
                   </select>
                 </div>
@@ -740,7 +878,7 @@ export function renderMallModal(): string {
               }
 
               <div class="flex items-center justify-between pt-1">
-                <span class="text-xs font-bold text-stone-700">주문 수량:</span>
+                <span class="text-xs font-bold text-stone-700">${tr('주문 수량:', 'Quantity:', '注文数量:')}</span>
                 <div class="flex items-center border border-stone-300 rounded-sm">
                   <button type="button" data-action="change-mall-qty" data-delta="-1" class="px-3 py-1 bg-stone-100 hover:bg-stone-200 text-xs font-bold min-h-[36px]">-</button>
                   <span class="px-4 py-1 text-xs font-bold">${selectedQty}</span>
@@ -749,9 +887,9 @@ export function renderMallModal(): string {
               </div>
 
               <div class="flex items-center justify-between pt-2 border-t border-[rgba(15,0,0,0.08)]">
-                <span class="text-xs font-bold text-stone-700">총 결제 예정액:</span>
+                <span class="text-xs font-bold text-stone-700">${tr('총 결제 예정액:', 'Total Amount:', 'お支払い合計額:')}</span>
                 <span class="text-sm font-black text-[#201d1d]">
-                  $${totalUsd.toFixed(2)} USD / ${totalKrw.toLocaleString()}원
+                  $${totalUsd.toFixed(2)} USD / ${totalKrw.toLocaleString()}${tr('원', ' KRW', 'ウォン')}
                 </span>
               </div>
             </div>
@@ -759,10 +897,10 @@ export function renderMallModal(): string {
 
           <div class="pt-3 border-t border-[rgba(15,0,0,0.08)] flex gap-2">
             <button type="button" data-action="close-mall-modal" class="flex-1 py-3 bg-[#f1eeee] hover:bg-[#e8e5e5] text-xs font-bold rounded-sm min-h-[44px]">
-              닫기
+              ${tr('닫기', 'Close', '閉じる')}
             </button>
             <button type="button" data-action="proceed-mall-shipping" class="flex-2 py-3 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px]">
-              즉시 구매 (배송지 입력) →
+              ${tr('즉시 구매 (배송지 입력) →', 'Buy Now (Enter Shipping) →', '今すぐ購入 (配送先入力) →')}
             </button>
           </div>
         </div>
@@ -777,30 +915,30 @@ export function renderMallModal(): string {
         <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full p-6 shadow-none space-y-4">
           <div class="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.08)]">
             <div class="flex items-center gap-2">
-              <button type="button" data-action="back-mall-detail" class="text-xs text-stone-500 hover:text-black">← 상품</button>
-              <h3 class="text-sm font-bold m-0">배송지 정보 입력</h3>
+              <button type="button" data-action="back-mall-detail" class="text-xs text-stone-500 hover:text-black">← ${tr('상품', 'Item', '商品')}</button>
+              <h3 class="text-sm font-bold m-0">${tr('배송지 정보 입력', 'Shipping Information', '配送先情報の入力')}</h3>
             </div>
             <button type="button" data-action="close-mall-modal" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
           </div>
 
           <form id="mall-shipping-form" class="space-y-3" onsubmit="event.preventDefault();">
             <div>
-              <label class="block text-xs font-bold text-stone-700 mb-1">받는 분 성함 (Name) *</label>
-              <input type="text" id="mall-buyer-name" value="${buyerName}" placeholder="홍길동" class="w-full p-2.5 bg-white border border-stone-300 text-xs rounded-sm min-h-[44px]" required />
+              <label class="block text-xs font-bold text-stone-700 mb-1">${tr('받는 분 성함 (Name) *', 'Recipient Name *', '受取人氏名 (Name) *')}</label>
+              <input type="text" id="mall-buyer-name" value="${buyerName}" placeholder="${tr('홍길동', 'John Doe', '山田 太郎')}" class="w-full p-2.5 bg-white border border-stone-300 text-xs rounded-sm min-h-[44px]" required />
             </div>
             <div>
-              <label class="block text-xs font-bold text-stone-700 mb-1">연락처 (Phone) *</label>
+              <label class="block text-xs font-bold text-stone-700 mb-1">${tr('연락처 (Phone) *', 'Phone Number *', '連絡先 (Phone) *')}</label>
               <input type="tel" id="mall-buyer-phone" value="${buyerPhone}" placeholder="010-1234-5678" class="w-full p-2.5 bg-white border border-stone-300 text-xs rounded-sm min-h-[44px]" required />
             </div>
             <div>
-              <label class="block text-xs font-bold text-stone-700 mb-1">배송지 상세 주소 (Address) *</label>
-              <input type="text" id="mall-buyer-address" value="${buyerAddress}" placeholder="도로명 주소 및 상세 동호수 입력" class="w-full p-2.5 bg-white border border-stone-300 text-xs rounded-sm min-h-[44px]" required />
+              <label class="block text-xs font-bold text-stone-700 mb-1">${tr('배송지 상세 주소 (Address) *', 'Shipping Address *', '配送先詳細住所 (Address) *')}</label>
+              <input type="text" id="mall-buyer-address" value="${buyerAddress}" placeholder="${tr('도로명 주소 및 상세 동호수 입력', 'Street address, apartment/suite, city, postal code', '都道府県・市区町村・番地・建物名を入力')}" class="w-full p-2.5 bg-white border border-stone-300 text-xs rounded-sm min-h-[44px]" required />
             </div>
 
             <div class="pt-3 border-t border-[rgba(15,0,0,0.08)] flex gap-2">
-              <button type="button" data-action="back-mall-detail" class="flex-1 py-3 bg-[#f1eeee] text-xs font-bold rounded-sm min-h-[44px]">이전</button>
+              <button type="button" data-action="back-mall-detail" class="flex-1 py-3 bg-[#f1eeee] text-xs font-bold rounded-sm min-h-[44px]">${tr('이전', 'Back', '戻る')}</button>
               <button type="button" data-action="submit-mall-shipping" class="flex-2 py-3 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px]">
-                결제 국가 선택 →
+                ${tr('결제 국가 선택 →', 'Select Country →', '決済国を選択 →')}
               </button>
             </div>
           </form>
@@ -816,8 +954,8 @@ export function renderMallModal(): string {
         <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full p-6 shadow-none space-y-4">
           <div class="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.08)]">
             <div class="flex items-center gap-2">
-              <button type="button" data-action="back-mall-shipping" class="text-xs text-stone-500 hover:text-black">← 배송지</button>
-              <h3 class="text-sm font-bold m-0">결제 국가 선택</h3>
+              <button type="button" data-action="back-mall-shipping" class="text-xs text-stone-500 hover:text-black">← ${tr('배송지', 'Shipping', '配送先')}</button>
+              <h3 class="text-sm font-bold m-0">${tr('결제 국가 선택', 'Select Payment Country', '決済国の選択')}</h3>
             </div>
             <span class="text-xs font-bold text-[#201d1d]">$${totalUsd.toFixed(2)} USD</span>
           </div>
@@ -837,8 +975,8 @@ export function renderMallModal(): string {
           </div>
 
           <button type="button" data-action="execute-mall-checkout" data-method="crypto" class="w-full p-3 bg-amber-600 hover:bg-amber-700 text-white rounded-sm text-xs font-bold flex items-center justify-between min-h-[44px]">
-            <span>⚡ 암호화폐 결제 (USDT / SOL / BTC)</span>
-            <span>즉시 지갑 결제 →</span>
+            <span>⚡ ${tr('암호화폐 결제 (USDT / SOL / BTC)', 'Crypto Payment (USDT / SOL / BTC)', '暗号資産決済 (USDT / SOL / BTC)')}</span>
+            <span>${tr('즉시 지갑 결제 →', 'Instant Wallet Pay →', '即時ウォレット決済 →')}</span>
           </button>
         </div>
       </div>
@@ -852,10 +990,10 @@ export function renderMallModal(): string {
         <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full p-6 shadow-none space-y-4">
           <div class="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.08)]">
             <div class="flex items-center gap-2">
-              <button type="button" data-action="back-mall-country" class="text-xs text-stone-500 hover:text-black">← 국가</button>
-              <h3 class="text-sm font-bold m-0">결제 수단 선택</h3>
+              <button type="button" data-action="back-mall-country" class="text-xs text-stone-500 hover:text-black">← ${tr('국가', 'Country', '国選択')}</button>
+              <h3 class="text-sm font-bold m-0">${tr('결제 수단 선택', 'Select Payment Method', '決済手段の選択')}</h3>
             </div>
-            <span class="text-xs font-bold text-[#201d1d]">${totalKrw.toLocaleString()}원</span>
+            <span class="text-xs font-bold text-[#201d1d]">${totalKrw.toLocaleString()}${tr('원', ' KRW', 'ウォン')}</span>
           </div>
 
           <div class="space-y-2">
@@ -863,20 +1001,20 @@ export function renderMallModal(): string {
               selectedCountry === 'ko'
                 ? `
               <button type="button" data-action="execute-mall-checkout" data-method="payapp_card" class="w-full py-3 px-4 bg-[#1e58ff] hover:bg-[#1542c7] text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                <span>💳 국내 신용/체크카드 (PayApp)</span>
-                <span>${totalKrw.toLocaleString()}원 결제 →</span>
+                <span>💳 ${tr('국내 신용/체크카드 (PayApp)', 'Credit/Debit Card (PayApp)', '韓国国内クレジット/チェックカード (PayApp)')}</span>
+                <span>${totalKrw.toLocaleString()}${tr('원 결제 →', ' KRW Pay →', 'ウォン決済 →')}</span>
               </button>
               <button type="button" data-action="execute-mall-checkout" data-method="kakaopay" class="w-full py-3 px-4 bg-[#FEE500] hover:bg-[#FADA0A] text-[#191919] font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                <span>🟡 카카오페이 (Kakao Pay)</span>
-                <span>간편결제 →</span>
+                <span>🟡 ${tr('카카오페이 (Kakao Pay)', 'Kakao Pay', 'カカオペイ (Kakao Pay)')}</span>
+                <span>${tr('간편결제 →', 'Quick Pay →', '簡単決済 →')}</span>
               </button>
               <button type="button" data-action="execute-mall-checkout" data-method="naverpay" class="w-full py-3 px-4 bg-[#03C75A] hover:bg-[#02b351] text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                <span>🟢 네이버페이 (Naver Pay)</span>
-                <span>간편결제 →</span>
+                <span>🟢 ${tr('네이버페이 (Naver Pay)', 'Naver Pay', 'ネイバーペイ (Naver Pay)')}</span>
+                <span>${tr('간편결제 →', 'Quick Pay →', '簡単決済 →')}</span>
               </button>
               <button type="button" data-action="execute-mall-checkout" data-method="applepay" class="w-full py-3 px-4 bg-black hover:bg-stone-800 text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
                 <span>🍎 Apple Pay</span>
-                <span>원터치 결제 →</span>
+                <span>${tr('원터치 결제 →', 'One-Touch Pay →', 'ワンタッチ決済 →')}</span>
               </button>
             `
                 : `
@@ -892,14 +1030,14 @@ export function renderMallModal(): string {
             }
 
             <button type="button" data-action="execute-mall-checkout" data-method="crypto" class="w-full py-3 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-              <span>⚡ 암호화폐 결제 (USDT / SOL / BTC)</span>
-              <span>Web3 지갑 결제 →</span>
+              <span>⚡ ${tr('암호화폐 결제 (USDT / SOL / BTC)', 'Crypto Payment (USDT / SOL / BTC)', '暗号資産決済 (USDT / SOL / BTC)')}</span>
+              <span>${tr('Web3 지갑 결제 →', 'Web3 Wallet Pay →', 'Web3ウォレット決済 →')}</span>
             </button>
 
             <!-- Test Simulation Button Clearly Separated -->
             <button type="button" data-action="execute-mall-checkout" data-method="test_sim" class="w-full py-2.5 px-4 bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px] mt-2 border border-stone-400">
-              <span>🧪 [개발자/시뮬레이션] 즉시 주문 승인 (SIM - 무과금)</span>
-              <span class="text-[10px] text-stone-600">결제창 없이 주문 확정</span>
+              <span>🧪 ${tr('[개발자/시뮬레이션] 즉시 주문 승인 (SIM - 무과금)', '[Dev/Sim] Instant Order Approval (SIM - Free)', '[開発者/シミュレーション] 即時注文承認 (SIM - 無料)')}</span>
+              <span class="text-[10px] text-stone-600">${tr('결제창 없이 주문 확정', 'Confirm without payment', '決済画面なしで注文確定')}</span>
             </button>
           </div>
         </div>
@@ -916,10 +1054,11 @@ export function renderMallModal(): string {
 
 export function renderMallView(): string {
   const activeTab = currentMallTab;
-  const filtered =
+  const filtered = (
     activeTab === 'ALL'
       ? MALL_GOODS_PRODUCTS
-      : MALL_GOODS_PRODUCTS.filter((p) => p.category === activeTab);
+      : MALL_GOODS_PRODUCTS.filter((p) => p.category === activeTab)
+  ).map(getLocalizedMallProduct);
 
   const modalHtml = renderMallModal();
 
@@ -930,15 +1069,19 @@ export function renderMallView(): string {
         <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.08)] gap-4">
           <div>
             <div class="inline-flex items-center gap-2 px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm tracking-wider uppercase mb-2">
-              <span>공식 실물 굿즈 스토어</span>
+              <span>${tr('공식 실물 굿즈 스토어', 'Official Physical Merch Store', '公式実物グッズストア')}</span>
               <span class="text-stone-400">·</span>
               <span>snshero.com/mall</span>
             </div>
             <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#201d1d] m-0">
-              SNS히어로 공식 굿즈 몰 (Official Goods Mall)
+              ${tr('SNS히어로 공식 굿즈 몰 (Official Goods Mall)', 'SNSHero Official Goods Mall', 'SNSヒーロー公式グッズモール (Official Goods Mall)')}
             </h1>
             <p class="text-xs sm:text-sm text-stone-600 mt-1 m-0">
-              110종 풀세트 실물 TCG 카드, 11대 종족별 테마 덱, 배틀 매트 게임테이블, 머그컵 및 공식 의류를 만나보세요.
+              ${tr(
+                '110종 풀세트 실물 TCG 카드, 11대 종족별 테마 덱, 배틀 매트 게임테이블, 머그컵 및 공식 의류를 만나보세요.',
+                'Discover the 110-card full physical TCG set, 11 faction theme decks, battle mat game tables, mugs, and official apparel.',
+                '全110種フルセット実物TCGカード、11大種族別テーマデッキ、バトルマットゲームテーブル、マグカップ、公式アパレルをチェックしましょう。'
+              )}
             </p>
           </div>
 
@@ -948,14 +1091,14 @@ export function renderMallView(): string {
               data-action="open-mall-orders"
               class="px-4 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] flex items-center justify-center whitespace-nowrap cursor-pointer"
             >
-              📦 내 주문 내역 조회
+              📦 ${tr('내 주문 내역 조회', 'My Order History', '注文履歴を照会')}
             </button>
             <a
               href="#shop"
               data-nav="shop"
               class="px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center whitespace-nowrap cursor-pointer no-underline"
             >
-              인게임 상점 바로가기 →
+              ${tr('인게임 상점 바로가기 →', 'Go to In-Game Shop →', 'ゲーム内ショップへ →')}
             </a>
           </div>
         </div>
@@ -975,7 +1118,7 @@ export function renderMallView(): string {
               }"
             >
               <span>${tab.icon}</span>
-              <span>${tab.label}</span>
+              <span>${getLocalizedMallTabLabel(tab.key)}</span>
             </button>
           `
           ).join('')}
@@ -1021,7 +1164,7 @@ export function renderMallView(): string {
 
               <div class="pt-4 border-t border-[rgba(15,0,0,0.08)] space-y-3">
                 <div class="flex items-baseline justify-between">
-                  <span class="text-xs text-stone-500">가격:</span>
+                  <span class="text-xs text-stone-500">${tr('가격:', 'Price:', '価格:')}</span>
                   <span class="text-base font-black text-[#201d1d]">
                     ${prod.priceText}
                   </span>
@@ -1033,7 +1176,7 @@ export function renderMallView(): string {
                   data-product-id="${prod.id}"
                   class="w-full py-2.5 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center shadow-none cursor-pointer transition-colors"
                 >
-                  상세보기 &amp; 즉시구매
+                  ${tr('상세보기 &amp; 즉시구매', 'View Details &amp; Buy Now', '詳細表示 &amp; 今すぐ購入')}
                 </button>
               </div>
             </div>

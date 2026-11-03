@@ -681,8 +681,11 @@ export function copyCryptoDepositAddress(address: string): void {
 }
 
 export function verifyCryptoDepositStatus(): void {
-  cryptoVerifyNotice =
-    '블록체인 네트워크에서 입금 내역을 조회 중입니다. 송금 후 네트워크 컨펌(1~3분) 완료 시 자동으로 코인이 지급됩니다.';
+  cryptoVerifyNotice = tr(
+    '블록체인 네트워크에서 입금 내역을 조회 중입니다. 송금 후 네트워크 컨펌(1~3분) 완료 시 자동으로 코인이 지급됩니다.',
+    'Checking blockchain network for your deposit. Coins will be credited automatically after network confirmation (1–3 mins).',
+    'ブロックチェーンネットワークで入金履歴を照会中です。送金後、ネットワーク承認（1〜3分）が完了すると自動的にコインが付与されます。'
+  );
 }
 
 export function getActivePackReveal(): PackRevealData | null {
@@ -1056,6 +1059,7 @@ export function renderCoinChargeModal(): string {
   if (!isCoinChargeModalOpen) return '';
 
   const pkg = selectedChargePackage;
+  const locPkg = getLocalizedCoinPackage(pkg);
 
   return `
     <div id="coin-charge-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
@@ -1063,9 +1067,9 @@ export function renderCoinChargeModal(): string {
         <div class="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.08)]">
           <div>
             <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-600 text-white rounded-sm mb-1">
-              결제 &amp; 코인 충전
+              ${tr('결제 & 코인 충전', 'Checkout & Coin Top-Up', '決済＆コインチャージ')}
             </span>
-            <h3 class="text-base font-bold m-0">SNS 코인 패키지 결제</h3>
+            <h3 class="text-base font-bold m-0">${tr('SNS 코인 패키지 결제', 'SNS Coin Package Checkout', 'SNSコインパッケージ決済')}</h3>
           </div>
           <button type="button" data-action="close-coin-charge-modal" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
         </div>
@@ -1074,8 +1078,9 @@ export function renderCoinChargeModal(): string {
           coinChargeStep === 'package'
             ? `
           <div class="space-y-2 max-h-72 overflow-y-auto">
-            ${COIN_PACKAGES.map(
-              (p) => `
+            ${COIN_PACKAGES.map((p) => {
+              const lp = getLocalizedCoinPackage(p);
+              return `
               <button
                 type="button"
                 data-action="select-charge-package"
@@ -1083,15 +1088,15 @@ export function renderCoinChargeModal(): string {
                 class="w-full p-3 bg-[#f8f7f7] hover:bg-[#f1eeee] border border-[rgba(15,0,0,0.08)] rounded-none flex items-center justify-between min-h-[44px] text-left transition-colors cursor-pointer"
               >
                 <div>
-                  <div class="text-xs font-bold text-[#201d1d]">${p.label}</div>
-                  <div class="text-[10px] text-amber-700 font-medium">${p.bonusText || ''}</div>
+                  <div class="text-xs font-bold text-[#201d1d]">${lp.label}</div>
+                  <div class="text-[10px] text-amber-700 font-medium">${lp.bonusText}</div>
                 </div>
                 <div class="text-xs font-black text-[#201d1d]">
-                  $${p.priceUsd.toFixed(2)} USD / ${p.priceKrw.toLocaleString()}원
+                  ${lp.priceDisplay}
                 </div>
               </button>
-            `
-            ).join('')}
+            `;
+            }).join('')}
           </div>
         `
             : ''
@@ -1102,8 +1107,8 @@ export function renderCoinChargeModal(): string {
             ? `
           <div class="space-y-3">
             <div class="flex items-center justify-between">
-              <button type="button" data-action="back-to-package-selection" class="text-xs text-stone-500 hover:text-black">← 패키지 변경</button>
-              <div class="text-xs font-bold">${pkg.label} ($${pkg.priceUsd.toFixed(2)})</div>
+              <button type="button" data-action="back-to-package-selection" class="text-xs text-stone-500 hover:text-black">← ${tr('패키지 변경', 'Change Package', 'パッケージ変更')}</button>
+              <div class="text-xs font-bold">${locPkg.label} ($${pkg.priceUsd.toFixed(2)})</div>
             </div>
 
             <div class="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
@@ -1126,8 +1131,8 @@ export function renderCoinChargeModal(): string {
             </div>
 
             <button type="button" data-action="execute-coin-charge" data-method="crypto" class="w-full p-3 bg-amber-600 hover:bg-amber-700 text-white rounded-sm text-xs font-bold flex items-center justify-between min-h-[44px]">
-              <span>⚡ 암호화폐 결제 (USDT / SOL / BTC)</span>
-              <span>즉시 지갑 결제 →</span>
+              <span>⚡ ${tr('암호화폐 결제 (USDT / SOL / BTC)', 'Crypto Checkout (USDT / SOL / BTC)', '暗号資産決済 (USDT / SOL / BTC)')}</span>
+              <span>${tr('즉시 지갑 결제 →', 'Instant Wallet Pay →', '即時ウォレット決済 →')}</span>
             </button>
           </div>
         `
@@ -1139,8 +1144,8 @@ export function renderCoinChargeModal(): string {
             ? `
           <div class="space-y-3">
             <div class="flex items-center justify-between">
-              <button type="button" data-action="back-to-country-selection" class="text-xs text-stone-500 hover:text-black">← 국가 변경</button>
-              <div class="text-xs font-bold">${pkg.label} (${pkg.priceKrw.toLocaleString()}원)</div>
+              <button type="button" data-action="back-to-country-selection" class="text-xs text-stone-500 hover:text-black">← ${tr('국가 변경', 'Change Country', '国・地域を変更')}</button>
+              <div class="text-xs font-bold">${locPkg.label} (${locPkg.priceDisplay})</div>
             </div>
 
             <div class="space-y-2">
@@ -1148,20 +1153,20 @@ export function renderCoinChargeModal(): string {
                 selectedChargeCountry === 'ko'
                   ? `
                 <button type="button" data-action="execute-coin-charge" data-method="payapp_card" class="w-full py-3 px-4 bg-[#1e58ff] hover:bg-[#1542c7] text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                  <span>💳 국내 신용/체크카드 (PayApp)</span>
-                  <span>${pkg.priceKrw.toLocaleString()}원 결제 →</span>
+                  <span>💳 ${tr('국내 신용/체크카드 (PayApp)', 'Credit / Debit Card (PayApp)', 'クレジット・デビットカード (PayApp)')}</span>
+                  <span>${pkg.priceKrw.toLocaleString()}${tr('원 결제 →', ' KRW →', ' KRW 決済 →')}</span>
                 </button>
                 <button type="button" data-action="execute-coin-charge" data-method="kakaopay" class="w-full py-3 px-4 bg-[#FEE500] hover:bg-[#FADA0A] text-[#191919] font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                  <span>🟡 카카오페이 (Kakao Pay)</span>
-                  <span>간편결제 →</span>
+                  <span>🟡 ${tr('카카오페이 (Kakao Pay)', 'Kakao Pay', 'カカオペイ (Kakao Pay)')}</span>
+                  <span>${tr('간편결제 →', 'Quick Pay →', '簡単決済 →')}</span>
                 </button>
                 <button type="button" data-action="execute-coin-charge" data-method="naverpay" class="w-full py-3 px-4 bg-[#03C75A] hover:bg-[#02b351] text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                  <span>🟢 네이버페이 (Naver Pay)</span>
-                  <span>간편결제 →</span>
+                  <span>🟢 ${tr('네이버페이 (Naver Pay)', 'Naver Pay', 'NAVERペイ (Naver Pay)')}</span>
+                  <span>${tr('간편결제 →', 'Quick Pay →', '簡単決済 →')}</span>
                 </button>
                 <button type="button" data-action="execute-coin-charge" data-method="applepay" class="w-full py-3 px-4 bg-black hover:bg-stone-800 text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
                   <span>🍎 Apple Pay</span>
-                  <span>원터치 결제 →</span>
+                  <span>${tr('원터치 결제 →', 'One-Touch Pay →', 'ワンタッチ決済 →')}</span>
                 </button>
               `
                   : `
@@ -1177,14 +1182,14 @@ export function renderCoinChargeModal(): string {
               }
 
               <button type="button" data-action="execute-coin-charge" data-method="crypto" class="w-full py-3 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                <span>⚡ 암호화폐 결제 (USDT / SOL / BTC)</span>
-                <span>Web3 지갑 결제 →</span>
+                <span>⚡ ${tr('암호화폐 결제 (USDT / SOL / BTC)', 'Crypto Checkout (USDT / SOL / BTC)', '暗号資産決済 (USDT / SOL / BTC)')}</span>
+                <span>${tr('Web3 지갑 결제 →', 'Web3 Wallet Pay →', 'Web3ウォレット決済 →')}</span>
               </button>
 
               <!-- Clear Simulation Test Button -->
               <button type="button" data-action="execute-coin-charge" data-method="test_sim" class="w-full py-2.5 px-4 bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px] mt-2 border border-stone-400">
-                <span>🧪 [개발자/시뮬레이션] 즉시 충전 (SIM - 무과금)</span>
-                <span class="text-[10px] text-stone-600">결제창 없이 계정 즉시 지급</span>
+                <span>🧪 ${tr('[개발자/시뮬레이션] 즉시 충전 (SIM - 무과금)', '[Dev/Simulation] Instant Top-Up (Free SIM)', '[開発者/シミュレーション] 即時チャージ (無料SIM)')}</span>
+                <span class="text-[10px] text-stone-600">${tr('결제창 없이 계정 즉시 지급', 'Instant credit without payment', '決済画面なしで即時付与')}</span>
               </button>
             </div>
           </div>
@@ -1210,16 +1215,16 @@ export function renderCoinChargeModal(): string {
                         data-action="back-to-payment-selection"
                         class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1"
                       >
-                        ← 결제 수단 변경
+                        ← ${tr('결제 수단 변경', 'Change Payment Method', '決済手段を変更')}
                       </button>
-                      <span class="text-xs font-bold text-[#201d1d]">⚡ 암호화폐 선택</span>
+                      <span class="text-xs font-bold text-[#201d1d]">⚡ ${tr('암호화폐 선택', 'Select Cryptocurrency', '暗号資産を選択')}</span>
                     </div>
 
                     <!-- Package Summary Box -->
                     <div class="bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none p-3 flex items-center justify-between">
                       <div class="text-xs text-[#201d1d]">
-                        <span class="font-bold block">${pkg.label}</span>
-                        <span class="text-stone-500 text-[11px]">결제 예정 금액: $${pkg.priceUsd.toFixed(2)} USD (${pkg.priceKrw.toLocaleString()}원)</span>
+                        <span class="font-bold block">${locPkg.label}</span>
+                        <span class="text-stone-500 text-[11px]">${tr('결제 예정 금액', 'Amount Due', '決済予定金額')}: ${locPkg.priceDisplay}</span>
                       </div>
                       <span class="text-xs font-black bg-[#201d1d] text-[#fdfcfc] px-2.5 py-1 rounded-sm">
                         $${pkg.priceUsd.toFixed(2)}
@@ -1233,7 +1238,7 @@ export function renderCoinChargeModal(): string {
                         type="text"
                         data-action="crypto-search-coin"
                         value="${cryptoSearchQuery}"
-                        placeholder="코인 심볼 또는 이름 검색 (USDT, BTC, ETH, SOL...)"
+                        placeholder="${tr('코인 심볼 또는 이름 검색 (USDT, BTC, ETH, SOL...)', 'Search coin symbol or name (USDT, BTC, ETH, SOL...)', 'コインシンボルまたは名前を検索 (USDT, BTC, ETH, SOL...)')}"
                         class="w-full px-3 py-2 text-xs border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#f8f7f7] text-[#201d1d] font-mono focus:outline-none focus:border-[#201d1d] min-h-[40px]"
                       />
                     </div>
@@ -1293,7 +1298,7 @@ export function renderCoinChargeModal(): string {
                                   </div>
                                 </div>
                               </div>
-                              <span class="text-xs font-bold text-stone-500">선택 →</span>
+                              <span class="text-xs font-bold text-stone-500">${tr('선택 →', 'Select →', '選択 →')}</span>
                             </button>
                           `
                         )
@@ -1320,14 +1325,18 @@ export function renderCoinChargeModal(): string {
                         data-action="back-to-crypto-coin"
                         class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1"
                       >
-                        ← 코인 다시 선택
+                        ← ${tr('코인 다시 선택', 'Back to Coin List', 'コイン選択へ戻る')}
                       </button>
-                      <span class="text-xs font-bold text-[#201d1d]">⚡ ${coinObj.ccy} 네트워크 선택</span>
+                      <span class="text-xs font-bold text-[#201d1d]">⚡ ${coinObj.ccy} ${tr('네트워크 선택', 'Select Network', 'ネットワーク選択')}</span>
                     </div>
 
                     <!-- Guidance Box -->
                     <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-xs text-stone-600 leading-relaxed">
-                      선택한 코인 <strong class="text-[#201d1d]">[${coinObj.ccy}]</strong>의 입금 네트워크(체인)를 선택해주세요. 송금 지갑과 동일한 네트워크를 선택해야 안전합니다.
+                      ${tr(
+                        `선택한 코인 <strong class="text-[#201d1d]">[${coinObj.ccy}]</strong>의 입금 네트워크(체인)를 선택해주세요. 송금 지갑과 동일한 네트워크를 선택해야 안전합니다.`,
+                        `Select the deposit network (chain) for <strong class="text-[#201d1d]">[${coinObj.ccy}]</strong>. Make sure it matches your sending wallet network.`,
+                        `選択したコイン <strong class="text-[#201d1d]">[${coinObj.ccy}]</strong> の入金ネットワーク（チェーン）を選択してください。送金元ウォレットと同じネットワークを選択してください。`
+                      )}
                     </div>
 
                     <!-- Network List -->
@@ -1353,13 +1362,13 @@ export function renderCoinChargeModal(): string {
                                   <span class="font-black text-xs sm:text-sm text-[#201d1d]">${chainName}</span>
                                   ${
                                     isRecommended
-                                      ? `<span class="text-[10px] bg-emerald-700 text-white font-bold px-1.5 py-0.5 rounded-sm">추천 (저렴한 수수료)</span>`
+                                      ? `<span class="text-[10px] bg-emerald-700 text-white font-bold px-1.5 py-0.5 rounded-sm">${tr('추천 (저렴한 수수료)', 'Recommended (Low Fee)', 'おすすめ (低手数料)')}</span>`
                                       : ''
                                   }
                                 </div>
                                 <span class="text-[11px] text-stone-500 font-mono block mt-0.5">${chainItem}</span>
                               </div>
-                              <span class="text-xs font-bold text-[#201d1d]">QR 생성 →</span>
+                              <span class="text-xs font-bold text-[#201d1d]">${tr('QR 생성 →', 'Generate QR →', 'QR生成 →')}</span>
                             </button>
                           `;
                         })
@@ -1389,7 +1398,7 @@ export function renderCoinChargeModal(): string {
                         data-action="back-to-crypto-coin"
                         class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1"
                       >
-                        ← 다른 코인/네트워크 선택
+                        ← ${tr('다른 코인/네트워크 선택', 'Change Coin / Network', '別のコイン・ネットワークを選択')}
                       </button>
                       <span class="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">
                         ${deposit.chain}
@@ -1398,20 +1407,20 @@ export function renderCoinChargeModal(): string {
 
                     <!-- Countdown Timer & Status -->
                     <div class="flex items-center justify-between p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-xs">
-                      <span class="text-stone-600 font-bold">⏱ 입금 유효 시간:</span>
+                      <span class="text-stone-600 font-bold">⏱ ${tr('입금 유효 시간:', 'Deposit Valid For:', '入金有効時間:')}</span>
                       <span class="font-black text-amber-700">10:00</span>
                     </div>
 
                     <!-- Exact Amount to Send -->
                     <div class="bg-[#f8f7f7] border border-[#201d1d] rounded-none p-3 text-center space-y-1">
                       <span class="text-[10px] text-stone-500 font-bold block uppercase tracking-wider">
-                        전송해야 할 정확한 금액 (EXACT AMOUNT TO SEND)
+                        ${tr('전송해야 할 정확한 금액 (EXACT AMOUNT TO SEND)', 'EXACT AMOUNT TO SEND', '送金する正確な金額 (EXACT AMOUNT TO SEND)')}
                       </span>
                       <div class="text-xl sm:text-2xl font-black text-[#201d1d] tracking-tight">
                         ${deposit.amount} <span class="text-sm font-bold text-amber-700">${deposit.ccy}</span>
                       </div>
                       <span class="text-[10px] text-stone-600 font-bold block">
-                        네트워크: ${deposit.chain} (약 $${deposit.priceUsd.toFixed(2)} USD)
+                        ${tr('네트워크', 'Network', 'ネットワーク')}: ${deposit.chain} (≈ $${deposit.priceUsd.toFixed(2)} USD)
                       </span>
                     </div>
 
@@ -1421,14 +1430,14 @@ export function renderCoinChargeModal(): string {
                         ${deposit.qrSvg}
                       </div>
                       <span class="text-[10px] text-stone-500 mt-1.5 font-mono font-bold">
-                        지갑 앱으로 QR 코드를 스캔하여 전송하세요
+                        ${tr('지갑 앱으로 QR 코드를 스캔하여 전송하세요', 'Scan QR code with your wallet app to send', 'ウォレットアプリでQRコードをスキャンして送金してください')}
                       </span>
                     </div>
 
                     <!-- Deposit Address & Copy Button -->
                     <div class="space-y-1.5">
                       <label class="text-[11px] font-bold text-stone-600 block">
-                        입금 전용 지갑 주소 (${deposit.chain})
+                        ${tr('입금 전용 지갑 주소', 'Deposit Wallet Address', '入金専用ウォレットアドレス')} (${deposit.chain})
                       </label>
                       <div class="flex items-center gap-1.5">
                         <input
@@ -1443,7 +1452,7 @@ export function renderCoinChargeModal(): string {
                           data-address="${deposit.address}"
                           class="px-3 py-2.5 min-h-[44px] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] rounded-sm text-xs font-bold flex items-center justify-center cursor-pointer shrink-0"
                         >
-                          ${cryptoAddressCopied ? '✓ 복사됨' : '복사'}
+                          ${cryptoAddressCopied ? tr('✓ 복사됨', '✓ Copied', '✓ コピー済') : tr('복사', 'Copy', 'コピー')}
                         </button>
                       </div>
                     </div>
@@ -1462,7 +1471,7 @@ export function renderCoinChargeModal(): string {
                     <div class="space-y-2 pt-1">
                       <div class="flex items-center justify-center gap-2 text-[11px] text-stone-600 bg-[#f8f7f7] p-2 rounded-none border border-[rgba(15,0,0,0.08)]">
                         <span class="inline-block w-2 h-2 bg-amber-500 rounded-none"></span>
-                        <span>네트워크 트랜잭션을 실시간 감지 중입니다...</span>
+                        <span>${tr('네트워크 트랜잭션을 실시간 감지 중입니다...', 'Monitoring network transactions in real time...', 'ネットワークトランザクションをリアルタイム検知中...')}</span>
                       </div>
 
                       <button
@@ -1470,7 +1479,7 @@ export function renderCoinChargeModal(): string {
                         data-action="verify-crypto-deposit"
                         class="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-sm min-h-[44px] cursor-pointer"
                       >
-                        ⚡ 입금 완료 즉시 확인 (수동 새로고침)
+                        ⚡ ${tr('입금 완료 즉시 확인 (수동 새로고침)', 'Verify Deposit Now (Manual Refresh)', '入金完了を今すぐ確認（手動更新）')}
                       </button>
 
                       <button
@@ -1478,7 +1487,7 @@ export function renderCoinChargeModal(): string {
                         data-action="close-coin-charge-modal"
                         class="w-full py-2.5 px-4 bg-[#f1eeee] hover:bg-[#e8e5e5] text-[#201d1d] border border-[rgba(15,0,0,0.12)] font-bold text-xs rounded-sm min-h-[44px] cursor-pointer"
                       >
-                        결제 취소 (닫기)
+                        ${tr('결제 취소 (닫기)', 'Cancel Payment (Close)', '決済キャンセル（閉じる）')}
                       </button>
                     </div>
                   </div>
@@ -1492,16 +1501,24 @@ export function renderCoinChargeModal(): string {
             ? `
           <div class="text-center py-4 space-y-4">
             <div class="text-3xl">🎉</div>
-            <h3 class="text-base font-black m-0">결제 및 충전이 성공적으로 완료되었습니다!</h3>
+            <h3 class="text-base font-black m-0">${tr('결제 및 충전이 성공적으로 완료되었습니다!', 'Payment and Top-Up Completed!', '決済およびチャージが正常に完了しました！')}</h3>
             <p class="text-xs text-stone-600 leading-relaxed">
               ${
                 chargeSuccessInfo.isAdRemoval
-                  ? '광고가 영구적으로 제거되었습니다. 모든 보상을 3초 만에 즉시 획득하세요!'
-                  : `<strong>+${chargeSuccessInfo.amount.toLocaleString()} SNS 코인</strong>이 계정에 정상 지급되었습니다.`
+                  ? tr(
+                      '광고가 영구적으로 제거되었습니다. 모든 보상을 3초 만에 즉시 획득하세요!',
+                      'Ads have been permanently removed. Claim all rewards instantly!',
+                      '広告が永久に除去されました。すべての報酬を即座に獲得できます！'
+                    )
+                  : tr(
+                      `<strong>+${chargeSuccessInfo.amount.toLocaleString()} SNS 코인</strong>이 계정에 정상 지급되었습니다.`,
+                      `<strong>+${chargeSuccessInfo.amount.toLocaleString()} SNS Coins</strong> have been credited to your account.`,
+                      `<strong>+${chargeSuccessInfo.amount.toLocaleString()} SNSコイン</strong>がアカウントに正常に付与されました。`
+                    )
               }
             </p>
             <button type="button" data-action="close-coin-charge-modal" class="w-full py-3 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm min-h-[44px]">
-              확인 (완료)
+              ${tr('확인 (완료)', 'Confirm (Done)', '確認（完了）')}
             </button>
           </div>
         `
@@ -1514,39 +1531,43 @@ export function renderCoinChargeModal(): string {
 
 export function renderPackRevealModal(): string {
   if (!activePackReveal) return '';
+  const packItem = ALL_SHOP_PRODUCTS.find((p) => p.id === activePackReveal?.packId);
+  const localizedPackName = packItem ? getLocalizedShopProduct(packItem).name : activePackReveal.packName;
 
   return `
     <div id="pack-reveal-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 font-mono">
       <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-2xl w-full p-6 space-y-6 shadow-none">
         <div class="text-center space-y-1">
           <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] rounded-sm">
-            소환 의식 완료
+            ${tr('소환 의식 완료', 'Summon Ritual Complete', '召喚儀式完了')}
           </span>
-          <h3 class="text-lg font-black m-0">${activePackReveal.packName} 개봉 결과</h3>
+          <h3 class="text-lg font-black m-0">${localizedPackName} — ${tr('개봉 결과', 'Pack Results', '開封結果')}</h3>
         </div>
 
         <!-- Revealed Cards Row -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           ${activePackReveal.cards
-            .map(
-              (card) => `
+            .map((card) => {
+              const locName = getLocalizedCharacterName(card.cardId) || card.nameKo;
+              const locFaction = getLocalizedFactionName(card.faction);
+              return `
             <div class="border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-3 text-center space-y-2">
               <div class="w-full h-36 bg-[#f1eeee] flex items-center justify-center p-1 overflow-hidden">
-                <img src="${card.bustUrl}" alt="${card.nameKo}" class="max-h-full max-w-full object-contain" />
+                <img src="${card.bustUrl}" alt="${locName}" class="max-h-full max-w-full object-contain" />
               </div>
               <div class="space-y-0.5">
-                <div class="text-xs font-bold">${card.nameKo}</div>
-                <div class="text-[10px] text-stone-500 uppercase">${card.faction} · ${card.rarity}</div>
+                <div class="text-xs font-bold">${locName}</div>
+                <div class="text-[10px] text-stone-500 uppercase">${locFaction} · ${card.rarity}</div>
               </div>
-              <div class="text-[11px] font-black text-amber-700">전투력: ${card.power}</div>
+              <div class="text-[11px] font-black text-amber-700">${tr('전투력', 'Power', '戦闘力')}: ${card.power}</div>
             </div>
-          `
-            )
+          `;
+            })
             .join('')}
         </div>
 
         <button type="button" data-action="confirm-pack-reveal" class="w-full py-3 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm min-h-[44px]">
-          확인 및 마이덱 보관함으로 이동
+          ${tr('확인 및 마이덱 보관함으로 이동', 'Confirm & View My Deck', '確認してマイデッキへ')}
         </button>
       </div>
     </div>
@@ -1577,15 +1598,19 @@ export function renderShopView(): string {
         <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.08)] gap-4">
           <div>
             <div class="inline-flex items-center gap-2 px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm tracking-wider uppercase mb-2">
-              <span>SNS히어로 인게임 상점</span>
+              <span>${tr('SNS히어로 인게임 상점', 'SNSHero In-Game Shop', 'SNSHero ゲーム内ショップ')}</span>
               <span class="text-stone-400">·</span>
               <span>snshero.com/shop</span>
             </div>
             <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#201d1d] m-0">
-              상점 &amp; 소환의 제단 (Shop)
+              ${tr('상점 & 소환의 제단 (Shop)', 'Shop & Summon Altar', 'ショップ＆召喚の祭壇 (Shop)')}
             </h1>
             <p class="text-xs sm:text-sm text-stone-600 mt-1 m-0">
-              카드팩 가챠, 육성 영약 아이템 및 SNS 코인을 충전하고 구매할 수 있습니다.
+              ${tr(
+                '카드팩 가챠, 육성 영약 아이템 및 SNS 코인을 충전하고 구매할 수 있습니다.',
+                'Summon hero card packs, purchase growth elixirs, and top up SNS coins.',
+                'カードパックガチャ、育成霊薬アイテムの購入およびSNSコインのチャージが可能です。'
+              )}
             </p>
           </div>
 
@@ -1593,7 +1618,7 @@ export function renderShopView(): string {
           <div class="flex flex-wrap items-center gap-3 p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none">
             <div class="text-right">
               <div class="text-[10px] text-stone-500 uppercase tracking-wider">
-                보유 골드: <span class="font-bold text-[#201d1d]">${gold.toLocaleString()} G</span>
+                ${tr('보유 골드', 'Gold Balance', '保有ゴールド')}: <span class="font-bold text-[#201d1d]">${gold.toLocaleString()} G</span>
               </div>
               <div class="text-base sm:text-lg font-black text-[#201d1d]">
                 ${coins.toLocaleString()} SNS
@@ -1606,14 +1631,14 @@ export function renderShopView(): string {
                 data-action="open-coin-charge-modal"
                 class="px-3.5 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center whitespace-nowrap cursor-pointer shadow-none"
               >
-                + 코인 충전
+                + ${tr('코인 충전', 'Top Up Coins', 'コインチャージ')}
               </button>
               <a
                 href="#mall"
                 data-nav="mall"
                 class="px-3 py-2 bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] flex items-center justify-center whitespace-nowrap cursor-pointer no-underline"
               >
-                📦 굿즈몰 이동 →
+                📦 ${tr('굿즈몰 이동 →', 'Merch Mall →', 'グッズモールへ →')}
               </a>
             </div>
           </div>
@@ -1634,7 +1659,7 @@ export function renderShopView(): string {
               }"
             >
               <span>${tab.icon}</span>
-              <span>${tab.label}</span>
+              <span>${getLocalizedShopTabLabel(tab.key)}</span>
             </button>
           `
           ).join('')}
@@ -1644,7 +1669,8 @@ export function renderShopView(): string {
       <!-- Products Grid -->
       <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         ${filteredProducts
-          .map((item) => {
+          .map((rawItem) => {
+            const item = getLocalizedShopProduct(rawItem);
             const isCoin = item.category === 'COIN';
 
             return `
@@ -1674,7 +1700,7 @@ export function renderShopView(): string {
 
               <div class="pt-4 border-t border-[rgba(15,0,0,0.08)] space-y-3">
                 <div class="flex items-baseline justify-between">
-                  <span class="text-xs text-stone-500">가격:</span>
+                  <span class="text-xs text-stone-500">${tr('가격:', 'Price:', '価格:')}</span>
                   <span class="text-base font-black text-[#201d1d]">
                     ${item.priceText}
                   </span>

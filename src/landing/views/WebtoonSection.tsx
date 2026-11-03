@@ -198,7 +198,7 @@ export function renderWebtoonSection(): string {
     const imgSrc = activeImage?.imageUrl || activeImage?.localArtUrl || '';
     const narration = isKo
       ? activeImage?.narrationKo || activeImage?.narrationEn || ''
-      : activeImage?.narrationEn || activeImage?.narrationKo || '';
+      : (activeImage?.narrationEn || activeImage?.narrationKo || '').replace(/\s*\(눈히어로\.com\)/g, '');
     const dialogues = activeImage?.dialogues || [];
     const isFirstPanelOfFirstEp = curEp <= 1 && validIdx <= 0;
     const isLastPanelOfLastEp = curEp >= 40 && validIdx >= maxIdx;
@@ -545,7 +545,7 @@ export function renderWebtoonSection(): string {
                     const panelBadge = isTitleCard ? 'TITLE CARD' : `SCENE ${String(sceneIndex).padStart(2, '0')}`;
                     const mainNarration = isKo
                       ? img.narrationKo || img.narrationEn || ''
-                      : img.narrationEn || img.narrationKo || '';
+                      : (img.narrationEn || img.narrationKo || '').replace(/\s*\(눈히어로\.com\)/g, '');
                     const dialogues = img.dialogues || [];
                     const imgSrc = img.imageUrl || img.localArtUrl || '';
 

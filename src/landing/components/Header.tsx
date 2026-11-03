@@ -10,7 +10,7 @@
 
 import { ViewKey, ModalKey, TOP_NAV_ITEMS } from '../types';
 import { getCurrentUser } from '../services/authService';
-import { t, getCurrentLanguage } from '../services/i18n';
+import { t, tr, getCurrentLanguage } from '../services/i18n';
 
 export interface HeaderProps {
   activeView: ViewKey;
@@ -55,7 +55,7 @@ export function renderHeader(activeView: ViewKey): string {
           type="button"
           data-modal="${item.key}"
           class="nav-item-btn px-3 py-2 text-xs font-semibold rounded-sm transition-colors min-h-[44px] flex items-center justify-center ${activeClass}"
-          aria-label="${label} 모달 열기"
+          aria-label="${label}"
         >
           ${label}
         </button>
@@ -68,7 +68,7 @@ export function renderHeader(activeView: ViewKey): string {
         data-nav="${item.key}"
         class="nav-item-btn px-3 py-2 text-xs font-semibold rounded-sm transition-colors min-h-[44px] flex items-center justify-center ${activeClass}"
         aria-current="${isActive ? 'page' : 'false'}"
-        aria-label="${label} 섹션 이동"
+        aria-label="${label}"
       >
         ${label}
       </button>
@@ -84,7 +84,7 @@ export function renderHeader(activeView: ViewKey): string {
             type="button"
             data-action="toggle-sidebar"
             class="lg:hidden p-2 rounded-sm text-[#201d1d] border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-            aria-label="사이드 메뉴 열기"
+            aria-label="${tr('사이드 메뉴 열기', 'Open Side Menu', 'サイドメニューを開く')}"
           >
             <span class="text-sm font-bold tracking-widest">[=]</span>
           </button>
@@ -98,7 +98,7 @@ export function renderHeader(activeView: ViewKey): string {
         </div>
 
         <!-- Desktop Navigation Bar -->
-        <nav class="hidden lg:flex items-center gap-1.5 desktop-nav-cluster" aria-label="메인 상단 내비게이션">
+        <nav class="hidden lg:flex items-center gap-1.5 desktop-nav-cluster" aria-label="${tr('메인 상단 내비게이션', 'Main Top Navigation', 'メイン上部ナビゲーション')}">
           ${navItemsHtml}
         </nav>
 
@@ -122,7 +122,7 @@ export function renderHeader(activeView: ViewKey): string {
                   type="button"
                   data-modal="login"
                   class="px-2.5 py-1.5 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] flex items-center gap-1.5 cursor-pointer"
-                  aria-label="내 계정 정보"
+                  aria-label="${tr('내 계정 정보', 'My Account Info', 'マイアカウント情報')}"
                 >
                   <img src="${user.photoURL}" alt="${user.displayName}" class="w-5 h-5 rounded-full object-cover" />
                   <span class="hidden sm:inline max-w-[90px] truncate">${user.displayName}</span>

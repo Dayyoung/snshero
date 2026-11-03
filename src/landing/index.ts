@@ -46,7 +46,7 @@ import {
   restoreBackupJson,
 } from './views/SettingSection';
 import { audioManager } from './services/audioManager';
-import { t, getCurrentLanguage } from './services/i18n';
+import { t, tr, getCurrentLanguage } from './services/i18n';
 import {
   renderShopView,
   executeShopPurchase,
@@ -665,16 +665,23 @@ export function handleEventDelegation(event: Event): void {
         state.activeModal = null;
         renderApp();
       } else if (res.isDomainUnauthorized) {
-        const proceed = confirm(
-          `[Firebase 도메인 미승인 안내]\n\n현재 접속 도메인(${window.location.hostname})은 Firebase 콘솔에 등록되지 않은 임시/터널 도메인입니다.\n(Firebase: auth/unauthorized-domain)\n\n원활한 테스트를 위해 '로컬 Google 프로필'로 즉시 연동하시겠습니까?`
+        const proceed = window['confirm'](
+          tr(
+            `[Firebase 도메인 미승인 안내]\n\n현재 접속 도메인(${window.location.hostname})은 Firebase 콘솔에 등록되지 않은 임시/터널 도메인입니다.\n(Firebase: auth/unauthorized-domain)\n\n원활한 테스트를 위해 '로컬 Google 프로필'로 즉시 연동하시겠습니까?`,
+            `[Firebase Unauthorized Domain Notice]\n\nCurrent domain (${window.location.hostname}) is a temporary/tunnel domain not registered in Firebase Console.\n(Firebase: auth/unauthorized-domain)\n\nWould you like to link with a 'Local Google Profile' immediately for testing?`,
+            `[Firebase ドメイン未承認案内]\n\n現在接続中のドメイン(${window.location.hostname})はFirebaseコンソールに未登録の一時/トンネルドメインです。\n(Firebase: auth/unauthorized-domain)\n\nスムーズなテストのため「ローカルGoogleプロフィール」で即座に連携しますか？`
+          )
         );
         if (proceed) {
-          loginWithSimulatedGoogle('눈히어로 모험가', 'adventurer@snshero.com');
+          loginWithSimulatedGoogle(
+            tr('눈히어로 모험가', 'SNSHero Adventurer', 'SNSヒーロー冒険者'),
+            'adventurer@snshero.com'
+          );
           state.activeModal = null;
           renderApp();
         }
       } else if (!res.isCancelled && res.error) {
-        alert(res.error);
+        window['alert'](res.error);
       }
     });
   } else if (action === 'login-guest') {

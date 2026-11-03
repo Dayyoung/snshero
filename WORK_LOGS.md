@@ -2,6 +2,44 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 05:56 KST] [9개 전체 라우트(#home, #deck, #play, #card, #shop, #mall, #book, #webtoon, #setting) 설정 언어(일본어 등) 완벽 표시 및 웹소설·웹툰 영문 기본값 폴백 완결]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 다국어 헬퍼(`tr`, `isKoreanLanguage`) 및 110종 캐릭터·종족 다국어 이름 적용 (`src/landing/services/i18n.ts`, `src/landing/services/assetCatalog.ts`, `src/landing/services/authService.ts`)**:
+    - `tr(ko, en, ja, extra)` 및 `isKoreanLanguage()` 헬퍼를 추가하고, 110종 전 영웅 캐릭터의 일본어(`ja`) 명칭과 11대 종족의 다국어 명칭(`getLocalizedCharacterName`, `getLocalizedFactionName`)을 완비.
+    - 게스트/모험가 기본 표시명도 설정된 언어(`ko`/`en`/`ja` 등)에 맞춰 동적으로 반환되도록 개선.
+  - **2. 9개 해시 페이지(`#home`, `#deck`, `#play`, `#card`, `#shop`, `#mall`, `#book`, `#webtoon`, `#setting`) 및 공통 레이아웃(`Header`, `Sidebar`, `Footer`, `Modals`, `OriginalCardHtml`) 하드코딩 한글 전수 현지화**:
+    - `#home` (`HomeSection.tsx`), `#deck` (`MyDeckSection.tsx`), `#card` (`CardSection.tsx`), `#shop` (`ShopSection.tsx`), `#mall` (`MallSection.tsx`), `#setting` (`SettingSection.tsx`)의 모든 배너, 탭, 필터, 상품 설명, 결제 모달, 카드 상세/육성 모달 및 접근성 라벨(`aria-label`, `title`)까지 설정된 언어로 표시되도록 현지화.
+    - `src/lib/translations/ja.ts` 내 한일 혼용 오타 4건(`restore_success`, `sell`, `community_cat_boast`, `game_tip_3`) 수정 완료.
+  - **3. 웹소설(`#book`), 웹툰(`#webtoon`) 및 스토리 대화(`#play`) 영문(`en`) 기본값 폴백 적용 (`src/content/novelRawEpisodesEn.ts`, `BookSection.tsx`, `WebtoonSection.tsx`, `PlaySection.tsx`, `playRpgEngine.ts`)**:
+    - `public/book/image_narrations/english_txt/SNSHero_Novel_Episode_01_EN.txt` ~ `40_EN.txt` 40화 전편을 기반으로 `src/content/novelRawEpisodesEn.ts`(`getNovelRawEpisodeEn`)를 생성하여, 한국어가 아닌 언어(`!isKoreanLanguage()`) 설정 시 `#book` 본문과 챕터 제목이 영문(`en`)으로 표시되도록 구현 (UI 버튼/컨트롤은 설정된 언어로 표시).
+    - `#webtoon` (`WebtoonSection.tsx`) 및 `#play` (`PlaySection.tsx`, `playRpgEngine.ts`)에서도 한국어가 아닌 언어 설정 시 에피소드 제목(`episodeTitle`/`titleEn`), 내레이션(`narrationEn`), 대사(`textEn`/`dialogueQuoteEn`), 화자(`speakerEn`) 및 선택지(`labelEn`/`attitudeEn`)가 기본값인 영어로 표시되도록 구현.
+- **검증 결과**:
+  - 일본어(`ja`) 및 영어(`en`) 모드에서 9개 전체 뷰 렌더링 시 하드코딩 한글 잔존 수 `0건` 검증 완료
+  - 프로덕션 빌드: `npm run build` 성공 (4,361개 모듈 변환, 0 errors)
+  - 로컬 git 커밋: 완료 (git push 미실행 준수)
+  - 구글 폼 보고서 제출: 완료
+
+## [2026-11-04 05:37 KST] [3x3 배틀 1초 턴 간격(턴제 템포) 적용 및 카드 중앙 3D Flip! 텍스트 연출 강화]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 카드 배치 후 1초(1000ms) 턴 템포(Cadence) 도입 (`src/landing/services/playRpgEngine.ts`)**:
+    - 플레이어가 카드를 낸 직후 AI가 0ms로 즉시 카드를 내어 상황 파악이 어렵던 문제를 해결.
+    - 내가 카드를 낸 후 자신의 카드 배치 및 플립 결과를 충분히 인지할 수 있도록 1000ms 동안 `playRpgState.turn = 'opponent'` 상태를 유지하며 상대 턴 생각을 시뮬레이션한 후 상대가 카드를 배치하도록 개선.
+    - 상대방 턴 진행 중 플레이어 슬롯 중복 터치 차단 가드 적용 및 빈 슬롯에 `[대기...]` 인디케이터 표시.
+    - 3x3 보드 상단에 실시간 턴 인디케이터 바(`▶ 내 턴 (P1)` vs `⏳ 상대 턴 (AI)`) 추가.
+  - **2. 카드 중앙 3D Flip! 텍스트 및 360도 입체 플립 효과 강화 (`src/landing/views/PlaySection.tsx`, `src/index.css`)**:
+    - 카드가 뒤집힐 때 상단 구석의 작은 뱃지 대신, 카드 정중앙(`absolute inset-0`)에 크고 눈부신 `⚡ Flip!` 텍스트 오버레이 배지를 표시.
+    - `src/index.css`의 `card-flip-rotate` 키프레임을 3D perspective 800px 공간에서 360도 입체 회전 및 1.25배 확대, 시안 네온 발광으로 강화 (0.65초 cubic-bezier).
+  - **3. 빌드 및 배포 검증**:
+    - Vite 프로덕션 빌드 성공 (`npm run build`, 0 error, 22.88s).
+    - 로컬 git 커밋 완료 (`8874151bc`, 지침에 따라 push 미실행 준수).
+    - 연동 구글 폼 완료 보고서 제출 완료.
+- **검증 결과**:
+  - Vite 프로덕션 빌드 성공: 0 error
+  - 로컬 git 커밋 완료: `8874151bc`
+  - 구글 폼 완료 보고서 제출 완료: `[UI/UX 개선] 3x3 배틀 1초 턴 간격(턴제 템포) 적용 및 카드 중앙 3D Flip! 텍스트 연출 강화`
+
 ## [2026-11-04 05:19 KST] [#play 웹툰/웹소설 스타일 회차 선택기(드롭다운/이전화/다음화/40화 목차) 구현]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

@@ -18,7 +18,7 @@
 
 import { getCurrentUser, loginWithGoogle, loginAsGuest, loginWithSimulatedGoogle, logoutUser, LandingUser } from '../services/authService';
 import { audioManager, AudioSettings } from '../services/audioManager';
-import { t, getCurrentLanguage, setCurrentLanguage, SupportedLanguage } from '../services/i18n';
+import { t, tr, getCurrentLanguage, setCurrentLanguage, SupportedLanguage } from '../services/i18n';
 
 export const OFFICIAL_LANGUAGES = [
   { code: 'ko', name: '한국어', flag: '🇰🇷', region: '대한민국' },
@@ -118,14 +118,22 @@ export function triggerDownloadBackupFile(): boolean {
 
 export function restoreBackupJson(jsonText: string): { success: boolean; restoredCount: number; message: string } {
   if (typeof localStorage === 'undefined') {
-    return { success: false, restoredCount: 0, message: '로컬스토리지를 지원하지 않는 브라우저입니다.' };
+    return {
+      success: false,
+      restoredCount: 0,
+      message: tr('로컬스토리지를 지원하지 않는 브라우저입니다.', 'Browser does not support LocalStorage.', 'ローカルストレージをサポートしていないブラウザです。'),
+    };
   }
 
   try {
     const parsed = JSON.parse(jsonText);
     const dataObj = parsed.data || parsed;
     if (!dataObj || typeof dataObj !== 'object') {
-      return { success: false, restoredCount: 0, message: '유효한 백업 데이터 형식이 아닙니다.' };
+      return {
+        success: false,
+        restoredCount: 0,
+        message: tr('유효한 백업 데이터 형식이 아닙니다.', 'Invalid backup data format.', '有効なバックアップデータ形式ではありません。'),
+      };
     }
 
     let count = 0;
@@ -137,7 +145,15 @@ export function restoreBackupJson(jsonText: string): { success: boolean; restore
     }
 
     if (count === 0) {
-      return { success: false, restoredCount: 0, message: '복원 가능한 게임 데이터(hero_*)가 발견되지 않았습니다.' };
+      return {
+        success: false,
+        restoredCount: 0,
+        message: tr(
+          '복원 가능한 게임 데이터(hero_*)가 발견되지 않았습니다.',
+          'No restorable game data (hero_*) found.',
+          '復元可能なゲームデータ(hero_*)が見つかりませんでした。'
+        ),
+      };
     }
 
     // Trigger update events
@@ -151,13 +167,19 @@ export function restoreBackupJson(jsonText: string): { success: boolean; restore
     return {
       success: true,
       restoredCount: count,
-      message: `성공적으로 ${count}개의 게임 데이터 키를 복원하였습니다.`,
+      message: tr(
+        `성공적으로 ${count}개의 게임 데이터 키를 복원하였습니다.`,
+        `Successfully restored ${count} game data keys.`,
+        `${count}個のゲームデータキーを正常に復元しました。`
+      ),
     };
   } catch (e: any) {
     return {
       success: false,
       restoredCount: 0,
-      message: 'JSON 파싱 오류: ' + (e?.message || '파일이 손상되었습니다.'),
+      message:
+        tr('JSON 파싱 오류: ', 'JSON parse error: ', 'JSONパースエラー: ') +
+        (e?.message || tr('파일이 손상되었습니다.', 'File is corrupted.', 'ファイルが破損しています。')),
     };
   }
 }
@@ -215,56 +237,112 @@ export function handleSettingAction(action: string, target?: HTMLElement): void 
   else if (action === 'setting-login-google') {
     loginWithGoogle().then((res) => {
       if (res.success) {
-        backupNoticeMessage = 'Google 계정으로 성공적으로 로그인되었습니다.';
+        backupNoticeMessage = tr(
+          'Google 계정으로 성공적으로 로그인되었습니다.',
+          'Successfully signed in with Google account.',
+          'Googleアカウントで正常にログインしました。'
+        );
       } else if (res.isDomainUnauthorized) {
         // Domain unauthorized: prompt fallback
         const ok = confirm(
-          `[Firebase 안내]\n현재 접속 도메인(${window.location.hostname})이 Firebase 승인 도메인에 미등록된 임시/터널 도메인입니다.\n\n안전한 '로컬 Google 프로필'로 즉시 연동하여 게임을 시작하시겠습니까?`
+          tr(
+            `[Firebase 안내]\n현재 접속 도메인(${window.location.hostname})이 Firebase 승인 도메인에 미등록된 임시/터널 도메인입니다.\n\n안전한 '로컬 Google 프로필'로 즉시 연동하여 게임을 시작하시겠습니까?`,
+            `[Firebase Notice]\nCurrent domain (${window.location.hostname}) is a temporary/tunnel domain not registered in Firebase Authorized Domains.\n\nWould you like to link with a safe 'Local Google Profile' immediately?`,
+            `[Firebase 案内]\n現在接続中のドメイン(${window.location.hostname})はFirebase承認済みドメインに未登録の一時/トンネルドメインです。\n\n安全な「ローカルGoogleプロフィール」で即座に連携してゲームを開始しますか？`
+          )
         );
         if (ok) {
           loginWithSimulatedGoogle('Google Adventurer', 'adventurer@gmail.com');
-          backupNoticeMessage = '로컬 Google 프로필로 연동되었습니다.';
+          backupNoticeMessage = tr(
+            '로컬 Google 프로필로 연동되었습니다.',
+            'Linked with Local Google Profile.',
+            'ローカルGoogleプロフィールで連携されました。'
+          );
         }
       } else if (!res.isCancelled && res.error) {
         alert(res.error);
       }
     });
   } else if (action === 'setting-login-simulated') {
-    const name = prompt('사용하실 구글 프로필 이름을 입력하세요:', 'Google Adventurer');
+    const name = prompt(
+      tr(
+        '사용하실 구글 프로필 이름을 입력하세요:',
+        'Enter your Google profile display name:',
+        '使用するGoogleプロフィール名を入力してください:'
+      ),
+      'Google Adventurer'
+    );
     if (name) {
       loginWithSimulatedGoogle(name);
-      backupNoticeMessage = `Google 프로필 '${name}'으로 로컬 연동되었습니다.`;
+      backupNoticeMessage = tr(
+        `Google 프로필 '${name}'으로 로컬 연동되었습니다.`,
+        `Linked locally with Google Profile '${name}'.`,
+        `Googleプロフィール「${name}」でローカル連携されました。`
+      );
     }
   } else if (action === 'setting-login-guest') {
     loginAsGuest();
-    backupNoticeMessage = '게스트 모험가 계정으로 전환되었습니다.';
+    backupNoticeMessage = tr(
+      '게스트 모험가 계정으로 전환되었습니다.',
+      'Switched to Guest Adventurer account.',
+      'ゲスト冒険者アカウントに切り替えました。'
+    );
   } else if (action === 'setting-change-name') {
     const current = getCurrentUser();
-    const newName = prompt('변경할 닉네임을 입력하세요:', current.displayName);
+    const newName = prompt(
+      tr('변경할 닉네임을 입력하세요:', 'Enter new nickname:', '変更するニックネームを入力してください:'),
+      current.displayName
+    );
     if (newName && newName.trim()) {
       loginAsGuest(newName.trim());
-      backupNoticeMessage = `닉네임이 '${newName.trim()}'(으)로 변경되었습니다.`;
+      backupNoticeMessage = tr(
+        `닉네임이 '${newName.trim()}'(으)로 변경되었습니다.`,
+        `Nickname changed to '${newName.trim()}'.`,
+        `ニックネームが「${newName.trim()}」に変更されました。`
+      );
     }
   } else if (action === 'setting-logout') {
-    const ok = confirm('정말 로그아웃 하시겠습니까?');
+    const ok = confirm(
+      tr('정말 로그아웃 하시겠습니까?', 'Are you sure you want to log out?', '本当にログアウトしますか？')
+    );
     if (ok) {
       logoutUser();
-      backupNoticeMessage = '로그아웃되어 기본 게스트 세션으로 전환되었습니다.';
+      backupNoticeMessage = tr(
+        '로그아웃되어 기본 게스트 세션으로 전환되었습니다.',
+        'Logged out and switched to default guest session.',
+        'ログアウトし、デフォルトのゲストセッションに切り替えました。'
+      );
     }
   }
   // ── Backup Actions ───────────────────────────────────────────────────────
   else if (action === 'setting-download-backup') {
     triggerDownloadBackupFile();
-    backupNoticeMessage = '전체 게임 데이터 백업 JSON 파일이 다운로드되었습니다.';
+    backupNoticeMessage = tr(
+      '전체 게임 데이터 백업 JSON 파일이 다운로드되었습니다.',
+      'Full game data backup JSON file downloaded.',
+      '全ゲームデータのバックアップJSONファイルがダウンロードされました。'
+    );
   } else if (action === 'setting-copy-backup-text') {
     const { jsonString } = exportBackupData();
     if (navigator?.clipboard) {
       navigator.clipboard.writeText(jsonString).then(() => {
-        alert('백업 데이터 JSON이 클립보드에 복사되었습니다.');
+        alert(
+          tr(
+            '백업 데이터 JSON이 클립보드에 복사되었습니다.',
+            'Backup JSON copied to clipboard.',
+            'バックアップデータJSONがクリップボードにコピーされました。'
+          )
+        );
       });
     }
   } else if (action === 'setting-restore-paste') {
-    const pasted = prompt('복원할 백업 JSON 텍스트를 붙여넣어 주세요:');
+    const pasted = prompt(
+      tr(
+        '복원할 백업 JSON 텍스트를 붙여넣어 주세요:',
+        'Paste your backup JSON text to restore:',
+        '復元するバックアップJSONテキストを貼り付けてください:'
+      )
+    );
     if (pasted && pasted.trim()) {
       const res = restoreBackupJson(pasted.trim());
       alert(res.message);
@@ -273,14 +351,25 @@ export function handleSettingAction(action: string, target?: HTMLElement): void 
       }
     }
   } else if (action === 'setting-factory-reset') {
+    const resetKeyword = tr('초기화', 'RESET', '初期化');
     const confirmText = prompt(
-      "경고: 모든 카드, 덱, 재화, 진행도가 완전히 초기화됩니다!\n정말 초기화하려면 '초기화'를 입력하세요:"
+      tr(
+        "경고: 모든 카드, 덱, 재화, 진행도가 완전히 초기화됩니다!\n정말 초기화하려면 '초기화'를 입력하세요:",
+        "WARNING: All cards, decks, currency, and progress will be wiped!\nType 'RESET' to confirm:",
+        '警告: すべてのカード、デッキ、通貨、進行状況が完全に初期化されます！\n本当に初期化する場合は「初期化」と入力してください:'
+      )
     );
-    if (confirmText === '초기화') {
+    if (confirmText === resetKeyword || confirmText === '초기화' || confirmText === 'RESET') {
       const preserveLang = localStorage.getItem('hero_language') || 'ko';
       localStorage.clear();
       localStorage.setItem('hero_language', preserveLang);
-      alert('모든 로컬 게임 데이터가 초기화되었습니다. 페이지를 새로고침합니다.');
+      alert(
+        tr(
+          '모든 로컬 게임 데이터가 초기화되었습니다. 페이지를 새로고침합니다.',
+          'All local game data has been reset. Reloading page.',
+          'すべてのローカルゲームデータが初期化されました。ページを再読み込みします。'
+        )
+      );
       if (typeof window !== 'undefined') {
         window.location.reload();
       }
@@ -343,7 +432,7 @@ export function renderSettingSection(): string {
       </section>
 
       <!-- Sub-Tab Navigation Bar -->
-      <nav class="border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] sticky top-14 md:top-16 z-20 px-4 sm:px-6 md:px-8" aria-label="환경설정 하위 메뉴">
+      <nav class="border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] sticky top-14 md:top-16 z-20 px-4 sm:px-6 md:px-8" aria-label="${tr('환경설정 하위 메뉴', 'Settings Sub-Menu', '環境設定サブメニュー')}">
         <div class="max-w-4xl mx-auto flex items-center gap-1.5 overflow-x-auto py-2.5 scrollbar-none min-h-[48px]">
           ${[
             { key: 'all', label: t('tab_all') },
@@ -507,7 +596,7 @@ export function renderSettingSection(): string {
                       type="button"
                       data-action="setting-toggle-haptic"
                       class="px-3 py-2.5 bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] hover:bg-[#edeaea] text-xs font-bold rounded-sm min-h-[44px] cursor-pointer whitespace-nowrap"
-                      title="모바일 햅틱 진동"
+                      title="${tr('모바일 햅틱 진동', 'Mobile Haptic Vibration', 'モバイル振動フィードバック')}"
                     >
                       ${t('haptic_label')} ${sound.hapticEnabled ? 'ON' : 'OFF'}
                     </button>
@@ -601,7 +690,11 @@ export function renderSettingSection(): string {
                       </span>
                     </div>
                     <div class="text-xs text-stone-500">
-                      ${user.email ? escapeHtml(user.email) : '로컬 모험가 계정 (UID: ' + user.uid.substring(0, 16) + '...)'}
+                      ${
+                        user.email
+                          ? escapeHtml(user.email)
+                          : `${tr('로컬 모험가 계정', 'Local Adventurer Account', 'ローカル冒険者アカウント')} (UID: ${user.uid.substring(0, 16)}...)`
+                      }
                     </div>
                   </div>
                 </div>
@@ -701,7 +794,7 @@ export function renderSettingSection(): string {
                       type="button"
                       data-action="setting-copy-backup-text"
                       class="py-3 px-3 bg-[#fdfcfc] text-[#201d1d] hover:bg-[#edeaea] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] cursor-pointer transition-colors"
-                      title="클립보드로 JSON 텍스트 복사"
+                      title="${tr('클립보드로 JSON 텍스트 복사', 'Copy JSON text to clipboard', 'クリップボードにJSONテキストをコピー')}"
                     >
                       ${t('backup_copy_btn')}
                     </button>

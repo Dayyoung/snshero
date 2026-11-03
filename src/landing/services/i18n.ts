@@ -36,13 +36,17 @@ export const SUPPORTED_LANGUAGES: readonly SupportedLanguage[] = [
   'vi',
 ] as const;
 
+let memoryLanguage: SupportedLanguage = 'ko';
+
 export function getCurrentLanguage(): SupportedLanguage {
-  if (typeof localStorage === 'undefined') return 'ko';
-  const saved = localStorage.getItem('hero_language') as SupportedLanguage | null;
-  if (saved && (SUPPORTED_LANGUAGES as readonly string[]).includes(saved)) {
-    return saved;
+  if (typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function') {
+    const saved = localStorage.getItem('hero_language') as SupportedLanguage | null;
+    if (saved && (SUPPORTED_LANGUAGES as readonly string[]).includes(saved)) {
+      memoryLanguage = saved;
+      return saved;
+    }
   }
-  return 'ko';
+  return memoryLanguage;
 }
 
 export function setCurrentLanguage(lang: string): SupportedLanguage {
@@ -50,7 +54,9 @@ export function setCurrentLanguage(lang: string): SupportedLanguage {
     ? (lang as SupportedLanguage)
     : 'ko';
 
-  if (typeof localStorage !== 'undefined') {
+  memoryLanguage = target;
+
+  if (typeof localStorage !== 'undefined' && typeof localStorage.setItem === 'function') {
     localStorage.setItem('hero_language', target);
   }
 

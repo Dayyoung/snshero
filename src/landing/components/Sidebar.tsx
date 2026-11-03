@@ -105,7 +105,7 @@ export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {
       class="fixed inset-0 z-50 transition-opacity duration-200 opacity-100 pointer-events-auto font-mono"
       role="dialog"
       aria-modal="true"
-      aria-label="사이드 내비게이션 메뉴"
+      aria-label="${tr('사이드 내비게이션 메뉴', 'Side Navigation Menu', 'サイドナビゲーションメニュー')}"
     >
       <!-- Backdrop Overlay -->
       <div
@@ -130,7 +130,7 @@ export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {
               id="sidebar-close-btn"
               data-action="close-sidebar"
               class="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-sm text-stone-600 hover:text-[#201d1d] hover:bg-[#f1eeee] transition-colors focus:outline-none"
-              aria-label="사이드 메뉴 닫기"
+              aria-label="${tr('사이드 메뉴 닫기', 'Close Side Menu', 'サイドメニューを閉じる')}"
             >
               <span class="text-sm font-bold">[x]</span>
             </button>
@@ -146,7 +146,7 @@ export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {
           </div>
 
           <!-- Navigation Items -->
-          <nav class="p-2" aria-label="사이드 내비게이션 항목">
+          <nav class="p-2" aria-label="${tr('사이드 내비게이션 항목', 'Side Navigation Items', 'サイドナビゲーション項目')}">
             <ul class="space-y-1 list-none p-0 m-0">
               ${itemsHtml}
             </ul>
