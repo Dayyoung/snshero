@@ -128,7 +128,7 @@ export const MALL_GOODS_PRODUCTS: MallGoodsProduct[] = [
     priceKrw: 42000,
     description: '20수 고급 코튼 원단에 대표 영웅 풀바디 공식 일러스트가 프린팅된 공식 반팔 티셔츠.',
     shortSpec: '면 100% 20수 코마사 · 정사이즈 유니섹스 핏 (S/M/L) · 넥라인 보강 테이핑',
-    image: '/icon.png',
+    image: '/tshirt.png',
   },
 ];
 
@@ -307,6 +307,9 @@ let selectedFaction = '성진기사단 (Human)';
 let selectedMugCardId = 41; // Default: Kadan (#41, Royal Gold)
 let isMugCardPickerOpen = false;
 
+let selectedTshirtCardId = 41; // Default: Kadan (#41, Royal Gold)
+let isTshirtCardPickerOpen = false;
+
 export function setSelectedMugCardId(cardId: number): void {
   selectedMugCardId = cardId;
   isMugCardPickerOpen = false;
@@ -320,16 +323,33 @@ export function getSelectedMugCardId(): number {
   return selectedMugCardId;
 }
 
-export function renderMugMockupPreview(cardId: number): string {
+export function setSelectedTshirtCardId(cardId: number): void {
+  selectedTshirtCardId = cardId;
+  isTshirtCardPickerOpen = false;
+}
+
+export function toggleTshirtCardPicker(): void {
+  isTshirtCardPickerOpen = !isTshirtCardPickerOpen;
+}
+
+export function getSelectedTshirtCardId(): number {
+  return selectedTshirtCardId;
+}
+
+export function renderMugMockupPreview(cardId: number, isThumbnail: boolean = false): string {
   const card = CARD_DATABASE.find((c) => c.id === cardId) || CARD_DATABASE[40] || CARD_DATABASE[0];
   const bustUrl = getCharacterAsset(card.id, 'bust');
   const locName = getLocalizedCharacterName(card.id) || card.nameKo;
   const locFaction = getLocalizedFactionName(card.faction);
 
+  const containerClass = isThumbnail
+    ? 'relative w-full h-full flex items-center justify-center select-none overflow-hidden'
+    : 'relative w-48 sm:w-56 h-44 sm:h-52 mx-auto bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 select-none';
+
   return `
-    <div class="relative w-48 sm:w-56 h-44 sm:h-52 mx-auto bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 select-none">
+    <div class="${containerClass}">
       <!-- White Ceramic Mug Base -->
-      <img src="/mug.png" alt="Mug Base" class="w-full h-full object-contain" />
+      <img src="/mug.png" alt="Mug Base" class="max-h-full max-w-full object-contain" />
 
       <!-- Cylindrical Curved Printed Card Overlay -->
       <div class="absolute top-[26%] left-[36%] w-[29%] aspect-[5/7] rotate-[-2.5deg] overflow-hidden shadow-sm pointer-events-none rounded-xs border border-amber-400/60 bg-[#161414] flex flex-col justify-between p-0.5 opacity-95">
@@ -342,6 +362,39 @@ export function renderMugMockupPreview(cardId: number): string {
           ${locName}
         </div>
         <div class="w-full grid grid-cols-4 gap-0.2 text-[5.5px] font-mono font-bold bg-black/60 text-stone-300 text-center py-0.2">
+          <span>▲${card.top}</span><span>▶${card.right}</span><span>▼${card.bottom}</span><span>◀${card.left}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+export function renderTshirtMockupPreview(cardId: number, isThumbnail: boolean = false): string {
+  const card = CARD_DATABASE.find((c) => c.id === cardId) || CARD_DATABASE[40] || CARD_DATABASE[0];
+  const bustUrl = getCharacterAsset(card.id, 'bust');
+  const locName = getLocalizedCharacterName(card.id) || card.nameKo;
+  const locFaction = getLocalizedFactionName(card.faction);
+
+  const containerClass = isThumbnail
+    ? 'relative w-full h-full flex items-center justify-center select-none overflow-hidden'
+    : 'relative w-48 sm:w-56 h-48 sm:h-56 mx-auto bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 select-none';
+
+  return `
+    <div class="${containerClass}">
+      <!-- White Cotton T-shirt Base Mockup -->
+      <img src="/tshirt.png" alt="T-Shirt Base" class="max-h-full max-w-full object-contain filter contrast-[1.02]" />
+
+      <!-- Chest Center Custom Printed Hero Card Overlay -->
+      <div class="absolute top-[28%] left-1/2 -translate-x-1/2 w-[27%] sm:w-[29%] aspect-[5/7] overflow-hidden shadow-md pointer-events-none rounded-xs border border-amber-400/80 bg-[#161414] flex flex-col justify-between p-0.5 opacity-95">
+        <div class="relative w-full aspect-square overflow-hidden bg-black/50">
+          <img src="${bustUrl}" alt="${locName}" class="w-full h-full object-cover" />
+          <span class="absolute top-0.5 left-0.5 px-0.5 py-0.2 bg-black/85 text-[6px] text-amber-300 font-black leading-none">${locFaction}</span>
+          <span class="absolute top-0.5 right-0.5 px-0.5 py-0.2 bg-amber-400 text-stone-950 text-[6px] font-black leading-none">${card.rarity}</span>
+        </div>
+        <div class="w-full text-center text-[7px] font-bold text-amber-200 truncate py-0.2">
+          ${locName}
+        </div>
+        <div class="w-full grid grid-cols-4 gap-0.2 text-[5.5px] font-mono font-bold bg-black/70 text-stone-300 text-center py-0.2">
           <span>▲${card.top}</span><span>▶${card.right}</span><span>▼${card.bottom}</span><span>◀${card.left}</span>
         </div>
       </div>
@@ -467,10 +520,17 @@ export async function executeMallCheckout(method: string): Promise<boolean> {
   const totalUsd = activeDetailProduct.priceUsd * selectedQty;
   const totalKrw = activeDetailProduct.priceKrw * selectedQty;
 
+  const customHeroName =
+    activeDetailProduct.id === 'goods_tshirt'
+      ? ` (#${selectedTshirtCardId} ${getLocalizedCharacterName(selectedTshirtCardId)})`
+      : activeDetailProduct.id === 'goods_mug'
+      ? ` (#${selectedMugCardId} ${getLocalizedCharacterName(selectedMugCardId)})`
+      : '';
+
   const orderData: MallGoodsOrderRecord = {
     id: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
     productId: activeDetailProduct.id,
-    title: activeDetailProduct.name,
+    title: `${activeDetailProduct.name}${customHeroName}`,
     quantity: selectedQty,
     size: activeDetailProduct.id === 'goods_tshirt' ? selectedSize : undefined,
     faction: activeDetailProduct.id === 'goods_deck_faction' ? selectedFaction : undefined,
@@ -869,6 +929,8 @@ export function renderMallModal(): string {
               ${
                 localizedDetailProd.id === 'goods_mug'
                   ? renderMugMockupPreview(selectedMugCardId)
+                  : localizedDetailProd.id === 'goods_tshirt'
+                  ? renderTshirtMockupPreview(selectedTshirtCardId)
                   : `<img src="${localizedDetailProd.image}" alt="${localizedDetailProd.name}" class="max-h-44 max-w-full object-contain" />`
               }
             </div>
@@ -949,6 +1011,58 @@ export function renderMallModal(): string {
               ${
                 localizedDetailProd.id === 'goods_tshirt'
                   ? `
+                <div class="p-3 bg-[#f8f7f7] border border-stone-300 rounded-none space-y-2">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">${tr('티셔츠 인쇄 영웅 카드', 'Custom Printed Hero Card', 'Tシャツ印刷英雄カード')}</div>
+                      <div class="text-xs font-black text-[#201d1d]">
+                        #${selectedTshirtCardId} ${getLocalizedCharacterName(selectedTshirtCardId)}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      data-action="toggle-tshirt-picker"
+                      class="px-3 py-1.5 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[36px] cursor-pointer"
+                    >
+                      ${isTshirtCardPickerOpen ? tr('선택 닫기 ▲', 'Close Picker ▲', '閉じる ▲') : tr('카드 변경 🔄', 'Change Card 🔄', 'カード変更 🔄')}
+                    </button>
+                  </div>
+
+                  ${
+                    isTshirtCardPickerOpen
+                      ? `
+                    <div class="pt-2 border-t border-stone-300">
+                      <div class="text-[10px] text-stone-600 mb-1.5 font-bold">
+                        ${tr('110종 영웅 중 티셔츠 가슴에 인쇄할 카드를 선택하세요:', 'Select a hero card to print on your T-shirt:', 'Tシャツ胸に印刷するカードを選択してください:')}
+                      </div>
+                      <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5 max-h-48 overflow-y-auto p-1 bg-white border border-stone-300 rounded-none">
+                        ${CARD_DATABASE.slice(0, 110)
+                          .map((c) => {
+                            const isCur = c.id === selectedTshirtCardId;
+                            const cName = getLocalizedCharacterName(c.id) || c.nameKo;
+                            return `
+                          <button
+                            type="button"
+                            data-action="select-tshirt-card"
+                            data-card-id="${c.id}"
+                            class="p-1 border ${
+                              isCur ? 'border-amber-400 bg-amber-50 ring-1 ring-amber-400' : 'border-stone-200 hover:border-stone-400 bg-white'
+                            } flex flex-col items-center justify-center cursor-pointer transition-all active:scale-95"
+                            title="${cName}"
+                          >
+                            <img src="${getCharacterAsset(c.id, 'bust')}" alt="${cName}" class="w-9 h-9 object-cover rounded-xs" />
+                            <span class="text-[8px] font-bold text-stone-800 truncate w-full text-center mt-0.5">#${c.id}</span>
+                          </button>
+                        `;
+                          })
+                          .join('')}
+                      </div>
+                    </div>
+                  `
+                      : ''
+                  }
+                </div>
+
                 <div>
                   <label class="block text-xs font-bold text-stone-700 mb-1">${tr('사이즈 선택 (Size):', 'Select Size:', 'サイズ選択 (Size):')}</label>
                   <div class="flex gap-2">
@@ -1249,11 +1363,17 @@ export function renderMallView(): string {
                 </div>
 
                 <div
-                  class="w-full h-44 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] rounded-none flex items-center justify-center p-3 overflow-hidden cursor-pointer"
+                  class="w-full h-44 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] rounded-none flex items-center justify-center p-2 overflow-hidden cursor-pointer"
                   data-action="open-mall-detail"
                   data-product-id="${prod.id}"
                 >
-                  <img src="${prod.image}" alt="${prod.name}" class="max-h-full max-w-full object-contain" />
+                  ${
+                    prod.id === 'goods_mug'
+                      ? renderMugMockupPreview(selectedMugCardId, true)
+                      : prod.id === 'goods_tshirt'
+                      ? renderTshirtMockupPreview(selectedTshirtCardId, true)
+                      : `<img src="${prod.image}" alt="${prod.name}" class="max-h-full max-w-full object-contain" />`
+                  }
                 </div>
 
                 <h3 class="text-base font-bold text-[#201d1d] m-0">

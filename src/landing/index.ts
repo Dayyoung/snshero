@@ -95,6 +95,8 @@ import {
   setMallCurrentTab,
   toggleMugCardPicker,
   setSelectedMugCardId,
+  toggleTshirtCardPicker,
+  setSelectedTshirtCardId,
 } from './views/MallSection';
 import { checkAndProcessPayAppSuccess } from './services/paymentService';
 import { loginWithGoogle, loginAsGuest, logoutUser, loginWithSimulatedGoogle } from './services/authService';
@@ -542,6 +544,15 @@ export function handleEventDelegation(event: Event): void {
     const cardIdAttr = target.getAttribute('data-card-id') || target.closest('button')?.getAttribute('data-card-id');
     if (cardIdAttr) {
       setSelectedMugCardId(parseInt(cardIdAttr, 10));
+      renderApp();
+    }
+  } else if (action === 'toggle-tshirt-picker') {
+    toggleTshirtCardPicker();
+    renderApp();
+  } else if (action === 'select-tshirt-card') {
+    const cardIdAttr = target.getAttribute('data-card-id') || target.closest('button')?.getAttribute('data-card-id');
+    if (cardIdAttr) {
+      setSelectedTshirtCardId(parseInt(cardIdAttr, 10));
       renderApp();
     }
   } else if (action === 'change-mall-qty') {
