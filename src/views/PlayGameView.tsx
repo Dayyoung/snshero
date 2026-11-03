@@ -16038,7 +16038,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           </button>
         </div>
         
-        <div className="w-full max-w-[480px] mx-auto flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 h-auto my-auto relative z-10 py-0.5 px-1 sm:px-2 select-none">
+        <div className="w-full max-w-[480px] mx-auto flex flex-nowrap items-center justify-center gap-1 sm:gap-1.5 md:gap-2 h-auto my-auto relative z-10 py-0.5 px-1 sm:px-2 select-none overflow-visible">
           <AnimatePresence mode="popLayout">
             {opponentHand.map((card, idx) => {
               const isSelected = selectedCardIdx === idx && selectedCardSide === 'ai';
@@ -16046,8 +16046,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               return (
               <motion.div 
                 key={card.id} 
+                style={{ width: 'calc((100% - 16px) / 5)', maxWidth: '72px' }}
                 className={cn(
-                  "w-[calc((100%-16px)/5)] max-w-[70px] sm:max-w-[78px] md:max-w-[84px] aspect-[5/7] cursor-pointer relative rounded-none flex-shrink-0",
+                  "aspect-[5/7] cursor-pointer relative rounded-none flex-shrink-0 flex-1 min-w-0 max-w-[72px] sm:max-w-[78px] md:max-w-[84px]",
                   isSelected && "z-50"
                 )}
                 onClick={() => handleCardClick(idx, 'ai')}
@@ -17249,7 +17250,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           </div>
         </div>
 
-        <div className="w-full max-w-[480px] mx-auto flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 h-auto py-0.5 md:py-1 px-1 sm:px-2 relative z-10 my-auto select-none">
+        <div className="w-full max-w-[480px] mx-auto flex flex-nowrap items-center justify-center gap-1 sm:gap-1.5 md:gap-2 h-auto py-0.5 md:py-1 px-1 sm:px-2 relative z-10 my-auto select-none overflow-visible">
           <AnimatePresence>
             {playerHand.map((card, idx) => {
               const isRecommended = recommendedPlayerMove?.cardIdx === idx;
@@ -17276,8 +17277,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   scale: isSelected ? 1.1 : 1.05
                 }}
                 whileTap={{ scale: 0.95 }}
+                style={{ width: 'calc((100% - 16px) / 5)', maxWidth: '72px' }}
                 className={cn(
-                  "w-[calc((100%-16px)/5)] max-w-[70px] sm:max-w-[78px] md:max-w-[84px] aspect-[5/7] cursor-pointer relative rounded-none flex-shrink-0 [will-change:transform,opacity]",
+                  "aspect-[5/7] cursor-pointer relative rounded-none flex-shrink-0 flex-1 min-w-0 max-w-[72px] sm:max-w-[78px] md:max-w-[84px] [will-change:transform,opacity]",
                   isSelected && "z-50"
                 )}
               >
@@ -18304,14 +18306,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                    <div className="h-px bg-white/20 w-12" />
                 </div>
                 
-                <div className="flex justify-center items-center gap-1 sm:gap-2 w-full max-w-[480px] mx-auto py-3 px-1 select-none">
+                <div className="flex flex-nowrap justify-center items-center gap-1 sm:gap-2 w-full max-w-[480px] mx-auto py-3 px-1 select-none overflow-visible">
                   {opponentHand.map((card, i) => (
                     <motion.div
                       key={`preview-${card.id}-${i}`}
                       initial={{ opacity: 0, y: 50, rotateY: 90 }}
                       animate={{ opacity: 1, y: 0, rotateY: 0 }}
                       transition={{ delay: i * 0.1, duration: 0.5, type: 'spring' }}
-                      className="w-[calc((100%-16px)/5)] max-w-[70px] sm:max-w-[80px] md:max-w-[100px] aspect-[5/7] rounded-none flex-shrink-0"
+                      style={{ width: 'calc((100% - 16px) / 5)', maxWidth: '84px' }}
+                      className="aspect-[5/7] rounded-none flex-shrink-0 flex-1 min-w-0 max-w-[84px]"
                     >
                       <CardItem card={card} isLocked={true} className="w-full h-full" lowSpecMode={lowSpecMode} />
                     </motion.div>

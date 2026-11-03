@@ -174,29 +174,29 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
   return (
     <div 
       ref={setNodeRef} 
-      style={style} 
+      style={{ ...style, width: 'calc((100% - 16px) / 5)', maxWidth: '88px' }} 
       id={`deck-slot-${idx}`}
-      className={cn("flex shrink-0 flex-col items-center gap-2 group", className)}
+      className={cn("flex flex-1 min-w-0 max-w-[88px] shrink-0 flex-col items-center gap-1 group", className)}
     >
       {card.customName && (
-        <div className="text-[10px] sm:text-xs font-black text-black/40 italic truncate max-w-[80px]">
+        <div className="text-[9px] sm:text-[10px] font-black text-black/40 italic truncate max-w-full">
           "{card.customName}"
         </div>
       )}
       <div className={cn(
-        "relative rounded-none group/card border border-transparent transition-colors",
+        "relative w-full rounded-none group/card border border-transparent transition-colors",
         isShaking ? "border-[#201d1d] z-30" : "",
         isSynergyActive && !isShaking ? "border-[#646262]" : ""
       )} {...attributes} {...listeners}>
         {isShaking && (
-          <div className="absolute top-1 left-1/2 -translate-x-1/2 z-30 px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-[9px] rounded-sm border border-[#fdfcfc] uppercase leading-none whitespace-nowrap">
-            {language === 'ko' ? '⚡ 장착 완료!' : '⚡ EQUIPPED!'}
+          <div className="absolute top-1 left-1/2 -translate-x-1/2 z-30 px-1.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-[8px] sm:text-[9px] rounded-sm border border-[#fdfcfc] uppercase leading-none whitespace-nowrap">
+            {language === 'ko' ? '⚡ 장착!' : '⚡ EQUIPPED!'}
           </div>
         )}
         <CardItem 
           card={card} 
           onClick={() => handleCardClick(idx)} 
-          className="w-[27vw] min-w-[5.8rem] max-w-[7.5rem] h-[38vw] min-h-[8.2rem] max-h-[10.5rem] sm:w-24 sm:h-32 md:w-32 md:h-44 cursor-grab active:cursor-grabbing rounded-none"
+          className="w-full aspect-[5/7] max-w-[84px] cursor-grab active:cursor-grabbing rounded-none"
           customImage={customCardImage}
           language={language}
           />
@@ -1833,9 +1833,9 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               items={currentDeckWithSkins.map(c => c.id)}
               strategy={rectSortingStrategy}
             >
-              {/* 상단 1행: 3장 (SLOT 1, 2, 3) */}
-              <div className="flex flex-nowrap justify-center items-center gap-2 sm:gap-4 md:gap-6 w-full">
-                {currentDeckWithSkins.slice(0, 3).map((card, idx) => (
+              {/* 장착 덱 5장 (SLOT 1~5) 가용 너비 자동 계산 1줄(One-Row) 완벽 정렬 */}
+              <div className="flex flex-nowrap justify-center items-center gap-1 sm:gap-2 md:gap-3 w-full max-w-[480px] mx-auto px-1">
+                {currentDeckWithSkins.map((card, idx) => (
                   <SortableCardItem 
                     key={card.id}
                     card={card}
@@ -1863,41 +1863,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     isShaking={shakingSlotIndices.includes(idx)}
                   />
                 ))}
-              </div>
-
-              {/* 하단 2행: 2장 (SLOT 4, 5) */}
-              <div className="flex flex-nowrap justify-center items-center gap-2 sm:gap-4 md:gap-6 w-full">
-                {currentDeckWithSkins.slice(3, 5).map((card, i) => {
-                  const idx = i + 3;
-                  return (
-                    <SortableCardItem 
-                      key={card.id}
-                      card={card}
-                      idx={idx}
-                      handleCardClick={handleCardClick}
-                      setItemManageIndex={setItemManageIndex}
-                      setIsItemModalOpen={setIsItemModalOpen}
-                      setEditingCardIndex={setEditingCardIndex}
-                      setEditName={setEditName}
-                      setEditNotes={setEditNotes}
-                      iconMap={iconMap}
-                      language={language}
-                      customCardImage={customCardImage}
-                      unequipItem={unequipItem}
-                      representativeCardId={representativeCardId}
-                      representativePetCardId={representativePetCardId}
-                      activeQuickSlot={activeQuickSlot}
-                      setActiveQuickSlot={setActiveQuickSlot}
-                      setSelectingIndex={setSelectingIndex}
-                      setIsPopupOpen={setIsPopupOpen}
-                      setSelectedCardForDetail={setSelectedCardForDetail}
-                      setCardDetailTab={setCardDetailTab}
-                      isSynergyActive={Boolean(factionSynergy && String((card as any)?.element || CARD_DATABASE[card?.imageIndex || 0]?.element || 'WATER').toUpperCase() === factionSynergy.element)}
-                      synergyElement={factionSynergy?.element}
-                      isShaking={shakingSlotIndices.includes(idx)}
-                    />
-                  );
-                })}
               </div>
             </SortableContext>
 
