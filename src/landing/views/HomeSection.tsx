@@ -79,85 +79,22 @@ export function renderHomeSection(): string {
 
   return `
     <div class="w-full flex flex-col font-mono text-[#201d1d] select-none">
-      <!-- 1. Hero Introduction Banner (SnowHero / 눈히어로 & Official Logo) -->
-      <section class="w-full bg-[#fdfcfc] border-b border-[rgba(15,0,0,0.12)] py-12 md:py-20 px-4 sm:px-6 md:px-8 lg:px-12">
-        <div class="w-full max-w-7xl mx-auto space-y-4">
-          <!-- Official SNS Hero Graphic Logo Display -->
-          <div class="w-full flex items-center justify-start pb-1">
-            <a
-              href="#home"
-              data-nav="home"
-              class="inline-flex items-center cursor-pointer bg-transparent transition-opacity hover:opacity-90 min-h-[44px]"
-              aria-label="${getCurrentLanguage() === 'ko' ? '눈히어로.com 공식 로고' : 'SNSHero.com Official Logo'}"
-            >
-              <img
-                src="${t('logo_src', '/logo-ko.png')}"
-                alt="${getCurrentLanguage() === 'ko' ? '눈히어로.com SNSHero Revolution 공식 로고' : 'SNSHero.com SNSHero Revolution Official Logo'}"
-                class="h-20 sm:h-28 md:h-36 w-auto max-w-full object-contain bg-transparent filter drop-shadow-none"
-                loading="eager"
-              />
-            </a>
-          </div>
-
-          <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm tracking-wider uppercase">
-            <span>${getCurrentLanguage() === 'ko' ? '눈히어로.com' : 'SNSHero.com'}</span>
-            <span class="text-stone-400">·</span>
-            <span>SNSHero Revolution</span>
-          </div>
-          <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight m-0">
-            ${tr('빛과 어둠의 11개 종족 대서사시,', 'Epic Saga of 11 Factions of Light and Darkness,', '光と闇の11種族が織りなす大叙事詩、')}<br/>
-            <span class="text-[#201d1d] border-b-2 border-[#201d1d]">${tr('카단과 성진호흡의 원클릭 AI 배틀', 'One-Click AI Battles of Kadan &amp; Star Breathing', 'カダンと星辰呼吸のワンクリックAIバトル')}</span>
-          </h1>
-          <p class="text-xs sm:text-sm md:text-base text-stone-600 leading-relaxed max-w-2xl m-0">
-            ${tr(
-              '눈히어로(SnowHero)는 110종의 고유 영웅 카드와 40부작 공식 판타지 웹소설·웹게임·웹툰·애니메이션 시네마가 유기적으로 연결된 차세대 웹 카드 게임입니다.',
-              'SNSHero is a next-gen web card game seamlessly connecting 110 unique hero cards with a 40-episode official fantasy web novel, web game, webtoon, and anime cinema.',
-              'SNSHeroは、110種の固有英雄カードと全40話の公式ファンタジーWeb小説・Webゲーム・Webtoon・アニメシネマが有機的に連動する次世代Webカードゲームです。'
-            )}
-          </p>
-        </div>
-      </section>
-
-      <!-- 2. Cool Card Deck Showcase (Fan-Folded 5-Card Preview with Rotational Offsets & CP) -->
-      <section id="home-deck-showcase" data-testid="cool-card-deck" class="w-full bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] py-12 px-4 sm:px-6 md:px-8 lg:px-12">
+      <!-- Cool Card Deck Showcase (Main Header + Fan-Folded 5-Card Preview with Rotational Offsets & CP) -->
+      <section id="home-deck-showcase" data-testid="cool-card-deck" class="w-full bg-[#fdfcfc] border-b border-[rgba(15,0,0,0.12)] py-10 sm:py-14 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12">
         <div class="w-full max-w-7xl mx-auto space-y-6">
-          <!-- Squad HUD Header: Title, CP, Win Streak Badge, Edit Button -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[rgba(15,0,0,0.12)]">
-            <div class="space-y-1">
-              <div class="inline-flex items-center gap-2 px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm tracking-wider uppercase">
-                <span>[ACTIVE SQUAD]</span>
-                <span class="text-stone-400">·</span>
-                <span>COOL CARD DECK</span>
-              </div>
-              <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#201d1d] m-0">
-                ${t('home_squad_title', '대표 출격 덱 5인 스쿼드')}
-              </h2>
-              <div class="text-xs text-stone-600">
-                ${t('home_squad_cp', '출격 덱 종합 전투력:')} <strong class="text-base font-black text-[#201d1d]">${deckTP} CP</strong> (${deckTP} TP)
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3">
-              ${winStreak > 0 ? `
-                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm border border-[#201d1d]" title="${winStreak} ${tr('연승 질주 중!', 'Win Streak!', '連勝中！')}">
-                  <span class="text-amber-400">🔥</span>
-                  <span>${winStreak}${tr('연승 질주', ' Win Streak', '連勝中')}</span>
-                </div>
-              ` : `
-                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm border border-[#201d1d]" title="🔥 ${tr('7연승 도전 중!', '7-Win Streak Challenge!', '7連勝挑戦中！')}">
-                  <span class="text-amber-400">🔥</span>
-                  <span>${tr('7연승 도전 중', '7-Win Challenge', '7連勝挑戦中')}</span>
-                </div>
-              `}
-              <a
-                href="#deck"
-                data-nav="deck"
-                class="px-4 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center cursor-pointer no-underline"
-                aria-label="${t('home_edit_deck', '[덱 편집]')}"
-              >
-                ${t('home_edit_deck', '[덱 편집]')}
-              </a>
-            </div>
+          <!-- Main Hero Title & Description Header -->
+          <div class="space-y-3 pb-4 border-b border-[rgba(15,0,0,0.12)]">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight m-0">
+              ${tr('빛과 어둠의 11개 종족 대서사시,', 'Epic Saga of 11 Factions of Light and Darkness,', '光と闇の11種族が織りなす大叙事詩、')}<br/>
+              <span class="text-[#201d1d] border-b-2 border-[#201d1d]">${tr('카단과 성진호흡의 원클릭 AI 배틀', 'One-Click AI Battles of Kadan &amp; Star Breathing', 'カダンと星辰呼吸のワンクリックAIバトル')}</span>
+            </h1>
+            <p class="text-xs sm:text-sm md:text-base text-stone-600 leading-relaxed max-w-2xl m-0">
+              ${tr(
+                '눈히어로(SnowHero)는 110종의 고유 영웅 카드와 40부작 공식 판타지 웹소설·웹게임·웹툰·애니메이션 시네마가 유기적으로 연결된 차세대 웹 카드 게임입니다.',
+                'SNSHero is a next-gen web card game seamlessly connecting 110 unique hero cards with a 40-episode official fantasy web novel, web game, webtoon, and anime cinema.',
+                'SNSHeroは、110種の固有英雄カードと全40話の公式ファンタジーWeb小説・Webゲーム・Webtoon・アニメシネマが有機的に連動する次世代Webカードゲームです。'
+              )}
+            </p>
           </div>
 
           <!-- Fan-Folded 5 Cards Display Stage (Original TCG Card Design) -->

@@ -88,10 +88,19 @@ export function renderHeader(activeView: ViewKey): string {
           >
             <span class="text-sm font-bold tracking-widest">[=]</span>
           </button>
-          <a href="#home" data-nav="home" class="brand-link flex items-center gap-2 text-sm md:text-base font-bold tracking-tight text-[#201d1d] min-h-[44px] no-underline">
-            <span class="w-2.5 h-2.5 bg-[#201d1d] rounded-none inline-block"></span>
-            <span>${brandName}</span>
-            <span class="hidden md:inline-block text-[11px] font-normal text-[#646262] border border-[rgba(15,0,0,0.12)] px-1.5 py-0.5 rounded-sm">
+          <a
+            href="#home"
+            data-nav="home"
+            class="brand-link flex items-center gap-2 min-h-[44px] no-underline hover:opacity-90 transition-opacity"
+            aria-label="${brandName}"
+          >
+            <img
+              src="${t('logo_src', '/logo-ko.png')}"
+              alt="${brandName}"
+              class="h-8 sm:h-9 md:h-10 w-auto max-w-[140px] sm:max-w-[180px] md:max-w-[220px] object-contain bg-transparent filter drop-shadow-none"
+              loading="eager"
+            />
+            <span class="hidden xl:inline-block text-[10px] font-normal text-[#646262] border border-[rgba(15,0,0,0.12)] px-1.5 py-0.5 rounded-sm">
               v2.1
             </span>
           </a>
