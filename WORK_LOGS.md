@@ -2,6 +2,30 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 07:06 KST] [구글 광고 정해진 영역 엄격 격리 및 카드팩 개봉 S.addExp 에러 수정]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 구글 광고 정해진 영역 엄격 격리 및 화면 가림/펼쳐짐 원천 차단 (`index.html`, `landing.css`, `index.css`, `adsenseManager.ts`)**:
+    - 구글 애드센스 자동 광고(Auto Ads)가 화면 상하단 앵커, 전면 팝업(비네트), 화면 전체 오버레이 형태로 무단 삽입되어 콘텐츠와 조작부를 가리는 현상 차단.
+    - `index.html`에 `data-overlays="bottom:false,top:false"` 속성 주입 및 `enable_page_level_ads: false`, `overlays: { bottom: false, top: false }` 설정 전달.
+    - `landing.css` 및 `index.css`에 강력한 4중 격리 CSS 적용: 구글이 주입하는 `position: fixed` 오버레이, 앵커 바, 비네트, 자동배치 div(`google-auto-placed`, `adsbygoogle-noab-wrap`, `data-anchor-status`, `div[id*="aswift"]`, `iframe[name*="google_ads_top_frame"]` 등)를 `display: none !important; width: 0 !important; height: 0 !important;`로 완전 소멸.
+    - 구글 스크립트가 body나 html에 강제로 집어넣는 `padding-top/margin-top` 푸시다운 0px 강제 복구.
+    - `adsenseManager.ts`에 `MutationObserver` 기반 실시간 침범 차단기(`initAdSenseContainmentObserver`)를 탑재하여, 지정된 4개 영역(데스크톱 좌우 사이드 거터, 모바일 상단 50px 배너, 인게임 컨테이너) 외부의 광고 요소가 DOM에 주입되는 즉시 자동 삭제 및 격리.
+    - `pushAdSenseTags()`에서 오직 지정된 4대 슬롯 내부의 `ins.adsbygoogle`만 타겟팅하여 push하도록 수정.
+  - **2. 카드팩 개봉 S.addExp is not a function 런타임 오류 수정 (`cardNurtureStore.ts`, `types.ts`)**:
+    - `cardNurtureStore`에 `addExp(cardId: number, expGain: number = 50)` 별칭 메서드를 구현하여 `nurtureCard`와 100% 호환되도록 연결.
+    - `NurtureState` 인터페이스에 `addExp` 및 `addCard` 메서드 타입을 등록하여 타입 안정성 확보.
+    - 카드팩 개봉 시 `Uncaught TypeError: S.addExp is not a function` 런타임 오류 완전 해결 및 카드 획득/경험치 부여 정상 작동 보장.
+  - **3. 빌드 및 배포 검증**:
+    - `npm run build` 및 `node scripts/post-build.js` 빌드 성공 (0 error).
+    - 로컬 git 커밋 완료 (`1212085e6`, 지침에 따라 원격 git push 미실행 준수).
+    - 연동 구글 폼 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (0 error)
+  - 로컬 git 커밋: `1212085e6`
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 구글 광고 정해진 영역 엄격 격리 및 카드팩 개봉 S.addExp 에러 수정`
+
+
 ## [2026-11-04 06:59 KST] [/git-push 원격 저장소(origin main) 누적 24개 커밋 푸시 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
