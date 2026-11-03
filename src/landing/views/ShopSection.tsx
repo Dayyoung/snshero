@@ -87,6 +87,96 @@ export interface PackRevealData {
   packId: string;
   packName: string;
   cards: RevealedCardMeta[];
+  revealedIndices: number[];
+  bestFaction: string;
+  bestCard: RevealedCardMeta;
+  hasTriggeredFactionVfx: boolean;
+}
+
+export interface FactionVfxInfo {
+  icon: string;
+  nameKo: string;
+  nameEn: string;
+  themeColor: string;
+  bgGradient: string;
+  bannerText: string;
+  particles: string[];
+  particleAnimation: string;
+}
+
+export function getFactionVfxInfo(faction: string): FactionVfxInfo {
+  const norm = (faction || '').toLowerCase();
+  if (norm.includes('water') || norm.includes('물') || norm.includes('aqua') || norm.includes('siren') || norm.includes('poseidon')) {
+    return {
+      icon: '🌊',
+      nameKo: '물의 원소',
+      nameEn: 'Water Elemental',
+      themeColor: '#06b6d4',
+      bgGradient: 'radial-gradient(circle at center, rgba(6,182,212,0.45) 0%, rgba(2,132,199,0.2) 65%, transparent 100%)',
+      bannerText: tr('🌊 물의 원소 해일 각성! 사방으로 튀어오르는 거대한 파도!', '🌊 Water Elemental Awakening! Giant tidal waves and water splashes!', '🌊 水の元素覚醒！四方に飛び散る巨大な波しぶき！'),
+      particles: ['💧', '🌊', '🫧', '🔷', '✨', '💧', '🌊'],
+      particleAnimation: 'water-splash',
+    };
+  }
+  if (norm.includes('fire') || norm.includes('불') || norm.includes('flame') || norm.includes('pyro') || norm.includes('dragon')) {
+    return {
+      icon: '🔥',
+      nameKo: '불의 원소',
+      nameEn: 'Fire Elemental',
+      themeColor: '#ef4444',
+      bgGradient: 'radial-gradient(circle at center, rgba(239,68,68,0.5) 0%, rgba(249,115,22,0.25) 65%, transparent 100%)',
+      bannerText: tr('🔥 화염의 원소 대폭발! 전장을 불태우는 맹렬한 업화!', '🔥 Blazing Fire Nova! Incinerating the entire battlefield!', '🔥 火炎元素大爆発！戦場を焼き尽くす猛烈な業火！'),
+      particles: ['🔥', '💥', '✨', '🔴', '⚡', '🔥', '💥'],
+      particleAnimation: 'fire-burst',
+    };
+  }
+  if (norm.includes('undead') || norm.includes('dark') || norm.includes('언데드') || norm.includes('암흑') || norm.includes('shadow') || norm.includes('necromancer')) {
+    return {
+      icon: '💀',
+      nameKo: '언데드 & 암흑',
+      nameEn: 'Undead & Shadow',
+      themeColor: '#a855f7',
+      bgGradient: 'radial-gradient(circle at center, rgba(168,85,247,0.5) 0%, rgba(88,28,135,0.3) 65%, transparent 100%)',
+      bannerText: tr('💀 심연의 흑마법 안개 각성! 전장을 뒤덮는 음침한 영혼의 안개!', '💀 Abyssal Dark Mist Unleashed! Ominous spectral fog covers the battlefield!', '💀 深淵の黒魔術の霧覚醒！戦場を覆い尽くす不気味な霊魂の霧！'),
+      particles: ['💀', '🌫️', '💜', '✨', '🌑', '💀', '🌫️'],
+      particleAnimation: 'undead-mist',
+    };
+  }
+  if (norm.includes('earth') || norm.includes('nature') || norm.includes('바람') || norm.includes('대지') || norm.includes('야수') || norm.includes('monster') || norm.includes('beast') || norm.includes('elf')) {
+    return {
+      icon: '🌿',
+      nameKo: '대자연 & 원소 폭풍',
+      nameEn: 'Nature & Gale',
+      themeColor: '#10b981',
+      bgGradient: 'radial-gradient(circle at center, rgba(16,185,129,0.45) 0%, rgba(5,150,105,0.25) 65%, transparent 100%)',
+      bannerText: tr('🌿 대자연의 숨결 각성! 휘몰아치는 원소의 폭풍과 나뭇잎의 가호!', '🌿 Nature Elemental Gale! Whirling gale of leaves and elemental blessing!', '🌿 大自然の息吹覚醒！吹き荒れる元素の嵐と木の葉の加護！'),
+      particles: ['🌿', '🍃', '🌪️', '💚', '✨', '🌿', '🍃'],
+      particleAnimation: 'nature-gale',
+    };
+  }
+  if (norm.includes('robot') || norm.includes('mecha') || norm.includes('로봇') || norm.includes('번개') || norm.includes('electric') || norm.includes('dwarf')) {
+    return {
+      icon: '⚡',
+      nameKo: '초전도 번개 & 기계',
+      nameEn: 'Lightning & Mecha',
+      themeColor: '#eab308',
+      bgGradient: 'radial-gradient(circle at center, rgba(234,179,8,0.5) 0%, rgba(56,189,248,0.25) 65%, transparent 100%)',
+      bannerText: tr('⚡ 하늘을 가르는 전율의 번개! 초전도 뇌격 방전 폭발!', '⚡ Thunderous Lightning Discharge! Sky-splitting superconducting volts!', '⚡ 天を裂く戦慄の稲妻！超電導雷撃放電炸裂！'),
+      particles: ['⚡', '⚙️', '✨', '🟡', '💥', '⚡', '⚙️'],
+      particleAnimation: 'lightning-spark',
+    };
+  }
+  // Default / Celestial / Holy / Human
+  return {
+    icon: '✨',
+    nameKo: '천상 & 신성',
+    nameEn: 'Divine Celestial',
+    themeColor: '#f59e0b',
+    bgGradient: 'radial-gradient(circle at center, rgba(245,158,11,0.5) 0%, rgba(251,191,36,0.3) 65%, transparent 100%)',
+    bannerText: tr('✨ 태초의 성스러운 황금빛 광채! 눈부신 신성의 축복 강림!', '✨ Primordial Divine Radiance! Sacred golden blessing descends!', '✨ 太古の神聖な黄金の輝き！眩しい神性の祝福降臨！'),
+    particles: ['✨', '⭐', '🌟', '👑', '💫', '✨', '⭐'],
+    particleAnimation: 'divine-radiance',
+  };
 }
 
 // ============================================================================
@@ -696,6 +786,26 @@ export function clearPackReveal(): void {
   activePackReveal = null;
 }
 
+export function flipPackCard(cardIndex: number): void {
+  if (!activePackReveal) return;
+  if (!activePackReveal.revealedIndices.includes(cardIndex)) {
+    activePackReveal.revealedIndices.push(cardIndex);
+    const flippedCard = activePackReveal.cards[cardIndex];
+    if (flippedCard && flippedCard.cardId === activePackReveal.bestCard.cardId) {
+      activePackReveal.hasTriggeredFactionVfx = true;
+    }
+    if (activePackReveal.revealedIndices.length === activePackReveal.cards.length) {
+      activePackReveal.hasTriggeredFactionVfx = true;
+    }
+  }
+}
+
+export function flipAllPackCards(): void {
+  if (!activePackReveal) return;
+  activePackReveal.revealedIndices = activePackReveal.cards.map((_, i) => i);
+  activePackReveal.hasTriggeredFactionVfx = true;
+}
+
 // ============================================================================
 // Coin / Gold Balance Helpers
 // ============================================================================
@@ -964,18 +1074,18 @@ export function executeShopPurchase(productId: string): {
     };
   }
 
-  // Pack draws
-  let count = 3;
+  // Pack draws: ALWAYS 5 CARDS per summon ritual!
+  let count = 5;
   let guaranteedRarity: 'Bronze' | 'Silver' | 'Gold' | 'Boss' = 'Bronze';
 
   if (item.id === 'pack_normal') {
-    count = 3;
+    count = 5;
     guaranteedRarity = 'Bronze';
   } else if (item.id === 'pack_magic') {
-    count = 3;
+    count = 5;
     guaranteedRarity = 'Silver';
   } else if (item.id === 'pack_rare') {
-    count = 3;
+    count = 5;
     guaranteedRarity = 'Gold';
   } else if (item.id === 'pack_starter_bundle') {
     count = 5;
@@ -983,10 +1093,26 @@ export function executeShopPurchase(productId: string): {
   }
 
   const revealed = simulatePackDraw(count, guaranteedRarity);
+
+  // Determine the highest rarity and power hero to drive the Faction Elemental VFX
+  const RARITY_WEIGHT: Record<string, number> = { Boss: 4, Gold: 3, Silver: 2, Bronze: 1 };
+  let best = revealed[0];
+  for (const c of revealed) {
+    const curScore = (RARITY_WEIGHT[c.rarity] || 1) * 10000 + c.power;
+    const bestScore = (RARITY_WEIGHT[best.rarity] || 1) * 10000 + best.power;
+    if (curScore > bestScore) {
+      best = c;
+    }
+  }
+
   activePackReveal = {
     packId: item.id,
     packName: item.name,
     cards: revealed,
+    revealedIndices: [], // initially facedown for dramatic flip!
+    bestFaction: best.faction,
+    bestCard: best,
+    hasTriggeredFactionVfx: false,
   };
 
   return {
@@ -1533,42 +1659,207 @@ export function renderPackRevealModal(): string {
   if (!activePackReveal) return '';
   const packItem = ALL_SHOP_PRODUCTS.find((p) => p.id === activePackReveal?.packId);
   const localizedPackName = packItem ? getLocalizedShopProduct(packItem).name : activePackReveal.packName;
+  const vfxInfo = getFactionVfxInfo(activePackReveal.bestFaction);
+  const allRevealed = activePackReveal.revealedIndices.length === activePackReveal.cards.length;
 
   return `
-    <div id="pack-reveal-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 font-mono">
-      <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-2xl w-full p-6 space-y-6 shadow-none">
-        <div class="text-center space-y-1">
-          <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] rounded-sm">
-            ${tr('소환 의식 완료', 'Summon Ritual Complete', '召喚儀式完了')}
-          </span>
-          <h3 class="text-lg font-black m-0">${localizedPackName} — ${tr('개봉 결과', 'Pack Results', '開封結果')}</h3>
+    <div id="pack-reveal-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 font-mono overflow-y-auto select-none">
+      
+      <!-- Faction Elemental Burst Fullscreen Background Effect -->
+      ${
+        activePackReveal.hasTriggeredFactionVfx
+          ? `
+            <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden transition-opacity duration-700 opacity-90" style="background: ${vfxInfo.bgGradient};">
+              <!-- Radial Aura Wave -->
+              <div class="absolute inset-0 flex items-center justify-center animate-ping opacity-25">
+                <div class="w-96 h-96 rounded-full border-4" style="border-color: ${vfxInfo.themeColor};"></div>
+              </div>
+              
+              <!-- Burst Floating Particles spreading everywhere -->
+              <div class="absolute inset-0 pointer-events-none">
+                ${Array.from({ length: 28 }, (_, i) => {
+                  const symbol = vfxInfo.particles[i % vfxInfo.particles.length];
+                  const top = (i * 23) % 94 + 3;
+                  const left = (i * 37) % 94 + 3;
+                  const delay = ((i % 8) * 0.15).toFixed(2);
+                  const duration = 1.2 + ((i % 5) * 0.3);
+                  return `
+                    <span
+                      class="absolute text-xl sm:text-2xl drop-shadow-[0_0_12px_${vfxInfo.themeColor}] select-none pointer-events-none animate-bounce"
+                      style="top: ${top}%; left: ${left}%; animation-delay: ${delay}s; animation-duration: ${duration}s;"
+                    >
+                      ${symbol}
+                    </span>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `
+          : ''
+      }
+
+      <!-- Main Modal Frame -->
+      <div class="relative z-10 bg-[#fdfcfc] text-[#201d1d] border-2 border-stone-800 rounded-none max-w-4xl w-full p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl my-auto">
+        
+        <!-- Header & Faction Burst Announcement -->
+        <div class="text-center space-y-2">
+          <div class="flex items-center justify-center gap-2">
+            <span class="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] rounded-sm">
+              ${tr('5연속 영웅 소환 의식', '5-Hero Summon Ritual', '5連召喚の儀式')}
+            </span>
+            <span class="text-xs font-bold text-amber-700">
+              [${activePackReveal.revealedIndices.length} / ${activePackReveal.cards.length} ${tr('개봉됨', 'Opened', '開封済')}]
+            </span>
+          </div>
+
+          <h3 class="text-base sm:text-xl font-black m-0 tracking-tight">
+            ${localizedPackName} — ${tr('카드팩 개봉', 'Hero Pack Summon', 'パック開封')}
+          </h3>
+
+          ${
+            activePackReveal.hasTriggeredFactionVfx
+              ? `
+                <!-- Faction Awakening Banner -->
+                <div class="p-2 sm:p-2.5 bg-stone-900 text-white rounded-none border border-stone-700 shadow-lg animate-pulse flex items-center justify-center gap-2">
+                  <span class="text-lg">${vfxInfo.icon}</span>
+                  <span class="text-xs sm:text-sm font-black tracking-wide" style="color: ${vfxInfo.themeColor};">
+                    ${vfxInfo.bannerText}
+                  </span>
+                </div>
+              `
+              : `
+                <p class="text-xs text-stone-500 m-0">
+                  ${tr(
+                    '카드를 터치하여 한 장씩 뒤집거나, 아래 버튼을 눌러 한 번에 개봉하세요!',
+                    'Tap each card to flip, or click Open All below to reveal the elemental burst!',
+                    'カードをタップして1枚ずつめくるか、下のボタンを押して一括開封しましょう！'
+                  )}
+                </p>
+              `
+          }
         </div>
 
-        <!-- Revealed Cards Row -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <!-- 5 Revealed Cards Row (Flip Effect) -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3 py-1">
           ${activePackReveal.cards
-            .map((card) => {
+            .map((card, idx) => {
+              const isFlipped = activePackReveal?.revealedIndices.includes(idx);
               const locName = getLocalizedCharacterName(card.cardId) || card.nameKo;
               const locFaction = getLocalizedFactionName(card.faction);
+              const isBest = card.cardId === activePackReveal?.bestCard.cardId;
+
+              if (!isFlipped) {
+                // 1. Facedown Sealed Card (Card Back + Touch to Flip)
+                return `
+                  <button
+                    type="button"
+                    data-action="flip-pack-card"
+                    data-card-index="${idx}"
+                    class="group relative aspect-[5/7] bg-[#1a1717] hover:bg-[#252222] border-2 border-amber-400/60 hover:border-amber-300 rounded-none p-2 flex flex-col items-center justify-between cursor-pointer transition-transform hover:scale-102 active:scale-95 shadow-lg select-none min-h-[170px]"
+                    aria-label="${tr('카드 개봉하기', 'Open Card', 'カードを開封')} #${idx + 1}"
+                  >
+                    <!-- Magical Rune Frame -->
+                    <div class="w-full flex justify-between items-center text-[10px] text-amber-400/70 font-mono">
+                      <span>#${idx + 1}</span>
+                      <span>✦</span>
+                    </div>
+
+                    <!-- Center Seal -->
+                    <div class="flex flex-col items-center justify-center gap-1.5 my-auto">
+                      <div class="w-12 h-12 rounded-full border border-amber-400/40 bg-stone-900 flex items-center justify-center text-amber-400 text-lg group-hover:scale-110 transition-transform">
+                        ?
+                      </div>
+                      <span class="text-[10px] font-bold text-amber-300 tracking-wider">
+                        ${tr('봉인된 룬', 'Sealed Rune', '封印されたルーン')}
+                      </span>
+                    </div>
+
+                    <!-- Touch to Reveal Cue -->
+                    <div class="w-full py-1 bg-amber-400/20 text-amber-300 text-[9px] font-black rounded-none text-center">
+                      ${tr('터치하여 개봉', 'Tap to Flip', 'タップして開封')}
+                    </div>
+                  </button>
+                `;
+              }
+
+              // 2. Faceup Flipped Card (Dramatic Card Reveal + Faction Glow)
+              const rarityGlow =
+                card.rarity === 'Boss'
+                  ? 'border-purple-600 ring-2 ring-purple-400/70 shadow-[0_0_20px_rgba(168,85,247,0.8)]'
+                  : card.rarity === 'Gold'
+                  ? 'border-amber-400 ring-2 ring-amber-300/80 shadow-[0_0_18px_rgba(251,191,36,0.8)]'
+                  : card.rarity === 'Silver'
+                  ? 'border-slate-300 ring-1 ring-cyan-400/50 shadow-md'
+                  : 'border-amber-700/60 shadow-sm';
+
               return `
-            <div class="border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-3 text-center space-y-2">
-              <div class="w-full h-36 bg-[#f1eeee] flex items-center justify-center p-1 overflow-hidden">
-                <img src="${card.bustUrl}" alt="${locName}" class="max-h-full max-w-full object-contain" />
-              </div>
-              <div class="space-y-0.5">
-                <div class="text-xs font-bold">${locName}</div>
-                <div class="text-[10px] text-stone-500 uppercase">${locFaction} · ${card.rarity}</div>
-              </div>
-              <div class="text-[11px] font-black text-amber-700">${tr('전투력', 'Power', '戦闘力')}: ${card.power}</div>
-            </div>
-          `;
+                <div
+                  class="relative aspect-[5/7] border-2 ${rarityGlow} bg-[#f8f7f7] p-2 flex flex-col justify-between items-center text-center select-none animate-[card-flip-rotate_0.5s_cubic-bezier(0.2,0.8,0.2,1)_forwards] min-h-[170px]"
+                >
+                  ${
+                    isBest
+                      ? `<div class="absolute -top-2 px-1.5 py-0.2 bg-amber-400 text-stone-950 text-[8px] font-black rounded-none shadow-md border border-stone-900 z-20">★ MVP HERO</div>`
+                      : ''
+                  }
+
+                  <!-- Card Illustration Thumbnail -->
+                  <div class="relative w-full aspect-square bg-[#ece8e8] flex items-center justify-center overflow-hidden border border-stone-200">
+                    <img src="${card.bustUrl}" alt="${locName}" class="w-full h-full object-cover" draggable="false" />
+                    <!-- Faction Icon Badge -->
+                    <span class="absolute top-1 left-1 px-1 py-0.2 bg-black/75 text-white text-[8px] font-black rounded-none">
+                      ${locFaction}
+                    </span>
+                    <!-- Rarity Badge -->
+                    <span class="absolute top-1 right-1 px-1 py-0.2 bg-amber-400 text-stone-950 text-[8px] font-black rounded-none">
+                      ${card.rarity}
+                    </span>
+                  </div>
+
+                  <!-- Name and Power -->
+                  <div class="w-full space-y-0.5 my-1">
+                    <div class="text-[11px] font-bold text-stone-900 truncate">${locName}</div>
+                    <div class="text-[10px] font-black text-amber-700">
+                      ${tr('전투력', 'Power', '戦闘力')}: ${card.power}
+                    </div>
+                  </div>
+
+                  <!-- 4-Way Compass Stats Preview (N / E / S / W) -->
+                  <div class="w-full grid grid-cols-4 gap-0.5 text-[8px] font-mono font-bold bg-stone-200/80 p-0.5 text-stone-800 rounded-none">
+                    <span title="North">▲${card.top}</span>
+                    <span title="East">▶${card.right}</span>
+                    <span title="South">▼${card.bottom}</span>
+                    <span title="West">◀${card.left}</span>
+                  </div>
+                </div>
+              `;
             })
             .join('')}
         </div>
 
-        <button type="button" data-action="confirm-pack-reveal" class="w-full py-3 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm min-h-[44px]">
-          ${tr('확인 및 마이덱 보관함으로 이동', 'Confirm & View My Deck', '確認してマイデッキへ')}
-        </button>
+        <!-- Action Control Buttons -->
+        <div class="flex flex-col sm:flex-row items-center gap-2 pt-2 border-t border-[rgba(15,0,0,0.08)]">
+          ${
+            !allRevealed
+              ? `
+                <button
+                  type="button"
+                  data-action="flip-pack-all"
+                  class="w-full sm:flex-1 py-3 bg-amber-600 hover:bg-amber-700 text-white font-black text-xs rounded-sm min-h-[44px] cursor-pointer flex items-center justify-center gap-1.5 transition-colors shadow-md"
+                >
+                  ⚡ ${tr('전체 카드 한 번에 뒤집기 (OPEN ALL)', 'Reveal All 5 Cards (OPEN ALL)', '全5枚を一括開封 (OPEN ALL)')}
+                </button>
+              `
+              : ''
+          }
+          <button
+            type="button"
+            data-action="confirm-pack-reveal"
+            class="w-full sm:flex-1 py-3 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] font-black text-xs rounded-sm min-h-[44px] cursor-pointer flex items-center justify-center gap-1.5 transition-colors"
+          >
+            ✓ ${tr('확인 및 마이덱 보관함으로 이동', 'Confirm & View My Deck', '確認してマイデッキへ')}
+          </button>
+        </div>
+
       </div>
     </div>
   `;

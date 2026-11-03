@@ -3,11 +3,11 @@
 <html lang="ko">
 <head>
 <script>
-  // Redirect /mall to unified #shop route with GOODS category
+  // Redirect /mall to dedicated #mall official physical goods store
   try {
-    localStorage.setItem('hero_shop_active_tab', 'GOODS');
+    localStorage.setItem('hero_mall_active_tab', 'ALL');
   } catch(e) {}
-  window.location.replace('/#shop');
+  window.location.replace('/#mall');
 </script>
 <link href="/mall/cdn/shop/files/pro_ico.png" rel="icon" type="image/png"/>
 <meta charset="utf-8"/>

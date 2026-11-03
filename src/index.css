@@ -78,6 +78,25 @@
   z-index: 35 !important;
 }
 
+/* Faction Elemental Burst Keyframes (Water, Fire, Undead, Nature, Lightning, Holy) */
+@keyframes water-splash-float {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  50% { transform: translateY(-24px) scale(1.3); opacity: 1; filter: drop-shadow(0 0 10px #06b6d4); }
+  100% { transform: translateY(-48px) scale(0.8); opacity: 0; }
+}
+
+@keyframes fire-burst-flare {
+  0% { transform: scale(0.4) rotate(0deg); opacity: 0; filter: brightness(1); }
+  50% { transform: scale(1.4) rotate(15deg); opacity: 1; filter: brightness(2) drop-shadow(0 0 16px #ef4444); }
+  100% { transform: scale(1.8) rotate(-15deg); opacity: 0; filter: brightness(2.5); }
+}
+
+@keyframes undead-mist-drift {
+  0% { transform: translate(0, 0) scale(0.8); opacity: 0; filter: blur(2px); }
+  50% { transform: translate(15px, -15px) scale(1.3); opacity: 0.85; filter: blur(0px) drop-shadow(0 0 12px #a855f7); }
+  100% { transform: translate(-10px, -30px) scale(1.6); opacity: 0; filter: blur(4px); }
+}
+
 /* Row 1061 / ID 324: Prevent default context callout & long press on mobile battle elements */
 .battle-touch-safe,
 .battle-board-slot,

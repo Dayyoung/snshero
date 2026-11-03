@@ -68,6 +68,8 @@ import {
   copyCryptoDepositAddress,
   verifyCryptoDepositStatus,
   clearPackReveal,
+  flipPackCard,
+  flipAllPackCards,
 } from './views/ShopSection';
 import {
   renderMallView,
@@ -91,6 +93,8 @@ import {
   verifyMallCryptoDeposit,
   openMallOrdersList,
   setMallCurrentTab,
+  toggleMugCardPicker,
+  setSelectedMugCardId,
 } from './views/MallSection';
 import { checkAndProcessPayAppSuccess } from './services/paymentService';
 import { loginWithGoogle, loginAsGuest, logoutUser, loginWithSimulatedGoogle } from './services/authService';
@@ -502,6 +506,15 @@ export function handleEventDelegation(event: Event): void {
   } else if (action === 'verify-crypto-deposit') {
     verifyCryptoDepositStatus();
     renderApp();
+  } else if (action === 'flip-pack-card') {
+    const cardIdxAttr = target.getAttribute('data-card-index');
+    if (cardIdxAttr !== null && cardIdxAttr !== undefined) {
+      flipPackCard(parseInt(cardIdxAttr, 10));
+      renderApp();
+    }
+  } else if (action === 'flip-pack-all') {
+    flipAllPackCards();
+    renderApp();
   } else if (action === 'close-pack-reveal' || action === 'confirm-pack-reveal') {
     clearPackReveal();
     renderApp();
@@ -522,6 +535,15 @@ export function handleEventDelegation(event: Event): void {
   } else if (action === 'close-mall-modal') {
     closeMallModal();
     renderApp();
+  } else if (action === 'toggle-mug-picker') {
+    toggleMugCardPicker();
+    renderApp();
+  } else if (action === 'select-mug-card') {
+    const cardIdAttr = target.getAttribute('data-card-id') || target.closest('button')?.getAttribute('data-card-id');
+    if (cardIdAttr) {
+      setSelectedMugCardId(parseInt(cardIdAttr, 10));
+      renderApp();
+    }
   } else if (action === 'change-mall-qty') {
     const delta = parseInt(target.getAttribute('data-delta') || '0', 10);
     const currQty = parseInt(target.parentElement?.querySelector('span')?.textContent || '1', 10);

@@ -26,6 +26,8 @@ import {
   resolveCryptoDepositDetails,
 } from '../services/qrCodeSvg';
 import { tr } from '../services/i18n';
+import { CARD_DATABASE } from '../../cardDatabase';
+import { getCharacterAsset, getLocalizedCharacterName, getLocalizedFactionName } from '../services/assetCatalog';
 
 export type MallCategoryTab = 'ALL' | 'CARD_SET' | 'APPAREL' | 'EQUIPMENT';
 
@@ -114,7 +116,7 @@ export const MALL_GOODS_PRODUCTS: MallGoodsProduct[] = [
     priceKrw: 14000,
     description: '원하는 영웅 일러스트와 칭호가 고화질 전사 인쇄된 11oz 프리미엄 세라믹 머그컵.',
     shortSpec: '용량 11oz (약 330ml) · 고온 전사 세라믹 · 전자레인지/식기세척기 안심 사용',
-    image: '/mug.png',
+    image: '/mall/cdn/shop/files/1.png',
   },
   {
     id: 'goods_tshirt',
@@ -302,6 +304,50 @@ let mallModalStep:
 let selectedQty = 1;
 let selectedSize = 'L';
 let selectedFaction = '성진기사단 (Human)';
+let selectedMugCardId = 41; // Default: Kadan (#41, Royal Gold)
+let isMugCardPickerOpen = false;
+
+export function setSelectedMugCardId(cardId: number): void {
+  selectedMugCardId = cardId;
+  isMugCardPickerOpen = false;
+}
+
+export function toggleMugCardPicker(): void {
+  isMugCardPickerOpen = !isMugCardPickerOpen;
+}
+
+export function getSelectedMugCardId(): number {
+  return selectedMugCardId;
+}
+
+export function renderMugMockupPreview(cardId: number): string {
+  const card = CARD_DATABASE.find((c) => c.id === cardId) || CARD_DATABASE[40] || CARD_DATABASE[0];
+  const bustUrl = getCharacterAsset(card.id, 'bust');
+  const locName = getLocalizedCharacterName(card.id) || card.nameKo;
+  const locFaction = getLocalizedFactionName(card.faction);
+
+  return `
+    <div class="relative w-48 sm:w-56 h-44 sm:h-52 mx-auto bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 select-none">
+      <!-- White Ceramic Mug Base -->
+      <img src="/mug.png" alt="Mug Base" class="w-full h-full object-contain" />
+
+      <!-- Cylindrical Curved Printed Card Overlay -->
+      <div class="absolute top-[26%] left-[36%] w-[29%] aspect-[5/7] rotate-[-2.5deg] overflow-hidden shadow-sm pointer-events-none rounded-xs border border-amber-400/60 bg-[#161414] flex flex-col justify-between p-0.5 opacity-95">
+        <div class="relative w-full aspect-square overflow-hidden bg-black/40">
+          <img src="${bustUrl}" alt="${locName}" class="w-full h-full object-cover" />
+          <span class="absolute top-0.5 left-0.5 px-0.5 py-0.2 bg-black/85 text-[6px] text-amber-300 font-black leading-none">${locFaction}</span>
+          <span class="absolute top-0.5 right-0.5 px-0.5 py-0.2 bg-amber-400 text-stone-950 text-[6px] font-black leading-none">${card.rarity}</span>
+        </div>
+        <div class="w-full text-center text-[7px] font-bold text-amber-200 truncate py-0.2">
+          ${locName}
+        </div>
+        <div class="w-full grid grid-cols-4 gap-0.2 text-[5.5px] font-mono font-bold bg-black/60 text-stone-300 text-center py-0.2">
+          <span>▲${card.top}</span><span>▶${card.right}</span><span>▼${card.bottom}</span><span>◀${card.left}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
 
 let buyerName = '';
 let buyerPhone = '';
@@ -819,8 +865,12 @@ export function renderMallModal(): string {
           </div>
 
           <div class="flex-1 overflow-y-auto py-4 space-y-4">
-            <div class="w-full h-44 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-3">
-              <img src="${localizedDetailProd.image}" alt="${localizedDetailProd.name}" class="max-h-full max-w-full object-contain" />
+            <div class="w-full bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-3">
+              ${
+                localizedDetailProd.id === 'goods_mug'
+                  ? renderMugMockupPreview(selectedMugCardId)
+                  : `<img src="${localizedDetailProd.image}" alt="${localizedDetailProd.name}" class="max-h-44 max-w-full object-contain" />`
+              }
             </div>
 
             <div>
@@ -839,6 +889,63 @@ export function renderMallModal(): string {
 
             <!-- Options -->
             <div class="space-y-3 pt-2 border-t border-[rgba(15,0,0,0.08)]">
+              ${
+                localizedDetailProd.id === 'goods_mug'
+                  ? `
+                <div class="p-3 bg-[#f8f7f7] border border-stone-300 rounded-none space-y-2">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">${tr('머그컵 인쇄 영웅 카드', 'Custom Printed Hero Card', 'マグカップ印刷英雄カード')}</div>
+                      <div class="text-xs font-black text-[#201d1d]">
+                        #${selectedMugCardId} ${getLocalizedCharacterName(selectedMugCardId)}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      data-action="toggle-mug-picker"
+                      class="px-3 py-1.5 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[36px] cursor-pointer"
+                    >
+                      ${isMugCardPickerOpen ? tr('선택 닫기 ▲', 'Close Picker ▲', '閉じる ▲') : tr('카드 변경 🔄', 'Change Card 🔄', 'カード変更 🔄')}
+                    </button>
+                  </div>
+
+                  ${
+                    isMugCardPickerOpen
+                      ? `
+                    <div class="pt-2 border-t border-stone-300">
+                      <div class="text-[10px] text-stone-600 mb-1.5 font-bold">
+                        ${tr('110종 영웅 중 머그컵에 인쇄할 카드를 선택하세요:', 'Select a hero card to print on your mug:', 'マグカップに印刷するカードを選択してください:')}
+                      </div>
+                      <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5 max-h-48 overflow-y-auto p-1 bg-white border border-stone-300 rounded-none">
+                        ${CARD_DATABASE.slice(0, 110)
+                          .map((c) => {
+                            const isCur = c.id === selectedMugCardId;
+                            const cName = getLocalizedCharacterName(c.id) || c.nameKo;
+                            return `
+                          <button
+                            type="button"
+                            data-action="select-mug-card"
+                            data-card-id="${c.id}"
+                            class="p-1 border ${
+                              isCur ? 'border-amber-400 bg-amber-50 ring-1 ring-amber-400' : 'border-stone-200 hover:border-stone-400 bg-white'
+                            } flex flex-col items-center justify-center cursor-pointer transition-all active:scale-95"
+                            title="${cName}"
+                          >
+                            <img src="${getCharacterAsset(c.id, 'bust')}" alt="${cName}" class="w-9 h-9 object-cover rounded-xs" />
+                            <span class="text-[8px] font-bold text-stone-800 truncate w-full text-center mt-0.5">#${c.id}</span>
+                          </button>
+                        `;
+                          })
+                          .join('')}
+                      </div>
+                    </div>
+                  `
+                      : ''
+                  }
+                </div>
+              `
+                  : ''
+              }
               ${
                 localizedDetailProd.id === 'goods_tshirt'
                   ? `
