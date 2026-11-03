@@ -2,6 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 06:45 KST] [SPA SEO/GEO/AEO 및 sitemap.xml 최적화, 카드팩 5장 3D 플립 및 종족 원소 특성 연출, #mall 커스텀 머그컵 곡면 카드 디자인 반영]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. SPA 전 페이지 Google 검색엔진/크롤러 대응 SEO/GEO/AEO 최적화 및 sitemap.xml 최신화 (`scripts/post-build.js`, `public/sitemap.xml`, `public/mall/index.html`)**:
+    - SPA 해시 라우팅(#home, #deck, #play, #card, #shop, #mall, #book, #webtoon, #setting 등) 환경에서 검색엔진 봇이 완벽하게 색인할 수 있도록 9개 핵심 라우트 및 세부 별칭에 대해 고유한 Title, Meta Description, Canonical URL, OpenGraph, Twitter Card 메타데이터를 정적 HTML에 사전 렌더링.
+    - 검색엔진과 AI 에이전트(GEO/AEO)가 페이지 맥락을 즉시 파악할 수 있도록 Schema.org JSON-LD 구조화 데이터(`WebApplication`, `VideoGame`, `Store`, `Book`, `ComicSeries`, `FAQPage`) 및 의미론적 본문(`<h1>`, `<h2>`, FAQ 아코디언)을 자동 주입.
+    - `public/sitemap.xml`에 `/mall`, `/card`, `/book`, `/webtoon`, `/setting` 등 누락되었던 정적 엔트리를 신규 추가하고 12개 국어 `xhtml:link rel="alternate"` 및 `lastmod 2026-11-04` 갱신.
+    - `public/mall/index.html`의 구버전 `window.location.replace('/#shop')`을 `/#mall`로 정상화.
+  - **2. 카드팩 구매 시 5장 카드 소환 3D 플립 및 최고 등급 카드 종족 원소 연출 (`src/landing/views/ShopSection.tsx`, `src/landing/index.ts`, `src/index.css`)**:
+    - 상점 카드팩 구매 시 5장의 카드가 마법 룬 봉인 뒷면 상태로 동시 소환.
+    - 개별 카드를 터치하여 3D 입체 플립(`card-flip-rotate`)으로 앞면을 하나씩 열어보거나, `[전체 카드 한 번에 뒤집기 (OPEN ALL)]` 버튼으로 한 번에 개봉 가능.
+    - 5장 중 최고 등급/전투력 카드의 종족(물, 불, 언데드, 자연, 번개, 신성 등)을 감지하여, 카드가 뒤집히는 순간 종족 고유의 시각 효과(물방울/해일 튀김, 화염 폭발, 음침한 안개 분출, 원소 돌풍, 방전 등 28개 종족 파티클 + 방사형 오라 + 펄스 링 연출)가 화면 전체에 화려하게 펼쳐지도록 구현.
+  - **3. #mall 커스텀 머그컵 표면 카드 디자인 실시간 합성 목업 복구 (`src/landing/views/MallSection.tsx`, `src/landing/index.ts`)**:
+    - 머그컵 상품 이미지를 공식 실물 굿즈 에셋(`/mall/cdn/shop/files/1.png`)으로 적용.
+    - 머그컵 표면에 선택된 영웅 카드의 일러스트, 칭호, 4방위 스탯이 흰색 세라믹 곡면 각도(`rotate-[-2.5deg]`)로 정밀 합성된 실시간 목업 프리뷰 렌더링.
+    - 굿즈 상세 모달에서 `[카드 변경 🔄]` 버튼을 통해 110종 전 영웅 카드를 검색 및 선택할 수 있는 영웅 카드 선택 피커 드로어 탑재.
+  - **4. 빌드 및 배포 검증**:
+    - `npm run build` 및 `node scripts/post-build.js` 빌드 성공 (0 error, dist/mall.html 7,556 bytes, dist/play.html 6,782 bytes, dist/shop.html 6,864 bytes 정상 생성).
+    - 로컬 git 커밋 완료 (`18755cb85`, 지침에 따라 원격 git push 미실행 준수).
+    - 연동 구글 폼 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (0 error)
+  - 로컬 git 커밋: `18755cb85`
+  - 구글 폼 완료 보고서 제출 완료: `[개발] SPA SEO/GEO/AEO 및 sitemap 최적화, 카드팩 5장 3D 플립 및 종족 원소 연출, #mall 머그컵 카드 합성 구현`
+
+
 ## [2026-11-04 06:36 KST] [#play 화살표 이동 키 타일 동서남북 오버레이 및 이동 시 마진 제거]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
