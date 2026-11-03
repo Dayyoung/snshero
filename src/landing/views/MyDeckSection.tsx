@@ -207,7 +207,7 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
                         isOwned: true,
                         level: stats.level,
                         hideStats: false,
-                        className: 'w-full aspect-[5/7]',
+                        className: 'w-full aspect-[5/7] min-w-[120px] sm:min-w-[140px]',
                       })}
                     </div>
 
@@ -288,7 +288,7 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
                             isOwned: true,
                             level: stats.level,
                             hideStats: false,
-                            className: 'w-full aspect-[5/7]',
+                            className: 'w-full aspect-[5/7] min-w-[120px] sm:min-w-[140px]',
                           })}
                         </div>
                         <div class="w-full pt-0.5">
@@ -615,7 +615,7 @@ export function renderMyDeckSection(selectedCardId?: number): string {
                       isOwned: true,
                       level: stats.level,
                       showRedDot: hasRedDot,
-                      className: 'w-full aspect-[5/7]',
+                      className: 'w-full aspect-[5/7] min-w-[130px] sm:min-w-[150px]',
                     })}
                   </div>
 

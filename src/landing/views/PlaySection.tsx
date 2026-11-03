@@ -958,25 +958,35 @@ function renderAdventureView(): string {
                             />
                           </div>
 
-                          <!-- Top Row: Owner Badge & North Stat -->
-                          <div class="relative z-10 flex items-center justify-between w-full px-0.5">
-                            <span class="px-1 py-0.5 text-[9px] font-black rounded-xs ${
-                              isPlayer ? 'bg-sky-500 text-slate-950' : 'bg-rose-500 text-white'
-                            }">${isPlayer ? 'P1' : 'AI'}</span>
-                            <span class="min-w-[18px] h-[18px] px-1 bg-black/80 border border-white/40 text-white text-[10px] font-black flex items-center justify-center rounded-xs">${top}</span>
-                            <span class="w-4"></span>
+                          <!-- 4-Way Compass Diamond HUD (Placed at Card Outer Edges: North, South, East, West) -->
+                          <!-- North (Top Edge) -->
+                          <div class="absolute top-0.5 sm:top-1 left-1/2 -translate-x-1/2 z-20 min-w-[18px] sm:min-w-[20px] h-[18px] sm:h-[20px] px-1 bg-black/85 border border-white/60 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center rounded-xs shadow-md">
+                            ${top}
                           </div>
 
-                          <!-- Middle Row: West & East Stats -->
-                          <div class="relative z-10 flex items-center justify-between w-full px-0.5 my-auto">
-                            <span class="min-w-[18px] h-[18px] px-1 bg-black/80 border border-white/40 text-white text-[10px] font-black flex items-center justify-center rounded-xs">${left}</span>
-                            <span class="min-w-[18px] h-[18px] px-1 bg-black/80 border border-white/40 text-white text-[10px] font-black flex items-center justify-center rounded-xs">${right}</span>
+                          <!-- South (Bottom Edge) -->
+                          <div class="absolute bottom-0.5 sm:bottom-1 left-1/2 -translate-x-1/2 z-20 min-w-[18px] sm:min-w-[20px] h-[18px] sm:h-[20px] px-1 bg-amber-400 border border-stone-900 text-stone-950 text-[9px] sm:text-[10px] font-black flex items-center justify-center rounded-xs shadow-md">
+                            ${bottom}
                           </div>
 
-                          <!-- Bottom Row: Card Name & South Stat -->
-                          <div class="relative z-10 flex items-center justify-between w-full px-0.5 bg-black/75 py-0.5">
-                            <span class="text-[9px] font-bold text-white truncate max-w-[65%]">${slotAsset.nameKo}</span>
-                            <span class="min-w-[18px] h-[18px] px-1 bg-amber-400 text-stone-950 text-[10px] font-black flex items-center justify-center rounded-xs">${bottom}</span>
+                          <!-- West (Left Edge) -->
+                          <div class="absolute left-0.5 sm:left-1 top-1/2 -translate-y-1/2 z-20 min-w-[18px] sm:min-w-[20px] h-[18px] sm:h-[20px] px-1 bg-black/85 border border-white/60 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center rounded-xs shadow-md">
+                            ${left}
+                          </div>
+
+                          <!-- East (Right Edge) -->
+                          <div class="absolute right-0.5 sm:right-1 top-1/2 -translate-y-1/2 z-20 min-w-[18px] sm:min-w-[20px] h-[18px] sm:h-[20px] px-1 bg-black/85 border border-white/60 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center rounded-xs shadow-md">
+                            ${right}
+                          </div>
+
+                          <!-- Owner Badge (Top Left Corner) -->
+                          <span class="absolute top-0.5 left-0.5 z-20 px-1 py-0.5 text-[8px] sm:text-[9px] font-black rounded-xs shadow-sm ${
+                            isPlayer ? 'bg-sky-500 text-slate-950' : 'bg-rose-500 text-white'
+                          }">${isPlayer ? 'P1' : 'AI'}</span>
+
+                          <!-- Card Name (Bottom Subtle Overlay) -->
+                          <div class="relative z-10 w-full mt-auto flex items-center justify-start bg-black/75 px-1 py-0.5">
+                            <span class="text-[8px] sm:text-[9px] font-bold text-white truncate max-w-[65%]">${slotAsset.nameKo}</span>
                           </div>
                         </div>
                       `;
@@ -984,9 +994,9 @@ function renderAdventureView(): string {
                     .join('')}
                 </div>
 
-                <!-- Player Active Hand Cards (1-Row Dynamic Card Width with Center Board Max-Width Constraint) -->
+                <!-- Player Active Hand Cards (1-Row Dynamic Card Width with Center Board Balance & PC Min-Width) -->
                 <div class="pt-1.5 border-t border-white/10">
-                  <div class="flex flex-nowrap items-stretch justify-center gap-1 sm:gap-2.5 pt-1 w-full max-w-[360px] sm:max-w-[440px] mx-auto">
+                  <div class="flex flex-nowrap items-stretch justify-center gap-1 sm:gap-2.5 pt-1 w-full max-w-[390px] sm:max-w-[580px] md:max-w-[680px] lg:max-w-[740px] mx-auto">
                     ${playRpgState.playerHand
                       .map((cId, hIdx) => {
                         const isSelected = playRpgState.selectedHandIndex === hIdx;
@@ -995,7 +1005,7 @@ function renderAdventureView(): string {
                             type="button"
                             data-action="play-battle-card"
                             data-hand-index="${hIdx}"
-                            class="relative flex-1 min-w-0 max-w-[68px] sm:max-w-[80px] text-left p-0 bg-transparent border-0 cursor-pointer transition-transform ${
+                            class="relative flex-1 min-w-0 sm:min-w-[96px] md:min-w-[115px] lg:min-w-[125px] max-w-[72px] sm:max-w-[125px] md:max-w-[140px] text-left p-0 bg-transparent border-0 cursor-pointer transition-transform ${
                               isSelected
                                 ? '-translate-y-1.5 ring-2 ring-amber-400 rounded-sm z-20'
                                 : 'hover:-translate-y-0.5 opacity-95 hover:opacity-100'
@@ -1003,7 +1013,7 @@ function renderAdventureView(): string {
                           >
                             ${
                               isSelected
-                                ? `<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 z-40 px-1.5 sm:px-2 py-0.5 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs whitespace-nowrap border border-stone-900">▼ 선택됨</span>`
+                                ? `<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 z-40 px-1.5 sm:px-2 py-0.5 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs whitespace-nowrap border border-stone-900 shadow-sm">▼ 선택됨</span>`
                                 : ''
                             }
                             ${renderOriginalCardHtml(cId, {
@@ -1012,7 +1022,7 @@ function renderAdventureView(): string {
                               showRedDot: false,
                               size: 'responsive',
                               visualTier: 'bust',
-                              className: 'w-full min-w-0 aspect-[5/7] max-h-[110px] sm:max-h-[135px]',
+                              className: 'w-full min-w-0 sm:min-w-[96px] md:min-w-[115px] lg:min-w-[125px] aspect-[5/7] max-h-[115px] sm:max-h-[175px] md:max-h-[200px]',
                             })}
                           </button>
                         `;

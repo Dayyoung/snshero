@@ -123,7 +123,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
 
   const cardPadClass = isResponsiveHand ? 'p-1 sm:p-2' : 'p-1.5 sm:p-2';
   const statCircleClass = isResponsiveHand
-    ? 'h-4 w-4 sm:h-6 sm:w-6 text-[8px] sm:text-xs border sm:border-2'
+    ? 'h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-[8px] sm:text-[9px] md:text-xs border sm:border-2'
     : 'h-5 w-5 sm:h-6 sm:w-6 text-[10px] sm:text-xs border-2';
 
   return `
@@ -162,6 +162,45 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
         </span>
       ` : ''}
 
+      <!-- 4-Way Compass Diamond HUD (Placed at Card Outer Edges: North, South, East, West - Not over Bust Art) -->
+      ${!hideStats ? `
+        <!-- North (Top Edge of Card) -->
+        <div
+          class="absolute top-0.5 sm:top-1 left-1/2 -translate-x-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
+          style="border-color: ${rarityTheme.statBadgeBorder};"
+          title="북(N): ${top}"
+        >
+          ${top}
+        </div>
+
+        <!-- South (Bottom Edge of Card) -->
+        <div
+          class="absolute bottom-0.5 sm:bottom-1 left-1/2 -translate-x-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
+          style="border-color: ${rarityTheme.statBadgeBorder};"
+          title="남(S): ${bottom}"
+        >
+          ${bottom}
+        </div>
+
+        <!-- West (Left Edge of Card) -->
+        <div
+          class="absolute left-0.5 sm:left-1 top-1/2 -translate-y-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
+          style="border-color: ${rarityTheme.statBadgeBorder};"
+          title="서(W): ${left}"
+        >
+          ${left}
+        </div>
+
+        <!-- East (Right Edge of Card) -->
+        <div
+          class="absolute right-0.5 sm:right-1 top-1/2 -translate-y-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
+          style="border-color: ${rarityTheme.statBadgeBorder};"
+          title="동(E): ${right}"
+        >
+          ${right}
+        </div>
+      ` : ''}
+
       <!-- 1. TCG Header Bar: Rarity Badge, Level, Power & Stars -->
       <div class="relative z-20 flex items-center justify-between w-full pb-0.5 sm:pb-1 border-b border-black/15 ${
         isResponsiveHand ? 'text-[8px] sm:text-[10px]' : 'text-[10px]'
@@ -183,13 +222,15 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
           </span>
           <span class="font-bold text-[#201d1d] truncate">Lv.${level}</span>
         </div>
+        <!-- Spacer for North Stat Badge at Top Edge -->
+        <div class="w-4 sm:w-6 shrink-0 pointer-events-none"></div>
         <div class="flex items-center gap-0.5 sm:gap-1 font-bold shrink-0">
           <span class="text-amber-700">⚡${totalTP}</span>
           <span class="${isResponsiveHand ? 'hidden sm:inline' : ''} text-amber-600 text-[10px]">${'★'.repeat(rarityTheme.starCount)}</span>
         </div>
       </div>
 
-      <!-- 2. Central Illustration Window with Cross Compass HUD -->
+      <!-- 2. Central Illustration Window (Clear View of Hero Art) -->
       <div
         class="relative z-10 w-full flex-1 my-0.5 sm:my-1 overflow-hidden border border-black/20 rounded-xs flex items-center justify-center"
         style="background-color: ${factionTheme.windowBg};"
@@ -218,45 +259,6 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
           />
         </div>
 
-        <!-- 4-Way Compass Diamond HUD (North, East, South, West) -->
-        ${!hideStats ? `
-          <!-- North (Top) -->
-          <div
-            class="absolute top-0.5 sm:top-1 left-1/2 -translate-x-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-sm select-none"
-            style="border-color: ${rarityTheme.statBadgeBorder};"
-            title="북(N): ${top}"
-          >
-            ${top}
-          </div>
-
-          <!-- East (Right) -->
-          <div
-            class="absolute right-0.5 sm:right-1 top-1/2 -translate-y-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-sm select-none"
-            style="border-color: ${rarityTheme.statBadgeBorder};"
-            title="동(E): ${right}"
-          >
-            ${right}
-          </div>
-
-          <!-- South (Bottom) -->
-          <div
-            class="absolute bottom-0.5 sm:bottom-1 left-1/2 -translate-x-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-sm select-none"
-            style="border-color: ${rarityTheme.statBadgeBorder};"
-            title="남(S): ${bottom}"
-          >
-            ${bottom}
-          </div>
-
-          <!-- West (Left) -->
-          <div
-            class="absolute left-0.5 sm:left-1 top-1/2 -translate-y-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-sm select-none"
-            style="border-color: ${rarityTheme.statBadgeBorder};"
-            title="서(W): ${left}"
-          >
-            ${left}
-          </div>
-        ` : ''}
-
         <!-- 5-Step Power Gauge Bar (bottom of illustration) -->
         <div class="pointer-events-none absolute inset-x-1 sm:inset-x-2 bottom-0.5 sm:bottom-1 z-20 flex items-center gap-0.5">
           ${[1, 2, 3, 4, 5].map(step => {
@@ -275,12 +277,14 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
       <div class="relative z-20 w-full pt-0.5 sm:pt-1 border-t border-black/15 flex items-center justify-between ${
         isResponsiveHand ? 'text-[8px] sm:text-[10px]' : 'text-[10px]'
       } leading-tight">
-        <div class="flex items-center gap-0.5 sm:gap-1 truncate min-w-0 w-full ${
-          isResponsiveHand ? 'justify-center sm:justify-start' : ''
+        <div class="flex items-center gap-0.5 sm:gap-1 truncate min-w-0 ${
+          isResponsiveHand ? 'justify-start' : ''
         }">
           <span class="${isResponsiveHand ? 'hidden sm:inline' : ''} text-amber-800 font-bold shrink-0">${abilityTag}</span>
           <span class="font-black text-[#201d1d] truncate" title="${asset.nameKo}">${asset.nameKo}</span>
         </div>
+        <!-- Spacer for South Stat Badge at Bottom Edge -->
+        <div class="w-4 sm:w-6 shrink-0 pointer-events-none"></div>
         <span class="${isResponsiveHand ? 'hidden sm:inline' : ''} font-bold text-stone-500 shrink-0 uppercase text-[9px]">${asset.code}</span>
       </div>
     </div>
