@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 06:36 KST] [#play 화살표 이동 키 타일 동서남북 오버레이 및 이동 시 마진 제거]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 화살표 이동 키를 10x8 RPG 타일맵 동·서·남·북으로 absolute 오버레이 배치 (`src/landing/views/PlaySection.tsx`)**:
+    - 외부 래퍼 프레임 방식을 제거하고, 10x8 타일맵 컨테이너 내부의 북(`top-2 left-1/2 -translate-x-1/2`), 남(`bottom-2 left-1/2 -translate-x-1/2`), 서(`left-2 top-1/2 -translate-y-1/2`), 동(`right-2 top-1/2 -translate-y-1/2`) 위치에 지정된 버튼 스타일(`w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm shadow-lg active:translate-y-px`)로 오버레이 배치.
+    - 지도가 화면 가로폭을 온전히 활용하며, 모바일 한 손 터치 및 데스크톱 모두에서 손쉬운 동서남북 내비게이션 환경 구축.
+  - **2. 이동 및 타일 조작 시 발생하는 마진 완벽 제거 (`src/landing/views/PlaySection.tsx`)**:
+    - 타일 컨테이너 주변의 외부 래퍼 마진(`mb-1.5`, `mt-1.5`, `gap-1 sm:gap-2`)을 일체 배제하고 `m-0 p-0 border-0` 적용.
+    - 타일 버튼의 `active:scale-95` 및 `group-hover:scale-105` 등의 스케일/트랜지션 효과를 완전히 제거(`transition-none`)하여, 플레이어가 타일을 누르거나 캐릭터가 이동할 때 타일 간에 틈새(마진)가 생기는 현상을 원천 방지.
+    - 타겟 및 영웅 테두리도 타일 내부의 `absolute inset-0 border-2`로 국소화하여 타일 외곽선 밖으로 마진이 번지는 현상을 차단.
+  - **3. 빌드 및 배포 검증**:
+    - `npm run build` 프로덕션 빌드 성공 (0 error, 9m 13s, SEO/Sitemap 정적 산출물 완비).
+    - 로컬 git 커밋 완료 (`47858e2d4`, 지침에 따라 원격 git push 미실행 준수).
+    - 연동 구글 폼 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (0 error)
+  - 로컬 git 커밋: `47858e2d4`
+  - 구글 폼 완료 보고서 제출 완료: `[개발] [#play] 화살표 버튼 타일 동서남북 오버레이 및 이동 시 마진 제거`
+
 ## [2026-11-04 06:17 KST] [#play 지도 상하좌우 화살표 컨트롤러 재배치 및 타일 마진 0px 완전 제거]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
