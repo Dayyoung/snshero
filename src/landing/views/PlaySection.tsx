@@ -72,6 +72,29 @@ import {
   PlayTabKey,
 } from '../services/playRpgEngine';
 
+/**
+ * Authentic RPG Terrain Tile & Object Sprites
+ * Preserved from original RPG world map (/play & KadanWorldMap.tsx)
+ */
+export const RPG_TERRAIN_ASSETS: Record<string, string> = {
+  snow: '/rpg/kadan-map/tile-snow.png',
+  cliff: '/rpg/kadan-map/tile-cliff.png',
+  palace: '/rpg/kadan-map/tile-palace.png',
+  cave: '/rpg/kadan-map/tile-cave.png',
+  lake: '/rpg/kadan-map/tile-forest.png',
+  forest: '/rpg/kadan-map/tile-forest.png',
+  island: '/rpg/kadan-map/tile-snow.png',
+  citadel: '/rpg/kadan-map/tile-palace.png',
+};
+
+export const RPG_EVENT_NODE_ASSETS: Record<string, string> = {
+  enemy: '/rpg/kadan-map/object-enemy.png',
+  chest: '/rpg/kadan-map/object-chest.png',
+  portal: '/rpg/kadan-map/object-portal.png',
+  story: '/rpg/kadan-map/object-portal.png',
+  boss: '/rpg/kadan-map/object-enemy.png',
+};
+
 // ============================================================================
 // 1. Webtoon Viewer State (Strict Invariant Contract Preserved)
 // ============================================================================
@@ -538,10 +561,39 @@ function renderAdventureView(): string {
         playRpgState.subState === 'battle' ||
         playRpgState.subState === 'reincarnation'
           ? `
-            <section class="w-full bg-[#090d16] border border-[rgba(15,0,0,0.12)] p-4 sm:p-6 rounded-none">
-              <!-- 10x8 Grid Container -->
+            <section class="w-full bg-[#060a12] border-2 border-[#1e293b] p-3 sm:p-5 rounded-none shadow-2xl font-mono">
+              <!-- World Map Legend & Terrain Header Bar -->
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-white/10 text-xs select-none">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 bg-amber-400/20 text-amber-300 border border-amber-400/50 text-[10px] font-black rounded-xs uppercase tracking-wider">
+                    TERRAIN: ${(region.terrain || 'forest').toUpperCase()}
+                  </span>
+                  <span class="text-stone-300 text-xs font-bold">
+                    ${region.nameKey}
+                  </span>
+                  <span class="text-stone-500 text-[10px] hidden sm:inline">
+                    (${region.width} × ${region.height} 타일 필드)
+                  </span>
+                </div>
+                <div class="flex items-center gap-3 text-[10px] text-stone-300 font-bold">
+                  <span class="inline-flex items-center gap-1">
+                    <img src="/rpg/kadan-map/hero-kadan.png" alt="카단" class="w-4 h-4 rounded-full border border-amber-300 object-cover" />
+                    <span>카단</span>
+                  </span>
+                  <span class="inline-flex items-center gap-1">
+                    <img src="${RPG_EVENT_NODE_ASSETS[chEvent?.nodeType || 'enemy'] || '/rpg/kadan-map/object-portal.png'}" alt="목표" class="w-4 h-4 object-contain" />
+                    <span class="text-amber-400 font-black">목표 (GO)</span>
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-stone-500">
+                    <span class="w-3.5 h-3.5 bg-black/80 border border-stone-700 flex items-center justify-center text-[9px]">✕</span>
+                    <span>통행 불가</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- 10x8 Grid Container with RPG Terrain Tiles -->
               <div
-                class="grid gap-1 sm:gap-1.5 w-full max-w-3xl mx-auto aspect-[10/8] select-none"
+                class="grid gap-1 sm:gap-1.5 w-full max-w-3xl mx-auto aspect-[10/8] select-none p-1 sm:p-1.5 bg-[#0a0f1d] border border-white/10 rounded-xs shadow-inner"
                 style="grid-template-columns: repeat(${region.width}, minmax(0, 1fr));"
               >
                 ${Array.from({ length: region.width * region.height }, (_, idx) => {
@@ -550,9 +602,8 @@ function renderAdventureView(): string {
                   const isBlocked = region.blockedTiles.some((b) => b.x === tileX && b.y === tileY);
                   const isHero = heroX === tileX && heroY === tileY;
                   const isTarget = chEvent?.tile.x === tileX && chEvent?.tile.y === tileY;
-
-                  let cellBg = isBlocked ? 'bg-stone-900/90' : 'bg-[#151c2e] hover:bg-[#1f2942]';
-                  let borderStyle = isTarget ? 'border-2 border-amber-400' : 'border border-white/10';
+                  const terrainImg = RPG_TERRAIN_ASSETS[region.terrain] || '/rpg/kadan-map/tile-forest.png';
+                  const eventImg = RPG_EVENT_NODE_ASSETS[chEvent?.nodeType || 'enemy'] || '/rpg/kadan-map/object-portal.png';
 
                   return `
                     <button
@@ -561,25 +612,81 @@ function renderAdventureView(): string {
                       data-x="${tileX}"
                       data-y="${tileY}"
                       ${isBlocked ? 'disabled' : ''}
-                      class="relative w-full h-full min-h-[32px] sm:min-h-[44px] rounded-none ${cellBg} ${borderStyle} transition-colors flex items-center justify-center cursor-pointer p-0 select-none"
+                      class="group relative w-full h-full aspect-square min-h-[32px] sm:min-h-[44px] rounded-xs overflow-hidden border transition-all flex items-center justify-center p-0 select-none ${
+                        isBlocked
+                          ? 'border-black/60 cursor-not-allowed opacity-60'
+                          : isTarget
+                          ? 'border-2 border-amber-400 ring-2 ring-amber-400/80 shadow-[0_0_15px_rgba(251,191,36,0.85)] cursor-pointer'
+                          : isHero
+                          ? 'border-2 border-amber-300 ring-1 ring-amber-400/60 cursor-default'
+                          : 'border-white/15 hover:border-amber-300/80 hover:ring-1 hover:ring-amber-300/50 cursor-pointer active:scale-95'
+                      }"
                       aria-label="타일 (${tileX + 1}, ${tileY + 1})"
                     >
+                      <!-- 1. Authentic Terrain Tile Background Texture -->
+                      <img
+                        src="${terrainImg}"
+                        alt=""
+                        class="absolute inset-0 w-full h-full object-cover pointer-events-none select-none transition-transform duration-200 ${
+                          isBlocked
+                            ? 'grayscale contrast-125 brightness-40'
+                            : 'opacity-90 group-hover:scale-105'
+                        }"
+                        draggable="false"
+                      />
+
+                      <!-- 2. Blocked Tile Overlay (Obstacle / Cliff) -->
+                      ${
+                        isBlocked
+                          ? `
+                            <div class="absolute inset-0 bg-black/60 border border-stone-800/80 flex items-center justify-center pointer-events-none z-10">
+                              <span class="text-stone-400 text-[10px] sm:text-xs font-black select-none drop-shadow">✕</span>
+                            </div>
+                          `
+                          : ''
+                      }
+
+                      <!-- 3. Target Node Sprite (Original Enemy / Chest / Portal from /play) -->
+                      ${
+                        isTarget
+                          ? `
+                            <div class="relative z-10 flex flex-col items-center justify-center animate-bounce pointer-events-none select-none">
+                              <img
+                                src="${eventImg}"
+                                alt="${chEvent?.titleKo || '목표 지점'}"
+                                class="w-6 h-6 sm:w-8 sm:h-8 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]"
+                                draggable="false"
+                              />
+                              <span class="absolute -bottom-1.5 px-1 py-0.2 bg-amber-400 text-stone-950 text-[7px] sm:text-[8px] font-black rounded-xs whitespace-nowrap shadow-md border border-stone-900 leading-none">
+                                GO!
+                              </span>
+                            </div>
+                          `
+                          : ''
+                      }
+
+                      <!-- 4. Hero Kadan Token Marker (Circular Golden Avatar) -->
                       ${
                         isHero
                           ? `
-                            <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-none border border-white bg-amber-400 p-0.5 flex items-center justify-center shadow-none z-20">
-                              <img src="/rpg/kadan-map/hero-kadan.png" alt="카단" class="w-full h-full object-cover" onerror="this.src='/seat/Kadan.png'; this.onerror=null;" />
+                            <div class="relative z-20 w-7 h-7 sm:w-9 sm:h-9 rounded-full border-2 border-amber-300 bg-slate-950 p-0.5 shadow-[0_0_16px_rgba(251,191,36,0.95)] ring-2 ring-amber-500/80 flex items-center justify-center overflow-hidden animate-pulse pointer-events-none select-none">
+                              <img
+                                src="/rpg/kadan-map/hero-kadan.png"
+                                alt="카단"
+                                class="w-full h-full object-cover rounded-full"
+                                draggable="false"
+                                onerror="this.src='/seat/Kadan.png'; this.onerror=null;"
+                              />
                             </div>
                           `
-                          : isTarget
-                          ? `
-                            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-none border border-amber-300 bg-amber-500/30 flex items-center justify-center text-amber-300 text-xs font-bold z-10 animate-pulse">
-                              🚩
-                            </div>
-                          `
-                          : isBlocked
-                          ? `<span class="text-stone-600 text-[10px]">✕</span>`
-                          : `<span class="text-white/20 text-[9px]">${tileX + 1},${tileY + 1}</span>`
+                          : ''
+                      }
+
+                      <!-- 5. Coordinate Badge (Subtle Top-Left on Clean Tiles) -->
+                      ${
+                        !isBlocked && !isHero && !isTarget
+                          ? `<span class="absolute top-0.5 left-0.5 z-10 text-[7px] sm:text-[8px] font-mono text-white/50 bg-black/50 px-0.5 rounded-xs pointer-events-none select-none">${tileX + 1},${tileY + 1}</span>`
+                          : ''
                       }
                     </button>
                   `;
