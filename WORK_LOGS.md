@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 06:59 KST] [/git-push 원격 저장소(origin main) 누적 24개 커밋 푸시 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 명령 처리**: `/git-push` 슬래시 커맨드 요청에 따라 로컬 누적 커밋들을 원격 저장소(`https://github.com/Dayyoung/snshero` `origin main`)로 안전하게 푸시.
+  - **2. 주요 푸시 내역**:
+    - SPA 전 페이지 SEO/GEO/AEO 정적 프리렌더 및 Schema.org JSON-LD, sitemap.xml 최신화 (`scripts/post-build.js`, `public/sitemap.xml`)
+    - 상점 카드팩 구매 시 5장 3D 플립 인터랙션 및 최고 등급 영웅 종족 특성(물/불/언데드/자연/번개/신성) 풀스크린 VFX 연출 (`ShopSection.tsx`)
+    - 공식 굿즈 몰(#mall) 커스텀 머그컵 및 신규 화이트 반팔 티셔츠 가슴 중앙 영웅 카드 디자인 실시간 합성 목업 & 110종 영웅 카드 선택 피커 드로어 탑재 (`MallSection.tsx`)
+    - `CARD_DATABASE` Record 객체 인덱싱 및 Object.values 변환으로 `#mall` 및 `#shop` 런타임 오류 전면 해결
+    - `#play` 10x8 RPG 타일맵 동서남북 이동 키 오버레이 및 이동 시 마진 발생 원인 완전 제거 (`PlaySection.tsx`)
+  - **3. 빌드 및 배포 검증**:
+    - 원격 푸시 성공 (`df3a1e908..b809ab606 main -> main`).
+    - 연동 구글 폼 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 원격 푸시: `df3a1e908..b809ab606` (24 commits)
+  - 구글 폼 완료 보고서 제출 완료: `[개발] [/git-push] 원격 저장소(origin main) 24개 커밋 푸시 완료`
+
+
 ## [2026-11-04 06:58 KST] [#shop 카드팩 개봉 시 CARD_DATABASE 런타임 오류 수정 및 인벤토리 연동]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
