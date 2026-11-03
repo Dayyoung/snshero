@@ -2,6 +2,30 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 19:58 KST] [무승부 TP 판정 승패 100% 결정 및 자동배틀 패배 시 상점-마이덱-전투 자동 복구 루프 완결 & /git-push 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 무승부 시 전체 TP(Total Power) 판정 승리 및 무승부 정지 완전 차단**:
+    - `src/views/PlayGameView.tsx`:
+      - 7042~7086행: 스코어가 동점이거나 5:4 턴 페널티 이후 등 어떤 경우라도 `finalWinner === 'draw' || pScore === aScore || (finalWinner !== 'player' && finalWinner !== 'ai')` 시 즉시 `pPower >= aPower ? 'player' : 'ai'`로 무조건 승패 결정.
+      - 7984~8011행: 기존에 `winner = 'draw'`를 설정하고 서든데스 배너가 뜨며 게임이 멈추던 `else` 블록을 전면 수정하여, TP 비교 결과에 따라 `player` 승리 또는 `ai` 승리 블록으로 자동 분기하여 `winner` 상태가 절대 `'draw'`로 남지 않도록 보장.
+    - `src/views/MobileCardPlayScreen.tsx`:
+      - 스코어 동점 시 `pTp >= oTp ? 'player' : 'ai'`로 판정하고 `winner`가 무승부로 남지 않도록 완벽 보장.
+  - **2. 자동배틀 패배 시 상점 소환 -> 덱 최적화 -> 전투 재개 루프 최우선 처리**:
+    - `src/views/PlayGameView.tsx`:
+      - 4580행 `useEffect`에서 `isAutoActive && (winner === 'ai' || winner === 'draw')` 조건을 `battleType === 'pvp_attack'` 및 `isMissionBattle`(110종 미니게임)보다 상위인 **최우선 순위**로 배치.
+      - 어떤 배틀 모드(랭킹대전, 110개 미니게임 수호자 대결, 일반 대결 등)이든 자동배틀 중 패배 감지 시 방에서 퇴장하거나 멈추지 않고 1.5초 후 즉시 상점으로 이동 (`hero_auto_loop_mode: 'gacha_start'`, `hero_auto_optimize_deck: 'true'`, `hero_story_auto_loop_return: 'play'`).
+      - 5449행: `PlayGameView`로 복귀 시 `hero_auto_start_pvp === 'true'` 및 `hero_auto_battle === 'true'`를 감지하여 2초 카운트다운 후 자동으로 새 매치(`startMissionCardBattle`)를 즉시 개시하도록 연결.
+    - `src/views/MobileCardPlayScreen.tsx`:
+      - 1490행: 자동배틀 패배 시 최우선 순위로 상점 자동 이동 및 최적화 루프 트리거.
+  - **3. 빌드 및 원격 푸시(/git-push) 완료**:
+    - `npm run build` 0 error 성공 완료.
+    - 사용자 명시 요청(`/git-push`)에 따라 `git push origin main` 원격 저장소 동기화 완료 (`commit: 0f32acf2c`).
+- **검증 결과**:
+  - Vite 프로덕션 빌드 성공 (`vite build && post-build.js` 0 error)
+  - 구글 폼 완료 보고서 제출 완료
+  - 원격 저장소 푸시 완료 (`origin main` -> commit `0f32acf2c`)
+
 ## [2026-11-03 19:42 KST] [카드 자동플레이 무승부/패배 시 상점 소환·덱 최적화·전투 재개 루프 완결 & 무승부 시 전체 TP 승리 판정 적용 및 /git-push 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
