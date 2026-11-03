@@ -643,6 +643,18 @@ function getLocalizedShopProduct(item: ShopCardProduct): ShopCardProduct {
 let currentCategoryTab: ShopCategoryTab = 'ALL';
 let activePackReveal: PackRevealData | null = null;
 
+// Item purchase success modal state
+export interface ItemPurchaseSuccessInfo {
+  itemId: string;
+  itemName: string;
+  category: string;
+  icon: string;
+  message: string;
+  remainingCoins: number;
+}
+let itemPurchaseSuccessModal: ItemPurchaseSuccessInfo | null = null;
+let coinDeficitNotice: string | null = null;
+
 // Coin recharge popup state
 let isCoinChargeModalOpen = false;
 let coinChargeStep:
@@ -670,6 +682,22 @@ let cryptoVerifyNotice: string | null = null;
 // State Getters & Mutators
 // ============================================================================
 
+export function getItemPurchaseSuccessModal(): ItemPurchaseSuccessInfo | null {
+  return itemPurchaseSuccessModal;
+}
+
+export function closeItemPurchaseModal(): void {
+  itemPurchaseSuccessModal = null;
+}
+
+export function getCoinDeficitNotice(): string | null {
+  return coinDeficitNotice;
+}
+
+export function clearCoinDeficitNotice(): void {
+  coinDeficitNotice = null;
+}
+
 export function getShopCurrentTab(): ShopCategoryTab {
   return currentCategoryTab;
 }
@@ -686,7 +714,10 @@ export function closeGoldExchangeModal(): void {
   // Deprecated: Gold exchange feature removed
 }
 
-export function openCoinChargeModal(packageId?: string): void {
+export function openCoinChargeModal(packageId?: string, notice?: string): void {
+  if (notice) {
+    coinDeficitNotice = notice;
+  }
   if (packageId) {
     const found = COIN_PACKAGES.find((p) => p.id === packageId);
     if (found) {
@@ -712,6 +743,7 @@ export function closeCoinChargeModal(): void {
   cryptoSearchQuery = '';
   cryptoAddressCopied = false;
   cryptoVerifyNotice = null;
+  coinDeficitNotice = null;
 }
 
 export function selectChargePackage(packageId: string): void {
@@ -1076,6 +1108,11 @@ export function executeShopPurchase(productId: string): {
 
   const userCoins = getUserCoins();
   if (userCoins < item.priceCoins) {
+    coinDeficitNotice = tr(
+      `SNS 코인이 부족합니다! (보유: ${userCoins.toLocaleString()} SNS / 필요: ${item.priceCoins.toLocaleString()} SNS) 아래 패키지를 선택하여 코인을 충전해 주세요.`,
+      `Not enough SNS coins! (Have: ${userCoins.toLocaleString()} SNS / Need: ${item.priceCoins.toLocaleString()} SNS) Please select a top-up package below.`,
+      `SNSコインが不足しています！（保有: ${userCoins.toLocaleString()} SNS / 必要: ${item.priceCoins.toLocaleString()} SNS）以下のパッケージを選択してチャージしてください。`
+    );
     openCoinChargeModal();
     return {
       success: false,
@@ -1085,12 +1122,25 @@ export function executeShopPurchase(productId: string): {
 
   // Deduct coins
   debitUserCoins(item.priceCoins);
+  const remainingCoins = getUserCoins();
 
   // If item pack or content pass
   if (item.id === 'item_exp_pack') {
     for (let cId = 1; cId <= 5; cId++) {
       cardNurtureStore.addExp(cId, 1000);
     }
+    itemPurchaseSuccessModal = {
+      itemId: item.id,
+      itemName: tr('EXP 영약팩 (대용량)', 'EXP Elixir Pack (Large)', 'EXP霊薬パック (大容量)'),
+      category: 'ITEM',
+      icon: '🧪',
+      message: tr(
+        'EXP 영약 10병이 투여되어 대표 덱 영웅들의 경험치가 각각 +1,000 EXP씩 크게 상승했습니다! 마이덱에서 성장한 영웅 스탯을 확인해보세요.',
+        '10 EXP Elixirs applied! Main deck heroes gained +1,000 EXP each. Check their upgraded stats in My Deck.',
+        'EXP霊薬10本が付与され、代表デッキ英雄の経験値がそれぞれ+1,000 EXP上昇しました！マイデッキで成長したステータスを確認してください。'
+      ),
+      remainingCoins,
+    };
     return {
       success: true,
       message: 'EXP 영약 10병이 지급되어 대표 덱 영웅들의 경험치가 크게 상승했습니다!',
@@ -1099,6 +1149,18 @@ export function executeShopPurchase(productId: string): {
 
   if (item.id === 'item_novel_pass') {
     localStorage.setItem('hero_novel_pass_unlocked', 'true');
+    itemPurchaseSuccessModal = {
+      itemId: item.id,
+      itemName: tr('공식 웹소설 110화 전편 패스', 'Official Web Novel All Chapters Pass', '公式Web小説全110話パス'),
+      category: 'ITEM',
+      icon: '📜',
+      message: tr(
+        '공식 웹소설 110화 풀 텍스트 열람권이 계정에 영구 해금되었습니다! 메뉴의 [스토리/소설] 탭에서 전편을 무제한 감상하실 수 있습니다.',
+        'Official Web Novel 110 chapters pass unlocked permanently! Enjoy unlimited reading in the Story tab.',
+        '公式Web小説全110話の閲覧権がアカウントに永久解放されました！ストーリータブで全話無制限に閲覧できます。'
+      ),
+      remainingCoins,
+    };
     return {
       success: true,
       message: '공식 웹소설 110화 풀 텍스트 열람권이 영구 해금되었습니다!',
@@ -1107,6 +1169,18 @@ export function executeShopPurchase(productId: string): {
 
   if (item.id === 'item_anime_cinema') {
     localStorage.setItem('hero_anime_cinema_unlocked', 'true');
+    itemPurchaseSuccessModal = {
+      itemId: item.id,
+      itemName: tr('공식 3D/2D 애니 극장판 티켓', 'Official Anime Cinema Pass', '公式アニメ劇場版チケット'),
+      category: 'ITEM',
+      icon: '🎬',
+      message: tr(
+        '공식 애니 극장판 시네마 패스가 영구 해금되었습니다! 40부작 풀에피소드 고화질 1080p 애니메이션을 무제한 스트리밍으로 감상하세요.',
+        'Official Anime Cinema Pass unlocked permanently! Stream all 40 full episodes in 1080p HD without limits.',
+        '公式アニメ劇場版シネマパスが永久解放されました！全40話フルエピソードを1080p高画質で無制限ストリーミング鑑賞できます。'
+      ),
+      remainingCoins,
+    };
     return {
       success: true,
       message: '공식 애니 극장판 시네마 패스가 영구 해금되었습니다!',
@@ -1235,6 +1309,90 @@ export function renderGoldExchangeModal(): string {
   return '';
 }
 
+export function renderItemPurchaseSuccessModal(): string {
+  if (!itemPurchaseSuccessModal) return '';
+  const modal = itemPurchaseSuccessModal;
+
+  return `
+    <div id="item-purchase-success-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 font-mono select-none">
+      <div class="relative bg-[#fdfcfc] text-[#201d1d] border-2 border-stone-800 rounded-none max-w-md w-full p-6 space-y-4 shadow-2xl my-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.08)]">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">${modal.icon}</span>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-emerald-700 text-white rounded-sm">
+                ${tr('구매 완료', 'Purchase Complete', '購入完了')}
+              </span>
+              <h3 class="text-base font-black m-0 mt-0.5">${modal.itemName}</h3>
+            </div>
+          </div>
+          <button
+            type="button"
+            data-action="close-item-purchase-modal"
+            class="text-stone-500 hover:text-black font-bold p-1 cursor-pointer"
+            aria-label="${tr('닫기', 'Close', '閉じる')}"
+          >[x]</button>
+        </div>
+
+        <!-- Description / Applied Effect -->
+        <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] text-xs leading-relaxed text-stone-700">
+          ${modal.message}
+        </div>
+
+        <!-- Remaining Coins -->
+        <div class="flex items-center justify-between text-xs text-stone-500 py-1 bg-[#f1eeee]/60 px-3 py-2 border border-[rgba(15,0,0,0.06)]">
+          <span>${tr('결제 후 잔여 코인:', 'Remaining Coins:', '残高コイン:')}</span>
+          <span class="font-black text-[#201d1d] text-sm">${modal.remainingCoins.toLocaleString()} SNS</span>
+        </div>
+
+        <!-- Action Control Buttons -->
+        <div class="flex flex-col sm:flex-row items-center gap-2 pt-2 border-t border-[rgba(15,0,0,0.08)]">
+          ${
+            modal.itemId === 'item_exp_pack'
+              ? `
+                <button
+                  type="button"
+                  data-action="view-my-deck-after-purchase"
+                  class="w-full sm:flex-1 py-3 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] font-black text-xs rounded-sm min-h-[44px] cursor-pointer flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  🃏 ${tr('마이덱에서 영웅 확인', 'View Heroes in My Deck', 'マイデッキで英雄を確認')}
+                </button>
+              `
+              : modal.itemId === 'item_novel_pass'
+              ? `
+                <a
+                  href="#book"
+                  data-nav="book"
+                  data-action="close-item-purchase-modal"
+                  class="w-full sm:flex-1 py-3 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] font-black text-xs rounded-sm min-h-[44px] cursor-pointer flex items-center justify-center gap-1.5 transition-colors no-underline text-center"
+                >
+                  📖 ${tr('웹소설 1화 보러 가기', 'Read Web Novel Ep.1', 'Web小説第1話へ')}
+                </a>
+              `
+              : `
+                <a
+                  href="/cinema"
+                  target="_blank"
+                  class="w-full sm:flex-1 py-3 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] font-black text-xs rounded-sm min-h-[44px] cursor-pointer flex items-center justify-center gap-1.5 transition-colors no-underline text-center"
+                >
+                  🎬 ${tr('극장판 시네마 감상하기', 'Watch Anime Cinema', '劇場版シネマを鑑賞')}
+                </a>
+              `
+          }
+          <button
+            type="button"
+            data-action="close-item-purchase-modal"
+            class="w-full sm:w-auto px-4 py-3 bg-[#f1eeee] hover:bg-[#e8e5e5] text-[#201d1d] border border-[rgba(15,0,0,0.12)] font-bold text-xs rounded-sm min-h-[44px] cursor-pointer transition-colors"
+          >
+            ${tr('계속 쇼핑하기', 'Continue Shopping', '買い物を続ける')}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 export function renderCoinChargeModal(): string {
   if (!isCoinChargeModalOpen) return '';
 
@@ -1253,6 +1411,17 @@ export function renderCoinChargeModal(): string {
           </div>
           <button type="button" data-action="close-coin-charge-modal" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
         </div>
+
+        ${
+          coinDeficitNotice
+            ? `
+              <div class="p-3 bg-amber-50 border border-amber-400 text-amber-900 text-xs font-bold rounded-sm flex items-start justify-between gap-2">
+                <span>⚠️ ${coinDeficitNotice}</span>
+                <button type="button" data-action="clear-coin-deficit-notice" class="text-amber-700 hover:text-black font-bold text-xs p-0.5">[x]</button>
+              </div>
+            `
+            : ''
+        }
 
         ${
           coinChargeStep === 'package'
@@ -1722,7 +1891,14 @@ export function renderPackRevealModal(): string {
       <div class="relative z-10 bg-[#fdfcfc] text-[#201d1d] border-2 border-stone-800 rounded-none max-w-4xl w-full p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl my-auto">
         
         <!-- Header -->
-        <div class="text-center space-y-2">
+        <div class="relative text-center space-y-2 pb-2 border-b border-[rgba(15,0,0,0.08)]">
+          <button
+            type="button"
+            data-action="close-pack-reveal"
+            class="absolute top-0 right-0 text-stone-500 hover:text-black font-bold p-1 cursor-pointer text-sm"
+            aria-label="${tr('닫기', 'Close', '閉じる')}"
+          >[x]</button>
+
           <div class="flex items-center justify-center gap-2">
             <span class="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] rounded-sm">
               ${tr('5연속 영웅 소환', '5-Hero Summon', '5連英雄召喚')}
@@ -1868,12 +2044,221 @@ export function renderPackRevealModal(): string {
             data-action="confirm-pack-reveal"
             class="w-full sm:flex-1 py-3 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] font-black text-xs rounded-sm min-h-[44px] cursor-pointer flex items-center justify-center gap-1.5 transition-colors"
           >
-            ✓ ${tr('확인 및 마이덱 보관함으로 이동', 'Confirm & View My Deck', '確認してマイデッキへ')}
+            ✓ ${tr('확인 및 마이덱 보관함으로 이동 →', 'Confirm & View My Deck →', '確認してマイデッキへ →')}
+          </button>
+          <button
+            type="button"
+            data-action="close-pack-reveal"
+            class="w-full sm:w-auto px-4 py-3 bg-[#f1eeee] hover:bg-[#e8e5e5] text-[#201d1d] border border-[rgba(15,0,0,0.12)] font-bold text-xs rounded-sm min-h-[44px] cursor-pointer transition-colors"
+          >
+            ${tr('상점에 머물기', 'Stay in Shop', 'ショップに残る')}
           </button>
         </div>
 
       </div>
     </div>
+  `;
+}
+
+// ============================================================================
+// Category Section Metadata & Product Card Renderer
+// ============================================================================
+
+export interface ShopCategorySectionMeta {
+  key: ShopCategoryTab;
+  titleKo: string;
+  titleEn: string;
+  titleJa: string;
+  badgeKo: string;
+  badgeEn: string;
+  badgeJa: string;
+  descKo: string;
+  descEn: string;
+  descJa: string;
+  icon: string;
+}
+
+export const SHOP_CATEGORY_SECTIONS: ShopCategorySectionMeta[] = [
+  {
+    key: 'PACK',
+    titleKo: '영웅 카드팩 소환 (Hero Card Packs)',
+    titleEn: 'Hero Card Packs Summon',
+    titleJa: '英雄カードパック召喚',
+    badgeKo: 'GACHA PACKS',
+    badgeEn: 'GACHA PACKS',
+    badgeJa: 'ガチャパック',
+    descKo: '덱 편성을 위한 5대 종족 영웅 3~5장 소환 의식 · 실버/골드/전설 SSR 확정 보장',
+    descEn: 'Summon 3–5 heroes from 5 factions to build your deck · Silver/Gold/SSR guaranteed.',
+    descJa: 'デッキ編成用の5種族英雄3〜5枚召喚の儀式・シルバー/ゴールド/SSR確定保証',
+    icon: '🎴',
+  },
+  {
+    key: 'ITEM',
+    titleKo: '육성 아이템 & 콘텐츠 특전 (Growth Items & Passes)',
+    titleEn: 'Growth Items & Exclusive Passes',
+    titleJa: '育成アイテム＆コンテンツ特典',
+    badgeKo: 'ITEMS & PASSES',
+    badgeEn: 'ITEMS & PASSES',
+    badgeJa: 'アイテム＆パス',
+    descKo: '영웅 즉시 레벨업 경험치 영약, 110화 웹소설 전편 열람권 및 광고 영구 제거 혜택',
+    descEn: 'Hero instant level-up EXP elixirs, all 110 web novel chapters pass, and permanent ad removal.',
+    descJa: '英雄即時レベルアップ経験値霊薬、全110話Web小説パス、広告永久解除特典',
+    icon: '🧪',
+  },
+  {
+    key: 'COIN',
+    titleKo: 'SNS 코인 충전소 (SNS Coin Packages)',
+    titleEn: 'SNS Coin Top-Up Station',
+    titleJa: 'SNSコインチャージ所',
+    badgeKo: 'COIN RECHARGE',
+    badgeEn: 'COIN RECHARGE',
+    badgeJa: 'コインチャージ',
+    descKo: '국내 카드/카카오·네이버페이 및 Web3 글로벌 암호화폐(USDT, SOL, BTC) 즉시 충전',
+    descEn: 'Credit cards, Kakao/Naver Pay, and Web3 crypto (USDT, SOL, BTC) instant recharge.',
+    descJa: 'クレジットカード、Kakao/Naver Pay、Web3暗号資産（USDT、SOL、BTC）即時チャージ',
+    icon: '💎',
+  },
+];
+
+function renderShopProductCard(rawItem: ShopCardProduct, userCoins: number): string {
+  const item = getLocalizedShopProduct(rawItem);
+  const isCoin = item.category === 'COIN';
+  const isAdRemoval = item.id === 'item_ad_removal';
+  const isCoinPack = !isCoin && !isAdRemoval;
+  const isAffordable = !isCoinPack || userCoins >= item.priceCoins;
+  const packageId = isAdRemoval ? 'pkg_ad_removal' : item.id.replace('coin_charge_', 'coin_');
+
+  const badgeColorClass =
+    item.category === 'PACK'
+      ? 'bg-amber-100 text-amber-900 border border-amber-300'
+      : item.category === 'ITEM'
+      ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+      : 'bg-sky-100 text-sky-900 border border-sky-300';
+
+  const categoryIcon = item.category === 'PACK' ? '🎴' : item.category === 'ITEM' ? '🧪' : '💎';
+
+  return `
+    <div class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-5 sm:p-6 rounded-none flex flex-col justify-between space-y-4 hover:border-[#201d1d] hover:shadow-md transition-all">
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] text-stone-500 uppercase font-bold tracking-wider">
+            ${item.category}
+          </span>
+          <span class="px-2 py-0.5 text-[10px] font-bold rounded-sm ${badgeColorClass}">
+            ${item.badge}
+          </span>
+        </div>
+
+        <h3 class="text-base font-bold text-[#201d1d] m-0 flex items-center gap-1.5">
+          <span>${categoryIcon}</span>
+          <span>${item.name}</span>
+        </h3>
+
+        <p class="text-xs text-stone-600 leading-relaxed m-0 min-h-[36px]">
+          ${item.description}
+        </p>
+
+        <div class="text-[11px] text-stone-500 pt-1 border-t border-[rgba(15,0,0,0.06)] font-mono">
+          ✦ ${item.shortSpec}
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-[rgba(15,0,0,0.08)] space-y-3">
+        <div class="flex items-baseline justify-between">
+          <span class="text-xs text-stone-500">${tr('가격:', 'Price:', '価格:')}</span>
+          <span class="text-base font-black text-[#201d1d]">
+            ${item.priceText}
+          </span>
+        </div>
+
+        ${
+          isCoin
+            ? `
+              <button
+                type="button"
+                data-action="open-coin-charge-modal"
+                data-package-id="${packageId}"
+                class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center shadow-none cursor-pointer transition-colors"
+              >
+                💎 ${item.actionText}
+              </button>
+            `
+            : isAdRemoval
+            ? `
+              <button
+                type="button"
+                data-action="open-coin-charge-modal"
+                data-package-id="pkg_ad_removal"
+                class="w-full py-2.5 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center shadow-none cursor-pointer transition-colors"
+              >
+                🛡️ ${item.actionText}
+              </button>
+            `
+            : isAffordable
+            ? `
+              <button
+                type="button"
+                data-action="buy-shop-item"
+                data-item-id="${item.id}"
+                class="w-full py-2.5 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center shadow-none cursor-pointer transition-colors"
+              >
+                ✨ ${item.actionText}
+              </button>
+            `
+            : `
+              <button
+                type="button"
+                data-action="open-coin-charge-modal"
+                data-package-id="coin_1000"
+                class="w-full py-2.5 bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center shadow-none cursor-pointer transition-colors"
+                title="${tr(`SNS 코인이 부족합니다 (부족: ${(item.priceCoins - userCoins).toLocaleString()} SNS)`, `Insufficient SNS coins (Need ${(item.priceCoins - userCoins).toLocaleString()} more)`, `SNSコイン不足 (不足: ${(item.priceCoins - userCoins).toLocaleString()} SNS)`)}"
+              >
+                ⚠️ ${tr('코인 충전 필요', 'Top-Up Needed', 'チャージが必要')} (${item.priceCoins.toLocaleString()} SNS)
+              </button>
+            `
+        }
+      </div>
+    </div>
+  `;
+}
+
+function renderShopCategorySectionBlock(
+  sectionMeta: ShopCategorySectionMeta,
+  products: ShopCardProduct[],
+  coins: number
+): string {
+  const title = tr(sectionMeta.titleKo, sectionMeta.titleEn, sectionMeta.titleJa);
+  const badge = tr(sectionMeta.badgeKo, sectionMeta.badgeEn, sectionMeta.badgeJa);
+  const desc = tr(sectionMeta.descKo, sectionMeta.descEn, sectionMeta.descJa);
+
+  return `
+    <section class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 sm:p-8 rounded-none shadow-none space-y-6 mb-8">
+      <!-- Section Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.08)] gap-3">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm tracking-wider uppercase">
+              <span>${sectionMeta.icon}</span>
+              <span>${badge}</span>
+            </span>
+            <span class="text-xs font-bold text-stone-500">
+              ${tr(`총 ${products.length}개 상품`, `${products.length} Products`, `全${products.length}商品`)}
+            </span>
+          </div>
+          <h2 class="text-lg sm:text-xl font-black text-[#201d1d] m-0">
+            ${title}
+          </h2>
+          <p class="text-xs sm:text-sm text-stone-600 m-0">
+            ${desc}
+          </p>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+        ${products.map((item) => renderShopProductCard(item, coins)).join('')}
+      </div>
+    </section>
   `;
 }
 
@@ -1886,18 +2271,18 @@ export function renderShopView(): string {
   const gold = getUserGold();
   const activeTab = currentCategoryTab;
 
-  const filteredProducts =
-    activeTab === 'ALL'
-      ? ALL_SHOP_PRODUCTS
-      : ALL_SHOP_PRODUCTS.filter((item) => item.category === activeTab);
+  const packProducts = ALL_SHOP_PRODUCTS.filter((item) => item.category === 'PACK');
+  const itemProducts = ALL_SHOP_PRODUCTS.filter((item) => item.category === 'ITEM');
+  const coinProducts = ALL_SHOP_PRODUCTS.filter((item) => item.category === 'COIN');
 
   const packModal = renderPackRevealModal();
   const coinChargeModal = renderCoinChargeModal();
+  const itemPurchaseModal = renderItemPurchaseSuccessModal();
 
   return `
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 font-mono text-[#201d1d] select-none">
       <!-- Top Shop Header & Balance Bar -->
-      <section class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 sm:p-8 rounded-none shadow-none space-y-6 mb-6">
+      <section class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 sm:p-8 rounded-none shadow-none space-y-6 mb-8">
         <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.08)] gap-4">
           <div>
             <div class="inline-flex items-center gap-2 px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm tracking-wider uppercase mb-2">
@@ -1910,9 +2295,9 @@ export function renderShopView(): string {
             </h1>
             <p class="text-xs sm:text-sm text-stone-600 mt-1 m-0">
               ${tr(
-                '카드팩 가챠, 육성 영약 아이템 및 SNS 코인을 충전하고 구매할 수 있습니다.',
-                'Summon hero card packs, purchase growth elixirs, and top up SNS coins.',
-                'カードパックガチャ、育成霊薬アイテムの購入およびSNSコインのチャージが可能です。'
+                '영웅 카드팩 가챠 소환, 성장 영약 & 특전 패스, 그리고 SNS 코인을 충전할 수 있습니다.',
+                'Summon hero card packs, purchase growth elixirs & passes, and recharge SNS coins.',
+                '英雄カードパックガチャ召喚、育成霊薬＆特典パス、そしてSNSコインをチャージできます。'
               )}
             </p>
           </div>
@@ -1947,15 +2332,24 @@ export function renderShopView(): string {
           </div>
         </div>
 
-        <!-- Category Tab Bar (4대 카테고리: 전체, 카드팩, 아이템, 코인충전) -->
+        <!-- Category Tab Bar (전체 / 카드팩 / 아이템 / 코인충전) with Count Badges -->
         <div class="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[rgba(15,0,0,0.08)]">
-          ${SHOP_CATEGORY_TABS.map(
-            (tab) => `
+          ${SHOP_CATEGORY_TABS.map((tab) => {
+            const count =
+              tab.key === 'ALL'
+                ? ALL_SHOP_PRODUCTS.length
+                : tab.key === 'PACK'
+                ? packProducts.length
+                : tab.key === 'ITEM'
+                ? itemProducts.length
+                : coinProducts.length;
+
+            return `
             <button
               type="button"
               data-action="switch-shop-tab"
               data-tab="${tab.key}"
-              class="px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-wider min-h-[44px] cursor-pointer whitespace-nowrap flex items-center gap-1.5 transition-colors ${
+              class="px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-wider min-h-[44px] cursor-pointer whitespace-nowrap flex items-center gap-2 transition-colors ${
                 tab.key === activeTab
                   ? 'bg-[#201d1d] text-[#fdfcfc] border border-[#201d1d]'
                   : 'bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
@@ -1963,79 +2357,34 @@ export function renderShopView(): string {
             >
               <span>${tab.icon}</span>
               <span>${getLocalizedShopTabLabel(tab.key)}</span>
+              <span class="px-1.5 py-0.2 text-[10px] rounded-sm font-black ${
+                tab.key === activeTab ? 'bg-white/20 text-white' : 'bg-stone-200 text-stone-700'
+              }">${count}</span>
             </button>
-          `
-          ).join('')}
+          `;
+          }).join('')}
         </div>
       </section>
 
-      <!-- Products Grid -->
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-        ${filteredProducts
-          .map((rawItem) => {
-            const item = getLocalizedShopProduct(rawItem);
-            const isCoin = item.category === 'COIN';
-
-            return `
-            <div class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-5 sm:p-6 rounded-none flex flex-col justify-between space-y-4 hover:border-[#201d1d] transition-colors">
-              <div class="space-y-2.5">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] text-stone-500 uppercase font-bold tracking-wider">
-                    ${item.category}
-                  </span>
-                  <span class="px-2 py-0.5 bg-[#f1eeee] text-[#201d1d] text-[10px] font-bold rounded-sm">
-                    ${item.badge}
-                  </span>
-                </div>
-
-                <h3 class="text-base font-bold text-[#201d1d] m-0">
-                  ${item.name}
-                </h3>
-
-                <p class="text-xs text-stone-600 leading-relaxed m-0">
-                  ${item.description}
-                </p>
-
-                <div class="text-[11px] text-stone-500">
-                  ${item.shortSpec}
-                </div>
-              </div>
-
-              <div class="pt-4 border-t border-[rgba(15,0,0,0.08)] space-y-3">
-                <div class="flex items-baseline justify-between">
-                  <span class="text-xs text-stone-500">${tr('가격:', 'Price:', '価格:')}</span>
-                  <span class="text-base font-black text-[#201d1d]">
-                    ${item.priceText}
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  data-action="${
-                    isCoin
-                      ? 'open-coin-charge-modal'
-                      : 'buy-shop-item'
-                  }"
-                  data-item-id="${item.id}"
-                  data-package-id="${item.id.replace('coin_charge_', 'coin_')}"
-                  class="w-full py-2.5 ${
-                    isCoin
-                      ? 'bg-amber-600 hover:bg-amber-700 text-white'
-                      : 'bg-[#201d1d] hover:opacity-90 text-[#fdfcfc]'
-                  } text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center shadow-none cursor-pointer transition-colors"
-                >
-                  ${item.actionText}
-                </button>
-              </div>
-            </div>
-          `;
-          })
-          .join('')}
-      </section>
+      <!-- Category Sections Content -->
+      ${
+        activeTab === 'ALL'
+          ? `
+            ${renderShopCategorySectionBlock(SHOP_CATEGORY_SECTIONS[0], packProducts, coins)}
+            ${renderShopCategorySectionBlock(SHOP_CATEGORY_SECTIONS[1], itemProducts, coins)}
+            ${renderShopCategorySectionBlock(SHOP_CATEGORY_SECTIONS[2], coinProducts, coins)}
+          `
+          : activeTab === 'PACK'
+          ? renderShopCategorySectionBlock(SHOP_CATEGORY_SECTIONS[0], packProducts, coins)
+          : activeTab === 'ITEM'
+          ? renderShopCategorySectionBlock(SHOP_CATEGORY_SECTIONS[1], itemProducts, coins)
+          : renderShopCategorySectionBlock(SHOP_CATEGORY_SECTIONS[2], coinProducts, coins)
+      }
 
       <!-- Active Modals -->
       ${packModal}
       ${coinChargeModal}
+      ${itemPurchaseModal}
     </div>
   `;
 }

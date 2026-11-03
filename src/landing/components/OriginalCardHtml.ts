@@ -291,3 +291,158 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
     </div>
   `;
 }
+
+export interface BattleBoardSlotCardOptions {
+  cardId: number;
+  stats: [number, number, number, number]; // [top, right, bottom, left]
+  owner: 'player' | 'opponent';
+  isJustPlaced?: boolean;
+  isFlipped?: boolean;
+  className?: string;
+}
+
+/**
+ * Render an authentic 3x3 Battle Board Card with exact aspect-[5/7] ratio,
+ * matching original TCG card visuals (faction surfaces, rarity borders, metallic brackets, compass HUD).
+ */
+export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): string {
+  const { cardId, stats, owner, isJustPlaced, isFlipped, className } = options;
+  const asset = getCharacterAsset(cardId);
+  const [top, right, bottom, left] = stats;
+  const totalTP = top + right + bottom + left;
+
+  const faction = (asset.faction || 'human').toLowerCase();
+  const factionTheme = FACTION_SURFACES[faction] || FACTION_SURFACES.human;
+  const rarity = (asset.rarity || 'bronze').toLowerCase();
+  const rarityTheme = RARITY_THEMES[rarity] || RARITY_THEMES.bronze;
+
+  const isPlayer = owner === 'player';
+  const ownerRingClass = isPlayer
+    ? 'ring-2 ring-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.5)]'
+    : 'ring-2 ring-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.5)]';
+
+  const animClass = isFlipped
+    ? 'animate-card-flip ring-4 ring-cyan-400 shadow-[0_0_24px_rgba(34,211,238,1)]'
+    : isJustPlaced
+    ? 'animate-card-place ring-2 ring-amber-400 shadow-[0_0_18px_rgba(251,191,36,0.9)]'
+    : '';
+
+  const statCircleClass = 'h-4 w-4 sm:h-5 sm:w-5 text-[8px] sm:text-[10px] border sm:border-2 font-black';
+
+  return `
+    <div
+      class="group/slot-card relative flex flex-col justify-between font-mono select-none rounded-xs border-2 w-full aspect-[5/7] p-1 sm:p-1.5 overflow-hidden transition-all ${ownerRingClass} ${animClass} ${className || ''}"
+      style="
+        background-color: ${factionTheme.bg};
+        border-color: ${rarityTheme.borderHex};
+      "
+      aria-label="${asset.nameKo} (${isPlayer ? 'P1' : 'AI'})"
+    >
+      <!-- Metallic Corner Bracket SVG (Authentic TCG Ornament) -->
+      <svg
+        viewBox="0 0 100 140"
+        preserveAspectRatio="none"
+        class="pointer-events-none absolute inset-0 z-10 h-full w-full"
+        aria-hidden="true"
+      >
+        <g stroke="${rarityTheme.borderHex}" stroke-width="1.8" fill="none">
+          <path d="M 2,12 L 2,2 L 12,2" />
+          <path d="M 88,2 L 98,2 L 98,12" />
+          <path d="M 2,128 L 2,138 L 12,138" />
+          <path d="M 88,138 L 98,138 L 98,128" />
+        </g>
+      </svg>
+
+      <!-- Central Flip! Flash Impact Overlay -->
+      ${
+        isFlipped
+          ? `
+            <div class="absolute inset-0 z-50 flex items-center justify-center pointer-events-none select-none">
+              <div class="px-2 py-0.5 bg-cyan-400 text-stone-950 border-2 border-white text-[10px] sm:text-xs font-black rounded-xs shadow-[0_0_20px_rgba(34,211,238,1)] animate-bounce tracking-wider uppercase rotate-[-6deg] whitespace-nowrap">
+                ⚡ Flip!
+              </div>
+            </div>
+          `
+          : isJustPlaced
+          ? `<span class="absolute top-0.5 left-1/2 -translate-x-1/2 z-40 px-1 py-0.2 bg-amber-400 text-stone-950 text-[7px] sm:text-[8px] font-black rounded-xs shadow-sm whitespace-nowrap border border-stone-900">PLACE</span>`
+          : ''
+      }
+
+      <!-- 4-Way Compass Diamond HUD (N, S, E, W) -->
+      <!-- North -->
+      <div
+        class="absolute top-0.5 sm:top-1 left-1/2 -translate-x-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
+        style="border-color: ${rarityTheme.statBadgeBorder};"
+        title="North: ${top}"
+      >
+        ${top}
+      </div>
+
+      <!-- South -->
+      <div
+        class="absolute bottom-0.5 sm:bottom-1 left-1/2 -translate-x-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
+        style="border-color: ${rarityTheme.statBadgeBorder};"
+        title="South: ${bottom}"
+      >
+        ${bottom}
+      </div>
+
+      <!-- West -->
+      <div
+        class="absolute left-0.5 sm:left-1 top-1/2 -translate-y-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
+        style="border-color: ${rarityTheme.statBadgeBorder};"
+        title="West: ${left}"
+      >
+        ${left}
+      </div>
+
+      <!-- East -->
+      <div
+        class="absolute right-0.5 sm:right-1 top-1/2 -translate-y-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
+        style="border-color: ${rarityTheme.statBadgeBorder};"
+        title="East: ${right}"
+      >
+        ${right}
+      </div>
+
+      <!-- 1. Header Bar: Owner Badge & Rarity -->
+      <div class="relative z-20 flex items-center justify-between w-full pb-0.5 border-b border-black/15 text-[8px] sm:text-[9px] leading-none gap-0.5">
+        <span class="px-1 py-0.2 rounded-xs font-black uppercase tracking-tight ${
+          isPlayer ? 'bg-sky-500 text-slate-950' : 'bg-rose-500 text-white'
+        }">
+          ${isPlayer ? 'P1' : 'AI'}
+        </span>
+        <!-- Spacer for North Stat Badge -->
+        <div class="w-4 shrink-0 pointer-events-none"></div>
+        <span
+          class="px-1 py-0.2 rounded-xs font-black uppercase text-[7px] sm:text-[8px] tracking-tight"
+          style="background-color: ${rarityTheme.badgeBg}; color: ${rarityTheme.badgeText};"
+        >
+          ${rarity.slice(0, 1).toUpperCase()}
+        </span>
+      </div>
+
+      <!-- 2. Central Illustration Window -->
+      <div
+        class="relative z-10 w-full flex-1 my-0.5 overflow-hidden border border-black/20 rounded-xs flex items-center justify-center"
+        style="background-color: ${factionTheme.windowBg};"
+      >
+        <img
+          src="${asset.bustPngUrl}?v=20261103v4"
+          alt="${asset.nameKo}"
+          class="max-w-full max-h-full object-contain filter drop-shadow-none"
+          loading="eager"
+          onerror="this.src='${asset.seatUrl}'; this.onerror=null;"
+        />
+      </div>
+
+      <!-- 3. Footer Bar: Character Name -->
+      <div class="relative z-20 w-full pt-0.5 border-t border-black/15 flex items-center justify-between text-[8px] sm:text-[9px] leading-tight">
+        <span class="font-black text-[#201d1d] truncate" title="${asset.nameKo}">${asset.nameKo}</span>
+        <!-- Spacer for South Stat Badge -->
+        <div class="w-4 shrink-0 pointer-events-none"></div>
+        <span class="font-bold text-amber-700 text-[8px]">⚡${totalTP}</span>
+      </div>
+    </div>
+  `;
+}

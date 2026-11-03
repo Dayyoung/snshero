@@ -47,7 +47,7 @@ import {
   FACTION_PALETTES,
 } from '../services/assetCatalog';
 import { cardNurtureStore } from '../services/cardNurtureStore';
-import { renderOriginalCardHtml } from '../components/OriginalCardHtml';
+import { renderOriginalCardHtml, renderBattleBoardCardHtml } from '../components/OriginalCardHtml';
 import { getCurrentLanguage, isKoreanLanguage, t, tr } from '../services/i18n';
 import {
   playRpgState,
@@ -1199,8 +1199,8 @@ function renderAdventureView(): string {
                   </div>
                 </div>
 
-                <!-- 3x3 Battle Field Board (중앙에 큼직하고 시원하게) -->
-                <div class="grid grid-cols-3 gap-1.5 sm:gap-2.5 w-full max-w-[270px] sm:max-w-[340px] md:max-w-[380px] mx-auto aspect-square select-none p-1.5 sm:p-2.5 bg-[#0c1220] border-2 border-amber-400/60 shadow-2xl">
+                <!-- 3x3 Battle Field Board (고정 aspect-[5/7] 슬롯으로 카드 배치 전후 높이 100% 동일 유지) -->
+                <div class="grid grid-cols-3 gap-1.5 sm:gap-2.5 w-full max-w-[285px] sm:max-w-[360px] md:max-w-[400px] mx-auto select-none p-1.5 sm:p-2.5 bg-[#0c1220] border-2 border-amber-400/60 shadow-2xl rounded-none">
                   ${playRpgState.battleBoard
                     .map((slot, sIdx) => {
                       if (!slot) {
@@ -1209,93 +1209,46 @@ function renderAdventureView(): string {
                           <button
                             type="button"
                             ${isOpponentTurn ? 'disabled' : `data-action="play-battle-slot" data-slot="${sIdx}"`}
-                            class="w-full h-full border ${
+                            class="relative w-full aspect-[5/7] border-2 border-dashed ${
                               isOpponentTurn
-                                ? 'border-dashed border-stone-700 bg-black/50 text-stone-600 cursor-wait'
-                                : 'border-dashed border-white/25 bg-white/5 hover:bg-white/15 text-stone-400 cursor-pointer active:translate-y-px hover:border-amber-400/70'
-                            } rounded-none flex flex-col items-center justify-center text-xs font-bold min-h-[44px] transition-colors select-none"
+                                ? 'border-stone-700/60 bg-stone-900/40 text-stone-600 cursor-wait'
+                                : 'border-amber-400/40 hover:border-amber-300 bg-[#0e1628]/60 hover:bg-[#131f38] text-amber-300 cursor-pointer active:scale-98'
+                            } rounded-xs flex flex-col items-center justify-between p-1.5 sm:p-2 transition-all select-none shadow-sm"
                             aria-label="${tr(`슬롯 ${sIdx + 1} 배치`, `Place in Slot ${sIdx + 1}`, `スロット${sIdx + 1}に配置`)}"
                           >
-                            <span class="text-[10px] ${isOpponentTurn ? 'text-stone-700' : 'text-stone-500'}">${sIdx + 1}</span>
-                            <span class="${isOpponentTurn ? 'text-stone-600' : 'text-amber-400'} text-[11px] font-black">
-                              ${isOpponentTurn ? tr('[대기...]', '[WAIT...]', '[待機中...]') : tr('[배치]', '[PLACE]', '[配置]')}
-                            </span>
+                            <!-- Slot Header -->
+                            <div class="w-full flex items-center justify-between text-[9px] sm:text-[10px] font-mono ${isOpponentTurn ? 'text-stone-600' : 'text-stone-400/80'}">
+                              <span>#${sIdx + 1}</span>
+                              <span class="${isOpponentTurn ? 'text-stone-700' : 'text-amber-400/60'}">✦</span>
+                            </div>
+
+                            <!-- Center Target / Seal Cue -->
+                            <div class="flex flex-col items-center justify-center gap-1 my-auto">
+                              <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border ${
+                                isOpponentTurn ? 'border-stone-700 bg-black/40 text-stone-600' : 'border-amber-400/40 bg-black/50 text-amber-400'
+                              } flex items-center justify-center text-xs sm:text-sm font-black">
+                                ${isOpponentTurn ? '⏳' : '+'}
+                              </div>
+                              <span class="text-[10px] sm:text-[11px] font-black tracking-wider ${isOpponentTurn ? 'text-stone-600' : 'text-amber-400'}">
+                                ${isOpponentTurn ? tr('대기...', 'WAIT', '待機...') : tr('[배치]', '[PLACE]', '[配置]')}
+                              </span>
+                            </div>
+
+                            <!-- Footer Cue -->
+                            <div class="text-[8px] sm:text-[9px] font-mono truncate ${isOpponentTurn ? 'text-stone-700' : 'text-stone-400/60'}">
+                              ${isOpponentTurn ? 'AI TURN' : 'TAP HERE'}
+                            </div>
                           </button>
                         `;
                       }
 
-                      const isPlayer = slot.owner === 'player';
-                      const [top, right, bottom, left] = slot.stats;
-                      const slotAsset = getCharacterAsset(slot.cardId);
-                      const isJustPlaced = playRpgState.lastPlacedSlot === sIdx;
-                      const isFlipped = playRpgState.flippedSlots?.includes(sIdx);
-
-                      return `
-                        <div class="relative w-full h-full border-2 ${
-                          isPlayer ? 'border-sky-400 bg-sky-950/90 text-sky-100' : 'border-rose-500 bg-rose-950/90 text-rose-100'
-                        } ${
-                          isFlipped
-                            ? 'animate-card-flip ring-2 ring-cyan-400 shadow-[0_0_24px_rgba(34,211,238,1)]'
-                            : isJustPlaced
-                            ? 'animate-card-place ring-2 ring-amber-400 shadow-[0_0_18px_rgba(251,191,36,0.9)]'
-                            : ''
-                        } rounded-none p-1 flex flex-col justify-between overflow-hidden shadow-none transition-all">
-                          <!-- Central Flip! Flash Impact Overlay (Centered in Card) -->
-                          ${
-                            isFlipped
-                              ? `
-                                <div class="absolute inset-0 z-40 flex items-center justify-center pointer-events-none select-none">
-                                  <div class="px-2.5 sm:px-3 py-1 bg-cyan-400 text-stone-950 border-2 border-white text-xs sm:text-sm font-black rounded-xs shadow-[0_0_25px_rgba(34,211,238,1)] animate-bounce tracking-wider uppercase rotate-[-6deg] whitespace-nowrap">
-                                    ⚡ Flip!
-                                  </div>
-                                </div>
-                              `
-                              : isJustPlaced
-                              ? `<span class="absolute top-0.5 left-1/2 -translate-x-1/2 z-30 px-1.5 py-0.2 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs shadow-sm whitespace-nowrap border border-stone-900">PLACE</span>`
-                              : ''
-                          }
-                          <!-- Character Bust Background Art -->
-                          <div class="absolute inset-0 z-0 flex items-center justify-center p-1 opacity-95 pointer-events-none">
-                            <img
-                              src="${slotAsset.bustPngUrl}?v=20261103v4"
-                              alt="${slotAsset.nameKo}"
-                              class="w-full h-full object-contain"
-                              onerror="this.src='${slotAsset.seatUrl}'; this.onerror=null;"
-                            />
-                          </div>
-
-                          <!-- 4-Way Compass Diamond HUD (Placed at Card Outer Edges: North, South, East, West) -->
-                          <!-- North (Top Edge) -->
-                          <div class="absolute top-0.5 sm:top-1 left-1/2 -translate-x-1/2 z-20 min-w-[18px] sm:min-w-[20px] h-[18px] sm:h-[20px] px-1 bg-black/85 border border-white/60 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center rounded-xs shadow-md">
-                            ${top}
-                          </div>
-
-                          <!-- South (Bottom Edge) -->
-                          <div class="absolute bottom-0.5 sm:bottom-1 left-1/2 -translate-x-1/2 z-20 min-w-[18px] sm:min-w-[20px] h-[18px] sm:h-[20px] px-1 bg-amber-400 border border-stone-900 text-stone-950 text-[9px] sm:text-[10px] font-black flex items-center justify-center rounded-xs shadow-md">
-                            ${bottom}
-                          </div>
-
-                          <!-- West (Left Edge) -->
-                          <div class="absolute left-0.5 sm:left-1 top-1/2 -translate-y-1/2 z-20 min-w-[18px] sm:min-w-[20px] h-[18px] sm:h-[20px] px-1 bg-black/85 border border-white/60 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center rounded-xs shadow-md">
-                            ${left}
-                          </div>
-
-                          <!-- East (Right Edge) -->
-                          <div class="absolute right-0.5 sm:right-1 top-1/2 -translate-y-1/2 z-20 min-w-[18px] sm:min-w-[20px] h-[18px] sm:h-[20px] px-1 bg-black/85 border border-white/60 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center rounded-xs shadow-md">
-                            ${right}
-                          </div>
-
-                          <!-- Owner Badge (Top Left Corner) -->
-                          <span class="absolute top-0.5 left-0.5 z-20 px-1 py-0.5 text-[8px] sm:text-[9px] font-black rounded-xs shadow-sm ${
-                            isPlayer ? 'bg-sky-500 text-slate-950' : 'bg-rose-500 text-white'
-                          }">${isPlayer ? 'P1' : 'AI'}</span>
-
-                          <!-- Card Name (Bottom Subtle Overlay) -->
-                          <div class="relative z-10 w-full mt-auto flex items-center justify-start bg-black/75 px-1 py-0.5">
-                            <span class="text-[8px] sm:text-[9px] font-bold text-white truncate max-w-[65%]">${slotAsset.nameKo}</span>
-                          </div>
-                        </div>
-                      `;
+                      return renderBattleBoardCardHtml({
+                        cardId: slot.cardId,
+                        stats: slot.stats,
+                        owner: slot.owner,
+                        isJustPlaced: playRpgState.lastPlacedSlot === sIdx,
+                        isFlipped: playRpgState.flippedSlots?.includes(sIdx),
+                      });
                     })
                     .join('')}
                 </div>

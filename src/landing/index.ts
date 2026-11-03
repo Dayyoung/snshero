@@ -72,6 +72,8 @@ import {
   flipAllPackCards,
   startAutoRevealTimer,
   stopAutoRevealTimer,
+  closeItemPurchaseModal,
+  clearCoinDeficitNotice,
 } from './views/ShopSection';
 import {
   renderMallView,
@@ -324,6 +326,17 @@ export function handleEventDelegation(event: Event): void {
     renderApp();
     return;
   }
+  if (rawTarget.id === 'pack-reveal-modal') {
+    stopAutoRevealTimer();
+    clearPackReveal();
+    renderApp();
+    return;
+  }
+  if (rawTarget.id === 'item-purchase-success-modal') {
+    closeItemPurchaseModal();
+    renderApp();
+    return;
+  }
   if (
     rawTarget.id === 'mall-detail-modal' ||
     rawTarget.id === 'mall-shipping-modal' ||
@@ -526,9 +539,22 @@ export function handleEventDelegation(event: Event): void {
     stopAutoRevealTimer();
     flipAllPackCards();
     renderApp();
-  } else if (action === 'close-pack-reveal' || action === 'confirm-pack-reveal') {
+  } else if (action === 'confirm-pack-reveal') {
     stopAutoRevealTimer();
     clearPackReveal();
+    navigateTo('deck');
+  } else if (action === 'close-pack-reveal') {
+    stopAutoRevealTimer();
+    clearPackReveal();
+    renderApp();
+  } else if (action === 'close-item-purchase-modal') {
+    closeItemPurchaseModal();
+    renderApp();
+  } else if (action === 'view-my-deck-after-purchase') {
+    closeItemPurchaseModal();
+    navigateTo('deck');
+  } else if (action === 'clear-coin-deficit-notice') {
+    clearCoinDeficitNotice();
     renderApp();
   }
   // ── Mall (공식 굿즈 몰) Actions ──────────────────────────────────────────
