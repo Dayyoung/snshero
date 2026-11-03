@@ -713,8 +713,17 @@
     <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
     <link rel="dns-prefetch" href="https://unpkg.com" />
 
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6937094123258335" crossorigin="anonymous"></script>
+    <!-- Google AdSense: Strict Containment (Disables screen-obstructing auto overlays/anchors/vignettes) -->
+    <script>
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.requestNonPersonalizedAds = 1;
+      window.adsbygoogle.push({
+        google_ad_client: "ca-pub-6937094123258335",
+        enable_page_level_ads: false,
+        overlays: { bottom: false, top: false }
+      });
+    </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6937094123258335" crossorigin="anonymous" data-overlays="bottom:false,top:false"></script>
     <!-- Static Landing Stylesheet -->
     <link rel="stylesheet" href="/src/landing/styles/landing.css" />
     <style>

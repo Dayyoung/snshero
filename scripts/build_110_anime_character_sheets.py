@@ -1049,165 +1049,176 @@ def main() -> None:
 
     anime_cutouts: dict[int, Image.Image] = {}
 
-    # 1. Extract all 5-character new high-res sheets via DP seam carving!
-    five_char_batches = [
-        ("anime_01a_water_1793137794792.jpg", 1, 768),
-        ("anime_01b_water_1793137814797.jpg", 6, 768),
-        ("anime_02a_fire_1793137834796.jpg", 11, 696),   # strip bottom text labels cleanly
-        ("anime_03a_wind_1793137800297.jpg", 21, 768),
-        ("anime_03b_wind_1793137822066.jpg", 26, 768),
-        ("anime_05a_human_clean_1793137812223.jpg", 41, 768),
-        ("anime_05b_human_1793137831091.jpg", 46, 704),  # strip bottom text labels cleanly
-        ("anime_07a_elf_1793137801713.jpg", 61, 768),
-        ("anime_07b_elf_1793137821573.jpg", 66, 768),
-        ("anime_09a_monster_1793137798455.jpg", 81, 768),
-        ("anime_09b_monster_1793137818251.jpg", 86, 768),
-        ("anime_10a_mecha_1793137836093.jpg", 91, 768),
-    ]
+    existing_cutouts = {
+        cid: CUTOUT_DIR / f"{cid:03d}_{cards[cid]['seat_filename'].replace('.png', '')}.png"
+        for cid in range(1, 111)
+    }
+    loaded_from_existing_cutouts = False
+    if all(p.exists() for p in existing_cutouts.values()):
+        for cid, p in existing_cutouts.items():
+            anime_cutouts[cid] = Image.open(p).convert("RGBA")
+        loaded_from_existing_cutouts = True
+        print("Loaded all 110 canonical anime_cutouts directly from public/anime-character-sheets/cutouts/!")
+    else:
+        # 1. Extract all 5-character new high-res sheets via DP seam carving!
+        five_char_batches = [
+            ("anime_01a_water_1793137794792.jpg", 1, 768),
+            ("anime_01b_water_1793137814797.jpg", 6, 768),
+            ("anime_02a_fire_1793137834796.jpg", 11, 696),   # strip bottom text labels cleanly
+            ("anime_03a_wind_1793137800297.jpg", 21, 768),
+            ("anime_03b_wind_1793137822066.jpg", 26, 768),
+            ("anime_05a_human_clean_1793137812223.jpg", 41, 768),
+            ("anime_05b_human_1793137831091.jpg", 46, 704),  # strip bottom text labels cleanly
+            ("anime_07a_elf_1793137801713.jpg", 61, 768),
+            ("anime_07b_elf_1793137821573.jpg", 66, 768),
+            ("anime_09a_monster_1793137798455.jpg", 81, 768),
+            ("anime_09b_monster_1793137818251.jpg", 86, 768),
+            ("anime_10a_mecha_1793137836093.jpg", 91, 768),
+        ]
 
-    for fname, start_cid, ymax in five_char_batches:
-        raw = Image.open(BRAIN_DIR / fname).convert("RGB").crop((0, 0, 1376, ymax))
-        rgba = remove_white_bg_clean(raw)
-        sw = [(288, 376), None, None, None] if start_cid == 46 else None
-        cuts = split_row_by_dp_seams(rgba, num_chars=5, seam_windows=sw)
-        for i, cut in enumerate(cuts):
-            anime_cutouts[start_cid + i] = cut
-        print(f"Segmented {fname} -> IDs {start_cid:03d}..{start_cid+4:03d}")
+        for fname, start_cid, ymax in five_char_batches:
+            raw = Image.open(BRAIN_DIR / fname).convert("RGB").crop((0, 0, 1376, ymax))
+            rgba = remove_white_bg_clean(raw)
+            sw = [(288, 376), None, None, None] if start_cid == 46 else None
+            cuts = split_row_by_dp_seams(rgba, num_chars=5, seam_windows=sw)
+            for i, cut in enumerate(cuts):
+                anime_cutouts[start_cid + i] = cut
+            print(f"Segmented {fname} -> IDs {start_cid:03d}..{start_cid+4:03d}")
 
-    # 2. Fire B (IDs 16..20) from sheet_02_fire_fixed_1793100244611.jpg (10-char sheet -> take indices 5..9)
-    fire10_rgb = Image.open(BRAIN_DIR / "sheet_02_fire_fixed_1793100244611.jpg").convert("RGB")
-    fire10_rgba = remove_white_bg_clean(fire10_rgb)
-    fire10_cuts = split_row_by_dp_seams(
-        fire10_rgba,
-        num_chars=10,
-        approx_centers=[88, 222, 368, 505, 628, 760, 902, 1045, 1175, 1300],
-        seam_windows=[
-            None,
-            None,
-            None,
-            None,
-            (668, 725),
-            (798, 868),
-            (942, 1018),
-            (1082, 1158),
-            (1198, 1258),
-        ],
-    )
-    for i in range(5, 10):
-        cid_f = 11 + i
-        anime_cutouts[cid_f] = clean_cutout_specks(fire10_cuts[i], keep_only_main=(cid_f in (18, 19)))
-    print("Segmented Fire B -> IDs 016..020")
+        # 2. Fire B (IDs 16..20) from sheet_02_fire_fixed_1793100244611.jpg (10-char sheet -> take indices 5..9)
+        fire10_rgb = Image.open(BRAIN_DIR / "sheet_02_fire_fixed_1793100244611.jpg").convert("RGB")
+        fire10_rgba = remove_white_bg_clean(fire10_rgb)
+        fire10_cuts = split_row_by_dp_seams(
+            fire10_rgba,
+            num_chars=10,
+            approx_centers=[88, 222, 368, 505, 628, 760, 902, 1045, 1175, 1300],
+            seam_windows=[
+                None,
+                None,
+                None,
+                None,
+                (668, 725),
+                (798, 868),
+                (942, 1018),
+                (1082, 1158),
+                (1198, 1258),
+            ],
+        )
+        for i in range(5, 10):
+            cid_f = 11 + i
+            anime_cutouts[cid_f] = clean_cutout_specks(fire10_cuts[i], keep_only_main=(cid_f in (18, 19)))
+        print("Segmented Fire B -> IDs 016..020")
 
-    # 3. Earth (IDs 31..40) from sheet_04_earth_1793100291507.jpg
-    earth10_rgb = Image.open(BRAIN_DIR / "sheet_04_earth_1793100291507.jpg").convert("RGB")
-    earth10_rgba = remove_white_bg_clean(earth10_rgb)
-    earth10_cuts = split_row_by_dp_seams(
-        earth10_rgba,
-        num_chars=10,
-        approx_centers=[92, 232, 368, 502, 612, 742, 855, 995, 1125, 1285],
-        seam_windows=[
-            (118, 184),
-            (278, 336),
-            (422, 468),
-            (542, 584),
-            (648, 696),
-            (780, 836),
-            (882, 990),
-            (1010, 1088),
-            (1145, 1232),
-        ],
-    )
-    for i in range(10):
-        cid_e = 31 + i
-        anime_cutouts[cid_e] = clean_cutout_specks(earth10_cuts[i], keep_only_main=(cid_e in (32, 36)))
-    print("Segmented Earth -> IDs 031..040")
+        # 3. Earth (IDs 31..40) from sheet_04_earth_1793100291507.jpg
+        earth10_rgb = Image.open(BRAIN_DIR / "sheet_04_earth_1793100291507.jpg").convert("RGB")
+        earth10_rgba = remove_white_bg_clean(earth10_rgb)
+        earth10_cuts = split_row_by_dp_seams(
+            earth10_rgba,
+            num_chars=10,
+            approx_centers=[92, 232, 368, 502, 612, 742, 855, 995, 1125, 1285],
+            seam_windows=[
+                (118, 184),
+                (278, 336),
+                (422, 468),
+                (542, 584),
+                (648, 696),
+                (780, 836),
+                (882, 990),
+                (1010, 1088),
+                (1145, 1232),
+            ],
+        )
+        for i in range(10):
+            cid_e = 31 + i
+            anime_cutouts[cid_e] = clean_cutout_specks(earth10_cuts[i], keep_only_main=(cid_e in (32, 36)))
+        print("Segmented Earth -> IDs 031..040")
 
-    # 4. Undead (IDs 51..60) from 2-row high-res sheet_06_undead_1793100207910.jpg!
-    undead_rgb = Image.open(BRAIN_DIR / "sheet_06_undead_1793100207910.jpg").convert("RGB")
-    undead_rgba = remove_white_bg_clean(undead_rgb)
-    # Row 1 (y=0..386) has 6 figures: Walker(51), Ghoul(52), Carrion(53), Arachne(54), Patchwork(55), extra(skip)
-    u_top = undead_rgba.crop((0, 0, 1376, 386))
-    u_top_cuts = split_row_by_dp_seams(
-        u_top, num_chars=6, approx_centers=[115, 330, 545, 735, 985, 1245]
-    )
-    for i in range(5):
-        anime_cutouts[51 + i] = u_top_cuts[i]
+        # 4. Undead (IDs 51..60) from 2-row high-res sheet_06_undead_1793100207910.jpg!
+        undead_rgb = Image.open(BRAIN_DIR / "sheet_06_undead_1793100207910.jpg").convert("RGB")
+        undead_rgba = remove_white_bg_clean(undead_rgb)
+        # Row 1 (y=0..386) has 6 figures: Walker(51), Ghoul(52), Carrion(53), Arachne(54), Patchwork(55), extra(skip)
+        u_top = undead_rgba.crop((0, 0, 1376, 386))
+        u_top_cuts = split_row_by_dp_seams(
+            u_top, num_chars=6, approx_centers=[115, 330, 545, 735, 985, 1245]
+        )
+        for i in range(5):
+            anime_cutouts[51 + i] = u_top_cuts[i]
 
-    # Row 2 (y=386..768) has 5 figures with wide white gaps: Sidragosa(58), Stone Gargoyle(57), Cardis(56), Keltus(59), Artus(60)
-    u_bot = undead_rgba.crop((0, 386, 1376, 768))
-    u_bot_cuts = split_row_by_dp_seams(
-        u_bot, num_chars=5, approx_centers=[175, 515, 760, 985, 1255]
-    )
-    anime_cutouts[58] = u_bot_cuts[0]
-    anime_cutouts[57] = u_bot_cuts[1]
-    anime_cutouts[56] = u_bot_cuts[2]
-    anime_cutouts[59] = u_bot_cuts[3]
-    anime_cutouts[60] = u_bot_cuts[4]
-    print("Segmented 2-row Undead -> IDs 051..060")
+        # Row 2 (y=386..768) has 5 figures with wide white gaps: Sidragosa(58), Stone Gargoyle(57), Cardis(56), Keltus(59), Artus(60)
+        u_bot = undead_rgba.crop((0, 386, 1376, 768))
+        u_bot_cuts = split_row_by_dp_seams(
+            u_bot, num_chars=5, approx_centers=[175, 515, 760, 985, 1255]
+        )
+        anime_cutouts[58] = u_bot_cuts[0]
+        anime_cutouts[57] = u_bot_cuts[1]
+        anime_cutouts[56] = u_bot_cuts[2]
+        anime_cutouts[59] = u_bot_cuts[3]
+        anime_cutouts[60] = u_bot_cuts[4]
+        print("Segmented 2-row Undead -> IDs 051..060")
 
-    # 5. Dwarf (IDs 71..80) from sheet_08_dwarf_1793100309173.jpg (strip stone plinth cleanly!)
-    dwarf10_rgb = Image.open(BRAIN_DIR / "sheet_08_dwarf_1793100309173.jpg").convert("RGB")
-    dwarf10_rgba = remove_white_bg_clean(dwarf10_rgb, ground_line_y=(488, 528))
-    dwarf10_cuts = split_row_by_dp_seams(
-        dwarf10_rgba,
-        num_chars=10,
-        approx_centers=[92, 248, 378, 515, 646, 760, 885, 1005, 1125, 1268],
-        seam_windows=[
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            (918, 966),
-            (1038, 1086),
-            (1135, 1218),
-        ],
-    )
-    # Trim Ironforge's dark tower-shield top behind Berryforge's bright golden sun-halo (#079)
-    bf_arr = np.array(dwarf10_cuts[8])
-    bf_h, bf_w, _ = bf_arr.shape
-    bf_lum = 0.299 * bf_arr[:, :, 0] + 0.587 * bf_arr[:, :, 1] + 0.114 * bf_arr[:, :, 2]
-    bf_yy, bf_xx = np.meshgrid(np.arange(bf_h), np.arange(bf_w), indexing="ij")
-    dark_shield_behind_halo = (bf_yy < int(bf_h * 0.36)) & (bf_xx > int(bf_w * 0.42)) & (bf_lum < 142.0) & (
-        (bf_arr[:, :, 0].astype(np.int32) - bf_arr[:, :, 2].astype(np.int32)) < 75
-    )
-    bf_arr[dark_shield_behind_halo, 3] = 0
-    dwarf10_cuts[8] = clean_cutout_specks(Image.fromarray(bf_arr), keep_only_main=True)
+        # 5. Dwarf (IDs 71..80) from sheet_08_dwarf_1793100309173.jpg (strip stone plinth cleanly!)
+        dwarf10_rgb = Image.open(BRAIN_DIR / "sheet_08_dwarf_1793100309173.jpg").convert("RGB")
+        dwarf10_rgba = remove_white_bg_clean(dwarf10_rgb, ground_line_y=(488, 528))
+        dwarf10_cuts = split_row_by_dp_seams(
+            dwarf10_rgba,
+            num_chars=10,
+            approx_centers=[92, 248, 378, 515, 646, 760, 885, 1005, 1125, 1268],
+            seam_windows=[
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                (918, 966),
+                (1038, 1086),
+                (1135, 1218),
+            ],
+        )
+        # Trim Ironforge's dark tower-shield top behind Berryforge's bright golden sun-halo (#079)
+        bf_arr = np.array(dwarf10_cuts[8])
+        bf_h, bf_w, _ = bf_arr.shape
+        bf_lum = 0.299 * bf_arr[:, :, 0] + 0.587 * bf_arr[:, :, 1] + 0.114 * bf_arr[:, :, 2]
+        bf_yy, bf_xx = np.meshgrid(np.arange(bf_h), np.arange(bf_w), indexing="ij")
+        dark_shield_behind_halo = (bf_yy < int(bf_h * 0.36)) & (bf_xx > int(bf_w * 0.42)) & (bf_lum < 142.0) & (
+            (bf_arr[:, :, 0].astype(np.int32) - bf_arr[:, :, 2].astype(np.int32)) < 75
+        )
+        bf_arr[dark_shield_behind_halo, 3] = 0
+        dwarf10_cuts[8] = clean_cutout_specks(Image.fromarray(bf_arr), keep_only_main=True)
 
-    for i in range(10):
-        anime_cutouts[71 + i] = dwarf10_cuts[i]
-    print("Segmented Dwarf -> IDs 071..080")
+        for i in range(10):
+            anime_cutouts[71 + i] = dwarf10_cuts[i]
+        print("Segmented Dwarf -> IDs 071..080")
 
-    # Apply complete anatomical & equipment restorations + Kadan's back Eye-Emblem Shield + v2 Fire/Earth/Dwarf/Mecha/Dragon sheets
-    from anime_sheet_restorations import apply_all_surgical_restorations
-    apply_all_surgical_restorations(
-        anime_cutouts,
-        BRAIN_DIR,
-        remove_white_bg_clean,
-        clean_cutout_specks,
-        split_row_by_dp_seams,
-    )
-    print("Applied all v2 high-res sheets (Fire/Earth/Dwarf/Mecha/Dragon) + surgical restorations + Kadan back Eye-Emblem Shield")
+        # Apply complete anatomical & equipment restorations + Kadan's back Eye-Emblem Shield + v2 Fire/Earth/Dwarf/Mecha/Dragon sheets
+        from anime_sheet_restorations import apply_all_surgical_restorations
+        apply_all_surgical_restorations(
+            anime_cutouts,
+            BRAIN_DIR,
+            remove_white_bg_clean,
+            clean_cutout_specks,
+            split_row_by_dp_seams,
+        )
+        print("Applied all v2 high-res sheets (Fire/Earth/Dwarf/Mecha/Dragon) + surgical restorations + Kadan back Eye-Emblem Shield")
 
-    # Override with newly generated 100% unclipped SOLO full-body plates from raw_solo_regenerated/
-    solo_dir = OUT_ROOT / "raw_solo_regenerated"
-    if solo_dir.exists():
-        solo_loaded = 0
-        for sp in sorted(solo_dir.glob("*_solo.jpg")):
-            try:
-                scid = int(sp.name[:3])
-                s_rgb = Image.open(sp).convert("RGB")
-                s_rgba = remove_white_bg_clean(s_rgb)
-                anime_cutouts[scid] = clean_cutout_specks(s_rgba, keep_only_main=False)
-                solo_loaded += 1
-            except Exception as ex:
-                print(f"Warning loading solo plate {sp.name}: {ex}")
-        print(f"Applied {solo_loaded} pristine unclipped SOLO full-body anime character plates!")
+        # Override with newly generated 100% unclipped SOLO full-body plates from raw_solo_regenerated/
+        solo_dir = OUT_ROOT / "raw_solo_regenerated"
+        if solo_dir.exists():
+            solo_loaded = 0
+            for sp in sorted(solo_dir.glob("*_solo.jpg")):
+                try:
+                    scid = int(sp.name[:3])
+                    s_rgb = Image.open(sp).convert("RGB")
+                    s_rgba = remove_white_bg_clean(s_rgb)
+                    anime_cutouts[scid] = clean_cutout_specks(s_rgba, keep_only_main=False)
+                    solo_loaded += 1
+                except Exception as ex:
+                    print(f"Warning loading solo plate {sp.name}: {ex}")
+            print(f"Applied {solo_loaded} pristine unclipped SOLO full-body anime character plates!")
 
-    # Ensure every single one of all 110 cutouts has clean 12px transparent margin on all 4 sides
-    for cid_pad in range(1, 111):
-        anime_cutouts[cid_pad] = clean_cutout_specks(anime_cutouts[cid_pad], keep_only_main=False)
+        # Ensure every single one of all 110 cutouts has clean 12px transparent margin on all 4 sides
+        for cid_pad in range(1, 111):
+            anime_cutouts[cid_pad] = clean_cutout_specks(anime_cutouts[cid_pad], keep_only_main=False)
 
     # Load all 110 original 3-head chibi idle & attack sprites (read-only!)
     cards1_atlas = Image.open(PROJECT_ROOT / "public" / "cards1.png").convert("RGBA")
@@ -1247,7 +1258,8 @@ def main() -> None:
         sheet_rel = f"/anime-character-sheets/sheets/{cid:03d}_{slug}_sheet.jpg"
         bust_rel = f"/anime-character-sheets/busts/{cid:03d}_bust.jpg"
 
-        anime_cutouts[cid].save(CUTOUT_DIR / f"{cid:03d}_{slug}.png", "PNG")
+        if not loaded_from_existing_cutouts:
+            anime_cutouts[cid].save(CUTOUT_DIR / f"{cid:03d}_{slug}.png", "PNG")
 
         bust_png, bust_rgb = render_head_hair_bust_assets(anime_cutouts[cid], cid)
         bust_png.save(BUST_DIR / f"{cid:03d}_bust.png", "PNG")

@@ -1270,28 +1270,44 @@ html.low-spec-mode .animate-shimmer {
 }
 
 /* ==========================================================================
-   Google AdSense Space Minimization & Compact Slim Banner Standard (Strict 50px)
+   Google AdSense Space Minimization & Strict Containment Policy (Strict 50px)
    ========================================================================== */
 
 /* Prevent Google Auto Ads from inserting unrequested extra top/bottom pushdown spaces */
 html, body {
   padding-top: 0 !important;
+  padding-bottom: 0 !important;
   margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 
-/* Eliminate Google Auto-Placed ads, anchor ads, and pushdown spacers that create large gaps */
+/* Eliminate Google Auto-Placed ads, anchor ads, and pushdown spacers that create large gaps or obstruct screen */
 .google-auto-placed,
 .adsbygoogle-noab-wrap,
 ins.adsbygoogle[data-anchor-status],
 div[id*="aswift"][style*="position: fixed"],
+div[id*="google_ads_iframe"][style*="position: fixed"],
+div[aria-label*="Advertisement"][style*="position: fixed"],
+div[aria-label*="광고"][style*="position: fixed"],
 iframe[name*="google_ads_top_frame"],
-iframe[name*="google_ads_bottom_frame"] {
+iframe[name*="google_ads_bottom_frame"],
+#aswift_0_host,
+#aswift_1_host,
+#aswift_2_host,
+#aswift_3_host,
+#aswift_4_host,
+#aswift_5_host {
   display: none !important;
+  width: 0 !important;
   height: 0 !important;
+  max-width: 0 !important;
   max-height: 0 !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
+  position: static !important;
   visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  z-index: -9999 !important;
+  overflow: hidden !important;
 }
 
 /* Strict 50px Compact Slim Banner for Mobile & Tablet */
@@ -1305,6 +1321,7 @@ iframe[name*="google_ads_bottom_frame"] {
 #adsense-mobile-top ins.adsbygoogle * {
   max-height: 50px !important;
   overflow: hidden !important;
+  contain: layout paint !important;
 }
 
 .adsense-compact-top,

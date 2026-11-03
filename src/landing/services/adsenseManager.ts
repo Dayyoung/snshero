@@ -169,19 +169,100 @@ export function renderMobileTopBanner(): string {
 }
 
 /**
- * Safe initializer to push adsbygoogle instances when ads are mounted in DOM.
+ * Removes any auto-placed ads, floating overlays, anchors, or screen-blocking vignettes
+ * inserted by Google Auto-Ads outside designated containers.
+ */
+export function cleanupUncontainedAds(): void {
+  if (typeof document === 'undefined') return;
+
+  try {
+    const uncontainedSelectors = [
+      '.google-auto-placed',
+      '.adsbygoogle-noab-wrap',
+      'ins.adsbygoogle[data-anchor-status]',
+      'iframe[name*="google_ads_top_frame"]',
+      'iframe[name*="google_ads_bottom_frame"]',
+      'div[id*="aswift"][style*="position: fixed"]',
+      'div[id*="google_ads_iframe"][style*="position: fixed"]',
+      '#aswift_0_host',
+      '#aswift_1_host',
+      '#aswift_2_host',
+      '#aswift_3_host',
+      '#aswift_4_host',
+      '#aswift_5_host',
+      '#landing-main-slot .google-auto-placed',
+      '#landing-main-slot ins.adsbygoogle',
+      '#landing-modals-slot ins.adsbygoogle',
+    ];
+
+    document.querySelectorAll(uncontainedSelectors.join(',')).forEach((el) => {
+      // Protect legitimate ads inside our containers
+      if (el.closest('#adsense-desktop-left, #adsense-desktop-right, #adsense-mobile-top, .adsense-container')) {
+        return;
+      }
+      try {
+        el.remove();
+      } catch {
+        (el as HTMLElement).style.display = 'none';
+      }
+    });
+
+    // Reset unwanted body padding/margins injected by AdSense
+    if (document.body && (document.body.style.paddingTop || document.body.style.marginTop)) {
+      document.body.style.paddingTop = '0px';
+      document.body.style.marginTop = '0px';
+    }
+  } catch {}
+}
+
+let isObserverInitialized = false;
+
+/**
+ * Initializes a DOM MutationObserver to enforce strict AdSense containment in real time.
+ */
+export function initAdSenseContainmentObserver(): void {
+  if (typeof window === 'undefined' || typeof document === 'undefined' || isObserverInitialized) return;
+  isObserverInitialized = true;
+
+  try {
+    const observer = new MutationObserver(() => {
+      cleanupUncontainedAds();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    // Initial pass
+    cleanupUncontainedAds();
+  } catch {}
+}
+
+/**
+ * Safe initializer to push adsbygoogle instances ONLY within strictly designated containers.
  */
 export function pushAdSenseTags(): void {
   if (isAdRemoved()) return;
   if (typeof window === 'undefined') return;
 
   try {
-    const uninitialized = document.querySelectorAll('ins.adsbygoogle:not([data-adsbygoogle-status])');
-    if (uninitialized.length === 0) return;
+    // Clean up any uncontained auto ads first
+    cleanupUncontainedAds();
+
+    // Select ONLY ins elements located within our allowed slot containers
+    const allowedSlots = document.querySelectorAll(
+      '#adsense-desktop-left ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
+      '#adsense-desktop-right ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
+      '#adsense-mobile-top ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
+      '.adsense-container ins.adsbygoogle:not([data-adsbygoogle-status])'
+    );
+
+    if (allowedSlots.length === 0) return;
 
     const win = window as any;
     win.adsbygoogle = win.adsbygoogle || [];
-    uninitialized.forEach(() => {
+    allowedSlots.forEach(() => {
       try {
         win.adsbygoogle.push({});
       } catch (err) {

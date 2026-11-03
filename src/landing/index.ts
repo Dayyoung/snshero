@@ -105,6 +105,7 @@ import {
   renderDesktopRightGutter,
   renderMobileTopBanner,
   pushAdSenseTags,
+  initAdSenseContainmentObserver,
 } from './services/adsenseManager';
 import { cardNurtureStore } from './services/cardNurtureStore';
 import { initIdleAutoPlay } from './services/idleAutoPlayManager';
@@ -1031,6 +1032,7 @@ export function mountLanding(): void {
   }
 
   // 10. Initial render
+  initAdSenseContainmentObserver();
   renderApp();
 }
 

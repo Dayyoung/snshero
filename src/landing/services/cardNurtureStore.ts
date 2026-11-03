@@ -297,6 +297,13 @@ export class CardNurtureStore implements NurtureState {
   }
 
   /**
+   * Add EXP to a card (alias for nurtureCard for shop and milestone parity)
+   */
+  addExp(cardId: number, expGain: number = 50): { expGained: number; leveledUp: boolean; newLevel: number } {
+    return this.nurtureCard(cardId, expGain);
+  }
+
+  /**
    * Battle Victory EXP Hook (Milestone 4):
    * On player victory, awards EXP (default 50) exclusively to active deck cards that are owned.
    */

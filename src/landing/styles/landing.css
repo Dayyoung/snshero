@@ -261,7 +261,84 @@ a.btn,
 }
 
 /* ==========================================================================
-   Mobile/Tablet Compact Slim AdSense Top Banner (Strict 50px)
+   Google AdSense: Strict Containment Policy (정해진 영역 외 표시 절대 차단)
+   ========================================================================== */
+
+/* 1. 구글 애드센스가 강제로 body나 html에 삽입하는 padding/margin 푸시다운 원천 제거 */
+html, body {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* 2. 구글이 주입하는 전체화면 오버레이, 앵커 바, 비네트(전면 광고), 자동 배치 div 원천 소멸 */
+.google-auto-placed,
+.adsbygoogle-noab-wrap,
+ins.adsbygoogle[data-anchor-status],
+iframe[name*="google_ads_top_frame"],
+iframe[name*="google_ads_bottom_frame"],
+div[id*="aswift"][style*="position: fixed"],
+div[id*="google_ads_iframe"][style*="position: fixed"],
+div[aria-label*="Advertisement"][style*="position: fixed"],
+div[aria-label*="광고"][style*="position: fixed"],
+#aswift_0_host,
+#aswift_1_host,
+#aswift_2_host,
+#aswift_3_host,
+#aswift_4_host,
+#aswift_5_host {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  position: static !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  z-index: -9999 !important;
+  overflow: hidden !important;
+}
+
+/* 3. 중앙 메인 콘텐츠 슬롯(#landing-main-slot) 내부 및 모달 내부에 구글이 임의로 주입하는 광고 전면 차단 */
+#landing-main-slot .google-auto-placed,
+#landing-main-slot ins.adsbygoogle,
+#landing-modals-slot ins.adsbygoogle,
+#landing-header-slot .google-auto-placed {
+  display: none !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* ==========================================================================
+   Dedicated Desktop Side Gutters (정해진 데스크톱 양 날개 영역)
+   ========================================================================== */
+#adsense-desktop-left,
+#adsense-desktop-right {
+  width: 160px !important;
+  max-width: 200px !important;
+  min-width: 140px !important;
+  overflow: hidden !important;
+  contain: layout paint !important;
+}
+
+#adsense-desktop-left ins.adsbygoogle,
+#adsense-desktop-right ins.adsbygoogle {
+  display: block !important;
+  width: 100% !important;
+  max-width: 200px !important;
+  overflow: hidden !important;
+}
+
+#adsense-desktop-left iframe,
+#adsense-desktop-right iframe {
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* ==========================================================================
+   Mobile/Tablet Compact Slim AdSense Top Banner (정해진 모바일 상단 50px 영역)
    ========================================================================== */
 #adsense-mobile-top {
   width: 100%;
@@ -272,6 +349,7 @@ a.btn,
   height: 50px !important;
   max-height: 50px !important;
   overflow: hidden !important;
+  contain: layout paint !important;
 }
 
 #adsense-mobile-top .adsense-banner-inner {
