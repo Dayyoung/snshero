@@ -1965,13 +1965,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         {isOpponentDeckExpanded && (
           <div 
             id="mobile-card-opponent-deck-content"
-            className="p-2 pt-1.5 border-t border-red-200/80 grid grid-cols-5 gap-1.5 w-full [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3"
+            className="p-1.5 sm:p-2 pt-1 border-t border-red-200/80 grid grid-cols-5 gap-1 sm:gap-1.5 w-full"
           >
             {opponentHand.map((card, i) => {
               return (
                 <div
                   key={`opp-card-${card.id || i}`}
-                  className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden border-2 border-red-400/90 bg-red-50/10 shadow-2xs [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
+                  className="aspect-[2.8/4] w-full max-h-[125px] rounded-sm relative overflow-hidden border-2 border-red-400/90 bg-red-50/10 shadow-2xs"
                 >
                   <CardItem
                     card={card}
@@ -1988,7 +1988,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
             {Array.from({ length: Math.max(0, 5 - opponentHand.length) }).map((_, idx) => (
               <div
                 key={`empty-opp-hand-${idx}`}
-                className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] border-2 border-dashed border-red-300 bg-red-50/10 rounded-sm flex items-center justify-center text-red-400 font-mono [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
+                className="aspect-[2.8/4] w-full max-h-[125px] border-2 border-dashed border-red-300 bg-red-50/10 rounded-sm flex items-center justify-center text-red-400 font-mono"
               >
                 <span className="text-[11px] font-bold">[-]</span>
               </div>
@@ -2306,7 +2306,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-5 gap-1.5 w-full [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3">
+        <div className="grid grid-cols-5 gap-1 sm:gap-1.5 w-full">
           {playerHand.map((card, i) => {
             const isSelected = selectedHandIndex === i;
             const myEl = getNormalizedElement(card);
@@ -2321,7 +2321,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   setSelectedHandIndex(i);
                 }}
                 className={cn(
-                  "aspect-[2.8/4] min-h-[44px] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden cursor-pointer border-2 transition-colors select-none [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
+                  "aspect-[2.8/4] w-full max-h-[125px] rounded-sm relative overflow-hidden cursor-pointer border-2 transition-colors select-none",
                   isSelected
                     ? "border-blue-600 ring-2 ring-blue-600/30"
                     : "border-blue-400/80 hover:border-blue-500 bg-blue-50/10"
@@ -2343,7 +2343,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           {Array.from({ length: Math.max(0, 5 - playerHand.length) }).map((_, idx) => (
             <div
               key={`empty-hand-${idx}`}
-              className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] border-2 border-dashed border-blue-300 bg-blue-50/10 rounded-sm flex items-center justify-center text-blue-400 font-mono [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
+              className="aspect-[2.8/4] w-full max-h-[125px] border-2 border-dashed border-blue-300 bg-blue-50/10 rounded-sm flex items-center justify-center text-blue-400 font-mono"
             >
               <span className="text-[11px] font-bold">[-]</span>
             </div>

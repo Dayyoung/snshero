@@ -16038,7 +16038,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           </button>
         </div>
         
-        <div className="w-full max-w-6xl mx-auto flex items-center justify-center gap-1 md:gap-2 h-auto my-auto relative z-10 py-0.5">
+        <div className="w-full max-w-[480px] mx-auto flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 h-auto my-auto relative z-10 py-0.5 px-1 sm:px-2 select-none">
           <AnimatePresence mode="popLayout">
             {opponentHand.map((card, idx) => {
               const isSelected = selectedCardIdx === idx && selectedCardSide === 'ai';
@@ -16047,7 +16047,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <motion.div 
                 key={card.id} 
                 className={cn(
-                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-none",
+                  "w-[calc((100%-16px)/5)] max-w-[70px] sm:max-w-[78px] md:max-w-[84px] aspect-[5/7] cursor-pointer relative rounded-none flex-shrink-0",
                   isSelected && "z-50"
                 )}
                 onClick={() => handleCardClick(idx, 'ai')}
@@ -17249,12 +17249,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           </div>
         </div>
 
-        <div className={cn(
-          "w-full max-w-6xl mx-auto flex items-center gap-1 md:gap-2 h-auto py-0.5 md:py-1 overflow-x-auto overflow-y-visible scrollbar-hide px-4 touch-pan-x relative z-10 my-auto select-none [mask-image:linear-gradient(to_right,transparent,black_16px,black_calc(100%-16px),transparent)]",
-          playerHand.length > 5 ? "justify-start md:justify-center" : "justify-center"
-        )}>
-
-
+        <div className="w-full max-w-[480px] mx-auto flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 h-auto py-0.5 md:py-1 px-1 sm:px-2 relative z-10 my-auto select-none">
           <AnimatePresence>
             {playerHand.map((card, idx) => {
               const isRecommended = recommendedPlayerMove?.cardIdx === idx;
@@ -17282,7 +17277,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 }}
                 whileTap={{ scale: 0.95 }}
                 className={cn(
-                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-none [will-change:transform,opacity]",
+                  "w-[calc((100%-16px)/5)] max-w-[70px] sm:max-w-[78px] md:max-w-[84px] aspect-[5/7] cursor-pointer relative rounded-none flex-shrink-0 [will-change:transform,opacity]",
                   isSelected && "z-50"
                 )}
               >
@@ -18309,14 +18304,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                    <div className="h-px bg-white/20 w-12" />
                 </div>
                 
-                <div className="flex justify-center gap-2 md:gap-4 overflow-x-auto py-4 px-2 no-scrollbar">
+                <div className="flex justify-center items-center gap-1 sm:gap-2 w-full max-w-[480px] mx-auto py-3 px-1 select-none">
                   {opponentHand.map((card, i) => (
                     <motion.div
                       key={`preview-${card.id}-${i}`}
                       initial={{ opacity: 0, y: 50, rotateY: 90 }}
                       animate={{ opacity: 1, y: 0, rotateY: 0 }}
                       transition={{ delay: i * 0.1, duration: 0.5, type: 'spring' }}
-                      className="w-[16vw] max-w-[80px] md:max-w-[120px] aspect-[5/7] rounded-none  flex-shrink-0"
+                      className="w-[calc((100%-16px)/5)] max-w-[70px] sm:max-w-[80px] md:max-w-[100px] aspect-[5/7] rounded-none flex-shrink-0"
                     >
                       <CardItem card={card} isLocked={true} className="w-full h-full" lowSpecMode={lowSpecMode} />
                     </motion.div>
