@@ -26,8 +26,8 @@ import {
 } from './views/MyDeckSection';
 import { renderPlaySection, handlePlayAction, stopPlayTts } from './views/PlaySection';
 import { renderCardSection, setSelectedCardId, setElementFilter, setOwnedFilter } from './views/CardSection';
-import { renderBookSection, handleBookAction } from './views/BookSection';
-import { renderWebtoonSection, handleWebtoonAction } from './views/WebtoonSection';
+import { renderBookSection, handleBookAction, initBookEpisodeFromUrl } from './views/BookSection';
+import { renderWebtoonSection, handleWebtoonAction, initWebtoonEpisodeFromUrl } from './views/WebtoonSection';
 import {
   renderShopView,
   executeShopPurchase,
@@ -321,7 +321,7 @@ export function handleEventDelegation(event: Event): void {
       setInspectedHomeCardId(cardId);
       renderApp();
     }
-  } else if (action === 'close-home-card-inspect') {
+  } else if (action === 'close-home-card-inspect' || action === 'close-home-card-inspector') {
     setInspectedHomeCardId(null);
     renderApp();
   } else if (action === 'inspect-deck-card') {
@@ -504,9 +504,17 @@ export function handleEventDelegation(event: Event): void {
   }
   // ── Book (웹소설) & Webtoon (웹툰) Actions ────────────────────────────────
   else if (action && action.startsWith('book-')) {
+    // Dropdown selects and text inputs must be handled by 'change'/'input' events, not 'click'
+    if (target.tagName === 'SELECT' || target.tagName === 'OPTION' || target.tagName === 'INPUT') {
+      return;
+    }
     handleBookAction(action, target);
     renderApp();
   } else if (action && action.startsWith('webtoon-')) {
+    // Dropdown selects and text inputs must be handled by 'change'/'input' events, not 'click'
+    if (target.tagName === 'SELECT' || target.tagName === 'OPTION' || target.tagName === 'INPUT') {
+      return;
+    }
     handleWebtoonAction(action, target);
     renderApp();
   }
@@ -607,11 +615,16 @@ export function mountLanding(): void {
   state.activeView = initialView;
   if (initialView === 'play') {
     ensureGameStarted();
+  } else if (initialView === 'book') {
+    initBookEpisodeFromUrl();
+  } else if (initialView === 'webtoon') {
+    initWebtoonEpisodeFromUrl();
   }
 
-  // 2. Normalize initial URL to `#${initialView}` without creating an extra history frame
-  const targetHash = `#${initialView}`;
-  if (window.location.hash !== targetHash) {
+  // 2. Normalize initial URL to `#${initialView}` without wiping query parameters
+  const currentHash = window.location.hash;
+  if (!currentHash || !currentHash.startsWith(`#${initialView}`)) {
+    const targetHash = `#${initialView}`;
     try {
       window.history.replaceState({ view: initialView }, '', targetHash);
     } catch {
@@ -661,8 +674,15 @@ export function mountLanding(): void {
     if (isProgrammaticRouting) return;
     checkAndProcessPayAppSuccess();
     const parsedView = parseRoute();
+    if (parsedView === 'book') {
+      initBookEpisodeFromUrl();
+    } else if (parsedView === 'webtoon') {
+      initWebtoonEpisodeFromUrl();
+    }
     if (parsedView !== state.activeView) {
       navigateTo(parsedView, { updateHash: false });
+    } else {
+      renderApp();
     }
   });
 
