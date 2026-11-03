@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 15:26 KST] [골드 환전 기능 전면 제거 (상점 #shop 및 인게임 상점)]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 랜딩 상점(`#shop`, `ShopSection.tsx`) 골드 환전소 기능 전면 제거**:
+    - 카테고리 탭 목록(`SHOP_CATEGORY_TABS`)에서 `EXCHANGE` ('골드 환전 (SWAP)') 탭 제거 (4대 카테고리: 전체, 카드팩, 아이템, 코인충전으로 정돈).
+    - 상품 목록(`ALL_SHOP_PRODUCTS`)에서 `gold_exchange_5000` 상품 제거.
+    - 상점 상단 잔액 바 우측의 `[골드 환전소]` 버튼(`data-action="open-gold-exchange"`) 제거.
+    - 골드 환전소 팝업 모달 렌더러(`renderGoldExchangeModal`) 및 모달 인스턴스 전면 제거.
+    - 상점 소개 헤더 문구를 "카드팩 가챠, 육성 영약 아이템 및 SNS 코인을 충전하고 구매할 수 있습니다."로 정돈.
+  - **2. `src/landing/index.ts` 골드 환전 관련 핸들러 및 import 정리**:
+    - `openGoldExchangeModal`, `closeGoldExchangeModal`, `executeGoldExchange` 불필요한 핸들러 분기 및 backdrop click 핸들러 안전 정리.
+  - **3. 인게임 상점(`ShopView.tsx`) 환전 버튼 제거**:
+    - `ShopView.tsx` 상단 바로가기 버튼 영역에서 `[🔄 토큰 환전]` 버튼을 완전히 제거하여 사용자 혼선 차단.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (4,357개 모듈 트랜스폼, 0 errors)
+  - 로컬 git 커밋: 완료 (git push 미실행 준수)
+  - 구글 폼 보고서 제출: 완료 예정
+
 ## [2026-11-03 14:35 KST] [#book 회차 이동 스크롤 최상단 및 [object Object] 수정, #play 닫기 버튼 정상화, #deck·#card 팝업 복구 및 하단 상세 섹션 제거, #shop 암호화폐 코인/네트워크 선택 및 QR코드 입금 연동]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

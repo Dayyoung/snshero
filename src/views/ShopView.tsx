@@ -4350,16 +4350,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
             >
               <span>💎 {language === 'ko' ? 'SNS 충전' : 'SNS Currency'}</span>
             </a>
-            <button
-              type="button"
-              onClick={() => {
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                setIsTokenExchangeOpen(true);
-              }}
-              className="min-h-11 px-4 py-3 bg-[#fdfcfc] text-[#201d1d] border border-[#0f0000]/12 font-bold rounded-sm shrink-0 flex items-center gap-2 hover:bg-[#f1eeee] cursor-pointer"
-            >
-              <span>🔄 {language === 'ko' ? '토큰 환전' : 'Token Swap'}</span>
-            </button>
           </div>
 
           {/* SCR-04 Monetization: 1인 1회 한정 파격 핫딜 '초심자 성장 스타터 번들' */}

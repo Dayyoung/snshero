@@ -10,14 +10,12 @@
  *      - PACK: 카드팩 가챠 (일반, 매직, 희귀, 스타터 전설팩)
  *      - ITEM: 육성 아이템 & 콘텐츠 (EXP 영약팩, 광고 영구 제거, 110화 웹소설, 시네마 티켓)
  *      - COIN: SNS 코인 충전 (1,000 / 3,000 / 10,000 / 50,000 SNS 코인)
- *      - EXCHANGE: 골드 <-> SNS 코인 환전소
  *   2. Real Payment Gateway Integration:
  *      - PayApp Lite: Credit Card, KakaoPay, NaverPay, ApplePay, WeChatPay
  *      - PayPal Express Checkout
  *      - Crypto Payments (USDT, SOL, BTC)
  *      - Clear Developer Simulation (SIM - 무과금 테스트)
  *   3. Gacha Pack Reveal Sequence & Diamond Compass Card Rendering.
- *   4. Gold Exchange Modal (5,000 Gold -> 1,000 SNS Coins).
  */
 
 import { CARD_DATABASE } from '../../cardDatabase';
@@ -34,11 +32,11 @@ import {
 // Types & Interfaces
 // ============================================================================
 
-export type ShopCategoryTab = 'ALL' | 'PACK' | 'ITEM' | 'COIN' | 'EXCHANGE';
+export type ShopCategoryTab = 'ALL' | 'PACK' | 'ITEM' | 'COIN';
 
 export interface ShopCardProduct {
   id: string;
-  category: 'PACK' | 'ITEM' | 'COIN' | 'EXCHANGE';
+  category: 'PACK' | 'ITEM' | 'COIN';
   name: string;
   badge: string;
   priceText: string;
@@ -99,7 +97,6 @@ export const SHOP_CATEGORY_TABS: Array<{ key: ShopCategoryTab; label: string; ic
   { key: 'PACK', label: '카드팩 가챠 (PACK)', icon: '🎴' },
   { key: 'ITEM', label: '아이템·특전 (ITEM)', icon: '🧪' },
   { key: 'COIN', label: '코인 충전 (COIN)', icon: '⚡' },
-  { key: 'EXCHANGE', label: '골드 환전 (SWAP)', icon: '🔄' },
 ];
 
 export const COUNTRIES: CountryOption[] = [
@@ -321,21 +318,6 @@ export const ALL_SHOP_PRODUCTS: ShopCardProduct[] = [
     shortSpec: '+25% 초대형 보너스 · VIP 한정 카드 테두리 증정',
     actionText: '충전하기',
   },
-
-  // ── EXCHANGE (골드 환전소) ───────────────────────────────────────────────
-  {
-    id: 'gold_exchange_5000',
-    category: 'EXCHANGE',
-    name: '골드 환전소 (5,000 G → 1,000 SNS)',
-    badge: '1:5 공식 환율',
-    priceText: '5,000 골드 소모',
-    priceCoins: 0,
-    priceUsd: 0,
-    priceKrw: 0,
-    description: '게임 플레이 및 퀘스트로 획득한 골드를 상점 전용 SNS 코인으로 환전합니다.',
-    shortSpec: '골드 5,000개 즉시 차감 ➔ 1,000 SNS 코인 지급',
-    actionText: '골드 환전하기',
-  },
 ];
 
 // ============================================================================
@@ -344,7 +326,6 @@ export const ALL_SHOP_PRODUCTS: ShopCardProduct[] = [
 
 let currentCategoryTab: ShopCategoryTab = 'ALL';
 let activePackReveal: PackRevealData | null = null;
-let isGoldExchangeModalOpen = false;
 
 // Coin recharge popup state
 let isCoinChargeModalOpen = false;
@@ -382,11 +363,11 @@ export function setShopCurrentTab(tab: ShopCategoryTab): void {
 }
 
 export function openGoldExchangeModal(): void {
-  isGoldExchangeModalOpen = true;
+  // Deprecated: Gold exchange feature removed
 }
 
 export function closeGoldExchangeModal(): void {
-  isGoldExchangeModalOpen = false;
+  // Deprecated: Gold exchange feature removed
 }
 
 export function openCoinChargeModal(packageId?: string): void {
@@ -849,63 +830,7 @@ function simulatePackDraw(
 // ============================================================================
 
 export function renderGoldExchangeModal(): string {
-  if (!isGoldExchangeModalOpen) return '';
-
-  const gold = getUserGold();
-  const coins = getUserCoins();
-
-  return `
-    <div id="gold-exchange-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
-      <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-md w-full p-6 space-y-4 shadow-none">
-        <div class="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.08)]">
-          <div>
-            <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] rounded-sm mb-1">
-              공식 환전소
-            </span>
-            <h3 class="text-base font-bold m-0">골드 ➔ SNS 코인 즉시 환전</h3>
-          </div>
-          <button type="button" data-action="close-gold-exchange" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
-            <div class="text-[10px] text-stone-500 font-bold uppercase">현재 보유 골드</div>
-            <div class="text-base font-black text-[#201d1d] mt-1">${gold.toLocaleString()} G</div>
-          </div>
-          <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
-            <div class="text-[10px] text-stone-500 font-bold uppercase">현재 보유 SNS</div>
-            <div class="text-base font-black text-[#201d1d] mt-1">${coins.toLocaleString()} SNS</div>
-          </div>
-        </div>
-
-        <div class="p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] space-y-2 text-xs">
-          <div class="flex justify-between font-bold">
-            <span>환전 비율 (고정):</span>
-            <span class="text-emerald-700">5.0 G : 1.0 SNS</span>
-          </div>
-          <div class="flex justify-between text-stone-600">
-            <span>소모 골드:</span>
-            <span class="font-bold text-[#201d1d]">5,000 G</span>
-          </div>
-          <div class="flex justify-between text-stone-600">
-            <span>지급 코인:</span>
-            <span class="font-black text-[#201d1d]">+1,000 SNS</span>
-          </div>
-        </div>
-
-        <div class="flex gap-2 pt-2 border-t border-[rgba(15,0,0,0.08)]">
-          <button type="button" data-action="close-gold-exchange" class="flex-1 py-2.5 bg-[#f1eeee] hover:bg-[#e8e5e5] text-xs font-bold rounded-sm min-h-[44px]">
-            취소
-          </button>
-          <button type="button" data-action="execute-gold-exchange" class="flex-2 py-2.5 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px] ${
-            gold < 5000 ? 'opacity-50 cursor-not-allowed' : ''
-          }" ${gold < 5000 ? 'disabled' : ''}>
-            5,000 골드 환전하기 →
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
+  return '';
 }
 
 export function renderCoinChargeModal(): string {
@@ -1424,7 +1349,6 @@ export function renderShopView(): string {
       : ALL_SHOP_PRODUCTS.filter((item) => item.category === activeTab);
 
   const packModal = renderPackRevealModal();
-  const exchangeModal = renderGoldExchangeModal();
   const coinChargeModal = renderCoinChargeModal();
 
   return `
@@ -1442,7 +1366,7 @@ export function renderShopView(): string {
               상점 &amp; 소환의 제단 (Shop)
             </h1>
             <p class="text-xs sm:text-sm text-stone-600 mt-1 m-0">
-              카드팩 가챠, 육성 영약 아이템 및 SNS 코인을 충전하고 환전할 수 있습니다.
+              카드팩 가챠, 육성 영약 아이템 및 SNS 코인을 충전하고 구매할 수 있습니다.
             </p>
           </div>
 
@@ -1465,13 +1389,6 @@ export function renderShopView(): string {
               >
                 + 코인 충전
               </button>
-              <button
-                type="button"
-                data-action="open-gold-exchange"
-                class="px-3 py-2 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] flex items-center justify-center whitespace-nowrap cursor-pointer"
-              >
-                골드 환전소
-              </button>
               <a
                 href="#mall"
                 data-nav="mall"
@@ -1483,7 +1400,7 @@ export function renderShopView(): string {
           </div>
         </div>
 
-        <!-- Category Tab Bar (5대 카테고리: 전체, 카드팩, 아이템, 코인충전, 골드환전) -->
+        <!-- Category Tab Bar (4대 카테고리: 전체, 카드팩, 아이템, 코인충전) -->
         <div class="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[rgba(15,0,0,0.08)]">
           ${SHOP_CATEGORY_TABS.map(
             (tab) => `
@@ -1510,7 +1427,6 @@ export function renderShopView(): string {
         ${filteredProducts
           .map((item) => {
             const isCoin = item.category === 'COIN';
-            const isExchange = item.category === 'EXCHANGE';
 
             return `
             <div class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-5 sm:p-6 rounded-none flex flex-col justify-between space-y-4 hover:border-[#201d1d] transition-colors">
@@ -1548,20 +1464,16 @@ export function renderShopView(): string {
                 <button
                   type="button"
                   data-action="${
-                    isExchange
-                      ? 'open-gold-exchange'
-                      : isCoin
-                        ? 'open-coin-charge-modal'
-                        : 'buy-shop-item'
+                    isCoin
+                      ? 'open-coin-charge-modal'
+                      : 'buy-shop-item'
                   }"
                   data-item-id="${item.id}"
                   data-package-id="${item.id.replace('coin_charge_', 'coin_')}"
                   class="w-full py-2.5 ${
                     isCoin
                       ? 'bg-amber-600 hover:bg-amber-700 text-white'
-                      : isExchange
-                        ? 'bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc]'
-                        : 'bg-[#201d1d] hover:opacity-90 text-[#fdfcfc]'
+                      : 'bg-[#201d1d] hover:opacity-90 text-[#fdfcfc]'
                   } text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center shadow-none cursor-pointer transition-colors"
                 >
                   ${item.actionText}
@@ -1575,7 +1487,6 @@ export function renderShopView(): string {
 
       <!-- Active Modals -->
       ${packModal}
-      ${exchangeModal}
       ${coinChargeModal}
     </div>
   `;

@@ -39,9 +39,6 @@ import {
   executeShopPurchase,
   getUserCoins,
   getUserGold,
-  openGoldExchangeModal,
-  closeGoldExchangeModal,
-  executeGoldExchange,
   setShopCurrentTab,
   openCoinChargeModal,
   closeCoinChargeModal,
@@ -269,11 +266,6 @@ export function handleEventDelegation(event: Event): void {
     renderApp();
     return;
   }
-  if (rawTarget.id === 'gold-exchange-modal' || rawTarget.id === 'gold-exchange-backdrop') {
-    closeGoldExchangeModal();
-    renderApp();
-    return;
-  }
   if (rawTarget.id === 'home-card-inspect-modal' || rawTarget.id === 'home-card-inspect-backdrop') {
     setInspectedHomeCardId(null);
     renderApp();
@@ -481,19 +473,6 @@ export function handleEventDelegation(event: Event): void {
     renderApp();
   } else if (action === 'verify-crypto-deposit') {
     verifyCryptoDepositStatus();
-    renderApp();
-  } else if (action === 'open-gold-exchange') {
-    openGoldExchangeModal();
-    renderApp();
-  } else if (action === 'execute-gold-exchange') {
-    const res = executeGoldExchange(5000);
-    if (!res.success) {
-      console.warn(res.message);
-    }
-    closeGoldExchangeModal();
-    renderApp();
-  } else if (action === 'close-gold-exchange') {
-    closeGoldExchangeModal();
     renderApp();
   } else if (action === 'close-pack-reveal' || action === 'confirm-pack-reveal') {
     clearPackReveal();
