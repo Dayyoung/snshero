@@ -87,12 +87,12 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
  minHeight: (style as React.CSSProperties)?.minHeight || getMinHeight(),
  width: '100%',
  minWidth: '250px',
- ...(format === 'horizontal' ? { maxHeight: '60px' } : {}),
+ ...(format === 'horizontal' ? { maxHeight: '50px', height: '50px' } : {}),
  ...style,
  };
 
  return (
- <div className={`adsense-container w-full overflow-hidden text-center select-none rounded-sm transition-all ${className}`}>
+ <div className={`adsense-container w-full overflow-hidden text-center select-none rounded-sm transition-all ${format === "horizontal" ? "h-[50px] max-h-[50px]" : ""} ${className}`}>
  {showLabel && (
  <div className="flex items-center justify-between px-2 py-0.5 text-[9px] font-mono text-slate-400/80 uppercase tracking-wider bg-black/5 dark:bg-white/5 border-b border-inherit/10 mb-1">
  <span>[AD]</span>

@@ -1225,34 +1225,57 @@ html.low-spec-mode .animate-shimmer {
   100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }
 
-/* Mobile & Tablet Compact Top AdSense Banner Clamp (50px mobile, 60px tablet) */
+/* ==========================================================================
+   Google AdSense Space Minimization & Compact Slim Banner Standard (Strict 50px)
+   ========================================================================== */
+
+/* Prevent Google Auto Ads from inserting unrequested extra top/bottom pushdown spaces */
+html, body {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Eliminate Google Auto-Placed ads, anchor ads, and pushdown spacers that create large gaps */
+.google-auto-placed,
+.adsbygoogle-noab-wrap,
+ins.adsbygoogle[data-anchor-status],
+div[id*="aswift"][style*="position: fixed"],
+iframe[name*="google_ads_top_frame"],
+iframe[name*="google_ads_bottom_frame"] {
+  display: none !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+/* Strict 50px Compact Slim Banner for Mobile & Tablet */
+.adsense-compact-top,
+.adsense-compact-top .adsense-container,
+.adsense-compact-top ins.adsbygoogle,
+.adsense-compact-top ins.adsbygoogle *,
+#adsense-mobile-top,
+#adsense-mobile-top .adsense-banner-inner,
+#adsense-mobile-top ins.adsbygoogle,
+#adsense-mobile-top ins.adsbygoogle * {
+  max-height: 50px !important;
+  overflow: hidden !important;
+}
+
 .adsense-compact-top,
 .adsense-compact-top ins.adsbygoogle,
 #adsense-mobile-top,
 #adsense-mobile-top ins.adsbygoogle {
-  max-height: 52px !important;
-  overflow: hidden !important;
+  height: 50px !important;
+  min-height: 50px !important;
 }
 
 .adsense-compact-top ins.adsbygoogle iframe,
 .adsense-compact-top ins.adsbygoogle > div,
 #adsense-mobile-top ins.adsbygoogle iframe,
 #adsense-mobile-top ins.adsbygoogle > div {
-  max-height: 52px !important;
+  max-height: 50px !important;
+  height: 50px !important;
   overflow: hidden !important;
-}
-
-@media (min-width: 640px) and (max-width: 1023px) {
-  .adsense-compact-top,
-  .adsense-compact-top ins.adsbygoogle,
-  #adsense-mobile-top,
-  #adsense-mobile-top ins.adsbygoogle {
-    max-height: 60px !important;
-  }
-  .adsense-compact-top ins.adsbygoogle iframe,
-  .adsense-compact-top ins.adsbygoogle > div,
-  #adsense-mobile-top ins.adsbygoogle iframe,
-  #adsense-mobile-top ins.adsbygoogle > div {
-    max-height: 60px !important;
-  }
 }

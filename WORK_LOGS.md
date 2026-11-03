@@ -2,6 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 18:36 KST] [상단 구글 광고 영역 상하 여백 공간 최소화(Strict 50px 밀착) 및 원격 저장소 푸시(/git-push) 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 상단 광고 배너 및 상단 버튼/본문 여백 공간 최소화 (Strict 50px 밀착)**:
+    - 광고 그래픽은 50px로 표시되나, 구글 광고를 둘러싼 상하 공간(배경/여백) 및 그 아래 버튼/본문과의 간격이 100px 이상으로 너무 높게 비어 있던 문제를 전면 해결.
+    - `src/App.tsx`:
+      - 상단 배너 컨테이너를 상하 패딩 `py-0`, `h-[50px] max-h-[50px]`로 여백 없이 딱 50px로 컴팩트화.
+      - 전역 음소거/메뉴 버튼 위치를 기존 `top-[calc(...+78px)]` (태블릿 `+106px`)에서 배너 바로 아래 `top-[calc(env(safe-area-inset-top,0px)+53px)]`로 25~53px 끌어올려 배너에 완벽 밀착.
+      - 소설/웹툰/만화책(`book`, `novel`, `webtoon`, `cartoonBook`)은 자체 완결형 헤더가 있으므로 불필요한 전역 뒤로가기 버튼 제거 및 상단 패딩 `pt-0` 적용 (광고 배너 바로 아래에 소설 헤더가 여백 0px으로 밀착).
+      - 일반 뷰의 본문 패딩도 불필요한 대형 패딩(`pt-12 sm:pt-14`)에서 버튼 높이에 맞춘 `pt-11`로 컴팩트화.
+    - `src/views/PlayGameView.tsx`: 상단 조작 컨트롤 바 위치를 `top-[78px] sm:top-[106px]`에서 `top-[53px]`로 배너 바로 아래에 정렬.
+    - `src/components/AdSenseBanner.tsx`: `horizontal` 포맷의 `maxHeight` 및 `height`를 50px로 고정하고, 래퍼 컨테이너에 `h-[50px] max-h-[50px]` 강제 적용.
+    - `src/index.css` & `src/landing/styles/landing.css`:
+      - 구글 애드센스 자동광고(`google-auto-placed`, `aswift`, 앵커 광고) 및 pushdown 스페이서를 `display: none !important; height: 0 !important;`로 완전 차단.
+      - `html, body { padding-top: 0 !important; margin-top: 0 !important; }`를 통해 구글 스크립트가 임의로 상단 여백을 밀어내는 현상 원천 차단.
+      - 상단 배너 내부의 모든 자식 엘리먼트(`ins.adsbygoogle *`)의 `max-height`를 50px로 엄격히 고정.
+    - `src/hooks/useAdSenseAutoAds.ts`: SPA 뷰 전환 시 구글 임의 자동광고를 즉시 청소(`removeAutoPlacedAds`)하여 비인가 상단 여백/광고 생성 방지.
+  - **2. 프로덕션 빌드 검증 및 원격 푸시(/git-push) 완료**:
+    - `npm run build` 0 error 성공 완료.
+    - 사용자 명시 요청(`/git-push`)에 따라 로컬 커밋 및 `git push origin main` 원격 저장소 동기화 완료.
+- **검증 결과**:
+  - Vite 프로덕션 빌드 성공 (`vite build && post-build.js` 0 error)
+  - 구글 폼 완료 보고서 제출 완료
+  - 원격 저장소 푸시 완료 (`origin main`)
+
+
 ## [2026-11-03 18:25 KST] [태블릿/모바일 상단 애드센스 광고 슬림 배너(50~60px) 축소 및 원격 저장소 푸시(/git-push) 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

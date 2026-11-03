@@ -60,6 +60,12 @@ export function removeAutoPlacedAds(): void {
         (el as HTMLElement).style.display = 'none';
       }
     });
+
+    // 구글 애드센스가 body에 추가한 상단 패딩/마진 리셋
+    if (document.body && (document.body.style.paddingTop || document.body.style.marginTop)) {
+      document.body.style.paddingTop = '0px';
+      document.body.style.marginTop = '0px';
+    }
   } catch {
     // safe catch
   }
@@ -76,19 +82,10 @@ export function useAdSenseAutoAds(currentView: string, isAdRemoved = false): voi
       return;
     }
 
-    // /reddit 페이지에서는 다른 화면과 달리 임의 자동 광고를 배제하고 오직 지정된 3개 배너 형태에만 광고 노출
-    if (currentView === 'reddit' || currentView.startsWith('reddit')) {
-      removeAutoPlacedAds();
-      return;
-    }
-
-    try {
-      // SPA 페이지 전환 시 애드센스 자동광고 페이지뷰 이벤트 트리거
-      const adsbygoogle = window.adsbygoogle || [];
-      adsbygoogle.push({});
-    } catch {
-      // 애드센스 스크립트 로드 전이거나 차단기 동작 시 안전 무시
-    }
+    // 모든 화면에서 지정된 수동 배너(.adsense-container) 외의 구글 자동 침범 요소/여백 제거
+    removeAutoPlacedAds();
+    const timer = setTimeout(removeAutoPlacedAds, 600);
+    return () => clearTimeout(timer);
   }, [currentView, isAdRemoved]);
 }
 

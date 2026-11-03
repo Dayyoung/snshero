@@ -6797,17 +6797,17 @@ function AppContent() {
           {/* Top AdSense Banner (모바일에서는 상단 배너 표시, PC에서는 상단 배너 제거 후 좌우 배너로 표시, 레딧/자동전투 시 완전 제거) */}
           {!isAdRemoved && !isAutoBattle && view !== 'landing' && view !== 'card-play' && view !== 'reddit' && (
             <div className={cn(
-              "block lg:hidden w-full px-2 py-0.5 shrink-0 select-none z-20 overflow-hidden pt-[env(safe-area-inset-top,0px)]",
+              "block lg:hidden w-full px-1 py-0 shrink-0 select-none z-20 overflow-hidden pt-[env(safe-area-inset-top,0px)]",
               isPlayingBattle
-                ? "bg-[#060a14]/95 border-b border-slate-800"
-                : "bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800"
+                ? "bg-[#060a14] border-b border-slate-800"
+                : "bg-[#fdfcfc] dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800"
             )}>
-              <div className="max-w-[468px] mx-auto h-[50px] max-h-[50px] sm:h-[58px] sm:max-h-[60px] flex items-center justify-center overflow-hidden">
+              <div className="max-w-[468px] mx-auto h-[50px] max-h-[50px] flex items-center justify-center overflow-hidden">
                 <AdSenseBanner 
                   format="horizontal"
                   responsive={false}
-                  className="adsense-compact-top w-full h-full overflow-hidden"
-                  style={{ maxHeight: '52px', height: '50px', minHeight: '48px' }}
+                  className="adsense-compact-top w-full h-[50px] max-h-[50px] overflow-hidden"
+                  style={{ maxHeight: '50px', height: '50px', minHeight: '50px' }}
                 />
               </div>
             </div>
@@ -6829,7 +6829,7 @@ function AppContent() {
                   className={cn(
                     "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 min-w-11 rounded-sm transition-colors cursor-pointer flex items-center justify-center touch-target",
                     (!isAdRemoved && view !== 'landing') 
-                      ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
+                      ? "top-[calc(env(safe-area-inset-top,0px)+53px)] lg:top-[10px]" 
                       : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
                     isAudioMuted
                       ? "bg-rose-500/10 border border-rose-500/50 text-rose-500 hover:bg-rose-500/20"
@@ -6858,7 +6858,7 @@ function AppContent() {
                   className={cn(
                     "fixed right-4 min-[1024px]:right-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 rounded-sm transition-colors cursor-pointer flex items-center justify-center touch-target",
                     (!isAdRemoved && view !== 'landing') 
-                      ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
+                      ? "top-[calc(env(safe-area-inset-top,0px)+53px)] lg:top-[10px]" 
                       : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
                     (theme === 'dark' || theme === 'metal')
                       ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
@@ -6873,14 +6873,14 @@ function AppContent() {
             </>
           )}
 
-          {view !== 'landing' && view !== 'card-play' && !isMainTab && (!isPlayingBattle || playGameState !== 'playing') && !isGlobalPopupOpen && (
+          {view !== 'landing' && view !== 'card-play' && view !== 'book' && view !== 'novel' && view !== 'webtoon' && view !== 'cartoonBook' && !isMainTab && (!isPlayingBattle || playGameState !== 'playing') && !isGlobalPopupOpen && (
             <button
               onClick={handleGlobalBack}
               id="global-header-back-btn"
               className={cn(
                 "fixed left-3 sm:left-4 min-[1024px]:left-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 h-11 px-3 rounded-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer font-mono font-bold select-none border",
                 (!isAdRemoved && view !== 'landing') 
-                  ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
+                  ? "top-[calc(env(safe-area-inset-top,0px)+53px)] lg:top-[10px]" 
                   : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
                 "bg-[var(--ui-canvas)] text-[var(--ui-ink)] border-[var(--ui-line)] hover:bg-[var(--ui-surface)]"
               )}
@@ -7307,7 +7307,7 @@ function AppContent() {
           <div className={cn(
             "flex-1 flex flex-col min-h-0",
             isPlayingBattle ? "h-full overflow-hidden select-none touch-none overscroll-none" : "overflow-x-hidden",
-            (view !== 'play' && view !== 'home' && view !== 'card-play') && ((!isAdRemoved && view !== 'landing') ? "pt-12 sm:pt-14 lg:pt-4" : "pt-4"),
+            (view !== 'play' && view !== 'home' && view !== 'card-play' && view !== 'book' && view !== 'novel' && view !== 'webtoon' && view !== 'cartoonBook') && ((!isAdRemoved && view !== 'landing') ? "pt-11 lg:pt-4" : "pt-2 lg:pt-4"),
             showNavbar ? "pb-[calc(5rem+env(safe-area-inset-bottom,0px))]" : "pb-0"
           )}>
             <AnimatePresence mode="wait">

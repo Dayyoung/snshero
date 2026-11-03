@@ -261,25 +261,30 @@ a.btn,
 }
 
 /* ==========================================================================
-   Mobile/Tablet Compact Slim AdSense Top Banner (50px mobile, 60px tablet)
+   Mobile/Tablet Compact Slim AdSense Top Banner (Strict 50px)
    ========================================================================== */
 #adsense-mobile-top {
   width: 100%;
   max-width: 100%;
   background-color: #f8f7f7;
   border-bottom: 1px solid rgba(15, 0, 0, 0.12);
-  padding: 2px 8px 4px;
+  padding: 0 4px;
+  height: 50px !important;
+  max-height: 50px !important;
   overflow: hidden !important;
 }
 
 #adsense-mobile-top .adsense-banner-inner {
   width: 100%;
-  max-width: 480px;
+  max-width: 468px;
+  height: 50px !important;
+  max-height: 50px !important;
   margin: 0 auto;
   overflow: hidden !important;
 }
 
-#adsense-mobile-top ins.adsbygoogle {
+#adsense-mobile-top ins.adsbygoogle,
+#adsense-mobile-top ins.adsbygoogle * {
   display: inline-block !important;
   width: 100% !important;
   max-width: 468px !important;
@@ -295,20 +300,4 @@ a.btn,
   max-height: 50px !important;
   height: 50px !important;
   overflow: hidden !important;
-}
-
-@media (min-width: 640px) and (max-width: 1023px) {
-  #adsense-mobile-top .adsense-banner-inner {
-    max-width: 540px;
-  }
-  #adsense-mobile-top ins.adsbygoogle {
-    height: 60px !important;
-    max-height: 60px !important;
-    min-height: 60px !important;
-  }
-  #adsense-mobile-top ins.adsbygoogle iframe,
-  #adsense-mobile-top ins.adsbygoogle > div {
-    max-height: 60px !important;
-    height: 60px !important;
-  }
 }

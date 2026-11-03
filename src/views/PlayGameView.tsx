@@ -15423,7 +15423,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {gameState === 'playing' && (
         <div className={cn(
           "fixed left-3 right-3 max-w-[1024px] mx-auto inset-x-0 z-[9999] flex items-center justify-between pointer-events-auto font-mono text-xs select-none",
-          !isAdRemoved ? "top-[78px] sm:top-[106px]" : "top-2"
+          !isAdRemoved ? "top-[53px]" : "top-2"
         )}>
           {/* Left side: Exit/Back, Menu, Mobile Logs */}
           <div className="flex items-center gap-1.5 sm:gap-2">
