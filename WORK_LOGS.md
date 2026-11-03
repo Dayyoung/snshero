@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 06:50 KST] [#mall 커스텀 티셔츠 이미지 교체 및 카드 디자인 오버레이·피커 구현]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 커스텀 티셔츠 베이스 이미지 교체 (`public/tshirt.png`, `public/mall/cdn/shop/files/tshirt.png`, `MallSection.tsx`)**:
+    - 사용자가 제공한 고해상도 화이트 반팔 라운드넥 티셔츠 목업 이미지를 `public/tshirt.png` 및 `public/mall/cdn/shop/files/tshirt.png`에 저장.
+    - `MALL_GOODS_PRODUCTS`의 `goods_tshirt` 기본 이미지를 `/tshirt.png`로 교체.
+  - **2. 가슴 중앙 영웅 카드 디자인 실시간 합성 렌더링 (`renderTshirtMockupPreview`)**:
+    - 티셔츠의 가슴 중앙 영역(`top: 28%`, `left: 50%`, `transform: translateX(-50%)`, `aspect-[5/7]`)에 선택된 영웅 카드가 고품질 패브릭 전사 프린팅된 형태로 렌더링되도록 구현.
+    - 카드 내부에는 영웅의 흉상 일러스트, 종족 뱃지, 등급(SSR/UR 등), 이름, 4방위(▲/▶/▼/◀) 전투 스탯이 세련된 골드 테두리와 함께 정밀 배치.
+    - 상품 목록 그리드 썸네일(`renderMallView`)에도 머그컵과 티셔츠에 카드가 인쇄된 실물 목업 형태로 동시 표시.
+  - **3. 티셔츠 인쇄 영웅 카드 선택 피커 드로어 및 주문 연동 (`MallSection.tsx`, `index.ts`)**:
+    - 티셔츠 상세 모달 내에 `[카드 변경 🔄]` 버튼과 110종 영웅 카드 선택 그리드 피커 탑재.
+    - 유저가 선택한 영웅 카드가 티셔츠 목업에 즉각 실시간 반영되며, 결제 및 주문 생성(`ORD-...`) 시에도 선택한 영웅 정보(`#번호 영웅명`)가 주문 명세에 정확히 기록되도록 연동.
+  - **4. 빌드 및 배포 검증**:
+    - `npm run build` 및 `node scripts/post-build.js` 빌드 성공 (0 error).
+    - 로컬 git 커밋 완료 (`f39fa6e8e`, 지침에 따라 원격 git push 미실행 준수).
+    - 연동 구글 폼 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (0 error)
+  - 로컬 git 커밋: `f39fa6e8e`
+  - 구글 폼 완료 보고서 제출 완료: `[개발] [#mall] 커스텀 티셔츠 이미지 교체 및 카드 디자인 오버레이·피커 구현`
+
+
 ## [2026-11-04 06:45 KST] [SPA SEO/GEO/AEO 및 sitemap.xml 최적화, 카드팩 5장 3D 플립 및 종족 원소 특성 연출, #mall 커스텀 머그컵 곡면 카드 디자인 반영]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
