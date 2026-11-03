@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 13:54 KST] [홈(#home) 카드 클릭 시 모바일 팝업 넘침 해결 및 상/하단 닫기 버튼 정상화]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 모바일 뷰포트 넘침(Overflow) 방지 및 반응형 레이아웃 구조화**:
+    - `#home` 화면에서 덱 카드를 탭했을 때 표시되는 카드 검사 모달이 모바일 화면 높이를 초과하여 상/하단이 화면 밖으로 삐져나가던 문제를 해결.
+    - 다이얼로그 컨테이너에 `max-h-[90dvh] flex flex-col overflow-hidden` 구조를 적용하여 모바일 뷰포트(360px ~ 430px 및 세로 600px ~ 850px) 내에 완벽하게 안착.
+    - 모바일 화면(sm 미만)에서 원본 TCG 카드와 7등신 캐릭터 컷아웃 크기를 반응형(`w-32 sm:w-44`, `h-44 sm:h-56`)으로 최적화.
+  - **2. 상단/하단 닫기 버튼 상시 노출 및 이벤트 핸들러 불일치 버그 수정**:
+    - 상단 헤더(`shrink-0`)에 크고 선명한 `[x] 닫기` 버튼(44px+ 터치 타깃)을 상시 고정 배치.
+    - 하단 액션 버튼 바(`shrink-0`)에도 '닫기', '카드 육성 →', '마이덱 편집 →' 버튼을 화면 하단에 고정하여 스크롤 위치와 관계없이 즉시 터치 가능하도록 보장.
+    - 카드 상세 콘텐츠(스탯, 나침반 HUD, 스킬 및 TP)는 중앙 스크롤 영역(`flex-1 overflow-y-auto`)으로 격리하여 작은 화면에서도 부드럽게 스크롤 지원.
+    - 액션 이름 불일치(`close-home-card-inspector` vs `close-home-card-inspect`) 버그를 수정하여 버튼 클릭 및 백드롭 터치 시 모달이 즉시 닫히도록 완벽 수정.
+- **검증 결과**:
+  - 자동화 검증 스위트: `scripts/verify_all_requirements.ts` 총 48개 항목 100% PASS (48 PASS / 0 FAIL)
+  - 로컬 git 커밋: `55acefc41` (git push 금지 준수)
+  - 구글 폼 완료 보고서 제출 완료: `https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`
+
+
 ## [2026-11-03 13:55 KST] [웹소설(#book) 원문 전용 뷰어, 웹툰(#webtoon) 상하 스크롤 컷신/대사 스트립 뷰어 구현 및 회차 선택 정상화]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

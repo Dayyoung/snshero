@@ -65,7 +65,7 @@ if (typeof (cardNurtureStore as any).awardBattleVictoryExp !== 'function') {
 }
 
 export type PlayTabKey = 'adventure' | 'arcade' | 'webtoon';
-export type PlaySubState = 'map' | 'dialogue' | 'battle' | 'reward';
+export type PlaySubState = 'map' | 'dialogue' | 'battle' | 'reward' | 'reincarnation';
 
 export interface BattleSlotState {
   cardId: number;
@@ -78,6 +78,9 @@ export interface PlayRpgState {
   activeTab: PlayTabKey;
   subState: PlaySubState;
   currentChapter: number;
+  reincarnationLevel: number;
+  reincarnationTimerSec: number;
+  reincarnationDeadlineMs: number;
   heroTile: KadanRpgTile;
   targetTile: KadanRpgTile;
   regionId: string;
@@ -117,6 +120,9 @@ export const playRpgState: PlayRpgState = {
   activeTab: 'adventure', // Default initial view per Approved Task Prompt & M3 spec
   subState: 'map',
   currentChapter: 1,
+  reincarnationLevel: 0,
+  reincarnationTimerSec: 3.0,
+  reincarnationDeadlineMs: 0,
   heroTile: { x: 2, y: 2 },
   targetTile: { x: 4, y: 3 },
   regionId: 'elwin-wildland',
@@ -168,11 +174,29 @@ export function initPlayRpgState(): void {
         playRpgState.currentChapter = parsed;
       }
     }
+
+    const savedRebirth = localStorage.getItem('hero_kadan_rpg_rebirth_level');
+    if (savedRebirth) {
+      const parsedRebirth = parseInt(savedRebirth, 10);
+      if (!isNaN(parsedRebirth) && parsedRebirth >= 0) {
+        playRpgState.reincarnationLevel = parsedRebirth;
+      }
+    }
   } catch (err) {
     console.warn('[playRpgEngine] Error reading localStorage:', err);
   }
 
   syncRegionAndTargets();
+}
+
+/**
+ * Format chapter prefix label (e.g. "제1화" or "환생1-1화")
+ */
+export function formatChapterLabel(
+  chapter: number = playRpgState.currentChapter,
+  rebirthLevel: number = playRpgState.reincarnationLevel
+): string {
+  return rebirthLevel > 0 ? `환생${rebirthLevel}-${chapter}화` : `제${chapter}화`;
 }
 
 /**
@@ -569,6 +593,27 @@ export function triggerDialogue(event: KadanRpgEvent): void {
 }
 
 /**
+ * Close dialogue modal and stop active auto-play
+ */
+export function closeDialogueAndStopPlay(): void {
+  if (reincarnationIntervalId) {
+    clearInterval(reincarnationIntervalId);
+    reincarnationIntervalId = null;
+  }
+  playRpgState.autoMode = false;
+  playRpgState.subState = 'map';
+  playRpgState.activeAmbush = null;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('hero_kadan_rpg_auto_mode', 'false');
+    }
+  } catch {}
+  const region = getCurrentRegion();
+  playRpgState.heroTile = { ...region.startTile };
+  notifyPlayStateUpdated();
+}
+
+/**
  * Get active script lines for current chapter
  */
 export function getCurrentDialogueLines(): KadanRpgNovelScriptLine[] {
@@ -645,9 +690,9 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
   } else {
     const chEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === playRpgState.currentChapter);
     if (chEvent) {
-      const encounter = getDynamicKadanEncounter(chEvent, 0);
+      const encounter = getDynamicKadanEncounter(chEvent, playRpgState.reincarnationLevel);
       playRpgState.opponentHand = [...encounter.opponentCardIds.slice(0, 5)];
-      playRpgState.opponentName = `제${playRpgState.currentChapter}화 수호 기사단`;
+      playRpgState.opponentName = `${formatChapterLabel(playRpgState.currentChapter, playRpgState.reincarnationLevel)} 수호 기사단`;
     } else {
       playRpgState.opponentHand = [51, 52, 61, 60, 43];
       playRpgState.opponentName = '섀도우렐름 정예단';
@@ -852,28 +897,136 @@ export function finishBattleAndAwardExp(): { expAwarded: number; deckCount: numb
   // If repeat hunting is active, immediately repeat battle
   if (playRpgState.repeatHunting) {
     setTimeout(() => {
-      initBattle();
+      if (playRpgState.subState === 'battle') {
+        initBattle();
+      }
     }, 1500);
+  } else if (playRpgState.currentChapter >= 40) {
+    // When Episode 40 finishes, automatically open the 3-second Reincarnation Popup
+    setTimeout(() => {
+      if (playRpgState.subState === 'battle' && playRpgState.currentChapter >= 40) {
+        triggerReincarnationPopup();
+      }
+    }, 1200);
   } else if (playRpgState.autoMode) {
     // If autoMode is active without repeat hunting, advance to next chapter
     setTimeout(() => {
-      advanceNextChapter();
+      if (playRpgState.subState === 'battle' && playRpgState.battleWinner) {
+        advanceNextChapter();
+      }
     }, 1500);
   }
 
   return result;
 }
 
-/**
- * Advance to next chapter
- */
-export function advanceNextChapter(): void {
-  if (playRpgState.currentChapter < 40) {
-    playRpgState.currentChapter += 1;
+let reincarnationIntervalId: ReturnType<typeof setInterval> | null = null;
+
+function notifyPlayStateUpdated(): void {
+  if (typeof window !== 'undefined') {
     try {
-      localStorage.setItem('hero_kadan_rpg_chapter', String(playRpgState.currentChapter));
+      window.dispatchEvent(new CustomEvent('snshero_card_nurture_updated'));
     } catch {}
   }
+}
+
+/**
+ * Show 3-second Reincarnation Modal Popup after Episode 40 completes
+ */
+export function triggerReincarnationPopup(): void {
+  if (reincarnationIntervalId) {
+    clearInterval(reincarnationIntervalId);
+    reincarnationIntervalId = null;
+  }
+
+  playRpgState.subState = 'reincarnation';
+  playRpgState.reincarnationTimerSec = 3.0;
+  playRpgState.reincarnationDeadlineMs = Date.now() + 3000;
+  notifyPlayStateUpdated();
+
+  if (typeof window !== 'undefined') {
+    reincarnationIntervalId = setInterval(() => {
+      if (playRpgState.subState !== 'reincarnation') {
+        if (reincarnationIntervalId) {
+          clearInterval(reincarnationIntervalId);
+          reincarnationIntervalId = null;
+        }
+        return;
+      }
+
+      const remainingMs = Math.max(0, playRpgState.reincarnationDeadlineMs - Date.now());
+      playRpgState.reincarnationTimerSec = Number((remainingMs / 1000).toFixed(1));
+
+      if (remainingMs <= 0) {
+        if (reincarnationIntervalId) {
+          clearInterval(reincarnationIntervalId);
+          reincarnationIntervalId = null;
+        }
+        completeReincarnation();
+      } else {
+        notifyPlayStateUpdated();
+      }
+    }, 100);
+  }
+}
+
+/**
+ * Complete reincarnation and restart from Reincarnation N-1 (환생N-1화)
+ */
+export function completeReincarnation(): void {
+  if (reincarnationIntervalId) {
+    clearInterval(reincarnationIntervalId);
+    reincarnationIntervalId = null;
+  }
+
+  playRpgState.reincarnationLevel += 1;
+  playRpgState.currentChapter = 1;
+  playRpgState.reincarnationTimerSec = 0;
+
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('hero_kadan_rpg_rebirth_level', String(playRpgState.reincarnationLevel));
+      localStorage.setItem('hero_kadan_rpg_chapter', '1');
+    }
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('hero_reincarnation_updated', {
+          detail: { rebirthLevel: playRpgState.reincarnationLevel },
+        })
+      );
+    }
+  } catch {}
+
+  playRpgState.ambushTriggeredInChapter = false;
+  playRpgState.activeAmbush = null;
+  syncRegionAndTargets();
+
+  const ch1Event = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === 1) || KADAN_RPG_EVENTS[0];
+  if (ch1Event) {
+    playRpgState.heroTile = { ...ch1Event.tile };
+    triggerDialogue(ch1Event);
+  } else {
+    playRpgState.subState = 'map';
+    const region = getCurrentRegion();
+    playRpgState.heroTile = { ...region.startTile };
+  }
+
+  notifyPlayStateUpdated();
+}
+
+/**
+ * Advance to next chapter (or trigger 3s Reincarnation Popup after Chapter 40)
+ */
+export function advanceNextChapter(): void {
+  if (playRpgState.currentChapter >= 40) {
+    triggerReincarnationPopup();
+    return;
+  }
+
+  playRpgState.currentChapter += 1;
+  try {
+    localStorage.setItem('hero_kadan_rpg_chapter', String(playRpgState.currentChapter));
+  } catch {}
 
   playRpgState.subState = 'map';
   playRpgState.ambushTriggeredInChapter = false;
@@ -968,12 +1121,21 @@ export function runAutoStep(): void {
         initBattle();
       } else {
         advanceNextChapter();
+        // If 40th chapter triggered the 3-second Reincarnation Popup, wait for the 3s countdown!
+        if (playRpgState.subState === 'reincarnation') {
+          return;
+        }
         const nextEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === playRpgState.currentChapter);
         if (nextEvent) {
           playRpgState.heroTile = { ...nextEvent.tile };
           triggerDialogue(nextEvent);
         }
       }
+    }
+  } else if (playRpgState.subState === 'reincarnation') {
+    // Wait for the 3-second reincarnation popup countdown to complete
+    if (playRpgState.reincarnationDeadlineMs > 0 && Date.now() >= playRpgState.reincarnationDeadlineMs) {
+      completeReincarnation();
     }
   }
 }

@@ -61,6 +61,9 @@ import {
   extractDialogueText,
   resolveDialogueSpeakers,
   ensureGameStarted,
+  formatChapterLabel,
+  closeDialogueAndStopPlay,
+  completeReincarnation,
   PlayTabKey,
 } from '../services/playRpgEngine';
 
@@ -268,6 +271,15 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
     case 'play-dialogue-skip':
       initBattle();
       break;
+    case 'play-dialogue-close':
+      closeDialogueAndStopPlay();
+      break;
+    case 'play-reincarnate-now':
+      completeReincarnation();
+      break;
+    case 'play-reincarnate-close':
+      closeDialogueAndStopPlay();
+      break;
     case 'play-dialogue-choice': {
       const idxAttr = target?.getAttribute('data-choice-index');
       if (idxAttr !== null && idxAttr !== undefined) {
@@ -399,9 +411,11 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
  */
 function renderAdventureView(): string {
   const currentChapter = playRpgState.currentChapter;
+  const rebirthLevel = playRpgState.reincarnationLevel;
+  const chapterLabel = formatChapterLabel(currentChapter, rebirthLevel);
   const chapterMeta = chapterTitles.find((c) => c.chapter === currentChapter) || {
     chapter: currentChapter,
-    titleKo: `제${currentChapter}화의 여정`,
+    titleKo: `${chapterLabel}의 여정`,
     titleEn: `Chapter ${currentChapter} Journey`,
   };
   const region = getCurrentRegion();
@@ -418,9 +432,14 @@ function renderAdventureView(): string {
             <span>2D 모험 RPG</span>
             <span class="text-stone-400">·</span>
             <span>지역: ${region.nameKey}</span>
+            ${
+              rebirthLevel > 0
+                ? `<span class="text-amber-400 font-black">· 👑 환생 ${rebirthLevel}회차</span>`
+                : ''
+            }
           </div>
           <h2 class="text-lg sm:text-xl font-black text-[#201d1d] m-0">
-            제${currentChapter}화: ${chapterMeta.titleKo}
+            ${chapterLabel}: ${chapterMeta.titleKo}
           </h2>
           <p class="text-xs text-stone-500 m-0 pt-0.5">
             ${chapterMeta.titleEn} · 목표: ${chEvent ? chEvent.objectiveKey : '원정 진행 중'}
@@ -496,7 +515,9 @@ function renderAdventureView(): string {
 
       <!-- Sub-State: 1. 2D Tile Map Grid & Movement Controls -->
       ${
-        playRpgState.subState === 'map' || playRpgState.subState === 'dialogue'
+        playRpgState.subState === 'map' ||
+        playRpgState.subState === 'dialogue' ||
+        playRpgState.subState === 'reincarnation'
           ? `
             <section class="w-full bg-[#090d16] border border-[rgba(15,0,0,0.12)] p-4 sm:p-6 rounded-none">
               <!-- 10x8 Grid Container -->
@@ -629,7 +650,8 @@ function renderAdventureView(): string {
                 >
                   <!-- Backdrop Overlay with Blur -->
                   <div
-                    class="fixed inset-0 bg-black/85 backdrop-blur-xs transition-opacity"
+                    data-action="play-dialogue-close"
+                    class="fixed inset-0 bg-black/85 backdrop-blur-xs transition-opacity cursor-pointer"
                     aria-hidden="true"
                   ></div>
 
@@ -656,19 +678,29 @@ function renderAdventureView(): string {
                     <!-- Dialogue Modal Content Box -->
                     <div class="relative bg-[#181515] text-[#fdfcfc] border border-amber-400/60 shadow-2xl rounded-none p-4 sm:p-6 space-y-3.5 pt-12 sm:pt-14">
                       
-                      <!-- Top Bar: Chapter Title & Skip Button -->
+                      <!-- Top Bar: Chapter Title, Skip Button & Close (Stop Play) Button -->
                       <div class="flex items-center justify-between pb-2 border-b border-white/10 gap-2">
                         <span class="text-xs font-bold text-amber-400 truncate">
-                          제${currentChapter}화 [${playRpgState.currentDialogueLineIdx + 1} / ${lines.length}]
+                          ${chapterLabel} [${playRpgState.currentDialogueLineIdx + 1} / ${lines.length}]
                         </span>
-                        <button
-                          type="button"
-                          data-action="play-dialogue-skip"
-                          class="px-2.5 py-1.5 bg-stone-800 text-stone-300 text-xs font-bold rounded-sm border border-stone-600 min-h-[44px] hover:bg-stone-700 cursor-pointer shrink-0"
-                          aria-label="대화 건너뛰기 및 전투 직행"
-                        >
-                          건너뛰기 ▶
-                        </button>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                          <button
+                            type="button"
+                            data-action="play-dialogue-skip"
+                            class="px-2.5 py-1.5 bg-stone-800 text-stone-300 text-xs font-bold rounded-sm border border-stone-600 min-h-[44px] hover:bg-stone-700 cursor-pointer shrink-0"
+                            aria-label="대화 건너뛰기 및 전투 직행"
+                          >
+                            건너뛰기 ▶
+                          </button>
+                          <button
+                            type="button"
+                            data-action="play-dialogue-close"
+                            class="px-3 py-1.5 bg-rose-950/90 text-rose-200 text-xs font-black rounded-sm border border-rose-500/70 min-h-[44px] hover:bg-rose-900 cursor-pointer shrink-0"
+                            aria-label="대사 창 닫기 및 플레이 중지"
+                          >
+                            ✕ 닫기
+                          </button>
+                        </div>
                       </div>
 
                       <!-- Active Speaker Tag -->
@@ -737,9 +769,19 @@ function renderAdventureView(): string {
 
                       <!-- Dialogue Footer Navigation Button -->
                       <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
-                        <span class="text-[11px] text-stone-400 font-mono">
-                          ${playRpgState.autoMode ? '⚡ 자동 진행 중 (1.4초 주기)' : '수동 진행'}
-                        </span>
+                        <div class="flex items-center gap-2">
+                          <button
+                            type="button"
+                            data-action="play-dialogue-close"
+                            class="px-3 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer"
+                            aria-label="대사 창 닫기 및 플레이 중지"
+                          >
+                            ✕ 닫기 (중지)
+                          </button>
+                          <span class="hidden sm:inline text-[11px] text-stone-400 font-mono">
+                            ${playRpgState.autoMode ? '⚡ 자동 진행 중' : '수동 진행'}
+                          </span>
+                        </div>
                         ${
                           isFinal
                             ? `
@@ -783,13 +825,21 @@ function renderAdventureView(): string {
                     플레이어 vs ${playRpgState.opponentName}
                   </h3>
                 </div>
-                <div class="flex items-center gap-2 text-xs">
+                <div class="flex flex-wrap items-center gap-2 text-xs">
                   <span class="px-2.5 py-1 bg-sky-950 text-sky-300 rounded-sm border border-sky-800">
                     내 핸드: ${playRpgState.playerHand.length}장
                   </span>
                   <span class="px-2.5 py-1 bg-rose-950 text-rose-300 rounded-sm border border-rose-800">
                     상대 핸드: ${playRpgState.opponentHand.length}장
                   </span>
+                  <button
+                    type="button"
+                    data-action="play-dialogue-close"
+                    class="px-3 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer"
+                    aria-label="배틀 중지 및 맵으로 복귀"
+                  >
+                    ✕ 닫기 (중지)
+                  </button>
                 </div>
               </div>
 
@@ -928,7 +978,7 @@ function renderAdventureView(): string {
                           data-action="play-next-chapter"
                           class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer"
                         >
-                          다음 챕터로 전진 ▶
+                          ${currentChapter >= 40 ? '👑 40화 완주 · 환생하기 ▶' : '다음 챕터로 전진 ▶'}
                         </button>
                       </div>
                     </div>
@@ -937,6 +987,105 @@ function renderAdventureView(): string {
               }
             </section>
           `
+          : ''
+      }
+
+      <!-- Sub-State: 4. 3-Second Reincarnation Modal Popup (After Episode 40 Completes) -->
+      ${
+        playRpgState.subState === 'reincarnation'
+          ? (() => {
+              const nextRebirth = playRpgState.reincarnationLevel + 1;
+              const remainingSec = Math.max(0, playRpgState.reincarnationTimerSec);
+              const progressPct = Math.max(0, Math.min(100, (remainingSec / 3.0) * 100));
+              const kadanAsset = getCharacterAsset(41);
+
+              return `
+                <div
+                  id="play-reincarnation-modal-root"
+                  class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 font-mono select-none"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="reincarnation-modal-title"
+                >
+                  <!-- Backdrop Overlay -->
+                  <div
+                    class="fixed inset-0 bg-black/85 backdrop-blur-xs transition-opacity"
+                    aria-hidden="true"
+                  ></div>
+
+                  <!-- Reincarnation Dialog Box -->
+                  <div class="relative z-10 w-full max-w-lg bg-[#181515] text-[#fdfcfc] border-2 border-amber-400 rounded-none p-5 sm:p-6 space-y-4">
+                    <!-- Top Header -->
+                    <div class="flex items-center justify-between border-b border-white/15 pb-3 gap-2">
+                      <div>
+                        <span class="inline-block px-2 py-0.5 bg-amber-400 text-stone-950 text-[10px] font-black rounded-sm uppercase tracking-wider mb-1">
+                          👑 40화 대장정 완주 · 차원 환생
+                        </span>
+                        <h3 id="reincarnation-modal-title" class="text-base sm:text-lg font-black text-white m-0">
+                          환생 ${nextRebirth}회차 각성 (환생${nextRebirth}-1화 시작)
+                        </h3>
+                      </div>
+                      <button
+                        type="button"
+                        data-action="play-reincarnate-close"
+                        class="px-3 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer shrink-0"
+                        aria-label="환생 창 닫기 및 플레이 중지"
+                      >
+                        ✕ 닫기
+                      </button>
+                    </div>
+
+                    <!-- Character & Description -->
+                    <div class="flex items-center gap-4 bg-[#100d0d] border border-amber-400/40 p-3.5 rounded-none">
+                      <div class="w-20 h-20 sm:w-24 sm:h-24 bg-[#0d0b0b] border border-amber-400 rounded-none shrink-0 overflow-hidden flex items-center justify-center">
+                        <img
+                          src="${kadanAsset.bustPngUrl}"
+                          alt="카단"
+                          class="w-full h-full object-contain"
+                          onerror="this.src='${kadanAsset.seatUrl}'; this.onerror=null;"
+                        />
+                      </div>
+                      <div class="space-y-1.5 text-xs">
+                        <p class="text-amber-200 font-bold leading-relaxed m-0">
+                          제40화의 마지막 결전을 넘어 새로운 차원의 지평선이 열렸습니다!
+                        </p>
+                        <p class="text-stone-300 leading-relaxed m-0">
+                          보유 카드와 육성 레벨(Lv)은 모두 영구 보존되며, <strong class="text-amber-400">[환생${nextRebirth}-1화]</strong>부터 더욱 강력한 적들과 새로운 여정이 시작됩니다.
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- 3-Second Auto Reincarnation Countdown Bar -->
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between text-xs font-bold text-amber-300">
+                        <span>⚡ 3초 후 [환생${nextRebirth}-1화]가 자동으로 시작됩니다...</span>
+                        <span>${remainingSec.toFixed(1)}s</span>
+                      </div>
+                      <div class="w-full h-2 bg-stone-800 border border-white/15 rounded-none overflow-hidden">
+                        <div
+                          class="h-full bg-amber-400 transition-all duration-100 ease-linear"
+                          style="width: ${progressPct}%"
+                        ></div>
+                      </div>
+                    </div>
+
+                    <!-- Footer Buttons -->
+                    <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
+                      <div class="px-3 py-2 bg-stone-900 border border-amber-400/40 text-xs font-black text-amber-400">
+                        👑 환생 레벨: Lv.${nextRebirth}
+                      </div>
+                      <button
+                        type="button"
+                        data-action="play-reincarnate-now"
+                        class="px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs sm:text-sm font-black rounded-sm min-h-[44px] cursor-pointer"
+                      >
+                        👑 환생${nextRebirth}-1화 즉시 시작 (${Math.max(1, Math.ceil(remainingSec))}s) ▶
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            })()
           : ''
       }
     </div>
