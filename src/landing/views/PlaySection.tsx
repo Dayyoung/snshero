@@ -58,6 +58,9 @@ import {
   launchArcadeGame,
   closeArcadeModal,
   rollRandomArcadeGame,
+  extractDialogueText,
+  resolveDialogueSpeakers,
+  ensureGameStarted,
   PlayTabKey,
 } from '../services/playRpgEngine';
 
@@ -592,7 +595,7 @@ function renderAdventureView(): string {
           : ''
       }
 
-      <!-- Sub-State: 2. Dialogue Modal Popup Overlay (True Modal Popup for Perfect Mobile & Desktop Visibility) -->
+      <!-- Sub-State: 2. Dialogue Modal Popup Overlay (Top-Left/Right Character Recognition & Clean Dialogue Only) -->
       ${
         playRpgState.subState === 'dialogue'
           ? (() => {
@@ -609,7 +612,14 @@ function renderAdventureView(): string {
               };
               const line: KadanRpgNovelScriptLine = lines[playRpgState.currentDialogueLineIdx] || defaultLine;
               const isFinal = playRpgState.currentDialogueLineIdx >= lines.length - 1;
-              const cutoutUrl = getCutoutUrl(line.cardId || 41);
+
+              // Clean dialogue text & speaker resolution
+              const dialogueData = extractDialogueText(line);
+              const speakers = resolveDialogueSpeakers(line);
+              const leftCutoutUrl = getCutoutUrl(speakers.left.cardId);
+              const rightCutoutUrl = getCutoutUrl(speakers.right.cardId);
+
+              const activeSpeaker = speakers.activeSide === 'left' ? speakers.left : speakers.right;
 
               return `
                 <div
@@ -621,116 +631,190 @@ function renderAdventureView(): string {
                 >
                   <!-- Backdrop Overlay with Blur -->
                   <div
-                    class="fixed inset-0 bg-black/80 backdrop-blur-xs transition-opacity"
+                    class="fixed inset-0 bg-black/85 backdrop-blur-xs transition-opacity"
                     aria-hidden="true"
                   ></div>
 
-                  <!-- Dialogue Modal Content Box (Mobile Full Visibility) -->
-                  <div class="relative z-10 w-full max-w-lg bg-[#181515] text-[#fdfcfc] border border-amber-400/60 shadow-2xl rounded-none p-4 sm:p-6 space-y-4 max-h-[90dvh] overflow-y-auto">
-                    <!-- Top Bar: Chapter Title & Skip Button -->
-                    <div class="flex items-center justify-between pb-3 border-b border-white/10 gap-2">
-                      <span class="text-xs font-bold text-amber-400">
-                        제${currentChapter}화 에피소드 스토리 다이얼로그 [${playRpgState.currentDialogueLineIdx + 1} / ${lines.length}]
-                      </span>
-                      <button
-                        type="button"
-                        data-action="play-dialogue-skip"
-                        class="px-3 py-1.5 bg-stone-800 text-stone-300 text-xs font-bold rounded-sm border border-stone-600 min-h-[44px] hover:bg-stone-700 cursor-pointer"
-                        aria-label="대화 건너뛰기 및 전투 직행"
-                      >
-                        건너뛰기 (전투 직행) ▶
-                      </button>
-                    </div>
-
-                    <!-- Dialogue Body: Cutout + Prose -->
-                    <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-                      <div class="w-28 h-36 sm:w-36 sm:h-48 shrink-0 bg-[#0e0c0c] border border-white/10 rounded-none flex items-center justify-center p-1 overflow-hidden">
+                  <!-- Dialogue Box Container with Top Left/Right Characters -->
+                  <div class="relative z-10 w-full max-w-xl text-[#fdfcfc] rounded-none pt-16 sm:pt-20">
+                    
+                    <!-- Top-Left Character Card -->
+                    <div class="absolute top-0 left-3 sm:left-6 flex flex-col items-center z-20 transition-all duration-200 ${
+                      speakers.activeSide === 'left' ? 'scale-105' : 'opacity-60 scale-95'
+                    }">
+                      <div class="relative w-20 h-24 sm:w-28 sm:h-32 bg-[#0d0b0b] ${
+                        speakers.activeSide === 'left'
+                          ? 'border-2 border-amber-400 bg-amber-950/20 shadow-[0_0_15px_rgba(251,191,36,0.35)]'
+                          : 'border border-white/20'
+                      } rounded-none overflow-hidden flex items-end justify-center">
                         <img
-                          src="${cutoutUrl}"
-                          alt="${line.name}"
-                          class="w-full h-full object-contain filter drop-shadow-none"
+                          src="${leftCutoutUrl}"
+                          alt="${speakers.left.name}"
+                          class="w-full h-full object-contain ${speakers.activeSide === 'left' ? '' : 'grayscale-[35%]'}"
                           onerror="this.src='/seat/Hero_041.png'"
                         />
-                      </div>
-
-                      <div class="flex-1 space-y-2 w-full">
-                        <div class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-amber-400 text-stone-950 text-xs font-black rounded-sm uppercase">
-                          <span id="dialogue-modal-speaker">${line.name || line.speaker}</span>
-                        </div>
-
-                        <p class="text-xs sm:text-sm leading-relaxed text-[#fdfcfc] font-medium m-0">
-                          ${line.text}
-                        </p>
-
                         ${
-                          line.dialogueQuoteKo
-                            ? `
-                              <p class="text-[11px] text-amber-300 italic border-l-2 border-amber-400 pl-2.5 py-0.5 m-0 font-mono">
-                                "${line.dialogueQuoteKo}"
-                              </p>
-                            `
-                            : ''
+                          speakers.activeSide === 'left'
+                            ? `<div class="absolute top-1 left-1 px-1.5 py-0.5 bg-amber-400 text-stone-950 text-[10px] font-black rounded-sm tracking-wider">
+                                [발언 중]
+                              </div>`
+                            : `<div class="absolute top-1 left-1 px-1.5 py-0.5 bg-stone-800 text-stone-400 text-[9px] font-bold rounded-sm">
+                                [경청]
+                              </div>`
                         }
+                      </div>
+                      <div class="mt-1 px-2 py-0.5 text-center ${
+                        speakers.activeSide === 'left'
+                          ? 'bg-amber-400 text-stone-950 font-black'
+                          : 'bg-[#201d1d] text-stone-400 font-bold border border-white/10'
+                      } text-[11px] sm:text-xs rounded-sm max-w-[85px] sm:max-w-[120px] truncate shadow-sm">
+                        ${speakers.left.name}
                       </div>
                     </div>
 
-                    <!-- Protagonist Interactive Choices -->
-                    ${
-                      line.choices && line.choices.length > 0
-                        ? `
-                          <div class="pt-3 border-t border-white/10 space-y-2">
-                            <div class="flex items-center justify-between text-xs text-stone-400">
-                              <span>주인공 선택지 (${playRpgState.autoMode ? '1.5초 후 자동 진행' : '선택 대기'})</span>
-                              <span class="text-amber-400 font-bold">${line.choices.length}개 선택 가능</span>
-                            </div>
-                            <div class="grid grid-cols-1 gap-2">
-                              ${line.choices
-                                .map(
-                                  (c, cIdx) => `
-                                <button
-                                  type="button"
-                                  data-action="play-dialogue-choice"
-                                  data-choice-index="${cIdx}"
-                                  class="px-4 py-3 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] border border-amber-400/50 text-xs font-bold rounded-sm min-h-[44px] text-left transition-colors flex items-center justify-between cursor-pointer active:translate-y-px"
-                                >
-                                  <span><span class="text-amber-400 font-black mr-1.5">[${c.attitude || '결의'}]</span>${c.labelKo || c.labelEn || '선택'}</span>
-                                  <span class="text-[10px] text-emerald-400 font-mono">${c.bonusType === 'sns' ? '+SNS 코인' : '+버프 각성'}</span>
-                                </button>
-                              `
-                                )
-                                .join('')}
-                            </div>
-                          </div>
-                        `
-                        : ''
-                    }
+                    <!-- Top-Right Character Card -->
+                    <div class="absolute top-0 right-3 sm:right-6 flex flex-col items-center z-20 transition-all duration-200 ${
+                      speakers.activeSide === 'right' ? 'scale-105' : 'opacity-60 scale-95'
+                    }">
+                      <div class="relative w-20 h-24 sm:w-28 sm:h-32 bg-[#0d0b0b] ${
+                        speakers.activeSide === 'right'
+                          ? 'border-2 border-amber-400 bg-amber-950/20 shadow-[0_0_15px_rgba(251,191,36,0.35)]'
+                          : 'border border-white/20'
+                      } rounded-none overflow-hidden flex items-end justify-center">
+                        <img
+                          src="${rightCutoutUrl}"
+                          alt="${speakers.right.name}"
+                          class="w-full h-full object-contain ${speakers.activeSide === 'right' ? '' : 'grayscale-[35%]'}"
+                          onerror="this.src='/seat/Hero_043.png'"
+                        />
+                        ${
+                          speakers.activeSide === 'right'
+                            ? `<div class="absolute top-1 right-1 px-1.5 py-0.5 bg-amber-400 text-stone-950 text-[10px] font-black rounded-sm tracking-wider">
+                                [발언 중]
+                              </div>`
+                            : `<div class="absolute top-1 right-1 px-1.5 py-0.5 bg-stone-800 text-stone-400 text-[9px] font-bold rounded-sm">
+                                [경청]
+                              </div>`
+                        }
+                      </div>
+                      <div class="mt-1 px-2 py-0.5 text-center ${
+                        speakers.activeSide === 'right'
+                          ? 'bg-amber-400 text-stone-950 font-black'
+                          : 'bg-[#201d1d] text-stone-400 font-bold border border-white/10'
+                      } text-[11px] sm:text-xs rounded-sm max-w-[85px] sm:max-w-[120px] truncate shadow-sm">
+                        ${speakers.right.name}
+                      </div>
+                    </div>
 
-                    <!-- Dialogue Footer Navigation Button -->
-                    <div class="pt-3 border-t border-white/10 flex items-center justify-between">
-                      <span class="text-[11px] text-stone-400 font-mono">
-                        ${playRpgState.autoMode ? '⚡ 자동 진행 중 (1.4초 주기)' : '수동 진행'}
-                      </span>
+                    <!-- Dialogue Modal Content Box -->
+                    <div class="relative bg-[#181515] text-[#fdfcfc] border border-amber-400/60 shadow-2xl rounded-none p-4 sm:p-6 space-y-3.5 pt-12 sm:pt-14">
+                      
+                      <!-- Top Bar: Chapter Title & Skip Button -->
+                      <div class="flex items-center justify-between pb-2 border-b border-white/10 gap-2">
+                        <span class="text-xs font-bold text-amber-400 truncate">
+                          제${currentChapter}화 [${playRpgState.currentDialogueLineIdx + 1} / ${lines.length}]
+                        </span>
+                        <button
+                          type="button"
+                          data-action="play-dialogue-skip"
+                          class="px-2.5 py-1.5 bg-stone-800 text-stone-300 text-xs font-bold rounded-sm border border-stone-600 min-h-[44px] hover:bg-stone-700 cursor-pointer shrink-0"
+                          aria-label="대화 건너뛰기 및 전투 직행"
+                        >
+                          건너뛰기 ▶
+                        </button>
+                      </div>
+
+                      <!-- Active Speaker Tag -->
+                      <div class="flex items-center gap-2">
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-amber-400 text-stone-950 text-xs font-black rounded-sm uppercase">
+                          <span id="dialogue-modal-speaker">${activeSpeaker.name}</span>
+                        </div>
+                        <span class="text-[11px] text-stone-400 truncate">
+                          ${speakers.speakerTitle}
+                        </span>
+                      </div>
+
+                      <!-- Clean Dialogue Speech Bubble (소설 지문 제거, 대사만 깔끔하게 표시) -->
+                      <div class="p-4 sm:p-5 bg-[#100d0d] border border-amber-400/50 rounded-none relative">
+                        <!-- Speech Bubble Pointer Arrow pointing toward the active speaker -->
+                        <div
+                          class="absolute -top-2 ${
+                            speakers.activeSide === 'left' ? 'left-8 sm:left-12' : 'right-8 sm:right-12'
+                          } w-0 h-0 border-x-8 border-x-transparent border-b-8 border-b-amber-400/60"
+                        ></div>
+
+                        <div class="space-y-2">
+                          ${dialogueData.text
+                            .split('\n\n')
+                            .map(
+                              (paragraph) => `
+                            <p class="text-sm sm:text-base font-bold text-amber-100 leading-relaxed m-0 break-keep">
+                              ${paragraph}
+                            </p>
+                          `
+                            )
+                            .join('')}
+                        </div>
+                      </div>
+
+                      <!-- Protagonist Interactive Choices -->
                       ${
-                        isFinal
+                        line.choices && line.choices.length > 0
                           ? `
-                            <button
-                              type="button"
-                              data-action="play-battle-start"
-                              class="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs sm:text-sm font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1.5 cursor-pointer shadow-none active:scale-95"
-                            >
-                              ⚔️ 전투 시작 (3x3 배틀) ▶
-                            </button>
+                            <div class="pt-2 border-t border-white/10 space-y-2">
+                              <div class="flex items-center justify-between text-xs text-stone-400">
+                                <span>주인공 선택지 (${playRpgState.autoMode ? '1.5초 후 자동 진행' : '선택 대기'})</span>
+                                <span class="text-amber-400 font-bold">${line.choices.length}개 선택 가능</span>
+                              </div>
+                              <div class="grid grid-cols-1 gap-2">
+                                ${line.choices
+                                  .map(
+                                    (c, cIdx) => `
+                                  <button
+                                    type="button"
+                                    data-action="play-dialogue-choice"
+                                    data-choice-index="${cIdx}"
+                                    class="px-4 py-3 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] border border-amber-400/50 text-xs font-bold rounded-sm min-h-[44px] text-left transition-colors flex items-center justify-between cursor-pointer active:translate-y-px"
+                                  >
+                                    <span><span class="text-amber-400 font-black mr-1.5">[${c.attitude || '결의'}]</span>${c.labelKo || c.labelEn || '선택'}</span>
+                                    <span class="text-[10px] text-emerald-400 font-mono">${c.bonusType === 'sns' ? '+SNS 코인' : '+버프 각성'}</span>
+                                  </button>
+                                `
+                                  )
+                                  .join('')}
+                              </div>
+                            </div>
                           `
-                          : `
-                            <button
-                              type="button"
-                              data-action="play-dialogue-next"
-                              class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1 cursor-pointer active:translate-y-px"
-                            >
-                              다음 대화 ▶
-                            </button>
-                          `
+                          : ''
                       }
+
+                      <!-- Dialogue Footer Navigation Button -->
+                      <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
+                        <span class="text-[11px] text-stone-400 font-mono">
+                          ${playRpgState.autoMode ? '⚡ 자동 진행 중 (1.4초 주기)' : '수동 진행'}
+                        </span>
+                        ${
+                          isFinal
+                            ? `
+                              <button
+                                type="button"
+                                data-action="play-battle-start"
+                                class="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs sm:text-sm font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1.5 cursor-pointer shadow-none active:scale-95"
+                              >
+                                ⚔️ 전투 시작 (3x3 배틀) ▶
+                              </button>
+                            `
+                            : `
+                              <button
+                                type="button"
+                                data-action="play-dialogue-next"
+                                class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1 cursor-pointer active:translate-y-px"
+                              >
+                                다음 대화 ▶
+                              </button>
+                            `
+                        }
+                      </div>
                     </div>
                   </div>
                 </div>

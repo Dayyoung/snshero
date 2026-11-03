@@ -66,7 +66,7 @@ import {
 } from './services/adsenseManager';
 import { cardNurtureStore } from './services/cardNurtureStore';
 import { initIdleAutoPlay } from './services/idleAutoPlayManager';
-import { playRpgState, runAutoStep } from './services/playRpgEngine';
+import { playRpgState, runAutoStep, ensureGameStarted } from './services/playRpgEngine';
 
 interface LandingState {
   activeView: ViewKey;
@@ -199,10 +199,7 @@ export function navigateTo(targetView: ViewKey, options?: RouteOptions): void {
 
   // Auto-start Kadan Journey runner when navigating to #play view
   if (resolvedView === 'play') {
-    playRpgState.autoMode = true;
-    try {
-      localStorage.setItem('hero_kadan_rpg_auto_mode', 'true');
-    } catch {}
+    ensureGameStarted();
   }
 
   state.activeView = resolvedView;
@@ -582,10 +579,7 @@ export function mountLanding(): void {
   const initialView = parseRoute();
   state.activeView = initialView;
   if (initialView === 'play') {
-    playRpgState.autoMode = true;
-    try {
-      localStorage.setItem('hero_kadan_rpg_auto_mode', 'true');
-    } catch {}
+    ensureGameStarted();
   }
 
   // 2. Normalize initial URL to `#${initialView}` without creating an extra history frame

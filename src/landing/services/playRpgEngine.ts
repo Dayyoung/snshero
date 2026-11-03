@@ -281,6 +281,174 @@ export function moveHeroToTile(target: KadanRpgTile): {
 }
 
 /**
+ * Ensure adventure game is started immediately upon navigating to #play
+ */
+export function ensureGameStarted(): void {
+  playRpgState.autoMode = true;
+  playRpgState.activeTab = 'adventure';
+  try {
+    localStorage.setItem('hero_kadan_rpg_auto_mode', 'true');
+  } catch {}
+
+  const chEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === playRpgState.currentChapter) || KADAN_RPG_EVENTS[0];
+
+  if (playRpgState.subState === 'map') {
+    if (chEvent) {
+      playRpgState.heroTile = { ...chEvent.tile };
+      triggerDialogue(chEvent);
+    }
+  } else if (playRpgState.subState === 'battle' && playRpgState.battleWinner) {
+    if (playRpgState.repeatHunting) {
+      initBattle();
+    } else {
+      advanceNextChapter();
+      const nextEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === playRpgState.currentChapter) || chEvent;
+      if (nextEvent) {
+        playRpgState.heroTile = { ...nextEvent.tile };
+        triggerDialogue(nextEvent);
+      }
+    }
+  }
+}
+
+/**
+ * Extract clean, concise dialogue quote from script line (대사만 추출)
+ */
+export function extractDialogueText(line: KadanRpgNovelScriptLine): { text: string; isNarration: boolean } {
+  // 1. 이미 정제된 dialogueQuoteKo가 있는 경우 최우선 채택
+  if (line.dialogueQuoteKo && line.dialogueQuoteKo.trim().length > 0) {
+    let quote = line.dialogueQuoteKo.trim();
+    if (!quote.startsWith('“') && !quote.startsWith('"')) {
+      quote = `“${quote}”`;
+    }
+    // 복수 대사 따옴표 분리 포맷팅
+    quote = quote.replace(/”\s*“/g, '”\n\n“').replace(/"\s*"/g, '"\n\n"');
+    return { text: quote, isNarration: false };
+  }
+
+  // 2. subCuts에서 따옴표 대사가 있는지 확인
+  if (line.subCuts && line.subCuts.length > 0) {
+    const cutQuotes: string[] = [];
+    for (const cut of line.subCuts) {
+      if (cut.dialogueKo && cut.dialogueKo.trim()) {
+        const matches = cut.dialogueKo.match(/[“"][^”"]+[”"]/g);
+        if (matches && matches.length > 0) {
+          cutQuotes.push(...matches);
+        }
+      }
+    }
+    if (cutQuotes.length > 0) {
+      // 중복 대사 제거 및 병합
+      const uniqueQuotes = Array.from(new Set(cutQuotes));
+      return { text: uniqueQuotes.join('\n\n'), isNarration: false };
+    }
+  }
+
+  // 3. line.text에서 큰따옴표 대사 추출
+  if (line.text && line.text.trim()) {
+    const matches = line.text.match(/[“"][^”"]+[”"]/g);
+    if (matches && matches.length > 0) {
+      const uniqueQuotes = Array.from(new Set(matches));
+      return { text: uniqueQuotes.join('\n\n'), isNarration: false };
+    }
+
+    // 4. 큰따옴표 대사가 전혀 없는 순수 지문/내레이션 문단인 경우:
+    // 전체 소설 본문 대신 1~2문장의 핵심 상황만 간결하게 표시 (최대 90자 이내)
+    const sentences = line.text
+      .replace(/\n+/g, ' ')
+      .split(/[.!?]/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+    const summary = sentences.slice(0, 2).join('. ') + (sentences.length > 0 ? '.' : '');
+    return { text: summary || line.text.slice(0, 80) + '...', isNarration: true };
+  }
+
+  return { text: '“서약은 얼어붙지 않는다.”', isNarration: false };
+}
+
+export interface DialogueSpeakerInfo {
+  name: string;
+  cardId: number;
+  role: string;
+  isActive: boolean;
+}
+
+export interface ResolvedDialogueSpeakers {
+  left: DialogueSpeakerInfo;
+  right: DialogueSpeakerInfo;
+  activeSide: 'left' | 'right';
+  speakerTitle: string;
+}
+
+/**
+ * Resolve top-left and top-right characters and identify who is speaking
+ */
+export function resolveDialogueSpeakers(line: KadanRpgNovelScriptLine): ResolvedDialogueSpeakers {
+  const chars = line.sceneCharacters || [];
+
+  // 기본 캐릭터 1 (주인공 / 아군 측 또는 첫 번째 인물)
+  const char1 = chars[0] || {
+    cardId: line.cardId || 41,
+    nameKo: line.name || '카단',
+    roleKo: '성기사단의 후예',
+    isSpeaker: true,
+  };
+
+  // 기본 캐릭터 2 (상대방 / 조력자 / 적 또는 두 번째 인물)
+  let char2 = chars[1];
+  if (!char2) {
+    // 1명만 있을 경우 대비: 카단이 아니면 카단을 상대방으로, 카단이면 발리안/알렉산다르를 배치
+    const oppCardId = char1.cardId === 41 ? 43 : 41;
+    const oppName = oppCardId === 41 ? '카단' : '발리안';
+    const oppRole = oppCardId === 41 ? '성기사단의 후예' : '아케인 창술의 달인';
+    char2 = {
+      cardId: oppCardId,
+      nameKo: oppName,
+      roleKo: oppRole,
+      isSpeaker: false,
+    };
+  }
+
+  // 발화자가 누구인지 판단 (좌측 vs 우측)
+  const lineSpeakerName = (line.name || '').trim();
+  const lineSpeakerType = line.speaker;
+  let activeSide: 'left' | 'right' = 'left';
+
+  if (lineSpeakerName.includes(char2.nameKo) || (char2.nameEn && lineSpeakerName.includes(char2.nameEn))) {
+    activeSide = 'right';
+  } else if (lineSpeakerName.includes(char1.nameKo) || (char1.nameEn && lineSpeakerName.includes(char1.nameEn))) {
+    activeSide = 'left';
+  } else if (lineSpeakerType === 'kadan' && char1.cardId === 41) {
+    activeSide = 'left';
+  } else if (lineSpeakerType === 'kadan' && char2.cardId === 41) {
+    activeSide = 'right';
+  } else if (char2.isSpeaker && !char1.isSpeaker) {
+    activeSide = 'right';
+  } else {
+    activeSide = 'left';
+  }
+
+  const activeChar = activeSide === 'left' ? char1 : char2;
+
+  return {
+    left: {
+      name: char1.nameKo,
+      cardId: char1.cardId || 41,
+      role: char1.roleKo || '동료',
+      isActive: activeSide === 'left',
+    },
+    right: {
+      name: char2.nameKo,
+      cardId: char2.cardId || 43,
+      role: char2.roleKo || '동료',
+      isActive: activeSide === 'right',
+    },
+    activeSide,
+    speakerTitle: activeChar.roleKo || '수호자',
+  };
+}
+
+/**
  * Trigger dialogue cutscene overlay
  */
 export function triggerDialogue(event: KadanRpgEvent): void {
@@ -664,18 +832,11 @@ export function runAutoStep(): void {
   if (!playRpgState.autoMode) return;
 
   if (playRpgState.subState === 'map') {
-    // Step toward target tile
-    const target = playRpgState.targetTile;
-    const dx = target.x - playRpgState.heroTile.x;
-    const dy = target.y - playRpgState.heroTile.y;
-
-    if (dx !== 0 || dy !== 0) {
-      const stepX = dx !== 0 ? Math.sign(dx) : 0;
-      const stepY = stepX === 0 && dy !== 0 ? Math.sign(dy) : 0;
-      stepHeroDelta(stepX, stepY);
-    } else {
-      const chEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === playRpgState.currentChapter);
-      if (chEvent) triggerDialogue(chEvent);
+    // In auto mode, immediately jump to event tile and trigger dialogue cutscene
+    const chEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === playRpgState.currentChapter) || KADAN_RPG_EVENTS[0];
+    if (chEvent) {
+      playRpgState.heroTile = { ...chEvent.tile };
+      triggerDialogue(chEvent);
     }
   } else if (playRpgState.subState === 'dialogue') {
     // If choice prompt active, auto-select option 0
@@ -698,6 +859,11 @@ export function runAutoStep(): void {
         initBattle();
       } else {
         advanceNextChapter();
+        const nextEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === playRpgState.currentChapter);
+        if (nextEvent) {
+          playRpgState.heroTile = { ...nextEvent.tile };
+          triggerDialogue(nextEvent);
+        }
       }
     }
   }
