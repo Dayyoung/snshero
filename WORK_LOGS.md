@@ -2,6 +2,51 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 04:32 KST] [PC 마이덱 카드 최소너비 보장 및 동서남북 스탯 배지 카드 테두리 끝단 십자 배치 적용]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 동서남북(N, S, W, E) 스탯 배지를 초상화 창에서 카드 최외곽 테두리 끝단으로 분리 배치 (`src/landing/components/OriginalCardHtml.ts`)**:
+    - 초상화(일러스트) 창 내부에 겹쳐져 있던 동서남북 4방향 다이아몬드 HUD를 카드 최외곽 컨테이너(`relative`)의 직속 자식으로 이동하여 카드 테두리 끝(North: 상단 중앙 끝, South: 하단 중앙 끝, West: 좌측 중앙 끝, East: 우측 중앙 끝)에 십자 형태로 당당하게 배치.
+    - 영웅 초상화(얼굴 및 신체)가 숫자에 가려지지 않고 온전히 시원하게 노출되도록 개선.
+    - 헤더 및 푸터 중앙에 스페이서(`pointer-events-none w-4 sm:w-6`)를 두어 상단(North)/하단(South) 배지와 텍스트(등급, Lv, 이름, 카드코드)가 겹치지 않도록 여백 확보.
+  - **2. PC 환경에서 마이덱 카드 최소 너비 보장 및 최적 크기 밸런싱 (`src/landing/views/PlaySection.tsx`, `MyDeckSection.tsx`)**:
+    - `PlaySection.tsx`: 모바일에서는 5장이 1줄에 딱 들어가고(`flex-1 min-w-0 max-w-[72px]`), PC(태블릿/데스크톱)에서는 지나치게 작아지지 않도록 최소 너비(`sm:min-w-[96px]`, `md:min-w-[115px]`, `lg:min-w-[125px]`) 및 넉넉한 컨테이너 폭(`sm:max-w-[580px]`, `md:max-w-[680px]`, `lg:max-w-[740px]`), 적정 카드 높이(`sm:max-h-[175px]`, `md:max-h-[200px]`)를 적용.
+    - 3x3 배틀 보드 슬롯도 동일하게 상하좌우 끝단 십자 배치로 통일하여 인접 슬롯과의 수치 비교 가독성 극대화.
+    - `MyDeckSection.tsx`: 5개 덱 슬롯 및 교체 드로어의 카드에 최소 너비(`min-w-[120px]`~`min-w-[150px]`)를 적용하여 대형 화면에서 카드가 찌그러지지 않도록 보호.
+  - **3. 서버 재기동 및 빌드 검증**:
+    - `scripts/start-server.sh`를 통해 Vite Preview(3000) 및 실시간 자동 빌드 워처 재가동 완료 (`200 OK`).
+    - `npm run build` 0 error 성공 (4,360 modules transformed).
+    - 로컬 git 커밋 완료 (`f8bfb27ea`, 지침에 따라 push 미실행 준수).
+    - 구글 폼 완료 보고서 제출 완료.
+- **검증 결과**:
+  - Vite 프로덕션 빌드 성공: 0 error
+  - 로컬 git 커밋 완료: `f8bfb27ea`
+  - 구글 폼 완료 보고서 제출 완료: `[UI/UX 개선] PC 마이덱 카드 최소너비 보장 및 카드 기준 동서남북 스탯 테두리 끝단 배치 완료`
+
+## [2026-11-04 04:25 KST] [#play 3x3 배틀 카드 배치 및 뒤집힘 효과·효과음 복구 및 PC 환경 내 카드 최대너비 제약 적용]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 카드 내려놓을 때/뒤집어질 때 효과음(SFX) 및 햅틱 복구 (`src/landing/services/audioManager.ts`, `playRpgEngine.ts`)**:
+    - `audioManager.ts`에 `playCardPlace()` 및 `playCardFlip()` 메서드 구현. Mixkit 정품 SFX(2571 카드 착지음, 2573 카드 플립 스위시음)와 Web Audio API 기반 오실레이터 합성음을 듀얼 지원하여 네트워크 단절 시에도 100% 무결점 재생 보장.
+    - `playRpgEngine.ts`의 `playCardToSlot` 실행 시 `playCardPlace()`가 즉시 호출되어 내려놓는 손맛을 복구하고, `evaluateBoardFlips`에서 인접 카드를 뒤집을 때 `playCardFlip()`과 진동(`navigator.vibrate`)이 동작하도록 복구.
+  - **2. 카드 착지 및 3D 플립 애니메이션 시각 효과 복구 (`src/index.css`, `PlaySection.tsx`, `landing/index.ts`)**:
+    - `src/index.css`에 `@keyframes card-place-slam`(스케일 1.18 -> 1.0 착지 임팩트) 및 `@keyframes card-flip-rotate`(3D Y축 회전 및 확대/플립) 키프레임 애니메이션 추가.
+    - `PlaySection.tsx` 3x3 보드 렌더링 시 방금 놓인 슬롯에 `.animate-card-place` 및 `PLACE` 인디케이터 배지를 표시하고, 뒤집힌 슬롯에 `.animate-card-flip`과 `⚡ FLIP!` 배지 및 시안(Cyan) 발광 아우라 적용.
+    - `landing/index.ts`에 `hero_rpg_board_updated` 이벤트 리스너를 연동하여 카드 배치 및 650ms 후 플립 하이라이트 복귀가 실시간으로 매끄럽게 렌더링되도록 처리.
+  - **3. PC 환경에서 내 카드가 과도하게 커지는 현상 해결 (`src/landing/views/PlaySection.tsx`)**:
+    - 기존 `max-w-4xl` 전체에 걸쳐 넓게 퍼지던 플레이어 핸드 영역에 가운데 3x3 판(`max-w-[320px]`)과 균형을 맞춘 최대 너비 제약(`max-w-[360px] sm:max-w-[440px] mx-auto`) 및 개별 카드 너비 제약(`max-w-[68px] sm:max-w-[80px]`, 높이 `max-h-[110px] sm:max-h-[135px]`)을 적용.
+    - 모바일에서는 1줄 5장이 꽉 차게 표시되고, PC(태블릿/데스크탑)에서는 가운데 전장과 완벽한 비례를 유지하여 너무 커 보이지 않도록 개선.
+  - **4. 메인 화면 로고 태그 alt 텍스트 다국어화 (`src/landing/views/HomeSection.tsx`)**:
+    - 영문 설정 시 로고 alt 텍스트와 aria-label이 영문(`SNSHero.com SNSHero Revolution Official Logo`)으로 표시되도록 다국어 분기 처리.
+  - **5. 빌드 검증 및 로컬 커밋 완료**:
+    - Vite 프로덕션 빌드 통과 (`npm run build`, 0 error)
+    - 로컬 git 커밋 완료 (지침에 따라 push 미실행 준수)
+    - 연동 구글 폼 완료 보고서 제출 완료
+- **검증 결과**:
+  - Vite 빌드 성공: 4,360 modules transformed, 0 error
+  - 로컬 git 커밋: `77c76582f`
+  - 구글 폼 완료 보고서 제출 완료
+
 ## [2026-11-04 03:58 KST] [에피소드 38화(51/52컷: 00-50) 및 에피소드 39화(13/54컷: 00-04, 18-21, 36-39) 귀멸의 칼날(ufotable) 화풍·색감 웹툰 애니메이션 생성·후처리 완료 및 쿼터 리셋 타이머 설정]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
