@@ -2,6 +2,22 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 07:20 KST] [110종 캐릭터시트 수정된 상반신 전면 적용 및 #mall 굿즈몰 기존 상품 제거·캐릭터시트 라이센스 해제($10) 판매 개편]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 110종 전체 캐릭터시트(`public/anime-character-sheets/sheets/*.jpg`)에 수정된 상반신(Bust) 이미지 전면 적용 (`scripts/build_110_anime_character_sheets.py`)**:
+    - `public/anime-character-sheets/cutouts/`의 110종 전신 원화 및 `CUSTOM_BUST_SPECS`(33종 커스텀 구도 + 정밀 두부 중앙 정렬 `extract_head_hair_bust`)를 기반으로 `public/anime-character-sheets/sheets/001_Aquaris_sheet.jpg` ~ `110_Dreadwing_sheet.jpg` 110종 전수 리렌더링 완료.
+    - 모든 캐릭터시트의 `02 HEAD, HAIR & EXPRESSION · 표정·헤어 디테일` 패널에 수정된 상반신 포트레이트가 반영되었으며, 종족 마스터 시트 11종 및 `all_110_cast_poster.jpg` 총람 포스터까지 동기화 완료.
+  - **2. 굿즈몰(`#mall`) 기존 실물 굿즈 상품 전량 제거 및 110종 캐릭터시트 라이센스 해제($10.00) 스토어로 전면 개편 (`src/landing/views/MallSection.tsx`, `src/landing/services/assetCatalog.ts`)**:
+    - 기존 5종 실물 상품(`110장 올인원 풀세트`, `종족별 영웅 덱`, `히어로 3x3 배틀 게임테이블`, `히어로 커스텀 머그컵`, `히어로 커스텀 티셔츠`)을 모두 제거.
+    - 수정된 상반신이 반영된 110종 공식 캐릭터시트(`sheet_001` ~ `sheet_110`, `NO.001` ~ `NO.110`)를 **개당 $10.00 (14,000원) · 상업적/2차 창작 IP 라이센스 영구 해제 조건**으로 판매하도록 `MALL_GOODS_PRODUCTS` 전면 재구축.
+    - 전체(110종), 라이센스 보유 탭 및 11개 종족별 필터(`WATER`, `FIRE`, `WIND`, `EARTH`, `HUMAN`, `UNDEAD`, `ELF`, `DWARF`, `MONSTER`, `ROBOT`, `DRAGON`) 제공.
+    - 라이센스 해제 결제 완료 시 `localStorage`(`hero_unlocked_character_sheets`, `hero_goods_orders`)에 영구 기록되며, 1600×1000 HD 캐릭터시트 원본(JPG), 수정된 상반신(PNG), 7등신 전신 투명 원화(PNG) 1클릭 즉시 다운로드 활성화.
+- **검증 결과**:
+  - 110종 캐릭터시트 이미지 생성 및 시각 검증 완료 (`001_Aquaris_sheet.jpg` ~ `110_Dreadwing_sheet.jpg`)
+  - 프로덕션 빌드 검증: `npm run build` 성공 (0 error)
+  - 구글 폼 완료 보고서 제출 완료
+
 ## [2026-11-04 07:19 KST] [카드플레이 스토리 대화 모달 전체화면 개편 및 상반신 2배 확대 중앙 배치]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
