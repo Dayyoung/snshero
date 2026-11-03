@@ -18063,3 +18063,11 @@
      - `npm run build`: Exit code 0
   4. **최종 판정**: **APPROVE** (모든 게이트 요건 100% 충족)
 - **보고서 제출**: 구글 폼 제출 완료 (`[개발] Challenger 2 Milestone 1 Iteration 2 Gate 검증 -> 작업완료`).
+
+
+## [2026-11-03 13:05 KST] [웹툰 애니메이션] EP20~EP40 캐릭터 독창성(귀멸의칼날 복제 방지) 프롬프트 전면 개편 & EP20~EP31 주인공(카단) 이마 흉터 전수 제거 및 EP31(61/61컷) 생성 완료
+- **작업 내용**:
+  1. `scripts/generate_all_webtoon_prompts.py` 개편 및 `EP20`~`EP40` 전체 21개 에피소드(1,119컷) 프롬프트 재생성: 귀멸의 칼날(ufotable) 특유의 고채도 선명한 색감·먹물 붓터치 외곽선·우키요에 파도/화염 호흡 이펙트 화풍만 적용하고, 캐릭터 외형 복제(탄지로 이마 흉터, 귀걸이, 체크무늬 하오리, 렌고쿠/교메이/무잔 등)를 원천 차단. 주인공 카단(Kadan)의 이마를 `100% CLEAN SMOOTH UNBLEMISHED FOREHEAD WITH ZERO SCARS AND ZERO BIRTHMARKS`로 고정.
+  2. `scripts/universal_webtoon_processor.py` 내 `remove_kadan_forehead_scar_pil` 알고리즘 고도화 및 `EP20`~`EP31` 기존 생성 이미지(687컷) 전수 후처리 완료: 주인공 카단의 시안색 눈동자 쌍을 정밀 추적하여 이마 영역의 붉은/갈색 흉터만 피부 톤으로 자연스럽게 복원하고 눈썹·머리카락 경계 및 이미지 최하단 AI 전용 히든 마커(`4x1` LSB + WebP EXIF)를 완벽 보존.
+  3. 에피소드 31화 잔여 24컷(`scene_26`~`29`, `scene_41`~`60`)을 독창적인 판타지 캐릭터 디자인(이마 흉터 0%)으로 생성하여 `EP31` 61/61컷 전수 완료.
+- **검증 및 보고**: 시각적 검증(`ep25_s00`, `ep26_s10`, `ep30_s00`, `ep30_s08`, `ep31_s29`, `ep31_s50`) 완료, 로컬 커밋(`095f53f0d`) 및 구글 폼 보고서 제출 완료.
