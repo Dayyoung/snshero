@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 20:45 KST] [마이덱 2줄(3장+2장) 1줄 통합 및 플레이어/상대방 핸드 인라인 calc 1줄 완벽 고정 & /git-push 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 마이덱(`MyDeckView.tsx`) 2줄(상단 3장 + 하단 2장) 하드코딩 레이아웃 1줄 전면 통합**:
+    - `src/views/MyDeckView.tsx`:
+      - 기존 코드에서 1행 3장(`currentDeckWithSkins.slice(0, 3)`)과 2행 2장(`currentDeckWithSkins.slice(3, 5)`)으로 나뉘어 2줄로 렌더링되던 마이덱 슬롯을 가용 너비 5등분 기반의 1줄(One-Row) 레이아웃(`flex flex-nowrap justify-center items-center gap-1 sm:gap-2 w-full max-w-[480px]`)으로 전면 통합.
+      - `SortableCardItem` 및 `CardItem` 크기도 반응형 5등분 규격(`width: calc((100% - 16px) / 5), maxWidth: 88px, aspect-[5/7]`)으로 조정하여 모바일에서도 5장이 예쁘게 1줄로 정렬되도록 개선.
+  - **2. 플레이어/상대방 인게임 핸드(`PlayGameView.tsx`) 인라인 스타일 calc 너비 적용**:
+    - `src/views/PlayGameView.tsx`:
+      - Tailwind CSS 4에서 중첩 괄호 임의 클래스(`w-[calc((100%-16px)/5)]`)가 빌드 시 누락되던 문제를 해결하기 위해, 인라인 스타일 `style={{ width: 'calc((100% - 16px) / 5)', maxWidth: '72px' }}`와 `flex flex-nowrap`을 직접 적용.
+      - 브라우저 렌더링 엔진이 가용 너비를 기반으로 카드 5장의 너비를 100% 오차 없이 계산하여 1줄로 완벽 고정.
+  - **3. 빌드 및 원격 푸시(/git-push) 완료**:
+    - `npm run build` 0 error 성공 완료.
+    - 사용자 명시 요청(`/git-push`)에 따라 `git push origin main` 원격 저장소 동기화 완료 (`commit: 727ed2766`).
+- **검증 결과**:
+  - Vite 프로덕션 빌드 성공 (`vite build && post-build.js` 0 error)
+  - 구글 폼 완료 보고서 제출 완료
+  - 원격 저장소 푸시 완료 (`origin main` -> commit `727ed2766`)
+
 ## [2026-11-03 20:27 KST] [카드플레이 시 카드 5장 가용 너비 자동 계산 1줄 반응형 레이아웃 적용 및 /git-push 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
