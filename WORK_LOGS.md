@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 07:16 KST] [카드팩 개봉 종족별 효과 제거, 카드 이미지 정상화 및 1초 자동 개봉 구현]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 카드팩 개봉 시 종족별 효과 제거 (`src/landing/views/ShopSection.tsx`)**:
+    - 화면 전체를 가리던 종족별 풀스크린 배경 그라디언트, 오라 웨이브, 28개 튀는 파티클 애니메이션 완전 제거.
+    - 헤더 하단 종족 각성 펄스 배너 제거 및 카드팩 본연의 깔끔한 카드 뽑기 연출로 정돈.
+    - 안내 문구를 "1초 후 모든 카드가 자동으로 개봉됩니다. 카드를 터치하여 즉시 확인할 수도 있습니다."로 직관화.
+  - **2. 카드팩 개봉 시 카드 이미지 미표시(엑박) 원인 해결 (`src/landing/views/ShopSection.tsx`)**:
+    - `simulatePackDraw`에서 `getCharacterAsset(picked.id, 'bust')` 호출 시 함수가 `CharacterAssetMeta` 객체를 반환하여 `src="[object Object]"` 404가 발생하던 버그 수정.
+    - `asset.bustPngUrl` (`/anime-character-sheets/busts/001_bust.png`)을 정확한 이미지 URL로 전달하고, `seatUrl` (`/seat/Aquaris.png`) 및 `fallbackUrl` (Terminal-Flat SVG) 3단계 `onerror` 안전 폴백 구현 완료.
+  - **3. 1초 보여주고 자동으로 모두 개봉되는 타이머 구현 (`src/landing/views/ShopSection.tsx`, `src/landing/index.ts`)**:
+    - 카드팩 구매 시 5장의 봉인된 룬 카드가 1초간 노출된 뒤, 1000ms 후에 자동으로 5장이 모두 앞면으로 플립되는 `startAutoRevealTimer` 탑재.
+    - 유저가 1초 내에 직접 카드를 터치하거나 [OPEN ALL]을 누르거나 모달을 닫을 경우 `stopAutoRevealTimer`를 통해 안전하게 타이머 해제 처리.
+  - **4. 빌드 및 배포 검증**:
+    - `npm run build && node scripts/post-build.js` 빌드 검증 성공 (0 error).
+    - 로컬 git 커밋 완료 (`d3b11edd2`, 지침에 따라 원격 git push는 미실행 유지).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build && node scripts/post-build.js` 성공 (0 error)
+  - 로컬 git 커밋: `d3b11edd2`
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 카드팩 개봉 종족별 효과 제거, 카드 이미지 정상화 및 1초 자동 개봉 구현 -> 작업완료`
+
+
 ## [2026-11-04 07:06 KST] [구글 광고 정해진 영역 엄격 격리 및 카드팩 개봉 S.addExp 에러 수정]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
