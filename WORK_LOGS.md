@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 06:58 KST] [#shop 카드팩 개봉 시 CARD_DATABASE 런타임 오류 수정 및 인벤토리 연동]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 버그 원인 분석**:
+    - `simulatePackDraw` 함수에서 `CARD_DATABASE`(`Record<number, DatabaseCard>`) 객체에 직접 `.filter()` 배열 메서드를 호출하면서 `db.filter is not a function` 런타임 오류가 발생하여 카드팩 개봉 모달이 정상 생성되지 못함.
+  - **2. 코드 수정 및 안전 추출 (`src/landing/views/ShopSection.tsx`)**:
+    - `Object.values(CARD_DATABASE)`를 사용하여 카드 풀을 안전한 배열로 변환.
+    - 소문자로 저장된 카드의 희귀도(`bronze`, `silver`, `gold`)를 정상 필터링하도록 매칭 로직 정규화.
+    - 카드의 실제 필드(`title`, `title_en`, `element`, `power`, `top/right/bottom/left`)를 안전하게 추출하고 `isNew` 식별 및 `cardNurtureStore.addCard()`/`addExp()`를 연동하여 카드팩에서 뽑힌 카드가 유저 인벤토리/마이덱에 즉시 영구 저장되도록 보장.
+    - 개별 카드 뒤집기(`flipPackCard`) 및 전체 열기(`flipAllPackCards`) 시 `audioManager.playCardFlip()` 및 최고 영웅 등장 시 `playVictoryFanfare()` 효과음 연동.
+  - **3. 빌드 및 배포 검증**:
+    - `npm run build` 및 `node scripts/post-build.js` 빌드 성공 (0 error).
+    - 로컬 git 커밋 완료 (`f980f3bf3`, 지침에 따라 원격 git push 미실행 준수).
+    - 연동 구글 폼 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (0 error)
+  - 로컬 git 커밋: `f980f3bf3`
+  - 구글 폼 완료 보고서 제출 완료: `[개발] [#shop] 카드팩 개봉 시 CARD_DATABASE 런타임 오류 수정 및 인벤토리 연동`
+
+
 ## [2026-11-04 06:53 KST] [#mall CARD_DATABASE.find TypeError 버그 수정 및 안전 인덱싱 전환]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
