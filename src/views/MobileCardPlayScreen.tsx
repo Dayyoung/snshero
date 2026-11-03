@@ -1493,6 +1493,34 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       return;
     }
 
+    const isAuto = isAutoBattle || (typeof window !== 'undefined' && localStorage.getItem('hero_auto_battle') === 'true');
+
+    // 🌟 [최우선 순위]: 카드 자동플레이 중 패배 또는 무승부 감지 시 즉시 상점 소환 & 덱 최적화 루프 실행
+    if (isAuto && (winner === 'ai' || winner === 'draw')) {
+      setRematchCountdown(null);
+      setTutorialShopCountdown(null);
+      setRankingAutoLoopCountdown(null);
+      setRankingSearchCountdown(null);
+
+      const autoRecoveryTimer = setTimeout(() => {
+        try {
+          localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
+          localStorage.setItem('hero_auto_optimize_deck', 'true');
+          localStorage.setItem('hero_story_auto_loop_return', 'play');
+          localStorage.setItem('hero_auto_battle', 'true');
+          localStorage.setItem('hero_auto_battle_setting', 'true');
+          localStorage.setItem('hero_auto_start_pvp', 'true');
+        } catch {}
+        if (onNavigate) {
+          onNavigate('shop');
+        } else if (typeof window !== 'undefined') {
+          window.location.hash = '#shop';
+        }
+      }, 1500);
+
+      return () => clearTimeout(autoRecoveryTimer);
+    }
+
     // 3) RPG 자동완료 모드인 경우
     if (autoCloseOnComplete && !isRepeatHunting) {
       setRematchCountdown(null);

@@ -4586,30 +4586,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         return;
       }
 
-      const isMissionBattle = activeMissionCardIdRef.current !== null || activeMissionCardId !== null;
+      const isAutoActive = isAutoBattle || isAutoBattleRef.current || (typeof window !== 'undefined' && localStorage.getItem('hero_auto_battle') === 'true');
 
-      if (battleType === 'pvp_attack') {
-        // 랭킹대전: 승패(승리/패배/무승부)에 상관없이 계속 무한 반복 전투 진행
-        if (hasExhausted) {
-          setDefeatExitCountdown(null);
-          setRematchCountdown(null);
-          setShowInsufficientPopup(true);
-        } else {
-          setDefeatExitCountdown(null);
-          setRematchCountdown(5);
-        }
-      } else if (isMissionBattle) {
-        // 미션 카드게임: 승패(승리/패배/무승부)에 상관없이 종료하기 전까지 계속 무한 반복 수행
-        setDefeatExitCountdown(null);
-        if (showCardAcquisitionModal) {
-          setRematchCountdown(null);
-        } else {
-          setRematchCountdown(3);
-        }
-      } else if (isAutoBattle && (winner === 'ai' || winner === 'draw')) {
-        // 🌟 카드 자동플레이 시 무승부나 패배했을 때: 상점으로 이동해서 무작위 카드 뽑고 덱 최적화 후 play로 복귀하여 다시 전투
+      // 🌟 [최우선 순위]: 카드 자동플레이 중 패배 또는 무승부 감지 시
+      // 랭킹전, 110종 미션 대결, 일반 대결 등 모든 배틀 모드를 막론하고 무조건 즉시 상점 소환 -> 덱 최적화 -> 전투 재개 루프 실행!
+      if (isAutoActive && (winner === 'ai' || winner === 'draw')) {
         setDefeatExitCountdown(null);
         setRematchCountdown(null);
+        setShowSuddenDeathTieBanner(false);
+        setShowRevengeChanceModal(false);
 
         addLog(
           language === 'ko'
@@ -4635,6 +4620,28 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         }, 1500);
 
         return () => clearTimeout(autoRecoveryTimer);
+      }
+
+      const isMissionBattle = activeMissionCardIdRef.current !== null || activeMissionCardId !== null;
+
+      if (battleType === 'pvp_attack') {
+        // 랭킹대전: 승패(승리/패배/무승부)에 상관없이 계속 무한 반복 전투 진행
+        if (hasExhausted) {
+          setDefeatExitCountdown(null);
+          setRematchCountdown(null);
+          setShowInsufficientPopup(true);
+        } else {
+          setDefeatExitCountdown(null);
+          setRematchCountdown(5);
+        }
+      } else if (isMissionBattle) {
+        // 미션 카드게임: 승패(승리/패배/무승부)에 상관없이 종료하기 전까지 계속 무한 반복 수행
+        setDefeatExitCountdown(null);
+        if (showCardAcquisitionModal) {
+          setRematchCountdown(null);
+        } else {
+          setRematchCountdown(3);
+        }
       } else if (winner === 'ai') {
         setDefeatExitCountdown(5);
         setRematchCountdown(null);
@@ -5442,7 +5449,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     const isAutoLoop = (() => {
       try {
         return localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
-               localStorage.getItem('hero_auto_loop_mode') !== null;
+               localStorage.getItem('hero_auto_loop_mode') !== null ||
+               localStorage.getItem('hero_auto_start_pvp') === 'true' ||
+               localStorage.getItem('hero_auto_battle') === 'true';
       } catch {
         return false;
       }
@@ -5470,6 +5479,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         clearInterval(interval);
         demoAutoMatchTimerRef.current = null;
         setDemoAutoMatchCountdown(null);
+        try {
+          localStorage.removeItem('hero_auto_start_pvp');
+        } catch {}
         startMissionCardBattle(targetCardId);
       }
     }, 1000);
@@ -7061,7 +7073,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           }
 
           // 🌟 무승부일 경우 전체 TP가 높은 사람이 승리 (동점일 경우 플레이어 승리)
-          if (finalWinner === 'draw' || pScore === aScore) {
+          if (finalWinner === 'draw' || pScore === aScore || (finalWinner !== 'player' && finalWinner !== 'ai')) {
             if (pPower >= aPower) {
               finalWinner = 'player';
               addLog(
@@ -7975,31 +7987,24 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   hasRecordedResult.current = true;
                 }
               } else {
-                setAutoBattleStats(prev => ({ ...prev, draws: prev.draws + 1 }));
-                setWinner('draw');
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                // ID 371: 5:5 무승부 시 서든데스 연출 및 +10 SNS 보상
-                setShowSuddenDeathTieBanner(true);
-                setRewardEarned(prev => prev + 10);
-                showToast(language === 'ko' ? '⚔️ [SUDDEN DEATH] 5:5 무승부! 격려 보너스 +10 SNS 지급!' : '⚔️ [SUDDEN DEATH] 5:5 Draw! +10 SNS Bonus Granted!');
-                if (!hasRecordedResult.current) {
-                  const finalResult = 'draw';
-                  const pScore = finalBoard.filter(c => c?.owner === 'player').length;
-                  const aScore = finalBoard.filter(c => c?.owner === 'ai').length;
-
-                  handleZeroSumAndRecord(finalResult);
-
-                  // Analytics: Track Game End
-                  if (analytics) {
-                    logEvent(analytics, 'game_end', {
-                      result: finalResult,
-                      player_score: pScore,
-                      opponent_score: aScore,
-                      score_diff: Math.abs(pScore - aScore),
-                      ai_difficulty: aiDifficulty
-                    });
+                // 🌟 무승부 발생 시 전체 TP 비교로 플레이어 또는 AI 승리로 최종 확정 (동점 시 플레이어 승리)
+                const isPlayerWin = pPower >= aPower;
+                if (isPlayerWin) {
+                  setAutoBattleStats(prev => ({ ...prev, wins: prev.wins + 1 }));
+                  setWinner('player');
+                  playSfx('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
+                  if (!hasRecordedResult.current) {
+                    handleZeroSumAndRecord('win');
+                    hasRecordedResult.current = true;
                   }
-                  hasRecordedResult.current = true;
+                } else {
+                  setAutoBattleStats(prev => ({ ...prev, losses: prev.losses + 1 }));
+                  setWinner('ai');
+                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  if (!hasRecordedResult.current) {
+                    handleZeroSumAndRecord('loss');
+                    hasRecordedResult.current = true;
+                  }
                 }
               }
             } // close setInterval branch
