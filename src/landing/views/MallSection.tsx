@@ -20,6 +20,11 @@
  */
 
 import { requestPayAppPayment, CRYPTO_PAYMENT_INFO } from '../services/paymentService';
+import {
+  CRYPTO_COINS_CATALOG,
+  CRYPTO_QUICK_CHIPS,
+  resolveCryptoDepositDetails,
+} from '../services/qrCodeSvg';
 
 export type MallCategoryTab = 'ALL' | 'CARD_SET' | 'APPAREL' | 'EQUIPMENT';
 
@@ -157,7 +162,18 @@ export const FACTION_OPTIONS = [
 
 let currentMallTab: MallCategoryTab = 'ALL';
 let activeDetailProduct: MallGoodsProduct | null = null;
-let mallModalStep: 'detail' | 'shipping' | 'country' | 'payment' | 'celebration' | 'crypto' | 'orders' | null = null;
+let mallModalStep:
+  | 'detail'
+  | 'shipping'
+  | 'country'
+  | 'payment'
+  | 'celebration'
+  | 'crypto_coin'
+  | 'crypto_chain'
+  | 'crypto_deposit'
+  | 'crypto'
+  | 'orders'
+  | null = null;
 
 let selectedQty = 1;
 let selectedSize = 'L';
@@ -169,6 +185,12 @@ let buyerAddress = '';
 let selectedCountry = 'ko';
 let selectedPaymentMethod: string | null = null;
 let lastCompletedOrder: MallGoodsOrderRecord | null = null;
+
+// Mall Crypto state
+let mallCryptoCcy: string = 'USDT';
+let mallCryptoChain: string = 'USDT-TRC20';
+let mallCryptoCopied: boolean = false;
+let mallCryptoVerifyNotice: string | null = null;
 
 // ============================================================================
 // State Getters & Actions
@@ -298,8 +320,9 @@ export async function executeMallCheckout(method: string): Promise<boolean> {
   }
 
   if (method === 'crypto') {
-    // Show Crypto transfer details
-    mallModalStep = 'crypto';
+    mallCryptoCopied = false;
+    mallCryptoVerifyNotice = null;
+    mallModalStep = 'crypto_coin';
     return true;
   }
 
@@ -333,6 +356,48 @@ export async function executeMallCheckout(method: string): Promise<boolean> {
   });
 
   return true;
+}
+
+export function selectMallCryptoCoin(ccy: string): void {
+  const found = CRYPTO_COINS_CATALOG.find((c) => c.ccy === ccy) || CRYPTO_COINS_CATALOG[0];
+  mallCryptoCcy = found.ccy;
+  mallCryptoCopied = false;
+  mallCryptoVerifyNotice = null;
+  if (found.chains.length > 1) {
+    mallModalStep = 'crypto_chain';
+  } else {
+    mallCryptoChain = found.chains[0] || `${found.ccy}-TRC20`;
+    mallModalStep = 'crypto_deposit';
+  }
+}
+
+export function selectMallCryptoChain(chain: string): void {
+  mallCryptoChain = chain;
+  mallCryptoCopied = false;
+  mallCryptoVerifyNotice = null;
+  mallModalStep = 'crypto_deposit';
+}
+
+export function backMallToCryptoCoin(): void {
+  mallModalStep = 'crypto_coin';
+  mallCryptoCopied = false;
+  mallCryptoVerifyNotice = null;
+}
+
+export function backMallToPayment(): void {
+  mallModalStep = 'payment';
+}
+
+export function copyMallCryptoAddress(address: string): void {
+  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+    navigator.clipboard.writeText(address).catch(() => {});
+  }
+  mallCryptoCopied = true;
+}
+
+export function verifyMallCryptoDeposit(): void {
+  mallCryptoVerifyNotice =
+    '블록체인 네트워크에서 입금 내역을 조회 중입니다. 송금 후 네트워크 컨펌 완료 시 주문이 자동 승인됩니다.';
 }
 
 // ============================================================================
@@ -401,28 +466,198 @@ export function renderMallModal(): string {
     `;
   }
 
-  if (mallModalStep === 'crypto') {
+  if (
+    mallModalStep === 'crypto_coin' ||
+    mallModalStep === 'crypto_chain' ||
+    mallModalStep === 'crypto_deposit' ||
+    mallModalStep === 'crypto'
+  ) {
+    const prod = activeDetailProduct;
+    const totalUsd = prod ? prod.priceUsd * selectedQty : 29.0;
+    const totalKrw = prod ? prod.priceKrw * selectedQty : 39000;
+    const prodLabel = prod ? `${prod.name} (${selectedQty}개)` : '공식 굿즈 주문';
+
     return `
       <div id="mall-crypto-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
-        <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-md w-full p-6 space-y-4 shadow-none">
-          <div class="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.08)]">
-            <h3 class="text-sm font-bold m-0">⚡ 암호화폐 결제 (USDT / SOL)</h3>
+        <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full p-6 space-y-4 shadow-none">
+          <div class="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.08)]">
+            <div>
+              <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-600 text-white rounded-sm mb-1">
+                굿즈 암호화폐 결제
+              </span>
+              <h3 class="text-sm sm:text-base font-bold m-0">⚡ 암호화폐 결제 (${prodLabel})</h3>
+            </div>
             <button type="button" data-action="close-mall-modal" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
           </div>
-          <p class="text-xs text-stone-600">아래 주소로 해당 금액을 송금하신 후 트랜잭션 해시를 기록해주세요.</p>
-          <div class="space-y-2 text-xs">
-            <div class="p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
-              <div class="text-[10px] text-stone-500 font-bold">USDT (TRC20):</div>
-              <div class="font-mono text-[11px] break-all select-all font-bold text-[#201d1d]">${CRYPTO_PAYMENT_INFO.usdtTrc20}</div>
-            </div>
-            <div class="p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
-              <div class="text-[10px] text-stone-500 font-bold">Solana (SOL):</div>
-              <div class="font-mono text-[11px] break-all select-all font-bold text-[#201d1d]">${CRYPTO_PAYMENT_INFO.solana}</div>
-            </div>
-          </div>
-          <button type="button" data-action="close-mall-modal" class="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px]">
-            확인 완료
-          </button>
+
+          ${
+            mallModalStep === 'crypto_coin'
+              ? `
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <button type="button" data-action="back-mall-payment" class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1">
+                      ← 결제 수단 변경
+                    </button>
+                    <span class="text-xs font-bold text-[#201d1d]">$${totalUsd.toFixed(2)} USD (${totalKrw.toLocaleString()}원)</span>
+                  </div>
+
+                  <div class="flex flex-wrap gap-1.5 text-[11px]">
+                    ${CRYPTO_QUICK_CHIPS.map(
+                      (chip) => `
+                        <button
+                          type="button"
+                          data-action="select-mall-crypto-coin"
+                          data-ccy="${chip}"
+                          class="px-2.5 py-1.5 min-h-[38px] bg-[#f8f7f7] hover:bg-[#201d1d] hover:text-[#fdfcfc] text-[#201d1d] rounded-sm font-bold border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer"
+                        >
+                          ${chip}
+                        </button>
+                      `
+                    ).join('')}
+                  </div>
+
+                  <div class="space-y-1.5 max-h-60 overflow-y-auto pr-1">
+                    ${CRYPTO_COINS_CATALOG.map(
+                      (coin) => `
+                        <button
+                          type="button"
+                          data-action="select-mall-crypto-coin"
+                          data-ccy="${coin.ccy}"
+                          class="w-full p-3 min-h-[48px] bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-none flex items-center justify-between transition-colors cursor-pointer text-left"
+                        >
+                          <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-none bg-[#f1eeee] border border-[rgba(15,0,0,0.12)] flex items-center justify-center font-bold text-base shrink-0">
+                              ${coin.icon}
+                            </div>
+                            <div>
+                              <div class="flex items-center gap-1.5">
+                                <span class="font-black text-xs sm:text-sm text-[#201d1d]">${coin.ccy}</span>
+                                <span class="text-[11px] text-stone-500">${coin.name}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <span class="text-xs font-bold text-stone-500">선택 →</span>
+                        </button>
+                      `
+                    ).join('')}
+                  </div>
+                </div>
+              `
+              : ''
+          }
+
+          ${
+            mallModalStep === 'crypto_chain'
+              ? (() => {
+                  const coinObj =
+                    CRYPTO_COINS_CATALOG.find((c) => c.ccy === mallCryptoCcy) || CRYPTO_COINS_CATALOG[0];
+                  return `
+                    <div class="space-y-3">
+                      <div class="flex items-center justify-between">
+                        <button type="button" data-action="back-mall-crypto-coin" class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1">
+                          ← 코인 다시 선택
+                        </button>
+                        <span class="text-xs font-bold text-[#201d1d]">⚡ ${coinObj.ccy} 네트워크 선택</span>
+                      </div>
+                      <div class="space-y-2 max-h-60 overflow-y-auto">
+                        ${coinObj.chains
+                          .map((chainItem) => {
+                            const chainName = chainItem.replace(`${coinObj.ccy}-`, '');
+                            return `
+                              <button
+                                type="button"
+                                data-action="select-mall-crypto-chain"
+                                data-chain="${chainItem}"
+                                class="w-full p-3.5 min-h-[48px] bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-none flex items-center justify-between transition-colors cursor-pointer text-left"
+                              >
+                                <span class="font-black text-xs sm:text-sm text-[#201d1d]">${chainName} (${chainItem})</span>
+                                <span class="text-xs font-bold text-[#201d1d]">QR 생성 →</span>
+                              </button>
+                            `;
+                          })
+                          .join('')}
+                      </div>
+                    </div>
+                  `;
+                })()
+              : ''
+          }
+
+          ${
+            mallModalStep === 'crypto_deposit' || mallModalStep === 'crypto'
+              ? (() => {
+                  const deposit = resolveCryptoDepositDetails(mallCryptoCcy, mallCryptoChain, totalUsd);
+                  return `
+                    <div class="space-y-3.5 max-h-[75vh] overflow-y-auto pr-0.5">
+                      <div class="flex items-center justify-between">
+                        <button type="button" data-action="back-mall-crypto-coin" class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1">
+                          ← 다른 코인/네트워크 선택
+                        </button>
+                        <span class="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">
+                          ${deposit.chain}
+                        </span>
+                      </div>
+
+                      <div class="bg-[#f8f7f7] border border-[#201d1d] rounded-none p-3 text-center space-y-1">
+                        <span class="text-[10px] text-stone-500 font-bold block uppercase tracking-wider">전송해야 할 정확한 금액</span>
+                        <div class="text-xl sm:text-2xl font-black text-[#201d1d]">
+                          ${deposit.amount} <span class="text-sm font-bold text-amber-700">${deposit.ccy}</span>
+                        </div>
+                        <span class="text-[10px] text-stone-600 font-bold block">네트워크: ${deposit.chain}</span>
+                      </div>
+
+                      <div class="flex flex-col items-center justify-center p-3 bg-white border border-[rgba(15,0,0,0.12)] rounded-none">
+                        <div class="p-1 bg-white border border-stone-200 flex items-center justify-center">
+                          ${deposit.qrSvg}
+                        </div>
+                        <span class="text-[10px] text-stone-500 mt-1.5 font-mono font-bold">
+                          지갑 앱으로 QR 코드를 스캔하여 전송하세요
+                        </span>
+                      </div>
+
+                      <div class="space-y-1.5">
+                        <label class="text-[11px] font-bold text-stone-600 block">입금 전용 지갑 주소 (${deposit.chain})</label>
+                        <div class="flex items-center gap-1.5">
+                          <input
+                            type="text"
+                            readonly
+                            value="${deposit.address}"
+                            class="flex-1 p-2.5 text-[11px] bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm font-mono font-bold text-[#201d1d] select-all focus:outline-none"
+                          />
+                          <button
+                            type="button"
+                            data-action="copy-mall-crypto-address"
+                            data-address="${deposit.address}"
+                            class="px-3 py-2.5 min-h-[44px] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] rounded-sm text-xs font-bold flex items-center justify-center cursor-pointer shrink-0"
+                          >
+                            ${mallCryptoCopied ? '✓ 복사됨' : '복사'}
+                          </button>
+                        </div>
+                      </div>
+
+                      ${
+                        mallCryptoVerifyNotice
+                          ? `<div class="p-2.5 bg-amber-50 border border-amber-400 text-amber-900 text-[11px] font-bold rounded-none">${mallCryptoVerifyNotice}</div>`
+                          : ''
+                      }
+
+                      <div class="space-y-2 pt-1">
+                        <button
+                          type="button"
+                          data-action="verify-mall-crypto-deposit"
+                          class="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-sm min-h-[44px] cursor-pointer"
+                        >
+                          ⚡ 입금 완료 즉시 확인 (수동 새로고침)
+                        </button>
+                        <button type="button" data-action="close-mall-modal" class="w-full py-2.5 bg-[#f1eeee] hover:bg-[#e8e5e5] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] cursor-pointer">
+                          결제 취소 (닫기)
+                        </button>
+                      </div>
+                    </div>
+                  `;
+                })()
+              : ''
+          }
         </div>
       </div>
     `;

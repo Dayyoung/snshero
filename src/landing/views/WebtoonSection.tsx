@@ -148,7 +148,7 @@ export function renderWebtoonSection(): string {
 
   const ep = currentWebtoonEpisode;
   const epData = MANIFEST[String(ep)];
-  const rawTitle = epData?.episodeTitleKo || epData?.episodeTitle || chapterTitles[ep - 1] || `제 ${ep}화`;
+  const rawTitle = epData?.episodeTitleKo || epData?.episodeTitle || chapterTitles[ep - 1]?.titleKo || `제 ${ep}화`;
   const images: WebtoonImageItem[] = epData?.images || [];
   const totalPanels = images.length;
 
@@ -216,7 +216,7 @@ export function renderWebtoonSection(): string {
                 ${Array.from({ length: 40 }, (_, idx) => {
                   const num = idx + 1;
                   const item = MANIFEST[String(num)];
-                  const title = item?.episodeTitleKo || chapterTitles[idx] || `제 ${num}화`;
+                  const title = item?.episodeTitleKo || chapterTitles[idx]?.titleKo || `제 ${num}화`;
                   return `
                     <option value="${num}" ${num === ep ? 'selected' : ''}>
                       제${num}화 - ${title}
@@ -260,7 +260,7 @@ export function renderWebtoonSection(): string {
               ${Array.from({ length: 40 }, (_, idx) => {
                 const num = idx + 1;
                 const item = MANIFEST[String(num)];
-                const title = item?.episodeTitleKo || chapterTitles[idx] || `제 ${num}화`;
+                const title = item?.episodeTitleKo || chapterTitles[idx]?.titleKo || `제 ${num}화`;
                 const isCurrent = num === ep;
                 return `
                   <button

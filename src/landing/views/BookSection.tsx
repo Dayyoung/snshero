@@ -28,6 +28,18 @@ export function getBookEpisode(): number {
   return currentBookEpisode;
 }
 
+function scrollToTopPage(): void {
+  if (typeof window === 'undefined') return;
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  });
+}
+
 export function setBookEpisode(ep: number, updateUrl: boolean = true): void {
   if (typeof ep !== 'number' || isNaN(ep)) ep = 1;
   currentBookEpisode = Math.max(1, Math.min(40, Math.floor(ep)));
@@ -40,6 +52,7 @@ export function setBookEpisode(ep: number, updateUrl: boolean = true): void {
     } catch {
       // Ignore if URL replacement fails in sandbox
     }
+    scrollToTopPage();
   }
 }
 
@@ -160,7 +173,7 @@ export function renderBookSection(): string {
   const ep = currentBookEpisode;
   const rawContent = getNovelRawEpisode(ep);
   const parsed = parseRawNovel(rawContent, ep);
-  const epTitle = chapterTitles[ep - 1] || `제 ${ep}화`;
+  const epTitle = chapterTitles[ep - 1]?.titleKo || `제 ${ep}화`;
 
   const fontClass =
     bookFontSize === 'xlarge'
@@ -249,7 +262,7 @@ export function renderBookSection(): string {
               >
                 ${Array.from({ length: 40 }, (_, idx) => {
                   const num = idx + 1;
-                  const title = chapterTitles[idx] || `제 ${num}화`;
+                  const title = chapterTitles[idx]?.titleKo || `제 ${num}화`;
                   return `
                     <option value="${num}" ${num === ep ? 'selected' : ''}>
                       제${num}화 - ${title}
@@ -292,7 +305,7 @@ export function renderBookSection(): string {
             <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[320px] overflow-y-auto pr-1">
               ${Array.from({ length: 40 }, (_, idx) => {
                 const num = idx + 1;
-                const title = chapterTitles[idx] || `제 ${num}화`;
+                const title = chapterTitles[idx]?.titleKo || `제 ${num}화`;
                 const isCurrent = num === ep;
                 return `
                   <button

@@ -422,12 +422,6 @@ export function renderMyDeckSection(selectedCardId?: number): string {
     ? deckSectionState.selectedCardId
     : activeDeckIds[0] || 1;
 
-  const selectedAsset = getCharacterAsset(currentSelectedId);
-  const selectedStats = getCardEffectiveStats(currentSelectedId);
-  const selectedDb = CARD_DATABASE[currentSelectedId] || {};
-  const selectedFactionStyle = FACTION_PALETTES[selectedAsset.faction] || { bg: '#201d1d', text: '#ffffff', border: '#302c2c' };
-
-  const currentSlotOfSelected = activeDeckIds.indexOf(currentSelectedId);
   const editingSlot = deckSectionState.editingSlotIndex;
 
   return `
@@ -543,6 +537,7 @@ export function renderMyDeckSection(selectedCardId?: number): string {
                     title="클릭하여 상세 정보 팝업 보기"
                   >
                     ${renderOriginalCardHtml(cardId, {
+                      action: 'select-deck-card',
                       isSelected,
                       isOwned: true,
                       level: stats.level,
@@ -570,129 +565,10 @@ export function renderMyDeckSection(selectedCardId?: number): string {
         </div>
       </section>
 
-      <!-- 3. Selected Card Deep Inspection & 7-Head Cutout Showcase -->
-      <section class="w-full bg-[#f8f7f7] py-12 px-4 sm:px-6 md:px-8 lg:px-12">
-        <div class="w-full max-w-7xl mx-auto space-y-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[rgba(15,0,0,0.12)]">
-            <div>
-              <span class="text-[11px] text-[#646262] font-bold uppercase tracking-wider">영웅 상세 분석</span>
-              <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#201d1d] m-0">
-                선택된 영웅 카드 상세 (SELECTED CARD DETAIL: ${selectedAsset.nameKo})
-              </h2>
-            </div>
-            <div class="text-xs text-stone-500 font-mono">
-              [NO.${selectedAsset.code}] ${selectedAsset.nameEn}
-            </div>
-          </div>
-
-          <!-- 2-Column Responsive Detail Card -->
-          <div class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 sm:p-8 rounded-none grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <!-- Left: 7-Head Full-Body Cutout Preview (Tier 1 Asset) -->
-            <div class="lg:col-span-5 flex flex-col items-center justify-center p-6 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none space-y-4">
-              <div class="relative w-full h-72 sm:h-80 flex items-center justify-center overflow-hidden">
-                <img
-                  src="${selectedAsset.cutoutUrl}"
-                  alt="${selectedAsset.nameKo} 7등신 풀바디"
-                  class="max-w-full max-h-full object-contain filter drop-shadow-none"
-                  loading="eager"
-                  onerror="this.src='${selectedAsset.bustPngUrl}'; this.onerror=null;"
-                />
-              </div>
-              <div class="w-full text-center space-y-1">
-                <span class="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-sm" style="background-color: ${selectedFactionStyle.bg}; color: ${selectedFactionStyle.text};">
-                  ${selectedAsset.faction} · ${selectedAsset.rarity}
-                </span>
-                <div class="text-xs text-stone-500">
-                  공식 7등신 풀바디 투명 컷아웃 (Visual Tier 1)
-                </div>
-              </div>
-            </div>
-
-            <!-- Right: Detailed Stats, Level, EXP, Ability, and Actions -->
-            <div class="lg:col-span-7 flex flex-col justify-between space-y-6">
-              <div class="space-y-3">
-                <div class="flex items-center gap-2">
-                  <h3 class="text-xl sm:text-2xl font-black text-[#201d1d] m-0">
-                    [${selectedAsset.code}] ${selectedAsset.nameKo}
-                  </h3>
-                  <span class="text-sm text-stone-500 font-normal">(${selectedAsset.nameEn})</span>
-                </div>
-
-                <p class="text-xs text-stone-600 leading-relaxed m-0">
-                  ${(selectedDb as any).lore_ko || `${selectedAsset.faction} 속성의 강력한 정령 영웅. 3x3 보드에서 전술적 플립과 결계를 주도합니다.`}
-                </p>
-              </div>
-
-              <!-- Level, EXP Bar & Stat Points Notification -->
-              <div class="border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-4 rounded-none space-y-2">
-                <div class="flex items-center justify-between text-xs">
-                  <span class="font-bold text-[#201d1d]">성장 레벨: Lv.${selectedStats.level} / 100</span>
-                  <span class="text-stone-500">EXP: ${selectedStats.exp} / ${selectedStats.expToNext}</span>
-                </div>
-                <div class="w-full h-2 bg-stone-200 rounded-sm overflow-hidden">
-                  <div
-                    class="h-full bg-[#201d1d]"
-                    style="width: ${Math.min(100, Math.round((selectedStats.exp / (selectedStats.expToNext || 100)) * 100))}%"
-                  ></div>
-                </div>
-                <div class="flex items-center justify-between text-[11px] pt-1">
-                  <span class="text-stone-600">
-                    미사용 스탯 포인트: <strong class="${selectedStats.statPoints > 0 ? 'text-red-600' : 'text-[#201d1d]'}">${selectedStats.statPoints} pt</strong>
-                  </span>
-                  ${selectedStats.statPoints > 0 ? `
-                    <span class="text-[10px] text-red-600 font-bold">카드 육성 메뉴에서 스탯을 배분하세요!</span>
-                  ` : `
-                    <span class="text-[10px] text-stone-400">모든 스탯 포인트 배분 완료</span>
-                  `}
-                </div>
-              </div>
-
-              <!-- 4-Way Compass Stats Breakdown Grid -->
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                <div class="border border-[rgba(15,0,0,0.12)] bg-white p-3 rounded-none">
-                  <div class="text-[10px] text-stone-500 font-bold uppercase">북 (NORTH)</div>
-                  <div class="text-lg font-black text-[#201d1d] mt-1">${selectedStats.top}</div>
-                  <div class="text-[10px] text-stone-400">기본 ${getCardBaseStats(currentSelectedId).top} + 보너스 ${selectedStats.top - getCardBaseStats(currentSelectedId).top}</div>
-                </div>
-                <div class="border border-[rgba(15,0,0,0.12)] bg-white p-3 rounded-none">
-                  <div class="text-[10px] text-stone-500 font-bold uppercase">동 (EAST)</div>
-                  <div class="text-lg font-black text-[#201d1d] mt-1">${selectedStats.right}</div>
-                  <div class="text-[10px] text-stone-400">기본 ${getCardBaseStats(currentSelectedId).right} + 보너스 ${selectedStats.right - getCardBaseStats(currentSelectedId).right}</div>
-                </div>
-                <div class="border border-[rgba(15,0,0,0.12)] bg-white p-3 rounded-none">
-                  <div class="text-[10px] text-stone-500 font-bold uppercase">남 (SOUTH)</div>
-                  <div class="text-lg font-black text-[#201d1d] mt-1">${selectedStats.bottom}</div>
-                  <div class="text-[10px] text-stone-400">기본 ${getCardBaseStats(currentSelectedId).bottom} + 보너스 ${selectedStats.bottom - getCardBaseStats(currentSelectedId).bottom}</div>
-                </div>
-                <div class="border border-[rgba(15,0,0,0.12)] bg-white p-3 rounded-none">
-                  <div class="text-[10px] text-stone-500 font-bold uppercase">서 (WEST)</div>
-                  <div class="text-lg font-black text-[#201d1d] mt-1">${selectedStats.left}</div>
-                  <div class="text-[10px] text-stone-400">기본 ${getCardBaseStats(currentSelectedId).left} + 보너스 ${selectedStats.left - getCardBaseStats(currentSelectedId).left}</div>
-                </div>
-              </div>
-
-              <!-- Special Ability & TP Total -->
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none">
-                <div class="space-y-0.5">
-                  <span class="text-[10px] text-stone-500 font-bold uppercase">고유 스킬 (SPECIAL ABILITY)</span>
-                  <div class="text-xs font-bold text-[#201d1d]">
-                    ${(selectedDb as any).ability?.description_ko || '기본 전술 능력: 표준 전장 배치'}
-                  </div>
-                </div>
-                <div class="text-right">
-                  <span class="text-[10px] text-stone-500 font-bold uppercase">영웅 총전투력</span>
-                  <div class="text-xl font-black text-[#201d1d]">${selectedStats.totalTP} TP</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 4. Interactive Card Selection Drawer / Modal (Parity with DeckView) -->
+      <!-- 3. Interactive Card Selection Drawer / Modal (Parity with DeckView) -->
       ${editingSlot !== null ? renderDeckSwapDrawer(editingSlot, activeDeckIds) : ''}
 
-      <!-- 5. Card Inspection Modal Popup (Mobile & Desktop) -->
+      <!-- 4. Card Inspection Modal Popup (Mobile & Desktop) -->
       ${deckSectionState.inspectedCardId !== null ? renderDeckCardDetailModal(deckSectionState.inspectedCardId) : ''}
     </div>
   `;

@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 14:35 KST] [#book 회차 이동 스크롤 최상단 및 [object Object] 수정, #play 닫기 버튼 정상화, #deck·#card 팝업 복구 및 하단 상세 섹션 제거, #shop 암호화폐 코인/네트워크 선택 및 QR코드 입금 연동]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. `#book?ep=5` 다음/이전 회차 이동 시 최상단 스크롤 및 `[object Object]` 제목 버그 수정**:
+    - `src/landing/views/BookSection.tsx` 및 `src/landing/views/WebtoonSection.tsx`에서 `chapterTitles[...]` 객체 배열 참조 시 `.titleKo` 프로퍼티를 추출하도록 수정하여 회차 제목이 `[object Object]`로 표시되던 버그를 해결.
+    - `setBookEpisode()` 및 `src/landing/index.ts`의 회차 전환 액션(`book-prev-episode`, `book-next-episode`, `book-jump-episode`, `book-select-episode`) 실행 후 `window.scrollTo({ top: 0, left: 0, behavior: 'instant' })` 및 `documentElement.scrollTop = 0`을 호출하여 다음/이전 회차 이동 시 스크롤이 즉시 최상단으로 이동하도록 개선.
+  - **2. `#play` 닫기 버튼(`play-dialogue-close`, `play-reincarnate-close`) 동작 복구**:
+    - `src/landing/index.ts`의 `handleEventDelegation` 클릭 이벤트 위임에 `action.startsWith('play-')` 분기를 복원하여 대사 모달, 3x3 배틀, 환생 모달의 `[✕ 닫기]` 버튼 클릭 시 즉시 플레이가 중지되고 맵 화면으로 복귀하도록 수정.
+  - **3. `#deck` 및 `#card` 카드 클릭 팝업 복구 및 `#deck` 하단 정적 상세 섹션 제거**:
+    - `src/landing/views/MyDeckSection.tsx`에서 하단 정적 상세 섹션(`<section class="w-full bg-[#f8f7f7] py-12 ..."> ... 선택된 영웅 카드 상세 (SELECTED CARD DETAIL: ...) ... </section>`)을 제거하고, 5개 슬롯 카드에 `action: 'select-deck-card'`를 전달.
+    - `src/landing/index.ts`에서 `select-deck-card`(상세 모달 `setInspectedDeckCardId(cardId)` 호출), `close-deck-card-modal`, `swap-deck-card`, `select-card`, `close-card-inspector` 및 모달 배경 클릭 닫기 핸들러를 복원하여 `#deck`과 `#card`에서 카드 클릭 시 7등신 상세 정보 팝업이 즉시 열리고 닫히도록 복구.
+  - **4. `#shop` (및 `#mall`) 암호화폐 결제 시 코인/네트워크 선택 및 QR코드 입금 화면 구현**:
+    - `src/landing/services/qrCodeSvg.ts`: 순수 TypeScript 기반 ISO/IEC 18004 QR 코드 SVG 생성기(`renderQrCodeSvg`, Zero-React 의존성) 및 8종 암호화폐(`USDT`, `TRX`, `BTC`, `ETH`, `SOL`, `USDC`, `DOGE`, `XRP`)·체인별 지갑 주소/환산 수량 계산기(`resolveCryptoDepositDetails`) 구현.
+    - `src/landing/views/ShopSection.tsx` & `src/landing/views/MallSection.tsx`: 암호화폐 결제 클릭 시 ① 코인 종류 선택(검색 + 퀵 칩 + 8종 코인 리스트) ➔ ② 블록체인 네트워크 선택(다중 체인 코인 대상, 수수료 추천 배지 포함) ➔ ③ SVG QR코드 + 정확한 전송 수량 + 입금 전용 지갑 주소 복사 + 수동 입금 확인 플로우를 OpenCode Terminal-Flat 디자인으로 구현.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (0 errors)
+  - 기능 검증: `#book?ep=5`, `#play`, `#deck`, `#card`, `#shop` 전 항목 검증 통과
+  - 로컬 git 커밋: 완료 (git push 미실행 원칙 준수)
+  - 구글 폼 보고서 제출: 완료
+
 ## [2026-11-03 13:57 KST] [#play 40화 완주 시 3초 환생 팝업 및 환생1-1화 재시작 연동, 대사/배틀 중 닫기(플레이 중지) 버튼 추가]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

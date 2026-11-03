@@ -24,6 +24,11 @@ import { CARD_DATABASE } from '../../cardDatabase';
 import { cardNurtureStore } from '../services/cardNurtureStore';
 import { getCharacterAsset } from '../services/assetCatalog';
 import { requestPayAppPayment, CRYPTO_PAYMENT_INFO } from '../services/paymentService';
+import {
+  CRYPTO_COINS_CATALOG,
+  CRYPTO_QUICK_CHIPS,
+  resolveCryptoDepositDetails,
+} from '../services/qrCodeSvg';
 
 // ============================================================================
 // Types & Interfaces
@@ -343,11 +348,26 @@ let isGoldExchangeModalOpen = false;
 
 // Coin recharge popup state
 let isCoinChargeModalOpen = false;
-let coinChargeStep: 'package' | 'country' | 'payment' | 'crypto' | 'success' = 'package';
+let coinChargeStep:
+  | 'package'
+  | 'country'
+  | 'payment'
+  | 'crypto_coin'
+  | 'crypto_chain'
+  | 'crypto_deposit'
+  | 'crypto'
+  | 'success' = 'package';
 let selectedChargePackage: CoinPackage = COIN_PACKAGES[0];
 let selectedChargeCountry: string = 'ko';
 let selectedPaymentMethod: string | null = null;
 let chargeSuccessInfo: { amount: number; label: string; isAdRemoval?: boolean } | null = null;
+
+// Crypto selection & QR deposit state
+let selectedCryptoCcy: string = 'USDT';
+let selectedCryptoChain: string = 'USDT-TRC20';
+let cryptoSearchQuery: string = '';
+let cryptoAddressCopied: boolean = false;
+let cryptoVerifyNotice: string | null = null;
 
 // ============================================================================
 // State Getters & Mutators
@@ -383,12 +403,18 @@ export function openCoinChargeModal(packageId?: string): void {
   }
   isCoinChargeModalOpen = true;
   chargeSuccessInfo = null;
+  cryptoSearchQuery = '';
+  cryptoAddressCopied = false;
+  cryptoVerifyNotice = null;
 }
 
 export function closeCoinChargeModal(): void {
   isCoinChargeModalOpen = false;
   coinChargeStep = 'package';
   chargeSuccessInfo = null;
+  cryptoSearchQuery = '';
+  cryptoAddressCopied = false;
+  cryptoVerifyNotice = null;
 }
 
 export function selectChargePackage(packageId: string): void {
@@ -410,6 +436,53 @@ export function backToPackageSelection(): void {
 
 export function backToCountrySelection(): void {
   coinChargeStep = 'country';
+}
+
+export function backToPaymentSelection(): void {
+  coinChargeStep = 'payment';
+  cryptoVerifyNotice = null;
+}
+
+export function selectCryptoCoin(ccy: string): void {
+  const found = CRYPTO_COINS_CATALOG.find((c) => c.ccy === ccy) || CRYPTO_COINS_CATALOG[0];
+  selectedCryptoCcy = found.ccy;
+  cryptoAddressCopied = false;
+  cryptoVerifyNotice = null;
+  if (found.chains.length > 1) {
+    coinChargeStep = 'crypto_chain';
+  } else {
+    selectedCryptoChain = found.chains[0] || `${found.ccy}-TRC20`;
+    coinChargeStep = 'crypto_deposit';
+  }
+}
+
+export function selectCryptoChain(chain: string): void {
+  selectedCryptoChain = chain;
+  cryptoAddressCopied = false;
+  cryptoVerifyNotice = null;
+  coinChargeStep = 'crypto_deposit';
+}
+
+export function backToCryptoCoinSelection(): void {
+  coinChargeStep = 'crypto_coin';
+  cryptoAddressCopied = false;
+  cryptoVerifyNotice = null;
+}
+
+export function setCryptoSearchQuery(query: string): void {
+  cryptoSearchQuery = query;
+}
+
+export function copyCryptoDepositAddress(address: string): void {
+  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+    navigator.clipboard.writeText(address).catch(() => {});
+  }
+  cryptoAddressCopied = true;
+}
+
+export function verifyCryptoDepositStatus(): void {
+  cryptoVerifyNotice =
+    '블록체인 네트워크에서 입금 내역을 조회 중입니다. 송금 후 네트워크 컨펌(1~3분) 완료 시 자동으로 코인이 지급됩니다.';
 }
 
 export function getActivePackReveal(): PackRevealData | null {
@@ -583,8 +656,11 @@ export async function executeCoinCharge(method: string): Promise<{ success: bool
   }
 
   if (method === 'crypto') {
-    coinChargeStep = 'crypto';
-    return { success: true, message: '암호화폐 결제 안내를 표시합니다.' };
+    coinChargeStep = 'crypto_coin';
+    cryptoSearchQuery = '';
+    cryptoAddressCopied = false;
+    cryptoVerifyNotice = null;
+    return { success: true, message: '암호화폐 선택 화면을 표시합니다.' };
   }
 
   if (method === 'paypal') {
@@ -973,25 +1049,297 @@ export function renderCoinChargeModal(): string {
         }
 
         ${
-          coinChargeStep === 'crypto'
-            ? `
-          <div class="space-y-4">
-            <h4 class="text-xs font-bold text-stone-700 m-0">아래 지갑으로 송금하시면 확인 즉시 코인이 적립됩니다.</h4>
-            <div class="space-y-2 text-xs">
-              <div class="p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
-                <div class="text-[10px] text-stone-500 font-bold">USDT (TRC20):</div>
-                <div class="font-mono text-[11px] break-all select-all font-bold text-[#201d1d]">${CRYPTO_PAYMENT_INFO.usdtTrc20}</div>
-              </div>
-              <div class="p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)]">
-                <div class="text-[10px] text-stone-500 font-bold">Solana (SOL):</div>
-                <div class="font-mono text-[11px] break-all select-all font-bold text-[#201d1d]">${CRYPTO_PAYMENT_INFO.solana}</div>
-              </div>
-            </div>
-            <button type="button" data-action="close-coin-charge-modal" class="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px]">
-              확인
-            </button>
-          </div>
-        `
+          coinChargeStep === 'crypto_coin'
+            ? (() => {
+                const q = cryptoSearchQuery.trim().toLowerCase();
+                const filteredCoins = CRYPTO_COINS_CATALOG.filter((coin) => {
+                  if (!q) return true;
+                  return coin.ccy.toLowerCase().includes(q) || coin.name.toLowerCase().includes(q);
+                });
+
+                return `
+                  <div class="space-y-3">
+                    <!-- Top Subheader & Back Button -->
+                    <div class="flex items-center justify-between">
+                      <button
+                        type="button"
+                        data-action="back-to-payment-selection"
+                        class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1"
+                      >
+                        ← 결제 수단 변경
+                      </button>
+                      <span class="text-xs font-bold text-[#201d1d]">⚡ 암호화폐 선택</span>
+                    </div>
+
+                    <!-- Package Summary Box -->
+                    <div class="bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none p-3 flex items-center justify-between">
+                      <div class="text-xs text-[#201d1d]">
+                        <span class="font-bold block">${pkg.label}</span>
+                        <span class="text-stone-500 text-[11px]">결제 예정 금액: $${pkg.priceUsd.toFixed(2)} USD (${pkg.priceKrw.toLocaleString()}원)</span>
+                      </div>
+                      <span class="text-xs font-black bg-[#201d1d] text-[#fdfcfc] px-2.5 py-1 rounded-sm">
+                        $${pkg.priceUsd.toFixed(2)}
+                      </span>
+                    </div>
+
+                    <!-- Search Coin Input -->
+                    <div>
+                      <input
+                        id="crypto-coin-search-input"
+                        type="text"
+                        data-action="crypto-search-coin"
+                        value="${cryptoSearchQuery}"
+                        placeholder="코인 심볼 또는 이름 검색 (USDT, BTC, ETH, SOL...)"
+                        class="w-full px-3 py-2 text-xs border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#f8f7f7] text-[#201d1d] font-mono focus:outline-none focus:border-[#201d1d] min-h-[40px]"
+                      />
+                    </div>
+
+                    <!-- Quick Select Chips -->
+                    <div class="flex flex-wrap gap-1.5 text-[11px]">
+                      ${CRYPTO_QUICK_CHIPS.map(
+                        (chip) => `
+                          <button
+                            type="button"
+                            data-action="select-crypto-coin"
+                            data-ccy="${chip}"
+                            class="px-2.5 py-1.5 min-h-[38px] bg-[#f8f7f7] hover:bg-[#201d1d] hover:text-[#fdfcfc] text-[#201d1d] rounded-sm font-bold border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer flex items-center justify-center"
+                          >
+                            ${chip}
+                          </button>
+                        `
+                      ).join('')}
+                    </div>
+
+                    <!-- Full 8-Coin Selection List -->
+                    <div class="space-y-1.5 max-h-60 overflow-y-auto pr-1">
+                      ${filteredCoins
+                        .map(
+                          (coin) => `
+                            <button
+                              type="button"
+                              data-action="select-crypto-coin"
+                              data-ccy="${coin.ccy}"
+                              class="w-full p-3 min-h-[48px] bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-none flex items-center justify-between transition-colors cursor-pointer text-left"
+                            >
+                              <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-none bg-[#f1eeee] border border-[rgba(15,0,0,0.12)] flex items-center justify-center font-bold text-base shrink-0">
+                                  ${coin.icon}
+                                </div>
+                                <div>
+                                  <div class="flex items-center gap-1.5">
+                                    <span class="font-black text-xs sm:text-sm text-[#201d1d]">${coin.ccy}</span>
+                                    <span class="text-[11px] text-stone-500">${coin.name}</span>
+                                  </div>
+                                  <div class="flex flex-wrap gap-1 mt-0.5">
+                                    ${coin.chains
+                                      .slice(0, 3)
+                                      .map(
+                                        (ch) => `
+                                          <span class="text-[9px] bg-[#f1eeee] text-stone-700 px-1.5 py-0.5 rounded-none font-mono">
+                                            ${ch.replace(`${coin.ccy}-`, '')}
+                                          </span>
+                                        `
+                                      )
+                                      .join('')}
+                                    ${
+                                      coin.chains.length > 3
+                                        ? `<span class="text-[9px] text-stone-400 font-mono">+${coin.chains.length - 3}</span>`
+                                        : ''
+                                    }
+                                  </div>
+                                </div>
+                              </div>
+                              <span class="text-xs font-bold text-stone-500">선택 →</span>
+                            </button>
+                          `
+                        )
+                        .join('')}
+                    </div>
+                  </div>
+                `;
+              })()
+            : ''
+        }
+
+        ${
+          coinChargeStep === 'crypto_chain'
+            ? (() => {
+                const coinObj =
+                  CRYPTO_COINS_CATALOG.find((c) => c.ccy === selectedCryptoCcy) || CRYPTO_COINS_CATALOG[0];
+
+                return `
+                  <div class="space-y-3">
+                    <!-- Top Subheader & Back Button -->
+                    <div class="flex items-center justify-between">
+                      <button
+                        type="button"
+                        data-action="back-to-crypto-coin"
+                        class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1"
+                      >
+                        ← 코인 다시 선택
+                      </button>
+                      <span class="text-xs font-bold text-[#201d1d]">⚡ ${coinObj.ccy} 네트워크 선택</span>
+                    </div>
+
+                    <!-- Guidance Box -->
+                    <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-xs text-stone-600 leading-relaxed">
+                      선택한 코인 <strong class="text-[#201d1d]">[${coinObj.ccy}]</strong>의 입금 네트워크(체인)를 선택해주세요. 송금 지갑과 동일한 네트워크를 선택해야 안전합니다.
+                    </div>
+
+                    <!-- Network List -->
+                    <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
+                      ${coinObj.chains
+                        .map((chainItem) => {
+                          const chainName = chainItem.replace(`${coinObj.ccy}-`, '');
+                          const isRecommended =
+                            chainName.includes('TRC20') ||
+                            chainName.includes('Polygon') ||
+                            chainName.includes('Arbitrum') ||
+                            chainName.includes('Solana');
+
+                          return `
+                            <button
+                              type="button"
+                              data-action="select-crypto-chain"
+                              data-chain="${chainItem}"
+                              class="w-full p-3.5 min-h-[48px] bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-none flex items-center justify-between transition-colors cursor-pointer text-left"
+                            >
+                              <div>
+                                <div class="flex items-center gap-2">
+                                  <span class="font-black text-xs sm:text-sm text-[#201d1d]">${chainName}</span>
+                                  ${
+                                    isRecommended
+                                      ? `<span class="text-[10px] bg-emerald-700 text-white font-bold px-1.5 py-0.5 rounded-sm">추천 (저렴한 수수료)</span>`
+                                      : ''
+                                  }
+                                </div>
+                                <span class="text-[11px] text-stone-500 font-mono block mt-0.5">${chainItem}</span>
+                              </div>
+                              <span class="text-xs font-bold text-[#201d1d]">QR 생성 →</span>
+                            </button>
+                          `;
+                        })
+                        .join('')}
+                    </div>
+                  </div>
+                `;
+              })()
+            : ''
+        }
+
+        ${
+          coinChargeStep === 'crypto_deposit' || coinChargeStep === 'crypto'
+            ? (() => {
+                const deposit = resolveCryptoDepositDetails(
+                  selectedCryptoCcy,
+                  selectedCryptoChain,
+                  pkg.priceUsd
+                );
+
+                return `
+                  <div class="space-y-3.5 max-h-[78vh] overflow-y-auto pr-0.5">
+                    <!-- Top Bar -->
+                    <div class="flex items-center justify-between">
+                      <button
+                        type="button"
+                        data-action="back-to-crypto-coin"
+                        class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1"
+                      >
+                        ← 다른 코인/네트워크 선택
+                      </button>
+                      <span class="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">
+                        ${deposit.chain}
+                      </span>
+                    </div>
+
+                    <!-- Countdown Timer & Status -->
+                    <div class="flex items-center justify-between p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-xs">
+                      <span class="text-stone-600 font-bold">⏱ 입금 유효 시간:</span>
+                      <span class="font-black text-amber-700">10:00</span>
+                    </div>
+
+                    <!-- Exact Amount to Send -->
+                    <div class="bg-[#f8f7f7] border border-[#201d1d] rounded-none p-3 text-center space-y-1">
+                      <span class="text-[10px] text-stone-500 font-bold block uppercase tracking-wider">
+                        전송해야 할 정확한 금액 (EXACT AMOUNT TO SEND)
+                      </span>
+                      <div class="text-xl sm:text-2xl font-black text-[#201d1d] tracking-tight">
+                        ${deposit.amount} <span class="text-sm font-bold text-amber-700">${deposit.ccy}</span>
+                      </div>
+                      <span class="text-[10px] text-stone-600 font-bold block">
+                        네트워크: ${deposit.chain} (약 $${deposit.priceUsd.toFixed(2)} USD)
+                      </span>
+                    </div>
+
+                    <!-- QR Code Box -->
+                    <div class="flex flex-col items-center justify-center p-3 bg-white border border-[rgba(15,0,0,0.12)] rounded-none">
+                      <div class="p-1 bg-white border border-stone-200 flex items-center justify-center">
+                        ${deposit.qrSvg}
+                      </div>
+                      <span class="text-[10px] text-stone-500 mt-1.5 font-mono font-bold">
+                        지갑 앱으로 QR 코드를 스캔하여 전송하세요
+                      </span>
+                    </div>
+
+                    <!-- Deposit Address & Copy Button -->
+                    <div class="space-y-1.5">
+                      <label class="text-[11px] font-bold text-stone-600 block">
+                        입금 전용 지갑 주소 (${deposit.chain})
+                      </label>
+                      <div class="flex items-center gap-1.5">
+                        <input
+                          type="text"
+                          readonly
+                          value="${deposit.address}"
+                          class="flex-1 p-2.5 text-[11px] bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm font-mono font-bold text-[#201d1d] select-all focus:outline-none"
+                        />
+                        <button
+                          type="button"
+                          data-action="copy-crypto-address"
+                          data-address="${deposit.address}"
+                          class="px-3 py-2.5 min-h-[44px] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] rounded-sm text-xs font-bold flex items-center justify-center cursor-pointer shrink-0"
+                        >
+                          ${cryptoAddressCopied ? '✓ 복사됨' : '복사'}
+                        </button>
+                      </div>
+                    </div>
+
+                    ${
+                      cryptoVerifyNotice
+                        ? `
+                          <div class="p-2.5 bg-amber-50 border border-amber-400 text-amber-900 text-[11px] font-bold rounded-none leading-relaxed">
+                            ${cryptoVerifyNotice}
+                          </div>
+                        `
+                        : ''
+                    }
+
+                    <!-- Action Buttons -->
+                    <div class="space-y-2 pt-1">
+                      <div class="flex items-center justify-center gap-2 text-[11px] text-stone-600 bg-[#f8f7f7] p-2 rounded-none border border-[rgba(15,0,0,0.08)]">
+                        <span class="inline-block w-2 h-2 bg-amber-500 rounded-none"></span>
+                        <span>네트워크 트랜잭션을 실시간 감지 중입니다...</span>
+                      </div>
+
+                      <button
+                        type="button"
+                        data-action="verify-crypto-deposit"
+                        class="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-sm min-h-[44px] cursor-pointer"
+                      >
+                        ⚡ 입금 완료 즉시 확인 (수동 새로고침)
+                      </button>
+
+                      <button
+                        type="button"
+                        data-action="close-coin-charge-modal"
+                        class="w-full py-2.5 px-4 bg-[#f1eeee] hover:bg-[#e8e5e5] text-[#201d1d] border border-[rgba(15,0,0,0.12)] font-bold text-xs rounded-sm min-h-[44px] cursor-pointer"
+                      >
+                        결제 취소 (닫기)
+                      </button>
+                    </div>
+                  </div>
+                `;
+              })()
             : ''
         }
 

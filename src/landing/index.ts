@@ -25,7 +25,13 @@ import {
   getInspectedDeckCardId,
 } from './views/MyDeckSection';
 import { renderPlaySection, handlePlayAction, stopPlayTts } from './views/PlaySection';
-import { renderCardSection, setSelectedCardId, setElementFilter, setOwnedFilter } from './views/CardSection';
+import {
+  renderCardSection,
+  setSelectedCardId,
+  getSelectedCardId,
+  setElementFilter,
+  setOwnedFilter,
+} from './views/CardSection';
 import { renderBookSection, handleBookAction, initBookEpisodeFromUrl } from './views/BookSection';
 import { renderWebtoonSection, handleWebtoonAction, initWebtoonEpisodeFromUrl } from './views/WebtoonSection';
 import {
@@ -41,8 +47,16 @@ import {
   closeCoinChargeModal,
   selectChargeCountry,
   backToCountrySelection,
+  backToPackageSelection,
+  backToPaymentSelection,
   selectChargePackage,
   executeCoinCharge,
+  selectCryptoCoin,
+  selectCryptoChain,
+  backToCryptoCoinSelection,
+  setCryptoSearchQuery,
+  copyCryptoDepositAddress,
+  verifyCryptoDepositStatus,
   clearPackReveal,
 } from './views/ShopSection';
 import {
@@ -59,6 +73,12 @@ import {
   selectMallCountry,
   backMallToCountry,
   executeMallCheckout,
+  selectMallCryptoCoin,
+  selectMallCryptoChain,
+  backMallToCryptoCoin,
+  backMallToPayment,
+  copyMallCryptoAddress,
+  verifyMallCryptoDeposit,
   openMallOrdersList,
   setMallCurrentTab,
 } from './views/MallSection';
@@ -259,8 +279,23 @@ export function handleEventDelegation(event: Event): void {
     renderApp();
     return;
   }
-  if (rawTarget.id === 'deck-card-inspect-modal' || rawTarget.id === 'deck-card-inspect-backdrop') {
+  if (
+    rawTarget.id === 'deck-card-inspect-modal' ||
+    rawTarget.id === 'deck-card-inspect-backdrop' ||
+    rawTarget.id === 'deck-card-detail-modal' ||
+    rawTarget.id === 'deck-card-modal-backdrop'
+  ) {
     setInspectedDeckCardId(null);
+    renderApp();
+    return;
+  }
+  if (rawTarget.id === 'deck-swap-drawer-backdrop' || rawTarget.id === 'deck-swap-backdrop') {
+    setEditingSlotIndex(null);
+    renderApp();
+    return;
+  }
+  if (rawTarget.id === 'card-nurture-modal-root' || rawTarget.id === 'card-nurture-modal-backdrop') {
+    setSelectedCardId(null);
     renderApp();
     return;
   }
@@ -324,13 +359,14 @@ export function handleEventDelegation(event: Event): void {
   } else if (action === 'close-home-card-inspect' || action === 'close-home-card-inspector') {
     setInspectedHomeCardId(null);
     renderApp();
-  } else if (action === 'inspect-deck-card') {
+  } else if (action === 'inspect-deck-card' || action === 'select-deck-card') {
     const cardId = Number(target.getAttribute('data-card-id'));
     if (cardId) {
+      setSelectedDeckCardId(cardId);
       setInspectedDeckCardId(cardId);
       renderApp();
     }
-  } else if (action === 'close-deck-card-inspect') {
+  } else if (action === 'close-deck-card-inspect' || action === 'close-deck-card-modal') {
     setInspectedDeckCardId(null);
     renderApp();
   } else if (action === 'open-deck-swap-drawer') {
@@ -342,21 +378,25 @@ export function handleEventDelegation(event: Event): void {
   } else if (action === 'close-deck-swap-drawer') {
     setEditingSlotIndex(null);
     renderApp();
-  } else if (action === 'select-deck-card') {
+  } else if (action === 'swap-deck-slot-card' || action === 'swap-deck-card') {
     const cardId = Number(target.getAttribute('data-card-id'));
-    if (cardId) {
-      setSelectedDeckCardId(cardId);
-      renderApp();
-    }
-  } else if (action === 'swap-deck-slot-card') {
-    const cardId = Number(target.getAttribute('data-card-id'));
-    const slotIndex = getEditingSlotIndex();
-    if (cardId && slotIndex !== null && cardNurtureStore.isCardOwned(cardId)) {
+    const slotAttr = target.getAttribute('data-slot-index');
+    const slotIndex = slotAttr !== null ? Number(slotAttr) : getEditingSlotIndex();
+    if (cardId && slotIndex !== null && !isNaN(slotIndex) && cardNurtureStore.isCardOwned(cardId)) {
       cardNurtureStore.setDeckSlot(slotIndex, cardId);
       setEditingSlotIndex(null);
       setSelectedDeckCardId(cardId);
       renderApp();
     }
+  } else if (action === 'select-card') {
+    const cardId = Number(target.getAttribute('data-card-id'));
+    if (cardId) {
+      setSelectedCardId(cardId);
+      renderApp();
+    }
+  } else if (action === 'close-card-inspector') {
+    setSelectedCardId(null);
+    renderApp();
   } else if (action === 'allocate-stat') {
     const cardId = Number(target.getAttribute('data-card-id'));
     const direction = target.getAttribute('data-direction') as 'top' | 'right' | 'bottom' | 'left';
@@ -409,11 +449,39 @@ export function handleEventDelegation(event: Event): void {
   } else if (action === 'back-to-country-selection') {
     backToCountrySelection();
     renderApp();
+  } else if (action === 'back-to-package-selection') {
+    backToPackageSelection();
+    renderApp();
+  } else if (action === 'back-to-payment-selection') {
+    backToPaymentSelection();
+    renderApp();
   } else if (action === 'execute-coin-charge') {
     const method = target.getAttribute('data-method') || 'test_sim';
     executeCoinCharge(method).then(() => {
       renderApp();
     });
+  } else if (action === 'select-crypto-coin') {
+    const coinId = target.getAttribute('data-ccy') || target.getAttribute('data-coin-id');
+    if (coinId) {
+      selectCryptoCoin(coinId);
+      renderApp();
+    }
+  } else if (action === 'select-crypto-chain') {
+    const chainId = target.getAttribute('data-chain') || target.getAttribute('data-chain-id');
+    if (chainId) {
+      selectCryptoChain(chainId);
+      renderApp();
+    }
+  } else if (action === 'back-to-crypto-coin') {
+    backToCryptoCoinSelection();
+    renderApp();
+  } else if (action === 'copy-crypto-address') {
+    const addr = target.getAttribute('data-address') || '';
+    copyCryptoDepositAddress(addr);
+    renderApp();
+  } else if (action === 'verify-crypto-deposit') {
+    verifyCryptoDepositStatus();
+    renderApp();
   } else if (action === 'open-gold-exchange') {
     openGoldExchangeModal();
     renderApp();
@@ -498,8 +566,41 @@ export function handleEventDelegation(event: Event): void {
     executeMallCheckout(method).then(() => {
       renderApp();
     });
+  } else if (action === 'select-mall-crypto-coin') {
+    const coinId = target.getAttribute('data-ccy') || target.getAttribute('data-coin-id');
+    if (coinId) {
+      selectMallCryptoCoin(coinId);
+      renderApp();
+    }
+  } else if (action === 'select-mall-crypto-chain') {
+    const chainId = target.getAttribute('data-chain') || target.getAttribute('data-chain-id');
+    if (chainId) {
+      selectMallCryptoChain(chainId);
+      renderApp();
+    }
+  } else if (action === 'back-mall-crypto-coin') {
+    backMallToCryptoCoin();
+    renderApp();
+  } else if (action === 'back-mall-payment') {
+    backMallToPayment();
+    renderApp();
+  } else if (action === 'copy-mall-crypto-address') {
+    const addr = target.getAttribute('data-address') || '';
+    copyMallCryptoAddress(addr);
+    renderApp();
+  } else if (action === 'verify-mall-crypto-deposit') {
+    verifyMallCryptoDeposit();
+    renderApp();
   } else if (action === 'open-mall-orders') {
     openMallOrdersList();
+    renderApp();
+  }
+  // ── Play (#play) Actions ─────────────────────────────────────────────────
+  else if (action && action.startsWith('play-')) {
+    if (target.tagName === 'SELECT' || target.tagName === 'OPTION' || target.tagName === 'INPUT') {
+      return;
+    }
+    handlePlayAction(action, target);
     renderApp();
   }
   // ── Book (웹소설) & Webtoon (웹툰) Actions ────────────────────────────────
@@ -510,6 +611,18 @@ export function handleEventDelegation(event: Event): void {
     }
     handleBookAction(action, target);
     renderApp();
+    if (
+      action === 'book-prev-episode' ||
+      action === 'book-next-episode' ||
+      action === 'book-jump-episode' ||
+      action === 'book-select-episode'
+    ) {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+      } catch {}
+    }
   } else if (action && action.startsWith('webtoon-')) {
     // Dropdown selects and text inputs must be handled by 'change'/'input' events, not 'click'
     if (target.tagName === 'SELECT' || target.tagName === 'OPTION' || target.tagName === 'INPUT') {
@@ -517,6 +630,18 @@ export function handleEventDelegation(event: Event): void {
     }
     handleWebtoonAction(action, target);
     renderApp();
+    if (
+      action === 'webtoon-prev-episode' ||
+      action === 'webtoon-next-episode' ||
+      action === 'webtoon-jump-episode' ||
+      action === 'webtoon-select-episode'
+    ) {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+      } catch {}
+    }
   }
   // ── Auth Actions ────────────────────────────────────────────────────────
   else if (action === 'login-google') {
@@ -579,6 +704,11 @@ export function handleGlobalKeydown(event: KeyboardEvent): void {
       renderApp();
       return;
     }
+    if (getSelectedCardId()) {
+      setSelectedCardId(null);
+      renderApp();
+      return;
+    }
     closeCoinChargeModal();
     closeMallModal();
     if (getInspectedHomeCardId()) {
@@ -599,6 +729,10 @@ export function handleGlobalKeydown(event: KeyboardEvent): void {
       renderApp();
     } else if (state.activeView === 'play') {
       stopPlayTts();
+      if (playRpgState.subState !== 'map') {
+        handlePlayAction('play-dialogue-close');
+        renderApp();
+      }
     }
   }
 }
@@ -650,9 +784,19 @@ export function mountLanding(): void {
     } else if (action && action.startsWith('book-')) {
       handleBookAction(action, target);
       renderApp();
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+      } catch {}
     } else if (action && action.startsWith('webtoon-')) {
       handleWebtoonAction(action, target);
       renderApp();
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+      } catch {}
     }
   });
   document.addEventListener('input', (event: Event) => {
@@ -661,6 +805,19 @@ export function mountLanding(): void {
     if (action && (action === 'play-scrub-scene' || action === 'play-arcade-search')) {
       handlePlayAction(action, target);
       renderApp();
+    } else if (action === 'crypto-search-coin') {
+      const inputEl = target as HTMLInputElement;
+      const val = inputEl?.value || '';
+      const selStart = inputEl?.selectionStart ?? val.length;
+      setCryptoSearchQuery(val);
+      renderApp();
+      const restoredInput = document.getElementById('crypto-coin-search-input') as HTMLInputElement | null;
+      if (restoredInput) {
+        restoredInput.focus();
+        try {
+          restoredInput.setSelectionRange(selStart, selStart);
+        } catch {}
+      }
     } else if (action && action.startsWith('webtoon-')) {
       handleWebtoonAction(action, target);
       renderApp();
