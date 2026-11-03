@@ -1225,5 +1225,34 @@ html.low-spec-mode .animate-shimmer {
   100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }
 
+/* Mobile & Tablet Compact Top AdSense Banner Clamp (50px mobile, 60px tablet) */
+.adsense-compact-top,
+.adsense-compact-top ins.adsbygoogle,
+#adsense-mobile-top,
+#adsense-mobile-top ins.adsbygoogle {
+  max-height: 52px !important;
+  overflow: hidden !important;
+}
 
+.adsense-compact-top ins.adsbygoogle iframe,
+.adsense-compact-top ins.adsbygoogle > div,
+#adsense-mobile-top ins.adsbygoogle iframe,
+#adsense-mobile-top ins.adsbygoogle > div {
+  max-height: 52px !important;
+  overflow: hidden !important;
+}
 
+@media (min-width: 640px) and (max-width: 1023px) {
+  .adsense-compact-top,
+  .adsense-compact-top ins.adsbygoogle,
+  #adsense-mobile-top,
+  #adsense-mobile-top ins.adsbygoogle {
+    max-height: 60px !important;
+  }
+  .adsense-compact-top ins.adsbygoogle iframe,
+  .adsense-compact-top ins.adsbygoogle > div,
+  #adsense-mobile-top ins.adsbygoogle iframe,
+  #adsense-mobile-top ins.adsbygoogle > div {
+    max-height: 60px !important;
+  }
+}

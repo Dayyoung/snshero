@@ -137,6 +137,7 @@ export function renderDesktopRightGutter(): string {
 
 /**
  * Renders Mobile/Tablet Top Banner Ad Unit (<div id="adsense-mobile-top">)
+ * Compact slim banner format (50px mobile, 60px tablet) to prevent blocking screen content.
  */
 export function renderMobileTopBanner(): string {
   if (isAdRemoved()) return '';
@@ -144,22 +145,24 @@ export function renderMobileTopBanner(): string {
   return `
     <div
       id="adsense-mobile-top"
-      class="adsense-banner-top w-full block lg:hidden bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] text-center px-2 py-1 select-none"
+      class="adsense-banner-top w-full block lg:hidden bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] text-center px-2 py-0.5 select-none overflow-hidden"
       aria-label="Google AdSense Mobile Banner"
     >
-      <div class="max-w-md mx-auto">
-        <div class="flex items-center justify-between text-[9px] font-mono text-stone-500 uppercase tracking-wider px-1 pb-0.5">
+      <div class="adsense-banner-inner max-w-sm sm:max-w-md mx-auto overflow-hidden">
+        <div class="flex items-center justify-between text-[8px] font-mono text-stone-400 uppercase tracking-wider px-1 leading-none mb-0.5">
           <span>[AD] Google Ads</span>
-          <span class="text-[8px] text-stone-400">Sponsored</span>
+          <span class="text-[7px] text-stone-300">Sponsored</span>
         </div>
-        <ins
-          class="adsbygoogle"
-          style="display:block; min-height:50px; max-height:100px; width:100%; min-width:250px;"
-          data-ad-client="${ADSENSE_CONFIG.client}"
-          data-ad-slot="${ADSENSE_CONFIG.slots.mobileTop}"
-          data-ad-format="horizontal"
-          data-full-width-responsive="true"
-        ></ins>
+        <div class="w-full h-[50px] sm:h-[60px] max-h-[50px] sm:max-h-[60px] flex items-center justify-center overflow-hidden">
+          <ins
+            class="adsbygoogle"
+            style="display:inline-block; width:100%; max-width:468px; height:50px; max-height:50px; min-height:50px; overflow:hidden;"
+            data-ad-client="${ADSENSE_CONFIG.client}"
+            data-ad-slot="${ADSENSE_CONFIG.slots.mobileTop}"
+            data-ad-format="horizontal"
+            data-full-width-responsive="false"
+          ></ins>
+        </div>
       </div>
     </div>
   `;

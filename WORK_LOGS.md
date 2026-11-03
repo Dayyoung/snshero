@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 18:25 KST] [태블릿/모바일 상단 애드센스 광고 슬림 배너(50~60px) 축소 및 원격 저장소 푸시(/git-push) 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 모바일/태블릿 상단 AdSense 배너 컴팩트 슬림화 (50px / 60px)**:
+    - 모바일 및 태블릿 화면에서 구글 애드센스가 250~300px 크기의 직사각형 광고로 과도하게 팽창하여 본문 상단을 가리던 문제를 근본 해결.
+    - `src/landing/services/adsenseManager.ts`: `data-full-width-responsive="false"`, `h-[50px] sm:h-[60px]`, `max-w-sm sm:max-w-md` 적용.
+    - `src/landing/styles/landing.css`: `#adsense-mobile-top` 및 내부 `ins.adsbygoogle`, `iframe`을 `max-height: 50px !important;`(태블릿 60px)과 `overflow: hidden !important;`로 강력 클램핑.
+    - `src/components/AdSenseBanner.tsx`: `horizontal` 포맷 최소 높이 90px -> 50px, 최대 높이 120px -> 60px로 축소.
+    - `src/App.tsx`: 메인 SPA 상단 배너 컨테이너(`h-[50px] max-h-[50px] sm:h-[58px] sm:max-h-[60px]`, `adsense-compact-top`, style `{ maxHeight: '52px', height: '50px', minHeight: '48px' }`)로 축소 적용.
+    - `src/index.css`: `.adsense-compact-top` 및 `#adsense-mobile-top`의 `ins.adsbygoogle`, `iframe` 높이를 모바일 52px, 태블릿 60px로 강제 고정하는 전역 CSS 규칙 추가.
+  - **2. 프로덕션 빌드 검증 및 원격 푸시(/git-push) 완료**:
+    - `npm run build` 0 error 성공 완료.
+    - 사용자 명시 요청(`/git-push`)에 따라 로컬 커밋 및 `git push origin main` 원격 저장소 동기화 완료.
+- **검증 결과**:
+  - Vite 프로덕션 빌드 성공 (`vite build && post-build.js` 0 error)
+  - 구글 폼 완료 보고서 제출 완료
+  - 원격 저장소 푸시 완료 (`origin main`)
+
+
 ## [2026-11-03 18:02 KST] [에피소드 35화(17/53컷: 00-05, 18-23, 36-40) 귀멸의 칼날(ufotable) 화풍·색감 웹툰 애니메이션 생성·후처리 완료 및 쿼터 리셋 타이머 설정]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

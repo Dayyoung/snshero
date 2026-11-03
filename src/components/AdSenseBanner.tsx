@@ -71,11 +71,11 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
 
  const getMinHeight = () => {
  switch (format) {
- case 'horizontal': return '90px';
+ case 'horizontal': return '50px';
  case 'rectangle': return '250px';
  case 'vertical': return '600px';
- case 'fluid': return '120px';
- default: return '90px';
+ case 'fluid': return '50px';
+ default: return '50px';
  }
  };
 
@@ -87,7 +87,7 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
  minHeight: (style as React.CSSProperties)?.minHeight || getMinHeight(),
  width: '100%',
  minWidth: '250px',
- ...(format === 'horizontal' ? { maxHeight: '120px' } : {}),
+ ...(format === 'horizontal' ? { maxHeight: '60px' } : {}),
  ...style,
  };
 

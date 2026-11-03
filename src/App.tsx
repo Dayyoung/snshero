@@ -6797,17 +6797,17 @@ function AppContent() {
           {/* Top AdSense Banner (모바일에서는 상단 배너 표시, PC에서는 상단 배너 제거 후 좌우 배너로 표시, 레딧/자동전투 시 완전 제거) */}
           {!isAdRemoved && !isAutoBattle && view !== 'landing' && view !== 'card-play' && view !== 'reddit' && (
             <div className={cn(
-              "block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20 overflow-hidden pt-[env(safe-area-inset-top,0px)]",
+              "block lg:hidden w-full px-2 py-0.5 shrink-0 select-none z-20 overflow-hidden pt-[env(safe-area-inset-top,0px)]",
               isPlayingBattle
                 ? "bg-[#060a14]/95 border-b border-slate-800"
                 : "bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800"
             )}>
-              <div className="max-w-[728px] mx-auto h-[70px] max-h-[76px] sm:h-[96px] sm:max-h-[102px] flex items-center justify-center overflow-hidden">
+              <div className="max-w-[468px] mx-auto h-[50px] max-h-[50px] sm:h-[58px] sm:max-h-[60px] flex items-center justify-center overflow-hidden">
                 <AdSenseBanner 
                   format="horizontal"
                   responsive={false}
-                  className="w-full h-full overflow-hidden"
-                  style={{ maxHeight: '72px', height: '68px', minHeight: '62px' }}
+                  className="adsense-compact-top w-full h-full overflow-hidden"
+                  style={{ maxHeight: '52px', height: '50px', minHeight: '48px' }}
                 />
               </div>
             </div>
