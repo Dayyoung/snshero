@@ -21,6 +21,8 @@ import {
   getEditingSlotIndex,
   setSelectedDeckCardId,
   getSelectedDeckCardId,
+  setInspectedDeckCardId,
+  getInspectedDeckCardId,
 } from './views/MyDeckSection';
 import { renderPlaySection, handlePlayAction, stopPlayTts } from './views/PlaySection';
 import { renderCardSection, setSelectedCardId, setElementFilter, setOwnedFilter } from './views/CardSection';
@@ -35,7 +37,27 @@ import {
   closePackRevealModal,
   getActiveRevealPack,
   isGoldExchangeModalOpen,
+  setShopCategoryTab,
+  openCoinChargeModal,
+  closeCoinChargeModal,
+  selectChargeCountry,
+  backToCountrySelection,
+  selectChargePackage,
+  executeCoinCharge,
+  openProductDetail,
+  closeProductDetail,
+  setDetailQty,
+  setDetailSize,
+  setDetailFaction,
+  proceedToShipping,
+  backToDetail,
+  proceedToGoodsCountry,
+  backToShipping,
+  selectGoodsPaymentCountry,
+  backToGoodsCountrySelection,
+  executeGoodsCheckout,
 } from './views/ShopSection';
+import { loginWithGoogle, loginAsGuest, logoutUser } from './services/authService';
 import {
   renderDesktopLeftGutter,
   renderDesktopRightGutter,
@@ -175,6 +197,14 @@ export function navigateTo(targetView: ViewKey, options?: RouteOptions): void {
     stopPlayTts();
   }
 
+  // Auto-start Kadan Journey runner when navigating to #play view
+  if (resolvedView === 'play') {
+    playRpgState.autoMode = true;
+    try {
+      localStorage.setItem('hero_kadan_rpg_auto_mode', 'true');
+    } catch {}
+  }
+
   state.activeView = resolvedView;
   state.isSidebarOpen = false;
   state.activeModal = null;
@@ -220,6 +250,16 @@ export function handleEventDelegation(event: Event): void {
   }
   if (rawTarget.id === 'home-card-inspect-modal' || rawTarget.id === 'home-card-inspect-backdrop') {
     setInspectedHomeCardId(null);
+    renderApp();
+    return;
+  }
+  if (rawTarget.id === 'deck-card-detail-modal' || rawTarget.id === 'deck-card-modal-backdrop') {
+    setInspectedDeckCardId(null);
+    renderApp();
+    return;
+  }
+  if (rawTarget.id === 'card-nurture-modal-root' || rawTarget.id === 'card-nurture-modal-backdrop') {
+    setSelectedCardId(null);
     renderApp();
     return;
   }
@@ -321,8 +361,12 @@ export function handleEventDelegation(event: Event): void {
       const id = parseInt(cardIdStr, 10);
       state.selectedDeckCardId = id;
       setSelectedDeckCardId(id);
+      setInspectedDeckCardId(id);
       renderApp();
     }
+  } else if (action === 'close-deck-card-modal') {
+    setInspectedDeckCardId(null);
+    renderApp();
   } else if (action && action.startsWith('play-')) {
     handlePlayAction(action, target as HTMLElement);
     renderApp();
@@ -367,6 +411,69 @@ export function handleEventDelegation(event: Event): void {
       }
       renderApp();
     }
+  } else if (action === 'switch-shop-tab') {
+    const tab = target.getAttribute('data-tab') as any;
+    if (tab) {
+      setShopCategoryTab(tab);
+      renderApp();
+    }
+  } else if (action === 'open-coin-charge-modal') {
+    const pkgId = target.getAttribute('data-package-id') || undefined;
+    openCoinChargeModal(pkgId);
+    renderApp();
+  } else if (action === 'close-coin-charge-modal') {
+    closeCoinChargeModal();
+    renderApp();
+  } else if (action === 'select-charge-package') {
+    const pkgId = target.getAttribute('data-package-id');
+    if (pkgId) {
+      selectChargePackage(pkgId);
+      renderApp();
+    }
+  } else if (action === 'select-charge-country') {
+    const countryCode = target.getAttribute('data-country-code');
+    if (countryCode) {
+      selectChargeCountry(countryCode);
+      renderApp();
+    }
+  } else if (action === 'back-to-country-selection') {
+    backToCountrySelection();
+    renderApp();
+  } else if (action === 'execute-coin-charge') {
+    const method = target.getAttribute('data-method') || 'sim';
+    executeCoinCharge(method);
+    renderApp();
+  } else if (action === 'open-product-detail' || action === 'open-goods-modal') {
+    const productId = target.getAttribute('data-product-id');
+    if (productId) {
+      openProductDetail(productId);
+      renderApp();
+    }
+  } else if (action === 'close-product-detail' || action === 'close-goods-modal') {
+    closeProductDetail();
+    renderApp();
+  } else if (action === 'proceed-to-shipping') {
+    proceedToShipping();
+    renderApp();
+  } else if (action === 'back-to-detail') {
+    backToDetail();
+    renderApp();
+  } else if (action === 'back-to-shipping') {
+    backToShipping();
+    renderApp();
+  } else if (action === 'select-goods-country') {
+    const countryCode = target.getAttribute('data-country-code');
+    if (countryCode) {
+      selectGoodsPaymentCountry(countryCode);
+      renderApp();
+    }
+  } else if (action === 'back-to-goods-country') {
+    backToGoodsCountrySelection();
+    renderApp();
+  } else if (action === 'execute-goods-checkout') {
+    const method = target.getAttribute('data-method') || 'test_sim';
+    executeGoodsCheckout(method);
+    renderApp();
   } else if (action === 'open-gold-exchange') {
     openGoldExchangeModal();
     renderApp();
@@ -383,6 +490,27 @@ export function handleEventDelegation(event: Event): void {
   } else if (action === 'close-pack-reveal' || action === 'confirm-pack-reveal') {
     closePackRevealModal();
     renderApp();
+  } else if (action === 'login-google') {
+    loginWithGoogle().then((res) => {
+      if (res.success) {
+        state.activeModal = null;
+        renderApp();
+      } else if (!res.isCancelled && res.error) {
+        alert(res.error);
+      }
+    });
+  } else if (action === 'login-guest') {
+    loginAsGuest();
+    state.activeModal = null;
+    renderApp();
+  } else if (action === 'logout-user') {
+    logoutUser().then(() => {
+      renderApp();
+    });
+  } else if (action === 'navigate-to-goods') {
+    state.activeModal = null;
+    setShopCategoryTab('GOODS');
+    navigateTo('shop');
   }
 }
 
@@ -425,6 +553,8 @@ export function handleGlobalKeydown(event: KeyboardEvent): void {
       renderApp();
       return;
     }
+    closeCoinChargeModal();
+    closeProductDetail();
     if (getInspectedHomeCardId()) {
       setInspectedHomeCardId(null);
       renderApp();
@@ -451,6 +581,12 @@ export function mountLanding(): void {
   // 1. Initial route resolution
   const initialView = parseRoute();
   state.activeView = initialView;
+  if (initialView === 'play') {
+    playRpgState.autoMode = true;
+    try {
+      localStorage.setItem('hero_kadan_rpg_auto_mode', 'true');
+    } catch {}
+  }
 
   // 2. Normalize initial URL to `#${initialView}` without creating an extra history frame
   const targetHash = `#${initialView}`;
@@ -488,6 +624,30 @@ export function mountLanding(): void {
     }
   });
 
+  document.addEventListener('submit', (event: Event) => {
+    const form = event.target as HTMLFormElement;
+    if (form && form.getAttribute('data-action') === 'submit-goods-order') {
+      event.preventDefault();
+      const formData = new FormData(form);
+      const buyerName = String(formData.get('buyer_name') || '').trim();
+      const buyerPhone = String(formData.get('buyer_phone') || '').trim();
+      const buyerAddress = String(formData.get('buyer_address') || '').trim();
+      const quantity = parseInt(String(formData.get('goods_qty') || '1'), 10) || 1;
+      const size = String(formData.get('goods_size') || 'M');
+      const faction = String(formData.get('goods_faction') || '');
+
+      executeGoodsOrder({
+        buyerName,
+        buyerPhone,
+        buyerAddress,
+        quantity,
+        size,
+        faction,
+      });
+      renderApp();
+    }
+  });
+
   window.addEventListener('keydown', handleGlobalKeydown);
 
   // 5. hashchange Listener (handles user manual hash edit or direct # links)
@@ -515,6 +675,9 @@ export function mountLanding(): void {
       renderApp();
     });
     window.addEventListener('snshero_sns_updated', () => {
+      renderApp();
+    });
+    window.addEventListener('snshero_auth_changed', () => {
       renderApp();
     });
   }

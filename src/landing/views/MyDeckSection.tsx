@@ -21,15 +21,18 @@
 import { cardNurtureStore } from '../services/cardNurtureStore';
 import { getCharacterAsset, FACTION_PALETTES } from '../services/assetCatalog';
 import { CARD_DATABASE } from '../../cardDatabase';
+import { renderOriginalCardHtml } from '../components/OriginalCardHtml';
 
 export interface MyDeckSectionState {
   editingSlotIndex: number | null; // 0..4 when drawer is open, null when closed
   selectedCardId: number;          // card currently shown in bottom detail preview
+  inspectedCardId: number | null;  // modal popup for mobile & desktop card deep inspect
 }
 
 export const deckSectionState: MyDeckSectionState = {
   editingSlotIndex: null,
   selectedCardId: 1,
+  inspectedCardId: null,
 };
 
 export function setEditingSlotIndex(slotIndex: number | null): void {
@@ -46,6 +49,14 @@ export function setSelectedDeckCardId(cardId: number): void {
 
 export function getSelectedDeckCardId(): number {
   return deckSectionState.selectedCardId;
+}
+
+export function setInspectedDeckCardId(cardId: number | null): void {
+  deckSectionState.inspectedCardId = cardId;
+}
+
+export function getInspectedDeckCardId(): number | null {
+  return deckSectionState.inspectedCardId;
 }
 
 /**
@@ -180,32 +191,15 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
             const isAlreadyInOtherSlot = otherSlotIdx !== -1 && otherSlotIdx !== editingSlot;
 
             return `
-              <div class="border ${isCurrentSlot ? 'border-[#201d1d] bg-[#f8f7f7]' : isAlreadyInOtherSlot ? 'border-stone-200 bg-stone-50 opacity-60' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d]'} p-4 rounded-none flex flex-col justify-between space-y-3">
-                <!-- Card Top Row -->
-                <div class="flex items-center justify-between w-full">
-                  <span class="text-[10px] font-bold px-1.5 py-0.5 ${isCurrentSlot ? 'bg-[#201d1d] text-white' : isAlreadyInOtherSlot ? 'bg-stone-300 text-stone-700' : 'bg-[#f1eeee] text-[#646262]'} rounded-sm truncate max-w-[140px]">
-                    [${asset.code}] ${asset.nameKo}
-                  </span>
-                  <span class="text-[10px] font-bold text-stone-500 uppercase">
-                    Lv.${stats.level} · ${asset.faction}
-                  </span>
-                </div>
-
-                <!-- Bust Image -->
-                <div class="w-full h-28 bg-[#f1eeee] flex items-center justify-center p-2 overflow-hidden border border-[rgba(15,0,0,0.06)] rounded-none">
-                  <img
-                    src="${asset.bustPngUrl}"
-                    alt="${asset.nameKo}"
-                    class="max-h-full max-w-full object-contain"
-                    loading="lazy"
-                    onerror="this.src='${asset.seatUrl}'; this.onerror=null;"
-                  />
-                </div>
-
-                <!-- 4-Way Stats & TP -->
-                <div class="w-full bg-[#f1eeee] border border-[rgba(15,0,0,0.08)] p-1.5 rounded-sm text-center text-[10px] text-stone-600 space-y-0.5">
-                  <div>N: <strong class="text-[#201d1d]">${stats.top}</strong> | S: <strong class="text-[#201d1d]">${stats.bottom}</strong> | W: <strong class="text-[#201d1d]">${stats.left}</strong> | E: <strong class="text-[#201d1d]">${stats.right}</strong></div>
-                  <div class="font-bold text-[#201d1d]">전투력: ${stats.totalTP} TP</div>
+              <div class="border ${isCurrentSlot ? 'border-[#201d1d] bg-[#f8f7f7]' : isAlreadyInOtherSlot ? 'border-stone-200 bg-stone-50 opacity-60' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d]'} p-3 rounded-none flex flex-col justify-between space-y-3">
+                <!-- Original TCG Card Preview -->
+                <div class="w-full">
+                  ${renderOriginalCardHtml(card.cardId, {
+                    isOwned: true,
+                    level: stats.level,
+                    hideStats: false,
+                    className: 'w-full aspect-[5/7]',
+                  })}
                 </div>
 
                 <!-- Action / Status Button (min-h-[44px]) -->
@@ -262,6 +256,151 @@ function renderDeckSwapDrawer(editingSlot: number, activeDeckIds: number[]): str
   `;
 }
 
+/**
+ * Renders the Card Inspection Modal Popup for mobile and desktop viewports.
+ * Displays 7-head cutout, level/EXP, stats breakdown, lore, and TP without needing to scroll.
+ */
+function renderDeckCardDetailModal(cardId: number): string {
+  const asset = getCharacterAsset(cardId);
+  const stats = getCardEffectiveStats(cardId);
+  const db = CARD_DATABASE[cardId] || {};
+  const factionStyle = FACTION_PALETTES[asset.faction] || { bg: '#201d1d', text: '#ffffff', border: '#302c2c' };
+  const baseStats = getCardBaseStats(cardId);
+
+  return `
+    <div
+      id="deck-card-detail-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto font-mono select-none"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="deck-card-detail-title"
+    >
+      <!-- Dedicated Modal Backdrop Sibling -->
+      <div
+        id="deck-card-modal-backdrop"
+        data-action="close-deck-card-modal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-pointer transition-opacity"
+        aria-hidden="true"
+      ></div>
+
+      <!-- Modal Dialog Content Box -->
+      <div class="relative z-10 w-full max-w-lg bg-[#fdfcfc] border border-[#201d1d] shadow-2xl rounded-none flex flex-col max-h-[90dvh] overflow-hidden">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-4 sm:p-5 border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7]">
+          <div class="pr-4">
+            <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase rounded-sm mb-1" style="background-color: ${factionStyle.bg}; color: ${factionStyle.text};">
+              ${asset.faction} · ${asset.rarity}
+            </span>
+            <h3 id="deck-card-detail-title" class="text-base sm:text-lg font-black text-[#201d1d] m-0">
+              [${asset.code}] ${asset.nameKo} (${asset.nameEn})
+            </h3>
+          </div>
+          <button
+            type="button"
+            data-action="close-deck-card-modal"
+            class="px-3 py-2 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer"
+            aria-label="닫기"
+          >
+            ✕ 닫기
+          </button>
+        </div>
+
+        <!-- Modal Scrollable Body -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+          <!-- Card Original Design & Cutout Dual Stage -->
+          <div class="flex flex-col sm:flex-row items-center gap-4">
+            <div class="w-44 sm:w-48 shrink-0">
+              ${renderOriginalCardHtml(cardId, {
+                isOwned: true,
+                level: stats.level,
+                hideStats: false,
+                className: 'w-full aspect-[5/7]',
+              })}
+            </div>
+            <div class="w-full flex-1 h-56 sm:h-64 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 overflow-hidden">
+              <img
+                src="${asset.cutoutUrl}"
+                alt="${asset.nameKo} 7등신 풀바디"
+                class="max-h-full max-w-full object-contain filter drop-shadow-none"
+                loading="eager"
+                onerror="this.src='${asset.bustPngUrl}'; this.onerror=null;"
+              />
+            </div>
+          </div>
+
+          <!-- Description / Lore -->
+          <p class="text-xs text-stone-600 leading-relaxed m-0">
+            ${(db as any).lore_ko || `${asset.faction} 속성의 강력한 정령 영웅. 3x3 보드에서 전술적 플립과 결계를 주도합니다.`}
+          </p>
+
+          <!-- Level, EXP Bar & Stat Points -->
+          <div class="border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-3.5 rounded-none space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-[#201d1d]">성장 레벨: Lv.${stats.level} / 100</span>
+              <span class="text-stone-500">EXP: ${stats.exp} / ${stats.expToNext}</span>
+            </div>
+            <div class="w-full h-2 bg-stone-200 rounded-sm overflow-hidden">
+              <div
+                class="h-full bg-[#201d1d]"
+                style="width: ${Math.min(100, Math.round((stats.exp / (stats.expToNext || 100)) * 100))}%"
+              ></div>
+            </div>
+            <div class="flex items-center justify-between text-[11px] pt-0.5">
+              <span class="text-stone-600">
+                미사용 스탯: <strong class="${stats.statPoints > 0 ? 'text-red-600' : 'text-[#201d1d]'}">${stats.statPoints} pt</strong>
+              </span>
+              <span class="text-[10px] text-stone-500 font-bold">전투력: ${stats.totalTP} TP</span>
+            </div>
+          </div>
+
+          <!-- 4-Way Compass Stats Breakdown Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+            <div class="border border-[rgba(15,0,0,0.12)] bg-white p-2.5 rounded-none">
+              <div class="text-[10px] text-stone-500 font-bold uppercase">북 (N)</div>
+              <div class="text-base font-black text-[#201d1d] mt-0.5">${stats.top}</div>
+              <div class="text-[9px] text-stone-400">기본 ${baseStats.top} + 보너스 ${stats.top - baseStats.top}</div>
+            </div>
+            <div class="border border-[rgba(15,0,0,0.12)] bg-white p-2.5 rounded-none">
+              <div class="text-[10px] text-stone-500 font-bold uppercase">동 (E)</div>
+              <div class="text-base font-black text-[#201d1d] mt-0.5">${stats.right}</div>
+              <div class="text-[9px] text-stone-400">기본 ${baseStats.right} + 보너스 ${stats.right - baseStats.right}</div>
+            </div>
+            <div class="border border-[rgba(15,0,0,0.12)] bg-white p-2.5 rounded-none">
+              <div class="text-[10px] text-stone-500 font-bold uppercase">남 (S)</div>
+              <div class="text-base font-black text-[#201d1d] mt-0.5">${stats.bottom}</div>
+              <div class="text-[9px] text-stone-400">기본 ${baseStats.bottom} + 보너스 ${stats.bottom - baseStats.bottom}</div>
+            </div>
+            <div class="border border-[rgba(15,0,0,0.12)] bg-white p-2.5 rounded-none">
+              <div class="text-[10px] text-stone-500 font-bold uppercase">서 (W)</div>
+              <div class="text-base font-black text-[#201d1d] mt-0.5">${stats.left}</div>
+              <div class="text-[9px] text-stone-400">기본 ${baseStats.left} + 보너스 ${stats.left - baseStats.left}</div>
+            </div>
+          </div>
+
+          <!-- Special Ability -->
+          <div class="p-3 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none space-y-0.5">
+            <span class="text-[10px] text-stone-500 font-bold uppercase">고유 스킬</span>
+            <div class="text-xs font-bold text-[#201d1d]">
+              ${(db as any).ability?.description_ko || '기본 전술 능력: 표준 전장 배치'}
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="p-4 border-t border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex items-center justify-end">
+          <button
+            type="button"
+            data-action="close-deck-card-modal"
+            class="px-5 py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer"
+          >
+            확인 (CLOSE)
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 export function renderMyDeckSection(selectedCardId?: number): string {
   // Update internal selected card if provided
   if (selectedCardId !== undefined && selectedCardId > 0) {
@@ -306,24 +445,6 @@ export function renderMyDeckSection(selectedCardId?: number): string {
               <p class="text-xs sm:text-sm text-stone-600 m-0 mt-1">
                 현재 출격 배치된 5장의 영웅 덱 구성과 전술 전투력(Tactical Power) 실시간 합산
               </p>
-            </div>
-
-            <!-- Quick Action: Go to Nurture or Play -->
-            <div class="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                data-nav="card"
-                class="px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center cursor-pointer"
-              >
-                카드 육성 및 스탯 분배 (Lv.1~100) →
-              </button>
-              <a
-                href="#play"
-                data-nav="play"
-                class="px-4 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] inline-flex items-center justify-center no-underline"
-              >
-                웹게임 출격 →
-              </a>
             </div>
           </div>
 
@@ -389,10 +510,9 @@ export function renderMyDeckSection(selectedCardId?: number): string {
             </div>
           </div>
 
-          <!-- 5 Card Slots Responsive Grid -->
+          <!-- 5 Card Slots Responsive Grid (Original TCG Card Design) -->
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             ${activeDeckIds.map((cardId, index) => {
-              const asset = getCharacterAsset(cardId);
               const stats = getCardEffectiveStats(cardId);
               const isSelected = cardId === currentSelectedId;
               const hasRedDot = stats.statPoints > 0;
@@ -400,76 +520,43 @@ export function renderMyDeckSection(selectedCardId?: number): string {
               return `
                 <div
                   data-slot-index="${index}"
-                  class="relative border ${isSelected ? 'border-[#201d1d] bg-[#f8f7f7] shadow-sm' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]'} p-4 rounded-none flex flex-col justify-between space-y-3 hover:border-[#201d1d] transition-all min-h-[340px]"
+                  class="relative border-2 ${isSelected ? 'border-[#201d1d] bg-[#f8f7f7] shadow-md' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]'} p-3 rounded-none flex flex-col justify-between space-y-2 hover:border-[#201d1d] transition-all"
                 >
-                  <!-- Top Row: Slot Number & Red Dot / Unspent Points -->
-                  <div class="flex items-center justify-between w-full">
-                    <span class="text-[10px] font-bold px-1.5 py-0.5 ${isSelected ? 'bg-[#201d1d] text-[#fdfcfc]' : 'bg-[#f1eeee] text-[#646262]'} rounded-sm">
+                  <!-- Top Row: Slot Number Badge -->
+                  <div class="flex items-center justify-between w-full pb-1 border-b border-[rgba(15,0,0,0.08)]">
+                    <span class="text-[10px] font-black px-2 py-0.5 ${isSelected ? 'bg-[#201d1d] text-[#fdfcfc]' : 'bg-[#f1eeee] text-[#646262]'} rounded-sm">
                       SLOT 0${index + 1}
                     </span>
-                    ${hasRedDot ? `
-                      <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded-sm" title="미사용 스탯 포인트">
-                        +${stats.statPoints} pt
-                      </span>
-                    ` : `
-                      <span class="text-[10px] text-stone-400 font-bold uppercase">${asset.rarity}</span>
-                    `}
+                    <span class="text-[10px] font-bold text-stone-600">
+                      ${stats.totalTP} TP
+                    </span>
                   </div>
 
-                  <!-- Character Bust Portrait (Click to inspect) -->
+                  <!-- Authentic Original TCG Card Component (Click to inspect) -->
                   <div
                     role="button"
                     tabindex="0"
                     data-action="select-deck-card"
                     data-card-id="${cardId}"
-                    class="w-full h-32 bg-[#f1eeee] flex items-center justify-center p-2 overflow-hidden border border-[rgba(15,0,0,0.06)] rounded-none cursor-pointer"
-                    title="클릭하여 상세 정보 보기"
+                    class="w-full cursor-pointer"
+                    title="클릭하여 상세 정보 팝업 보기"
                   >
-                    <img
-                      src="${asset.bustPngUrl}"
-                      alt="${asset.nameKo}"
-                      class="max-h-full max-w-full object-contain filter drop-shadow-none"
-                      loading="lazy"
-                      onerror="this.src='${asset.seatUrl}'; this.onerror=null;"
-                    />
-                  </div>
-
-                  <!-- Card Identification & Level -->
-                  <div
-                    role="button"
-                    tabindex="0"
-                    data-action="select-deck-card"
-                    data-card-id="${cardId}"
-                    class="w-full space-y-1 cursor-pointer"
-                  >
-                    <div class="flex items-center justify-between">
-                      <span class="text-xs font-black text-[#201d1d] truncate">[${asset.code}] ${asset.nameKo}</span>
-                      <span class="text-[11px] font-bold text-stone-700">Lv.${stats.level}</span>
-                    </div>
-                    <div class="text-[10px] text-stone-500 uppercase tracking-wider">${asset.faction} · ${asset.nameEn}</div>
-                  </div>
-
-                  <!-- 4-Way Compass Stats (N, E, S, W) & Total TP -->
-                  <div class="w-full bg-[#f1eeee] border border-[rgba(15,0,0,0.08)] p-2 rounded-sm space-y-1 text-center">
-                    <div class="text-[10px] font-bold text-stone-600">북(N): <span class="text-[#201d1d]">${stats.top}</span></div>
-                    <div class="flex items-center justify-between text-[10px] font-bold text-stone-600 px-1">
-                      <span>서(W): <span class="text-[#201d1d]">${stats.left}</span></span>
-                      <span>동(E): <span class="text-[#201d1d]">${stats.right}</span></span>
-                    </div>
-                    <div class="text-[10px] font-bold text-stone-600">남(S): <span class="text-[#201d1d]">${stats.bottom}</span></div>
+                    ${renderOriginalCardHtml(cardId, {
+                      isSelected,
+                      isOwned: true,
+                      level: stats.level,
+                      showRedDot: hasRedDot,
+                      className: 'w-full aspect-[5/7]',
+                    })}
                   </div>
 
                   <!-- Bottom Slot Action: Card Swap Button (44px+ touch target) -->
-                  <div class="w-full pt-1 space-y-2">
-                    <div class="flex items-center justify-between text-[11px] border-t border-[rgba(15,0,0,0.08)] pt-1">
-                      <span class="text-stone-500 font-semibold">전투력</span>
-                      <span class="font-black text-[#201d1d]">${stats.totalTP} TP</span>
-                    </div>
+                  <div class="w-full pt-1">
                     <button
                       type="button"
                       data-action="open-deck-swap-drawer"
                       data-slot-index="${index}"
-                      class="w-full py-2 px-3 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center gap-1.5 cursor-pointer transition-opacity"
+                      class="w-full py-2.5 px-3 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center gap-1.5 cursor-pointer transition-opacity"
                     >
                       <span>🔄</span>
                       <span>영웅 교체</span>
@@ -596,35 +683,6 @@ export function renderMyDeckSection(selectedCardId?: number): string {
                   <div class="text-xl font-black text-[#201d1d]">${selectedStats.totalTP} TP</div>
                 </div>
               </div>
-
-              <!-- Action Buttons -->
-              <div class="flex flex-wrap items-center gap-3 pt-2">
-                ${currentSlotOfSelected !== -1 ? `
-                  <button
-                    type="button"
-                    data-action="open-deck-swap-drawer"
-                    data-slot-index="${currentSlotOfSelected}"
-                    class="px-5 py-3 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center cursor-pointer gap-1.5"
-                  >
-                    <span>🔄</span>
-                    <span>이 슬롯 영웅 교체하기 (SLOT 0${currentSlotOfSelected + 1}) →</span>
-                  </button>
-                ` : ''}
-                <button
-                  type="button"
-                  data-nav="card"
-                  class="flex-1 px-5 py-3 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] inline-flex items-center justify-center cursor-pointer"
-                >
-                  이 카드 육성하기 (EXP &amp; 스탯 배분) →
-                </button>
-                <a
-                  href="#play"
-                  data-nav="play"
-                  class="px-5 py-3 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] inline-flex items-center justify-center no-underline"
-                >
-                  실전 배틀 출격 →
-                </a>
-              </div>
             </div>
           </div>
         </div>
@@ -632,6 +690,9 @@ export function renderMyDeckSection(selectedCardId?: number): string {
 
       <!-- 4. Interactive Card Selection Drawer / Modal (Parity with DeckView) -->
       ${editingSlot !== null ? renderDeckSwapDrawer(editingSlot, activeDeckIds) : ''}
+
+      <!-- 5. Card Inspection Modal Popup (Mobile & Desktop) -->
+      ${deckSectionState.inspectedCardId !== null ? renderDeckCardDetailModal(deckSectionState.inspectedCardId) : ''}
     </div>
   `;
 }

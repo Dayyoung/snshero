@@ -8,6 +8,7 @@
  */
 
 import { ViewKey, ModalKey, TOP_NAV_ITEMS } from '../types';
+import { getCurrentUser } from '../services/authService';
 
 export interface HeaderProps {
   activeView: ViewKey;
@@ -28,7 +29,6 @@ export const TOP_NAV_DEFS: NavItemDef[] = [
   { key: 'play', label: '플레이' },
   { key: 'card', label: '카드' },
   { key: 'shop', label: '상점' },
-  { key: 'mall', label: '쇼핑몰', isModal: true },
 ];
 
 export function renderHeader(activeView: ViewKey): string {
@@ -91,12 +91,39 @@ export function renderHeader(activeView: ViewKey): string {
           ${navItemsHtml}
         </nav>
 
-        <!-- Right Action: Game Launch & Quick Links -->
+        <!-- Right Action: User Login & Game Launch -->
         <div class="flex items-center gap-2">
+          ${(() => {
+            const user = getCurrentUser();
+            const isGoogle = !user.isAnonymous && user.providerId === 'google.com';
+            if (isGoogle) {
+              return `
+                <button
+                  type="button"
+                  data-modal="login"
+                  class="px-2.5 py-1.5 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] flex items-center gap-1.5 cursor-pointer"
+                  aria-label="내 계정 정보"
+                >
+                  <img src="${user.photoURL}" alt="${user.displayName}" class="w-5 h-5 rounded-full object-cover" />
+                  <span class="hidden sm:inline max-w-[90px] truncate">${user.displayName}</span>
+                </button>
+              `;
+            }
+            return `
+              <button
+                type="button"
+                data-modal="login"
+                class="px-3 py-2 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center cursor-pointer"
+                aria-label="로그인"
+              >
+                로그인
+              </button>
+            `;
+          })()}
           <a
             href="#play"
             data-nav="play"
-            class="px-4 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center no-underline"
+            class="px-3.5 sm:px-4 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center no-underline"
             aria-label="플레이 게임 섹션으로 이동"
           >
             게임 시작 →

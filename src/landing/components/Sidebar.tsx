@@ -8,6 +8,7 @@
  */
 
 import { ViewKey, ModalKey, SIDE_NAV_ITEMS } from '../types';
+import { getCurrentUser } from '../services/authService';
 
 export interface SidebarProps {
   isOpen: boolean;
@@ -117,12 +118,12 @@ export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {
             </button>
           </div>
 
-          <!-- User / Guest Status Notice -->
+          <!-- User Status Notice -->
           <div class="p-4 bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)]">
             <div class="text-[11px] text-[#646262] font-semibold uppercase tracking-wider mb-1">인증 상태</div>
             <div class="text-xs font-bold text-[#201d1d] flex items-center gap-1.5">
               <span class="w-2 h-2 rounded-none bg-emerald-500 inline-block"></span>
-              <span>게스트 모험가 (LocalStorage 자동저장)</span>
+              <span>${getCurrentUser().displayName}</span>
             </div>
           </div>
 

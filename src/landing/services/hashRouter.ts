@@ -8,7 +8,7 @@
 
 export type ViewKey = 'home' | 'deck' | 'play' | 'card' | 'shop';
 export type HashRoute = '#home' | '#deck' | '#play' | '#card' | '#shop';
-export type LegacyRoute = '/home' | '/deck' | '/play' | '/main' | '/shop' | '/card';
+export type LegacyRoute = '/home' | '/deck' | '/play' | '/main' | '/shop' | '/card' | '/mall' | '/goods';
 
 export const VALID_VIEWS: readonly ViewKey[] = ['home', 'deck', 'play', 'card', 'shop'] as const;
 
@@ -27,6 +27,8 @@ export const LEGACY_ROUTES: readonly LegacyRoute[] = [
   '/main',
   '/shop',
   '/card',
+  '/mall',
+  '/goods',
 ] as const;
 
 export const HASH_VIEW_MAP: Record<string, ViewKey> = {
@@ -44,6 +46,8 @@ export const HASH_VIEW_MAP: Record<string, ViewKey> = {
   companion: 'card',
   shop: 'shop',
   store: 'shop',
+  mall: 'shop',
+  goods: 'shop',
 };
 
 export const LEGACY_PATH_MAP: Record<string, ViewKey> = {
@@ -59,6 +63,8 @@ export const LEGACY_PATH_MAP: Record<string, ViewKey> = {
   '/missions': 'card',
   '/shop': 'shop',
   '/store': 'shop',
+  '/mall': 'shop',
+  '/goods': 'shop',
 };
 
 export const LEGACY_ROUTE_MAPPING: Record<LegacyRoute, HashRoute> = {
@@ -68,6 +74,8 @@ export const LEGACY_ROUTE_MAPPING: Record<LegacyRoute, HashRoute> = {
   '/main': '#play',
   '/shop': '#shop',
   '/card': '#card',
+  '/mall': '#shop',
+  '/goods': '#shop',
 };
 
 /**

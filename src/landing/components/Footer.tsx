@@ -61,8 +61,7 @@ export function renderFooter(): string {
             © 2026 SNSHero.com (눈히어로.com). OpenCode Terminal-Flat Architecture.
           </div>
           <div class="flex items-center space-x-4">
-            <span>[100% LocalStorage]</span>
-            <span>[0% Server Dependency]</span>
+            <span>[Web TCG Platform]</span>
             <span>[110 Cards / 40 Episodes]</span>
           </div>
         </div>

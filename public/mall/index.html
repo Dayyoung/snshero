@@ -1,7 +1,15 @@
 <!DOCTYPE html>
 
 <html lang="ko">
-<head><link href="/mall/cdn/shop/files/pro_ico.png" rel="icon" type="image/png"/>
+<head>
+<script>
+  // Redirect /mall to unified #shop route with GOODS category
+  try {
+    localStorage.setItem('hero_shop_active_tab', 'GOODS');
+  } catch(e) {}
+  window.location.replace('/#shop');
+</script>
+<link href="/mall/cdn/shop/files/pro_ico.png" rel="icon" type="image/png"/>
 <meta charset="utf-8"/>
 <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>

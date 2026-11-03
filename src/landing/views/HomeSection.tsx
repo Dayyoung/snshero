@@ -9,7 +9,6 @@
  *   - Click-to-inspect card modal with 7-head character cutout, stats & ability breakdown
  *   - 4 core media pillars (웹소설, 웹게임, 웹툰, 애니메이션)
  *   - Official external serialization links with '[절찬 연재중]' badges (네이버 웹소설, 네이버 웹툰, 문피아)
- *   - 110-card 3-tier visual asset system showcase
  * Pure TypeScript template string generator (Zero React runtime).
  */
 
@@ -17,6 +16,7 @@ import { EXTERNAL_LINKS } from '../types';
 import { getCharacterAsset, FACTION_PALETTES } from '../services/assetCatalog';
 import { cardNurtureStore } from '../services/cardNurtureStore';
 import { CARD_DATABASE } from '../../cardDatabase';
+import { renderOriginalCardHtml } from '../components/OriginalCardHtml';
 
 let inspectedHomeCardId: number | null = null;
 
@@ -62,12 +62,6 @@ function getHomeCardEffectiveStats(cardId: number) {
 }
 
 export function renderHomeSection(): string {
-  // Sample hero assets for 3-tier visual display
-  const hero1 = getCharacterAsset(1);   // Aquaris (Water)
-  const hero19 = getCharacterAsset(19); // Phoenix (Fire)
-  const hero41 = getCharacterAsset(41); // Kadan (Human)
-  const hero60 = getCharacterAsset(60); // Death Knight Artus (Undead)
-
   // Active 5-card squad & metrics for Cool Card Deck preview
   const deckIds = cardNurtureStore.getDeckCardIds();
   const deckTP = cardNurtureStore.getDeckTP();
@@ -86,79 +80,36 @@ export function renderHomeSection(): string {
     <div class="w-full flex flex-col font-mono text-[#201d1d] select-none">
       <!-- 1. Hero Introduction Banner (SnowHero / 눈히어로 & Official Logo) -->
       <section class="w-full bg-[#fdfcfc] border-b border-[rgba(15,0,0,0.12)] py-12 md:py-20 px-4 sm:px-6 md:px-8 lg:px-12">
-        <div class="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8 md:gap-12">
-          <div class="flex-1 space-y-4">
-            <!-- Official SNS Hero Graphic Logo Display -->
-            <div class="w-full flex items-center justify-start pb-1">
-              <a
-                href="#home"
-                data-nav="home"
-                class="inline-flex items-center cursor-pointer bg-transparent transition-opacity hover:opacity-90 min-h-[44px]"
-                aria-label="눈히어로.com 공식 로고"
-              >
-                <img
-                  src="/logo-ko.png"
-                  alt="눈히어로.com SNSHero Revolution 공식 로고"
-                  class="h-20 sm:h-28 md:h-36 w-auto max-w-full object-contain bg-transparent filter drop-shadow-none"
-                  loading="eager"
-                />
-              </a>
-            </div>
-
-            <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm tracking-wider uppercase">
-              <span>눈히어로.com</span>
-              <span class="text-stone-400">·</span>
-              <span>SNSHero Revolution</span>
-            </div>
-            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight m-0">
-              빛과 어둠의 11개 종족 대서사시,<br/>
-              <span class="text-[#201d1d] border-b-2 border-[#201d1d]">카단과 성진호흡의 원클릭 AI 배틀</span>
-            </h1>
-            <p class="text-xs sm:text-sm md:text-base text-stone-600 leading-relaxed max-w-2xl m-0">
-              눈히어로(SnowHero)는 110종의 고유 영웅 카드와 40부작 공식 판타지 웹소설·웹게임·웹툰·애니메이션 시네마가 유기적으로 연결된 차세대 웹 카드 게임입니다.
-              서버 로그인 없이 브라우저 로컬스토리지(LocalStorage)에 육성 데이터가 영구 보존됩니다.
-            </p>
-            <div class="flex flex-wrap items-center gap-3 pt-2">
-              <a
-                href="#play"
-                data-nav="play"
-                class="px-6 py-3 bg-[#201d1d] text-[#fdfcfc] text-sm font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center no-underline shadow-none"
-              >
-                웹게임 즉시 시작 →
-              </a>
-              <button
-                type="button"
-                data-nav="play"
-                class="px-5 py-3 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-sm font-semibold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] inline-flex items-center justify-center cursor-pointer"
-              >
-                40부작 웹툰·애니메이션 감상
-              </button>
-              <a
-                href="#deck"
-                data-nav="deck"
-                class="px-5 py-3 bg-white text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-sm font-semibold rounded-sm hover:bg-[#f8f7f7] transition-colors min-h-[44px] inline-flex items-center justify-center no-underline cursor-pointer"
-              >
-                마이덱 확인 →
-              </a>
-            </div>
-          </div>
-
-          <!-- Hero Character Visual Showcase (7-head cutout & bust preview) -->
-          <div class="w-full lg:w-96 flex flex-col items-center justify-center p-6 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none">
-            <div class="relative w-48 h-64 sm:w-56 sm:h-72 flex items-center justify-center overflow-hidden mb-4">
+        <div class="w-full max-w-7xl mx-auto space-y-4">
+          <!-- Official SNS Hero Graphic Logo Display -->
+          <div class="w-full flex items-center justify-start pb-1">
+            <a
+              href="#home"
+              data-nav="home"
+              class="inline-flex items-center cursor-pointer bg-transparent transition-opacity hover:opacity-90 min-h-[44px]"
+              aria-label="눈히어로.com 공식 로고"
+            >
               <img
-                src="${hero41.bustPngUrl}"
-                alt="${hero41.nameKo} (${hero41.nameEn})"
-                class="max-w-full max-h-full object-contain filter drop-shadow-none"
+                src="/logo-ko.png"
+                alt="눈히어로.com SNSHero Revolution 공식 로고"
+                class="h-20 sm:h-28 md:h-36 w-auto max-w-full object-contain bg-transparent filter drop-shadow-none"
                 loading="eager"
-                onerror="this.src='${hero41.seatUrl}'; this.onerror=null;"
               />
-            </div>
-            <div class="w-full text-center space-y-1">
-              <div class="text-xs font-bold text-[#201d1d]">[NO.041] ${hero41.nameKo} (${hero41.nameEn})</div>
-              <div class="text-[11px] text-stone-500">휴먼 성진기사단 · 7등신 풀바디 &amp; 상반신 공식 비주얼</div>
-            </div>
+            </a>
           </div>
+
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm tracking-wider uppercase">
+            <span>눈히어로.com</span>
+            <span class="text-stone-400">·</span>
+            <span>SNSHero Revolution</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight m-0">
+            빛과 어둠의 11개 종족 대서사시,<br/>
+            <span class="text-[#201d1d] border-b-2 border-[#201d1d]">카단과 성진호흡의 원클릭 AI 배틀</span>
+          </h1>
+          <p class="text-xs sm:text-sm md:text-base text-stone-600 leading-relaxed max-w-2xl m-0">
+            눈히어로(SnowHero)는 110종의 고유 영웅 카드와 40부작 공식 판타지 웹소설·웹게임·웹툰·애니메이션 시네마가 유기적으로 연결된 차세대 웹 카드 게임입니다.
+          </p>
         </div>
       </section>
 
@@ -204,18 +155,13 @@ export function renderHomeSection(): string {
             </div>
           </div>
 
-          <!-- Fan-Folded 5 Cards Display Stage -->
-          <div id="home-squad-fan" class="squad-fan-container relative h-64 sm:h-72 md:h-84 w-full flex items-center justify-center overflow-visible select-none my-6" role="group" aria-label="출격 덱 5장 부채꼴 미리보기">
+          <!-- Fan-Folded 5 Cards Display Stage (Original TCG Card Design) -->
+          <div id="home-squad-fan" class="squad-fan-container relative h-72 sm:h-80 md:h-96 w-full flex items-center justify-center overflow-visible select-none my-6" role="group" aria-label="출격 덱 5장 부채꼴 미리보기">
             ${deckIds.map((cardId, index) => {
               const asset = getCharacterAsset(cardId);
               const stats = getHomeCardEffectiveStats(cardId);
               const centerOffset = index - 2; // -2, -1, 0, 1, 2
               const rotation = centerOffset * 6; // -12deg, -6deg, 0deg, 6deg, 12deg
-              const rarityGlowClass = asset.rarity === 'gold'
-                ? 'rarity-glow-gold border-yellow-400'
-                : asset.rarity === 'silver'
-                ? 'rarity-glow-silver border-slate-300'
-                : 'rarity-glow-bronze border-amber-700/80';
 
               return `
                 <div
@@ -225,45 +171,22 @@ export function renderHomeSection(): string {
                   data-deck-preview-card="true"
                   data-action="inspect-home-card"
                   data-card-id="${cardId}"
-                  class="fan-card fan-deck-card absolute w-28 sm:w-36 md:w-44 h-44 sm:h-56 md:h-68 bg-[#fdfcfc] border-2 ${rarityGlowClass} p-2 rounded-none flex flex-col justify-between shadow-none cursor-pointer focus:outline-none"
+                  class="fan-card fan-deck-card absolute w-32 sm:w-40 md:w-48 cursor-pointer focus:outline-none transition-transform"
                   style="
                     left: 50%;
-                    --fan-x: calc(${centerOffset} * clamp(30px, 6vw, 56px));
+                    --fan-x: calc(${centerOffset} * clamp(34px, 7vw, 64px));
                     --fan-y: calc(${Math.abs(centerOffset)} * clamp(4px, 1.2vw, 10px));
                     transform: translate(calc(-50% + var(--fan-x)), var(--fan-y)) rotate(${rotation}deg);
                     z-index: ${10 + index};
                   "
                   aria-label="${asset.nameKo} 카드 검사 (${index + 1}/5)"
                 >
-                  <!-- Card Top Bar: Slot & Level -->
-                  <div class="flex items-center justify-between text-[10px] w-full pb-1 border-b border-[rgba(15,0,0,0.08)]">
-                    <span class="font-bold text-[#201d1d]">SLOT 0${index + 1}</span>
-                    <span class="font-bold text-stone-600">Lv.${stats.level}</span>
-                  </div>
-
-                  <!-- Character Bust Portrait -->
-                  <div class="w-full flex-1 flex items-center justify-center overflow-hidden my-1 bg-[#f8f7f7]">
-                    <img
-                      src="${asset.bustPngUrl}"
-                      alt="${asset.nameKo}"
-                      class="max-h-full max-w-full object-contain filter drop-shadow-none pointer-events-none"
-                      loading="lazy"
-                      onerror="this.src='${asset.seatUrl}'; this.onerror=null;"
-                    />
-                  </div>
-
-                  <!-- Card Bottom Info: Name & Compass Stats -->
-                  <div class="w-full text-center space-y-0.5 pt-1 border-t border-[rgba(15,0,0,0.08)]">
-                    <div class="text-[11px] font-black text-[#201d1d] truncate">
-                      [${asset.code}] ${asset.nameKo}
-                    </div>
-                    <div class="text-[9px] text-stone-500 font-mono">
-                      N:${stats.top} E:${stats.right} S:${stats.bottom} W:${stats.left}
-                    </div>
-                    <div class="text-[10px] font-bold text-[#201d1d]">
-                      ${stats.totalTP} TP
-                    </div>
-                  </div>
+                  ${renderOriginalCardHtml(cardId, {
+                    isOwned: true,
+                    level: stats.level,
+                    hideStats: false,
+                    className: 'w-full aspect-[5/7]',
+                  })}
                 </div>
               `;
             }).join('')}
@@ -439,35 +362,6 @@ export function renderHomeSection(): string {
         </div>
       </section>
 
-      <!-- 5. 3-Tier Character Visuals Showcase (7-head cutout, bust, 3-head SD) -->
-      <section class="w-full bg-[#fdfcfc] py-12 px-4 sm:px-6 md:px-8 lg:px-12">
-        <div class="w-full max-w-7xl mx-auto space-y-6">
-          <div class="pb-3 border-b border-[rgba(15,0,0,0.12)]">
-            <span class="text-[11px] text-[#646262] font-bold uppercase tracking-wider">3-Tier Visual Asset Standard</span>
-            <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#201d1d] m-0">110종 영웅 3단계 비주얼 자산 체계</h2>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            ${[hero1, hero19, hero41, hero60].map((h) => `
-              <div class="border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-4 rounded-none flex flex-col items-center text-center space-y-3">
-                <div class="w-full h-44 bg-[#f1eeee] flex items-center justify-center p-2 overflow-hidden">
-                  <img
-                    src="${h.bustPngUrl}"
-                    alt="${h.nameKo}"
-                    class="max-h-full object-contain"
-                    loading="lazy"
-                    onerror="this.src='${h.seatUrl}'; this.onerror=null;"
-                  />
-                </div>
-                <div class="space-y-1">
-                  <div class="text-xs font-bold text-[#201d1d]">[${h.code}] ${h.nameKo}</div>
-                  <div class="text-[10px] text-stone-500 uppercase tracking-wider">${h.faction} · ${h.rarity}</div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      </section>
 
       <!-- 6. Card Inspect Modal Overlay (Opened on fan card click) -->
       ${inspectedId && inspectedAsset && inspectedStats ? `
@@ -507,15 +401,25 @@ export function renderHomeSection(): string {
               </h3>
             </div>
 
-            <!-- 7-Head Full-Body Cutout Preview -->
-            <div class="w-full h-56 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-3 overflow-hidden">
-              <img
-                src="${inspectedAsset.cutoutUrl}"
-                alt="${inspectedAsset.nameKo} 7등신 풀바디"
-                class="max-h-full max-w-full object-contain filter drop-shadow-none"
-                loading="eager"
-                onerror="this.src='${inspectedAsset.bustPngUrl}'; this.onerror=null;"
-              />
+            <!-- Card Original TCG & Cutout Dual Preview -->
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+              <div class="w-36 sm:w-44 shrink-0">
+                ${renderOriginalCardHtml(inspectedId, {
+                  isOwned: true,
+                  level: inspectedStats.level,
+                  hideStats: false,
+                  className: 'w-full aspect-[5/7]',
+                })}
+              </div>
+              <div class="w-full flex-1 h-52 sm:h-56 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 overflow-hidden">
+                <img
+                  src="${inspectedAsset.cutoutUrl}"
+                  alt="${inspectedAsset.nameKo} 7등신 풀바디"
+                  class="max-h-full max-w-full object-contain filter drop-shadow-none"
+                  loading="eager"
+                  onerror="this.src='${inspectedAsset.bustPngUrl}'; this.onerror=null;"
+                />
+              </div>
             </div>
 
             <!-- Compass Stats & Level -->

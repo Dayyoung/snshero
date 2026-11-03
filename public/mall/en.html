@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head><link href="/mall/cdn/shop/files/pro_ico.png?crop=center&amp;height=32&amp;v=1781492451&amp;width=32" rel="icon" type="image/png"/>
+<head>
+<script>
+  try {
+    localStorage.setItem('hero_shop_active_tab', 'GOODS');
+  } catch(e) {}
+  window.location.replace('/#shop');
+</script>
+<link href="/mall/cdn/shop/files/pro_ico.png?crop=center&amp;height=32&amp;v=1781492451&amp;width=32" rel="icon" type="image/png"/>
 <meta charset="utf-8"/>
 <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
