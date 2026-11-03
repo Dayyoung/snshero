@@ -2,6 +2,48 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 03:48 KST] [에피소드 37화(49/49컷) 귀멸의 칼날(ufotable) 화풍·색감 웹툰 애니메이션 전수 생성 완결 및 에피소드 38화(52컷) 병렬 착수]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 에피소드 37화 전체 49컷(`scene_00.webp`~`scene_48.webp`) 100% 생성 및 후처리 완료**:
+    - 귀멸의 칼날(ufotable) 수묵화 외곽선 및 고채도 색감만 적용하고 오리지널 캐릭터 모델 시트(카단 이마 흉터 0%, 귀걸이/하오리 배제)를 엄격히 준수하여 49컷 전수 생성 완료.
+    - `universal_webtoon_processor.py 37 --force` 실행을 통해 대사 17개 컷의 하단 히든 AI 화자 마커(4x1 LSB 스테가노그래피 + WebP EXIF) 삽입 및 생생한 컬러 그레이딩 완료.
+  - **2. 에피소드 38화(52컷: `scene_00`~`scene_51`) 병렬 생성 착수**:
+    - 3개 배치(`00-17`, `18-34`, `35-51`) 서브에이전트 병렬 가동.
+- **검증 결과**:
+  - `public/images/webtoon/episode_37/scene_00.webp`~`scene_48.webp` 49컷 변환 완료
+  - 로컬 git 커밋: 완료 (git push 미실행 준수)
+  - 구글 폼 보고서 제출: 완료
+
+## [2026-11-04 03:44 KST] [i18n 브라우저 언어 자동 감지 및 비지원 언어 영문 기본 처리, 영문 화면 한글 하드코딩 전면 개선 및 원격 푸시 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 브라우저 언어 설정 자동 감지 및 비지원 언어 영문 기본 fallback (`src/lib/i18n.ts`)**:
+    - `getBrowserLanguage()` 함수 개선: `navigator.languages` 다중 언어 목록을 우선순위별로 순회하며 정규화된 지원 언어(zh-TW, zh-CN, en-GB, ko, ja, es, fr, de, vi, th, id, ru, en)를 판별.
+    - 지원하지 않는 언어거나 탐색에 실패할 경우 무조건 `'en'`(영어 기본)으로 안전하게 fallback 처리.
+  - **2. 유저 수동 선택 언어 보존 및 브라우저 언어 동적 반영 (`src/contexts/GameSettingsContext.tsx`)**:
+    - `hero_language_user_selected === 'true'` 플래그를 도입하여 유저가 설정에서 명시적으로 변경한 경우에만 수동 선택 언어를 유지하고, 그 외에는 항상 브라우저 언어(`getBrowserLanguage()`)를 우선 적용하도록 개선.
+    - 브라우저의 `languagechange` 이벤트 리스너를 연동하여 사용자가 수동 고정하지 않은 상태에서 브라우저 언어가 변경될 경우 게임 언어도 실시간 자동 갱신.
+  - **3. 상단 헤더 로고 및 대체 텍스트 즉시 언어 반응형 전환 (`src/components/PageHeader.tsx`, `ShareTemplateCard.tsx`, `heroAiBridge.ts`)**:
+    - `PageHeader.tsx`: `useGameSettings().language`를 직접 구독하여 영어 설정 시 `/logo-en.png` 및 `SNSHero.com`으로 즉각 전환되도록 수정.
+    - `ShareTemplateCard.tsx` 및 `heroAiBridge.ts`에서 기본값 `'ko'`로 고정되던 로직을 `getBrowserLanguage()` 또는 Context 기반으로 정돈.
+  - **4. 주요 뷰 내 영문 설정 시 한글 하드코딩 잔존 화면 전면 다국어화**:
+    - `ShopView.tsx`: 50 AP 물약, 10연차 모의 뽑기, 중복 마일리지 상점, 월간 소환 마일스톤, 초심자 성장 스타터 번들 텍스트 다국어(`language === 'ko' ? ... : ...`) 적용.
+    - `PlayGameView.tsx`: 상단 쿨다운 배지, 대결하기(CHALLENGE) 버튼, 러닝 GPS 경고 배너, 러닝 카드 획득 카운트, 스토리 완주 축하 헤딩 다국어 적용.
+    - `MyDeckView.tsx`: 자동 덱 최적화 복귀 배너 내 카드명 영문 타이틀 분기 및 4방향 스탯 정렬 버튼 툴팁 다국어화.
+    - `CinemaView.tsx` & `MovieView.tsx`: 무비/애니메이션 회차 목록 버튼, 헤더 배너, YouTube 열기 버튼 다국어화.
+    - `SettingView.tsx`: 진동 강도 조절 버튼(`[강도 조절]` -> `[Adjust]`), 구글 시트 영구 연동 상태 다국어화.
+    - `CardMarketplaceView.tsx`: 4방향 스탯 슬라이더 라벨(상단/우측/하단/좌측), 권장가 자동입력 텍스트 다국어화.
+    - `RankingView.tsx`: DDA 가상 봇 생성 시 티어 접두사(`[수습]`, `[안정]`, `[정예]`, `[라이벌]` -> `[Novice]`, `[Stable]`, `[Elite]`, `[Rival]`) 다국어화.
+  - **5. 빌드 검증, 원격 저장소 푸시 및 구글 폼 보고 완료**:
+    - Vite 프로덕션 빌드: `npm run build` 성공 (0 errors)
+    - 사용자 요청에 따른 `git push origin main` 원격 저장소 푸시 완료 (`commit: df3a1e908`)
+    - 구글 폼 보고서 제출 완료 (`report-ex/scripts/submit_report.py`)
+- **검증 결과**:
+  - Vite 빌드 성공: 4,360 modules transformed, 0 error
+  - git push 성공: `05de42fce..df3a1e908 main -> main`
+  - 구글 폼 완료 보고서 제출 완료
+
 ## [2026-11-03 22:58 KST] [에피소드 37화(14/49컷: 00-03, 17-21, 33-37) 귀멸의 칼날(ufotable) 화풍·색감 웹툰 애니메이션 생성·후처리 완료 및 쿼터 리셋 타이머 설정]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
