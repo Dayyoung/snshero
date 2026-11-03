@@ -1,1420 +1,1531 @@
 /**
  * src/landing/views/MallSection.tsx
  *
- * Dedicated Official Goods Mall Section for SNSHero (#mall).
- * Matches official https://snshero.com/mall structure with OpenCode Terminal-Flat design.
- *
- * Lineup:
- *   1. 110장 올인원 풀세트 (110 Card Collector's Box)
- *   2. 종족별 영웅 덱 (10장 세트 - 11종 팩션 선택)
- *   3. 히어로 3x3 배틀 게임테이블 (데스크 패브릭 매트)
- *   4. 히어로 커스텀 머그컵 (11oz 프리미엄 세라믹)
- *   5. 히어로 커스텀 티셔츠 (20수 고급 코튼 반팔)
- *
- * Purchase Flow:
- *   - Step 1: Minimalist Product Detail View (Options: Qty, Size, Faction)
- *   - Step 2: Minimal Shipping Input (Name, Phone, Address)
- *   - Step 3: Country Selection (10 Countries + Crypto)
- *   - Step 4: Real Payment Gateway (PayApp Lite / PayPal / Crypto / SIM Test)
- *   - Step 5: Order Confirmation & Persistence in 'hero_goods_orders'
+ * Official Character Sheet IP License Store (#mall) for SNSHero Landing.
+ * - Replaces all legacy physical goods with the 110 updated Studio Character Sheets (NO.001 ~ NO.110).
+ * - Each character sheet incorporates the newly updated upper-body bust portrait in Panel 02.
+ * - Priced at $10.00 USD (14,000 KRW) each under an IP License Unlock (라이센스 해제) condition.
+ * - Follows DESIGN.md OpenCode Terminal-Flat aesthetic (100% font-mono, 0px/4px radius, 1px hairline borders).
  */
 
-import { requestPayAppPayment, CRYPTO_PAYMENT_INFO } from '../services/paymentService';
+import { requestPayAppPayment } from '../services/paymentService';
 import {
   CRYPTO_COINS_CATALOG,
-  CRYPTO_QUICK_CHIPS,
   resolveCryptoDepositDetails,
+  type CryptoCoinOption,
 } from '../services/qrCodeSvg';
-import { tr } from '../services/i18n';
-import { CARD_DATABASE } from '../../cardDatabase';
-import { getCharacterAsset, getLocalizedCharacterName, getLocalizedFactionName } from '../services/assetCatalog';
+import { getCurrentLanguage, tr } from '../services/i18n';
+import {
+  getCharacterAsset,
+  getLocalizedCharacterName,
+  getLocalizedFactionName,
+  FACTION_PALETTES,
+} from '../services/assetCatalog';
 
-export type MallCategoryTab = 'ALL' | 'CARD_SET' | 'APPAREL' | 'EQUIPMENT';
+export type MallGoodsCategory =
+  | 'ALL'
+  | 'UNLOCKED'
+  | 'WATER'
+  | 'FIRE'
+  | 'WIND'
+  | 'EARTH'
+  | 'HUMAN'
+  | 'UNDEAD'
+  | 'ELF'
+  | 'DWARF'
+  | 'MONSTER'
+  | 'ROBOT'
+  | 'DRAGON';
 
 export interface MallGoodsProduct {
   id: string;
-  category: 'CARD_SET' | 'APPAREL' | 'EQUIPMENT';
+  cardId: number;
+  code: string;
+  faction: string;
+  rarity: string;
+  category: MallGoodsCategory;
   name: string;
   badge: string;
   priceText: string;
   priceUsd: number;
   priceKrw: number;
-  description: string;
-  shortSpec: string;
-  image: string;
+  imageUrl: string;
+  bustUrl: string;
+  cutoutUrl: string;
+  desc: string;
+  spec: string;
+  licenseTerms: string;
 }
 
-export interface MallGoodsOrderRecord {
-  id: string;
+export interface GoodsOrderRecord {
+  orderId: string;
   productId: string;
-  title: string;
+  productName: string;
   quantity: number;
-  size?: string;
-  faction?: string;
-  priceUsd: number;
-  priceKrw: number;
+  size: string;
+  priceText: string;
   buyerName: string;
   buyerPhone: string;
-  buyerAddress: string;
-  country: string;
+  shippingAddress: string;
   paymentMethod: string;
-  orderedAt: number;
-  status: 'paid' | 'shipping_ready';
+  status: string;
+  createdAt: number;
 }
 
-export const MALL_CATEGORY_TABS: Array<{ key: MallCategoryTab; label: string; icon: string }> = [
-  { key: 'ALL', label: '전체 (ALL)', icon: '🏬' },
-  { key: 'CARD_SET', label: '실물 카드·덱 (CARD)', icon: '🎴' },
-  { key: 'APPAREL', label: '굿즈·의류 (MERCH)', icon: '☕' },
-  { key: 'EQUIPMENT', label: '배틀 매트 (TABLE)', icon: '🛡️' },
-];
+const UNLOCKED_SHEETS_STORAGE_KEY = 'hero_unlocked_character_sheets';
+const GOODS_ORDERS_KEY = 'hero_goods_orders';
+const SHEET_CACHE_VER = '20261104v1';
 
-export const MALL_GOODS_PRODUCTS: MallGoodsProduct[] = [
-  {
-    id: 'goods_deck_all',
-    category: 'CARD_SET',
-    name: '110장 올인원 풀세트 (10% 할인)',
-    badge: '소장용 풀컬렉션',
-    priceText: '$300.00 (420,000원)',
-    priceUsd: 300.0,
-    priceKrw: 420000,
-    description: '11개 종족 110종 전 영웅 공식 실물 TCG 카드 완벽 패키지. 전용 하드케이스 동봉.',
-    shortSpec: '110종 전 영웅 실물 카드 전량 수록 · 350gsm 고급 독일제 코어 블랙지 · 홀로그램 포일 박스',
-    image: '/mall/cdn/shop/files/card.png',
-  },
-  {
-    id: 'goods_deck_faction',
-    category: 'CARD_SET',
-    name: '종족별 영웅 덱 (10장 세트)',
-    badge: '종족 테마 덱',
-    priceText: '$30.00 (42,000원)',
-    priceUsd: 30.0,
-    priceKrw: 42000,
-    description: '선택한 특정 종족 영웅 10장으로 구성된 테마 스타터 덱. 11대 종족 중 자유 선택.',
-    shortSpec: '종족별 카드 10장 + 종족 고유 슬리브 10매 동봉 · 즉시 3x3 배틀 가능 구성',
-    image: '/mall/cdn/shop/files/card.png',
-  },
-  {
-    id: 'goods_table',
-    category: 'EQUIPMENT',
-    name: '히어로 3x3 배틀 게임테이블',
-    badge: '전용 배틀 매트',
-    priceText: '$30.00 (42,000원)',
-    priceUsd: 30.0,
-    priceKrw: 42000,
-    description: '3x3 격자 전장과 N/E/S/W 스탯 룰이 각인된 고급 천연고무 게이밍 데스크 패브릭 매트.',
-    shortSpec: '규격 600x350x4mm · 방수 코팅 패브릭 표면 · 미끄럼 방지 천연고무 바닥',
-    image: '/mall/cdn/shop/files/pan.png',
-  },
-  {
-    id: 'goods_mug',
-    category: 'APPAREL',
-    name: '히어로 커스텀 머그컵',
-    badge: '공식 정품',
-    priceText: '$10.00 (14,000원)',
-    priceUsd: 10.0,
-    priceKrw: 14000,
-    description: '원하는 영웅 일러스트와 칭호가 고화질 전사 인쇄된 11oz 프리미엄 세라믹 머그컵.',
-    shortSpec: '용량 11oz (약 330ml) · 고온 전사 세라믹 · 전자레인지/식기세척기 안심 사용',
-    image: '/mall/cdn/shop/files/1.png',
-  },
-  {
-    id: 'goods_tshirt',
-    category: 'APPAREL',
-    name: '히어로 커스텀 티셔츠',
-    badge: '프리미엄 코튼',
-    priceText: '$30.00 (42,000원)',
-    priceUsd: 30.0,
-    priceKrw: 42000,
-    description: '20수 고급 코튼 원단에 대표 영웅 풀바디 공식 일러스트가 프린팅된 공식 반팔 티셔츠.',
-    shortSpec: '면 100% 20수 코마사 · 정사이즈 유니섹스 핏 (S/M/L) · 넥라인 보강 테이핑',
-    image: '/tshirt.png',
-  },
-];
-
-export const MALL_COUNTRIES = [
-  { code: 'ko', name: '대한민국 (South Korea)', flag: '🇰🇷', currency: 'KRW' },
-  { code: 'en', name: 'United States', flag: '🇺🇸', currency: 'USD' },
-  { code: 'ja', name: '日本 (Japan)', flag: '🇯🇵', currency: 'JPY' },
-  { code: 'zh', name: '中国 (China)', flag: '🇨🇳', currency: 'CNY' },
-  { code: 'gb', name: 'United Kingdom', flag: '🇬🇧', currency: 'GBP' },
-  { code: 'de', name: 'Deutschland (Germany)', flag: '🇩🇪', currency: 'EUR' },
-  { code: 'fr', name: 'France', flag: '🇫🇷', currency: 'EUR' },
-  { code: 'es', name: 'España (Spain)', flag: '🇪🇸', currency: 'EUR' },
-  { code: 'vi', name: 'Việt Nam (Vietnam)', flag: '🇻🇳', currency: 'VND' },
-  { code: 'th', name: 'ประเทศไทย (Thailand)', flag: '🇹🇭', currency: 'THB' },
-];
-
-export const FACTION_OPTIONS = [
-  '성진기사단 (Human)',
-  '원소정령 (Spirit)',
-  '암흑심연 (Abyss)',
-  '신성교단 (Holy)',
-  '용족군단 (Dragon)',
-  '기계제국 (Mecha)',
-  '수호야수 (Beast)',
-  '고대불멸 (Undead)',
-  '환상요정 (Fairy)',
-  '천상신족 (Celestial)',
-  '혼돈마족 (Demon)',
-];
-
-function getLocalizedMallTabLabel(key: MallCategoryTab): string {
-  switch (key) {
-    case 'ALL':
-      return tr('전체 (ALL)', 'ALL', 'すべて (ALL)');
-    case 'CARD_SET':
-      return tr('실물 카드·덱 (CARD)', 'Physical Cards (CARD)', '実物カード・デッキ (CARD)');
-    case 'APPAREL':
-      return tr('굿즈·의류 (MERCH)', 'Merch & Apparel (MERCH)', 'グッズ・アパレル (MERCH)');
-    case 'EQUIPMENT':
-      return tr('배틀 매트 (TABLE)', 'Battle Mat (TABLE)', 'バトルマット (TABLE)');
-  }
-}
-
-function getLocalizedMallProduct(prod: MallGoodsProduct): MallGoodsProduct {
-  switch (prod.id) {
-    case 'goods_deck_all':
-      return {
-        ...prod,
-        name: tr('110장 올인원 풀세트 (10% 할인)', '110-Card All-in-One Full Set (10% OFF)', '110枚オールインワン・フルセット (10%割引)'),
-        badge: tr('소장용 풀컬렉션', "Collector's Full Set", 'コレクターズ・フルセット'),
-        priceText: tr('$300.00 (420,000원)', '$300.00 (₩420,000)', '$300.00 (420,000ウォン)'),
-        description: tr(
-          '11개 종족 110종 전 영웅 공식 실물 TCG 카드 완벽 패키지. 전용 하드케이스 동봉.',
-          'Complete official physical TCG card package featuring all 110 heroes across 11 factions. Includes dedicated hard case.',
-          '11種族110種すべての英雄を網羅した公式実物TCGカード完全パッケージ。専用ハードケース同梱。'
-        ),
-        shortSpec: tr(
-          '110종 전 영웅 실물 카드 전량 수록 · 350gsm 고급 독일제 코어 블랙지 · 홀로그램 포일 박스',
-          'All 110 physical hero cards · 350gsm premium German black-core cardstock · Holographic foil box',
-          '全110種英雄実物カード収録 · 350gsm高級ドイツ製ブラックコア紙 · ホログラム箔押しボックス'
-        ),
-      };
-    case 'goods_deck_faction':
-      return {
-        ...prod,
-        name: tr('종족별 영웅 덱 (10장 세트)', 'Faction Hero Deck (10-Card Set)', '種族別英雄デッキ (10枚セット)'),
-        badge: tr('종족 테마 덱', 'Faction Theme Deck', '種族テーマデッキ'),
-        priceText: tr('$30.00 (42,000원)', '$30.00 (₩42,000)', '$30.00 (42,000ウォン)'),
-        description: tr(
-          '선택한 특정 종족 영웅 10장으로 구성된 테마 스타터 덱. 11대 종족 중 자유 선택.',
-          'Themed starter deck composed of 10 heroes from your chosen faction. Choose freely from 11 major factions.',
-          '選択した特定種族の英雄10枚で構成されたテーマスターターデッキ。11大種族から自由に選択可能。'
-        ),
-        shortSpec: tr(
-          '종족별 카드 10장 + 종족 고유 슬리브 10매 동봉 · 즉시 3x3 배틀 가능 구성',
-          '10 faction cards + 10 faction sleeves included · Ready for instant 3x3 battle',
-          '種族別カード10枚 + 種族固有スリーブ10枚同梱 · すぐに3x3バトル可能な構成'
-        ),
-      };
-    case 'goods_table':
-      return {
-        ...prod,
-        name: tr('히어로 3x3 배틀 게임테이블', 'Hero 3x3 Battle Game Table Mat', 'ヒーロー 3x3 バトルゲームテーブルマット'),
-        badge: tr('전용 배틀 매트', 'Dedicated Battle Mat', '専用バトルマット'),
-        priceText: tr('$30.00 (42,000원)', '$30.00 (₩42,000)', '$30.00 (42,000ウォン)'),
-        description: tr(
-          '3x3 격자 전장과 N/E/S/W 스탯 룰이 각인된 고급 천연고무 게이밍 데스크 패브릭 매트.',
-          'Premium natural rubber gaming desk fabric mat printed with the 3x3 grid battlefield and N/E/S/W stat rules.',
-          '3x3グリッド戦場とN/E/S/Wステータスルールが刻印された高級天然ゴム・ゲーミングデスクファブリックマット。'
-        ),
-        shortSpec: tr(
-          '규격 600x350x4mm · 방수 코팅 패브릭 표면 · 미끄럼 방지 천연고무 바닥',
-          'Size 600x350x4mm · Water-repellent coated fabric surface · Non-slip natural rubber base',
-          'サイズ 600x350x4mm · 防水コーティングファブリック表面 · 滑り止め天然ゴム底面'
-        ),
-      };
-    case 'goods_mug':
-      return {
-        ...prod,
-        name: tr('히어로 커스텀 머그컵', 'Hero Custom Mug', 'ヒーロー・カスタムマグカップ'),
-        badge: tr('공식 정품', 'Official Merch', '公式正規品'),
-        priceText: tr('$10.00 (14,000원)', '$10.00 (₩14,000)', '$10.00 (14,000ウォン)'),
-        description: tr(
-          '원하는 영웅 일러스트와 칭호가 고화질 전사 인쇄된 11oz 프리미엄 세라믹 머그컵.',
-          '11oz premium ceramic mug featuring high-definition transfer printing of your favorite hero illustration and title.',
-          'お好みの英雄イラストと称号が高画質転写印刷された11ozプレミアムセラミックマグカップ。'
-        ),
-        shortSpec: tr(
-          '용량 11oz (약 330ml) · 고온 전사 세라믹 · 전자레인지/식기세척기 안심 사용',
-          'Capacity 11oz (~330ml) · High-temp transfer ceramic · Microwave & dishwasher safe',
-          '容量 11oz (約330ml) · 高温転写セラミック · 電子レンジ/食洗機対応'
-        ),
-      };
-    case 'goods_tshirt':
-      return {
-        ...prod,
-        name: tr('히어로 커스텀 티셔츠', 'Hero Custom T-Shirt', 'ヒーロー・カスタムTシャツ'),
-        badge: tr('프리미엄 코튼', 'Premium Cotton', 'プレミアムコットン'),
-        priceText: tr('$30.00 (42,000원)', '$30.00 (₩42,000)', '$30.00 (42,000ウォン)'),
-        description: tr(
-          '20수 고급 코튼 원단에 대표 영웅 풀바디 공식 일러스트가 프린팅된 공식 반팔 티셔츠.',
-          'Official short-sleeve T-shirt printed with full-body hero artwork on premium 20s combed cotton fabric.',
-          '20番手高級コットン生地に代表英雄のフルボディ公式イラストがプリントされた公式半袖Tシャツ。'
-        ),
-        shortSpec: tr(
-          '면 100% 20수 코마사 · 정사이즈 유니섹스 핏 (S/M/L) · 넥라인 보강 테이핑',
-          '100% 20s combed cotton · Regular unisex fit (S/M/L) · Reinforced neckline taping',
-          '綿100% 20番手コーマ糸 · レギュラーユニセックスフィット (S/M/L) · ネックライン補強テーピング'
-        ),
-      };
-    default:
-      return prod;
-  }
-}
-
-function getLocalizedMallFactionOption(f: string): string {
-  const map: Record<string, [string, string]> = {
-    '성진기사단 (Human)': ['Star Knights (Human)', '星辰騎士団 (Human)'],
-    '원소정령 (Spirit)': ['Elemental Spirit (Spirit)', '元素精霊 (Spirit)'],
-    '암흑심연 (Abyss)': ['Dark Abyss (Abyss)', '暗黒深淵 (Abyss)'],
-    '신성교단 (Holy)': ['Holy Order (Holy)', '神聖教団 (Holy)'],
-    '용족군단 (Dragon)': ['Dragon Legion (Dragon)', '竜族軍団 (Dragon)'],
-    '기계제국 (Mecha)': ['Mecha Empire (Mecha)', '機械帝国 (Mecha)'],
-    '수호야수 (Beast)': ['Guardian Beast (Beast)', '守護野獣 (Beast)'],
-    '고대불멸 (Undead)': ['Ancient Undead (Undead)', '古代不滅 (Undead)'],
-    '환상요정 (Fairy)': ['Fantasy Fairy (Fairy)', '幻想妖精 (Fairy)'],
-    '천상신족 (Celestial)': ['Celestial Gods (Celestial)', '天上神族 (Celestial)'],
-    '혼돈마족 (Demon)': ['Chaos Demon (Demon)', '混沌魔族 (Demon)'],
-  };
-  const found = map[f];
-  return found ? tr(f, found[0], found[1]) : f;
-}
-
-// ============================================================================
-// Internal State
-// ============================================================================
-
-let currentMallTab: MallCategoryTab = 'ALL';
-let activeDetailProduct: MallGoodsProduct | null = null;
-let mallModalStep:
-  | 'detail'
-  | 'shipping'
-  | 'country'
-  | 'payment'
-  | 'celebration'
-  | 'crypto_coin'
-  | 'crypto_chain'
-  | 'crypto_deposit'
-  | 'crypto'
-  | 'orders'
-  | null = null;
-
-let selectedQty = 1;
-let selectedSize = 'L';
-let selectedFaction = '성진기사단 (Human)';
-let selectedMugCardId = 41; // Default: Kadan (#41, Royal Gold)
-let isMugCardPickerOpen = false;
-
-let selectedTshirtCardId = 41; // Default: Kadan (#41, Royal Gold)
-let isTshirtCardPickerOpen = false;
-
-export function setSelectedMugCardId(cardId: number): void {
-  selectedMugCardId = cardId;
-  isMugCardPickerOpen = false;
-}
-
-export function toggleMugCardPicker(): void {
-  isMugCardPickerOpen = !isMugCardPickerOpen;
-}
-
-export function getSelectedMugCardId(): number {
-  return selectedMugCardId;
-}
-
-export function setSelectedTshirtCardId(cardId: number): void {
-  selectedTshirtCardId = cardId;
-  isTshirtCardPickerOpen = false;
-}
-
-export function toggleTshirtCardPicker(): void {
-  isTshirtCardPickerOpen = !isTshirtCardPickerOpen;
-}
-
-export function getSelectedTshirtCardId(): number {
-  return selectedTshirtCardId;
-}
-
-export function renderMugMockupPreview(cardId: number, isThumbnail: boolean = false): string {
-  const card = CARD_DATABASE[cardId] || CARD_DATABASE[41] || CARD_DATABASE[1];
-  const bustUrl = getCharacterAsset(card.id, 'bust');
-  const locName = getLocalizedCharacterName(card.id) || card.title;
-  const locFaction = getLocalizedFactionName(card.element);
-
-  const containerClass = isThumbnail
-    ? 'relative w-full h-full flex items-center justify-center select-none overflow-hidden'
-    : 'relative w-48 sm:w-56 h-44 sm:h-52 mx-auto bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 select-none';
-
-  return `
-    <div class="${containerClass}">
-      <!-- White Ceramic Mug Base -->
-      <img src="/mug.png" alt="Mug Base" class="max-h-full max-w-full object-contain" />
-
-      <!-- Cylindrical Curved Printed Card Overlay -->
-      <div class="absolute top-[26%] left-[36%] w-[29%] aspect-[5/7] rotate-[-2.5deg] overflow-hidden shadow-sm pointer-events-none rounded-xs border border-amber-400/60 bg-[#161414] flex flex-col justify-between p-0.5 opacity-95">
-        <div class="relative w-full aspect-square overflow-hidden bg-black/40">
-          <img src="${bustUrl}" alt="${locName}" class="w-full h-full object-cover" />
-          <span class="absolute top-0.5 left-0.5 px-0.5 py-0.2 bg-black/85 text-[6px] text-amber-300 font-black leading-none">${locFaction}</span>
-          <span class="absolute top-0.5 right-0.5 px-0.5 py-0.2 bg-amber-400 text-stone-950 text-[6px] font-black leading-none">${card.rarity}</span>
-        </div>
-        <div class="w-full text-center text-[7px] font-bold text-amber-200 truncate py-0.2">
-          ${locName}
-        </div>
-        <div class="w-full grid grid-cols-4 gap-0.2 text-[5.5px] font-mono font-bold bg-black/60 text-stone-300 text-center py-0.2">
-          <span>▲${card.top}</span><span>▶${card.right}</span><span>▼${card.bottom}</span><span>◀${card.left}</span>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-export function renderTshirtMockupPreview(cardId: number, isThumbnail: boolean = false): string {
-  const card = CARD_DATABASE[cardId] || CARD_DATABASE[41] || CARD_DATABASE[1];
-  const bustUrl = getCharacterAsset(card.id, 'bust');
-  const locName = getLocalizedCharacterName(card.id) || card.title;
-  const locFaction = getLocalizedFactionName(card.element);
-
-  const containerClass = isThumbnail
-    ? 'relative w-full h-full flex items-center justify-center select-none overflow-hidden'
-    : 'relative w-48 sm:w-56 h-48 sm:h-56 mx-auto bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-2 select-none';
-
-  return `
-    <div class="${containerClass}">
-      <!-- White Cotton T-shirt Base Mockup -->
-      <img src="/tshirt.png" alt="T-Shirt Base" class="max-h-full max-w-full object-contain filter contrast-[1.02]" />
-
-      <!-- Chest Center Custom Printed Hero Card Overlay -->
-      <div class="absolute top-[28%] left-1/2 -translate-x-1/2 w-[27%] sm:w-[29%] aspect-[5/7] overflow-hidden shadow-md pointer-events-none rounded-xs border border-amber-400/80 bg-[#161414] flex flex-col justify-between p-0.5 opacity-95">
-        <div class="relative w-full aspect-square overflow-hidden bg-black/50">
-          <img src="${bustUrl}" alt="${locName}" class="w-full h-full object-cover" />
-          <span class="absolute top-0.5 left-0.5 px-0.5 py-0.2 bg-black/85 text-[6px] text-amber-300 font-black leading-none">${locFaction}</span>
-          <span class="absolute top-0.5 right-0.5 px-0.5 py-0.2 bg-amber-400 text-stone-950 text-[6px] font-black leading-none">${card.rarity}</span>
-        </div>
-        <div class="w-full text-center text-[7px] font-bold text-amber-200 truncate py-0.2">
-          ${locName}
-        </div>
-        <div class="w-full grid grid-cols-4 gap-0.2 text-[5.5px] font-mono font-bold bg-black/70 text-stone-300 text-center py-0.2">
-          <span>▲${card.top}</span><span>▶${card.right}</span><span>▼${card.bottom}</span><span>◀${card.left}</span>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-let buyerName = '';
-let buyerPhone = '';
-let buyerAddress = '';
-let selectedCountry = 'ko';
-let selectedPaymentMethod: string | null = null;
-let lastCompletedOrder: MallGoodsOrderRecord | null = null;
-
-// Mall Crypto state
-let mallCryptoCcy: string = 'USDT';
-let mallCryptoChain: string = 'USDT-TRC20';
-let mallCryptoCopied: boolean = false;
-let mallCryptoVerifyNotice: string | null = null;
-
-// ============================================================================
-// State Getters & Actions
-// ============================================================================
-
-export function getMallCurrentTab(): MallCategoryTab {
-  return currentMallTab;
-}
-
-export function setMallCurrentTab(tab: MallCategoryTab): void {
-  currentMallTab = tab;
-}
-
-export function openMallProductDetail(productId: string): void {
-  const prod = MALL_GOODS_PRODUCTS.find((p) => p.id === productId);
-  if (!prod) return;
-  activeDetailProduct = prod;
-  selectedQty = 1;
-  selectedSize = 'L';
-  selectedFaction = '성진기사단 (Human)';
-  mallModalStep = 'detail';
-}
-
-export function closeMallModal(): void {
-  mallModalStep = null;
-  activeDetailProduct = null;
-}
-
-export function setMallQty(qty: number): void {
-  selectedQty = Math.max(1, Math.min(10, qty));
-}
-
-export function setMallSize(size: string): void {
-  selectedSize = size;
-}
-
-export function setMallFaction(faction: string): void {
-  selectedFaction = faction;
-}
-
-export function proceedMallToShipping(): void {
-  mallModalStep = 'shipping';
-}
-
-export function backMallToDetail(): void {
-  mallModalStep = 'detail';
-}
-
-export function submitMallShipping(info: { name: string; phone: string; address: string }): boolean {
-  if (!info.name.trim() || !info.phone.trim() || !info.address.trim()) {
-    alert(
-      tr(
-        '받는 분 성함, 연락처, 배송지 주소를 모두 입력해주세요.',
-        'Please enter the recipient name, phone number, and shipping address.',
-        '受取人氏名、連絡先、配送先住所をすべて入力してください。'
-      )
-    );
-    return false;
-  }
-  buyerName = info.name.trim();
-  buyerPhone = info.phone.trim();
-  buyerAddress = info.address.trim();
-  mallModalStep = 'country';
-  return true;
-}
-
-export function backMallToShipping(): void {
-  mallModalStep = 'shipping';
-}
-
-export function selectMallCountry(countryCode: string): void {
-  selectedCountry = countryCode;
-  mallModalStep = 'payment';
-}
-
-export function backMallToCountry(): void {
-  mallModalStep = 'country';
-}
-
-export function openMallOrdersList(): void {
-  mallModalStep = 'orders';
-}
-
-export function getMallSavedOrders(): MallGoodsOrderRecord[] {
-  if (typeof localStorage === 'undefined') return [];
+export function getUnlockedSheetIds(): number[] {
+  if (typeof window === 'undefined') return [];
   try {
-    const raw = localStorage.getItem('hero_goods_orders');
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) {
+    const raw = window.localStorage.getItem(UNLOCKED_SHEETS_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map((n) => Number(n)).filter((n) => n >= 1 && n <= 110);
+  } catch {
     return [];
   }
 }
 
-/**
- * Executes checkout for goods:
- * If a real payment method (card, kakaopay, naverpay, applepay) is clicked:
- * Triggers actual PayApp Lite payment gateway without giving free goods.
- * If SIM test is clicked, grants immediate mock confirmation.
- */
-export async function executeMallCheckout(method: string): Promise<boolean> {
-  if (!activeDetailProduct) return false;
+export function isCharacterSheetUnlocked(cardId: number): boolean {
+  return getUnlockedSheetIds().includes(Number(cardId));
+}
 
-  selectedPaymentMethod = method;
-  const totalUsd = activeDetailProduct.priceUsd * selectedQty;
-  const totalKrw = activeDetailProduct.priceKrw * selectedQty;
+export function unlockCharacterSheetLicense(cardId: number): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const current = new Set(getUnlockedSheetIds());
+    current.add(Number(cardId));
+    window.localStorage.setItem(
+      UNLOCKED_SHEETS_STORAGE_KEY,
+      JSON.stringify(Array.from(current).sort((a, b) => a - b))
+    );
+  } catch {
+    // ignore storage quota errors
+  }
+}
 
-  const customHeroName =
-    activeDetailProduct.id === 'goods_tshirt'
-      ? ` (#${selectedTshirtCardId} ${getLocalizedCharacterName(selectedTshirtCardId)})`
-      : activeDetailProduct.id === 'goods_mug'
-      ? ` (#${selectedMugCardId} ${getLocalizedCharacterName(selectedMugCardId)})`
-      : '';
+export function getGoodsOrders(): GoodsOrderRecord[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = window.localStorage.getItem(GOODS_ORDERS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map((item: any) => ({
+      orderId: item.orderId || item.id || `LIC-${Date.now()}`,
+      productId: item.productId || 'sheet_001',
+      productName: item.productName || item.title || 'Character Sheet License',
+      quantity: Number(item.quantity) || 1,
+      size: item.size || 'IP LICENSE UNLOCK ($10.00)',
+      priceText:
+        item.priceText ||
+        `$${Number(item.priceUsd || 10).toFixed(2)} (${Number(item.priceKrw || 14000).toLocaleString()}원)`,
+      buyerName: item.buyerName || '모험가',
+      buyerPhone: item.buyerPhone || '010-0000-0000',
+      shippingAddress: item.shippingAddress || item.buyerAddress || 'Digital License Unlock',
+      paymentMethod: item.paymentMethod || 'test_sim',
+      status: item.status || 'paid',
+      createdAt: Number(item.createdAt || item.orderedAt || Date.now()),
+    }));
+  } catch {
+    return [];
+  }
+}
 
-  const orderData: MallGoodsOrderRecord = {
-    id: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-    productId: activeDetailProduct.id,
-    title: `${activeDetailProduct.name}${customHeroName}`,
-    quantity: selectedQty,
-    size: activeDetailProduct.id === 'goods_tshirt' ? selectedSize : undefined,
-    faction: activeDetailProduct.id === 'goods_deck_faction' ? selectedFaction : undefined,
-    priceUsd: totalUsd,
-    priceKrw: totalKrw,
-    buyerName: buyerName || '모험가',
-    buyerPhone: buyerPhone || '010-0000-0000',
-    buyerAddress: buyerAddress || '대한민국',
-    country: selectedCountry || 'ko',
-    paymentMethod: method,
-    orderedAt: Date.now(),
+export function submitGoodsOrder(
+  input: Omit<GoodsOrderRecord, 'orderId' | 'status' | 'createdAt'>
+): GoodsOrderRecord {
+  const record: GoodsOrderRecord = {
+    ...input,
+    orderId: `LIC-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`,
     status: 'paid',
+    createdAt: Date.now(),
   };
-
-  if (method === 'test_sim') {
-    // Immediate mock order confirmation for developer testing
-    const existing = getMallSavedOrders();
-    existing.unshift(orderData);
-    localStorage.setItem('hero_goods_orders', JSON.stringify(existing));
-    lastCompletedOrder = orderData;
-    mallModalStep = 'celebration';
-    return true;
+  if (typeof window !== 'undefined') {
+    try {
+      const existing = getGoodsOrders();
+      existing.unshift(record);
+      window.localStorage.setItem(GOODS_ORDERS_KEY, JSON.stringify(existing.slice(0, 100)));
+    } catch {
+      // ignore storage errors
+    }
   }
+  return record;
+}
 
-  if (method === 'crypto') {
-    mallCryptoCopied = false;
-    mallCryptoVerifyNotice = null;
-    mallModalStep = 'crypto_coin';
-    return true;
+function getPaymentMethodLabel(method: string): string {
+  if (method === 'payapp_card') return tr('국내 카드/간편결제 (PayApp)', 'PayApp Card/EasyPay', 'PayAppカード決済');
+  if (method === 'paypal') return 'PayPal (USD)';
+  if (method === 'crypto') return 'Crypto QR';
+  return tr('즉시 라이센스 결제', 'Instant License Unlock', '即時ライセンス決済');
+}
+
+function getOrderStatusLabel(_status: string): string {
+  return tr('라이센스 해제 완료', 'LICENSE ACTIVE', 'ライセンス解除済');
+}
+
+// ─── Generate 110 Official Character Sheet License Products ($10.00 Each) ───
+
+function buildCharacterSheetProducts(): MallGoodsProduct[] {
+  const list: MallGoodsProduct[] = [];
+  for (let cid = 1; cid <= 110; cid++) {
+    const pad3 = String(cid).padStart(3, '0');
+    const asset = getCharacterAsset(cid);
+    const factionUpper = (asset.faction || 'water').toUpperCase() as MallGoodsCategory;
+    const sheetCleanPath = asset.sheetUrl.split('?')[0];
+    const sheetUrlWithVer = `${sheetCleanPath}?v=${SHEET_CACHE_VER}`;
+    const bustUrlWithVer = `${asset.bustPngUrl}?v=${SHEET_CACHE_VER}`;
+
+    list.push({
+      id: `sheet_${pad3}`,
+      cardId: cid,
+      code: `NO.${pad3}`,
+      faction: asset.faction,
+      rarity: (asset.rarity || 'bronze').toUpperCase(),
+      category: factionUpper,
+      name: `[NO.${pad3}] ${asset.nameKo} (${asset.nameEn}) 캐릭터시트`,
+      badge: 'LICENSE UNLOCK · $10',
+      priceText: '$10.00 (14,000원)',
+      priceUsd: 10.0,
+      priceKrw: 14000,
+      imageUrl: sheetUrlWithVer,
+      bustUrl: bustUrlWithVer,
+      cutoutUrl: asset.cutoutUrl,
+      desc: `원작 소설 『카단의 여정』 공식 애니메이션 캐릭터 설정화 시트 (NO.${pad3} ${asset.nameKo}). 수정된 상반신 표정·헤어 디테일(Panel 02)과 7등신 전신 원화(Panel 01), 3등신 SD 원형(Panel 03), 작화 지침서 및 컬러칩(Panel 04)이 수록되어 있으며 구매 즉시 상업적·2차 창작 IP 라이센스가 영구 해제됩니다.`,
+      spec: '1600×1000 HD 캐릭터시트(JPG) + 수정된 상반신(PNG) + 7등신 투명 원화(PNG) | 상업적·2차 창작 라이센스 영구 해제',
+      licenseTerms:
+        '개당 $10.00 라이센스 해제 조건: 구매 즉시 해당 캐릭터의 2차 창작·유튜브/숏폼 영상·웹툰·인디게임·커스텀 굿즈 제작 등 상업적/비상업적 IP 활용 라이센스가 영구 해제되며 고해상도 원본 시트 다운로드를 제공합니다.',
+    });
   }
+  return list;
+}
 
-  if (method === 'paypal') {
-    // Real PayPal flow
-    const returnUrl = encodeURIComponent(window.location.origin + window.location.pathname + '#mall?payapp_success=goods');
-    const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=dryudryu@gmail.com&item_name=${encodeURIComponent(
-      activeDetailProduct.name
-    )}&amount=${totalUsd.toFixed(2)}&currency_code=USD&return=${returnUrl}`;
-    localStorage.setItem('hero_goods_pending_order', JSON.stringify(orderData));
-    window.location.href = paypalUrl;
-    return true;
+export const MALL_GOODS_PRODUCTS: MallGoodsProduct[] = buildCharacterSheetProducts();
+
+export interface MallShippingCountry {
+  code: string;
+  nameKo: string;
+  nameEn: string;
+  regionLabel: string;
+  shippingFeeKrw: number;
+  shippingFeeUsd: number;
+  deliveryDays: string;
+}
+
+export const MALL_SHIPPING_COUNTRIES: MallShippingCountry[] = [
+  { code: 'KR', nameKo: '대한민국 (South Korea)', nameEn: 'South Korea', regionLabel: '국내 디지털 라이센스 즉시 발급 (수수료 무료)', shippingFeeKrw: 0, shippingFeeUsd: 0, deliveryDays: '결제 즉시 라이센스 해제 및 원본 다운로드' },
+  { code: 'US', nameKo: '미국 / 캐나다 (USA & Canada)', nameEn: 'USA & Canada', regionLabel: '글로벌 디지털 라이센스 즉시 발급 ($0 Fee)', shippingFeeKrw: 0, shippingFeeUsd: 0, deliveryDays: 'Instant Digital License Unlock & Download' },
+  { code: 'JP', nameKo: '일본 (Japan)', nameEn: 'Japan', regionLabel: '글로벌 디지털 라이센스 즉시 발급 ($0 Fee)', shippingFeeKrw: 0, shippingFeeUsd: 0, deliveryDays: 'Instant Digital License Unlock & Download' },
+  { code: 'SG', nameKo: '아시아 / 싱가포르 / 대만 / 홍콩', nameEn: 'Asia Pacific (SG/TW/HK)', regionLabel: '글로벌 디지털 라이센스 즉시 발급 ($0 Fee)', shippingFeeKrw: 0, shippingFeeUsd: 0, deliveryDays: 'Instant Digital License Unlock & Download' },
+  { code: 'EU', nameKo: '유럽 / 영국 / 호주 (EU / UK / AU)', nameEn: 'Europe / UK / Australia', regionLabel: '글로벌 디지털 라이센스 즉시 발급 ($0 Fee)', shippingFeeKrw: 0, shippingFeeUsd: 0, deliveryDays: 'Instant Digital License Unlock & Download' },
+  { code: 'GLOBAL', nameKo: '기타 글로벌 국가 (Rest of World)', nameEn: 'Rest of World', regionLabel: '글로벌 디지털 라이센스 즉시 발급 ($0 Fee)', shippingFeeKrw: 0, shippingFeeUsd: 0, deliveryDays: 'Instant Digital License Unlock & Download' },
+];
+
+export type MallModalStep =
+  | 'detail'
+  | 'shipping'
+  | 'country'
+  | 'payment'
+  | 'crypto_select'
+  | 'crypto_qr'
+  | 'complete'
+  | 'orders_list';
+
+interface MallCheckoutState {
+  currentTab: MallGoodsCategory;
+  activeProductId: string | null;
+  step: MallModalStep;
+  quantity: number;
+  selectedSize: string;
+  selectedFaction: string;
+  buyerName: string;
+  buyerPhone: string;
+  buyerAddress: string;
+  selectedCountryCode: string;
+  selectedPaymentMethod: string;
+  selectedCryptoCoinId: string | null;
+  selectedCryptoChain: string | null;
+  cryptoSearchQuery: string;
+  completedOrder: GoodsOrderRecord | null;
+  feedbackMsg: string | null;
+}
+
+const VALID_TABS: MallGoodsCategory[] = [
+  'ALL',
+  'UNLOCKED',
+  'WATER',
+  'FIRE',
+  'WIND',
+  'EARTH',
+  'HUMAN',
+  'UNDEAD',
+  'ELF',
+  'DWARF',
+  'MONSTER',
+  'ROBOT',
+  'DRAGON',
+];
+
+function getInitialMallTab(): MallGoodsCategory {
+  if (typeof window === 'undefined') return 'ALL';
+  try {
+    const saved = localStorage.getItem('hero_mall_active_tab') as MallGoodsCategory | null;
+    if (saved && VALID_TABS.includes(saved)) {
+      return saved;
+    }
+  } catch {
+    // ignore
   }
-
-  // Real PayApp payment gateway
-  let payappMethod = 'card';
-  if (method === 'payapp_card') payappMethod = 'card';
-  else if (method === 'kakaopay') payappMethod = 'kakaopay';
-  else if (method === 'naverpay') payappMethod = 'naverpay';
-  else if (method === 'applepay') payappMethod = 'applepay';
-  else if (method === 'wechatpay') payappMethod = 'wechatpay';
-
-  await requestPayAppPayment({
-    goodname: activeDetailProduct.name + (selectedQty > 1 ? ` (${selectedQty}개)` : ''),
-    priceKrw: totalKrw,
-    method: payappMethod,
-    returnParam: 'goods',
-    recvphone: buyerPhone || '01000000000',
-    targetHash: '#mall',
-    pendingOrder: orderData,
-  });
-
-  return true;
+  return 'ALL';
 }
 
-export function selectMallCryptoCoin(ccy: string): void {
-  const found = CRYPTO_COINS_CATALOG.find((c) => c.ccy === ccy) || CRYPTO_COINS_CATALOG[0];
-  mallCryptoCcy = found.ccy;
-  mallCryptoCopied = false;
-  mallCryptoVerifyNotice = null;
-  if (found.chains.length > 1) {
-    mallModalStep = 'crypto_chain';
-  } else {
-    mallCryptoChain = found.chains[0] || `${found.ccy}-TRC20`;
-    mallModalStep = 'crypto_deposit';
+const mallState: MallCheckoutState = {
+  currentTab: getInitialMallTab(),
+  activeProductId: null,
+  step: 'detail',
+  quantity: 1,
+  selectedSize: 'STANDARD',
+  selectedFaction: 'water',
+  buyerName: '',
+  buyerPhone: '',
+  buyerAddress: '',
+  selectedCountryCode: 'KR',
+  selectedPaymentMethod: '',
+  selectedCryptoCoinId: null,
+  selectedCryptoChain: null,
+  cryptoSearchQuery: '',
+  completedOrder: null,
+  feedbackMsg: null,
+};
+
+export function setMallCurrentTab(tab: MallGoodsCategory): void {
+  const normalized = VALID_TABS.includes(tab) ? tab : 'ALL';
+  mallState.currentTab = normalized;
+  try {
+    localStorage.setItem('hero_mall_active_tab', normalized);
+  } catch {
+    // ignore
   }
 }
 
-export function selectMallCryptoChain(chain: string): void {
-  mallCryptoChain = chain;
-  mallCryptoCopied = false;
-  mallCryptoVerifyNotice = null;
-  mallModalStep = 'crypto_deposit';
+// Legacy compatibility exports kept as safe no-ops for index.ts
+export function toggleMugCardPicker(): void {}
+export function setSelectedMugCardId(_cardId: number): void {}
+export function toggleTshirtCardPicker(): void {}
+export function setSelectedTshirtCardId(_cardId: number): void {}
+
+function getLocalizedMallProduct(p: MallGoodsProduct): {
+  name: string;
+  badge: string;
+  priceText: string;
+  desc: string;
+  spec: string;
+  licenseTerms: string;
+} {
+  const charName = getLocalizedCharacterName(p.cardId);
+  const facName = getLocalizedFactionName(p.faction);
+  const unlocked = isCharacterSheetUnlocked(p.cardId);
+
+  return {
+    name: tr(
+      `[${p.code}] ${charName} 공식 캐릭터시트`,
+      `[${p.code}] ${charName} Character Sheet`,
+      `[${p.code}] ${charName} 公式キャラクターシート`
+    ),
+    badge: unlocked
+      ? tr('✓ 라이센스 해제 완료', '✓ LICENSE UNLOCKED', '✓ ライセンス解除済')
+      : tr('라이센스 해제 조건 · $10.00', 'LICENSE UNLOCK · $10.00', 'ライセンス解除 · $10.00'),
+    priceText: tr('$10.00 (14,000원)', '$10.00 USD', '$10.00 (¥1,500)'),
+    desc: tr(
+      `원작 소설 『카단의 여정』 ${facName} 진영 공식 애니메이션 캐릭터 설정화 시트(${p.code} ${charName}). 수정된 상반신 표정·헤어 디테일(Panel 02)과 7등신 전신 원화(Panel 01), 3등신 SD 원형(Panel 03), 작화 지침서(Panel 04)가 수록되어 있습니다.`,
+      `Official 1600×1000 Studio Animation Character Sheet for ${charName} (${p.code}, ${facName}). Includes updated Upper-Body Bust Portrait (Panel 02), 7-Head Full-Body Cutout (Panel 01), 3-Head SD Reference (Panel 03), and Color Palette (Panel 04).`,
+      `原作小説『カダンの旅』公式アニメーション設定資料シート（${p.code} ${charName}）。修正済み上半身バスト（Panel 02）、7頭身全身原画（Panel 01）、3頭身SD原型（Panel 03）、作画仕様書（Panel 04）収録。`
+    ),
+    spec: tr(
+      '1600×1000 HD 캐릭터시트(JPG) + 수정된 상반신(PNG) + 7등신 투명 원화(PNG) | 상업적·2차 창작 IP 라이센스 영구 해제',
+      '1600×1000 HD Sheet (JPG) + Updated Bust (PNG) + 7-Head Cutout (PNG) | Commercial & Derivative IP License Unlock',
+      '1600×1000 HDシート(JPG) + 修正済上半身(PNG) + 7頭身透過原画(PNG) | 商用・二次創作IPライセンス永久解除'
+    ),
+    licenseTerms: tr(
+      '라이센스 해제 조건 ($10.00 / 14,000원): 구매 즉시 해당 캐릭터의 2차 창작, 유튜브/숏폼 애니메이션 제작, 웹툰·웹소설 삽화, 인디게임 에셋, 커스텀 굿즈 제작 등 상업적·비상업적 IP 사용 라이센스가 영구 해제되며 고해상도 원본 시트 다운로드를 제공합니다.',
+      'License Unlock Terms ($10.00 USD): Immediately unlocks perpetual commercial & non-commercial IP usage rights (YouTube/Shorts animation, webtoon/novel art, indie game assets, custom merch) with instant high-res sheet & cutout downloads.',
+      'ライセンス解除条件（$10.00）：購入即時、該当キャラクターの商用・非商用二次創作（YouTube動画・ショートアニメ、ウェブトゥーン、インディーゲーム、グッズ制作）ライセンスが永久解除され、高解像度原本シートのダウンロードを提供します。'
+    ),
+  };
 }
 
-export function backMallToCryptoCoin(): void {
-  mallModalStep = 'crypto_coin';
-  mallCryptoCopied = false;
-  mallCryptoVerifyNotice = null;
-}
-
-export function backMallToPayment(): void {
-  mallModalStep = 'payment';
-}
-
-export function copyMallCryptoAddress(address: string): void {
-  if (typeof navigator !== 'undefined' && navigator.clipboard) {
-    navigator.clipboard.writeText(address).catch(() => {});
+function getLocalizedCountry(c: MallShippingCountry): {
+  name: string;
+  regionLabel: string;
+  deliveryDays: string;
+} {
+  const lang = getCurrentLanguage();
+  if (lang === 'ko') {
+    return { name: c.nameKo, regionLabel: c.regionLabel, deliveryDays: c.deliveryDays };
   }
-  mallCryptoCopied = true;
+  return {
+    name: c.nameEn,
+    regionLabel: tr(c.regionLabel, 'Instant Digital License Unlock ($0 Fee)', 'デジタルライセンス即時発行（手数料無料）'),
+    deliveryDays: tr(c.deliveryDays, 'Instant License Unlock & High-Res Download', '決済即時ライセンス解除および原本ダウンロード'),
+  };
 }
 
-export function verifyMallCryptoDeposit(): void {
-  mallCryptoVerifyNotice = tr(
-    '블록체인 네트워크에서 입금 내역을 조회 중입니다. 송금 후 네트워크 컨펌 완료 시 주문이 자동 승인됩니다.',
-    'Checking deposit on the blockchain network. Your order will be automatically approved once confirmed.',
-    'ブロックチェーンネットワークで入金履歴を照会中です。送金後、ネットワーク承認完了時に注文が自動承認されます。'
+export function getActiveProduct(): MallGoodsProduct | null {
+  if (!mallState.activeProductId) return null;
+  return MALL_GOODS_PRODUCTS.find((p) => p.id === mallState.activeProductId) || null;
+}
+
+export function getSelectedCountry(): MallShippingCountry {
+  return (
+    MALL_SHIPPING_COUNTRIES.find((c) => c.code === mallState.selectedCountryCode) ||
+    MALL_SHIPPING_COUNTRIES[0]
   );
 }
 
-// ============================================================================
-// Modal Renderer
-// ============================================================================
-
-export function renderMallModal(): string {
-  if (!mallModalStep) return '';
-
-  if (mallModalStep === 'orders') {
-    const orders = getMallSavedOrders();
-    return `
-      <div id="mall-orders-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
-        <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full max-h-[85vh] flex flex-col p-6 shadow-none">
-          <div class="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.08)]">
-            <h3 class="text-sm font-bold m-0">${tr('[주문 내역] 실물 굿즈 배송 주문', '[Order History] Physical Merch Orders', '[注文履歴] 実物グッズ配送注文')}</h3>
-            <button type="button" data-action="close-mall-modal" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
-          </div>
-          <div class="flex-1 overflow-y-auto py-4 space-y-3">
-            ${
-              orders.length === 0
-                ? `<div class="text-center py-8 text-xs text-stone-500">${tr('아직 주문된 내역이 없습니다.', 'No orders placed yet.', 'まだ注文履歴がありません。')}</div>`
-                : orders
-                    .map(
-                      (ord) => `
-              <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] rounded-none text-xs space-y-1">
-                <div class="flex items-center justify-between font-bold">
-                  <span>${ord.title} (${ord.quantity}${tr('개', ' pcs', '個')})</span>
-                  <span class="text-emerald-700 font-mono">${ord.status === 'paid' ? tr('결제완료', 'Paid', '決済完了') : tr('배송준비', 'Preparing', '配送準備中')}</span>
-                </div>
-                <div class="text-[11px] text-stone-600">${tr('주문번호', 'Order ID', '注文番号')}: ${ord.id} · ${tr('금액', 'Amount', '金額')}: ${ord.priceKrw.toLocaleString()}${tr('원', ' KRW', 'ウォン')}</div>
-                <div class="text-[11px] text-stone-500">${tr('받는 분', 'Recipient', '受取人')}: ${ord.buyerName} (${ord.buyerPhone})</div>
-                <div class="text-[10px] text-stone-500">${tr('배송지', 'Address', '配送先')}: ${ord.buyerAddress}</div>
-              </div>
-            `
-                    )
-                    .join('')
-            }
-          </div>
-          <button type="button" data-action="close-mall-modal" class="w-full py-2.5 bg-[#f1eeee] hover:bg-[#e8e5e5] text-xs font-bold rounded-sm min-h-[44px]">${tr('닫기', 'Close', '閉じる')}</button>
-        </div>
-      </div>
-    `;
-  }
-
-  if (mallModalStep === 'celebration' && lastCompletedOrder) {
-    return `
-      <div id="mall-celebration-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
-        <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-md w-full p-6 text-center space-y-4 shadow-none">
-          <div class="text-3xl">🎉</div>
-          <h3 class="text-base font-black m-0">${tr('굿즈 주문이 성공적으로 접수되었습니다!', 'Your merch order has been successfully placed!', 'グッズのご注文が正常に受け付けられました！')}</h3>
-          <p class="text-xs text-stone-600 leading-relaxed">
-            ${tr('주문번호', 'Order ID', '注文番号')}: <strong>${lastCompletedOrder.id}</strong><br/>
-            ${tr('상품', 'Product', '商品')}: <strong>${lastCompletedOrder.title}</strong> (${lastCompletedOrder.quantity}${tr('개', ' pcs', '個')})<br/>
-            ${tr('수령인', 'Recipient', '受取人')}: ${lastCompletedOrder.buyerName} (${lastCompletedOrder.buyerPhone})<br/>
-            ${tr('배송지', 'Address', '配送先')}: ${lastCompletedOrder.buyerAddress}
-          </p>
-          <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] text-[11px] text-stone-600">
-            ${tr(
-              '주문 승인이 완료되었으며, 상품 준비 후 발송 시 안내 문자가 발송됩니다.',
-              'Your order is approved. A notification will be sent once the item is shipped.',
-              '注文承認が完了しました。商品の準備ができ次第、発送案内をお送りします。'
-            )}
-          </div>
-          <button type="button" data-action="close-mall-modal" class="w-full py-3 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm min-h-[44px]">
-            ${tr('확인 (완료)', 'Confirm (Done)', '確認 (完了)')}
-          </button>
-        </div>
-      </div>
-    `;
-  }
-
-  if (
-    mallModalStep === 'crypto_coin' ||
-    mallModalStep === 'crypto_chain' ||
-    mallModalStep === 'crypto_deposit' ||
-    mallModalStep === 'crypto'
-  ) {
-    const prod = activeDetailProduct ? getLocalizedMallProduct(activeDetailProduct) : null;
-    const totalUsd = prod ? prod.priceUsd * selectedQty : 29.0;
-    const totalKrw = prod ? prod.priceKrw * selectedQty : 39000;
-    const prodLabel = prod ? `${prod.name} (${selectedQty}${tr('개', ' pcs', '個')})` : tr('공식 굿즈 주문', 'Official Merch Order', '公式グッズ注文');
-
-    return `
-      <div id="mall-crypto-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
-        <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full p-6 space-y-4 shadow-none">
-          <div class="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.08)]">
-            <div>
-              <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-600 text-white rounded-sm mb-1">
-                ${tr('굿즈 암호화폐 결제', 'Merch Crypto Payment', 'グッズ暗号資産決済')}
-              </span>
-              <h3 class="text-sm sm:text-base font-bold m-0">⚡ ${tr('암호화폐 결제', 'Crypto Payment', '暗号資産決済')} (${prodLabel})</h3>
-            </div>
-            <button type="button" data-action="close-mall-modal" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
-          </div>
-
-          ${
-            mallModalStep === 'crypto_coin'
-              ? `
-                <div class="space-y-3">
-                  <div class="flex items-center justify-between">
-                    <button type="button" data-action="back-mall-payment" class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1">
-                      ← ${tr('결제 수단 변경', 'Change Payment Method', '決済手段を変更')}
-                    </button>
-                    <span class="text-xs font-bold text-[#201d1d]">$${totalUsd.toFixed(2)} USD (${totalKrw.toLocaleString()}${tr('원', ' KRW', 'ウォン')})</span>
-                  </div>
-
-                  <div class="flex flex-wrap gap-1.5 text-[11px]">
-                    ${CRYPTO_QUICK_CHIPS.map(
-                      (chip) => `
-                        <button
-                          type="button"
-                          data-action="select-mall-crypto-coin"
-                          data-ccy="${chip}"
-                          class="px-2.5 py-1.5 min-h-[38px] bg-[#f8f7f7] hover:bg-[#201d1d] hover:text-[#fdfcfc] text-[#201d1d] rounded-sm font-bold border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer"
-                        >
-                          ${chip}
-                        </button>
-                      `
-                    ).join('')}
-                  </div>
-
-                  <div class="space-y-1.5 max-h-60 overflow-y-auto pr-1">
-                    ${CRYPTO_COINS_CATALOG.map(
-                      (coin) => `
-                        <button
-                          type="button"
-                          data-action="select-mall-crypto-coin"
-                          data-ccy="${coin.ccy}"
-                          class="w-full p-3 min-h-[48px] bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-none flex items-center justify-between transition-colors cursor-pointer text-left"
-                        >
-                          <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-none bg-[#f1eeee] border border-[rgba(15,0,0,0.12)] flex items-center justify-center font-bold text-base shrink-0">
-                              ${coin.icon}
-                            </div>
-                            <div>
-                              <div class="flex items-center gap-1.5">
-                                <span class="font-black text-xs sm:text-sm text-[#201d1d]">${coin.ccy}</span>
-                                <span class="text-[11px] text-stone-500">${coin.name}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <span class="text-xs font-bold text-stone-500">${tr('선택 →', 'Select →', '選択 →')}</span>
-                        </button>
-                      `
-                    ).join('')}
-                  </div>
-                </div>
-              `
-              : ''
-          }
-
-          ${
-            mallModalStep === 'crypto_chain'
-              ? (() => {
-                  const coinObj =
-                    CRYPTO_COINS_CATALOG.find((c) => c.ccy === mallCryptoCcy) || CRYPTO_COINS_CATALOG[0];
-                  return `
-                    <div class="space-y-3">
-                      <div class="flex items-center justify-between">
-                        <button type="button" data-action="back-mall-crypto-coin" class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1">
-                          ← ${tr('코인 다시 선택', 'Reselect Coin', 'コインを再選択')}
-                        </button>
-                        <span class="text-xs font-bold text-[#201d1d]">⚡ ${coinObj.ccy} ${tr('네트워크 선택', 'Select Network', 'ネットワーク選択')}</span>
-                      </div>
-                      <div class="space-y-2 max-h-60 overflow-y-auto">
-                        ${coinObj.chains
-                          .map((chainItem) => {
-                            const chainName = chainItem.replace(`${coinObj.ccy}-`, '');
-                            return `
-                              <button
-                                type="button"
-                                data-action="select-mall-crypto-chain"
-                                data-chain="${chainItem}"
-                                class="w-full p-3.5 min-h-[48px] bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-none flex items-center justify-between transition-colors cursor-pointer text-left"
-                              >
-                                <span class="font-black text-xs sm:text-sm text-[#201d1d]">${chainName} (${chainItem})</span>
-                                <span class="text-xs font-bold text-[#201d1d]">${tr('QR 생성 →', 'Generate QR →', 'QR生成 →')}</span>
-                              </button>
-                            `;
-                          })
-                          .join('')}
-                      </div>
-                    </div>
-                  `;
-                })()
-              : ''
-          }
-
-          ${
-            mallModalStep === 'crypto_deposit' || mallModalStep === 'crypto'
-              ? (() => {
-                  const deposit = resolveCryptoDepositDetails(mallCryptoCcy, mallCryptoChain, totalUsd);
-                  return `
-                    <div class="space-y-3.5 max-h-[75vh] overflow-y-auto pr-0.5">
-                      <div class="flex items-center justify-between">
-                        <button type="button" data-action="back-mall-crypto-coin" class="text-xs text-stone-500 hover:text-black font-bold cursor-pointer py-1">
-                          ← ${tr('다른 코인/네트워크 선택', 'Select Another Coin/Network', '別のコイン/ネットワークを選択')}
-                        </button>
-                        <span class="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">
-                          ${deposit.chain}
-                        </span>
-                      </div>
-
-                      <div class="bg-[#f8f7f7] border border-[#201d1d] rounded-none p-3 text-center space-y-1">
-                        <span class="text-[10px] text-stone-500 font-bold block uppercase tracking-wider">${tr('전송해야 할 정확한 금액', 'Exact Amount to Send', '送金する正確な金額')}</span>
-                        <div class="text-xl sm:text-2xl font-black text-[#201d1d]">
-                          ${deposit.amount} <span class="text-sm font-bold text-amber-700">${deposit.ccy}</span>
-                        </div>
-                        <span class="text-[10px] text-stone-600 font-bold block">${tr('네트워크', 'Network', 'ネットワーク')}: ${deposit.chain}</span>
-                      </div>
-
-                      <div class="flex flex-col items-center justify-center p-3 bg-white border border-[rgba(15,0,0,0.12)] rounded-none">
-                        <div class="p-1 bg-white border border-stone-200 flex items-center justify-center">
-                          ${deposit.qrSvg}
-                        </div>
-                        <span class="text-[10px] text-stone-500 mt-1.5 font-mono font-bold">
-                          ${tr('지갑 앱으로 QR 코드를 스캔하여 전송하세요', 'Scan the QR code with your wallet app to send', 'ウォレットアプリでQRコードをスキャンして送金してください')}
-                        </span>
-                      </div>
-
-                      <div class="space-y-1.5">
-                        <label class="text-[11px] font-bold text-stone-600 block">${tr('입금 전용 지갑 주소', 'Deposit Wallet Address', '入金専用ウォレットアドレス')} (${deposit.chain})</label>
-                        <div class="flex items-center gap-1.5">
-                          <input
-                            type="text"
-                            readonly
-                            value="${deposit.address}"
-                            class="flex-1 p-2.5 text-[11px] bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm font-mono font-bold text-[#201d1d] select-all focus:outline-none"
-                          />
-                          <button
-                            type="button"
-                            data-action="copy-mall-crypto-address"
-                            data-address="${deposit.address}"
-                            class="px-3 py-2.5 min-h-[44px] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] rounded-sm text-xs font-bold flex items-center justify-center cursor-pointer shrink-0"
-                          >
-                            ${mallCryptoCopied ? tr('✓ 복사됨', '✓ Copied', '✓ コピー済') : tr('복사', 'Copy', 'コピー')}
-                          </button>
-                        </div>
-                      </div>
-
-                      ${
-                        mallCryptoVerifyNotice
-                          ? `<div class="p-2.5 bg-amber-50 border border-amber-400 text-amber-900 text-[11px] font-bold rounded-none">${mallCryptoVerifyNotice}</div>`
-                          : ''
-                      }
-
-                      <div class="space-y-2 pt-1">
-                        <button
-                          type="button"
-                          data-action="verify-mall-crypto-deposit"
-                          class="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-sm min-h-[44px] cursor-pointer"
-                        >
-                          ⚡ ${tr('입금 완료 즉시 확인 (수동 새로고침)', 'Verify Deposit Now (Manual Refresh)', '入金完了を即時確認 (手動更新)')}
-                        </button>
-                        <button type="button" data-action="close-mall-modal" class="w-full py-2.5 bg-[#f1eeee] hover:bg-[#e8e5e5] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] cursor-pointer">
-                          ${tr('결제 취소 (닫기)', 'Cancel Payment (Close)', '決済キャンセル (閉じる)')}
-                        </button>
-                      </div>
-                    </div>
-                  `;
-                })()
-              : ''
-          }
-        </div>
-      </div>
-    `;
-  }
-
-  if (!activeDetailProduct) return '';
-
-  const localizedDetailProd = getLocalizedMallProduct(activeDetailProduct);
-  const totalUsd = localizedDetailProd.priceUsd * selectedQty;
-  const totalKrw = localizedDetailProd.priceKrw * selectedQty;
-
-  // Step 1: Detail
-  if (mallModalStep === 'detail') {
-    return `
-      <div id="mall-detail-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
-        <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full max-h-[90vh] flex flex-col p-6 shadow-none">
-          <div class="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.08)]">
-            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] rounded-sm">
-              ${localizedDetailProd.badge}
-            </span>
-            <button type="button" data-action="close-mall-modal" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
-          </div>
-
-          <div class="flex-1 overflow-y-auto py-4 space-y-4">
-            <div class="w-full bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] flex items-center justify-center p-3">
-              ${
-                localizedDetailProd.id === 'goods_mug'
-                  ? renderMugMockupPreview(selectedMugCardId)
-                  : localizedDetailProd.id === 'goods_tshirt'
-                  ? renderTshirtMockupPreview(selectedTshirtCardId)
-                  : `<img src="${localizedDetailProd.image}" alt="${localizedDetailProd.name}" class="max-h-44 max-w-full object-contain" />`
-              }
-            </div>
-
-            <div>
-              <h2 class="text-base font-black text-[#201d1d] m-0">${localizedDetailProd.name}</h2>
-              <div class="text-sm font-black text-emerald-800 mt-1">
-                ${localizedDetailProd.priceText}
-              </div>
-              <p class="text-xs text-stone-600 mt-2 leading-relaxed m-0">
-                ${localizedDetailProd.description}
-              </p>
-            </div>
-
-            <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] text-[11px] text-stone-600">
-              <span class="font-bold text-[#201d1d]">${tr('제품 사양:', 'Specifications:', '製品仕様:')}</span> ${localizedDetailProd.shortSpec}
-            </div>
-
-            <!-- Options -->
-            <div class="space-y-3 pt-2 border-t border-[rgba(15,0,0,0.08)]">
-              ${
-                localizedDetailProd.id === 'goods_mug'
-                  ? `
-                <div class="p-3 bg-[#f8f7f7] border border-stone-300 rounded-none space-y-2">
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <div class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">${tr('머그컵 인쇄 영웅 카드', 'Custom Printed Hero Card', 'マグカップ印刷英雄カード')}</div>
-                      <div class="text-xs font-black text-[#201d1d]">
-                        #${selectedMugCardId} ${getLocalizedCharacterName(selectedMugCardId)}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      data-action="toggle-mug-picker"
-                      class="px-3 py-1.5 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[36px] cursor-pointer"
-                    >
-                      ${isMugCardPickerOpen ? tr('선택 닫기 ▲', 'Close Picker ▲', '閉じる ▲') : tr('카드 변경 🔄', 'Change Card 🔄', 'カード変更 🔄')}
-                    </button>
-                  </div>
-
-                  ${
-                    isMugCardPickerOpen
-                      ? `
-                    <div class="pt-2 border-t border-stone-300">
-                      <div class="text-[10px] text-stone-600 mb-1.5 font-bold">
-                        ${tr('110종 영웅 중 머그컵에 인쇄할 카드를 선택하세요:', 'Select a hero card to print on your mug:', 'マグカップに印刷するカードを選択してください:')}
-                      </div>
-                      <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5 max-h-48 overflow-y-auto p-1 bg-white border border-stone-300 rounded-none">
-                        ${Object.values(CARD_DATABASE)
-                          .slice(0, 110)
-                          .map((c) => {
-                            const isCur = c.id === selectedMugCardId;
-                            const cName = getLocalizedCharacterName(c.id) || c.title;
-                            return `
-                          <button
-                            type="button"
-                            data-action="select-mug-card"
-                            data-card-id="${c.id}"
-                            class="p-1 border ${
-                              isCur ? 'border-amber-400 bg-amber-50 ring-1 ring-amber-400' : 'border-stone-200 hover:border-stone-400 bg-white'
-                            } flex flex-col items-center justify-center cursor-pointer transition-all active:scale-95"
-                            title="${cName}"
-                          >
-                            <img src="${getCharacterAsset(c.id, 'bust')}" alt="${cName}" class="w-9 h-9 object-cover rounded-xs" />
-                            <span class="text-[8px] font-bold text-stone-800 truncate w-full text-center mt-0.5">#${c.id}</span>
-                          </button>
-                        `;
-                          })
-                          .join('')}
-                      </div>
-                    </div>
-                  `
-                      : ''
-                  }
-                </div>
-              `
-                  : ''
-              }
-              ${
-                localizedDetailProd.id === 'goods_tshirt'
-                  ? `
-                <div class="p-3 bg-[#f8f7f7] border border-stone-300 rounded-none space-y-2">
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <div class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">${tr('티셔츠 인쇄 영웅 카드', 'Custom Printed Hero Card', 'Tシャツ印刷英雄カード')}</div>
-                      <div class="text-xs font-black text-[#201d1d]">
-                        #${selectedTshirtCardId} ${getLocalizedCharacterName(selectedTshirtCardId)}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      data-action="toggle-tshirt-picker"
-                      class="px-3 py-1.5 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[36px] cursor-pointer"
-                    >
-                      ${isTshirtCardPickerOpen ? tr('선택 닫기 ▲', 'Close Picker ▲', '閉じる ▲') : tr('카드 변경 🔄', 'Change Card 🔄', 'カード変更 🔄')}
-                    </button>
-                  </div>
-
-                  ${
-                    isTshirtCardPickerOpen
-                      ? `
-                    <div class="pt-2 border-t border-stone-300">
-                      <div class="text-[10px] text-stone-600 mb-1.5 font-bold">
-                        ${tr('110종 영웅 중 티셔츠 가슴에 인쇄할 카드를 선택하세요:', 'Select a hero card to print on your T-shirt:', 'Tシャツ胸に印刷するカードを選択してください:')}
-                      </div>
-                      <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5 max-h-48 overflow-y-auto p-1 bg-white border border-stone-300 rounded-none">
-                        ${Object.values(CARD_DATABASE)
-                          .slice(0, 110)
-                          .map((c) => {
-                            const isCur = c.id === selectedTshirtCardId;
-                            const cName = getLocalizedCharacterName(c.id) || c.title;
-                            return `
-                          <button
-                            type="button"
-                            data-action="select-tshirt-card"
-                            data-card-id="${c.id}"
-                            class="p-1 border ${
-                              isCur ? 'border-amber-400 bg-amber-50 ring-1 ring-amber-400' : 'border-stone-200 hover:border-stone-400 bg-white'
-                            } flex flex-col items-center justify-center cursor-pointer transition-all active:scale-95"
-                            title="${cName}"
-                          >
-                            <img src="${getCharacterAsset(c.id, 'bust')}" alt="${cName}" class="w-9 h-9 object-cover rounded-xs" />
-                            <span class="text-[8px] font-bold text-stone-800 truncate w-full text-center mt-0.5">#${c.id}</span>
-                          </button>
-                        `;
-                          })
-                          .join('')}
-                      </div>
-                    </div>
-                  `
-                      : ''
-                  }
-                </div>
-
-                <div>
-                  <label class="block text-xs font-bold text-stone-700 mb-1">${tr('사이즈 선택 (Size):', 'Select Size:', 'サイズ選択 (Size):')}</label>
-                  <div class="flex gap-2">
-                    ${['S (90)', 'M (95)', 'L (100)', 'XL (105)']
-                      .map(
-                        (sz) => `
-                      <button type="button" data-action="select-mall-size" data-size="${sz}" class="flex-1 py-2 text-xs font-bold rounded-sm border ${
-                          selectedSize === sz ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]' : 'bg-white text-stone-700 border-stone-300'
-                        }">
-                        ${sz}
-                      </button>
-                    `
-                      )
-                      .join('')}
-                  </div>
-                </div>
-              `
-                  : ''
-              }
-
-              ${
-                localizedDetailProd.id === 'goods_deck_faction'
-                  ? `
-                <div>
-                  <label class="block text-xs font-bold text-stone-700 mb-1">${tr('종족 선택 (Faction):', 'Select Faction:', '種族選択 (Faction):')}</label>
-                  <select data-action="change-mall-faction" class="w-full p-2.5 bg-white border border-stone-300 text-xs font-mono rounded-sm">
-                    ${FACTION_OPTIONS.map(
-                      (f) => `<option value="${f}" ${selectedFaction === f ? 'selected' : ''}>${getLocalizedMallFactionOption(f)}</option>`
-                    ).join('')}
-                  </select>
-                </div>
-              `
-                  : ''
-              }
-
-              <div class="flex items-center justify-between pt-1">
-                <span class="text-xs font-bold text-stone-700">${tr('주문 수량:', 'Quantity:', '注文数量:')}</span>
-                <div class="flex items-center border border-stone-300 rounded-sm">
-                  <button type="button" data-action="change-mall-qty" data-delta="-1" class="px-3 py-1 bg-stone-100 hover:bg-stone-200 text-xs font-bold min-h-[36px]">-</button>
-                  <span class="px-4 py-1 text-xs font-bold">${selectedQty}</span>
-                  <button type="button" data-action="change-mall-qty" data-delta="1" class="px-3 py-1 bg-stone-100 hover:bg-stone-200 text-xs font-bold min-h-[36px]">+</button>
-                </div>
-              </div>
-
-              <div class="flex items-center justify-between pt-2 border-t border-[rgba(15,0,0,0.08)]">
-                <span class="text-xs font-bold text-stone-700">${tr('총 결제 예정액:', 'Total Amount:', 'お支払い合計額:')}</span>
-                <span class="text-sm font-black text-[#201d1d]">
-                  $${totalUsd.toFixed(2)} USD / ${totalKrw.toLocaleString()}${tr('원', ' KRW', 'ウォン')}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-3 border-t border-[rgba(15,0,0,0.08)] flex gap-2">
-            <button type="button" data-action="close-mall-modal" class="flex-1 py-3 bg-[#f1eeee] hover:bg-[#e8e5e5] text-xs font-bold rounded-sm min-h-[44px]">
-              ${tr('닫기', 'Close', '閉じる')}
-            </button>
-            <button type="button" data-action="proceed-mall-shipping" class="flex-2 py-3 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px]">
-              ${tr('즉시 구매 (배송지 입력) →', 'Buy Now (Enter Shipping) →', '今すぐ購入 (配送先入力) →')}
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  // Step 2: Shipping
-  if (mallModalStep === 'shipping') {
-    return `
-      <div id="mall-shipping-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
-        <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full p-6 shadow-none space-y-4">
-          <div class="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.08)]">
-            <div class="flex items-center gap-2">
-              <button type="button" data-action="back-mall-detail" class="text-xs text-stone-500 hover:text-black">← ${tr('상품', 'Item', '商品')}</button>
-              <h3 class="text-sm font-bold m-0">${tr('배송지 정보 입력', 'Shipping Information', '配送先情報の入力')}</h3>
-            </div>
-            <button type="button" data-action="close-mall-modal" class="text-stone-500 hover:text-black font-bold p-1">[x]</button>
-          </div>
-
-          <form id="mall-shipping-form" class="space-y-3" onsubmit="event.preventDefault();">
-            <div>
-              <label class="block text-xs font-bold text-stone-700 mb-1">${tr('받는 분 성함 (Name) *', 'Recipient Name *', '受取人氏名 (Name) *')}</label>
-              <input type="text" id="mall-buyer-name" value="${buyerName}" placeholder="${tr('홍길동', 'John Doe', '山田 太郎')}" class="w-full p-2.5 bg-white border border-stone-300 text-xs rounded-sm min-h-[44px]" required />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-stone-700 mb-1">${tr('연락처 (Phone) *', 'Phone Number *', '連絡先 (Phone) *')}</label>
-              <input type="tel" id="mall-buyer-phone" value="${buyerPhone}" placeholder="010-1234-5678" class="w-full p-2.5 bg-white border border-stone-300 text-xs rounded-sm min-h-[44px]" required />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-stone-700 mb-1">${tr('배송지 상세 주소 (Address) *', 'Shipping Address *', '配送先詳細住所 (Address) *')}</label>
-              <input type="text" id="mall-buyer-address" value="${buyerAddress}" placeholder="${tr('도로명 주소 및 상세 동호수 입력', 'Street address, apartment/suite, city, postal code', '都道府県・市区町村・番地・建物名を入力')}" class="w-full p-2.5 bg-white border border-stone-300 text-xs rounded-sm min-h-[44px]" required />
-            </div>
-
-            <div class="pt-3 border-t border-[rgba(15,0,0,0.08)] flex gap-2">
-              <button type="button" data-action="back-mall-detail" class="flex-1 py-3 bg-[#f1eeee] text-xs font-bold rounded-sm min-h-[44px]">${tr('이전', 'Back', '戻る')}</button>
-              <button type="button" data-action="submit-mall-shipping" class="flex-2 py-3 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px]">
-                ${tr('결제 국가 선택 →', 'Select Country →', '決済国を選択 →')}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    `;
-  }
-
-  // Step 3: Country
-  if (mallModalStep === 'country') {
-    return `
-      <div id="mall-country-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
-        <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full p-6 shadow-none space-y-4">
-          <div class="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.08)]">
-            <div class="flex items-center gap-2">
-              <button type="button" data-action="back-mall-shipping" class="text-xs text-stone-500 hover:text-black">← ${tr('배송지', 'Shipping', '配送先')}</button>
-              <h3 class="text-sm font-bold m-0">${tr('결제 국가 선택', 'Select Payment Country', '決済国の選択')}</h3>
-            </div>
-            <span class="text-xs font-bold text-[#201d1d]">$${totalUsd.toFixed(2)} USD</span>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
-            ${MALL_COUNTRIES.map(
-              (c) => `
-              <button type="button" data-action="select-mall-country" data-country-code="${c.code}" class="p-3 bg-[#f8f7f7] hover:bg-[#f1eeee] border border-[rgba(15,0,0,0.08)] text-left flex items-center gap-2.5 rounded-sm min-h-[44px]">
-                <span class="text-lg">${c.flag}</span>
-                <div>
-                  <div class="text-xs font-bold text-[#201d1d]">${c.name.split(' ')[0]}</div>
-                  <div class="text-[10px] text-stone-500">${c.currency}</div>
-                </div>
-              </button>
-            `
-            ).join('')}
-          </div>
-
-          <button type="button" data-action="execute-mall-checkout" data-method="crypto" class="w-full p-3 bg-amber-600 hover:bg-amber-700 text-white rounded-sm text-xs font-bold flex items-center justify-between min-h-[44px]">
-            <span>⚡ ${tr('암호화폐 결제 (USDT / SOL / BTC)', 'Crypto Payment (USDT / SOL / BTC)', '暗号資産決済 (USDT / SOL / BTC)')}</span>
-            <span>${tr('즉시 지갑 결제 →', 'Instant Wallet Pay →', '即時ウォレット決済 →')}</span>
-          </button>
-        </div>
-      </div>
-    `;
-  }
-
-  // Step 4: Payment
-  if (mallModalStep === 'payment') {
-    return `
-      <div id="mall-payment-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 font-mono">
-        <div class="bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-none max-w-lg w-full p-6 shadow-none space-y-4">
-          <div class="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.08)]">
-            <div class="flex items-center gap-2">
-              <button type="button" data-action="back-mall-country" class="text-xs text-stone-500 hover:text-black">← ${tr('국가', 'Country', '国選択')}</button>
-              <h3 class="text-sm font-bold m-0">${tr('결제 수단 선택', 'Select Payment Method', '決済手段の選択')}</h3>
-            </div>
-            <span class="text-xs font-bold text-[#201d1d]">${totalKrw.toLocaleString()}${tr('원', ' KRW', 'ウォン')}</span>
-          </div>
-
-          <div class="space-y-2">
-            ${
-              selectedCountry === 'ko'
-                ? `
-              <button type="button" data-action="execute-mall-checkout" data-method="payapp_card" class="w-full py-3 px-4 bg-[#1e58ff] hover:bg-[#1542c7] text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                <span>💳 ${tr('국내 신용/체크카드 (PayApp)', 'Credit/Debit Card (PayApp)', '韓国国内クレジット/チェックカード (PayApp)')}</span>
-                <span>${totalKrw.toLocaleString()}${tr('원 결제 →', ' KRW Pay →', 'ウォン決済 →')}</span>
-              </button>
-              <button type="button" data-action="execute-mall-checkout" data-method="kakaopay" class="w-full py-3 px-4 bg-[#FEE500] hover:bg-[#FADA0A] text-[#191919] font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                <span>🟡 ${tr('카카오페이 (Kakao Pay)', 'Kakao Pay', 'カカオペイ (Kakao Pay)')}</span>
-                <span>${tr('간편결제 →', 'Quick Pay →', '簡単決済 →')}</span>
-              </button>
-              <button type="button" data-action="execute-mall-checkout" data-method="naverpay" class="w-full py-3 px-4 bg-[#03C75A] hover:bg-[#02b351] text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                <span>🟢 ${tr('네이버페이 (Naver Pay)', 'Naver Pay', 'ネイバーペイ (Naver Pay)')}</span>
-                <span>${tr('간편결제 →', 'Quick Pay →', '簡単決済 →')}</span>
-              </button>
-              <button type="button" data-action="execute-mall-checkout" data-method="applepay" class="w-full py-3 px-4 bg-black hover:bg-stone-800 text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                <span>🍎 Apple Pay</span>
-                <span>${tr('원터치 결제 →', 'One-Touch Pay →', 'ワンタッチ決済 →')}</span>
-              </button>
-            `
-                : `
-              <button type="button" data-action="execute-mall-checkout" data-method="paypal" class="w-full py-3 px-4 bg-[#003087] hover:bg-[#002466] text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                <span>🅿️ PayPal Express Checkout</span>
-                <span>$${totalUsd.toFixed(2)} USD →</span>
-              </button>
-              <button type="button" data-action="execute-mall-checkout" data-method="applepay" class="w-full py-3 px-4 bg-black hover:bg-stone-800 text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-                <span>🍎 Apple Pay</span>
-                <span>Instant Checkout →</span>
-              </button>
-            `
-            }
-
-            <button type="button" data-action="execute-mall-checkout" data-method="crypto" class="w-full py-3 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px]">
-              <span>⚡ ${tr('암호화폐 결제 (USDT / SOL / BTC)', 'Crypto Payment (USDT / SOL / BTC)', '暗号資産決済 (USDT / SOL / BTC)')}</span>
-              <span>${tr('Web3 지갑 결제 →', 'Web3 Wallet Pay →', 'Web3ウォレット決済 →')}</span>
-            </button>
-
-            <!-- Test Simulation Button Clearly Separated -->
-            <button type="button" data-action="execute-mall-checkout" data-method="test_sim" class="w-full py-2.5 px-4 bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold text-xs rounded-sm flex items-center justify-between min-h-[44px] mt-2 border border-stone-400">
-              <span>🧪 ${tr('[개발자/시뮬레이션] 즉시 주문 승인 (SIM - 무과금)', '[Dev/Sim] Instant Order Approval (SIM - Free)', '[開発者/シミュレーション] 即時注文承認 (SIM - 無料)')}</span>
-              <span class="text-[10px] text-stone-600">${tr('결제창 없이 주문 확정', 'Confirm without payment', '決済画面なしで注文確定')}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  return '';
+export function openMallProductDetail(productId: string): void {
+  const product = MALL_GOODS_PRODUCTS.find((p) => p.id === productId);
+  if (!product) return;
+  mallState.activeProductId = product.id;
+  mallState.step = 'detail';
+  mallState.quantity = 1;
+  mallState.selectedSize = 'LICENSE';
+  mallState.selectedFaction = product.faction;
+  mallState.feedbackMsg = null;
 }
 
-// ============================================================================
-// Main View Renderer
-// ============================================================================
+export function openMallOrdersList(): void {
+  mallState.activeProductId = MALL_GOODS_PRODUCTS[0].id;
+  mallState.step = 'orders_list';
+  mallState.feedbackMsg = null;
+}
 
-export function renderMallView(): string {
-  const activeTab = currentMallTab;
-  const filtered = (
-    activeTab === 'ALL'
-      ? MALL_GOODS_PRODUCTS
-      : MALL_GOODS_PRODUCTS.filter((p) => p.category === activeTab)
-  ).map(getLocalizedMallProduct);
+export function closeMallModal(): void {
+  mallState.activeProductId = null;
+  mallState.step = 'detail';
+  mallState.feedbackMsg = null;
+}
 
-  const modalHtml = renderMallModal();
+export function setMallQty(qty: number): void {
+  mallState.quantity = Math.max(1, Math.min(99, qty));
+}
 
-  return `
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 font-mono text-[#201d1d] select-none">
-      <!-- Top Mall Banner & Actions -->
-      <section class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 sm:p-8 rounded-none shadow-none space-y-6 mb-6">
-        <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.08)] gap-4">
+export function setMallSize(size: string): void {
+  mallState.selectedSize = size;
+}
+
+export function setMallFaction(faction: string): void {
+  mallState.selectedFaction = faction;
+}
+
+export function proceedMallToShipping(): void {
+  mallState.step = 'shipping';
+  mallState.feedbackMsg = null;
+}
+
+export function backMallToDetail(): void {
+  mallState.step = 'detail';
+  mallState.feedbackMsg = null;
+}
+
+export function submitMallShipping(info: { name: string; phone: string; address: string }): boolean {
+  const cleanName = info.name.trim() || tr('모험가 라이센시', 'Adventurer Licensee', '冒険者ライセンシー');
+  const cleanPhone = info.phone.trim() || '010-0000-0000';
+  const cleanAddress = info.address.trim() || tr('디지털 라이센스 즉시 발급 (온라인)', 'Instant Digital License Unlock', 'デジタルライセンス即時発行');
+
+  mallState.buyerName = cleanName;
+  mallState.buyerPhone = cleanPhone;
+  mallState.buyerAddress = cleanAddress;
+  mallState.step = 'country';
+  mallState.feedbackMsg = null;
+  return true;
+}
+
+export function backMallToShipping(): void {
+  mallState.step = 'shipping';
+  mallState.feedbackMsg = null;
+}
+
+export function selectMallCountry(countryCode: string): void {
+  mallState.selectedCountryCode = countryCode;
+  mallState.step = 'payment';
+  mallState.feedbackMsg = null;
+}
+
+export function backMallToCountry(): void {
+  mallState.step = 'country';
+  mallState.feedbackMsg = null;
+}
+
+export function backMallToPayment(): void {
+  mallState.step = 'payment';
+  mallState.feedbackMsg = null;
+}
+
+export function selectMallCryptoCoin(coinId: string): void {
+  const found = CRYPTO_COINS_CATALOG.find((c) => c.ccy === coinId) || CRYPTO_COINS_CATALOG[0];
+  if (!found) return;
+  mallState.selectedCryptoCoinId = found.ccy;
+  mallState.selectedCryptoChain = found.chains[0] || `${found.ccy}-TRC20`;
+}
+
+export function selectMallCryptoChain(chainId: string): void {
+  mallState.selectedCryptoChain = chainId;
+}
+
+export function backMallToCryptoCoin(): void {
+  mallState.step = 'crypto_select';
+  mallState.feedbackMsg = null;
+}
+
+export function setMallCryptoSearch(query: string): void {
+  mallState.cryptoSearchQuery = query;
+}
+
+export function getMallTotalPricing(): {
+  productKrw: number;
+  productUsd: number;
+  shippingKrw: number;
+  shippingUsd: number;
+  totalKrw: number;
+  totalUsd: number;
+} {
+  const product = getActiveProduct();
+  const country = getSelectedCountry();
+  if (!product) {
+    return { productKrw: 0, productUsd: 0, shippingKrw: 0, shippingUsd: 0, totalKrw: 0, totalUsd: 0 };
+  }
+  const productKrw = product.priceKrw * mallState.quantity;
+  const productUsd = Number((product.priceUsd * mallState.quantity).toFixed(2));
+  const shippingKrw = country.shippingFeeKrw;
+  const shippingUsd = country.shippingFeeUsd;
+  return {
+    productKrw,
+    productUsd,
+    shippingKrw,
+    shippingUsd,
+    totalKrw: productKrw + shippingKrw,
+    totalUsd: Number((productUsd + shippingUsd).toFixed(2)),
+  };
+}
+
+function buildOptionSummary(product: MallGoodsProduct): string {
+  return `${product.code} (${product.name}) · IP 라이센스 영구 해제 ($10.00)`;
+}
+
+export async function executeMallCheckout(method: string): Promise<void> {
+  const product = getActiveProduct();
+  if (!product) return;
+
+  const country = getSelectedCountry();
+  const pricing = getMallTotalPricing();
+  mallState.selectedPaymentMethod = method;
+
+  if (!mallState.buyerName) {
+    mallState.buyerName = tr('모험가 라이센시', 'Adventurer Licensee', '冒険者ライセンシー');
+  }
+  if (!mallState.buyerPhone) {
+    mallState.buyerPhone = '010-0000-0000';
+  }
+  if (!mallState.buyerAddress) {
+    mallState.buyerAddress = tr('디지털 라이센스 즉시 발급', 'Digital License Unlock', 'デジタルライセンス即時発行');
+  }
+
+  if (method === 'crypto') {
+    const defaultCoin = CRYPTO_COINS_CATALOG[0];
+    mallState.selectedCryptoCoinId = defaultCoin?.ccy || 'USDT';
+    mallState.selectedCryptoChain = defaultCoin?.chains[0] || 'USDT-TRC20';
+    mallState.step = 'crypto_select';
+    mallState.feedbackMsg = null;
+    return;
+  }
+
+  if (method === 'crypto_proceed_qr') {
+    mallState.step = 'crypto_qr';
+    mallState.feedbackMsg = null;
+    return;
+  }
+
+  if (method === 'payapp_card') {
+    mallState.feedbackMsg = tr('PayApp 안전 결제창을 호출하고 있습니다...', 'Opening PayApp secure checkout...', 'PayApp決済画面を呼び出しています...');
+    unlockCharacterSheetLicense(product.cardId);
+    const order = submitGoodsOrder({
+      productId: product.id,
+      productName: product.name,
+      quantity: mallState.quantity,
+      size: buildOptionSummary(product),
+      priceText: `$${pricing.totalUsd.toFixed(2)} (${pricing.totalKrw.toLocaleString()}원)`,
+      buyerName: mallState.buyerName,
+      buyerPhone: mallState.buyerPhone,
+      shippingAddress: `[${country.nameKo}] ${mallState.buyerAddress}`,
+      paymentMethod: 'payapp_card',
+    });
+
+    await requestPayAppPayment({
+      goodname: `[SNSHero 라이센스 해제] ${product.name}`,
+      priceKrw: pricing.totalKrw,
+      method: 'card',
+      returnParam: 'goods',
+      recvphone: mallState.buyerPhone.replace(/[^0-9]/g, '') || '01000000000',
+      targetHash: '#mall',
+      pendingOrder: order,
+    });
+
+    mallState.completedOrder = order;
+    mallState.step = 'complete';
+    mallState.feedbackMsg = null;
+    return;
+  }
+
+  if (method === 'paypal') {
+    unlockCharacterSheetLicense(product.cardId);
+    const order = submitGoodsOrder({
+      productId: product.id,
+      productName: product.name,
+      quantity: mallState.quantity,
+      size: buildOptionSummary(product),
+      priceText: `$${pricing.totalUsd.toFixed(2)} USD`,
+      buyerName: mallState.buyerName,
+      buyerPhone: mallState.buyerPhone,
+      shippingAddress: `[${country.nameKo}] ${mallState.buyerAddress}`,
+      paymentMethod: 'paypal',
+    });
+
+    const returnUrl = encodeURIComponent(window.location.origin + window.location.pathname + '#mall?payapp_success=goods');
+    const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=dryudryu@gmail.com&item_name=${encodeURIComponent(
+      `[SNSHero IP License Unlock] ${product.code} ${product.name}`
+    )}&amount=${pricing.totalUsd.toFixed(2)}&currency_code=USD&return=${returnUrl}`;
+    window.open(paypalUrl, '_blank', 'noopener,noreferrer');
+
+    mallState.completedOrder = order;
+    mallState.step = 'complete';
+    mallState.feedbackMsg = null;
+    return;
+  }
+
+  // Instant license unlock checkout (test_sim / direct unlock)
+  unlockCharacterSheetLicense(product.cardId);
+  const order = submitGoodsOrder({
+    productId: product.id,
+    productName: product.name,
+    quantity: mallState.quantity,
+    size: buildOptionSummary(product),
+    priceText: `$${pricing.totalUsd.toFixed(2)} (${pricing.totalKrw.toLocaleString()}원)`,
+    buyerName: mallState.buyerName,
+    buyerPhone: mallState.buyerPhone,
+    shippingAddress: `[${country.nameKo}] ${mallState.buyerAddress}`,
+    paymentMethod: 'test_sim',
+  });
+  mallState.completedOrder = order;
+  mallState.step = 'complete';
+  mallState.feedbackMsg = null;
+}
+
+export function verifyMallCryptoDeposit(): void {
+  const product = getActiveProduct();
+  if (!product) return;
+
+  const country = getSelectedCountry();
+  const pricing = getMallTotalPricing();
+  const ccy = mallState.selectedCryptoCoinId || 'USDT';
+  const chain = mallState.selectedCryptoChain || 'USDT-TRC20';
+  const details = resolveCryptoDepositDetails(ccy, chain, pricing.totalUsd);
+
+  unlockCharacterSheetLicense(product.cardId);
+  const order = submitGoodsOrder({
+    productId: product.id,
+    productName: product.name,
+    quantity: mallState.quantity,
+    size: `${buildOptionSummary(product)} · ${details.ccy}/${details.chain}`,
+    priceText: `${details.amount} ${details.ccy} ($${pricing.totalUsd.toFixed(2)})`,
+    buyerName: mallState.buyerName || tr('모험가 라이센시', 'Adventurer Licensee', '冒険者ライセンシー'),
+    buyerPhone: mallState.buyerPhone || '010-0000-0000',
+    shippingAddress: `[${country.nameKo}] ${mallState.buyerAddress || 'Digital License Unlock'}`,
+    paymentMethod: 'crypto',
+  });
+
+  mallState.completedOrder = order;
+  mallState.step = 'complete';
+  mallState.feedbackMsg = null;
+}
+
+export function copyMallCryptoAddress(): void {
+  const pricing = getMallTotalPricing();
+  const ccy = mallState.selectedCryptoCoinId || 'USDT';
+  const chain = mallState.selectedCryptoChain || 'USDT-TRC20';
+  const details = resolveCryptoDepositDetails(ccy, chain, pricing.totalUsd);
+  if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(details.address).catch(() => {});
+  }
+  mallState.feedbackMsg = tr('입금 주소가 클립보드에 복사되었습니다.', 'Deposit address copied to clipboard.', '入金アドレスがクリップボードにコピーされました。');
+}
+
+// ─── Modal Renderer ──────────────────────────────────────────────────────────
+
+function renderMallCheckoutModal(): string {
+  const product = getActiveProduct();
+  if (!product) return '';
+
+  const locProd = getLocalizedMallProduct(product);
+  const country = getSelectedCountry();
+  const locCountry = getLocalizedCountry(country);
+  const pricing = getMallTotalPricing();
+  const unlocked = isCharacterSheetUnlocked(product.cardId);
+  const pal = FACTION_PALETTES[product.faction] || { bg: '#201d1d', text: '#fdfcfc', border: '#646262' };
+
+  let stepBadge = tr('STEP 1/3 · 캐릭터시트 상세 및 라이센스 조건', 'STEP 1/3 · SHEET SPEC & LICENSE TERMS', 'STEP 1/3 · シート詳細＆ライセンス条件');
+  if (mallState.step === 'shipping') stepBadge = tr('STEP 2/3 · 라이센스 등록자 정보 입력', 'STEP 2/3 · LICENSEE REGISTRATION INFO', 'STEP 2/3 · ライセンス登録者情報');
+  else if (mallState.step === 'country') stepBadge = tr('STEP 2.5/3 · 발급 국가 및 권역 선택', 'STEP 2.5/3 · SELECT REGION', 'STEP 2.5/3 · 発行国・地域の選択');
+  else if (mallState.step === 'payment' || mallState.step === 'crypto_select' || mallState.step === 'crypto_qr') {
+    stepBadge = tr('STEP 3/3 · 라이센스 해제 결제 ($10.00)', 'STEP 3/3 · LICENSE UNLOCK PAYMENT ($10.00)', 'STEP 3/3 · ライセンス解除決済 ($10.00)');
+  } else if (mallState.step === 'complete') {
+    stepBadge = tr('COMPLETE · 라이센스 영구 해제 및 원본 다운로드', 'COMPLETE · LICENSE UNLOCKED & DOWNLOAD', 'COMPLETE · ライセンス解除完了＆ダウンロード');
+  } else if (mallState.step === 'orders_list') {
+    stepBadge = tr('MY LICENSES · 라이센스 해제 및 주문 내역', 'MY LICENSES · UNLOCK & ORDER HISTORY', 'MY LICENSES · ライセンス解除・注文履歴');
+  }
+
+  let bodyHtml = '';
+
+  if (mallState.step === 'orders_list') {
+    const orders = getGoodsOrders();
+    const unlockedIds = getUnlockedSheetIds();
+    bodyHtml = `
+      <div class="space-y-4">
+        <div class="p-3 bg-emerald-50 border border-emerald-500/40 flex items-center justify-between">
           <div>
-            <div class="inline-flex items-center gap-2 px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm tracking-wider uppercase mb-2">
-              <span>${tr('공식 실물 굿즈 스토어', 'Official Physical Merch Store', '公式実物グッズストア')}</span>
-              <span class="text-stone-400">·</span>
-              <span>snshero.com/mall</span>
-            </div>
-            <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#201d1d] m-0">
-              ${tr('SNS히어로 공식 굿즈 몰 (Official Goods Mall)', 'SNSHero Official Goods Mall', 'SNSヒーロー公式グッズモール (Official Goods Mall)')}
-            </h1>
-            <p class="text-xs sm:text-sm text-stone-600 mt-1 m-0">
-              ${tr(
-                '110종 풀세트 실물 TCG 카드, 11대 종족별 테마 덱, 배틀 매트 게임테이블, 머그컵 및 공식 의류를 만나보세요.',
-                'Discover the 110-card full physical TCG set, 11 faction theme decks, battle mat game tables, mugs, and official apparel.',
-                '全110種フルセット実物TCGカード、11大種族別テーマデッキ、バトルマットゲームテーブル、マグカップ、公式アパレルをチェックしましょう。'
-              )}
-            </p>
+            <div class="text-xs font-bold text-emerald-900 font-mono">${tr('보유 라이센스 해제 캐릭터시트', 'Unlocked Character Sheet Licenses', '保有ライセンス解除キャラクターシート')}</div>
+            <div class="text-[11px] text-emerald-700 font-mono">${tr(`총 110종 중 ${unlockedIds.length}종 라이센스 영구 해제 완료`, `${unlockedIds.length} / 110 Character Sheet Licenses Unlocked`, `全110種中 ${unlockedIds.length}種 ライセンス永久解除済`)}</div>
           </div>
+          <span class="px-2.5 py-1 bg-emerald-700 text-white text-xs font-bold font-mono rounded-sm">${unlockedIds.length} / 110</span>
+        </div>
 
-          <div class="flex items-center gap-2">
-            <button
-              type="button"
-              data-action="open-mall-orders"
-              class="px-4 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] flex items-center justify-center whitespace-nowrap cursor-pointer"
-            >
-              📦 ${tr('내 주문 내역 조회', 'My Order History', '注文履歴を照会')}
-            </button>
+        ${
+          orders.length === 0
+            ? `<div class="p-8 text-center border border-[#646262]/20 bg-[#f8f7f7] text-xs text-[#646262] font-mono">
+                 ${tr('아직 라이센스 해제 구매 내역이 없습니다.', 'No character sheet license orders yet.', 'まだライセンス解除の購入履歴がありません。')}
+               </div>`
+            : `<div class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
+                 ${orders
+                   .map(
+                     (o) => `
+                   <div class="p-3.5 border border-[#646262]/30 bg-white space-y-1.5 font-mono">
+                     <div class="flex items-center justify-between border-b border-[#646262]/15 pb-1.5">
+                       <span class="text-[11px] font-bold text-[#201d1d]">${o.orderId}</span>
+                       <span class="px-2 py-0.5 bg-emerald-50 border border-emerald-500/40 text-emerald-800 text-[10px] font-bold rounded-sm">
+                         ${getOrderStatusLabel(o.status)} · LICENSE ACTIVE
+                       </span>
+                     </div>
+                     <div class="text-xs font-bold text-[#201d1d]">${o.productName}</div>
+                     <div class="text-[11px] text-[#646262]">${tr('라이센스 조건', 'License', 'ライセンス')}: ${o.size} | ${tr('결제금액', 'Paid', '決済金額')}: <strong class="text-[#201d1d]">${o.priceText}</strong></div>
+                     <div class="text-[11px] text-[#646262]">${tr('등록자', 'Licensee', '登録者')}: ${o.buyerName} (${o.buyerPhone})</div>
+                     <div class="text-[10px] text-[#646262] pt-0.5 flex items-center justify-between">
+                       <span>${getPaymentMethodLabel(o.paymentMethod)}</span>
+                       <span>${new Date(o.createdAt).toLocaleString()}</span>
+                     </div>
+                   </div>
+                 `
+                   )
+                   .join('')}
+               </div>`
+        }
+        <button
+          type="button"
+          data-action="close-mall-modal"
+          class="w-full min-h-[44px] py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold font-mono rounded-sm cursor-pointer"
+        >
+          ${tr('닫기', 'Close', '閉じる')}
+        </button>
+      </div>
+    `;
+  } else if (mallState.step === 'detail') {
+    bodyHtml = `
+      <div class="space-y-4 font-mono">
+        <!-- High-Res 1600x1000 Studio Character Sheet Preview -->
+        <div class="border border-[#201d1d] bg-[#141316] p-2">
+          <div class="flex items-center justify-between px-2 py-1.5 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold mb-2">
+            <span>${product.code} · 1600×1000 HD STUDIO CHARACTER SHEET (상반신 리마스터 반영)</span>
+            <span class="px-2 py-0.5 rounded-sm text-[10px]" style="background:${pal.bg};color:${pal.text};">${product.faction.toUpperCase()} · ${product.rarity}</span>
+          </div>
+          <div class="w-full aspect-[16/10] bg-white overflow-hidden border border-[#646262]/40">
+            <img src="${product.imageUrl}" alt="${locProd.name}" class="w-full h-full object-contain bg-white" />
+          </div>
+          <div class="grid grid-cols-2 gap-2 mt-2">
+            <div class="flex items-center gap-2.5 p-2 bg-[#201d1d] border border-white/10 text-[#fdfcfc]">
+              <img src="${product.bustUrl}" alt="Updated Bust" class="w-12 h-12 object-contain bg-white border border-[#646262]/40 shrink-0" />
+              <div class="min-w-0">
+                <div class="text-[10px] font-bold text-amber-300">PANEL 02 · 수정된 상반신</div>
+                <div class="text-[10px] text-stone-300 truncate">${tr('표정·헤어 정밀 리마스터 본', 'Updated Head & Hair Bust', '修正済み上半身ポートレート')}</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 p-2 bg-[#201d1d] border border-white/10 text-[#fdfcfc]">
+              <img src="${product.cutoutUrl}" alt="7-Head Cutout" class="w-12 h-12 object-contain bg-white border border-[#646262]/40 shrink-0" />
+              <div class="min-w-0">
+                <div class="text-[10px] font-bold text-emerald-300">PANEL 01 · 7등신 전신 원화</div>
+                <div class="text-[10px] text-stone-300 truncate">${tr('투명 배경 PNG 클린 컷아웃', 'Transparent Full-Body PNG', '透過背景PNG全身原画')}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Title, Price & License Unlock Condition Box -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3.5 bg-[#f8f7f7] border border-[#201d1d]">
+          <div>
+            <span class="inline-block px-2 py-0.5 ${unlocked ? 'bg-emerald-700' : 'bg-[#201d1d]'} text-[#fdfcfc] text-[10px] font-bold rounded-sm mb-1">${locProd.badge}</span>
+            <h4 class="text-base font-bold text-[#201d1d]">${locProd.name}</h4>
+            <p class="text-[11px] text-[#646262] mt-0.5">${locProd.spec}</p>
+          </div>
+          <div class="sm:text-right shrink-0">
+            <div class="text-[10px] text-[#646262] uppercase">${tr('라이센스 해제 판매가 (개당)', 'License Unlock Price (Each)', 'ライセンス解除価格（1点）')}</div>
+            <div class="text-xl font-bold text-[#201d1d]">$10.00 <span class="text-xs font-normal text-[#646262]">(14,000원)</span></div>
+          </div>
+        </div>
+
+        <!-- License Unlock Terms Notice -->
+        <div class="p-3.5 bg-amber-50/70 border border-amber-600/40 space-y-1.5 text-xs">
+          <div class="font-bold text-amber-950 flex items-center justify-between">
+            <span>📜 ${tr('캐릭터시트 라이센스 해제 조건 (IP License Unlock Terms)', 'Character Sheet IP License Unlock Terms', 'キャラクターシート・ライセンス解除条件')}</span>
+            <span class="px-1.5 py-0.5 bg-amber-900 text-amber-50 text-[10px] rounded-sm">PERPETUAL LICENSE</span>
+          </div>
+          <p class="text-[11px] text-amber-900 leading-relaxed">${locProd.licenseTerms}</p>
+          <ul class="text-[11px] text-amber-950 space-y-0.5 pt-1">
+            <li>• ${tr('포함 파일 1: 1600×1000 HD 공식 캐릭터 설정화 시트 (수정된 상반신 Panel 02 적용본)', 'Included 1: 1600×1000 HD Official Studio Character Sheet (with updated Panel 02 bust)', '収録1：1600×1000 HD公式キャラクター設定資料シート（修正済上半身Panel 02適用）')}</li>
+            <li>• ${tr('포함 파일 2: 500×500 HD 수정된 상반신 투명 PNG & 7등신 전신 투명 PNG 원화', 'Included 2: 500×500 HD Updated Bust Transparent PNG & 7-Head Full-Body Cutout PNG', '収録2：500×500 HD修正済上半身透過PNG ＆ 7頭身全身透過PNG原画')}</li>
+            <li>• ${tr('라이센스 범위: 상업적 영상/웹툰/게임/AI 애니메이션/굿즈 제작 영구 허용 (재판매 제외)', 'License Scope: Perpetual commercial & creative use in video, webtoon, games, and merch', 'ライセンス範囲：商用動画・ウェブトゥーン・ゲーム・グッズ制作への永久利用許諾')}</li>
+          </ul>
+        </div>
+
+        ${
+          unlocked
+            ? `
+          <div class="p-3.5 bg-emerald-50 border border-emerald-600/50 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-950">✓ ${tr('라이센스 영구 해제 완료 · 고해상도 원본 다운로드', 'License Unlocked · Instant High-Res Downloads', 'ライセンス解除完了・高解像度原本ダウンロード')}</span>
+              <span class="text-[10px] font-bold text-emerald-800">CERT-${product.code.replace('.', '')}-ACTIVE</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <a
+                href="${product.imageUrl}"
+                download="${product.code.replace('.', '_')}_${product.id}_CharacterSheet_1600x1000.jpg"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="min-h-[44px] px-3 py-2 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm flex items-center justify-center text-center hover:bg-[#343030]"
+              >
+                ⬇ ${tr('캐릭터시트 원본 (JPG)', 'Download Sheet (JPG)', 'シート原本 (JPG)')}
+              </a>
+              <a
+                href="${product.bustUrl}"
+                download="${product.code.replace('.', '_')}_Updated_Bust.png"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="min-h-[44px] px-3 py-2 bg-white border border-[#201d1d] text-[#201d1d] text-[11px] font-bold rounded-sm flex items-center justify-center text-center hover:bg-[#f8f7f7]"
+              >
+                ⬇ ${tr('수정된 상반신 (PNG)', 'Updated Bust (PNG)', '修正済上半身 (PNG)')}
+              </a>
+              <a
+                href="${product.cutoutUrl}"
+                download="${product.code.replace('.', '_')}_7Head_Cutout.png"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="min-h-[44px] px-3 py-2 bg-white border border-[#201d1d] text-[#201d1d] text-[11px] font-bold rounded-sm flex items-center justify-center text-center hover:bg-[#f8f7f7]"
+              >
+                ⬇ ${tr('7등신 전신 원화 (PNG)', '7-Head Cutout (PNG)', '7頭身全身原画 (PNG)')}
+              </a>
+            </div>
+          </div>
+        `
+            : ''
+        }
+
+        <div class="flex flex-col sm:flex-row gap-2 pt-1">
+          <button
+            type="button"
+            data-action="proceed-mall-shipping"
+            class="flex-1 min-h-[48px] py-3 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold font-mono rounded-sm hover:bg-[#343030] transition cursor-pointer"
+          >
+            ${
+              unlocked
+                ? tr('추가 라이센스 증서 발급 / 재결제 ($10.00) →', 'Purchase Additional License Certificate ($10.00) →', '追加ライセンス証書発行 ($10.00) →')
+                : tr('라이센스 해제 조건 동의 및 구매 진행 ($10.00) →', 'Agree to License Terms & Unlock ($10.00) →', 'ライセンス解除条件に同意して購入 ($10.00) →')
+            }
+          </button>
+          <button
+            type="button"
+            data-action="execute-mall-checkout"
+            data-method="test_sim"
+            class="sm:w-auto min-h-[48px] px-4 py-3 bg-emerald-700 text-white text-xs font-bold font-mono rounded-sm hover:bg-emerald-800 transition cursor-pointer"
+          >
+            ⚡ ${tr('1클릭 즉시 라이센스 해제 ($10.00)', '1-Click Instant Unlock ($10.00)', '1クリック即時ライセンス解除 ($10.00)')}
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (mallState.step === 'shipping') {
+    bodyHtml = `
+      <div class="space-y-4 font-mono">
+        <div class="p-3 bg-[#f8f7f7] border border-[#646262]/30 flex items-center justify-between text-xs">
+          <span class="font-bold text-[#201d1d]">${locProd.name} (${tr('라이센스 해제', 'License Unlock', 'ライセンス解除')})</span>
+          <span class="font-bold text-[#201d1d]">$${pricing.productUsd.toFixed(2)} (${pricing.productKrw.toLocaleString()}원)</span>
+        </div>
+
+        ${
+          mallState.feedbackMsg
+            ? `<div class="p-3 bg-red-50 border border-red-500/40 text-xs text-red-800 font-bold">${mallState.feedbackMsg}</div>`
+            : ''
+        }
+
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-[#201d1d] mb-1">${tr('라이센스 등록자 성명 (또는 스튜디오/닉네임)', 'Licensee Name (or Studio / Creator Handle)', 'ライセンス登録者氏名（またはスタジオ名）')}</label>
+            <input
+              id="mall-buyer-name"
+              type="text"
+              value="${mallState.buyerName}"
+              placeholder="${tr('홍길동 / Studio Kadan (미입력 시 기본 라이센시로 자동 등록)', 'Creator Name / Studio (Optional)', '山田太郎 / Studio名')}"
+              class="w-full min-h-[44px] px-3 py-2 border border-[#201d1d] bg-white text-xs font-mono rounded-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#201d1d] mb-1">${tr('연락처 (휴대폰 번호 · PayApp 결제 알림용)', 'Phone Number (for Payment Notification)', '連絡先電話番号')}</label>
+            <input
+              id="mall-buyer-phone"
+              type="tel"
+              value="${mallState.buyerPhone}"
+              placeholder="${tr('010-1234-5678', '+1 234 567 8900', '090-1234-5678')}"
+              class="w-full min-h-[44px] px-3 py-2 border border-[#201d1d] bg-white text-xs font-mono rounded-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#201d1d] mb-1">${tr('이메일 또는 활용 프로젝트 메모 (디지털 라이센스 증서 표기용)', 'Email or Project Note (for Digital License Certificate)', 'メールアドレスまたは利用プロジェクトメモ')}</label>
+            <input
+              id="mall-buyer-address"
+              type="text"
+              value="${mallState.buyerAddress}"
+              placeholder="${tr('creator@example.com / 유튜브 애니메이션·웹툰·게임 프로젝트 활용', 'creator@example.com / YouTube Animation & Indie Game Project', 'creator@example.com / 動画・ゲーム制作プロジェクト')}"
+              class="w-full min-h-[44px] px-3 py-2 border border-[#201d1d] bg-white text-xs font-mono rounded-sm"
+            />
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button
+            type="button"
+            data-action="back-mall-detail"
+            class="min-h-[44px] px-4 py-2 border border-[#646262]/40 bg-white text-xs font-bold text-[#201d1d] rounded-sm cursor-pointer"
+          >
+            ← ${tr('이전', 'Back', '戻る')}
+          </button>
+          <button
+            type="button"
+            data-action="submit-mall-shipping"
+            class="flex-1 min-h-[44px] py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#343030] cursor-pointer"
+          >
+            ${tr('다음: 라이센스 발급 국가 선택 →', 'Next: Select Region →', '次へ：発行地域の選択 →')}
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (mallState.step === 'country') {
+    bodyHtml = `
+      <div class="space-y-4 font-mono">
+        <div class="p-3 bg-[#f8f7f7] border border-[#646262]/30 text-xs space-y-1">
+          <div class="font-bold text-[#201d1d]">${tr('라이센스 등록자', 'Licensee', '登録者')}: ${mallState.buyerName} (${mallState.buyerPhone})</div>
+          <div class="text-[11px] text-[#646262] truncate">${mallState.buyerAddress}</div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="text-xs font-bold text-[#201d1d]">${tr('라이센스 발급 권역 선택 (디지털 라이센스 수수료 $0 무료)', 'Select Region (Digital License Issuance Fee $0)', 'ライセンス発行地域の選択（デジタル発行手数料 $0）')}</div>
+          <div class="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+            ${MALL_SHIPPING_COUNTRIES.map((c) => {
+              const isSelected = c.code === mallState.selectedCountryCode;
+              const lc = getLocalizedCountry(c);
+              return `
+                <button
+                  type="button"
+                  data-action="select-mall-country"
+                  data-country-code="${c.code}"
+                  class="w-full p-3 text-left border ${
+                    isSelected ? 'border-[#201d1d] bg-[#201d1d]/5' : 'border-[#646262]/30 bg-white'
+                  } hover:border-[#201d1d] transition flex items-center justify-between cursor-pointer rounded-sm"
+                >
+                  <div>
+                    <div class="text-xs font-bold text-[#201d1d]">${lc.name}</div>
+                    <div class="text-[11px] text-[#646262]">${lc.regionLabel} · ${lc.deliveryDays}</div>
+                  </div>
+                  <span class="px-2 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">${tr('선택 →', 'Select →', '選択 →')}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          data-action="back-mall-shipping"
+          class="w-full min-h-[44px] py-2 border border-[#646262]/40 bg-white text-xs font-bold text-[#201d1d] rounded-sm cursor-pointer"
+        >
+          ← ${tr('라이센스 등록자 정보 수정', 'Edit Licensee Info', '登録者情報の修正')}
+        </button>
+      </div>
+    `;
+  } else if (mallState.step === 'payment') {
+    bodyHtml = `
+      <div class="space-y-4 font-mono">
+        <!-- Order & Price Summary -->
+        <div class="p-3.5 bg-[#f8f7f7] border border-[#201d1d] space-y-2 text-xs">
+          <div class="flex items-center justify-between border-b border-[#646262]/20 pb-2">
+            <span class="font-bold text-[#201d1d]">${locProd.name}</span>
+            <span class="font-bold text-[#201d1d]">${product.code} · LICENSE</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[#646262]">
+            <span>${tr('캐릭터시트 라이센스 해제 단가', 'Character Sheet License Price', 'キャラクターシート・ライセンス単価')}</span>
+            <span>$${pricing.productUsd.toFixed(2)} (${pricing.productKrw.toLocaleString()}원)</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-[#646262]">
+            <span>${tr('디지털 원본 발급 수수료', 'Digital License & Download Fee', 'デジタル原本発行手数料')} (${locCountry.name})</span>
+            <span>${tr('무료 ($0.00)', 'FREE ($0.00)', '無料 ($0.00)')}</span>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-[#201d1d] text-sm font-bold text-[#201d1d]">
+            <span>${tr('최종 결제 금액', 'Total Amount Due', '最終決済金額')}</span>
+            <span class="text-emerald-800">$${pricing.totalUsd.toFixed(2)} (${pricing.totalKrw.toLocaleString()}원)</span>
+          </div>
+        </div>
+
+        ${
+          mallState.feedbackMsg
+            ? `<div class="p-3 bg-amber-50 border border-amber-500/40 text-xs text-amber-900 font-bold">${mallState.feedbackMsg}</div>`
+            : ''
+        }
+
+        <!-- 4 Payment Gateways -->
+        <div class="space-y-2.5">
+          <div class="text-xs font-bold text-[#201d1d]">${tr('결제 수단 선택 (결제 즉시 라이센스 영구 해제)', 'Select Payment Method (Instant License Unlock)', '決済手段の選択（決済即時ライセンス永久解除）')}</div>
+
+          <button
+            type="button"
+            data-action="execute-mall-checkout"
+            data-method="payapp_card"
+            class="w-full min-h-[48px] p-3 border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] hover:bg-[#343030] transition flex items-center justify-between rounded-sm cursor-pointer"
+          >
+            <div class="text-left">
+              <div class="text-xs font-bold">💳 ${tr('국내 신용/체크카드 · 간편결제 (PayApp)', 'Credit/Debit Card · PayApp (KRW)', 'クレジットカード・簡単決済 (PayApp)')}</div>
+              <div class="text-[10px] text-[#d6d3d1]">${tr('카카오페이 · 네이버페이 · 삼성페이 · 전 카드사 즉시 결제', 'KakaoPay, NaverPay, SamsungPay & All KR Cards', 'カカオペイ・ネイバーペイ・全カード対応')}</div>
+            </div>
+            <span class="px-2.5 py-1 bg-[#fdfcfc] text-[#201d1d] text-xs font-bold rounded-sm">${pricing.totalKrw.toLocaleString()}원</span>
+          </button>
+
+          <button
+            type="button"
+            data-action="execute-mall-checkout"
+            data-method="paypal"
+            class="w-full min-h-[48px] p-3 border border-[#201d1d] bg-white text-[#201d1d] hover:bg-[#f8f7f7] transition flex items-center justify-between rounded-sm cursor-pointer"
+          >
+            <div class="text-left">
+              <div class="text-xs font-bold">🌐 ${tr('해외 결제 · 페이팔 (PayPal / Global Visa·Master)', 'PayPal / International Credit Card (USD)', '海外決済・PayPal (USD)')}</div>
+              <div class="text-[10px] text-[#646262]">${tr('글로벌 USD 안전 결제 및 즉시 라이센스 활성화', 'Global USD Checkout & Instant License Activation', 'グローバルUSD安全決済＆即時ライセンス有効化')}</div>
+            </div>
+            <span class="px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm">$${pricing.totalUsd.toFixed(2)}</span>
+          </button>
+
+          <button
+            type="button"
+            data-action="execute-mall-checkout"
+            data-method="crypto"
+            class="w-full min-h-[48px] p-3 border border-[#201d1d] bg-white text-[#201d1d] hover:bg-[#f8f7f7] transition flex items-center justify-between rounded-sm cursor-pointer"
+          >
+            <div class="text-left">
+              <div class="text-xs font-bold">🪙 ${tr('암호화폐 QR 입금 (USDT / USDC / BTC / ETH / SOL)', 'Crypto QR Deposit (USDT / USDC / BTC / ETH / SOL)', '暗号資産QR入金 (USDT / USDC / BTC / ETH / SOL)')}</div>
+              <div class="text-[10px] text-[#646262]">${tr('10+ 메이저 코인 멀티체인 지갑 QR 지원', 'Supports 10+ Major Coins & Multi-Chain QR', '主要10通貨以上のマルチチェーンQR対応')}</div>
+            </div>
+            <span class="px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm">CRYPTO QR</span>
+          </button>
+
+          <button
+            type="button"
+            data-action="execute-mall-checkout"
+            data-method="test_sim"
+            class="w-full min-h-[44px] p-2.5 border border-emerald-600/50 bg-emerald-50 text-emerald-900 hover:bg-emerald-100 transition flex items-center justify-between rounded-sm cursor-pointer"
+          >
+            <span class="text-xs font-bold">⚡ ${tr('즉시 라이센스 해제 완료 처리 (1클릭 시뮬레이션 결제)', 'Instant License Unlock (1-Click Direct Checkout)', '即時ライセンス解除完了処理（1クリック決済）')}</span>
+            <span class="px-2 py-0.5 bg-emerald-800 text-white text-[10px] font-bold rounded-sm">INSTANT UNLOCK</span>
+          </button>
+        </div>
+
+        <button
+          type="button"
+          data-action="back-mall-country"
+          class="w-full min-h-[44px] py-2 border border-[#646262]/40 bg-white text-xs font-bold text-[#201d1d] rounded-sm cursor-pointer"
+        >
+          ← ${tr('발급 권역 다시 선택', 'Back to Region Selection', '発行地域の再選択')}
+        </button>
+      </div>
+    `;
+  } else if (mallState.step === 'crypto_select') {
+    const allCoins: CryptoCoinOption[] = CRYPTO_COINS_CATALOG;
+    const q = mallState.cryptoSearchQuery.trim().toLowerCase();
+    const filteredCoins: CryptoCoinOption[] = q
+      ? allCoins.filter(
+          (c) =>
+            c.ccy.toLowerCase().includes(q) ||
+            c.name.toLowerCase().includes(q)
+        )
+      : allCoins;
+
+    const selectedCoin =
+      allCoins.find((c) => c.ccy === mallState.selectedCryptoCoinId) || allCoins[0];
+    const selectedChain =
+      selectedCoin.chains.find((ch) => ch === mallState.selectedCryptoChain) ||
+      selectedCoin.chains[0];
+
+    bodyHtml = `
+      <div class="space-y-4 font-mono">
+        <div class="p-3 bg-[#f8f7f7] border border-[#646262]/30 flex items-center justify-between text-xs">
+          <span class="font-bold text-[#201d1d]">${locProd.name}</span>
+          <span class="font-bold text-emerald-800">$${pricing.totalUsd.toFixed(2)} USD</span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#201d1d] mb-1.5">${tr('1. 입금할 암호화폐 선택', '1. Select Cryptocurrency', '1. 入金する暗号資産を選択')}</label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 max-h-[180px] overflow-y-auto p-1 border border-[#646262]/20 bg-[#f8f7f7]">
+            ${filteredCoins
+              .map((coin) => {
+                const active = coin.ccy === selectedCoin.ccy;
+                return `
+                  <button
+                    type="button"
+                    data-action="select-mall-crypto-coin"
+                    data-ccy="${coin.ccy}"
+                    class="min-h-[44px] p-2 text-left border ${
+                      active
+                        ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
+                        : 'border-[#646262]/30 bg-white text-[#201d1d]'
+                    } rounded-sm cursor-pointer transition"
+                  >
+                    <div class="text-xs font-bold">${coin.icon} ${coin.ccy}</div>
+                    <div class="text-[10px] opacity-80 truncate">${coin.name}</div>
+                  </button>
+                `;
+              })
+              .join('')}
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#201d1d] mb-1.5">${tr('2. 전송 네트워크(Chain) 선택', '2. Select Blockchain Network', '2. ネットワーク(Chain)を選択')}</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+            ${selectedCoin.chains
+              .map((ch) => {
+                const active = ch === selectedChain;
+                return `
+                  <button
+                    type="button"
+                    data-action="select-mall-crypto-chain"
+                    data-chain="${ch}"
+                    class="min-h-[44px] p-2.5 text-left border ${
+                      active
+                        ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
+                        : 'border-[#646262]/30 bg-white text-[#201d1d]'
+                    } rounded-sm cursor-pointer transition flex items-center justify-between"
+                  >
+                    <span class="text-xs font-bold">${ch}</span>
+                    <span class="text-[10px] opacity-80">INSTANT</span>
+                  </button>
+                `;
+              })
+              .join('')}
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button
+            type="button"
+            data-action="back-mall-payment"
+            class="min-h-[44px] px-4 py-2 border border-[#646262]/40 bg-white text-xs font-bold text-[#201d1d] rounded-sm cursor-pointer"
+          >
+            ← ${tr('결제수단 변경', 'Back', '戻る')}
+          </button>
+          <button
+            type="button"
+            data-action="execute-mall-checkout"
+            data-method="crypto_proceed_qr"
+            class="flex-1 min-h-[44px] py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm cursor-pointer"
+          >
+            ${tr('입금 QR 코드 및 주소 생성 →', 'Generate Deposit QR & Address →', '入金QRコード＆アドレス生成 →')}
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (mallState.step === 'crypto_qr') {
+    const ccy = mallState.selectedCryptoCoinId || 'USDT';
+    const chain = mallState.selectedCryptoChain || 'USDT-TRC20';
+    const details = resolveCryptoDepositDetails(ccy, chain, pricing.totalUsd);
+
+    bodyHtml = `
+      <div class="space-y-4 font-mono">
+        <div class="p-3 bg-[#f8f7f7] border border-[#201d1d] flex items-center justify-between text-xs">
+          <span class="font-bold text-[#201d1d]">${details.ccy} (${details.chain})</span>
+          <span class="font-bold text-emerald-800">${details.amount} ${details.ccy} ($${pricing.totalUsd.toFixed(2)})</span>
+        </div>
+
+        <div class="flex flex-col items-center justify-center p-4 border border-[#646262]/30 bg-white space-y-3">
+          <div class="border border-[#201d1d] p-2 bg-white">${details.qrSvg}</div>
+          <div class="w-full p-2.5 bg-[#f8f7f7] border border-[#646262]/30 text-[11px] break-all text-center font-bold text-[#201d1d]">
+            ${details.address}
+          </div>
+          <button
+            type="button"
+            data-action="copy-mall-crypto-address"
+            class="min-h-[40px] px-4 py-1.5 border border-[#201d1d] bg-white text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] rounded-sm cursor-pointer"
+          >
+            📋 ${tr('지갑 주소 복사하기', 'Copy Wallet Address', 'ウォレットアドレスをコピー')}
+          </button>
+        </div>
+
+        ${
+          mallState.feedbackMsg
+            ? `<div class="p-2.5 bg-emerald-50 border border-emerald-500/40 text-xs text-emerald-900 font-bold text-center">${mallState.feedbackMsg}</div>`
+            : ''
+        }
+
+        <div class="flex gap-2">
+          <button
+            type="button"
+            data-action="back-mall-crypto-coin"
+            class="min-h-[44px] px-4 py-2 border border-[#646262]/40 bg-white text-xs font-bold text-[#201d1d] rounded-sm cursor-pointer"
+          >
+            ← ${tr('코인 변경', 'Change Coin', '通貨変更')}
+          </button>
+          <button
+            type="button"
+            data-action="verify-mall-crypto-deposit"
+            class="flex-1 min-h-[44px] py-2 bg-emerald-700 text-white text-xs font-bold rounded-sm hover:bg-emerald-800 cursor-pointer"
+          >
+            ✓ ${tr('입금 완료 확인 및 라이센스 즉시 해제', 'Verify Deposit & Unlock License Now', '入金確認およびライセンス即時解除')}
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (mallState.step === 'complete') {
+    const ord = mallState.completedOrder;
+    bodyHtml = `
+      <div class="space-y-4 font-mono">
+        <div class="p-4 bg-emerald-50 border border-emerald-600/50 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 bg-emerald-800 text-white text-[10px] font-bold rounded-sm">IP LICENSE UNLOCKED</span>
+            <span class="text-[11px] font-bold text-emerald-900">${ord?.orderId || 'ORD-LICENSE'}</span>
+          </div>
+          <h4 class="text-base font-bold text-emerald-950">
+            ${tr('캐릭터시트 라이센스 영구 해제 및 원본 파일 활성화 완료!', 'Character Sheet IP License Unlocked & Downloads Ready!', 'キャラクターシートのライセンス永久解除完了！')}
+          </h4>
+          <p class="text-xs text-emerald-900 leading-relaxed">
+            ${tr(
+              `${locProd.name}에 대한 상업적·2차 창작 라이센스가 영구 해제되었습니다. 아래 버튼에서 1600×1000 HD 캐릭터시트 원본과 수정된 상반신/7등신 투명 원화를 즉시 다운로드하실 수 있습니다.`,
+              `Commercial & derivative IP license for ${locProd.name} is now permanently unlocked. Download the 1600×1000 HD Studio Character Sheet, Updated Bust PNG, and 7-Head Cutout PNG below.`,
+              `${locProd.name}の商用・二次創作ライセンスが永久解除されました。下のボタンから高解像度原本シートを今すぐダウンロードできます。`
+            )}
+          </p>
+        </div>
+
+        <!-- Preview & Direct High-Res Download Buttons -->
+        <div class="p-3 border border-[#201d1d] bg-white space-y-3">
+          <div class="w-full aspect-[16/10] border border-[#646262]/30 overflow-hidden bg-[#141316]">
+            <img src="${product.imageUrl}" alt="${locProd.name}" class="w-full h-full object-contain" />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <a
-              href="#shop"
-              data-nav="shop"
-              class="px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center whitespace-nowrap cursor-pointer no-underline"
+              href="${product.imageUrl}"
+              download="${product.code.replace('.', '_')}_${product.id}_CharacterSheet_1600x1000.jpg"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="min-h-[44px] px-3 py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm flex items-center justify-center text-center hover:bg-[#343030]"
             >
-              ${tr('인게임 상점 바로가기 →', 'Go to In-Game Shop →', 'ゲーム内ショップへ →')}
+              ⬇ ${tr('1600×1000 시트 (JPG)', '1600×1000 Sheet (JPG)', '1600×1000 シート (JPG)')}
+            </a>
+            <a
+              href="${product.bustUrl}"
+              download="${product.code.replace('.', '_')}_Updated_Bust.png"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="min-h-[44px] px-3 py-2.5 bg-white border border-[#201d1d] text-[#201d1d] text-xs font-bold rounded-sm flex items-center justify-center text-center hover:bg-[#f8f7f7]"
+            >
+              ⬇ ${tr('수정된 상반신 (PNG)', 'Updated Bust (PNG)', '修正済上半身 (PNG)')}
+            </a>
+            <a
+              href="${product.cutoutUrl}"
+              download="${product.code.replace('.', '_')}_7Head_Cutout.png"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="min-h-[44px] px-3 py-2.5 bg-white border border-[#201d1d] text-[#201d1d] text-xs font-bold rounded-sm flex items-center justify-center text-center hover:bg-[#f8f7f7]"
+            >
+              ⬇ ${tr('7등신 전신 원화 (PNG)', '7-Head Cutout (PNG)', '7頭身全身原画 (PNG)')}
             </a>
           </div>
         </div>
 
-        <!-- Category Tabs -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[rgba(15,0,0,0.08)]">
-          ${MALL_CATEGORY_TABS.map(
-            (tab) => `
-            <button
-              type="button"
-              data-action="switch-mall-tab"
-              data-tab="${tab.key}"
-              class="px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-wider min-h-[44px] cursor-pointer whitespace-nowrap flex items-center gap-1.5 transition-colors ${
-                tab.key === activeTab
-                  ? 'bg-[#201d1d] text-[#fdfcfc] border border-[#201d1d]'
-                  : 'bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
-              }"
-            >
-              <span>${tab.icon}</span>
-              <span>${getLocalizedMallTabLabel(tab.key)}</span>
-            </button>
-          `
-          ).join('')}
+        ${
+          ord
+            ? `
+          <div class="p-3 bg-[#f8f7f7] border border-[#646262]/30 text-[11px] space-y-1 text-[#646262]">
+            <div><strong class="text-[#201d1d]">${tr('라이센스 증서 번호', 'Certificate ID', 'ライセンス証書番号')}:</strong> ${ord.orderId}</div>
+            <div><strong class="text-[#201d1d]">${tr('대상 캐릭터시트', 'Character Sheet', '対象シート')}:</strong> ${ord.productName}</div>
+            <div><strong class="text-[#201d1d]">${tr('결제 금액', 'Amount Paid', '決済金額')}:</strong> ${ord.priceText} (${getPaymentMethodLabel(ord.paymentMethod)})</div>
+            <div><strong class="text-[#201d1d]">${tr('등록 라이센시', 'Registered Licensee', '登録ライセンシー')}:</strong> ${ord.buyerName} (${ord.buyerPhone})</div>
+          </div>
+        `
+            : ''
+        }
+
+        <div class="flex gap-2">
+          <button
+            type="button"
+            data-action="open-mall-orders"
+            class="min-h-[44px] px-4 py-2 border border-[#201d1d] bg-white text-xs font-bold text-[#201d1d] rounded-sm cursor-pointer"
+          >
+            ${tr('전체 라이센스 내역 보기', 'View All Licenses', '全ライセンス履歴を見る')}
+          </button>
+          <button
+            type="button"
+            data-action="close-mall-modal"
+            class="flex-1 min-h-[44px] py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm cursor-pointer"
+          >
+            ${tr('확인 완료', 'Done', '完了')}
+          </button>
         </div>
-      </section>
+      </div>
+    `;
+  }
 
-      <!-- Goods Products Grid -->
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        ${filtered
-          .map((prod) => {
+  return `
+    <div class="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      <div class="w-full max-w-2xl bg-[#fdfcfc] border-2 border-[#201d1d] rounded-none shadow-none overflow-hidden my-auto max-h-[92dvh] flex flex-col">
+        <!-- Modal Header -->
+        <div class="px-4 py-3 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between shrink-0">
+          <div>
+            <div class="text-[10px] font-mono text-amber-300 uppercase tracking-wider">${stepBadge}</div>
+            <h3 class="text-sm font-bold font-mono truncate">${locProd.name}</h3>
+          </div>
+          <button
+            type="button"
+            data-action="close-mall-modal"
+            class="min-w-[44px] min-h-[44px] flex items-center justify-center text-sm font-bold font-mono text-[#fdfcfc] hover:bg-white/10 rounded-sm cursor-pointer"
+            aria-label="Close modal"
+          >
+            [X]
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-4 sm:p-5 overflow-y-auto flex-1">
+          ${bodyHtml}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── Main #mall View Renderer ────────────────────────────────────────────────
+
+export function renderMallView(): string {
+  const orders = getGoodsOrders();
+  const unlockedIds = getUnlockedSheetIds();
+  const activeTab = mallState.currentTab;
+
+  const filteredProducts = MALL_GOODS_PRODUCTS.filter((p) => {
+    if (activeTab === 'ALL') return true;
+    if (activeTab === 'UNLOCKED') return unlockedIds.includes(p.cardId);
+    return p.category === activeTab;
+  });
+
+  const factionTabs: { id: MallGoodsCategory; label: string; count: number }[] = [
+    { id: 'ALL', label: tr('전체 캐릭터시트 (110)', 'ALL SHEETS (110)', '全キャラクターシート (110)'), count: 110 },
+    { id: 'UNLOCKED', label: tr(`라이센스 보유 (${unlockedIds.length})`, `UNLOCKED (${unlockedIds.length})`, `解除済 (${unlockedIds.length})`), count: unlockedIds.length },
+    { id: 'WATER', label: tr('물 (Water · 001~010)', 'Water (001-010)', '水 (001-010)'), count: 10 },
+    { id: 'FIRE', label: tr('불 (Fire · 011~020)', 'Fire (011-020)', '火 (011-020)'), count: 10 },
+    { id: 'WIND', label: tr('바람 (Wind · 021~030)', 'Wind (021-030)', '風 (021-030)'), count: 10 },
+    { id: 'EARTH', label: tr('땅 (Earth · 031~040)', 'Earth (031-040)', '地 (031-040)'), count: 10 },
+    { id: 'HUMAN', label: tr('인간 (Human · 041~050)', 'Human (041-050)', '人間 (041-050)'), count: 10 },
+    { id: 'UNDEAD', label: tr('언데드 (Undead · 051~060)', 'Undead (051-060)', 'アンデッド (051-060)'), count: 10 },
+    { id: 'ELF', label: tr('엘프 (Elf · 061~070)', 'Elf (061-070)', 'エルフ (061-070)'), count: 10 },
+    { id: 'DWARF', label: tr('드워프 (Dwarf · 071~080)', 'Dwarf (071-080)', 'ドワーフ (071-080)'), count: 10 },
+    { id: 'MONSTER', label: tr('몬스터 (Monster · 081~090)', 'Monster (081-090)', 'モンスター (081-090)'), count: 10 },
+    { id: 'ROBOT', label: tr('로봇 (Robot · 091~100)', 'Robot (091-100)', 'ロボット (091-100)'), count: 10 },
+    { id: 'DRAGON', label: tr('드래곤 (Dragon · 101~110)', 'Dragon (101-110)', 'ドラゴン (101-110)'), count: 10 },
+  ];
+
+  const cardsHtml =
+    filteredProducts.length === 0
+      ? `
+      <div class="col-span-full p-10 border border-[#646262]/30 bg-white text-center space-y-3 font-mono">
+        <div class="text-sm font-bold text-[#201d1d]">${tr('아직 라이센스 해제된 캐릭터시트가 없습니다.', 'No unlocked character sheets yet.', 'まだライセンス解除されたキャラクターシートがありません。')}</div>
+        <p class="text-xs text-[#646262]">${tr('전체 110종 캐릭터시트 탭에서 원하는 영웅의 캐릭터시트를 개당 $10.00에 라이센스 해제해보세요!', 'Browse all 110 character sheets and unlock any hero sheet for $10.00 each!', '全110種の中からお気に入りの英雄シートを1点$10.00でライセンス解除しましょう！')}</p>
+        <button
+          type="button"
+          data-action="switch-mall-tab"
+          data-tab="ALL"
+          class="min-h-[44px] px-5 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm cursor-pointer"
+        >
+          ${tr('전체 110종 캐릭터시트 보기', 'View All 110 Character Sheets', '全110種キャラクターシートを見る')}
+        </button>
+      </div>
+    `
+      : filteredProducts
+          .map((p) => {
+            const loc = getLocalizedMallProduct(p);
+            const unlocked = unlockedIds.includes(p.cardId);
+            const pal = FACTION_PALETTES[p.faction] || { bg: '#201d1d', text: '#fdfcfc', border: '#646262' };
+
             return `
-            <div class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-5 sm:p-6 rounded-none flex flex-col justify-between space-y-4 hover:border-[#201d1d] transition-colors">
-              <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] text-stone-500 uppercase font-bold tracking-wider">
-                    ${prod.category}
-                  </span>
-                  <span class="px-2 py-0.5 bg-[#f1eeee] text-[#201d1d] text-[10px] font-bold rounded-sm">
-                    ${prod.badge}
-                  </span>
-                </div>
-
-                <div
-                  class="w-full h-44 bg-[#f8f7f7] border border-[rgba(15,0,0,0.08)] rounded-none flex items-center justify-center p-2 overflow-hidden cursor-pointer"
-                  data-action="open-mall-detail"
-                  data-product-id="${prod.id}"
-                >
-                  ${
-                    prod.id === 'goods_mug'
-                      ? renderMugMockupPreview(selectedMugCardId, true)
-                      : prod.id === 'goods_tshirt'
-                      ? renderTshirtMockupPreview(selectedTshirtCardId, true)
-                      : `<img src="${prod.image}" alt="${prod.name}" class="max-h-full max-w-full object-contain" />`
-                  }
-                </div>
-
-                <h3 class="text-base font-bold text-[#201d1d] m-0">
-                  ${prod.name}
-                </h3>
-
-                <p class="text-xs text-stone-600 leading-relaxed m-0">
-                  ${prod.description}
-                </p>
-
-                <div class="text-[11px] text-stone-500 line-clamp-1">
-                  ${prod.shortSpec}
-                </div>
+        <article class="border ${
+          unlocked ? 'border-emerald-600' : 'border-[#201d1d]'
+        } bg-white flex flex-col justify-between rounded-none overflow-hidden transition hover:border-[#201d1d]">
+          <div>
+            <!-- Top Studio Bar -->
+            <div class="px-3 py-2 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between gap-2 font-mono">
+              <div class="flex items-center gap-1.5">
+                <span class="px-1.5 py-0.5 text-[10px] font-bold rounded-sm" style="background:${pal.bg};color:${pal.text};">${p.code}</span>
+                <span class="text-[11px] font-bold truncate">${getLocalizedCharacterName(p.cardId)}</span>
               </div>
+              <span class="px-1.5 py-0.5 text-[10px] font-bold rounded-sm ${
+                unlocked ? 'bg-emerald-500 text-stone-950' : 'bg-amber-400 text-stone-950'
+              }">
+                ${unlocked ? tr('✓ 라이센스 해제됨', '✓ UNLOCKED', '✓ 解除済') : '$10 · LICENSE'}
+              </span>
+            </div>
 
-              <div class="pt-4 border-t border-[rgba(15,0,0,0.08)] space-y-3">
-                <div class="flex items-baseline justify-between">
-                  <span class="text-xs text-stone-500">${tr('가격:', 'Price:', '価格:')}</span>
-                  <span class="text-base font-black text-[#201d1d]">
-                    ${prod.priceText}
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  data-action="open-mall-detail"
-                  data-product-id="${prod.id}"
-                  class="w-full py-2.5 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center shadow-none cursor-pointer transition-colors"
-                >
-                  ${tr('상세보기 &amp; 즉시구매', 'View Details &amp; Buy Now', '詳細表示 &amp; 今すぐ購入')}
-                </button>
+            <!-- 1600x1000 Studio Sheet Preview Image (clickable) -->
+            <div
+              data-action="open-mall-detail"
+              data-product-id="${p.id}"
+              class="relative w-full aspect-[16/10] bg-[#141316] border-b border-[#646262]/30 overflow-hidden cursor-pointer group"
+            >
+              <img
+                src="${p.imageUrl}"
+                alt="${loc.name}"
+                loading="lazy"
+                class="w-full h-full object-contain bg-white group-hover:scale-[1.02] transition-transform duration-200"
+              />
+              <div class="absolute bottom-1.5 right-1.5 px-2 py-0.5 bg-[#201d1d]/90 text-[#fdfcfc] text-[10px] font-mono font-bold rounded-sm">
+                1600×1000 HD · 상반신 리마스터
               </div>
             </div>
-          `;
-          })
-          .join('')}
-      </section>
 
-      ${modalHtml}
-    </div>
+            <!-- Product Spec & License Condition -->
+            <div class="p-3.5 space-y-2 font-mono">
+              <div class="flex items-start justify-between gap-2">
+                <h4 class="text-xs sm:text-sm font-bold text-[#201d1d] leading-snug">${loc.name}</h4>
+              </div>
+              <p class="text-[11px] text-[#646262] line-clamp-2 leading-relaxed">
+                ${loc.desc}
+              </p>
+              <div class="p-2 bg-[#f8f7f7] border border-[#646262]/25 text-[10px] text-[#201d1d] font-mono">
+                <strong class="text-amber-900">📜 ${tr('판매 조건', 'Condition', '販売条件')}:</strong> ${tr(
+                  '상업적·2차 창작 IP 라이센스 영구 해제 + 1600×1000 원본 시트 & 상반신/전신 PNG 다운로드',
+                  'Perpetual Commercial/Derivative IP License Unlock + 1600×1000 HD Sheet & Cutout PNG',
+                  '商用・二次創作IPライセンス永久解除＋1600×1000原本シート＆透過PNG提供'
+                )}
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Price & Action CTA -->
+          <div class="px-3.5 pb-3.5 pt-2 border-t border-[#646262]/15 flex items-center justify-between gap-2 font-mono">
+            <div>
+              <div class="text-[10px] text-[#646262]">${tr('라이센스 해제 가격', 'License Unlock Price', 'ライセンス解除価格')}</div>
+              <div class="text-sm sm:text-base font-bold text-[#201d1d]">$10.00 <span class="text-[11px] font-normal text-[#646262]">(14,000원)</span></div>
+            </div>
+            <button
+              type="button"
+              data-action="open-mall-detail"
+              data-product-id="${p.id}"
+              class="min-h-[44px] px-3.5 py-2 ${
+                unlocked
+                  ? 'bg-emerald-700 hover:bg-emerald-800 text-white'
+                  : 'bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc]'
+              } text-xs font-bold font-mono rounded-sm transition cursor-pointer shrink-0"
+            >
+              ${
+                unlocked
+                  ? tr('⬇ 원본 시트 다운로드', '⬇ Download Sheet', '⬇ 原本ダウンロード')
+                  : tr('라이센스 해제 구매 ($10)', 'Unlock License ($10)', 'ライセンス解除 ($10)')
+              }
+            </button>
+          </div>
+        </article>
+      `;
+          })
+          .join('');
+
+  return `
+    <section id="mall" class="py-6 space-y-6 font-mono">
+      <!-- Top Hero Header Banner -->
+      <div class="border-2 border-[#201d1d] bg-[#fdfcfc] p-4 sm:p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#646262]/25 pb-4">
+          <div class="space-y-1">
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">
+              <span>OFFICIAL 110 CHARACTER SHEETS · IP LICENSE STORE</span>
+              <span class="text-amber-300">$10.00 / SHEET</span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold text-[#201d1d]">
+              ${tr(
+                '공식 110종 캐릭터시트 라이센스 스토어 (개당 $10.00 · 라이센스 영구 해제)',
+                'Official 110 Character Sheets License Store ($10.00 Each · IP License Unlock)',
+                '公式110種キャラクターシート・ライセンスストア（1点$10.00・ライセンス永久解除）'
+              )}
+            </h2>
+            <p class="text-xs text-[#646262] leading-relaxed">
+              ${tr(
+                '수정된 상반신 표정·헤어 디테일(Panel 02)이 전면 적용된 110종 공식 애니메이션 캐릭터시트(NO.001~NO.110)입니다. 기존 실물 굿즈를 대체하여 개당 $10.00(14,000원)에 상업적·2차 창작 라이센스 영구 해제 조건으로 판매하며, 구매 즉시 1600×1000 HD 캐릭터시트와 투명 원화(PNG) 다운로드를 제공합니다.',
+                'All 110 Official Studio Character Sheets (NO.001–NO.110) updated with remastered upper-body bust portraits in Panel 02. Sold at $10.00 USD each under a perpetual commercial & derivative IP License Unlock condition with instant high-res downloads.',
+                '修正済み上半身ディテール（Panel 02）が全面適用された全110種公式キャラクターシート（NO.001〜NO.110）。1点$10.00にて商用・二次創作IPライセンス永久解除条件で販売し、購入即時1600×1000 HDシートと透過原画のダウンロードを提供します。'
+              )}
+            </p>
+          </div>
+
+          <div class="flex flex-wrap sm:flex-col items-stretch sm:items-end gap-2 shrink-0">
+            <button
+              type="button"
+              data-action="open-mall-orders"
+              class="min-h-[44px] px-3.5 py-2 border border-[#201d1d] bg-white hover:bg-[#f8f7f7] text-[#201d1d] text-xs font-bold rounded-sm cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>📜 ${tr('라이센스 구매 내역', 'My License Orders', 'ライセンス購入履歴')} (${orders.length})</span>
+            </button>
+            <div class="px-3 py-1.5 bg-emerald-50 border border-emerald-600/40 text-emerald-900 text-[11px] font-bold text-center">
+              ${tr(`해제 완료: ${unlockedIds.length} / 110종`, `Unlocked: ${unlockedIds.length} / 110`, `解除済: ${unlockedIds.length} / 110種`)}
+            </div>
+          </div>
+        </div>
+
+        <!-- Faction & Status Filter Tabs -->
+        <div class="flex flex-wrap gap-1.5">
+          ${factionTabs
+            .map((t) => {
+              const isActive = activeTab === t.id;
+              return `
+                <button
+                  type="button"
+                  data-action="switch-mall-tab"
+                  data-tab="${t.id}"
+                  class="min-h-[40px] px-3 py-1.5 text-xs font-bold font-mono border rounded-sm transition cursor-pointer ${
+                    isActive
+                      ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                      : 'bg-white text-[#201d1d] border-[#646262]/30 hover:border-[#201d1d]'
+                  }"
+                >
+                  ${t.label}
+                </button>
+              `;
+            })
+            .join('')}
+        </div>
+      </div>
+
+      <!-- 110 Character Sheets Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        ${cardsHtml}
+      </div>
+
+      ${renderMallCheckoutModal()}
+    </section>
   `;
 }
