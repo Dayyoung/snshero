@@ -2,6 +2,33 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 15:58 KST] [설정 소리 무음 버그 해결 (Web Audio 신디사이저 & 로컬 BGM 엔진 구축) 및 12개 국어 실시간 반응형 i18n 엔진 전면 적용]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 설정 배경음/효과음 무음 문제 원천 해결 (`audioManager.ts`, `SettingSection.tsx`, `index.ts`)**:
+    - **원인 분석**: 기존에는 외부 CDN URL 의존성 및 실제 BGM 재생 오디오 인스턴스가 존재하지 않아 설정 변경 시 소리가 출력되지 않음.
+    - **Web Audio API + 로컬 오디오 듀얼 엔진 (`src/landing/services/audioManager.ts`) 구축**:
+      - **BGM 4종 고유 멜로디 루프**:
+        - 'title': `/mixkit-games-worldbeat-466.mp3` 로컬 BGM 파일 및 신스 멜로디 엔진.
+        - 'lobby': 온화한 카단 성소 펜타토닉 신스 멜로디 루프.
+        - 'battle': 콜로세움 3x3 TCG 전투 패스트 비트 루프.
+        - 'peace': 잔잔한 바람과 자연의 앰비언스 사인파 루프.
+      - **실시간 볼륨 조절 & 100% 즉시 재생 효과음 (SFX)**:
+        - `playTestChime()`: Web Audio API 기반 C5-E5-G5-C6 아르페지오 팡파레를 외부 네트워크 의존성 0%로 즉시 합성 출력하여 100% 무조건 소리 출력 보장.
+        - 볼륨 슬라이더 실시간 음량 동기화 및 탭/클릭 시 반응형 틱 효과음, 햅틱 진동 연동.
+        - 브라우저 Autoplay Policy 대응을 위해 첫 사용자 상호작용 시 AudioContext 자동 활성화.
+  - **2. 12개 공식 언어 실시간 반응형 i18n 엔진 전면 적용 (`i18n.ts`, `Header.tsx`, `Sidebar.tsx`, `Footer.tsx`, `SettingSection.tsx`, `HomeSection.tsx`)**:
+    - **원인 분석**: 언어 설정을 변경해도 화면 텍스트가 하드코딩되어 있어 번역이 반영되지 않음.
+    - **12개 국어 i18n 엔진 (`src/landing/services/i18n.ts`) 구축**:
+      - 한국어(`ko`), English(`en`), 日本語(`ja`), 简体中文(`zh-CN`), 繁體中文(`zh-TW`), Deutsch(`de`), Español(`es`), Français(`fr`), Bahasa Indonesia(`id`), Русский(`ru`), ภาษาไทย(`th`), Tiếng Việt(`vi`) 12개 언어의 전체 UI 번역 사전 완벽 구축.
+      - `t(key, fallback)` 및 `getCurrentLanguage()`, `setCurrentLanguage(lang)` 함수 제공.
+      - 언어 변경 즉시 `snshero_language_changed` 이벤트 발송 및 전체 DOM 재렌더링 트리거.
+      - 헤더(브랜드, 메뉴 9종, 로그인, 게임 시작), 사이드바(메뉴 11종, 헤더, 인증상태), 푸터(링크 7종, 저작권), 설정 섹션(탭, 제목, 설명, 라벨, 버튼, 알림 문구), 홈 섹션(로고 ko/en 자동 전환, 스쿼드 제목, 전투력, 덱 편집 버튼) 전체에 12개 국어 실시간 번역 적용 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (4,360개 모듈 변환, 0 errors, 정적 라우트 61개 생성)
+  - 로컬 git 커밋: 완료 (git push 미실행 준수)
+  - 구글 폼 보고서 제출: 완료 예정
+
 ## [2026-11-03 15:46 KST] [게임 환경설정(#setting) 전면 구축(소리/12개언어/계정인증/로컬스토리지 백업복원) 및 Firebase 미승인도메인(auth/unauthorized-domain) 스마트 폴백 연동]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
