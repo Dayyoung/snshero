@@ -39,9 +39,16 @@ import {
   chapterTitles,
 } from '../../content/kadanRpgStory';
 import type { KadanRpgNovelScriptLine } from '../../content/kadanRpgNovelScript';
-import { getCutoutUrl, getCharacterAsset, FACTION_PALETTES } from '../services/assetCatalog';
+import {
+  getCutoutUrl,
+  getCharacterAsset,
+  getLocalizedCharacterName,
+  getLocalizedFactionName,
+  FACTION_PALETTES,
+} from '../services/assetCatalog';
 import { cardNurtureStore } from '../services/cardNurtureStore';
 import { renderOriginalCardHtml } from '../components/OriginalCardHtml';
+import { getCurrentLanguage, isKoreanLanguage, t, tr } from '../services/i18n';
 import {
   playRpgState,
   setActiveTab,
@@ -149,11 +156,14 @@ export function speakCurrentNarration(): void {
     window.speechSynthesis.cancel();
 
     const episode = getWebtoonEpisode(playState.currentEpisode);
-    const textToSpeak = episode.leadNarrationKo || episode.titleKo;
+    const isKo = isKoreanLanguage();
+    const textToSpeak = isKo
+      ? episode.leadNarrationKo || episode.titleKo
+      : episode.leadNarrationEn || episode.titleEn;
     if (!textToSpeak) return;
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    utterance.lang = 'ko-KR';
+    utterance.lang = isKo ? 'ko-KR' : 'en-US';
     utterance.rate = playState.speechRate;
     utterance.pitch = 1.0;
 
@@ -375,7 +385,7 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
     case 'play-repeat-hunting':
       initBattle();
       break;
-    case 'play-next-chapter':
+    case 'play-advance-next-chapter':
       advanceNextChapter();
       break;
 
@@ -475,6 +485,7 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
  * Render Tab 1: 2D Tile Adventure Map & RPG Battle Loop
  */
 function renderAdventureView(): string {
+  const isKo = isKoreanLanguage();
   const currentChapter = playRpgState.currentChapter;
   const rebirthLevel = playRpgState.reincarnationLevel;
   const chapterLabel = formatChapterLabel(currentChapter, rebirthLevel);
@@ -484,9 +495,14 @@ function renderAdventureView(): string {
     titleEn: `Chapter ${currentChapter} Journey`,
   };
   const region = getCurrentRegion();
+  const regionDisplayName = t(region.nameKey, region.id);
   const chEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === currentChapter);
+  const objectiveText = chEvent
+    ? t(chEvent.objectiveKey, tr('원정 진행 중', 'Expedition in Progress', '遠征進行中'))
+    : tr('원정 진행 중', 'Expedition in Progress', '遠征進行中');
   const heroX = playRpgState.heroTile.x;
   const heroY = playRpgState.heroTile.y;
+  const displayChapterTitle = isKo ? chapterMeta.titleKo : chapterMeta.titleEn;
 
   return `
     <div id="kadan-world-map" class="w-full space-y-4">
@@ -495,27 +511,27 @@ function renderAdventureView(): string {
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm uppercase tracking-wider mb-1">
-              <span>2D 모험 RPG</span>
+              <span>${tr('2D 모험 RPG', '2D Adventure RPG', '2D冒険RPG')}</span>
               <span class="text-stone-400">·</span>
-              <span>지역: ${region.nameKey}</span>
+              <span>${tr('지역', 'Region', '地域')}: ${regionDisplayName}</span>
               ${
                 rebirthLevel > 0
-                  ? `<span class="text-amber-400 font-black">· 👑 환생 ${rebirthLevel}회차</span>`
+                  ? `<span class="text-amber-400 font-black">· 👑 ${tr(`환생 ${rebirthLevel}회차`, `Rebirth ${rebirthLevel}`, `転生${rebirthLevel}周目`)}</span>`
                   : ''
               }
             </div>
             <h2 class="text-lg sm:text-xl font-black text-[#201d1d] m-0">
-              ${chapterLabel}: ${chapterMeta.titleKo}
+              ${chapterLabel}: ${displayChapterTitle}
             </h2>
             <p class="text-xs text-stone-500 m-0 pt-0.5">
-              ${chapterMeta.titleEn} · 목표: ${chEvent ? chEvent.objectiveKey : '원정 진행 중'}
+              ${chapterMeta.titleEn} · ${tr('목표', 'Objective', '目標')}: ${objectiveText}
             </p>
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
             <!-- Coordinates Badge -->
             <span class="px-3 py-2 bg-white text-[#201d1d] text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.12)] min-h-[44px] inline-flex items-center">
-              📍 좌표 (${heroX + 1}, ${heroY + 1})
+              📍 ${tr('좌표', 'Coord', '座標')} (${heroX + 1}, ${heroY + 1})
             </span>
 
             <!-- Auto-Play Toggle -->
@@ -527,9 +543,9 @@ function renderAdventureView(): string {
                   ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
                   : 'bg-[#f1eeee] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#e8e5e5]'
               }"
-              aria-label="자동 진행 토글"
+              aria-label="${tr('자동 진행 토글', 'Toggle Auto-Play', '自動進行切替')}"
             >
-              🤖 자동 진행 ${playRpgState.autoMode ? '[ON]' : '[OFF]'}
+              🤖 ${tr('자동 진행', 'Auto-Play', '自動進行')} ${playRpgState.autoMode ? '[ON]' : '[OFF]'}
             </button>
 
             <!-- Repeat Hunting Toggle -->
@@ -541,9 +557,9 @@ function renderAdventureView(): string {
                   ? 'bg-emerald-800 text-white border-emerald-900'
                   : 'bg-[#f1eeee] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#e8e5e5]'
               }"
-              aria-label="반복 사냥 토글"
+              aria-label="${tr('반복 사냥 토글', 'Toggle Repeat Hunt', '反復狩り切替')}"
             >
-              🔁 반복 사냥 ${playRpgState.repeatHunting ? '[ON]' : '[OFF]'}
+              🔁 ${tr('반복 사냥', 'Repeat Hunt', '反復狩り')} ${playRpgState.repeatHunting ? '[ON]' : '[OFF]'}
             </button>
 
             <!-- Direct 3x3 Card Battle Popup Launch Button (Mobile & Desktop Quick Access) -->
@@ -551,9 +567,9 @@ function renderAdventureView(): string {
               type="button"
               data-action="play-battle-start"
               class="px-4 py-2 bg-rose-700 hover:bg-rose-600 text-white border border-rose-800 text-xs font-black rounded-sm min-h-[44px] inline-flex items-center justify-center cursor-pointer transition-colors active:translate-y-px"
-              aria-label="3x3 카드 배틀 팝업 열기"
+              aria-label="${tr('3x3 카드 배틀 팝업 열기', 'Open 3x3 Card Battle', '3x3カードバトルを開く')}"
             >
-              ⚔️ 3x3 카드 배틀
+              ⚔️ ${tr('3x3 카드 배틀', '3x3 Card Battle', '3x3カードバトル')}
             </button>
           </div>
         </div>
@@ -566,9 +582,9 @@ function renderAdventureView(): string {
             data-action="play-prev-chapter"
             ${currentChapter <= 1 ? 'disabled' : ''}
             class="px-3.5 py-2 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#383333] disabled:opacity-30 disabled:hover:bg-[#201d1d] text-xs font-bold rounded-sm min-h-[44px] flex items-center gap-1 cursor-pointer transition-colors"
-            aria-label="이전 회차"
+            aria-label="${tr('이전 회차', 'Previous Episode', '前のエピソード')}"
           >
-            ◀ 이전화
+            ◀ ${tr('이전화', 'Prev', '前話')}
           </button>
 
           <!-- Dropdown Episode Selector -->
@@ -577,14 +593,16 @@ function renderAdventureView(): string {
               id="play-chapter-select"
               data-action="play-select-chapter"
               class="w-full px-3 py-2 bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.2)] text-xs font-bold rounded-sm min-h-[44px] cursor-pointer focus:outline-none focus:border-[#201d1d] text-center"
-              aria-label="플레이할 회차 선택"
+              aria-label="${tr('플레이할 회차 선택', 'Select Episode to Play', 'プレイするエピソードを選択')}"
             >
               ${Array.from({ length: 40 }, (_, idx) => {
                 const num = idx + 1;
-                const meta = chapterTitles[idx] || { titleKo: `제 ${num}화` };
+                const meta = chapterTitles[idx] || { titleKo: `제 ${num}화`, titleEn: `Episode ${num}` };
+                const optTitle = isKo ? meta.titleKo : meta.titleEn;
+                const optPrefix = isKo ? `제${num}화` : `EP.${String(num).padStart(2, '0')}`;
                 return `
                   <option value="${num}" ${num === currentChapter ? 'selected' : ''}>
-                    제${num}화 - ${meta.titleKo}
+                    ${optPrefix} - ${optTitle}
                   </option>
                 `;
               }).join('')}
@@ -597,9 +615,9 @@ function renderAdventureView(): string {
             data-action="play-next-chapter"
             ${currentChapter >= 40 ? 'disabled' : ''}
             class="px-3.5 py-2 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#383333] disabled:opacity-30 disabled:hover:bg-[#201d1d] text-xs font-bold rounded-sm min-h-[44px] flex items-center gap-1 cursor-pointer transition-colors"
-            aria-label="다음 회차"
+            aria-label="${tr('다음 회차', 'Next Episode', '次のエピソード')}"
           >
-            다음화 ▶
+            ${tr('다음화', 'Next', '次話')} ▶
           </button>
 
           <!-- 40-Episode Index Drawer Toggle Button -->
@@ -607,9 +625,9 @@ function renderAdventureView(): string {
             type="button"
             data-action="play-toggle-chapter-drawer"
             class="px-3 py-2 bg-[#f1eeee] hover:bg-[#e4e1e1] text-[#201d1d] border border-[rgba(15,0,0,0.15)] text-xs font-bold rounded-sm min-h-[44px] flex items-center gap-1.5 cursor-pointer transition-colors shrink-0"
-            aria-label="회차 전체 목차 토글"
+            aria-label="${tr('회차 전체 목차 토글', 'Toggle Episode Index', '全エピソード目次切替')}"
           >
-            <span>📋 전체 목차</span>
+            <span>📋 ${tr('전체 목차', 'All Episodes', '全話目次')}</span>
             <span class="text-[10px] text-stone-500">${isAdventureDrawerOpen ? '▲' : '▼'}</span>
           </button>
         </div>
@@ -621,20 +639,26 @@ function renderAdventureView(): string {
               <div class="pt-3 border-t border-[rgba(15,0,0,0.12)]">
                 <div class="flex items-center justify-between pb-2 mb-2">
                   <span class="text-xs font-black text-[#201d1d]">
-                    원하는 회차를 선택하면 해당 필드 맵과 배틀로 즉시 이동합니다 (1~40화 전편):
+                    ${tr(
+                      '원하는 회차를 선택하면 해당 필드 맵과 배틀로 즉시 이동합니다 (1~40화 전편):',
+                      'Select any episode to jump directly to its field map and battle (Episodes 1–40):',
+                      'エピソードを選択すると該当のフィールドマップとバトルへ即座に移動します（全40話）:'
+                    )}
                   </span>
                   <button
                     type="button"
                     data-action="play-toggle-chapter-drawer"
                     class="text-xs text-stone-500 hover:text-stone-900 font-bold p-1 cursor-pointer"
                   >
-                    ✕ 닫기
+                    ✕ ${tr('닫기', 'Close', '閉じる')}
                   </button>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[300px] overflow-y-auto pr-1">
                   ${Array.from({ length: 40 }, (_, idx) => {
                     const num = idx + 1;
-                    const meta = chapterTitles[idx] || { titleKo: `제 ${num}화` };
+                    const meta = chapterTitles[idx] || { titleKo: `제 ${num}화`, titleEn: `Episode ${num}` };
+                    const btnTitle = isKo ? meta.titleKo : meta.titleEn;
+                    const btnPrefix = isKo ? `제${num}화` : `EP.${String(num).padStart(2, '0')}`;
                     const isCur = num === currentChapter;
                     const ev = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === num);
                     return `
@@ -647,13 +671,13 @@ function renderAdventureView(): string {
                             ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] font-black'
                             : 'bg-white text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
                         }"
-                        title="제${num}화 - ${meta.titleKo}"
+                        title="${btnPrefix} - ${btnTitle}"
                       >
                         <div class="flex items-center justify-between w-full">
-                          <span class="font-bold">제${num}화</span>
+                          <span class="font-bold">${btnPrefix}</span>
                           <span class="text-[9px] ${isCur ? 'text-amber-400' : 'text-stone-400'} uppercase">${ev?.regionId || ''}</span>
                         </div>
-                        <span class="text-[11px] truncate opacity-90">${meta.titleKo}</span>
+                        <span class="text-[11px] truncate opacity-90">${btnTitle}</span>
                       </button>
                     `;
                   }).join('')}
@@ -670,9 +694,21 @@ function renderAdventureView(): string {
           ? `
             <div class="w-full bg-rose-50 border-2 border-rose-600 p-4 rounded-none flex flex-wrap items-center justify-between gap-3">
               <div>
-                <span class="text-xs font-black text-rose-700 uppercase tracking-wider">[⚠️ 마물/산적 기습 발생!]</span>
-                <p class="text-sm font-bold text-rose-950 m-0 pt-0.5">${playRpgState.activeAmbush.name}의 습격을 받았습니다!</p>
-                <p class="text-xs text-rose-800 m-0 pt-0.5">"${playRpgState.activeAmbush.dialogQuoteKo}"</p>
+                <span class="text-xs font-black text-rose-700 uppercase tracking-wider">${tr('[⚠️ 마물/산적 기습 발생!]', '[⚠️ Field Ambush Encounter!]', '[⚠️ 魔物・山賊の奇襲発生！]')}</span>
+                <p class="text-sm font-bold text-rose-950 m-0 pt-0.5">${
+                  isKo
+                    ? `${playRpgState.activeAmbush.name}의 습격을 받았습니다!`
+                    : tr(
+                        `${playRpgState.activeAmbush.name}의 습격을 받았습니다!`,
+                        `Ambushed by ${playRpgState.activeAmbush.nameEn || playRpgState.activeAmbush.name}!`,
+                        `${playRpgState.activeAmbush.nameEn || playRpgState.activeAmbush.name}に奇襲されました！`
+                      )
+                }</p>
+                <p class="text-xs text-rose-800 m-0 pt-0.5">"${
+                  isKo
+                    ? playRpgState.activeAmbush.dialogQuoteKo
+                    : playRpgState.activeAmbush.dialogQuoteEn || playRpgState.activeAmbush.dialogQuoteKo
+                }"</p>
               </div>
               <div class="flex items-center gap-2">
                 <button
@@ -680,14 +716,14 @@ function renderAdventureView(): string {
                   data-action="play-ambush-start"
                   class="px-5 py-2.5 bg-rose-600 text-white text-xs font-bold rounded-sm min-h-[44px] hover:bg-rose-500 cursor-pointer"
                 >
-                  ⚔️ 즉시 요격 (배틀)
+                  ⚔️ ${tr('즉시 요격 (배틀)', 'Intercept Now (Battle)', '即座に迎撃（バトル）')}
                 </button>
                 <button
                   type="button"
                   data-action="play-ambush-evade"
                   class="px-4 py-2.5 bg-white text-stone-700 border border-stone-300 text-xs font-bold rounded-sm min-h-[44px] hover:bg-stone-100 cursor-pointer"
                 >
-                  돌파 회피
+                  ${tr('돌파 회피', 'Evade', '突破回避')}
                 </button>
               </div>
             </div>
@@ -710,24 +746,24 @@ function renderAdventureView(): string {
                     TERRAIN: ${(region.terrain || 'forest').toUpperCase()}
                   </span>
                   <span class="text-stone-300 text-xs font-bold">
-                    ${region.nameKey}
+                    ${regionDisplayName}
                   </span>
                   <span class="text-stone-500 text-[10px] hidden sm:inline">
-                    (${region.width} × ${region.height} 타일 필드)
+                    (${region.width} × ${region.height} ${tr('타일 필드', 'Tile Field', 'タイルフィールド')})
                   </span>
                 </div>
                 <div class="flex items-center gap-3 text-[10px] text-stone-300 font-bold">
                   <span class="inline-flex items-center gap-1">
-                    <img src="/rpg/kadan-map/hero-kadan.png" alt="카단" class="w-4 h-4 rounded-full border border-amber-300 object-cover" />
-                    <span>카단</span>
+                    <img src="/rpg/kadan-map/hero-kadan.png" alt="${tr('카단', 'Kadan', 'カダン')}" class="w-4 h-4 rounded-full border border-amber-300 object-cover" />
+                    <span>${tr('카단', 'Kadan', 'カダン')}</span>
                   </span>
                   <span class="inline-flex items-center gap-1">
-                    <img src="${RPG_EVENT_NODE_ASSETS[chEvent?.nodeType || 'enemy'] || '/rpg/kadan-map/object-portal.png'}" alt="목표" class="w-4 h-4 object-contain" />
-                    <span class="text-amber-400 font-black">목표 (GO)</span>
+                    <img src="${RPG_EVENT_NODE_ASSETS[chEvent?.nodeType || 'enemy'] || '/rpg/kadan-map/object-portal.png'}" alt="GO" class="w-4 h-4 object-contain" />
+                    <span class="text-amber-400 font-black">${tr('목표 (GO)', 'Target (GO)', '目標 (GO)')}</span>
                   </span>
                   <span class="inline-flex items-center gap-1 text-stone-500">
                     <span class="w-3.5 h-3.5 bg-black/80 border border-stone-700 flex items-center justify-center text-[9px]">✕</span>
-                    <span>통행 불가</span>
+                    <span>${tr('통행 불가', 'Blocked', '通行不可')}</span>
                   </span>
                 </div>
               </div>
@@ -762,7 +798,7 @@ function renderAdventureView(): string {
                           ? 'border-2 border-amber-300 ring-1 ring-amber-400/60 cursor-default'
                           : 'border-white/15 hover:border-amber-300/80 hover:ring-1 hover:ring-amber-300/50 cursor-pointer active:scale-95'
                       }"
-                      aria-label="타일 (${tileX + 1}, ${tileY + 1})"
+                      aria-label="${tr('타일', 'Tile', 'タイル')} (${tileX + 1}, ${tileY + 1})"
                     >
                       <!-- 1. Authentic Terrain Tile Background Texture -->
                       <img
@@ -794,7 +830,7 @@ function renderAdventureView(): string {
                             <div class="relative z-10 flex flex-col items-center justify-center animate-bounce pointer-events-none select-none">
                               <img
                                 src="${eventImg}"
-                                alt="${chEvent?.titleKo || '목표 지점'}"
+                                alt="${tr('목표 지점', 'Target Node', '目標地点')}"
                                 class="w-6 h-6 sm:w-8 sm:h-8 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]"
                                 draggable="false"
                               />
@@ -813,7 +849,7 @@ function renderAdventureView(): string {
                             <div class="relative z-20 w-7 h-7 sm:w-9 sm:h-9 rounded-full border-2 border-amber-300 bg-slate-950 p-0.5 shadow-[0_0_16px_rgba(251,191,36,0.95)] ring-2 ring-amber-500/80 flex items-center justify-center overflow-hidden animate-pulse pointer-events-none select-none">
                               <img
                                 src="/rpg/kadan-map/hero-kadan.png"
-                                alt="카단"
+                                alt="${tr('카단', 'Kadan', 'カダン')}"
                                 class="w-full h-full object-cover rounded-full"
                                 draggable="false"
                                 onerror="this.src='/seat/Kadan.png'; this.onerror=null;"
@@ -837,7 +873,11 @@ function renderAdventureView(): string {
               <!-- D-Pad Directional Controls -->
               <div class="mt-6 flex flex-col items-center justify-center gap-2">
                 <span class="text-xs text-stone-400 font-bold">
-                  [방향키, W/A/S/D 키 또는 아래 버튼으로 이동 · 타일 직접 터치 이동 지원]
+                  ${tr(
+                    '[방향키, W/A/S/D 키 또는 아래 버튼으로 이동 · 타일 직접 터치 이동 지원]',
+                    '[Move via Arrow keys, W/A/S/D, D-Pad buttons, or tap any tile directly]',
+                    '[矢印キー・W/A/S/D・下のボタンで移動・タイル直接タップ移動対応]'
+                  )}
                 </span>
                 <div class="flex flex-col items-center gap-1.5 pt-1">
                   <!-- Up -->
@@ -845,7 +885,7 @@ function renderAdventureView(): string {
                     type="button"
                     data-action="play-move-up"
                     class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px"
-                    aria-label="위로 이동"
+                    aria-label="${tr('위로 이동', 'Move Up', '上へ移動')}"
                   >
                     ▲
                   </button>
@@ -855,7 +895,7 @@ function renderAdventureView(): string {
                       type="button"
                       data-action="play-move-left"
                       class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px"
-                      aria-label="왼쪽으로 이동"
+                      aria-label="${tr('왼쪽으로 이동', 'Move Left', '左へ移動')}"
                     >
                       ◀
                     </button>
@@ -863,7 +903,7 @@ function renderAdventureView(): string {
                       type="button"
                       data-action="play-move-down"
                       class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px"
-                      aria-label="아래로 이동"
+                      aria-label="${tr('아래로 이동', 'Move Down', '下へ移動')}"
                     >
                       ▼
                     </button>
@@ -871,7 +911,7 @@ function renderAdventureView(): string {
                       type="button"
                       data-action="play-move-right"
                       class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px"
-                      aria-label="오른쪽으로 이동"
+                      aria-label="${tr('오른쪽으로 이동', 'Move Right', '右へ移動')}"
                     >
                       ▶
                     </button>
@@ -896,6 +936,7 @@ function renderAdventureView(): string {
                 text: '눈보라가 거세지고 있다. 물러설 수 없다.',
                 textEn: 'The blizzard thickens. There is no turning back.',
                 dialogueQuoteKo: '서약은 얼어붙지 않는다.',
+                dialogueQuoteEn: 'An oath never freezes.',
                 choices: [],
               };
               const line: KadanRpgNovelScriptLine = lines[playRpgState.currentDialogueLineIdx] || defaultLine;
@@ -960,17 +1001,17 @@ function renderAdventureView(): string {
                               type="button"
                               data-action="play-dialogue-skip"
                               class="px-2.5 py-1.5 bg-stone-800 text-stone-300 text-xs font-bold rounded-sm border border-stone-600 min-h-[44px] hover:bg-stone-700 cursor-pointer shrink-0"
-                              aria-label="대화 건너뛰기 및 전투 직행"
+                              aria-label="${tr('대화 건너뛰기 및 전투 직행', 'Skip Dialogue & Start Battle', '会話をスキップして戦闘へ')}"
                             >
-                              건너뛰기 ▶
+                              ${tr('건너뛰기 ▶', 'Skip ▶', 'スキップ ▶')}
                             </button>
                             <button
                               type="button"
                               data-action="play-dialogue-close"
                               class="px-3 py-1.5 bg-rose-950/90 text-rose-200 text-xs font-black rounded-sm border border-rose-500/70 min-h-[44px] hover:bg-rose-900 cursor-pointer shrink-0"
-                              aria-label="대사 창 닫기 및 플레이 중지"
+                              aria-label="${tr('대사 창 닫기 및 플레이 중지', 'Close Dialogue & Stop Play', '会話ウィンドウを閉じて停止')}"
                             >
-                              ✕ 닫기
+                              ✕ ${tr('닫기', 'Close', '閉じる')}
                             </button>
                           </div>
                         </div>
@@ -1017,24 +1058,26 @@ function renderAdventureView(): string {
                             ? `
                               <div class="pt-1 border-t border-white/10 space-y-1.5">
                                 <div class="flex items-center justify-between text-[11px] text-stone-400">
-                                  <span>주인공 선택지 (${playRpgState.autoMode ? '3.0초 후 자동 진행' : '선택 대기'})</span>
-                                  <span class="text-amber-400 font-bold">${line.choices.length}개 선택 가능</span>
+                                  <span>${tr('주인공 선택지', 'Protagonist Choice', '主人公の選択肢')} (${playRpgState.autoMode ? tr('3.0초 후 자동 진행', 'Auto-advances in 3.0s', '3.0秒後に自動進行') : tr('선택 대기', 'Waiting for choice', '選択待機中')})</span>
+                                  <span class="text-amber-400 font-bold">${tr(`${line.choices.length}개 선택 가능`, `${line.choices.length} options`, `${line.choices.length}択`)}</span>
                                 </div>
                                 <div class="grid grid-cols-1 gap-1.5">
                                   ${line.choices
-                                    .map(
-                                      (c, cIdx) => `
+                                    .map((c, cIdx) => {
+                                      const cAttitude = isKo ? c.attitude || '결의' : c.attitudeEn || 'Resolve';
+                                      const cLabel = isKo ? c.labelKo || c.labelEn || '선택' : c.labelEn || c.labelKo || 'Select';
+                                      return `
                                     <button
                                       type="button"
                                       data-action="play-dialogue-choice"
                                       data-choice-index="${cIdx}"
                                       class="px-3.5 py-2.5 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] border border-amber-400/50 text-xs font-bold rounded-sm min-h-[44px] text-left transition-colors flex items-center justify-between cursor-pointer active:translate-y-px"
                                     >
-                                      <span><span class="text-amber-400 font-black mr-1.5">[${c.attitude || '결의'}]</span>${c.labelKo || c.labelEn || '선택'}</span>
-                                      <span class="text-[10px] text-emerald-400 font-mono">${c.bonusType === 'sns' ? '+SNS 코인' : '+버프 각성'}</span>
+                                      <span><span class="text-amber-400 font-black mr-1.5">[${cAttitude}]</span>${cLabel}</span>
+                                      <span class="text-[10px] text-emerald-400 font-mono">${c.bonusType === 'sns' ? tr('+SNS 코인', '+SNS Coins', '+SNSコイン') : tr('+버프 각성', '+Buff Awakening', '+バフ覚醒')}</span>
                                     </button>
-                                  `
-                                    )
+                                  `;
+                                    })
                                     .join('')}
                                 </div>
                               </div>
@@ -1050,12 +1093,12 @@ function renderAdventureView(): string {
                             type="button"
                             data-action="play-dialogue-close"
                             class="px-3 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer"
-                            aria-label="대사 창 닫기 및 플레이 중지"
+                            aria-label="${tr('대사 창 닫기 및 플레이 중지', 'Close Dialogue & Stop Play', '会話ウィンドウを閉じて停止')}"
                           >
-                            ✕ 닫기
+                            ✕ ${tr('닫기', 'Close', '閉じる')}
                           </button>
                           <span class="hidden sm:inline text-[11px] text-stone-400 font-mono">
-                            ${playRpgState.autoMode ? '⚡ 자동 진행 중' : '수동 진행'}
+                            ${playRpgState.autoMode ? tr('⚡ 자동 진행 중', '⚡ Auto-Playing', '⚡ 自動進行中') : tr('수동 진행', 'Manual Mode', '手動進行')}
                           </span>
                         </div>
                         <div class="flex items-center gap-1.5 sm:gap-2">
@@ -1068,9 +1111,9 @@ function renderAdventureView(): string {
                                 ? 'bg-stone-900 text-stone-600 border border-stone-800 cursor-not-allowed'
                                 : 'bg-stone-800 hover:bg-stone-700 text-stone-100 border border-stone-500 cursor-pointer active:translate-y-px'
                             } text-xs font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1"
-                            aria-label="이전 대화로 이동"
+                            aria-label="${tr('이전 대화로 이동', 'Previous Dialogue', '前の会話へ')}"
                           >
-                            ◀ 이전 대화
+                            ◀ ${tr('이전 대화', 'Prev', '前へ')}
                           </button>
                           ${
                             isFinal
@@ -1080,7 +1123,7 @@ function renderAdventureView(): string {
                                   data-action="play-battle-start"
                                   class="px-4 sm:px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs sm:text-sm font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1.5 cursor-pointer shadow-none active:scale-95"
                                 >
-                                  ⚔️ 전투 시작 ▶
+                                  ⚔️ ${tr('전투 시작 ▶', 'Start Battle ▶', '戦闘開始 ▶')}
                                 </button>
                               `
                               : `
@@ -1089,7 +1132,7 @@ function renderAdventureView(): string {
                                   data-action="play-dialogue-next"
                                   class="px-4 sm:px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1 cursor-pointer active:translate-y-px"
                                 >
-                                  다음 대화 ▶
+                                  ${tr('다음 대화 ▶', 'Next ▶', '次へ ▶')}
                                 </button>
                               `
                           }
@@ -1136,7 +1179,7 @@ function renderAdventureView(): string {
                       ${chapterLabel}
                     </span>
                     <h3 id="battle-modal-title" class="text-xs sm:text-base font-black text-white m-0 truncate">
-                      vs ${epDeck.leaderName} 외 (${epDeck.deckNames.slice(0, 3).join('·')})
+                      vs ${epDeck.leaderName} ${tr('외', '& others', '他')} (${epDeck.deckNames.slice(0, 3).join('·')})
                     </h3>
                     ${
                       playRpgState.reincarnationLevel > 0
@@ -1148,10 +1191,29 @@ function renderAdventureView(): string {
                     type="button"
                     data-action="play-dialogue-close"
                     class="px-2.5 py-1 bg-rose-950/90 hover:bg-rose-900 text-rose-200 border border-rose-500/70 text-xs font-black rounded-sm min-h-[38px] sm:min-h-[44px] cursor-pointer shrink-0"
-                    aria-label="배틀 중지 및 맵으로 복귀"
+                    aria-label="${tr('배틀 중지 및 맵으로 복귀', 'Exit Battle & Return to Map', 'バトルを中断してマップへ戻る')}"
                   >
-                    ✕ 닫기
+                    ✕ ${tr('닫기', 'Close', '閉じる')}
                   </button>
+                </div>
+
+                <!-- Real-time Turn Status & Cadence Bar -->
+                <div class="flex items-center justify-between px-2.5 py-1.5 bg-black/60 border border-white/10 text-xs rounded-xs font-mono select-none">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="px-2 py-0.5 text-[10px] font-black rounded-xs shrink-0 ${
+                      playRpgState.turn === 'player'
+                        ? 'bg-sky-500 text-slate-950 animate-pulse'
+                        : 'bg-rose-500 text-white animate-pulse'
+                    }">
+                      ${playRpgState.turn === 'player' ? tr('▶ 내 턴 (P1)', '▶ YOUR TURN (P1)', '▶ 自ターン (P1)') : tr('⏳ 상대 턴 (AI)', "⏳ OPPONENT'S TURN", '⏳ 相手ターン (AI)')}
+                    </span>
+                    <span class="text-[11px] text-stone-300 truncate">
+                      ${playRpgState.battleMessage || tr('카드를 선택한 후 빈 슬롯을 터치하세요.', 'Select a card and touch an empty slot.', 'カードを選択して空きスロットをタッチしてください。')}
+                    </span>
+                  </div>
+                  <div class="text-[11px] font-bold text-amber-400 shrink-0">
+                    P1(${playRpgState.playerHand.length}) : AI(${playRpgState.opponentHand.length})
+                  </div>
                 </div>
 
                 <!-- 3x3 Battle Field Board -->
@@ -1159,16 +1221,22 @@ function renderAdventureView(): string {
                   ${playRpgState.battleBoard
                     .map((slot, sIdx) => {
                       if (!slot) {
+                        const isOpponentTurn = playRpgState.turn === 'opponent';
                         return `
                           <button
                             type="button"
-                            data-action="play-battle-slot"
-                            data-slot="${sIdx}"
-                            class="w-full h-full border border-dashed border-white/25 bg-white/5 hover:bg-white/15 rounded-none flex flex-col items-center justify-center text-xs text-stone-400 font-bold min-h-[44px] cursor-pointer active:translate-y-px transition-colors"
-                            aria-label="슬롯 ${sIdx + 1} 배치"
+                            ${isOpponentTurn ? 'disabled' : `data-action="play-battle-slot" data-slot="${sIdx}"`}
+                            class="w-full h-full border ${
+                              isOpponentTurn
+                                ? 'border-dashed border-stone-700 bg-black/50 text-stone-600 cursor-wait'
+                                : 'border-dashed border-white/25 bg-white/5 hover:bg-white/15 text-stone-400 cursor-pointer active:translate-y-px hover:border-amber-400/70'
+                            } rounded-none flex flex-col items-center justify-center text-xs font-bold min-h-[44px] transition-colors select-none"
+                            aria-label="${tr(`슬롯 ${sIdx + 1} 배치`, `Place in Slot ${sIdx + 1}`, `スロット${sIdx + 1}に配置`)}"
                           >
-                            <span class="text-[10px] text-stone-500">${sIdx + 1}</span>
-                            <span class="text-amber-400 text-[11px] font-black">[배치]</span>
+                            <span class="text-[10px] ${isOpponentTurn ? 'text-stone-700' : 'text-stone-500'}">${sIdx + 1}</span>
+                            <span class="${isOpponentTurn ? 'text-stone-600' : 'text-amber-400'} text-[11px] font-black">
+                              ${isOpponentTurn ? tr('[대기...]', '[WAIT...]', '[待機中...]') : tr('[배치]', '[PLACE]', '[配置]')}
+                            </span>
                           </button>
                         `;
                       }
@@ -1184,16 +1252,23 @@ function renderAdventureView(): string {
                           isPlayer ? 'border-sky-400 bg-sky-950/90 text-sky-100' : 'border-rose-500 bg-rose-950/90 text-rose-100'
                         } ${
                           isFlipped
-                            ? 'animate-card-flip ring-2 ring-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.95)]'
+                            ? 'animate-card-flip ring-2 ring-cyan-400 shadow-[0_0_24px_rgba(34,211,238,1)]'
                             : isJustPlaced
                             ? 'animate-card-place ring-2 ring-amber-400 shadow-[0_0_18px_rgba(251,191,36,0.9)]'
                             : ''
                         } rounded-none p-1 flex flex-col justify-between overflow-hidden shadow-none transition-all">
+                          <!-- Central Flip! Flash Impact Overlay (Centered in Card) -->
                           ${
                             isFlipped
-                              ? `<span class="absolute top-0.5 left-1/2 -translate-x-1/2 z-30 px-1.5 py-0.2 bg-cyan-400 text-stone-950 text-[8px] font-black rounded-xs shadow-md animate-bounce whitespace-nowrap">⚡ FLIP!</span>`
+                              ? `
+                                <div class="absolute inset-0 z-40 flex items-center justify-center pointer-events-none select-none">
+                                  <div class="px-2.5 sm:px-3 py-1 bg-cyan-400 text-stone-950 border-2 border-white text-xs sm:text-sm font-black rounded-xs shadow-[0_0_25px_rgba(34,211,238,1)] animate-bounce tracking-wider uppercase rotate-[-6deg] whitespace-nowrap">
+                                    ⚡ Flip!
+                                  </div>
+                                </div>
+                              `
                               : isJustPlaced
-                              ? `<span class="absolute top-0.5 left-1/2 -translate-x-1/2 z-30 px-1 py-0.2 bg-amber-400 text-stone-950 text-[8px] font-black rounded-xs shadow-sm whitespace-nowrap">PLACE</span>`
+                              ? `<span class="absolute top-0.5 left-1/2 -translate-x-1/2 z-30 px-1.5 py-0.2 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs shadow-sm whitespace-nowrap border border-stone-900">PLACE</span>`
                               : ''
                           }
                           <!-- Character Bust Background Art -->
@@ -1261,7 +1336,7 @@ function renderAdventureView(): string {
                           >
                             ${
                               isSelected
-                                ? `<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 z-40 px-1.5 sm:px-2 py-0.5 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs whitespace-nowrap border border-stone-900 shadow-sm">▼ 선택됨</span>`
+                                ? `<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 z-40 px-1.5 sm:px-2 py-0.5 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs whitespace-nowrap border border-stone-900 shadow-sm">▼ ${tr('선택됨', 'SELECTED', '選択中')}</span>`
                                 : ''
                             }
                             ${renderOriginalCardHtml(cId, {
@@ -1289,8 +1364,12 @@ function renderAdventureView(): string {
                         }">
                           ${
                             playRpgState.battleWinner === 'player'
-                              ? '🎉 전투 승리! 50 EXP 획득 완료.'
-                              : '⚠️ 승리하지 못하면 다음 회차로 진행할 수 없습니다. 카드를 업그레이드(#card)하거나 재도전하세요!'
+                              ? tr('🎉 전투 승리! 50 EXP 획득 완료.', '🎉 Victory! +50 EXP awarded.', '🎉 バトル勝利！50 EXPを獲得しました。')
+                              : tr(
+                                  '⚠️ 승리하지 못하면 다음 회차로 진행할 수 없습니다. 카드를 업그레이드(#card)하거나 재도전하세요!',
+                                  '⚠️ You must win to advance to the next episode. Upgrade your cards (#card) or retry!',
+                                  '⚠️ 勝利しないと次話へ進めません。カードを強化（#card）するか再挑戦してください！'
+                                )
                           }
                         </div>
 
@@ -1300,7 +1379,7 @@ function renderAdventureView(): string {
                             data-action="play-repeat-hunting"
                             class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-sm min-h-[44px] cursor-pointer"
                           >
-                            ${playRpgState.battleWinner === 'player' ? '🔁 반복 사냥 재전투' : '⚔️ 현재 회차 재도전'}
+                            ${playRpgState.battleWinner === 'player' ? tr('🔁 반복 사냥 재전투', '🔁 Repeat Battle', '🔁 反復狩り再戦') : tr('⚔️ 현재 회차 재도전', '⚔️ Retry Episode', '⚔️ 現在のエピソードに再挑戦')}
                           </button>
                           ${
                             playRpgState.battleWinner === 'player'
@@ -1310,7 +1389,7 @@ function renderAdventureView(): string {
                                   data-action="play-next-chapter"
                                   class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer"
                                 >
-                                  ${currentChapter >= 40 ? '👑 40화 완주 · 환생하기 ▶' : '다음 챕터로 전진 ▶'}
+                                  ${currentChapter >= 40 ? tr('👑 40화 완주 · 환생하기 ▶', '👑 Episode 40 Clear · Reincarnate ▶', '👑 全40話完走・転生する ▶') : tr('다음 챕터로 전진 ▶', 'Next Chapter ▶', '次のチャプターへ ▶')}
                                 </button>
                               `
                               : `
@@ -1319,7 +1398,7 @@ function renderAdventureView(): string {
                                   data-nav="card"
                                   class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer"
                                 >
-                                  ⬆️ 카드 업그레이드 (#card)
+                                  ⬆️ ${tr('카드 업그레이드 (#card)', 'Upgrade Cards (#card)', 'カード強化 (#card)')}
                                 </button>
                               `
                           }
@@ -1364,19 +1443,23 @@ function renderAdventureView(): string {
                     <div class="flex items-center justify-between border-b border-white/15 pb-3 gap-2">
                       <div>
                         <span class="inline-block px-2 py-0.5 bg-amber-400 text-stone-950 text-[10px] font-black rounded-sm uppercase tracking-wider mb-1">
-                          👑 40화 대장정 완주 · 차원 환생
+                          👑 ${tr('40화 대장정 완주 · 차원 환생', 'Episode 40 Clear · Dimensional Reincarnation', '全40話完走・次元転生')}
                         </span>
                         <h3 id="reincarnation-modal-title" class="text-base sm:text-lg font-black text-white m-0">
-                          환생 ${nextRebirth}회차 각성 (환생${nextRebirth}-1화 시작)
+                          ${tr(
+                            `환생 ${nextRebirth}회차 각성 (환생${nextRebirth}-1화 시작)`,
+                            `Reincarnation ${nextRebirth} Awakening (Start Rebirth ${nextRebirth}-1)`,
+                            `転生${nextRebirth}周目覚醒（転生${nextRebirth}-第1話開始）`
+                          )}
                         </h3>
                       </div>
                       <button
                         type="button"
                         data-action="play-reincarnate-close"
                         class="px-3 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer shrink-0"
-                        aria-label="환생 창 닫기 및 플레이 중지"
+                        aria-label="${tr('환생 창 닫기 및 플레이 중지', 'Close Reincarnation Modal', '転生ウィンドウを閉じる')}"
                       >
-                        ✕ 닫기
+                        ✕ ${tr('닫기', 'Close', '閉じる')}
                       </button>
                     </div>
 
@@ -1385,17 +1468,25 @@ function renderAdventureView(): string {
                       <div class="w-20 h-20 sm:w-24 sm:h-24 bg-[#0d0b0b] border border-amber-400 rounded-none shrink-0 overflow-hidden flex items-center justify-center">
                         <img
                           src="${kadanAsset.bustPngUrl}?v=20261103v4"
-                          alt="카단"
+                          alt="${kadanAsset.nameKo}"
                           class="w-full h-full object-contain"
                           onerror="this.src='${kadanAsset.seatUrl}'; this.onerror=null;"
                         />
                       </div>
                       <div class="space-y-1.5 text-xs">
                         <p class="text-amber-200 font-bold leading-relaxed m-0">
-                          제40화의 마지막 결전을 넘어 새로운 차원의 지평선이 열렸습니다!
+                          ${tr(
+                            '제40화의 마지막 결전을 넘어 새로운 차원의 지평선이 열렸습니다!',
+                            'Beyond the final battle of Episode 40, a new dimensional horizon has opened!',
+                            '第40話の最終決戦を超え、新たな次元の地平が開かれました！'
+                          )}
                         </p>
                         <p class="text-stone-300 leading-relaxed m-0">
-                          보유 카드와 육성 레벨(Lv)은 모두 영구 보존되며, <strong class="text-amber-400">[환생${nextRebirth}-1화]</strong>부터 더욱 강력한 적들과 새로운 여정이 시작됩니다.
+                          ${tr(
+                            `보유 카드와 육성 레벨(Lv)은 모두 영구 보존되며, <strong class="text-amber-400">[환생${nextRebirth}-1화]</strong>부터 더욱 강력한 적들과 새로운 여정이 시작됩니다.`,
+                            `All owned cards and nurture levels (Lv) are permanently preserved as a new journey against stronger foes begins at <strong class="text-amber-400">[Rebirth ${nextRebirth}-1]</strong>.`,
+                            `保有カードと育成レベル（Lv）はすべて永久保存され、<strong class="text-amber-400">[転生${nextRebirth}-第1話]</strong>からさらに強力な敵との新たな旅が始まります。`
+                          )}
                         </p>
                       </div>
                     </div>
@@ -1403,7 +1494,11 @@ function renderAdventureView(): string {
                     <!-- 3-Second Auto Reincarnation Countdown Bar -->
                     <div class="space-y-1.5">
                       <div class="flex items-center justify-between text-xs font-bold text-amber-300">
-                        <span>⚡ 3초 후 [환생${nextRebirth}-1화]가 자동으로 시작됩니다...</span>
+                        <span>⚡ ${tr(
+                          `3초 후 [환생${nextRebirth}-1화]가 자동으로 시작됩니다...`,
+                          `[Rebirth ${nextRebirth}-1] starts automatically in 3 seconds...`,
+                          `3秒後に[転生${nextRebirth}-第1話]が自動的に開始されます...`
+                        )}</span>
                         <span>${remainingSec.toFixed(1)}s</span>
                       </div>
                       <div class="w-full h-2 bg-stone-800 border border-white/15 rounded-none overflow-hidden">
@@ -1417,14 +1512,18 @@ function renderAdventureView(): string {
                     <!-- Footer Buttons -->
                     <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
                       <div class="px-3 py-2 bg-stone-900 border border-amber-400/40 text-xs font-black text-amber-400">
-                        👑 환생 레벨: Lv.${nextRebirth}
+                        👑 ${tr('환생 레벨', 'Rebirth Lv', '転生レベル')}: Lv.${nextRebirth}
                       </div>
                       <button
                         type="button"
                         data-action="play-reincarnate-now"
                         class="px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs sm:text-sm font-black rounded-sm min-h-[44px] cursor-pointer"
                       >
-                        👑 환생${nextRebirth}-1화 즉시 시작 (${Math.max(1, Math.ceil(remainingSec))}s) ▶
+                        👑 ${tr(
+                          `환생${nextRebirth}-1화 즉시 시작`,
+                          `Start Rebirth ${nextRebirth}-1 Now`,
+                          `転生${nextRebirth}-第1話をすぐ開始`
+                        )} (${Math.max(1, Math.ceil(remainingSec))}s) ▶
                       </button>
                     </div>
                   </div>
@@ -1445,18 +1544,18 @@ function renderArcadeView(): string {
   const selectedElement = playRpgState.arcadeElement;
 
   const elements = [
-    { key: 'all', label: '전체 (All)' },
-    { key: 'water', label: '물 (Water)' },
-    { key: 'fire', label: '불 (Fire)' },
-    { key: 'wind', label: '바람 (Wind)' },
-    { key: 'earth', label: '땅 (Earth)' },
-    { key: 'human', label: '인간 (Human)' },
-    { key: 'undead', label: '언데드 (Undead)' },
-    { key: 'elf', label: '엘프 (Elf)' },
-    { key: 'dwarf', label: '호빗 (Hobbit)' },
-    { key: 'monster', label: '야수 (Beast)' },
-    { key: 'robot', label: '메카 (Mecha)' },
-    { key: 'dragon', label: '드래곤 (Dragon)' },
+    { key: 'all', label: tr('전체 (All)', 'All', 'すべて (All)') },
+    { key: 'water', label: `${getLocalizedFactionName('물')} (Water)` },
+    { key: 'fire', label: `${getLocalizedFactionName('불')} (Fire)` },
+    { key: 'wind', label: `${getLocalizedFactionName('바람')} (Wind)` },
+    { key: 'earth', label: `${getLocalizedFactionName('땅')} (Earth)` },
+    { key: 'human', label: `${getLocalizedFactionName('인간')} (Human)` },
+    { key: 'undead', label: `${getLocalizedFactionName('언데드')} (Undead)` },
+    { key: 'elf', label: `${getLocalizedFactionName('엘프')} (Elf)` },
+    { key: 'dwarf', label: `${getLocalizedFactionName('호빗')} (Hobbit)` },
+    { key: 'monster', label: `${getLocalizedFactionName('야수')} (Beast)` },
+    { key: 'robot', label: `${getLocalizedFactionName('메카')} (Mecha)` },
+    { key: 'dragon', label: `${getLocalizedFactionName('드래곤')} (Dragon)` },
   ];
 
   // 110 Games Filter
@@ -1467,13 +1566,17 @@ function renderArcadeView(): string {
 
     const rawEl = card.element?.toLowerCase() || 'water';
     const el = rawEl === 'air' ? 'wind' : rawEl;
-    const titleMatch = card.title?.toLowerCase().includes(query) || (card.desc && card.desc.toLowerCase().includes(query));
+    const locName = getLocalizedCharacterName(id);
+    const titleMatch =
+      locName.toLowerCase().includes(query) ||
+      card.title?.toLowerCase().includes(query) ||
+      (card.desc && card.desc.toLowerCase().includes(query));
     const elMatch = selectedElement === 'all' || el === selectedElement;
 
     if (titleMatch && elMatch) {
       filteredGames.push({
         id,
-        title: card.title || `Hero ${id}`,
+        title: locName || card.title || `Hero ${id}`,
         element: el,
         power: (card.top || 2) + (card.right || 2) + (card.bottom || 2) + (card.left || 2),
       });
@@ -1486,9 +1589,17 @@ function renderArcadeView(): string {
       <section class="w-full bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-4 rounded-none space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-[rgba(15,0,0,0.12)]">
           <div>
-            <span class="text-xs font-bold text-[#201d1d] uppercase">[110선 Poki 미니게임 아케이드 카탈로그]</span>
+            <span class="text-xs font-bold text-[#201d1d] uppercase">${tr(
+              '[110선 Poki 미니게임 아케이드 카탈로그]',
+              '[110 Poki Minigames Arcade Catalog]',
+              '[110種 Pokiミニゲーム・アーケードカタログ]'
+            )}</span>
             <p class="text-xs text-stone-500 m-0 pt-0.5">
-              110종 영웅 수호 덱과 2D Canvas 챌린지 플레이 · 100% 모바일 퓨어 터치 지원
+              ${tr(
+                '110종 영웅 수호 덱과 2D Canvas 챌린지 플레이 · 100% 모바일 퓨어 터치 지원',
+                '110 Hero Guardian Decks & 2D Canvas Challenges · 100% Mobile Pure Touch',
+                '110種英雄守護デッキ＆2Dキャンバスチャレンジ・100%モバイルタッチ対応'
+              )}
             </p>
           </div>
 
@@ -1497,9 +1608,9 @@ function renderArcadeView(): string {
             type="button"
             data-action="play-arcade-random"
             class="px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:bg-stone-800 text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center gap-1.5 cursor-pointer active:translate-y-px"
-            aria-label="랜덤 플레이"
+            aria-label="${tr('랜덤 플레이', 'Random Play', 'ランダムプレイ')}"
           >
-            🎲 랜덤 플레이 (Die Roll)
+            🎲 ${tr('랜덤 플레이 (Die Roll)', 'Random Play (Die Roll)', 'ランダムプレイ (Die Roll)')}
           </button>
         </div>
 
@@ -1509,9 +1620,9 @@ function renderArcadeView(): string {
             type="text"
             data-action="play-arcade-search"
             value="${playRpgState.arcadeQuery}"
-            placeholder="미니게임 및 캐릭터 검색 (110종)..."
+            placeholder="${tr('미니게임 및 캐릭터 검색 (110종)...', 'Search minigames & heroes (110)...', 'ミニゲーム・キャラクター検索 (110種)...')}"
             class="w-full px-3 py-2 bg-white text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px]"
-            aria-label="미니게임 검색"
+            aria-label="${tr('미니게임 검색', 'Search Minigames', 'ミニゲーム検索')}"
           />
         </div>
 
@@ -1562,7 +1673,7 @@ function renderArcadeView(): string {
 
                 <div>
                   <h4 class="text-xs font-bold text-[#201d1d] m-0 truncate">${g.title}</h4>
-                  <span class="text-[10px] text-stone-500 font-mono">전투력: ${g.power} TP</span>
+                  <span class="text-[10px] text-stone-500 font-mono">${tr('전투력', 'Power', '戦闘力')}: ${g.power} TP</span>
                 </div>
 
                 <button
@@ -1570,9 +1681,9 @@ function renderArcadeView(): string {
                   data-action="play-arcade-launch"
                   data-card-id="${g.id}"
                   class="w-full py-2 bg-[#f1eeee] text-[#201d1d] hover:bg-[#201d1d] hover:text-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] transition-colors flex items-center justify-center cursor-pointer"
-                  aria-label="${g.title} 플레이"
+                  aria-label="${g.title} ${tr('플레이', 'Play', 'プレイ')}"
                 >
-                  🎮 도전 / 플레이
+                  🎮 ${tr('도전 / 플레이', 'Challenge / Play', '挑戦 / プレイ')}
                 </button>
               </div>
             `;
@@ -1584,26 +1695,27 @@ function renderArcadeView(): string {
       ${
         playRpgState.activeArcadeModalId !== null
           ? (() => {
-              const activeCard = CARD_DATABASE[playRpgState.activeArcadeModalId] || {
-                title: '수호자 미니게임',
-              };
+              const activeTitle =
+                getLocalizedCharacterName(playRpgState.activeArcadeModalId) ||
+                CARD_DATABASE[playRpgState.activeArcadeModalId]?.title ||
+                tr('수호자 미니게임', 'Guardian Minigame', '守護者ミニゲーム');
               const activeAsset = getCharacterAsset(playRpgState.activeArcadeModalId);
               return `
                 <div class="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none z-[99999] bg-[#fdfcfc] flex flex-col justify-between">
                   <!-- Minimalist Mission HUD -->
                   <div class="w-full bg-[#201d1d] text-[#fdfcfc] px-4 py-3 flex items-center justify-between border-b border-white/10 shrink-0">
                     <div class="flex items-center gap-2">
-                      <span class="text-xs font-black uppercase text-amber-400">[아케이드 챌린지]</span>
-                      <span class="text-xs font-bold text-white">${activeCard.title}</span>
+                      <span class="text-xs font-black uppercase text-amber-400">${tr('[아케이드 챌린지]', '[Arcade Challenge]', '[アーケードチャレンジ]')}</span>
+                      <span class="text-xs font-bold text-white">${activeTitle}</span>
                     </div>
 
                     <button
                       type="button"
                       data-action="play-arcade-close"
                       class="px-4 py-2 bg-stone-800 text-white hover:bg-stone-700 text-xs font-bold rounded-sm border border-stone-600 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
-                      aria-label="미니게임 닫기"
+                      aria-label="${tr('미니게임 닫기', 'Close Minigame', 'ミニゲームを閉じる')}"
                     >
-                      ✕ 나가기
+                      ✕ ${tr('나가기', 'Exit', '終了')}
                     </button>
                   </div>
 
@@ -1614,8 +1726,8 @@ function renderArcadeView(): string {
                     </div>
 
                     <div class="space-y-1">
-                      <h3 class="text-base sm:text-lg font-bold text-white m-0">${activeCard.title} 전용 수호자 시련</h3>
-                      <p class="text-xs text-stone-400 m-0">2D 모바일 제스처 터치 및 3x3 카드 대결 플레이를 지원합니다.</p>
+                      <h3 class="text-base sm:text-lg font-bold text-white m-0">${activeTitle} — ${tr('전용 수호자 시련', 'Guardian Trial', '専用守護者試練')}</h3>
+                      <p class="text-xs text-stone-400 m-0">${tr('2D 모바일 제스처 터치 및 3x3 카드 대결 플레이를 지원합니다.', 'Supports 2D mobile touch gestures and 3x3 card duel play.', '2Dモバイルタッチジェスチャーおよび3x3カード対戦に対応しています。')}</p>
                     </div>
 
                     <button
@@ -1623,7 +1735,7 @@ function renderArcadeView(): string {
                       data-action="play-ambush-start"
                       class="px-6 py-3 bg-amber-400 text-stone-950 hover:bg-amber-300 text-xs font-black rounded-sm min-h-[44px] transition-colors cursor-pointer"
                     >
-                      ⚔️ 수호 덱과 3x3 카드 결투 개시
+                      ⚔️ ${tr('수호 덱과 3x3 카드 결투 개시', 'Start 3x3 Card Duel vs Guardian Deck', '守護デッキと3x3カード決闘開始')}
                     </button>
                   </div>
                 </div>
@@ -1639,6 +1751,7 @@ function renderArcadeView(): string {
  * Render Tab 3: 40-Episode Webtoon Theater (Strict Invariant Contract)
  */
 function renderWebtoonView(): string {
+  const isKo = isKoreanLanguage();
   const currentEp: WebtoonEpisodeMeta = getWebtoonEpisode(playState.currentEpisode);
   const sceneImageUrl = getWebtoonSceneImageUrl(playState.currentEpisode, playState.currentScene);
   const padEp = String(playState.currentEpisode).padStart(2, '0');
@@ -1658,9 +1771,9 @@ function renderWebtoonView(): string {
               data-nav="home"
               data-action="play-close"
               class="px-5 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] inline-flex items-center justify-center cursor-pointer active:translate-y-px"
-              aria-label="플레이 뷰 닫기 및 홈으로 복귀"
+              aria-label="${tr('플레이 뷰 닫기 및 홈으로 복귀', 'Close Play View & Return Home', '閉じてホームへ戻る')}"
             >
-              닫기
+              ${tr('닫기', 'Close', '閉じる')}
             </button>
 
             <!-- Button 2: 이전 -->
@@ -1668,9 +1781,9 @@ function renderWebtoonView(): string {
               type="button"
               data-action="play-prev"
               class="px-5 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] inline-flex items-center justify-center cursor-pointer active:translate-y-px"
-              aria-label="이전 씬으로 이동"
+              aria-label="${tr('이전 씬으로 이동', 'Previous Scene', '前のシーンへ')}"
             >
-              이전
+              ${tr('이전', 'Prev', '前へ')}
             </button>
 
             <!-- Button 3: 다음 -->
@@ -1678,9 +1791,9 @@ function renderWebtoonView(): string {
               type="button"
               data-action="play-next"
               class="px-5 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] inline-flex items-center justify-center cursor-pointer active:translate-y-px"
-              aria-label="다음 씬으로 이동"
+              aria-label="${tr('다음 씬으로 이동', 'Next Scene', '次のシーンへ')}"
             >
-              다음
+              ${tr('다음', 'Next', '次へ')}
             </button>
           </div>
 
@@ -1695,10 +1808,10 @@ function renderWebtoonView(): string {
                   ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
                   : 'bg-[#f1eeee] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#e8e5e5]'
               }"
-              aria-label="나레이션 자막 표시 전환"
+              aria-label="${tr('나레이션 자막 표시 전환', 'Toggle Narration Subtitles', 'ナレーション字幕表示切替')}"
               aria-pressed="${playState.isNarrationVisible ? 'true' : 'false'}"
             >
-              나레이션 ${playState.isNarrationVisible ? '[ON]' : '[OFF]'}
+              ${tr('나레이션', 'Narration', 'ナレーション')} ${playState.isNarrationVisible ? '[ON]' : '[OFF]'}
             </button>
 
             <!-- Button 5: TTS -->
@@ -1710,7 +1823,7 @@ function renderWebtoonView(): string {
                   ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
                   : 'bg-[#f1eeee] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#e8e5e5]'
               }"
-              aria-label="TTS 오디오 나레이션 재생 전환"
+              aria-label="${tr('TTS 오디오 나레이션 재생 전환', 'Toggle TTS Audio', 'TTS音声再生切替')}"
               aria-pressed="${playState.isTtsActive ? 'true' : 'false'}"
             >
               TTS ${playState.isTtsActive ? '[ON]' : '[OFF]'}
@@ -1723,13 +1836,13 @@ function renderWebtoonView(): string {
       <section class="w-full mb-4 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-3 rounded-none flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div class="flex items-center gap-2">
           <label for="play-episode-select" class="text-xs font-bold text-stone-600 whitespace-nowrap">
-            회차 선택:
+            ${tr('회차 선택:', 'Episode:', 'エピソード選択:')}
           </label>
           <button
             type="button"
             data-action="play-prev-episode"
             class="px-3 py-2 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-[#e8e5e5]"
-            aria-label="이전 회차"
+            aria-label="${tr('이전 회차', 'Previous Episode', '前のエピソード')}"
           >
             &lt;
           </button>
@@ -1737,19 +1850,23 @@ function renderWebtoonView(): string {
             id="play-episode-select"
             data-action="play-select-episode"
             class="px-3 py-2 bg-white text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] cursor-pointer flex-1 md:flex-initial"
-            aria-label="40부작 회차 목록"
+            aria-label="${tr('40부작 회차 목록', '40-Episode List', '全40話リスト')}"
           >
-            ${WEBTOON_40_EPISODES.map((ep) => `
+            ${WEBTOON_40_EPISODES.map((ep) => {
+              const epTitle = isKo ? ep.titleKo : ep.titleEn;
+              const epPrefix = isKo ? `제${ep.episodeNumber}화` : `EP.${String(ep.episodeNumber).padStart(2, '0')}`;
+              return `
               <option value="${ep.episodeNumber}" ${ep.episodeNumber === playState.currentEpisode ? 'selected' : ''}>
-                제${ep.episodeNumber}화 · ${ep.titleKo} (${ep.totalScenes}컷)
+                ${epPrefix} · ${epTitle} (${ep.totalScenes}${tr('컷', ' scenes', 'カット')})
               </option>
-            `).join('')}
+            `;
+            }).join('')}
           </select>
           <button
             type="button"
             data-action="play-next-episode"
             class="px-3 py-2 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-[#e8e5e5]"
-            aria-label="다음 회차"
+            aria-label="${tr('다음 회차', 'Next Episode', '次のエピソード')}"
           >
             &gt;
           </button>
@@ -1757,11 +1874,11 @@ function renderWebtoonView(): string {
 
         <div class="flex items-center gap-3 text-xs text-stone-600 font-bold">
           <span class="px-2 py-1 bg-[#f1eeee] rounded-sm border border-[rgba(15,0,0,0.12)]">
-            씬 ${padScene} / ${padTotal}
+            ${tr('씬', 'Scene', 'シーン')} ${padScene} / ${padTotal}
           </span>
           <span class="text-stone-400">|</span>
           <span class="text-[#201d1d]">
-            ${playState.isTtsActive ? '🔊 TTS 음성 활성화됨' : '🔇 TTS 음성 비활성'}
+            ${playState.isTtsActive ? tr('🔊 TTS 음성 활성화됨', '🔊 TTS Audio Active', '🔊 TTS音声有効') : tr('🔇 TTS 음성 비활성', '🔇 TTS Audio Muted', '🔇 TTS音声オフ')}
           </span>
         </div>
       </section>
@@ -1771,7 +1888,7 @@ function renderWebtoonView(): string {
         <div class="w-full flex items-center justify-center p-2 sm:p-4">
           <img
             src="${sceneImageUrl}"
-            alt="${currentEp.titleKo} - 씬 ${padScene}"
+            alt="${isKo ? currentEp.titleKo : currentEp.titleEn} - ${padScene}"
             class="max-w-full max-h-[65vh] object-contain mx-auto shadow-none select-none transition-opacity duration-200"
             loading="eager"
             onerror="this.src='/images/webtoon/episode_${padEp}/scene_00.webp'; this.onerror=null;"
@@ -1779,7 +1896,7 @@ function renderWebtoonView(): string {
         </div>
 
         <div class="absolute top-3 left-3 px-2.5 py-1 bg-[#201d1d]/85 text-[#fdfcfc] text-[11px] font-bold rounded-sm border border-white/15 backdrop-blur-xs">
-          [EP.${padEp} · 씬 ${padScene} / ${padTotal}]
+          [EP.${padEp} · ${tr('씬', 'Scene', 'シーン')} ${padScene} / ${padTotal}]
         </div>
 
         ${
@@ -1789,25 +1906,27 @@ function renderWebtoonView(): string {
                 <div class="flex items-center justify-between">
                   <div class="inline-flex items-center gap-2">
                     <span class="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm uppercase tracking-wider">
-                      ${currentEp.speakerKo}
+                      ${isKo ? currentEp.speakerKo : currentEp.speakerEn}
                     </span>
                     <span class="text-[11px] text-stone-500 font-semibold">${currentEp.speakerEn}</span>
                   </div>
                   <div class="text-[11px] font-bold">
                     ${
                       playState.isTtsActive
-                        ? '<span class="text-emerald-700 font-bold">● TTS 음성 출력 중</span>'
-                        : '<span class="text-stone-400">○ TTS 대기 (OFF)</span>'
+                        ? `<span class="text-emerald-700 font-bold">● ${tr('TTS 음성 출력 중', 'TTS Speaking', 'TTS音声出力中')}</span>`
+                        : `<span class="text-stone-400">○ ${tr('TTS 대기 (OFF)', 'TTS Standby (OFF)', 'TTS待機 (OFF)')}</span>`
                     }
                   </div>
                 </div>
 
                 <p class="text-xs sm:text-sm font-semibold text-[#201d1d] leading-relaxed m-0">
-                  ${currentEp.leadNarrationKo}
+                  ${isKo ? currentEp.leadNarrationKo : currentEp.leadNarrationEn}
                 </p>
-                <p class="text-[11px] text-stone-500 leading-normal m-0 pt-0.5 font-mono">
-                  ${currentEp.leadNarrationEn}
-                </p>
+                ${
+                  isKo
+                    ? `<p class="text-[11px] text-stone-500 leading-normal m-0 pt-0.5 font-mono">${currentEp.leadNarrationEn}</p>`
+                    : ''
+                }
               </div>
             `
             : ''
@@ -1820,9 +1939,9 @@ function renderWebtoonView(): string {
           type="button"
           data-action="play-prev"
           class="w-full sm:w-auto px-4 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] flex items-center justify-center cursor-pointer"
-          aria-label="이전 컷"
+          aria-label="${tr('이전 컷', 'Previous Panel', '前のカット')}"
         >
-          ◀ 이전 컷
+          ◀ ${tr('이전 컷', 'Prev Panel', '前のカット')}
         </button>
 
         <div class="flex-1 w-full flex flex-col justify-center px-1">
@@ -1833,12 +1952,12 @@ function renderWebtoonView(): string {
             value="${playState.currentScene}"
             data-action="play-scrub-scene"
             class="w-full cursor-pointer accent-[#201d1d] min-h-[44px]"
-            aria-label="웹툰 씬 타임라인 스크러버"
+            aria-label="${tr('웹툰 씬 타임라인 스크러버', 'Webtoon Scene Timeline Scrubber', 'ウェブトゥーン・タイムライン')}"
           />
           <div class="flex justify-between text-[10px] text-stone-500 pt-0.5">
-            <span>씬 01 (시작)</span>
-            <span class="font-bold text-[#201d1d]">컷 ${playState.currentScene + 1} / ${currentEp.totalScenes}</span>
-            <span>씬 ${currentEp.totalScenes} (끝)</span>
+            <span>${tr('씬 01 (시작)', 'Scene 01 (Start)', 'シーン 01 (開始)')}</span>
+            <span class="font-bold text-[#201d1d]">${tr('컷', 'Panel', 'カット')} ${playState.currentScene + 1} / ${currentEp.totalScenes}</span>
+            <span>${tr(`씬 ${currentEp.totalScenes} (끝)`, `Scene ${currentEp.totalScenes} (End)`, `シーン ${currentEp.totalScenes} (終了)`)}</span>
           </div>
         </div>
 
@@ -1846,9 +1965,9 @@ function renderWebtoonView(): string {
           type="button"
           data-action="play-next"
           class="w-full sm:w-auto px-4 py-2.5 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] flex items-center justify-center cursor-pointer"
-          aria-label="다음 컷"
+          aria-label="${tr('다음 컷', 'Next Panel', '次のカット')}"
         >
-          다음 컷 ▶
+          ${tr('다음 컷', 'Next Panel', '次のカット')} ▶
         </button>
       </section>
 
@@ -1856,10 +1975,10 @@ function renderWebtoonView(): string {
       <section class="w-full mt-6 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-4 rounded-none space-y-3">
         <div class="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.12)]">
           <div class="flex items-center gap-2">
-            <span class="text-xs font-bold text-[#201d1d]">[40부작 전편 빠른 이동 (Carousel)]</span>
-            <span class="text-[11px] text-stone-500">전편 감상 가능</span>
+            <span class="text-xs font-bold text-[#201d1d]">${tr('[40부작 전편 빠른 이동 (Carousel)]', '[All 40 Episodes Quick Jump]', '[全40話クイック移動]')}</span>
+            <span class="text-[11px] text-stone-500">${tr('전편 감상 가능', 'All Episodes Available', '全話鑑賞可能')}</span>
           </div>
-          <span class="text-[11px] text-stone-500 font-mono">1~40화 전편 수록</span>
+          <span class="text-[11px] text-stone-500 font-mono">${tr('1~40화 전편 수록', 'Episodes 1–40 Complete', '第1〜40話収録')}</span>
         </div>
 
         <div class="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-10 gap-2 max-h-56 overflow-y-auto p-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none">
@@ -1875,7 +1994,7 @@ function renderWebtoonView(): string {
                     ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
                     : 'bg-white text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
                 }"
-                aria-label="제${ep.episodeNumber}화 보기"
+                aria-label="EP.${ep.episodeNumber}"
                 aria-current="${isCurrent ? 'true' : 'false'}"
               >
                 <span class="text-[10px] ${isCurrent ? 'text-stone-300' : 'text-stone-400'}">EP</span>
@@ -1904,15 +2023,19 @@ export function renderPlaySection(): string {
       <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.12)] gap-2 mb-6">
         <div>
           <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm tracking-wider uppercase mb-1">
-            <span>눈히어로.com</span>
+            <span>${tr('눈히어로.com', 'SNSHero.com', 'SNSHero.com')}</span>
             <span class="text-stone-400">·</span>
-            <span>카단의 여정 (2D 모험 RPG)</span>
+            <span>${tr('카단의 여정 (2D 모험 RPG)', "Kadan's Journey (2D Adventure RPG)", 'カダンの旅 (2D冒険RPG)')}</span>
           </div>
           <h1 class="text-xl sm:text-2xl font-black text-[#201d1d] m-0 tracking-tight">
-            카단의 모험 &amp; 3x3 전술 카드 배틀
+            ${tr('카단의 모험 & 3x3 전술 카드 배틀', "Kadan's Adventure & 3x3 Tactical Card Battle", 'カダンの冒険 ＆ 3x3戦術カードバトル')}
           </h1>
           <p class="text-xs text-stone-500 m-0 pt-0.5">
-            2D 타일 탐험 · 에피소드 스토리 다이얼로그 · 3x3 전술 카드 배틀 루프
+            ${tr(
+              '2D 타일 탐험 · 에피소드 스토리 다이얼로그 · 3x3 전술 카드 배틀 루프',
+              '2D Tile Exploration · Episode Story Dialogues · 3x3 Tactical Card Battle Loop',
+              '2Dタイル探検・エピソードストーリー対話・3x3戦術カードバトルループ'
+            )}
           </p>
         </div>
 
@@ -1921,7 +2044,7 @@ export function renderPlaySection(): string {
             EP.${String(playRpgState.currentChapter).padStart(2, '0')} / 40
           </span>
           <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-sm border border-emerald-300">
-            절찬 연재중
+            ${tr('절찬 연재중', 'Now Serializing', '絶賛連載中')}
           </span>
         </div>
       </div>

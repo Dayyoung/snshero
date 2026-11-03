@@ -18,7 +18,9 @@
 
 import { EXTERNAL_LINKS } from '../types';
 import { getNovelRawEpisode } from '../../content/novelRawEpisodes';
+import { getNovelRawEpisodeEn } from '../../content/novelRawEpisodesEn';
 import { chapterTitles } from '../../content/kadanRpgStory';
+import { isKoreanLanguage, tr } from '../services/i18n';
 
 let currentBookEpisode: number = 1;
 let isEpisodeListOpen: boolean = false;
@@ -118,11 +120,20 @@ interface ParsedNovel {
 }
 
 function parseRawNovel(rawText: string, fallbackEp: number): ParsedNovel {
+  const isKo = isKoreanLanguage();
   if (!rawText || !rawText.trim()) {
     return {
-      mainTitle: `눈히어로.com - 카단의 여정 제 ${fallbackEp}화`,
+      mainTitle: isKo
+        ? `눈히어로.com - 카단의 여정 제 ${fallbackEp}화`
+        : `SNSHero.com - Kadan's Journey Episode ${fallbackEp}`,
       sourceScope: '',
-      paragraphs: ['소설 본문을 불러오는 중입니다...'],
+      paragraphs: [
+        tr(
+          '소설 본문을 불러오는 중입니다...',
+          'Loading novel episode text...',
+          '小説の本文を読み込んでいます...'
+        ),
+      ],
     };
   }
 
@@ -150,14 +161,20 @@ function parseRawNovel(rawText: string, fallbackEp: number): ParsedNovel {
     const trimmed = para.trim();
     if (!trimmed) continue;
     // Strip trailing promotion or delimiter blocks if present
-    if (trimmed.startsWith('==') || trimmed.includes('소설 관련 카드게임 플레이를 원하시나요')) {
+    if (
+      trimmed.startsWith('==') ||
+      trimmed.includes('소설 관련 카드게임 플레이를 원하시나요') ||
+      trimmed.includes('Want to play the card game based on the novel')
+    ) {
       continue;
     }
     cleanParagraphs.push(trimmed);
   }
 
   if (!mainTitle) {
-    mainTitle = `눈히어로.com - 카단의 여정 제 ${fallbackEp}화`;
+    mainTitle = isKo
+      ? `눈히어로.com - 카단의 여정 제 ${fallbackEp}화`
+      : `SNSHero.com - Kadan's Journey Episode ${fallbackEp}`;
   }
 
   return {
@@ -171,9 +188,12 @@ export function renderBookSection(): string {
   initBookEpisodeFromUrl();
 
   const ep = currentBookEpisode;
-  const rawContent = getNovelRawEpisode(ep);
+  const isKo = isKoreanLanguage();
+  const rawContent = isKo ? getNovelRawEpisode(ep) : getNovelRawEpisodeEn(ep) || getNovelRawEpisode(ep);
   const parsed = parseRawNovel(rawContent, ep);
-  const epTitle = chapterTitles[ep - 1]?.titleKo || `제 ${ep}화`;
+  const epTitle = isKo
+    ? chapterTitles[ep - 1]?.titleKo || `제 ${ep}화`
+    : chapterTitles[ep - 1]?.titleEn || `Episode ${ep}`;
 
   const fontClass =
     bookFontSize === 'xlarge'
@@ -206,25 +226,25 @@ export function renderBookSection(): string {
                   type="button"
                   data-action="book-font-normal"
                   class="px-2.5 py-1 text-xs font-bold ${bookFontSize === 'normal' ? 'bg-[#201d1d] text-[#fdfcfc]' : 'text-[#646262] hover:bg-[#f1eeee]'} cursor-pointer"
-                  title="보통 글자"
+                  title="${tr('보통 글자', 'Normal Font', '標準文字')}"
                 >
-                  기본
+                  ${tr('기본', 'A', '標準')}
                 </button>
                 <button
                   type="button"
                   data-action="book-font-large"
                   class="px-2.5 py-1 text-xs font-bold ${bookFontSize === 'large' ? 'bg-[#201d1d] text-[#fdfcfc]' : 'text-[#646262] hover:bg-[#f1eeee]'} cursor-pointer border-l border-[rgba(15,0,0,0.12)]"
-                  title="큰 글자"
+                  title="${tr('큰 글자', 'Large Font', '大きく')}"
                 >
-                  크게
+                  ${tr('크게', 'A+', '大')}
                 </button>
                 <button
                   type="button"
                   data-action="book-font-xlarge"
                   class="px-2.5 py-1 text-xs font-bold ${bookFontSize === 'xlarge' ? 'bg-[#201d1d] text-[#fdfcfc]' : 'text-[#646262] hover:bg-[#f1eeee]'} cursor-pointer border-l border-[rgba(15,0,0,0.12)]"
-                  title="아주 큰 글자"
+                  title="${tr('아주 큰 글자', 'Extra Large Font', '特大')}"
                 >
-                  더크게
+                  ${tr('더크게', 'A++', '特大')}
                 </button>
               </div>
 
@@ -233,9 +253,9 @@ export function renderBookSection(): string {
                 type="button"
                 data-action="book-toggle-index"
                 class="px-3 py-1.5 bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f1eeee] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[36px] flex items-center gap-1 cursor-pointer transition-colors"
-                title="전체 40화 목차 보기"
+                title="${tr('전체 40화 목차 보기', 'View All 40 Episodes', '全40話の目次を表示')}"
               >
-                <span>${isEpisodeListOpen ? '목차 닫기 ▲' : '전체 목차 ▼'}</span>
+                <span>${isEpisodeListOpen ? tr('목차 닫기 ▲', 'Close Index ▲', '目次を閉じる ▲') : tr('전체 목차 ▼', 'All Episodes ▼', '全話目次 ▼')}</span>
               </button>
             </div>
           </div>
@@ -248,9 +268,9 @@ export function renderBookSection(): string {
               data-action="book-prev-episode"
               ${ep <= 1 ? 'disabled' : ''}
               class="px-3 py-2 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] disabled:opacity-30 disabled:hover:bg-[#201d1d] text-xs font-bold rounded-sm min-h-[44px] flex items-center gap-1 cursor-pointer transition-colors"
-              aria-label="이전 화"
+              aria-label="${tr('이전 화', 'Previous Episode', '前の話')}"
             >
-              ◀ 이전화
+              ◀ ${tr('이전화', 'Prev', '前話')}
             </button>
 
             <!-- Dropdown Episode Selector -->
@@ -262,10 +282,13 @@ export function renderBookSection(): string {
               >
                 ${Array.from({ length: 40 }, (_, idx) => {
                   const num = idx + 1;
-                  const title = chapterTitles[idx]?.titleKo || `제 ${num}화`;
+                  const title = isKo
+                    ? chapterTitles[idx]?.titleKo || `제 ${num}화`
+                    : chapterTitles[idx]?.titleEn || `Episode ${num}`;
+                  const epPrefix = isKo ? `제${num}화` : `EP.${String(num).padStart(2, '0')}`;
                   return `
                     <option value="${num}" ${num === ep ? 'selected' : ''}>
-                      제${num}화 - ${title}
+                      ${epPrefix} - ${title}
                     </option>
                   `;
                 }).join('')}
@@ -278,9 +301,9 @@ export function renderBookSection(): string {
               data-action="book-next-episode"
               ${ep >= 40 ? 'disabled' : ''}
               class="px-3 py-2 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] disabled:opacity-30 disabled:hover:bg-[#201d1d] text-xs font-bold rounded-sm min-h-[44px] flex items-center gap-1 cursor-pointer transition-colors"
-              aria-label="다음 화"
+              aria-label="${tr('다음 화', 'Next Episode', '次の話')}"
             >
-              다음화 ▶
+              ${tr('다음화', 'Next', '次話')} ▶
             </button>
           </div>
         </div>
@@ -292,21 +315,28 @@ export function renderBookSection(): string {
           <div class="w-full max-w-5xl mx-auto px-4 py-4 sm:px-6 bg-[#f8f7f7] border-t border-[rgba(15,0,0,0.12)]">
             <div class="flex items-center justify-between pb-2 mb-3 border-b border-[rgba(15,0,0,0.12)]">
               <span class="text-xs font-black text-[#201d1d]">
-                카단의 여정 40화 전편 목차 (원하는 화를 클릭하면 즉시 이동합니다)
+                ${tr(
+                  '카단의 여정 40화 전편 목차 (원하는 화를 클릭하면 즉시 이동합니다)',
+                  "Kadan's Journey — All 40 Episodes Index (Click any episode to jump)",
+                  'カダンの旅 全40話目次（クリックで該当エピソードへ移動）'
+                )}
               </span>
               <button
                 type="button"
                 data-action="book-toggle-index"
                 class="text-xs text-[#646262] hover:text-[#201d1d] font-bold p-1 cursor-pointer"
               >
-                [닫기 ✕]
+                [${tr('닫기', 'Close', '閉じる')} ✕]
               </button>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-1.5 max-h-[320px] overflow-y-auto pr-1">
               ${Array.from({ length: 40 }, (_, idx) => {
                 const num = idx + 1;
-                const title = chapterTitles[idx]?.titleKo || `제 ${num}화`;
+                const title = isKo
+                  ? chapterTitles[idx]?.titleKo || `제 ${num}화`
+                  : chapterTitles[idx]?.titleEn || `Episode ${num}`;
                 const isCurrent = num === ep;
+                const epBadge = isKo ? `[${num}화]` : `[EP.${String(num).padStart(2, '0')}]`;
                 return `
                   <button
                     type="button"
@@ -317,9 +347,9 @@ export function renderBookSection(): string {
                         ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] font-bold'
                         : 'bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#edeaea]'
                     }"
-                    title="제${num}화 - ${title}"
+                    title="${epBadge} ${title}"
                   >
-                    <span class="font-bold mr-1">[${num}화]</span>
+                    <span class="font-bold mr-1">${epBadge}</span>
                     <span class="truncate">${title}</span>
                   </button>
                 `;
@@ -342,7 +372,7 @@ export function renderBookSection(): string {
                 CANONICAL NOVEL
               </span>
               <span class="text-xs font-bold text-amber-700">
-                제 ${ep}화 / 총 40화 완결
+                ${tr(`제 ${ep}화 / 총 40화 완결`, `Episode ${ep} / 40 Complete`, `第${ep}話 / 全40話完結`)}
               </span>
             </div>
 
@@ -393,10 +423,18 @@ export function renderBookSection(): string {
           <!-- Episode Completion Endmark -->
           <div class="pt-10 pb-6 text-center border-t border-[rgba(15,0,0,0.12)] space-y-2">
             <span class="text-xs font-bold text-[#646262] tracking-widest uppercase">
-              — 《카단의 여정》 제 ${ep}화 끝 —
+              ${tr(
+                `— 《카단의 여정》 제 ${ep}화 끝 —`,
+                `— End of Kadan's Journey Episode ${ep} —`,
+                `— 《カダンの旅》 第${ep}話 完 —`
+              )}
             </span>
             <p class="text-xs text-stone-500 m-0">
-              다음 화에서 카단과 수호자들의 모험이 계속 이어집니다.
+              ${tr(
+                '다음 화에서 카단과 수호자들의 모험이 계속 이어집니다.',
+                'The adventure of Kadan and the Guardians continues in the next episode.',
+                '次話でもカダンと守護者たちの冒険が続きます。'
+              )}
             </p>
           </div>
 
@@ -408,16 +446,16 @@ export function renderBookSection(): string {
               ${ep <= 1 ? 'disabled' : ''}
               class="flex-1 py-3.5 px-4 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] disabled:opacity-30 disabled:hover:bg-[#201d1d] text-xs sm:text-sm font-bold rounded-sm min-h-[48px] flex items-center justify-center gap-2 cursor-pointer transition-colors"
             >
-              <span>◀ 이전화 (제${Math.max(1, ep - 1)}화)</span>
+              <span>◀ ${tr(`이전화 (제${Math.max(1, ep - 1)}화)`, `Prev (EP.${Math.max(1, ep - 1)})`, `前話 (第${Math.max(1, ep - 1)}話)`)}</span>
             </button>
 
             <button
               type="button"
               data-action="book-scroll-top"
               class="px-4 py-3.5 bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f1eeee] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[48px] flex items-center justify-center gap-1 cursor-pointer transition-colors"
-              title="맨 위로"
+              title="${tr('맨 위로', 'Back to Top', 'ページ上部へ')}"
             >
-              <span>맨 위로 ↑</span>
+              <span>${tr('맨 위로 ↑', 'Top ↑', '上へ ↑')}</span>
             </button>
 
             <button
@@ -426,13 +464,13 @@ export function renderBookSection(): string {
               ${ep >= 40 ? 'disabled' : ''}
               class="flex-1 py-3.5 px-4 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] disabled:opacity-30 disabled:hover:bg-[#201d1d] text-xs sm:text-sm font-bold rounded-sm min-h-[48px] flex items-center justify-center gap-2 cursor-pointer transition-colors"
             >
-              <span>다음화 (제${Math.min(40, ep + 1)}화) ▶</span>
+              <span>${tr(`다음화 (제${Math.min(40, ep + 1)}화)`, `Next (EP.${Math.min(40, ep + 1)})`, `次話 (第${Math.min(40, ep + 1)}話)`)} ▶</span>
             </button>
           </div>
 
           <!-- External Official Serialization Links -->
           <div class="mt-8 p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none space-y-3">
-            <span class="text-xs font-bold text-[#646262]">공식 연재처 바로가기:</span>
+            <span class="text-xs font-bold text-[#646262]">${tr('공식 연재처 바로가기:', 'Official Serialization Links:', '公式連載プラットフォーム:')}</span>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <a
                 href="${EXTERNAL_LINKS.naverNovel}"
@@ -440,7 +478,7 @@ export function renderBookSection(): string {
                 rel="noopener noreferrer"
                 class="px-3 py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-[#edeaea] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center text-center no-underline"
               >
-                네이버 시리즈 ↗
+                ${tr('네이버 시리즈 ↗', 'Naver Series ↗', 'NAVERシリーズ ↗')}
               </a>
               <a
                 href="${EXTERNAL_LINKS.munpiaNovel}"
@@ -448,7 +486,7 @@ export function renderBookSection(): string {
                 rel="noopener noreferrer"
                 class="px-3 py-2 bg-[#fdfcfc] text-[#201d1d] hover:bg-[#edeaea] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center text-center no-underline"
               >
-                문피아 소설 ↗
+                ${tr('문피아 소설 ↗', 'Munpia Novel ↗', 'Munpiaウェブ小説 ↗')}
               </a>
             </div>
           </div>

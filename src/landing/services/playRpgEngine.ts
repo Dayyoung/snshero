@@ -29,7 +29,8 @@ import {
 } from '../../content/kadanRpgStory';
 import { KADAN_RPG_NOVEL_SCRIPTS, KadanRpgNovelScriptLine, KadanRpgDialogueChoice } from '../../content/kadanRpgNovelScript';
 import { cardNurtureStore } from './cardNurtureStore';
-import { getCharacterAsset } from './assetCatalog';
+import { getCharacterAsset, getLocalizedCharacterName } from './assetCatalog';
+import { isKoreanLanguage, tr } from './i18n';
 import {
   shouldTriggerAmbush,
   generateAmbushEncounter,
@@ -204,7 +205,14 @@ export function formatChapterLabel(
   chapter: number = playRpgState.currentChapter,
   rebirthLevel: number = playRpgState.reincarnationLevel
 ): string {
-  return rebirthLevel > 0 ? `환생${rebirthLevel}-${chapter}화` : `제${chapter}화`;
+  if (rebirthLevel > 0) {
+    return tr(
+      `환생${rebirthLevel}-${chapter}화`,
+      `Rebirth ${rebirthLevel}-${chapter}`,
+      `転生${rebirthLevel}-第${chapter}話`
+    );
+  }
+  return tr(`제${chapter}화`, `EP.${chapter}`, `第${chapter}話`);
 }
 
 /**
@@ -350,6 +358,52 @@ export function extractDialogueText(
   line: KadanRpgNovelScriptLine,
   preferredSpeakerName?: string
 ): { text: string; isNarration: boolean } {
+  const isKo = isKoreanLanguage();
+
+  if (!isKo) {
+    // Non-Korean languages default novel/story dialogues to English
+    if (line.dialogueQuoteEn && line.dialogueQuoteEn.trim().length > 0) {
+      let quote = line.dialogueQuoteEn.trim();
+      if (!quote.startsWith('“') && !quote.startsWith('"')) {
+        quote = `"${quote}"`;
+      }
+      quote = quote.replace(/”\s*“/g, '”\n\n“').replace(/"\s*"/g, '"\n\n"');
+      return { text: quote, isNarration: false };
+    }
+
+    if (line.subCuts && line.subCuts.length > 0) {
+      const cutQuotes: string[] = [];
+      for (const cut of line.subCuts) {
+        const srcEn = cut.dialogueEn || cut.narrationEn || '';
+        if (srcEn.trim()) {
+          const matches = srcEn.match(/[“"][^”"]+[”"]/g);
+          if (matches && matches.length > 0) {
+            cutQuotes.push(...matches);
+          }
+        }
+      }
+      if (cutQuotes.length > 0) {
+        const uniqueQuotes = Array.from(new Set(cutQuotes));
+        return { text: uniqueQuotes.join('\n\n'), isNarration: false };
+      }
+    }
+
+    if (line.textEn && line.textEn.trim()) {
+      const matches = line.textEn.match(/[“"][^”"]+[”"]/g);
+      if (matches && matches.length > 0) {
+        const uniqueQuotes = Array.from(new Set(matches));
+        return { text: uniqueQuotes.join('\n\n'), isNarration: false };
+      }
+      const sentences = line.textEn
+        .replace(/\n+/g, ' ')
+        .split(/[.!?]/)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+      const summary = sentences.slice(0, 2).join('. ') + (sentences.length > 0 ? '.' : '');
+      return { text: summary || line.textEn.slice(0, 120) + '...', isNarration: true };
+    }
+  }
+
   // 0. preferredSpeakerName이 지정된 경우, subCuts에서 해당 화자의 대사를 최우선 추출
   if (preferredSpeakerName && line.subCuts && line.subCuts.length > 0) {
     const speakerQuotes: string[] = [];
@@ -422,7 +476,7 @@ export function extractDialogueText(
     return { text: summary || line.text.slice(0, 80) + '...', isNarration: true };
   }
 
-  return { text: '“서약은 얼어붙지 않는다.”', isNarration: false };
+  return { text: isKo ? '“서약은 얼어붙지 않는다.”' : '"An oath never freezes."', isNarration: false };
 }
 
 export interface DialogueSpeakerInfo {
@@ -443,6 +497,7 @@ function findSpeakerInfoInLine(
   line: KadanRpgNovelScriptLine,
   prevCardId: number | null
 ): { cardId: number; name: string; role: string } {
+  const isKo = isKoreanLanguage();
   const chars = line.sceneCharacters || [];
 
   const resolveByName = (rawName: string): { cardId: number; name: string; role: string } | null => {
@@ -452,10 +507,11 @@ function findSpeakerInfoInLine(
       (c) => c.nameKo === clean || clean.includes(c.nameKo) || c.nameKo.includes(clean)
     );
     if (foundInScene) {
+      const cid = foundInScene.cardId || 41;
       return {
-        cardId: foundInScene.cardId || 41,
-        name: foundInScene.nameKo,
-        role: foundInScene.roleKo || '수호자',
+        cardId: cid,
+        name: isKo ? foundInScene.nameKo : getLocalizedCharacterName(cid),
+        role: isKo ? foundInScene.roleKo || '수호자' : foundInScene.roleEn || tr('수호자', 'Guardian', '守護者'),
       };
     }
     for (let id = 1; id <= 110; id++) {
@@ -463,8 +519,8 @@ function findSpeakerInfoInLine(
       if (card && card.title && (card.title === clean || clean.includes(card.title))) {
         return {
           cardId: id,
-          name: card.title,
-          role: card.desc ? card.desc.slice(0, 36) : '수호자',
+          name: isKo ? card.title : getLocalizedCharacterName(id),
+          role: isKo ? (card.desc ? card.desc.slice(0, 36) : '수호자') : tr('수호자', 'Guardian', '守護者'),
         };
       }
     }
@@ -503,17 +559,19 @@ function findSpeakerInfoInLine(
     if (prevCardId !== null && chars.length > 1) {
       const diffChar = chars.find((c) => c.cardId !== prevCardId);
       if (diffChar) {
+        const cid = diffChar.cardId || 41;
         return {
-          cardId: diffChar.cardId || 41,
-          name: diffChar.nameKo,
-          role: diffChar.roleKo || '수호자',
+          cardId: cid,
+          name: isKo ? diffChar.nameKo : getLocalizedCharacterName(cid),
+          role: isKo ? diffChar.roleKo || '수호자' : diffChar.roleEn || tr('수호자', 'Guardian', '守護者'),
         };
       }
     }
+    const firstCid = chars[0].cardId || 41;
     return {
-      cardId: chars[0].cardId || 41,
-      name: chars[0].nameKo,
-      role: chars[0].roleKo || '수호자',
+      cardId: firstCid,
+      name: isKo ? chars[0].nameKo : getLocalizedCharacterName(firstCid),
+      role: isKo ? chars[0].roleKo || '수호자' : chars[0].roleEn || tr('수호자', 'Guardian', '守護者'),
     };
   }
 
@@ -521,10 +579,11 @@ function findSpeakerInfoInLine(
     return fromLineName;
   }
 
+  const fallbackCid = line.cardId || 41;
   return {
-    cardId: line.cardId || 41,
-    name: rawLineName || '카단',
-    role: '성기사단의 후예',
+    cardId: fallbackCid,
+    name: isKo ? rawLineName || '카단' : getLocalizedCharacterName(fallbackCid),
+    role: tr('성기사단의 후예', 'Descendant of the Holy Order', '聖騎士団の末裔'),
   };
 }
 
@@ -532,16 +591,18 @@ function findSpeakerInfoInLine(
  * Resolve active speaking character and alternate left/right side whenever character changes
  */
 export function resolveDialogueSpeakers(line: KadanRpgNovelScriptLine): ResolvedDialogueSpeakers {
+  const isKo = isKoreanLanguage();
   const allLines = getCurrentDialogueLines();
   const idxInAll = allLines.indexOf(line);
   const targetIdx = idxInAll >= 0 ? idxInAll : playRpgState.currentDialogueLineIdx;
 
   let activeSide: 'left' | 'right' = 'left';
   let prevCardId: number | null = null;
+  const initCid = line.cardId || 41;
   let currentSpeaker = {
-    cardId: line.cardId || 41,
-    name: (line.name || '카단').split('·').pop()?.trim() || '카단',
-    role: '성기사단의 후예',
+    cardId: initCid,
+    name: isKo ? (line.name || '카단').split('·').pop()?.trim() || '카단' : getLocalizedCharacterName(initCid),
+    role: tr('성기사단의 후예', 'Descendant of the Holy Order', '聖騎士団の末裔'),
   };
 
   if (allLines.length > 0 && targetIdx >= 0 && targetIdx < allLines.length) {
@@ -564,7 +625,9 @@ export function resolveDialogueSpeakers(line: KadanRpgNovelScriptLine): Resolved
   const otherChar = chars.find((c) => c.cardId !== currentSpeaker.cardId) || {
     cardId: currentSpeaker.cardId === 41 ? 43 : 41,
     nameKo: currentSpeaker.cardId === 41 ? '발리안' : '카단',
+    nameEn: currentSpeaker.cardId === 41 ? 'Balian' : 'Kadan',
     roleKo: currentSpeaker.cardId === 41 ? '아케인 창술의 달인' : '성기사단의 후예',
+    roleEn: currentSpeaker.cardId === 41 ? 'Master of the Arcane Spear' : 'Descendant of the Holy Order',
   };
 
   const activeInfo: DialogueSpeakerInfo = {
@@ -574,10 +637,11 @@ export function resolveDialogueSpeakers(line: KadanRpgNovelScriptLine): Resolved
     isActive: true,
   };
 
+  const otherCid = otherChar.cardId || 43;
   const inactiveInfo: DialogueSpeakerInfo = {
-    name: otherChar.nameKo,
-    cardId: otherChar.cardId || 43,
-    role: otherChar.roleKo || '동료',
+    name: isKo ? otherChar.nameKo : getLocalizedCharacterName(otherCid),
+    cardId: otherCid,
+    role: isKo ? otherChar.roleKo || '동료' : (otherChar as any).roleEn || tr('동료', 'Companion', '仲間'),
     isActive: false,
   };
 
@@ -585,7 +649,7 @@ export function resolveDialogueSpeakers(line: KadanRpgNovelScriptLine): Resolved
     left: activeSide === 'left' ? activeInfo : inactiveInfo,
     right: activeSide === 'right' ? activeInfo : inactiveInfo,
     activeSide,
-    speakerTitle: currentSpeaker.role || '수호자',
+    speakerTitle: currentSpeaker.role || tr('수호자', 'Guardian', '守護者'),
   };
 }
 
@@ -885,8 +949,8 @@ export function getEpisodeActualOpponentDeck(chapter: number): {
     selected.push(fallbackId);
   }
 
-  const deckNames = selected.map((id) => CARD_DATABASE[id]?.title || `영웅 #${id}`);
-  const leaderName = deckNames[0] || '수호자';
+  const deckNames = selected.map((id) => getLocalizedCharacterName(id) || CARD_DATABASE[id]?.title || `#${id}`);
+  const leaderName = deckNames[0] || tr('수호자', 'Guardian', '守護者');
 
   return {
     cardIds: selected.slice(0, 5),
@@ -929,8 +993,16 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
   );
   playRpgState.battleMessage =
     rebirthBonus > 0
-      ? `🔥 [환생 ${playRpgState.reincarnationLevel}회차 강화] 상대 모든 카드 스탯 +${rebirthBonus}! 카드를 선택해 빈 슬롯에 배치하세요.`
-      : '카드를 선택한 후 3x3 전장의 빈 슬롯을 터치하세요.';
+      ? tr(
+          `🔥 [환생 ${playRpgState.reincarnationLevel}회차 강화] 상대 모든 카드 스탯 +${rebirthBonus}! 카드를 선택해 빈 슬롯에 배치하세요.`,
+          `🔥 [Reincarnation ${playRpgState.reincarnationLevel} Boost] Opponent all card stats +${rebirthBonus}! Select a card and place it in an empty slot.`,
+          `🔥 [転生${playRpgState.reincarnationLevel}周目強化] 相手全カードステータス+${rebirthBonus}！カードを選択して空きスロットに配置してください。`
+        )
+      : tr(
+          '카드를 선택한 후 3x3 전장의 빈 슬롯을 터치하세요.',
+          'Select a card from your hand, then tap an empty slot on the 3x3 board.',
+          '手札からカードを選択し、3x3盤面の空きスロットをタップしてください。'
+        );
 
   // Player Hand: 5 active deck cards
   const activeDeck = (cardNurtureStore as any).getDeckCardIds
@@ -941,13 +1013,17 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
   // Opponent Hand: Strictly composed of the actual appearing characters in the current chapter
   if (customOpponentCards && customOpponentCards.length >= 5) {
     playRpgState.opponentHand = customOpponentCards.slice(0, 5);
-    playRpgState.opponentName = customOpponentName || '기습 적군';
+    playRpgState.opponentName = customOpponentName || tr('기습 적군', 'Ambush Enemy', '奇襲敵軍');
   } else {
     const epDeck = getEpisodeActualOpponentDeck(playRpgState.currentChapter);
     playRpgState.opponentHand = [...epDeck.cardIds];
     const chapLabel = formatChapterLabel(playRpgState.currentChapter, playRpgState.reincarnationLevel);
     const secondName = epDeck.deckNames[1] ? `·${epDeck.deckNames[1]}` : '';
-    playRpgState.opponentName = `${chapLabel} 등장인물 (${epDeck.leaderName}${secondName} 외)`;
+    playRpgState.opponentName = tr(
+      `${chapLabel} 등장인물 (${epDeck.leaderName}${secondName} 외)`,
+      `${chapLabel} Cast (${epDeck.leaderName}${secondName} & others)`,
+      `${chapLabel} 登場人物 (${epDeck.leaderName}${secondName} 他)`
+    );
   }
 }
 
@@ -1008,8 +1084,18 @@ export function playCardToSlot(
   owner: 'player' | 'opponent' = 'player'
 ): { success: boolean; completed: boolean } {
   if (slotIdx < 0 || slotIdx > 8) return { success: false, completed: false };
+
+  // Guard: player cannot place cards during opponent's turn
+  if (owner === 'player' && playRpgState.turn !== 'player') {
+    return { success: false, completed: false };
+  }
+
   if (playRpgState.battleBoard[slotIdx] !== null) {
-    playRpgState.battleMessage = '이미 카드가 배치된 슬롯입니다.';
+    playRpgState.battleMessage = tr(
+      '이미 카드가 배치된 슬롯입니다.',
+      'This slot already has a card placed.',
+      'すでにカードが配置されているスロットです。'
+    );
     return { success: false, completed: false };
   }
 
@@ -1025,7 +1111,7 @@ export function playCardToSlot(
     cardId,
     owner,
     stats,
-    name: card?.title || `Hero ${cardId}`,
+    name: getLocalizedCharacterName(cardId) || card?.title || `Hero ${cardId}`,
   };
   playRpgState.lastPlacedSlot = slotIdx;
   playRpgState.flippedSlots = [];
@@ -1039,7 +1125,7 @@ export function playCardToSlot(
   // Evaluate 4-way flips
   evaluateBoardFlips(slotIdx, owner, stats);
 
-  // Schedule visual animation cleanup after 650ms
+  // Schedule visual animation cleanup after 850ms
   if (typeof window !== 'undefined') {
     window.setTimeout(() => {
       if (playRpgState.lastPlacedSlot === slotIdx) {
@@ -1047,7 +1133,7 @@ export function playCardToSlot(
       }
       playRpgState.flippedSlots = [];
       window.dispatchEvent(new CustomEvent('hero_rpg_board_updated'));
-    }, 650);
+    }, 850);
   }
 
   // Check if battle completed (all 9 slots filled or hands empty)
@@ -1059,15 +1145,38 @@ export function playCardToSlot(
     return { success: true, completed: true };
   }
 
-  // Switch turn
+  // Switch turn with deliberate cadence
   if (owner === 'player') {
     playRpgState.turn = 'opponent';
     playRpgState.selectedHandIndex = 0;
-    // Execute AI turn
-    executeOpponentTurn();
+    playRpgState.battleMessage = tr(
+      '상대방 턴: 상대가 전황을 분석하며 카드를 고르고 있습니다...',
+      "Opponent's turn: Analyzing the battlefield...",
+      '相手のターン：戦況を分析しながらカードを選択中...'
+    );
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('hero_rpg_board_updated'));
+      // Execute opponent turn after a clear 1000ms delay so both sides play with cadence
+      window.setTimeout(() => {
+        if (playRpgState.subState === 'battle' && !playRpgState.battleWinner && playRpgState.turn === 'opponent') {
+          executeOpponentTurn();
+        }
+      }, 1000);
+    } else {
+      executeOpponentTurn();
+    }
   } else {
     playRpgState.turn = 'player';
     playRpgState.selectedHandIndex = 0;
+    playRpgState.battleMessage = tr(
+      '내 턴: 출격할 카드를 선택한 후 3x3 전장의 빈 슬롯을 터치하세요.',
+      'Your turn: Select a card and touch an empty slot.',
+      'あなたのターン：カードを選択して空きスロットをタッチしてください。'
+    );
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('hero_rpg_board_updated'));
+    }
   }
 
   return { success: true, completed: false };
@@ -1126,7 +1235,11 @@ function evaluateBoardFlips(
 
   if (flippedList.length > 0) {
     playRpgState.flippedSlots = flippedList;
-    playRpgState.battleMessage = `상대 카드 ${flippedList.length}장을 공명 역전(Flip)했습니다!`;
+    playRpgState.battleMessage = tr(
+      `상대 카드 ${flippedList.length}장을 공명 역전(Flip)했습니다!`,
+      `Flipped ${flippedList.length} opponent card(s)!`,
+      `相手カード${flippedList.length}枚を反転（Flip）しました！`
+    );
     audioManager.playCardFlip();
   }
 }
@@ -1219,15 +1332,27 @@ export function finalizeBattle(): void {
 
   if (pScore > oScore) {
     playRpgState.battleWinner = 'player';
-    playRpgState.battleMessage = `🎉 승리! (스코어 ${pScore} : ${oScore}) +50 EXP가 활성 덱 전원에 지급되었습니다.`;
+    playRpgState.battleMessage = tr(
+      `🎉 승리! (스코어 ${pScore} : ${oScore}) +50 EXP가 활성 덱 전원에 지급되었습니다.`,
+      `🎉 Victory! (Score ${pScore} : ${oScore}) +50 EXP awarded to all active deck cards.`,
+      `🎉 勝利！（スコア ${pScore} : ${oScore}）編成デッキ全員に+50 EXPが付与されました。`
+    );
     finishBattleAndAwardExp();
   } else if (pScore < oScore) {
     playRpgState.battleWinner = 'opponent';
     const reb = playRpgState.reincarnationLevel;
     playRpgState.battleMessage =
       reb > 0
-        ? `⚠️ 패배 (스코어 ${pScore} : ${oScore}) · 환생 ${reb}회차 강화 덱에 막혔습니다! 카드를 업그레이드하지 않으면 다음 회차로 진행할 수 없습니다.`
-        : `⚠️ 패배 (스코어 ${pScore} : ${oScore}) · 승리해야 다음 회차로 진행할 수 있습니다. 카드를 업그레이드하거나 재도전하세요.`;
+        ? tr(
+            `⚠️ 패배 (스코어 ${pScore} : ${oScore}) · 환생 ${reb}회차 강화 덱에 막혔습니다! 카드를 업그레이드하지 않으면 다음 회차로 진행할 수 없습니다.`,
+            `⚠️ Defeat (Score ${pScore} : ${oScore}) · Blocked by Reincarnation ${reb} deck! Upgrade your cards to advance to the next episode.`,
+            `⚠️ 敗北（スコア ${pScore} : ${oScore}）・転生${reb}周目強化デッキに阻まれました！カードを強化しないと次話へ進めません。`
+          )
+        : tr(
+            `⚠️ 패배 (스코어 ${pScore} : ${oScore}) · 승리해야 다음 회차로 진행할 수 있습니다. 카드를 업그레이드하거나 재도전하세요.`,
+            `⚠️ Defeat (Score ${pScore} : ${oScore}) · Victory is required to advance. Upgrade your cards or retry.`,
+            `⚠️ 敗北（スコア ${pScore} : ${oScore}）・次話へ進むには勝利が必要です。カードを強化するか再挑戦してください。`
+          );
     if (playRpgState.repeatHunting) {
       setTimeout(() => {
         initBattle();
@@ -1240,7 +1365,11 @@ export function finalizeBattle(): void {
     }
   } else {
     playRpgState.battleWinner = 'draw';
-    playRpgState.battleMessage = `⚠️ 무승부 (스코어 ${pScore} : ${oScore}) · 승리해야만 다음 회차로 전진할 수 있습니다. 카드를 업그레이드하거나 재도전하세요.`;
+    playRpgState.battleMessage = tr(
+      `⚠️ 무승부 (스코어 ${pScore} : ${oScore}) · 승리해야만 다음 회차로 전진할 수 있습니다. 카드를 업그레이드하거나 재도전하세요.`,
+      `⚠️ Draw (Score ${pScore} : ${oScore}) · Victory is required to advance. Upgrade your cards or retry.`,
+      `⚠️ 引き分け（スコア ${pScore} : ${oScore}）・次話へ進むには勝利が必要です。カードを強化するか再挑戦してください。`
+    );
     if (playRpgState.repeatHunting) {
       setTimeout(() => {
         initBattle();
@@ -1392,8 +1521,11 @@ export function advanceNextChapter(): void {
     playRpgState.battleWinner !== null &&
     playRpgState.battleWinner !== 'player'
   ) {
-    playRpgState.battleMessage =
-      '⚠️ 전투에서 승리해야만 다음 회차로 전진할 수 있습니다! 카드를 업그레이드하거나 재도전하세요.';
+    playRpgState.battleMessage = tr(
+      '⚠️ 전투에서 승리해야만 다음 회차로 전진할 수 있습니다! 카드를 업그레이드하거나 재도전하세요.',
+      '⚠️ You must win the battle to advance to the next episode! Upgrade your cards or retry.',
+      '⚠️ バトルに勝利しないと次のエピソードへ進めません！カードを強化するか再挑戦してください。'
+    );
     return;
   }
 

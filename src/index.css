@@ -67,15 +67,15 @@
 
 /* 3x3 Card Tactical Flip / Reverse 3D Rotate FX */
 @keyframes card-flip-rotate {
-  0% { transform: perspective(600px) rotateY(0deg) scale(1); filter: brightness(1); }
-  45% { transform: perspective(600px) rotateY(90deg) scale(1.16); filter: brightness(1.75); }
-  75% { transform: perspective(600px) rotateY(180deg) scale(1.06); filter: brightness(1.25); }
-  100% { transform: perspective(600px) rotateY(0deg) scale(1); filter: brightness(1); }
+  0% { transform: perspective(800px) rotateY(0deg) scale(1); filter: brightness(1); }
+  35% { transform: perspective(800px) rotateY(90deg) scale(1.25); filter: brightness(2.2); box-shadow: 0 0 30px rgba(34, 211, 238, 1); }
+  65% { transform: perspective(800px) rotateY(270deg) scale(1.15); filter: brightness(1.6); }
+  100% { transform: perspective(800px) rotateY(360deg) scale(1); filter: brightness(1); }
 }
 
 .animate-card-flip {
-  animation: card-flip-rotate 0.45s ease-in-out both;
-  z-index: 30 !important;
+  animation: card-flip-rotate 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  z-index: 35 !important;
 }
 
 /* Row 1061 / ID 324: Prevent default context callout & long press on mobile battle elements */

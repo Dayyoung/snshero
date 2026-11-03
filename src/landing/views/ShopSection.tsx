@@ -20,13 +20,14 @@
 
 import { CARD_DATABASE } from '../../cardDatabase';
 import { cardNurtureStore } from '../services/cardNurtureStore';
-import { getCharacterAsset } from '../services/assetCatalog';
+import { getCharacterAsset, getLocalizedCharacterName, getLocalizedFactionName } from '../services/assetCatalog';
 import { requestPayAppPayment, CRYPTO_PAYMENT_INFO } from '../services/paymentService';
 import {
   CRYPTO_COINS_CATALOG,
   CRYPTO_QUICK_CHIPS,
   resolveCryptoDepositDetails,
 } from '../services/qrCodeSvg';
+import { tr } from '../services/i18n';
 
 // ============================================================================
 // Types & Interfaces
@@ -320,9 +321,227 @@ export const ALL_SHOP_PRODUCTS: ShopCardProduct[] = [
   },
 ];
 
-// ============================================================================
-// Internal State
-// ============================================================================
+function getLocalizedShopTabLabel(key: ShopCategoryTab): string {
+  switch (key) {
+    case 'ALL':
+      return tr('전체 (ALL)', 'All Items (ALL)', 'すべて (ALL)');
+    case 'PACK':
+      return tr('카드팩 가챠 (PACK)', 'Card Packs (PACK)', 'カードパック (PACK)');
+    case 'ITEM':
+      return tr('아이템·특전 (ITEM)', 'Items & Passes (ITEM)', 'アイテム・特典 (ITEM)');
+    case 'COIN':
+      return tr('코인 충전 (COIN)', 'Coin Top-Up (COIN)', 'コインチャージ (COIN)');
+  }
+}
+
+function getLocalizedCoinPackage(pkg: CoinPackage): { label: string; bonusText: string; priceDisplay: string } {
+  switch (pkg.id) {
+    case 'coin_1000':
+      return {
+        label: tr('1,000 SNS 코인', '1,000 SNS Coins', '1,000 SNSコイン'),
+        bonusText: tr('스타터 충전', 'Starter Pack', 'スターターチャージ'),
+        priceDisplay: tr('$1.00 USD / 1,500원', '$1.00 USD', '$1.00 USD (約150円)'),
+      };
+    case 'coin_3000':
+      return {
+        label: tr('3,000 SNS 코인', '3,000 SNS Coins', '3,000 SNSコイン'),
+        bonusText: tr('+5% 보너스', '+5% Bonus', '+5% ボーナス'),
+        priceDisplay: tr('$2.99 USD / 4,000원', '$2.99 USD', '$2.99 USD (約450円)'),
+      };
+    case 'coin_10000':
+      return {
+        label: tr('10,000 SNS 코인', '10,000 SNS Coins', '10,000 SNSコイン'),
+        bonusText: tr('🔥 BEST 인기 (+15%)', '🔥 BEST Seller (+15%)', '🔥 人気No.1 (+15%)'),
+        priceDisplay: tr('$10.00 USD / 14,000원', '$10.00 USD', '$10.00 USD (約1,500円)'),
+      };
+    case 'coin_50000':
+      return {
+        label: tr('50,000 SNS 코인', '50,000 SNS Coins', '50,000 SNSコイン'),
+        bonusText: tr('⭐ VIP 혜택 (+25%)', '⭐ VIP Bundle (+25%)', '⭐ VIP特典 (+25%)'),
+        priceDisplay: tr('$100.00 USD / 140,000원', '$100.00 USD', '$100.00 USD (約15,000円)'),
+      };
+    case 'pkg_ad_removal':
+      return {
+        label: tr('광고 영구 제거 패키지', 'Permanent Ad Removal Pack', '広告永久除去パッケージ'),
+        bonusText: tr('영구 해금', 'Permanent Unlock', '永久解放'),
+        priceDisplay: tr('$2.99 USD / 4,000원', '$2.99 USD', '$2.99 USD (約450円)'),
+      };
+    default:
+      return {
+        label: pkg.label,
+        bonusText: pkg.bonusText || '',
+        priceDisplay: `$${pkg.priceUsd.toFixed(2)} USD`,
+      };
+  }
+}
+
+function getLocalizedShopProduct(item: ShopCardProduct): ShopCardProduct {
+  switch (item.id) {
+    case 'pack_normal':
+      return {
+        ...item,
+        name: tr('일반 카드팩', 'Normal Card Pack', 'ノーマルカードパック'),
+        badge: tr('브론즈~실버 확정', 'Bronze–Silver Guaranteed', 'ブロンズ〜シルバー確定'),
+        description: tr(
+          '기초 원소 영웅 3장을 획득합니다. 도감 수집율을 빠르게 높일 수 있는 기본 팩.',
+          'Summons 3 base elemental heroes. Ideal for building your collection rate quickly.',
+          '基本属性の英雄3枚を獲得します。図鑑収集率を素早く高められる基本パック。'
+        ),
+        shortSpec: tr('3장 랜덤 소환 · 브론즈~실버 등급 보장', '3 Random Cards · Bronze–Silver Guaranteed', '3枚ランダム召喚・ブロンズ〜シルバー保証'),
+        actionText: tr('구매하기 (300 SNS)', 'Buy Now (300 SNS)', '購入する (300 SNS)'),
+      };
+    case 'pack_magic':
+      return {
+        ...item,
+        name: tr('매직 카드팩', 'Magic Card Pack', 'マジックカードパック'),
+        badge: tr('실버~골드 확정', 'Silver–Gold Guaranteed', 'シルバー〜ゴールド確定'),
+        description: tr(
+          '상급 영웅 카드 3장을 획득합니다. 실버 등급 이상 확정 지급.',
+          'Summons 3 advanced hero cards with Silver rarity or higher guaranteed.',
+          '上級英雄カード3枚を獲得します。シルバー等級以上が確定で排出されます。'
+        ),
+        shortSpec: tr('3장 상급 소환 · 실버 등급 이상 100% 보장', '3 Advanced Cards · 100% Silver+ Guaranteed', '3枚上級召喚・シルバー以上100%保証'),
+        actionText: tr('구매하기 (800 SNS)', 'Buy Now (800 SNS)', '購入する (800 SNS)'),
+      };
+    case 'pack_rare':
+      return {
+        ...item,
+        name: tr('희귀 카드팩', 'Rare Card Pack', 'レアカードパック'),
+        badge: tr('골드 이상 확정', 'Gold+ Guaranteed', 'ゴールド以上確定'),
+        description: tr(
+          '최고 등급 전설 영웅 3장을 획득합니다. 덱 TP와 Total TP를 비약적으로 상승시킵니다.',
+          'Summons 3 top-tier legendary heroes to dramatically boost your Deck TP and Total TP.',
+          '最高ランクの伝説英雄3枚を獲得します。デッキTPと総戦闘力を飛躍的に上昇させます。'
+        ),
+        shortSpec: tr('3장 최고급 소환 · 골드~전설 SSR 확정', '3 Supreme Cards · Gold–SSR Guaranteed', '3枚最高級召喚・ゴールド〜伝説SSR確定'),
+        actionText: tr('구매하기 (1,500 SNS)', 'Buy Now (1,500 SNS)', '購入する (1,500 SNS)'),
+      };
+    case 'pack_starter_bundle':
+      return {
+        ...item,
+        name: tr('스타터 전설팩 (SSR 5종)', 'Starter Legendary Pack (5 SSRs)', 'スターター伝説パック (SSR 5種)'),
+        badge: tr('첫 구매 추천', 'Best Starter Value', '初回購入おすすめ'),
+        description: tr(
+          '초심자 모험가를 위한 핵심 5대 종족 전설 영웅 5장 즉시 지급 세트.',
+          'Instant bundle of 5 core faction legendary heroes tailored for new adventurers.',
+          '初心者冒険者のための主要5大種族・伝説英雄5枚即時付与セット。'
+        ),
+        shortSpec: tr('전설 영웅 5장 일괄 지급 · 초보자 필수 추천', '5 Legendary Heroes Bundle · Essential Starter', '伝説英雄5枚一括付与・初心者必須おすすめ'),
+        actionText: tr('구매하기 (2,000 SNS)', 'Buy Now (2,000 SNS)', '購入する (2,000 SNS)'),
+      };
+    case 'item_exp_pack':
+      return {
+        ...item,
+        name: tr('EXP 영약팩 (대용량)', 'EXP Elixir Bundle (Large)', 'EXP霊薬パック (大容量)'),
+        badge: tr('성장 부스터', 'Growth Booster', '成長ブースター'),
+        description: tr(
+          '영웅 즉시 레벨업 경험치 영약 10병 세트. 원하는 영웅에게 즉시 투여하여 전투력을 강화합니다.',
+          'Set of 10 instant EXP elixirs to rapidly level up your heroes and boost combat power.',
+          '英雄即時レベルアップ経験値霊薬10本セット。英雄に投与して戦闘力を強化します。'
+        ),
+        shortSpec: tr('10병 세트 (병당 +500 EXP) · 즉시 인벤토리 지급', '10 Bottles (+500 EXP each) · Instant Delivery', '10本セット (1本あたり+500 EXP)・即時付与'),
+        actionText: tr('구매하기 (500 SNS)', 'Buy Now (500 SNS)', '購入する (500 SNS)'),
+      };
+    case 'item_ad_removal':
+      return {
+        ...item,
+        name: tr('광고 영구 제거 패키지', 'Permanent Ad Removal Pack', '広告永久除去パッケージ'),
+        badge: tr('영구 편의', 'Permanent QoL', '永久快適'),
+        priceText: tr('$2.99 (4,000원)', '$2.99 USD', '$2.99 USD (約450円)'),
+        description: tr(
+          '전면/보상형 광고를 영구적으로 제거하고 쾌적하게 3초 즉시 보상을 수령합니다.',
+          'Permanently removes interstitial/rewarded ads and claims all rewards instantly.',
+          '広告を永久に除去し、すべての報酬を即座に受け取ることができます。'
+        ),
+        shortSpec: tr('광고 제거 영구 적용 · 보상 즉시 획득', 'Permanent Ad-Free · Instant Rewards', '広告除去永久適用・報酬即時獲得'),
+        actionText: tr('충전 & 결제하기', 'Checkout & Unlock', '決済して解放する'),
+      };
+    case 'item_novel_pass':
+      return {
+        ...item,
+        name: tr('공식 웹소설 110화 전편 패스', 'Official Web Novel Full Pass', '公式ウェブ小説全話パス'),
+        badge: tr('세계관 비전서', 'Lore Archive', '世界観秘伝書'),
+        description: tr(
+          '네이버/문피아 연재 중인 눈히어로 공식 110화 풀 텍스트 열람 및 히든 칭호 해금권.',
+          'Full access pass to the official unabridged SNSHero web novel and hidden title unlock.',
+          '公式連載中のSNSHeroウェブ小説全文閲覧および隠し称号解放パス。'
+        ),
+        shortSpec: tr('110화 무제한 정주행 · 히든 스탯 영구 버프 지급', 'Unlimited Reading · Permanent Hidden Stat Buff', '無制限閲覧・隠しステータス永久バフ付与'),
+        actionText: tr('구매하기 (1,000 SNS)', 'Buy Now (1,000 SNS)', '購入する (1,000 SNS)'),
+      };
+    case 'item_anime_cinema':
+      return {
+        ...item,
+        name: tr('공식 3D/2D 애니 극장판 티켓', 'Official Anime Cinema Pass', '公式アニメ劇場版チケット'),
+        badge: tr('시네마 패스', 'Cinema Pass', 'シネマパス'),
+        description: tr(
+          '카단의 여정 40부작 및 Veo 3.1 기반 공식 컷신 애니메이션 무제한 고화질 스트리밍.',
+          'Unlimited HD streaming for all 40 episodes of Kadan’s Journey cutscene animation.',
+          'カダンの旅 全40話および公式カットシーンアニメの無制限高画質ストリーミング。'
+        ),
+        shortSpec: tr('40부작 풀에피소드 1080p 고화질 감상', '40 Full Episodes in 1080p HD', '全40話フルエピソード 1080p高画質鑑賞'),
+        actionText: tr('구매하기 (1,200 SNS)', 'Buy Now (1,200 SNS)', '購入する (1,200 SNS)'),
+      };
+    case 'coin_charge_1000':
+      return {
+        ...item,
+        name: tr('1,000 SNS 코인 충전', '1,000 SNS Coins Top-Up', '1,000 SNSコインチャージ'),
+        badge: tr('스타터', 'Starter', 'スターター'),
+        priceText: tr('$1.00 (1,500원)', '$1.00 USD', '$1.00 USD (約150円)'),
+        description: tr(
+          '일반/매직 카드팩을 소환할 수 있는 기본 코인 패키지.',
+          'Starter coin package for summoning Normal and Magic card packs.',
+          'ノーマル・マジックカードパックを召喚できる基本コインパッケージ。'
+        ),
+        shortSpec: tr('즉시 계정 충전 · 유효기간 없음', 'Instant Account Top-Up · Never Expires', '即時アカウントチャージ・有効期限なし'),
+        actionText: tr('충전하기', 'Top Up Now', 'チャージする'),
+      };
+    case 'coin_charge_3000':
+      return {
+        ...item,
+        name: tr('3,000 SNS 코인 충전', '3,000 SNS Coins Top-Up', '3,000 SNSコインチャージ'),
+        badge: tr('+5% 보너스', '+5% Bonus', '+5% ボーナス'),
+        priceText: tr('$2.99 (4,000원)', '$2.99 USD', '$2.99 USD (約450円)'),
+        description: tr(
+          '희귀 카드팩과 아이템 팩을 여유롭게 구매할 수 있는 인기 패키지.',
+          'Popular coin bundle with enough balance for Rare card packs and item bundles.',
+          'レアカードパックやアイテムパックを余裕を持って購入できる人気パッケージ。'
+        ),
+        shortSpec: tr('+5% 추가 보너스 적립', '+5% Extra Bonus Coins', '+5% 追加ボーナス付与'),
+        actionText: tr('충전하기', 'Top Up Now', 'チャージする'),
+      };
+    case 'coin_charge_10000':
+      return {
+        ...item,
+        name: tr('10,000 SNS 코인 충전', '10,000 SNS Coins Top-Up', '10,000 SNSコインチャージ'),
+        badge: tr('🔥 BEST 인기', '🔥 BEST Seller', '🔥 人気No.1'),
+        priceText: tr('$10.00 (14,000원)', '$10.00 USD', '$10.00 USD (約1,500円)'),
+        description: tr(
+          '가장 많은 모험가들이 선택하는 베스트 패키지. 대량 소환 및 풀 세팅 지원.',
+          'Our most popular package chosen by adventurers for bulk summons and full deck builds.',
+          '最も多くの冒険者に選ばれているベストパッケージ。大量召喚とフル編成に対応。'
+        ),
+        shortSpec: tr('+15% 추가 보너스 적립 · 전설 소환 추천', '+15% Bonus Coins · Recommended for SSR Summons', '+15% 追加ボーナス・伝説召喚おすすめ'),
+        actionText: tr('충전하기', 'Top Up Now', 'チャージする'),
+      };
+    case 'coin_charge_50000':
+      return {
+        ...item,
+        name: tr('50,000 SNS 코인 충전', '50,000 SNS Coins Top-Up', '50,000 SNSコインチャージ'),
+        badge: tr('⭐ VIP 혜택', '⭐ VIP Tier', '⭐ VIP特典'),
+        priceText: tr('$100.00 (140,000원)', '$100.00 USD', '$100.00 USD (約15,000円)'),
+        description: tr(
+          '모든 시즌 전설 덱 완성과 최고급 컬렉션을 위한 최고 혜택 VIP 번들.',
+          'Ultimate VIP bundle for completing all seasonal legendary decks and collections.',
+          '全シーズンの伝説デッキ完成と最高級コレクションのためのVIPバンドル。'
+        ),
+        shortSpec: tr('+25% 초대형 보너스 · VIP 한정 카드 테두리 증정', '+25% Mega Bonus · Exclusive VIP Card Border', '+25% 超大型ボーナス・VIP限定カードフレーム贈呈'),
+        actionText: tr('충전하기', 'Top Up Now', 'チャージする'),
+      };
+    default:
+      return item;
+  }
+}
 
 let currentCategoryTab: ShopCategoryTab = 'ALL';
 let activePackReveal: PackRevealData | null = null;
