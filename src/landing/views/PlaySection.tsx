@@ -768,14 +768,119 @@ function renderAdventureView(): string {
                 </div>
               </div>
 
-              <!-- Map with 4-Way Compass Controls (Top / Left / Right / Bottom) & Seamless Zero-Margin Tiles -->
-              <div class="w-full max-w-4xl mx-auto flex flex-col items-center select-none">
-                <!-- 1. Top Arrow Button (상) -->
-                <div class="w-full flex justify-center mb-1.5">
+              <!-- 10x8 RPG Tile Map with 4-Way Compass Controls Overlaid (North / South / West / East) -->
+              <div class="relative w-full max-w-3xl mx-auto aspect-[10/8] select-none rounded-none border border-white/20 bg-[#0a0f1d] shadow-inner overflow-hidden p-0 m-0">
+                <!-- 1. 10x8 Terrain Tile Grid (Zero Margin, Zero Gap, Zero Padding) -->
+                <div
+                  class="grid gap-0 w-full h-full select-none p-0 m-0 border-0"
+                  style="grid-template-columns: repeat(${region.width}, minmax(0, 1fr));"
+                >
+                  ${Array.from({ length: region.width * region.height }, (_, idx) => {
+                    const tileX = idx % region.width;
+                    const tileY = Math.floor(idx / region.width);
+                    const isBlocked = region.blockedTiles.some((b) => b.x === tileX && b.y === tileY);
+                    const isHero = heroX === tileX && heroY === tileY;
+                    const isTarget = chEvent?.tile.x === tileX && chEvent?.tile.y === tileY;
+                    const terrainImg = RPG_TERRAIN_ASSETS[region.terrain] || '/rpg/kadan-map/tile-forest.png';
+                    const eventImg = RPG_EVENT_NODE_ASSETS[chEvent?.nodeType || 'enemy'] || '/rpg/kadan-map/object-portal.png';
+
+                    return `
+                      <button
+                        type="button"
+                        data-action="play-tile-click"
+                        data-x="${tileX}"
+                        data-y="${tileY}"
+                        ${isBlocked ? 'disabled' : ''}
+                        class="group relative w-full h-full aspect-square rounded-none overflow-hidden m-0 p-0 border-0 outline-none select-none flex items-center justify-center transition-none ${
+                          isBlocked
+                            ? 'cursor-not-allowed opacity-60'
+                            : isTarget
+                            ? 'cursor-pointer z-10'
+                            : isHero
+                            ? 'cursor-default z-20'
+                            : 'cursor-pointer hover:brightness-105 active:brightness-110'
+                        }"
+                        aria-label="${tr('타일', 'Tile', 'タイル')} (${tileX + 1}, ${tileY + 1})"
+                      >
+                        <!-- 1. Authentic Terrain Tile Background Texture (Seamless 0-Margin) -->
+                        <img
+                          src="${terrainImg}"
+                          alt=""
+                          class="absolute inset-0 w-full h-full object-cover pointer-events-none select-none ${
+                            isBlocked
+                              ? 'grayscale contrast-125 brightness-40'
+                              : 'opacity-100'
+                          }"
+                          draggable="false"
+                        />
+
+                        <!-- 2. Blocked Tile Overlay (Obstacle / Cliff) -->
+                        ${
+                          isBlocked
+                            ? `
+                              <div class="absolute inset-0 bg-black/60 flex items-center justify-center pointer-events-none z-10">
+                                <span class="text-stone-400 text-[10px] sm:text-xs font-black select-none drop-shadow">✕</span>
+                              </div>
+                            `
+                            : ''
+                        }
+
+                        <!-- 3. Target Node Sprite (Original Enemy / Chest / Portal from /play) -->
+                        ${
+                          isTarget
+                            ? `
+                              <div class="absolute inset-0 border-2 border-amber-400 pointer-events-none z-10 shadow-[inset_0_0_10px_rgba(251,191,36,0.6)] flex flex-col items-center justify-center animate-bounce">
+                                <img
+                                  src="${eventImg}"
+                                  alt="${tr('목표 지점', 'Target Node', '目標地点')}"
+                                  class="w-6 h-6 sm:w-8 sm:h-8 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]"
+                                  draggable="false"
+                                />
+                                <span class="absolute -bottom-1 px-1 py-0.2 bg-amber-400 text-stone-950 text-[7px] sm:text-[8px] font-black rounded-none whitespace-nowrap shadow-md border border-stone-900 leading-none">
+                                  GO!
+                                </span>
+                              </div>
+                            `
+                            : ''
+                        }
+
+                        <!-- 4. Hero Kadan Token Marker (Circular Golden Avatar) -->
+                        ${
+                          isHero
+                            ? `
+                              <div class="absolute inset-0 border-2 border-amber-300 pointer-events-none z-20 shadow-[inset_0_0_8px_rgba(251,191,36,0.8)] flex items-center justify-center">
+                                <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-full border-2 border-amber-300 bg-slate-950 p-0.5 shadow-[0_0_16px_rgba(251,191,36,0.95)] ring-2 ring-amber-500/80 flex items-center justify-center overflow-hidden animate-pulse pointer-events-none select-none">
+                                  <img
+                                    src="/rpg/kadan-map/hero-kadan.png"
+                                    alt="${tr('카단', 'Kadan', 'カダン')}"
+                                    class="w-full h-full object-cover rounded-full"
+                                    draggable="false"
+                                    onerror="this.src='/seat/Kadan.png'; this.onerror=null;"
+                                  />
+                                </div>
+                              </div>
+                            `
+                            : ''
+                        }
+
+                        <!-- 5. Coordinate Badge (Subtle Top-Left on Clean Tiles) -->
+                        ${
+                          !isBlocked && !isHero && !isTarget
+                            ? `<span class="absolute top-0.5 left-0.5 z-10 text-[7px] sm:text-[8px] font-mono text-white/30 bg-black/40 px-0.5 rounded-none pointer-events-none select-none">${tileX + 1},${tileY + 1}</span>`
+                            : ''
+                        }
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+
+                <!-- 2. Overlaid 4-Way Compass Buttons (동서남북 오버레이) -->
+                <!-- North (북 / 위로 이동) -->
+                <div class="absolute top-2 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
                   <button
                     type="button"
                     data-action="play-move-up"
-                    class="h-10 sm:h-11 px-8 sm:px-14 bg-[#201d1d] hover:bg-[#2d2929] active:bg-[#151313] text-amber-300 font-black text-base sm:text-lg border border-white/20 hover:border-amber-400/60 rounded-sm shadow-md flex items-center justify-center cursor-pointer transition-all active:scale-95 min-h-[44px]"
+                    class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px shadow-lg"
                     aria-label="${tr('위로 이동', 'Move Up', '上へ移動')}"
                     title="${tr('위로 이동 (W / ↑)', 'Move Up (W / ↑)', '上へ移動 (W / ↑)')}"
                   >
@@ -783,141 +888,12 @@ function renderAdventureView(): string {
                   </button>
                 </div>
 
-                <!-- 2. Middle Row: Left Arrow (좌) + 10x8 Seamless Tile Map + Right Arrow (우) -->
-                <div class="w-full flex items-center justify-center gap-1 sm:gap-2">
-                  <!-- Left Arrow Button (좌) -->
-                  <button
-                    type="button"
-                    data-action="play-move-left"
-                    class="w-10 sm:w-12 h-24 sm:h-36 bg-[#201d1d] hover:bg-[#2d2929] active:bg-[#151313] text-amber-300 font-black text-base sm:text-lg border border-white/20 hover:border-amber-400/60 rounded-sm shadow-md flex items-center justify-center cursor-pointer shrink-0 transition-all active:scale-95 min-w-[40px] sm:min-w-[44px] min-h-[44px]"
-                    aria-label="${tr('왼쪽으로 이동', 'Move Left', '左へ移動')}"
-                    title="${tr('왼쪽으로 이동 (A / ←)', 'Move Left (A / ←)', '左へ移動 (A / ←)')}"
-                  >
-                    ◀
-                  </button>
-
-                  <!-- 10x8 Grid Container with RPG Terrain Tiles (Zero Gap & Seamless Connection) -->
-                  <div class="flex-1 max-w-3xl aspect-[10/8] relative">
-                    <div
-                      class="grid gap-0 w-full h-full select-none p-0 bg-[#0a0f1d] border border-white/20 rounded-none shadow-inner overflow-hidden"
-                      style="grid-template-columns: repeat(${region.width}, minmax(0, 1fr));"
-                    >
-                      ${Array.from({ length: region.width * region.height }, (_, idx) => {
-                        const tileX = idx % region.width;
-                        const tileY = Math.floor(idx / region.width);
-                        const isBlocked = region.blockedTiles.some((b) => b.x === tileX && b.y === tileY);
-                        const isHero = heroX === tileX && heroY === tileY;
-                        const isTarget = chEvent?.tile.x === tileX && chEvent?.tile.y === tileY;
-                        const terrainImg = RPG_TERRAIN_ASSETS[region.terrain] || '/rpg/kadan-map/tile-forest.png';
-                        const eventImg = RPG_EVENT_NODE_ASSETS[chEvent?.nodeType || 'enemy'] || '/rpg/kadan-map/object-portal.png';
-
-                        return `
-                          <button
-                            type="button"
-                            data-action="play-tile-click"
-                            data-x="${tileX}"
-                            data-y="${tileY}"
-                            ${isBlocked ? 'disabled' : ''}
-                            class="group relative w-full h-full aspect-square rounded-none overflow-hidden transition-all flex items-center justify-center p-0 select-none ${
-                              isBlocked
-                                ? 'cursor-not-allowed opacity-60'
-                                : isTarget
-                                ? 'ring-2 ring-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.85)] cursor-pointer z-10'
-                                : isHero
-                                ? 'ring-2 ring-amber-300 ring-offset-0 cursor-default z-20'
-                                : 'hover:ring-1 hover:ring-amber-300/80 cursor-pointer active:brightness-110'
-                            }"
-                            aria-label="${tr('타일', 'Tile', 'タイル')} (${tileX + 1}, ${tileY + 1})"
-                          >
-                            <!-- 1. Authentic Terrain Tile Background Texture (Seamless 0-Margin) -->
-                            <img
-                              src="${terrainImg}"
-                              alt=""
-                              class="absolute inset-0 w-full h-full object-cover pointer-events-none select-none transition-transform duration-200 ${
-                                isBlocked
-                                  ? 'grayscale contrast-125 brightness-40'
-                                  : 'opacity-100 group-hover:scale-105'
-                              }"
-                              draggable="false"
-                            />
-
-                            <!-- 2. Blocked Tile Overlay (Obstacle / Cliff) -->
-                            ${
-                              isBlocked
-                                ? `
-                                  <div class="absolute inset-0 bg-black/60 border border-stone-800/80 flex items-center justify-center pointer-events-none z-10">
-                                    <span class="text-stone-400 text-[10px] sm:text-xs font-black select-none drop-shadow">✕</span>
-                                  </div>
-                                `
-                                : ''
-                            }
-
-                            <!-- 3. Target Node Sprite (Original Enemy / Chest / Portal from /play) -->
-                            ${
-                              isTarget
-                                ? `
-                                  <div class="relative z-10 flex flex-col items-center justify-center animate-bounce pointer-events-none select-none">
-                                    <img
-                                      src="${eventImg}"
-                                      alt="${tr('목표 지점', 'Target Node', '目標地点')}"
-                                      class="w-6 h-6 sm:w-8 sm:h-8 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]"
-                                      draggable="false"
-                                    />
-                                    <span class="absolute -bottom-1.5 px-1 py-0.2 bg-amber-400 text-stone-950 text-[7px] sm:text-[8px] font-black rounded-xs whitespace-nowrap shadow-md border border-stone-900 leading-none">
-                                      GO!
-                                    </span>
-                                  </div>
-                                `
-                                : ''
-                            }
-
-                            <!-- 4. Hero Kadan Token Marker (Circular Golden Avatar) -->
-                            ${
-                              isHero
-                                ? `
-                                  <div class="relative z-20 w-7 h-7 sm:w-9 sm:h-9 rounded-full border-2 border-amber-300 bg-slate-950 p-0.5 shadow-[0_0_16px_rgba(251,191,36,0.95)] ring-2 ring-amber-500/80 flex items-center justify-center overflow-hidden animate-pulse pointer-events-none select-none">
-                                    <img
-                                      src="/rpg/kadan-map/hero-kadan.png"
-                                      alt="${tr('카단', 'Kadan', 'カダン')}"
-                                      class="w-full h-full object-cover rounded-full"
-                                      draggable="false"
-                                      onerror="this.src='/seat/Kadan.png'; this.onerror=null;"
-                                    />
-                                  </div>
-                                `
-                                : ''
-                            }
-
-                            <!-- 5. Coordinate Badge (Subtle Top-Left on Clean Tiles) -->
-                            ${
-                              !isBlocked && !isHero && !isTarget
-                                ? `<span class="absolute top-0.5 left-0.5 z-10 text-[7px] sm:text-[8px] font-mono text-white/40 bg-black/40 px-0.5 rounded-none pointer-events-none select-none">${tileX + 1},${tileY + 1}</span>`
-                                : ''
-                            }
-                          </button>
-                        `;
-                      }).join('')}
-                    </div>
-                  </div>
-
-                  <!-- Right Arrow Button (우) -->
-                  <button
-                    type="button"
-                    data-action="play-move-right"
-                    class="w-10 sm:w-12 h-24 sm:h-36 bg-[#201d1d] hover:bg-[#2d2929] active:bg-[#151313] text-amber-300 font-black text-base sm:text-lg border border-white/20 hover:border-amber-400/60 rounded-sm shadow-md flex items-center justify-center cursor-pointer shrink-0 transition-all active:scale-95 min-w-[40px] sm:min-w-[44px] min-h-[44px]"
-                    aria-label="${tr('오른쪽으로 이동', 'Move Right', '右へ移動')}"
-                    title="${tr('오른쪽으로 이동 (D / →)', 'Move Right (D / →)', '右へ移動 (D / →)')}"
-                  >
-                    ▶
-                  </button>
-                </div>
-
-                <!-- 3. Bottom Arrow Button (하) -->
-                <div class="w-full flex justify-center mt-1.5">
+                <!-- South (남 / 아래로 이동) -->
+                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
                   <button
                     type="button"
                     data-action="play-move-down"
-                    class="h-10 sm:h-11 px-8 sm:px-14 bg-[#201d1d] hover:bg-[#2d2929] active:bg-[#151313] text-amber-300 font-black text-base sm:text-lg border border-white/20 hover:border-amber-400/60 rounded-sm shadow-md flex items-center justify-center cursor-pointer transition-all active:scale-95 min-h-[44px]"
+                    class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px shadow-lg"
                     aria-label="${tr('아래로 이동', 'Move Down', '下へ移動')}"
                     title="${tr('아래로 이동 (S / ↓)', 'Move Down (S / ↓)', '下へ移動 (S / ↓)')}"
                   >
@@ -925,16 +901,42 @@ function renderAdventureView(): string {
                   </button>
                 </div>
 
-                <!-- Movement Guide Hint -->
-                <div class="mt-3 text-center">
-                  <span class="text-[11px] sm:text-xs text-stone-400 font-mono">
-                    ${tr(
-                      '[지도 상하좌우 버튼, 방향키(↑↓←→), W/A/S/D 키 또는 타일 직접 터치로 이동]',
-                      '[Move via Map Up/Down/Left/Right buttons, Arrow keys, W/A/S/D, or tap any tile directly]',
-                      '[マップ上下左右ボタン・矢印キー・W/A/S/D・タイル直接タップで移動]'
-                    )}
-                  </span>
+                <!-- West (서 / 왼쪽으로 이동) -->
+                <div class="absolute left-2 top-1/2 -translate-y-1/2 z-30 pointer-events-auto">
+                  <button
+                    type="button"
+                    data-action="play-move-left"
+                    class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px shadow-lg"
+                    aria-label="${tr('왼쪽으로 이동', 'Move Left', '左へ移動')}"
+                    title="${tr('왼쪽으로 이동 (A / ←)', 'Move Left (A / ←)', '左へ移動 (A / ←)')}"
+                  >
+                    ◀
+                  </button>
                 </div>
+
+                <!-- East (동 / 오른쪽으로 이동) -->
+                <div class="absolute right-2 top-1/2 -translate-y-1/2 z-30 pointer-events-auto">
+                  <button
+                    type="button"
+                    data-action="play-move-right"
+                    class="w-14 h-11 bg-[#fdfcfc] text-[#201d1d] border border-white/20 text-sm font-black rounded-sm hover:bg-stone-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer active:translate-y-px shadow-lg"
+                    aria-label="${tr('오른쪽으로 이동', 'Move Right', '右へ移動')}"
+                    title="${tr('오른쪽으로 이동 (D / →)', 'Move Right (D / →)', '右へ移動 (D / →)')}"
+                  >
+                    ▶
+                  </button>
+                </div>
+              </div>
+
+              <!-- Movement Guide Hint -->
+              <div class="mt-3 text-center">
+                <span class="text-[11px] sm:text-xs text-stone-400 font-mono">
+                  ${tr(
+                    '[타일 위 동서남북 버튼, 방향키(↑↓←→), W/A/S/D 키 또는 타일 직접 터치로 이동]',
+                    '[Move via on-tile Compass buttons (N/S/W/E), Arrow keys, W/A/S/D, or tap any tile directly]',
+                    '[タイル上東西南北ボタン・矢印キー・W/A/S/D・タイル直接タップで移動]'
+                  )}
+                </span>
               </div>
             </section>
           `
