@@ -1091,12 +1091,11 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
             oTp = Math.round(pTp * 0.98);
           }
 
-          if (pTp > oTp) {
+          // 🌟 무승부일 경우 전체 TP가 높은 사람이 승리 (동점일 경우 플레이어 승리)
+          if (pTp >= oTp) {
             winState = 'player';
-          } else if (pTp < oTp) {
-            winState = 'ai';
           } else {
-            winState = 'draw';
+            winState = 'ai';
           }
 
           setTieBreakerInfo({
@@ -1532,6 +1531,24 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         }
       })();
 
+      // 🌟 카드 자동플레이 중 패배나 무승부 발생 시: 즉시 상점 소환 & 덱 최적화 루프 실행
+      if (isAutoBattle && (winner === 'ai' || winner === 'draw')) {
+        try {
+          localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
+          localStorage.setItem('hero_auto_optimize_deck', 'true');
+          localStorage.setItem('hero_story_auto_loop_return', 'play');
+          localStorage.setItem('hero_auto_battle', 'true');
+          localStorage.setItem('hero_auto_battle_setting', 'true');
+          localStorage.setItem('hero_auto_start_pvp', 'true');
+        } catch {}
+        if (onNavigate) {
+          onNavigate('shop');
+        } else {
+          handleExitGame();
+        }
+        return;
+      }
+
       // [1] 데모플레이 모드: 승리 시 또는 3연속 대전 도달 시 상점으로 무조건 이동!
       const isDemo = isDemoPlayActive();
       const demoMatches = isDemo ? incrementDemoRankingMatchCount() : 0;
@@ -1642,26 +1659,20 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         opponentName && (opponentName.includes('스토리') || opponentName.includes('제 ') || opponentName.includes('Ch.'))
       );
 
-      if (winner === 'player' || winner === 'draw') {
+      if (winner === 'player') {
         try {
           localStorage.removeItem('hero_story_consecutive_losses');
         } catch {}
-      } else if (winner === 'ai' && isAutoBattle && isStoryBattle) {
-        let prevLosses = 0;
-        try {
-          prevLosses = parseInt(localStorage.getItem('hero_story_consecutive_losses') || '0', 10) || 0;
-        } catch {}
-        const nextLosses = prevLosses + 1;
-        try {
-          localStorage.setItem('hero_story_consecutive_losses', String(nextLosses));
-        } catch {}
-
-        if (nextLosses >= 2 && onNavigate) {
+      } else if ((winner === 'ai' || winner === 'draw') && isAutoBattle) {
+        // 🌟 카드 자동플레이 시 무승부나 패배했을 때: 상점으로 이동해서 무작위 카드 뽑고 덱으로 이동해서 최적화 덱 적용 후 play로 복귀
+        if (onNavigate) {
           try {
-            localStorage.setItem('hero_story_consecutive_losses', '0');
             localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
             localStorage.setItem('hero_auto_optimize_deck', 'true');
-            localStorage.setItem('hero_story_auto_loop_return', 'main');
+            localStorage.setItem('hero_story_auto_loop_return', isStoryBattle ? 'main' : 'play');
+            localStorage.setItem('hero_auto_battle', 'true');
+            localStorage.setItem('hero_auto_battle_setting', 'true');
+            localStorage.setItem('hero_auto_start_pvp', 'true');
           } catch {}
           onNavigate('shop');
           return;

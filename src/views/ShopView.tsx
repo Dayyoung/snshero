@@ -2537,16 +2537,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
     const lang = languageRef.current;
     setSmartLoopStatus(
       lang === 'ko'
-        ? (storyReturnTarget
-            ? '⚡ [연패 교착 탈출] 상점 카드팩 소환 후 마이덱 카드 최적화를 진행합니다...'
-            : isDemoPlayActive()
-              ? '🎁 [데모플레이] 상점 카드팩 소환을 시작합니다...'
-              : '🤖 [스마트 루프] 랭킹대전 승리 보상으로 카드 소환을 시작합니다...')
-        : (storyReturnTarget
-            ? '⚡ [Deadlock Escape] Summoning card pack in Shop before My Deck optimization...'
-            : isDemoPlayActive()
-              ? '🎁 [Demo Play] Summoning card pack in Shop...'
-              : '🤖 [Smart Loop] Summoning card pack with Rank Match reward...')
+        ? (storyReturnTarget === 'play'
+            ? '⚡ [자동 전술 복구] 상점에서 무작위 영웅 카드를 소환하고 마이덱 최적화를 진행합니다...'
+            : (storyReturnTarget
+                ? '⚡ [연패 교착 탈출] 상점 카드팩 소환 후 마이덱 카드 최적화를 진행합니다...'
+                : isDemoPlayActive()
+                  ? '🎁 [데모플레이] 상점 카드팩 소환을 시작합니다...'
+                  : '🤖 [스마트 루프] 랭킹대전 승리 보상으로 카드 소환을 시작합니다...'))
+        : (storyReturnTarget === 'play'
+            ? '⚡ [Auto Tactical Recovery] Summoning random card in Shop before My Deck optimization...'
+            : (storyReturnTarget
+                ? '⚡ [Deadlock Escape] Summoning card pack in Shop before My Deck optimization...'
+                : isDemoPlayActive()
+                  ? '🎁 [Demo Play] Summoning card pack in Shop...'
+                  : '🤖 [Smart Loop] Summoning card pack with Rank Match reward...'))
     );
 
     const executeSummon = () => {

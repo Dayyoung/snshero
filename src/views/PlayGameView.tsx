@@ -4538,7 +4538,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   }, [showDungeonBattleResultModal, isAutoBattle]);
 
   useEffect(() => {
-    if (isAutoBattle && battleType !== 'pvp_attack' && gameOver && (!isTutorialMode || (tutorialStep !== 6 && tutorialStep !== 7)) && !isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive) {
+    if (isAutoBattle && battleType !== 'pvp_attack' && gameOver && winner === 'player' && (!isTutorialMode || (tutorialStep !== 6 && tutorialStep !== 7)) && !isBossActive && !isStoryActive && !isDungeonActive && !isTournamentActive) {
       const isMatgo = battleType === 'matgo';
       const isMissionBattle = activeMissionCardIdRef.current !== null || activeMissionCardId !== null;
 
@@ -4606,6 +4606,35 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         } else {
           setRematchCountdown(3);
         }
+      } else if (isAutoBattle && (winner === 'ai' || winner === 'draw')) {
+        // 🌟 카드 자동플레이 시 무승부나 패배했을 때: 상점으로 이동해서 무작위 카드 뽑고 덱 최적화 후 play로 복귀하여 다시 전투
+        setDefeatExitCountdown(null);
+        setRematchCountdown(null);
+
+        addLog(
+          language === 'ko'
+            ? `⚡ [자동 전술 복구] 전투 패배/무승부 감지! 상점에서 무작위 영웅 카드를 소환하고 덱을 최적화한 후 재도전합니다 (1.5초)...`
+            : `⚡ [Auto Recovery] Defeat/Draw detected! Summoning random card in Shop & optimizing deck before rematch in 1.5s...`,
+          'system'
+        );
+
+        const autoRecoveryTimer = setTimeout(() => {
+          try {
+            localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
+            localStorage.setItem('hero_auto_optimize_deck', 'true');
+            localStorage.setItem('hero_story_auto_loop_return', 'play');
+            localStorage.setItem('hero_auto_battle', 'true');
+            localStorage.setItem('hero_auto_battle_setting', 'true');
+            localStorage.setItem('hero_auto_start_pvp', 'true');
+          } catch {}
+          if (setView) {
+            setView('shop');
+          } else if (typeof window !== 'undefined') {
+            window.location.hash = '#shop';
+          }
+        }, 1500);
+
+        return () => clearTimeout(autoRecoveryTimer);
       } else if (winner === 'ai') {
         setDefeatExitCountdown(5);
         setRematchCountdown(null);
@@ -4623,7 +4652,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setDefeatExitCountdown(null);
       setRematchCountdown(null);
     }
-  }, [gameOver, winner, hasExhausted, battleType, isBossActive, isStoryActive, isDungeonActive, isTournamentActive, isAutoBattle, activeMissionCardId, showCardAcquisitionModal]);
+  }, [gameOver, winner, hasExhausted, battleType, isBossActive, isStoryActive, isDungeonActive, isTournamentActive, isAutoBattle, activeMissionCardId, showCardAcquisitionModal, language, setView]);
 
   // 패배 팝업 5초 자동 닫힘 타이머
   useEffect(() => {
@@ -6519,12 +6548,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     } else {
       const playerTotalPower = playerDeck.reduce((acc, c) => acc + (c.power || 0), 0);
       const aiTotalPower = opponentDeck.reduce((acc, c) => acc + (c.power || 0), 0);
-      if (playerTotalPower > aiTotalPower) {
+      if (playerTotalPower >= aiTotalPower) {
         winnerSide = 'player';
-      } else if (aiTotalPower > playerTotalPower) {
-        winnerSide = 'ai';
       } else {
-        winnerSide = 'draw';
+        winnerSide = 'ai';
       }
     }
     setWinner(winnerSide === 'draw' ? null : winnerSide);
@@ -7030,6 +7057,27 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               // Exact tie in score (e.g. 4.5 vs 4.5? no, but fallback)
               finalWinner = (pPower >= aPower) ? 'player' : 'ai';
               addLog(language === 'ko' ? `TP 판정: ${pPower} vs ${aPower}` : `TP Decision: ${pPower} vs ${aPower}`, finalWinner === 'player' ? 'victory' : 'defeat');
+            }
+          }
+
+          // 🌟 무승부일 경우 전체 TP가 높은 사람이 승리 (동점일 경우 플레이어 승리)
+          if (finalWinner === 'draw' || pScore === aScore) {
+            if (pPower >= aPower) {
+              finalWinner = 'player';
+              addLog(
+                language === 'ko' 
+                  ? `⚖️ [무승부 전체 TP 판정 승리] 아군 전체 TP(${pPower}) >= 적 전체 TP(${aPower})로 플레이어 최종 승리!`
+                  : `⚖️ [TIEBREAKER WIN] Friendly Total TP(${pPower}) >= Enemy Total TP(${aPower})! Victory!`,
+                'victory'
+              );
+            } else {
+              finalWinner = 'ai';
+              addLog(
+                language === 'ko'
+                  ? `⚖️ [무승부 전체 TP 판정 패배] 적 전체 TP(${aPower}) > 아군 전체 TP(${pPower})로 상대 최종 승리!`
+                  : `⚖️ [TIEBREAKER LOSS] Enemy Total TP(${aPower}) > Friendly Total TP(${pPower})! Defeat!`,
+                'defeat'
+              );
             }
           }
 

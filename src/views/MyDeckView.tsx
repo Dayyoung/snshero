@@ -334,20 +334,25 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       return;
     }
 
-    // 🌟 스토리모드 연패 교착상태 탈출로 상점 소환 & 마이덱 최적화를 마친 경우: 즉시 스토리모드로 복귀하여 돌파!
-    if (storyReturnTarget === 'main' || storyReturnTarget === 'play_story') {
+    // 🌟 스토리모드/전투모드 연패 및 무승부 탈출로 상점 소환 & 마이덱 최적화를 마친 경우: 즉시 해당 모드로 복귀하여 돌파!
+    if (storyReturnTarget === 'play' || storyReturnTarget === 'main' || storyReturnTarget === 'play_story') {
       try {
         localStorage.removeItem('hero_story_auto_loop_return');
         localStorage.removeItem('hero_auto_optimize_deck');
         localStorage.removeItem('hero_auto_loop_mode');
         localStorage.removeItem('hero_auto_loop_card');
-        localStorage.setItem('hero_story_just_optimized', 'true');
-        localStorage.setItem('hero_kadan_rpg_auto_mode', 'true');
+        localStorage.setItem('hero_auto_battle', 'true');
+        localStorage.setItem('hero_auto_battle_setting', 'true');
+        localStorage.setItem('hero_auto_start_pvp', 'true');
+        if (storyReturnTarget === 'main' || storyReturnTarget === 'play_story') {
+          localStorage.setItem('hero_story_just_optimized', 'true');
+          localStorage.setItem('hero_kadan_rpg_auto_mode', 'true');
+        }
       } catch {}
       if (isDemoPlayActive()) {
-        setDemoPlayStep('story');
+        setDemoPlayStep(storyReturnTarget === 'main' ? 'story' : 'mission');
       }
-      onNavigate(storyReturnTarget === 'play_story' ? 'play' : 'main');
+      onNavigate(storyReturnTarget === 'main' ? 'main' : 'play');
       return;
     }
 
@@ -611,12 +616,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       const updateBanner = (sec: number) => {
         setAutoSwapBanner(
           language === 'ko'
-            ? (storyReturnTarget
-                ? `⚡ [마이덱 카드 최적화 완료] '${cardName}' 포함 최강 5장 덱 편성 완료!\n스토리모드로 복귀하여 연패 교착상태를 돌파합니다 (${sec}초)...`
-                : `⚡ [신규 덱 최적화 장착 완료] '${cardName}' 포함 최강 덱 편성!\n/main 또는 /play 모드로 이동하여 새로운 카드플레이를 시작합니다 (${sec}초)...`)
-            : (storyReturnTarget
-                ? `⚡ [Deck Optimized] Best 5-card deck with '${cardName}' equipped!\nReturning to Story Mode to break the deadlock in ${sec}s...`
-                : `⚡ [Deck Optimized] Equipped best deck with '${cardName}'!\nMoving to /main or /play for new card battle in ${sec}s...`)
+            ? (storyReturnTarget === 'play'
+                ? `⚡ [마이덱 카드 최적화 완료] '${cardName}' 포함 최강 덱 편성 완료!\n전투 화면(/play)으로 즉시 복귀하여 승리를 쟁취합니다 (${sec}초)...`
+                : (storyReturnTarget
+                    ? `⚡ [마이덱 카드 최적화 완료] '${cardName}' 포함 최강 5장 덱 편성 완료!\n스토리모드로 복귀하여 연패 교착상태를 돌파합니다 (${sec}초)...`
+                    : `⚡ [신규 덱 최적화 장착 완료] '${cardName}' 포함 최강 덱 편성!\n/main 또는 /play 모드로 이동하여 새로운 카드플레이를 시작합니다 (${sec}초)...`))
+            : (storyReturnTarget === 'play'
+                ? `⚡ [Deck Optimized] Equipped best deck with '${cardName}'!\nReturning to battle (/play) to achieve victory in ${sec}s...`
+                : (storyReturnTarget
+                    ? `⚡ [Deck Optimized] Best 5-card deck with '${cardName}' equipped!\nReturning to Story Mode to break the deadlock in ${sec}s...`
+                    : `⚡ [Deck Optimized] Equipped best deck with '${cardName}'!\nMoving to /main or /play for new card battle in ${sec}s...`))
         );
       };
 

@@ -2,6 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 19:42 KST] [카드 자동플레이 무승부/패배 시 상점 소환·덱 최적화·전투 재개 루프 완결 & 무승부 시 전체 TP 승리 판정 적용 및 /git-push 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 무승부 판정 시 전체 TP(Total Power) 비교 승리 판정 완벽 적용**:
+    - `src/views/PlayGameView.tsx`:
+      - 3x3 배틀 및 맞고 미니게임 등에서 스코어가 동점이거나 무승부 판정 조건 발생 시, 아군 전체 TP(`pPower`/`playerTotalPower`)와 적 전체 TP(`aPower`/`aiTotalPower`)를 비교하여 전체 TP가 높은 쪽이 승리하도록 판정 (`pPower >= aPower ? 'player' : 'ai'`).
+      - 동점 시에도 플레이어 우대 승리 처리하여 교착 상태 원천 차단.
+      - 승리/패배 안내 로그에 `[무승부 전체 TP 판정 승리] 아군 전체 TP vs 적 전체 TP` 명확히 출력.
+    - `src/views/MobileCardPlayScreen.tsx`:
+      - 스코어 동점 시 `pTp >= oTp ? 'player' : 'ai'`로 승패를 확정하여 무승부로 인한 게임 중단 차단.
+  - **2. 카드 자동플레이(`isAutoBattle`) 중 무승부/패배 시 자동 강화 루프 구현**:
+    - 카드 자동플레이 상태에서 패배(`winner === 'ai'`) 또는 무승부(`winner === 'draw'`) 발생 시:
+      - 멈추거나 방에서 퇴장하지 않고, 1.5초 후 `hero_auto_loop_mode: 'gacha_start'`, `hero_auto_optimize_deck: 'true'`, `hero_story_auto_loop_return: 'play'`를 세팅하고 즉시 상점(`shop`)으로 자동 이동.
+      - **상점(`ShopView.tsx`)**: 무작위 카드 팩 자동 소환 및 신규 카드 획득 후 1.5초 뒤 마이덱(`mydeck`)으로 자동 이동.
+      - **덱(`MyDeckView.tsx`)**: 인벤토리 내 최고 전투력 카드로 5장 최적화 덱 편성 및 장착 후 1.5초 뒤 전투 화면(`play`)으로 자동 복귀.
+      - **전투(`PlayGameView.tsx` / `MobileCardPlayScreen.tsx`)**: 복귀 즉시 강화된 최적 덱으로 자동 전투 재개 (`hero_auto_battle: true`).
+    - 승리 시에는 기존 3초 자동 반복 대결 카운트다운을 유지하여 무한 승리 파밍 보장.
+  - **3. 프로덕션 빌드 검증 및 원격 푸시(/git-push) 완료**:
+    - `npm run build` 0 error 성공 완료.
+    - 사용자 명시 요청(`/git-push`)에 따라 로컬 커밋 및 `git push origin main` 원격 저장소 동기화 완료.
+- **검증 결과**:
+  - Vite 프로덕션 빌드 성공 (`vite build && post-build.js` 0 error)
+  - 구글 폼 완료 보고서 제출 완료
+  - 원격 저장소 푸시 완료 (`origin main`)
+
+
 ## [2026-11-03 18:36 KST] [상단 구글 광고 영역 상하 여백 공간 최소화(Strict 50px 밀착) 및 원격 저장소 푸시(/git-push) 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
