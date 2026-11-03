@@ -667,6 +667,92 @@ export function selectDialogueChoice(choiceIndex: number): void {
 }
 
 /**
+ * Extract the 5 actual appearing card characters for a given episode (1..40)
+ * strictly from KADAN_RPG_NOVEL_SCRIPTS[chapter].
+ */
+export function getEpisodeActualOpponentDeck(chapter: number): {
+  cardIds: number[];
+  leaderName: string;
+  deckNames: string[];
+} {
+  const clampedChapter = Math.max(1, Math.min(40, Math.floor(chapter || 1)));
+  const rawScript = KADAN_RPG_NOVEL_SCRIPTS[clampedChapter];
+  const lines: KadanRpgNovelScriptLine[] = Array.isArray(rawScript)
+    ? rawScript
+    : rawScript && Array.isArray((rawScript as any).lines)
+    ? (rawScript as any).lines
+    : [];
+
+  const nonKadanIds: number[] = [];
+  const allAppearingIds: number[] = [];
+
+  const registerId = (id: number | undefined) => {
+    if (!id || !Number.isInteger(id) || id < 1 || id > 110 || !CARD_DATABASE[id]) return;
+    if (!allAppearingIds.includes(id)) {
+      allAppearingIds.push(id);
+    }
+    if (id !== 41 && !nonKadanIds.includes(id)) {
+      nonKadanIds.push(id);
+    }
+  };
+
+  for (const line of lines) {
+    registerId(line.cardId);
+    if (line.sceneCharacters && Array.isArray(line.sceneCharacters)) {
+      for (const sc of line.sceneCharacters) {
+        registerId(sc.cardId);
+      }
+    }
+  }
+
+  // Fallback to encounter definition if script lines are empty
+  if (nonKadanIds.length < 5) {
+    const chEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === clampedChapter);
+    if (chEvent) {
+      const enc = getDynamicKadanEncounter(chEvent, 0);
+      for (const cid of enc.opponentCardIds) {
+        registerId(cid);
+      }
+    }
+  }
+
+  const selected: number[] = [...nonKadanIds.slice(0, 5)];
+  for (const id of allAppearingIds) {
+    if (selected.length >= 5) break;
+    if (!selected.includes(id)) selected.push(id);
+  }
+  while (selected.length < 5) {
+    const fallbackId = allAppearingIds[selected.length % Math.max(1, allAppearingIds.length)] || 50;
+    selected.push(fallbackId);
+  }
+
+  const deckNames = selected.map((id) => CARD_DATABASE[id]?.title || `영웅 #${id}`);
+  const leaderName = deckNames[0] || '수호자';
+
+  return {
+    cardIds: selected.slice(0, 5),
+    leaderName,
+    deckNames,
+  };
+}
+
+/**
+ * Compute per-direction stat bonus for opponent cards based on reincarnation level and chapter.
+ * Reincarnation 0: +0 bonus (standard story balance).
+ * Reincarnation 1+: +4 per reincarnation level + chapter scaling, requiring player card upgrades to progress.
+ */
+export function getOpponentRebirthStatBonus(
+  rebirthLevel: number = playRpgState.reincarnationLevel,
+  chapter: number = playRpgState.currentChapter
+): number {
+  if (!rebirthLevel || rebirthLevel <= 0) {
+    return 0;
+  }
+  const chapterTier = Math.floor(Math.max(0, chapter - 1) / 8);
+  return rebirthLevel * 4 + chapterTier * rebirthLevel;
+}
+
+/**
  * Initialize 3x3 Tactical Battle
  */
 export function initBattle(customOpponentCards?: number[], customOpponentName?: string): void {
@@ -675,7 +761,15 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
   playRpgState.battleWinner = null;
   playRpgState.selectedHandIndex = 0;
   playRpgState.turn = 'player';
-  playRpgState.battleMessage = '카드를 선택한 후 3x3 전장의 빈 슬롯을 터치하세요.';
+
+  const rebirthBonus = getOpponentRebirthStatBonus(
+    playRpgState.reincarnationLevel,
+    playRpgState.currentChapter
+  );
+  playRpgState.battleMessage =
+    rebirthBonus > 0
+      ? `🔥 [환생 ${playRpgState.reincarnationLevel}회차 강화] 상대 모든 카드 스탯 +${rebirthBonus}! 카드를 선택해 빈 슬롯에 배치하세요.`
+      : '카드를 선택한 후 3x3 전장의 빈 슬롯을 터치하세요.';
 
   // Player Hand: 5 active deck cards
   const activeDeck = (cardNurtureStore as any).getDeckCardIds
@@ -683,30 +777,58 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
     : [1, 2, 3, 4, 5];
   playRpgState.playerHand = activeDeck.length === 5 ? [...activeDeck] : [1, 2, 3, 4, 5];
 
-  // Opponent Hand: Scaled from chapter encounter or custom cards
+  // Opponent Hand: Strictly composed of the actual appearing characters in the current chapter
   if (customOpponentCards && customOpponentCards.length >= 5) {
     playRpgState.opponentHand = customOpponentCards.slice(0, 5);
     playRpgState.opponentName = customOpponentName || '기습 적군';
   } else {
-    const chEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === playRpgState.currentChapter);
-    if (chEvent) {
-      const encounter = getDynamicKadanEncounter(chEvent, playRpgState.reincarnationLevel);
-      playRpgState.opponentHand = [...encounter.opponentCardIds.slice(0, 5)];
-      playRpgState.opponentName = `${formatChapterLabel(playRpgState.currentChapter, playRpgState.reincarnationLevel)} 수호 기사단`;
-    } else {
-      playRpgState.opponentHand = [51, 52, 61, 60, 43];
-      playRpgState.opponentName = '섀도우렐름 정예단';
-    }
+    const epDeck = getEpisodeActualOpponentDeck(playRpgState.currentChapter);
+    playRpgState.opponentHand = [...epDeck.cardIds];
+    const chapLabel = formatChapterLabel(playRpgState.currentChapter, playRpgState.reincarnationLevel);
+    const secondName = epDeck.deckNames[1] ? `·${epDeck.deckNames[1]}` : '';
+    playRpgState.opponentName = `${chapLabel} 등장인물 (${epDeck.leaderName}${secondName} 외)`;
   }
 }
 
 /**
  * Helper to get 4-way card stats [top, right, bottom, left]
  */
-function getCardCombatStats(cardId: number): [number, number, number, number] {
+function getCardCombatStats(
+  cardId: number,
+  owner: 'player' | 'opponent' = 'player'
+): [number, number, number, number] {
   const card = CARD_DATABASE[cardId];
+  if (owner === 'opponent') {
+    const rebirthLevel = playRpgState.reincarnationLevel || 0;
+    const chapter = playRpgState.currentChapter || 1;
+    const rawTop = card?.top || 3;
+    const rawRight = card?.right || 3;
+    const rawBottom = card?.bottom || 3;
+    const rawLeft = card?.left || 3;
+
+    if (rebirthLevel <= 0) {
+      // First playthrough (Reincarnation 0): scale episode character stats smoothly by chapter (1..40)
+      const cap = 2 + Math.floor(chapter / 5);
+      return [
+        Math.max(1, Math.min(rawTop, cap)),
+        Math.max(1, Math.min(rawRight, cap)),
+        Math.max(1, Math.min(rawBottom, cap)),
+        Math.max(1, Math.min(rawLeft, cap)),
+      ];
+    }
+
+    // Reincarnation 1+: Full character base stats + progressive Reincarnation bonus
+    const rebirthBonus = getOpponentRebirthStatBonus(rebirthLevel, chapter);
+    return [
+      Math.max(4, rawTop) + rebirthBonus,
+      Math.max(4, rawRight) + rebirthBonus,
+      Math.max(4, rawBottom) + rebirthBonus,
+      Math.max(4, rawLeft) + rebirthBonus,
+    ];
+  }
+
   const nurture = (cardNurtureStore as any).getCard(cardId);
-  const bonus = nurture.bonusStats || { top: 0, right: 0, bottom: 0, left: 0 };
+  const bonus = nurture?.bonusStats || { top: 0, right: 0, bottom: 0, left: 0 };
 
   const top = (card?.top || 2) + bonus.top;
   const right = (card?.right || 2) + bonus.right;
@@ -734,7 +856,7 @@ export function playCardToSlot(
   if (!hand[handIdx]) return { success: false, completed: false };
 
   const cardId = hand[handIdx];
-  const stats = getCardCombatStats(cardId);
+  const stats = getCardCombatStats(cardId, owner);
   const card = CARD_DATABASE[cardId];
 
   // Place card
@@ -831,6 +953,35 @@ function evaluateBoardFlips(
 }
 
 /**
+ * Count how many opponent cards would be flipped if `stats` were placed at `slot` by `placedOwner`
+ */
+function countPotentialFlips(
+  slot: number,
+  placedOwner: 'player' | 'opponent',
+  placedStats: [number, number, number, number]
+): number {
+  const [top, right, bottom, left] = placedStats;
+  let flips = 0;
+  if (slot >= 3) {
+    const n = playRpgState.battleBoard[slot - 3];
+    if (n && n.owner !== placedOwner && top > n.stats[2]) flips++;
+  }
+  if (slot <= 5) {
+    const n = playRpgState.battleBoard[slot + 3];
+    if (n && n.owner !== placedOwner && bottom > n.stats[0]) flips++;
+  }
+  if (slot % 3 !== 0) {
+    const n = playRpgState.battleBoard[slot - 1];
+    if (n && n.owner !== placedOwner && left > n.stats[1]) flips++;
+  }
+  if (slot % 3 !== 2) {
+    const n = playRpgState.battleBoard[slot + 1];
+    if (n && n.owner !== placedOwner && right > n.stats[3]) flips++;
+  }
+  return flips;
+}
+
+/**
  * Execute AI opponent turn
  */
 function executeOpponentTurn(): void {
@@ -844,7 +995,31 @@ function executeOpponentTurn(): void {
 
   if (emptySlots.length === 0) return;
 
-  // AI picks best slot or random slot
+  // On Reincarnation 1+, AI actively chooses the card & slot that maximizes flips of player cards
+  if (playRpgState.reincarnationLevel >= 1) {
+    let bestHandIdx = 0;
+    let bestSlot = emptySlots[0];
+    let bestScore = -1;
+
+    for (let hIdx = 0; hIdx < playRpgState.opponentHand.length; hIdx++) {
+      const cid = playRpgState.opponentHand[hIdx];
+      const stats = getCardCombatStats(cid, 'opponent');
+      const statSum = stats[0] + stats[1] + stats[2] + stats[3];
+      for (const sIdx of emptySlots) {
+        const flips = countPotentialFlips(sIdx, 'opponent', stats);
+        const score = flips * 1000 + statSum;
+        if (score > bestScore) {
+          bestScore = score;
+          bestHandIdx = hIdx;
+          bestSlot = sIdx;
+        }
+      }
+    }
+    playCardToSlot(bestHandIdx, bestSlot, 'opponent');
+    return;
+  }
+
+  // Reincarnation 0: Standard AI
   const randomSlot = emptySlots[Math.floor(Math.random() * emptySlots.length)];
   const randomHandIdx = Math.floor(Math.random() * playRpgState.opponentHand.length);
 
@@ -869,19 +1044,33 @@ export function finalizeBattle(): void {
     finishBattleAndAwardExp();
   } else if (pScore < oScore) {
     playRpgState.battleWinner = 'opponent';
-    playRpgState.battleMessage = `패배 (스코어 ${pScore} : ${oScore}). 재도전하거나 덱을 보강하세요.`;
+    const reb = playRpgState.reincarnationLevel;
+    playRpgState.battleMessage =
+      reb > 0
+        ? `⚠️ 패배 (스코어 ${pScore} : ${oScore}) · 환생 ${reb}회차 강화 덱에 막혔습니다! 카드를 업그레이드하지 않으면 다음 회차로 진행할 수 없습니다.`
+        : `⚠️ 패배 (스코어 ${pScore} : ${oScore}) · 승리해야 다음 회차로 진행할 수 있습니다. 카드를 업그레이드하거나 재도전하세요.`;
     if (playRpgState.repeatHunting) {
       setTimeout(() => {
         initBattle();
       }, 1500);
+    } else {
+      playRpgState.autoMode = false;
+      try {
+        localStorage.setItem('hero_kadan_rpg_auto_mode', 'false');
+      } catch {}
     }
   } else {
     playRpgState.battleWinner = 'draw';
-    playRpgState.battleMessage = `무승부 (스코어 ${pScore} : ${oScore}).`;
+    playRpgState.battleMessage = `⚠️ 무승부 (스코어 ${pScore} : ${oScore}) · 승리해야만 다음 회차로 전진할 수 있습니다. 카드를 업그레이드하거나 재도전하세요.`;
     if (playRpgState.repeatHunting) {
       setTimeout(() => {
         initBattle();
       }, 1500);
+    } else {
+      playRpgState.autoMode = false;
+      try {
+        localStorage.setItem('hero_kadan_rpg_auto_mode', 'false');
+      } catch {}
     }
   }
 }
@@ -1016,8 +1205,19 @@ export function completeReincarnation(): void {
 
 /**
  * Advance to next chapter (or trigger 3s Reincarnation Popup after Chapter 40)
+ * Strictly requires battle victory when called from an ended battle.
  */
 export function advanceNextChapter(): void {
+  if (
+    playRpgState.subState === 'battle' &&
+    playRpgState.battleWinner !== null &&
+    playRpgState.battleWinner !== 'player'
+  ) {
+    playRpgState.battleMessage =
+      '⚠️ 전투에서 승리해야만 다음 회차로 전진할 수 있습니다! 카드를 업그레이드하거나 재도전하세요.';
+    return;
+  }
+
   if (playRpgState.currentChapter >= 40) {
     triggerReincarnationPopup();
     return;
@@ -1119,7 +1319,7 @@ export function runAutoStep(): void {
     } else if (playRpgState.battleWinner) {
       if (playRpgState.repeatHunting) {
         initBattle();
-      } else {
+      } else if (playRpgState.battleWinner === 'player') {
         advanceNextChapter();
         // If 40th chapter triggered the 3-second Reincarnation Popup, wait for the 3s countdown!
         if (playRpgState.subState === 'reincarnation') {
@@ -1130,6 +1330,12 @@ export function runAutoStep(): void {
           playRpgState.heroTile = { ...nextEvent.tile };
           triggerDialogue(nextEvent);
         }
+      } else {
+        // Defeat or Draw: cannot advance to next chapter without winning (upgrade cards required)
+        playRpgState.autoMode = false;
+        try {
+          localStorage.setItem('hero_kadan_rpg_auto_mode', 'false');
+        } catch {}
       }
     }
   } else if (playRpgState.subState === 'reincarnation') {

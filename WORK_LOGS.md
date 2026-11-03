@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 16:04 KST] [#play 3x3 카드 배틀 회차별 실제 등장 캐릭터 상대 덱 구성 및 환생 누적 난이도 강화·카드 업그레이드 필수 관문 구현]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 회차(1~40화)별 실제 등장 카드 캐릭터로만 상대 5장 카드덱 100% 구성 (`kadanRpgStory.ts`, `playRpgEngine.ts`, `PlaySection.tsx`)**:
+    - `KADAN_RPG_NOVEL_SCRIPTS[1..40]`의 실제 회차별 등장 캐릭터(`sceneCharacters` 및 `cardId`)를 전수 분석하여, 1화부터 40화까지 모든 챕터의 상대 5장 카드덱(`opponentCardIds`)을 해당 회차에 실제로 등장하는 카드 캐릭터 5인으로만 정확히 편성.
+    - `getDynamicKadanEncounter`에서 환생 회차가 올라가더라도 임의의 고정 카드(`100`, `60`)로 덮어쓰지 않고 해당 회차의 실제 등장 캐릭터 5인을 그대로 유지하도록 수정.
+    - `getEpisodeActualOpponentDeck(chapter)`를 통해 전투 시작 시 해당 회차의 실제 등장 캐릭터 5장 핸드와 대표 캐릭터명, 등장 덱 명단을 배틀 모달 헤더에 표시.
+  - **2. 환생(Reincarnation) 누적 시 상대 카드덱 점진적 스탯/AI 강화 및 승리 필수(카드 업그레이드 관문) 적용 (`playRpgEngine.ts`, `PlaySection.tsx`)**:
+    - **환생 누적 스탯 스케일링 (`getOpponentRebirthStatBonus`)**:
+      - 환생 0회차(초회차)에서는 챕터 진행도에 맞춘 입문용 스탯 상한(`cap = 2 + Math.floor(chapter / 5)`)을 적용하고, 환생 1회차 이상부터는 상대 카드의 본래 기본 스탯 100% 해금 + 환생 회차 및 챕터에 비례하는 전 방향(N/E/S/W) 추가 스탯 보너스(`rebirthLevel * 4 + Math.floor((chapter - 1) / 8) * rebirthLevel`)를 부여.
+      - 환생 1회차 이상에서는 상대 AI가 단순 첫 슬롯 배치가 아닌, 플레이어 카드를 가장 많이 뒤집을 수 있는 최적의 카드와 슬롯을 계산(`countPotentialFlips`)하여 배치하도록 전술 AI 강화.
+    - **패배/무승부 시 다음 회차 진행 차단 (카드 업그레이드 필수 관문)**:
+      - `finalizeBattle()`, `advanceNextChapter()`, `runAutoStep()` 및 `PlaySection.tsx` 배틀 결과 UI에서 `battleWinner === 'player'`(승리)일 때만 다음 챕터 전진(`다음 챕터로 전진 ▶`)을 허용.
+      - 패배 또는 무승부 시 자동 진행(Auto-Play)을 즉시 중단하고 `[다음 챕터로 전진 ▶]` 버튼을 숨기며, 대신 `[⚔️ 현재 회차 재도전]` 버튼과 `[⬆️ 카드 업그레이드 (#card)]` 바로가기 버튼을 표시하여 카드를 육성/업그레이드하지 않으면 다음 회차로 넘어갈 수 없도록 구현.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (4,360개 모듈 변환, 0 errors, SPA 정적 라우트 61개 생성)
+  - 로컬 git 커밋: 완료 (git push 미실행 준수)
+  - 구글 폼 보고서 제출: 완료
+
 ## [2026-11-03 15:58 KST] [설정 소리 무음 버그 해결 (Web Audio 신디사이저 & 로컬 BGM 엔진 구축) 및 12개 국어 실시간 반응형 i18n 엔진 전면 적용]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

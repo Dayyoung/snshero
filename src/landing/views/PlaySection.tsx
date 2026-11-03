@@ -65,6 +65,8 @@ import {
   formatChapterLabel,
   closeDialogueAndStopPlay,
   completeReincarnation,
+  getEpisodeActualOpponentDeck,
+  getOpponentRebirthStatBonus,
   PlayTabKey,
 } from '../services/playRpgEngine';
 
@@ -833,7 +835,13 @@ function renderAdventureView(): string {
       <!-- Sub-State: 3. 3x3 Tactical Card Battle Modal Popup (Mobile & Desktop Full-Screen Overlay + Original TCG Hand Cards) -->
       ${
         playRpgState.subState === 'battle'
-          ? `
+          ? (() => {
+              const epDeck = getEpisodeActualOpponentDeck(currentChapter);
+              const rebirthBonus = getOpponentRebirthStatBonus(
+                playRpgState.reincarnationLevel,
+                currentChapter,
+              );
+              return `
             <div
               id="play-battle-modal-root"
               class="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 font-mono select-none overflow-y-auto"
@@ -853,10 +861,20 @@ function renderAdventureView(): string {
                 <!-- Battle Status Header -->
                 <div class="flex flex-wrap items-center justify-between pb-2.5 border-b border-white/10 gap-2">
                   <div>
-                    <span class="text-[11px] font-bold text-amber-400 uppercase">[${chapterLabel} · 3x3 전술 카드 배틀]</span>
-                    <h3 id="battle-modal-title" class="text-sm sm:text-lg font-black text-white m-0">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span class="text-[11px] font-bold text-amber-400 uppercase">[${chapterLabel} · 3x3 전술 카드 배틀]</span>
+                      ${
+                        playRpgState.reincarnationLevel > 0
+                          ? `<span class="px-1.5 py-0.5 bg-purple-950 text-purple-200 border border-purple-500/70 text-[10px] font-black rounded-sm">🔥 환생 ${playRpgState.reincarnationLevel}회차 강화 · 상대 전 스탯 +${rebirthBonus}</span>`
+                          : ''
+                      }
+                    </div>
+                    <h3 id="battle-modal-title" class="text-sm sm:text-lg font-black text-white m-0 mt-0.5">
                       플레이어 vs ${playRpgState.opponentName}
                     </h3>
+                    <div class="text-[10px] text-stone-400 mt-0.5">
+                      회차 등장 상대 덱: ${epDeck.deckNames.join(' · ')}
+                    </div>
                   </div>
                   <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
                     <span class="px-2 py-1 bg-sky-950 text-sky-300 rounded-sm border border-sky-800">
@@ -988,7 +1006,7 @@ function renderAdventureView(): string {
                   </div>
                 </div>
 
-                <!-- Battle Result Controls -->
+                <!-- Battle Result Controls (Victory Required to Advance Chapter) -->
                 ${
                   playRpgState.battleWinner
                     ? `
@@ -999,25 +1017,39 @@ function renderAdventureView(): string {
                           ${
                             playRpgState.battleWinner === 'player'
                               ? '🎉 전투 승리! 50 EXP 획득 완료.'
-                              : '패배. 다시 도전하세요.'
+                              : '⚠️ 승리하지 못하면 다음 회차로 진행할 수 없습니다. 카드를 업그레이드(#card)하거나 재도전하세요!'
                           }
                         </div>
 
-                        <div class="flex items-center gap-2">
+                        <div class="flex flex-wrap items-center gap-2">
                           <button
                             type="button"
                             data-action="play-repeat-hunting"
                             class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-sm min-h-[44px] cursor-pointer"
                           >
-                            🔁 반복 사냥 재전투
+                            ${playRpgState.battleWinner === 'player' ? '🔁 반복 사냥 재전투' : '⚔️ 현재 회차 재도전'}
                           </button>
-                          <button
-                            type="button"
-                            data-action="play-next-chapter"
-                            class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer"
-                          >
-                            ${currentChapter >= 40 ? '👑 40화 완주 · 환생하기 ▶' : '다음 챕터로 전진 ▶'}
-                          </button>
+                          ${
+                            playRpgState.battleWinner === 'player'
+                              ? `
+                                <button
+                                  type="button"
+                                  data-action="play-next-chapter"
+                                  class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer"
+                                >
+                                  ${currentChapter >= 40 ? '👑 40화 완주 · 환생하기 ▶' : '다음 챕터로 전진 ▶'}
+                                </button>
+                              `
+                              : `
+                                <button
+                                  type="button"
+                                  data-nav="card"
+                                  class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer"
+                                >
+                                  ⬆️ 카드 업그레이드 (#card)
+                                </button>
+                              `
+                          }
                         </div>
                       </div>
                     `
@@ -1025,7 +1057,8 @@ function renderAdventureView(): string {
                 }
               </section>
             </div>
-          `
+          `;
+            })()
           : ''
       }
 
