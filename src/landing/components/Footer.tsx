@@ -8,7 +8,7 @@
  */
 
 import { EXTERNAL_LINKS } from '../types';
-import { t } from '../services/i18n';
+import { t, tr } from '../services/i18n';
 
 export function renderFooter(): string {
   return `
@@ -21,14 +21,14 @@ export function renderFooter(): string {
             data-nav="book"
             class="min-h-[44px] flex items-center no-underline text-[#201d1d] font-bold hover:underline"
           >
-            <span>[📜] ${t('nav_book')} 40화</span>
+            <span>[📜] ${t('nav_book')} ${tr('40화', '40 Eps', '全40話')}</span>
           </a>
           <a
             href="#webtoon"
             data-nav="webtoon"
             class="min-h-[44px] flex items-center no-underline text-[#201d1d] font-bold hover:underline"
           >
-            <span>[🎨] ${t('nav_webtoon')} 840컷+</span>
+            <span>[🎨] ${t('nav_webtoon')} ${tr('840컷+', '840+ Cuts', '840カット+')}</span>
           </a>
           <a
             href="${EXTERNAL_LINKS.naverNovel}"
@@ -36,7 +36,7 @@ export function renderFooter(): string {
             rel="noopener noreferrer"
             class="min-h-[44px] flex items-center no-underline hover:text-[#201d1d] transition-colors"
           >
-            <span>[+] 네이버 웹소설</span>
+            <span>[+] ${tr('네이버 웹소설', 'Naver Web Novel', 'NAVER Web小説')}</span>
           </a>
           <a
             href="${EXTERNAL_LINKS.naverWebtoon}"
@@ -44,7 +44,7 @@ export function renderFooter(): string {
             rel="noopener noreferrer"
             class="min-h-[44px] flex items-center no-underline hover:text-[#201d1d] transition-colors"
           >
-            <span>[+] 네이버 웹툰</span>
+            <span>[+] ${tr('네이버 웹툰', 'Naver Webtoon', 'NAVER Webtoon')}</span>
           </a>
           <a
             href="${EXTERNAL_LINKS.munpiaNovel}"
@@ -52,7 +52,7 @@ export function renderFooter(): string {
             rel="noopener noreferrer"
             class="min-h-[44px] flex items-center no-underline hover:text-[#201d1d] transition-colors"
           >
-            <span>[+] 문피아 웹소설</span>
+            <span>[+] ${tr('문피아 웹소설', 'Munpia Web Novel', 'Munpia Web小説')}</span>
           </a>
           <a
             href="#setting"
@@ -73,7 +73,7 @@ export function renderFooter(): string {
         <!-- Copyright & System Info -->
         <div class="pt-6 flex flex-col md:flex-row items-center justify-between text-[11px] text-stone-500 space-y-2 md:space-y-0">
           <div>
-            © 2026 SNSHero.com (눈히어로.com). OpenCode Terminal-Flat Architecture.
+            © 2026 SNSHero.com ${tr('(눈히어로.com)', '', '')}. OpenCode Terminal-Flat Architecture.
           </div>
           <div class="flex items-center space-x-4">
             <span>[Web TCG Platform]</span>

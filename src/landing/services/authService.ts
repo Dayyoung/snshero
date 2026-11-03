@@ -6,6 +6,7 @@
  */
 
 import { signInWithGoogleAccount, signOutGoogleAccount } from '../../lib/googleAuthService';
+import { tr } from './i18n';
 
 export interface LandingUser {
   uid: string;
@@ -21,10 +22,11 @@ const STORAGE_KEY_NAME = 'hero_user_name';
 const STORAGE_KEY_AVATAR = 'hero_user_avatar';
 
 export function getCurrentUser(): LandingUser {
+  const defaultGuestName = tr('게스트 모험가', 'Guest Adventurer', 'ゲスト冒険者');
   if (typeof localStorage === 'undefined') {
     return {
       uid: 'guest_offline',
-      displayName: '게스트 모험가',
+      displayName: defaultGuestName,
       email: '',
       photoURL: 'https://api.dicebear.com/7.x/bottts/svg?seed=guest',
       isAnonymous: true,
@@ -37,9 +39,18 @@ export function getCurrentUser(): LandingUser {
     try {
       const parsed = JSON.parse(raw);
       if (parsed && parsed.uid) {
+        const rawName = parsed.displayName || '모험가';
+        const localizedDisplayName =
+          rawName === '게스트 모험가' || rawName === 'Guest Adventurer' || rawName === 'ゲスト冒険者'
+            ? defaultGuestName
+            : rawName === '모험가'
+            ? tr('모험가', 'Adventurer', '冒険者')
+            : rawName === '눈히어로 모험가'
+            ? tr('눈히어로 모험가', 'SNSHero Adventurer', 'SNSHero 冒険者')
+            : rawName;
         return {
           uid: parsed.uid,
-          displayName: parsed.displayName || '모험가',
+          displayName: localizedDisplayName,
           email: parsed.email || '',
           photoURL: parsed.photoURL || `https://api.dicebear.com/7.x/bottts/svg?seed=${parsed.displayName || 'Hero'}`,
           isAnonymous: Boolean(parsed.isAnonymous),
@@ -50,7 +61,11 @@ export function getCurrentUser(): LandingUser {
   }
 
   // Fallback: check hero_user_name
-  const name = localStorage.getItem(STORAGE_KEY_NAME) || '게스트 모험가';
+  const storedName = localStorage.getItem(STORAGE_KEY_NAME);
+  const name =
+    !storedName || storedName === '게스트 모험가' || storedName === 'Guest Adventurer' || storedName === 'ゲスト冒険者'
+      ? defaultGuestName
+      : storedName;
   const avatar = localStorage.getItem(STORAGE_KEY_AVATAR) || 'https://api.dicebear.com/7.x/bottts/svg?seed=guest';
   const guestUser: LandingUser = {
     uid: 'guest_' + Math.random().toString(36).substring(2, 9),

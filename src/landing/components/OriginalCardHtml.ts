@@ -17,6 +17,7 @@
 import { getCharacterAsset } from '../services/assetCatalog';
 import { CARD_DATABASE } from '../../cardDatabase';
 import { cardNurtureStore } from '../services/cardNurtureStore';
+import { tr } from '../services/i18n';
 
 export interface OriginalCardRenderOptions {
   className?: string;
@@ -106,7 +107,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
     : ability?.type === 'SHIELD' ? '[🛡️SHIELD]'
     : ability?.type === 'PIERCE' ? '[🎯PIERCE]'
     : ability?.type === 'COUNTER' ? '[⚔️COUNTER]'
-    : '[기본]';
+    : tr('[기본]', '[BASE]', '[基本]');
 
   const isSelected = options.isSelected || false;
   const showRedDot = options.showRedDot ?? (isOwned && cardNurtureStore.hasUnspentPoints(cardId));
@@ -137,7 +138,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
         border-color: ${rarityTheme.borderHex};
         box-shadow: ${isSelected ? '0 10px 25px -5px rgba(0,0,0,0.3)' : '0 2px 6px rgba(0,0,0,0.1)'};
       "
-      aria-label="${asset.nameKo} 원본 카드"
+      aria-label="${asset.nameKo} ${tr('원본 카드', 'Card', 'カード')}"
     >
       <!-- Metallic Corner Bracket SVG (Authentic TCG Ornament) -->
       <svg
@@ -168,7 +169,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
         <div
           class="absolute top-0.5 sm:top-1 left-1/2 -translate-x-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
           style="border-color: ${rarityTheme.statBadgeBorder};"
-          title="북(N): ${top}"
+          title="${tr('북(N)', 'North(N)', '北(N)')}: ${top}"
         >
           ${top}
         </div>
@@ -177,7 +178,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
         <div
           class="absolute bottom-0.5 sm:bottom-1 left-1/2 -translate-x-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
           style="border-color: ${rarityTheme.statBadgeBorder};"
-          title="남(S): ${bottom}"
+          title="${tr('남(S)', 'South(S)', '南(S)')}: ${bottom}"
         >
           ${bottom}
         </div>
@@ -186,7 +187,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
         <div
           class="absolute left-0.5 sm:left-1 top-1/2 -translate-y-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
           style="border-color: ${rarityTheme.statBadgeBorder};"
-          title="서(W): ${left}"
+          title="${tr('서(W)', 'West(W)', '西(W)')}: ${left}"
         >
           ${left}
         </div>
@@ -195,7 +196,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
         <div
           class="absolute right-0.5 sm:right-1 top-1/2 -translate-y-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-[0_1px_3px_rgba(0,0,0,0.35)] select-none"
           style="border-color: ${rarityTheme.statBadgeBorder};"
-          title="동(E): ${right}"
+          title="${tr('동(E)', 'East(E)', '東(E)')}: ${right}"
         >
           ${right}
         </div>

@@ -1099,6 +1099,32 @@ export const DICTIONARY: Record<SupportedLanguage, Record<string, string>> = {
 };
 
 /**
+ * Returns true if the current language is Korean ('ko').
+ */
+export function isKoreanLanguage(): boolean {
+  return getCurrentLanguage() === 'ko';
+}
+
+/**
+ * Inline multi-language string selector.
+ * - Returns `ko` when language is 'ko'.
+ * - Returns `ja` (or `en` fallback) when language is 'ja'.
+ * - Returns `extra[lang]` if provided for other languages, otherwise defaults to `en`.
+ */
+export function tr(
+  ko: string,
+  en: string,
+  ja?: string,
+  extra?: Partial<Record<SupportedLanguage, string>>
+): string {
+  const lang = getCurrentLanguage();
+  if (lang === 'ko') return ko;
+  if (lang === 'ja') return ja !== undefined ? ja : en;
+  if (extra && extra[lang]) return extra[lang]!;
+  return en;
+}
+
+/**
  * Translation helper function with fallback support.
  */
 export function t(key: string, fallback?: string): string {

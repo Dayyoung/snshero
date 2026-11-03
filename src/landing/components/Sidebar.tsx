@@ -10,7 +10,7 @@
 
 import { ViewKey, ModalKey, SIDE_NAV_ITEMS } from '../types';
 import { getCurrentUser } from '../services/authService';
-import { t } from '../services/i18n';
+import { t, tr } from '../services/i18n';
 
 export interface SidebarProps {
   isOpen: boolean;
@@ -46,7 +46,18 @@ export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {
 
   const itemsHtml = SIDE_NAV_DEFS.map((item) => {
     const isActive = !item.isModal && activeView === item.key;
-    const label = t(item.i18nKey, item.defaultLabel);
+    const label =
+      item.key === 'community'
+        ? tr('커뮤니티', 'Community', 'コミュニティ')
+        : t(item.i18nKey, item.defaultLabel);
+    const badgeLabel =
+      item.key === 'login'
+        ? tr('계정', 'Account', 'アカウント')
+        : item.key === 'book'
+        ? tr('40화', '40 Eps', '全40話')
+        : item.key === 'webtoon'
+        ? tr('840컷', '840 Cuts', '840カット')
+        : item.badge || tr('열기', 'Open', '開く');
     const activeClass = isActive
       ? 'bg-[#201d1d] text-[#fdfcfc]'
       : 'text-[#201d1d] hover:bg-[#f1eeee]';
@@ -58,13 +69,13 @@ export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {
             type="button"
             data-modal="${item.modalTarget}"
             class="sidebar-item-btn w-full px-4 py-3 text-sm font-medium flex items-center justify-between border-b border-[rgba(15,0,0,0.06)] rounded-sm min-h-[44px] transition-colors ${activeClass}"
-            aria-label="${label} 모달 열기"
+            aria-label="${label}"
           >
             <span class="flex items-center gap-3">
               <span class="text-base">${item.icon}</span>
               <span>${label}</span>
             </span>
-            <span class="text-[11px] text-stone-500 font-mono">[${item.badge || '열기'}]</span>
+            <span class="text-[11px] text-stone-500 font-mono">[${badgeLabel}]</span>
           </button>
         </li>
       `;
@@ -76,7 +87,7 @@ export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {
           type="button"
           data-nav="${item.key}"
           class="sidebar-item-btn w-full px-4 py-3 text-sm font-medium flex items-center justify-between border-b border-[rgba(15,0,0,0.06)] rounded-sm min-h-[44px] transition-colors ${activeClass}"
-          aria-label="${label} 섹션 이동"
+          aria-label="${label}"
         >
           <span class="flex items-center gap-3">
             <span class="text-base">${item.icon}</span>
@@ -152,7 +163,7 @@ export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {
             ${t('btn_game_start')}
           </a>
           <p class="text-[10px] text-stone-500 text-center font-mono m-0">
-            눈히어로.com (SNSHero.com) © 2026
+            ${tr('눈히어로.com (SNSHero.com)', 'SNSHero.com', 'SNSHero.com')} © 2026
           </p>
         </div>
       </aside>
