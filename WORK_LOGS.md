@@ -2,6 +2,27 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 15:46 KST] [게임 환경설정(#setting) 전면 구축(소리/12개언어/계정인증/로컬스토리지 백업복원) 및 Firebase 미승인도메인(auth/unauthorized-domain) 스마트 폴백 연동]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 게임 환경설정(#setting) 정식 뷰 구축 (`SettingSection.tsx`, `index.ts`, `types.ts`, `hashRouter.ts`)**:
+    - **소리 및 음향 (Sound & Audio)**: BGM 켜기/끄기, BGM 볼륨 슬라이더(0~100%), 배경음악 프리셋(타이틀/로비/결투/평화), SFX 켜기/끄기, SFX 볼륨 슬라이더(0~100%), 효과음 테스트 재생, 모바일 햅틱 진동 설정.
+    - **12대 공식 언어 (Language)**: 한국어(ko), English(en), 日本語(ja), 简体中文(zh-CN), 繁體中文(zh-TW), Deutsch(de), Español(es), Français(fr), Bahasa Indonesia(id), Русский(ru), ภาษาไทย(th), Tiếng Việt(vi) 12개 국어 퀵 선택 및 즉시 반영.
+    - **계정 및 인증 관리 (Account & Auth)**: Google 공식 로그인, 게스트 세션 모드, 모험가 닉네임 변경, 로그아웃 기능.
+    - **데이터 백업 및 복원 (Backup & Restore)**: 100% 로컬스토리지(`hero_*`) 기반 전체 카드, 덱, 재화, 레벨 데이터를 1개의 완전한 JSON 파일로 즉시 다운로드(Export), 클립보드 텍스트 복사, JSON 파일 업로드 복원(Import), 텍스트 직접 입력 복원, 전체 데이터 초기화(Factory Reset).
+    - **시스템 진단 및 도메인 정보**: 접속 호스트, LocalStorage 영구 보존 상태, Firebase 도메인 승인 상태 실시간 진단.
+  - **2. Firebase 미승인 도메인(`auth/unauthorized-domain`) 에러 스마트 폴백 연동 (`authService.ts`, `index.ts`)**:
+    - Tailscale 터널 도메인(`dayyoung-macbookpro.tail3717a4.ts.net`) 등 Firebase 콘솔 미승인 도메인에서 구글 로그인 시 발생하는 `Firebase: Error (auth/unauthorized-domain)` 에러를 자동 식별.
+    - 에러 팝업으로 끝나지 않고 사용자에게 터널 도메인 안내와 함께 '로컬 Google 프로필'로 즉시 전환할 수 있는 확인창(`confirm`) 및 `loginWithSimulatedGoogle`을 지원하여 인증 흐름이 중단되지 않도록 완벽 보장.
+  - **3. 네비게이션 및 라우팅 연동 (`Header.tsx`, `Sidebar.tsx`, `Footer.tsx`, `routes.ts`, `post-build.js`)**:
+    - GNB 상단 헤더, 모바일 사이드바 드로어, 하단 푸터에 `[설정]`(`⚙️`, `#setting`) 바로가기 메뉴 및 아이콘 배치.
+    - HashRouter에 `setting`, `settings` 뷰 및 레거시 리다이렉트 매핑.
+    - `post-build.js`에 정적 SPA Fallback 라우트 등록.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (4,358개 모듈 변환, 0 errors, SPA 정적 라우트 61개 생성)
+  - 로컬 git 커밋: 완료 (git push 미실행 준수)
+  - 구글 폼 보고서 제출: 완료 예정
+
 ## [2026-11-03 15:43 KST] [110종 전체 카드 수정 상반신(Bust) 즉시 반영 & 캐시 무효화, #deck 영웅 교체 기능 고도화, #play 3x3 카드 배틀 모바일 팝업화·하단 원본 카드 디자인 유지·대사창 버튼/캐릭터 위치 고정]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
