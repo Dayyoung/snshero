@@ -192,29 +192,118 @@ export function renderHomeSection(): string {
             }).join('')}
           </div>
 
-          <!-- Bottom Showcase Helper Text -->
-          <div class="text-center text-xs text-stone-500 pt-2">
-            출격 덱 카드(-12°~+12° 부채꼴 배치). 카드를 클릭하면 7등신 풀바디 비주얼과 4방향 스탯을 상세 검사할 수 있습니다.
+          <!-- Bottom Showcase Helper Text & Core Media Shortcuts (웹소설 #book, 웹툰 #webtoon) -->
+          <div class="space-y-4 pt-2">
+            <div class="text-center text-xs text-stone-500">
+              출격 덱 카드(-12°~+12° 부채꼴 배치). 카드를 클릭하면 7등신 풀바디 비주얼과 4방향 스탯을 상세 검사할 수 있습니다.
+            </div>
+
+            <!-- Original Style Media Shortcuts Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-3xl mx-auto w-full pt-1">
+              <a
+                href="#book"
+                data-nav="book"
+                class="min-h-[44px] px-3 py-2.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs sm:text-sm rounded-sm border border-[#201d1d] flex items-center justify-center gap-1.5 transition-colors no-underline cursor-pointer shadow-sm"
+                aria-label="공식 웹소설 바로가기"
+              >
+                <span>📜 공식 웹소설</span>
+                <span class="text-[10px] text-amber-300 font-normal">[40화]</span>
+              </a>
+
+              <a
+                href="#webtoon"
+                data-nav="webtoon"
+                class="min-h-[44px] px-3 py-2.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs sm:text-sm rounded-sm border border-[#201d1d] flex items-center justify-center gap-1.5 transition-colors no-underline cursor-pointer shadow-sm"
+                aria-label="공식 웹툰 바로가기"
+              >
+                <span>🎨 공식 웹툰</span>
+                <span class="text-[10px] text-emerald-300 font-normal">[840컷]</span>
+              </a>
+
+              <a
+                href="#play"
+                data-nav="play"
+                class="min-h-[44px] px-3 py-2.5 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold text-xs sm:text-sm rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center gap-1.5 transition-colors no-underline cursor-pointer"
+                aria-label="AI 전술 카드배틀 플레이 바로가기"
+              >
+                <span>⚔️ AI 카드배틀</span>
+              </a>
+
+              <a
+                href="#shop"
+                data-nav="shop"
+                class="min-h-[44px] px-3 py-2.5 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold text-xs sm:text-sm rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center gap-1.5 transition-colors no-underline cursor-pointer"
+                aria-label="카드상점 바로가기"
+              >
+                <span>🛒 카드 상점</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- 3. Official External Serializations Section (네이버 웹소설, 네이버 웹툰, 문피아) -->
+      <!-- 3. Official Web Novel & Webtoon Hub Section (눈히어로 공식 #book, #webtoon 및 외부 연재 플랫폼) -->
       <section class="w-full bg-[#fdfcfc] border-b border-[rgba(15,0,0,0.12)] py-12 px-4 sm:px-6 md:px-8 lg:px-12">
         <div class="w-full max-w-7xl mx-auto space-y-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[rgba(15,0,0,0.12)]">
             <div>
-              <span class="text-[11px] text-[#646262] font-bold uppercase tracking-wider">공식 연재 플랫폼 바로가기</span>
-              <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#201d1d] m-0">눈히어로 40부작 웹소설 &amp; 웹툰 공식 채널</h2>
+              <span class="text-[11px] text-[#646262] font-bold uppercase tracking-wider">공식 스토리 &amp; 연재 채널</span>
+              <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#201d1d] m-0">눈히어로 40부작 웹소설 &amp; 웹툰 바로가기</h2>
             </div>
             <div class="text-xs text-stone-500 font-mono">
               매주 연재 업데이트 진행 중
             </div>
           </div>
 
-          <!-- 3 Serialization Cards Grid: Naver Novel, Naver Webtoon, Munpia -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Card 1: Naver Web Novel -->
+          <!-- 4 Core Showcase Cards Grid: 공식 웹소설(#book), 공식 웹툰(#webtoon), 네이버 웹소설, 네이버 웹툰 -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Card 1: Official Web Novel (#book) -->
+            <div class="border-2 border-[#201d1d] bg-[#f8f7f7] p-6 rounded-none flex flex-col justify-between space-y-4 shadow-sm">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-[#201d1d]">눈히어로 웹소설</span>
+                  <span class="px-2 py-0.5 bg-amber-500 text-stone-950 text-[10px] font-black rounded-sm tracking-wider">
+                    [40화 전편]
+                  </span>
+                </div>
+                <h3 class="text-sm font-bold text-[#201d1d] m-0">눈히어로.com - 카단의 여정</h3>
+                <p class="text-xs text-stone-600 leading-relaxed m-0">
+                  평범한 청년 카단이 아케인 대륙 11개 종족을 모험하며 힘을 일깨우는 40부작 정통 판타지 대서사시.
+                </p>
+              </div>
+              <a
+                href="#book"
+                data-nav="book"
+                class="w-full py-3 px-4 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] text-center text-xs font-bold rounded-sm min-h-[44px] transition-colors no-underline flex items-center justify-center cursor-pointer"
+              >
+                📜 웹소설 읽으러 가기 →
+              </a>
+            </div>
+
+            <!-- Card 2: Official Webtoon (#webtoon) -->
+            <div class="border-2 border-[#201d1d] bg-[#f8f7f7] p-6 rounded-none flex flex-col justify-between space-y-4 shadow-sm">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-[#201d1d]">눈히어로 웹툰</span>
+                  <span class="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-black rounded-sm tracking-wider">
+                    [840컷+ 뷰어]
+                  </span>
+                </div>
+                <h3 class="text-sm font-bold text-[#201d1d] m-0">카단의 여정 비주얼 코믹스</h3>
+                <p class="text-xs text-stone-600 leading-relaxed m-0">
+                  840컷 이상의 고해상도 풀컬러 다크 판타지 컷씬과 캐릭터 대사, 타격 SFX가 살아있는 비주얼 웹툰.
+                </p>
+              </div>
+              <a
+                href="#webtoon"
+                data-nav="webtoon"
+                class="w-full py-3 px-4 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] text-center text-xs font-bold rounded-sm min-h-[44px] transition-colors no-underline flex items-center justify-center cursor-pointer"
+              >
+                🎨 웹툰 보러 가기 →
+              </a>
+            </div>
+
+            <!-- Card 3: Naver Web Novel -->
             <div class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 rounded-none flex flex-col justify-between space-y-4">
               <div class="space-y-2">
                 <div class="flex items-center justify-between">
@@ -223,9 +312,9 @@ export function renderHomeSection(): string {
                     [절찬 연재중]
                   </span>
                 </div>
-                <h3 class="text-sm font-bold text-[#201d1d] m-0">카단과 아케인 에코즈 40부작</h3>
+                <h3 class="text-sm font-bold text-[#201d1d] m-0">카단과 아케인 에코즈</h3>
                 <p class="text-xs text-stone-600 leading-relaxed m-0">
-                  네이버 챌린지 리그 공식 연재관. 눈보라 치는 설산의 맹세부터 새벽의 성채까지 이어지는 정통 다크 판타지 웹소설.
+                  네이버 챌린지 리그 공식 연재관. 눈보라 치는 설산의 맹세부터 새벽의 성채까지 이어지는 정통 웹소설.
                 </p>
               </div>
               <a
@@ -233,13 +322,13 @@ export function renderHomeSection(): string {
                 data-url="http://novel.naver.com/challenge/list?novelId=1250635"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="w-full py-3 px-4 bg-[#201d1d] text-[#fdfcfc] text-center text-xs font-bold rounded-sm min-h-[44px] hover:opacity-90 transition-opacity no-underline flex items-center justify-center"
+                class="w-full py-3 px-4 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-center text-xs font-bold rounded-sm min-h-[44px] transition-colors no-underline flex items-center justify-center"
               >
-                네이버 웹소설 읽으러 가기 →
+                네이버 웹소설 ↗
               </a>
             </div>
 
-            <!-- Card 2: Naver Webtoon -->
+            <!-- Card 4: Naver Webtoon -->
             <div class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 rounded-none flex flex-col justify-between space-y-4">
               <div class="space-y-2">
                 <div class="flex items-center justify-between">
@@ -248,9 +337,9 @@ export function renderHomeSection(): string {
                     [절찬 연재중]
                   </span>
                 </div>
-                <h3 class="text-sm font-bold text-[#201d1d] m-0">SNS히어로 레볼루션 웹툰 40화</h3>
+                <h3 class="text-sm font-bold text-[#201d1d] m-0">SNS히어로 레볼루션 웹툰</h3>
                 <p class="text-xs text-stone-600 leading-relaxed m-0">
-                  네이버 도전만화 공식 연재관. 840컷 이상의 다이나믹 컷씬과 말풍선, 타격 효과음이 살아있는 비주얼 코믹스.
+                  네이버 도전만화 공식 연재관. 다이나믹 컷씬과 타격 효과음이 살아있는 비주얼 코믹스.
                 </p>
               </div>
               <a
@@ -258,105 +347,10 @@ export function renderHomeSection(): string {
                 data-url="https://comic.naver.com/challenge/list?titleId=856677"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="w-full py-3 px-4 bg-[#201d1d] text-[#fdfcfc] text-center text-xs font-bold rounded-sm min-h-[44px] hover:opacity-90 transition-opacity no-underline flex items-center justify-center"
+                class="w-full py-3 px-4 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-center text-xs font-bold rounded-sm min-h-[44px] transition-colors no-underline flex items-center justify-center"
               >
-                네이버 웹툰 보러 가기 →
+                네이버 웹툰 ↗
               </a>
-            </div>
-
-            <!-- Card 3: Munpia -->
-            <div class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 rounded-none flex flex-col justify-between space-y-4">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-[#201d1d]">문피아 웹소설</span>
-                  <span class="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded-sm tracking-wider">
-                    [절찬 연재중]
-                  </span>
-                </div>
-                <h3 class="text-sm font-bold text-[#201d1d] m-0">아케인의 영웅들 (문피아 독점관)</h3>
-                <p class="text-xs text-stone-600 leading-relaxed m-0">
-                  문피아 공식 연재 링크. 11개 대륙의 심층 설정과 영웅들의 숨겨진 비화, 전술 카드 배틀의 원형 소설.
-                </p>
-              </div>
-              <a
-                href="${EXTERNAL_LINKS.munpiaNovel}"
-                data-url="https://nlink.munpia.com/link/munpia/novel/616551"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="w-full py-3 px-4 bg-[#201d1d] text-[#fdfcfc] text-center text-xs font-bold rounded-sm min-h-[44px] hover:opacity-90 transition-opacity no-underline flex items-center justify-center"
-              >
-                문피아 소설 읽으러 가기 →
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 4. Core 4 Media Pillars: 웹소설 · 웹게임 · 웹툰 · 애니메이션 쇼케이스 -->
-      <section class="w-full bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] py-12 px-4 sm:px-6 md:px-8 lg:px-12">
-        <div class="w-full max-w-7xl mx-auto space-y-8">
-          <div class="text-center space-y-2 max-w-2xl mx-auto">
-            <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-[#201d1d] m-0">눈히어로 4대 핵심 미디어 생태계</h2>
-            <p class="text-xs sm:text-sm text-stone-600 m-0">
-              하나의 세계관 아래 유기적으로 연결되는 4대 핵심 미디어: 웹소설, 원클릭 웹게임, 비주얼 웹툰, 시네마틱 애니메이션.
-            </p>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Pillar 1: 웹소설 -->
-            <div class="border border-[rgba(15,0,0,0.12)] p-6 bg-white rounded-none space-y-3 flex flex-col justify-between">
-              <div class="space-y-3">
-                <div class="text-2xl">📜</div>
-                <h3 class="text-base font-bold text-[#201d1d] m-0">40부작 공식 웹소설</h3>
-                <p class="text-xs text-stone-600 leading-relaxed m-0">
-                  11개 종족 110명 영웅들의 탄생과 운명, 카단의 성진호흡 수련과 암흑 군주들과의 전쟁을 다룬 40부작 완결 스토리라인.
-                </p>
-              </div>
-              <div class="pt-2">
-                <span class="text-[10px] text-stone-500 font-bold uppercase tracking-wider">NOVEL · 40 EPISODES</span>
-              </div>
-            </div>
-
-            <!-- Pillar 2: 웹게임 -->
-            <div class="border border-[rgba(15,0,0,0.12)] p-6 bg-white rounded-none space-y-3 flex flex-col justify-between">
-              <div class="space-y-3">
-                <div class="text-2xl">⚔️</div>
-                <h3 class="text-base font-bold text-[#201d1d] m-0">원클릭 AI 카드 웹게임</h3>
-                <p class="text-xs text-stone-600 leading-relaxed m-0">
-                  3x3 전술 보드에서 상하좌우(N·E·S·W) 수치와 속성 역상성을 파훼하는 두뇌 싸움. 최대 100레벨 카드 육성 및 스탯 커스터마이징.
-                </p>
-              </div>
-              <div class="pt-2">
-                <span class="text-[10px] text-stone-500 font-bold uppercase tracking-wider">GAME · 110 CARDS</span>
-              </div>
-            </div>
-
-            <!-- Pillar 3: 웹툰 -->
-            <div class="border border-[rgba(15,0,0,0.12)] p-6 bg-white rounded-none space-y-3 flex flex-col justify-between">
-              <div class="space-y-3">
-                <div class="text-2xl">🎨</div>
-                <h3 class="text-base font-bold text-[#201d1d] m-0">840컷+ 비주얼 웹툰</h3>
-                <p class="text-xs text-stone-600 leading-relaxed m-0">
-                  2,049컷 이상의 고해상도 다크 판타지 컷씬과 캐릭터 대사 말풍선, 박진감 넘치는 전투 타격 효과음(SFX)이 살아있는 비주얼 코믹스.
-                </p>
-              </div>
-              <div class="pt-2">
-                <span class="text-[10px] text-stone-500 font-bold uppercase tracking-wider">WEBTOON · 840+ PANELS</span>
-              </div>
-            </div>
-
-            <!-- Pillar 4: 애니메이션 -->
-            <div class="border border-[rgba(15,0,0,0.12)] p-6 bg-white rounded-none space-y-3 flex flex-col justify-between">
-              <div class="space-y-3">
-                <div class="text-2xl">🎬</div>
-                <h3 class="text-base font-bold text-[#201d1d] m-0">시네마틱 애니메이션</h3>
-                <p class="text-xs text-stone-600 leading-relaxed m-0">
-                  7등신 실사형 풀바디 연출과 40개 전편 MP4 비디오, 입체 오디오 BGM 및 다국어 자막 시스템이 탑재된 극장식 시네마.
-                </p>
-              </div>
-              <div class="pt-2">
-                <span class="text-[10px] text-stone-500 font-bold uppercase tracking-wider">ANIME · 40 MP4 FILMS</span>
-              </div>
             </div>
           </div>
         </div>

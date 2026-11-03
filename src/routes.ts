@@ -479,6 +479,8 @@ export function getViewFromPath(pathname: string, search = '', hash = ''): ViewT
     }
     if (rawHash === 'card' || rawHash === 'cards' || rawHash === 'mission' || rawHash === 'missions') return 'card' as ViewType;
     if (rawHash === 'shop' || rawHash === 'store') return 'shop';
+    if (rawHash === 'book' || rawHash === 'novel') return 'novel';
+    if (rawHash === 'webtoon' || rawHash === 'webtoo' || rawHash === 'cartoon' || rawHash === 'cartoonbook') return 'webtoon';
   }
 
   const queryView = params.get('view');

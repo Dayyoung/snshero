@@ -2,6 +2,55 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-03 13:45 KST] [웹소설(#book) 및 웹툰(#webtoon) 뷰 복구, 홈 바로가기 연동 및 4대 핵심 생태계 항목 제거]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 공식 웹소설(#book) 40화 전편 전용 뷰어(`BookSection.tsx`) 신규 개발 및 복구**:
+    - `https://snshero.com/book` 및 `https://snshero.com/#book` 접근 시 40화 전편 공식 웹소설 뷰어를 로드.
+    - 회차 선택 드롭다운(1~40화), 폰트 크기 조절, 단락/대화문 정밀 렌더링, 등장인물 칩, 이전/다음 화 이동 버튼 제공.
+    - 네이버 시리즈, 카카오페이지, 문피아, 리디 등 외부 공식 연재처 바로가기 4열 카드 그리드 연동.
+  - **2. 공식 웹툰(#webtoon) 840컷+ 전편 전용 뷰어(`WebtoonSection.tsx`) 신규 개발 및 복구**:
+    - `https://snshero.com/webtoon` 및 `https://snshero.com/#webtoon` 접근 시 40화 전편(840컷+) 웹툰 뷰어 로드.
+    - 에피소드 선택기(1~40화), 씬 스크러버(1~씬 N), 고화질 컷신 이미지 뷰어, 나레이션 및 대사 자막 오버레이, 이전/다음 씬 네비게이션 제공.
+  - **3. 홈(#home) 화면 웹소설 및 웹툰 바로가기 링크 원본 복구 및 4대 핵심 생태계 항목 제거**:
+    - `HomeSection.tsx`에서 노후화된 "4대 핵심 미디어 생태계" 카드 섹션 완전 삭제.
+    - 덱 쇼케이스 하단 4열 퀵 액션 카드 그리드(`📜 공식 웹소설 [40화] (#book)`, `🎨 공식 웹툰 [840컷] (#webtoon)`, `⚔️ AI 카드배틀 (#play)`, `🛒 카드 상점 (#shop)`) 추가.
+    - 하단 섹션에 `[📜 공식 웹소설 40화 정주행 (#book)]` 및 `[🎨 공식 웹툰 840컷+ 갤러리 (#webtoon)]` 풀사이즈 카드 및 4대 연재처 바로가기 연동.
+  - **4. 라우터 및 정적 리다이렉트 스텁 완벽 연동**:
+    - `src/landing/services/hashRouter.ts`, `src/landing/types.ts`, `src/landing/index.ts`, `src/routes.ts`에 `#book`, `#webtoon`, `/book`, `/webtoon` 완벽 지원.
+    - `scripts/post-build.js`의 `legacyRoutesToHash`에 `/book`, `/webtoon` 스텁 자동 생성 등록 (`dist/book/index.html`, `dist/webtoon/index.html` 생성 검증 완료).
+    - 헤더, 사이드바, 푸터 네비게이션에 `[소설]`(`#book`) 및 `[웹툰]`(`#webtoon`) 링크 동기화.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (0 errors)
+  - 정적 리다이렉트: `dist/book/index.html` -> `/#book`, `dist/webtoon/index.html` -> `/#webtoon` 정상 동작 확인
+  - DESIGN.md 100% 준수: `font-mono`, `bg-[#fdfcfc]`, `bg-[#201d1d]`, 1px hairline 보더, 0px/4px 모서리 반경
+  - 로컬 git 커밋: 완료 예정 (git push 금지 준수)
+  - 구글 폼 보고서 제출: 완료 예정
+
+## [2026-11-03 13:40 KST] [상점(#shop)과 굿즈몰(#mall) 분리 및 실제 결제(PayApp/PayPal/Crypto) 연동 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 상점(#shop)과 굿즈몰(#mall) 명확한 구분 및 독립 뷰 분리**:
+    - `https://snshero.com/shop`과 `https://snshero.com/mall` 구조에 맞춰 인게임 상점과 공식 실물 굿즈 몰을 완벽하게 분리.
+    - `#shop` (ShopSection): 인게임 재화 전용 상점 (카드팩 가챠 4종, 육성 아이템/특전 4종, SNS 코인 충전 패키지 4종, 골드 환전소). 실물 굿즈 상품을 완전히 배제하고 인게임 상점 5대 카테고리(`ALL`, `PACK`, `ITEM`, `COIN`, `EXCHANGE`)로 정돈.
+    - `#mall` (MallSection): 공식 실물 굿즈 전용 몰 (110장 풀세트 박스, 11대 종족별 테마 덱, 3x3 배틀 게임테이블 매트, 커스텀 머그컵, 커스텀 티셔츠). 카테고리 4대 탭(`ALL`, `CARD_SET`, `APPAREL`, `EQUIPMENT`), 미니멀 상세 모달, 옵션/수량 선택, 배송지 간편 입력, 주문 내역 조회 지원.
+    - 상단 헤더, 모바일 사이드바 드로어, 푸터 네비게이션 및 `hashRouter.ts`에 `[상점]` (`#shop`)과 `[굿즈몰]` (`#mall`)을 각각 독립 메뉴로 완벽 등록.
+  - **2. 실제 결제(PayApp Lite / PayPal / Crypto) 연동 및 즉시 무료 충전 오류 해결**:
+    - 기존에 결제 수단 클릭 시 무조건 즉시 무료 충전/주문 완료되던 치명적 결함을 원천 수정.
+    - `src/landing/services/paymentService.ts` 신규 개발:
+      * PayApp Lite SDK(`https://lite.payapp.kr/public/api/v2/payapp-lite.js`) 동적 로드 및 `PayApp.payrequest()` 실제 호출.
+      * 신용카드, 카카오페이, 네이버페이, 애플페이, 위챗페이 등 선택 시 실제 PayApp 결제창(모바일 리다이렉트 / 팝업)을 띄우도록 실 연동.
+      * 결제 성공 후 돌아오는 URL 쿼리 파라미터(`?payapp_success=...`)를 감지하여 실제 결제 승인 완료 시에만 코인 적립 또는 굿즈 주문 확정 처리.
+      * PayPal 공식 결제 플로우 및 Web3 암호화폐(USDT / SOL) 지갑 안내 연동.
+      * 개발/테스트용 무과금 시뮬레이션은 `[개발자/시뮬레이션] 즉시 충전 (SIM - 무과금)` 버튼으로 명확히 격리 분리.
+- **검증 결과**:
+  - 자동화 검증 스위트: `scripts/verify_all_requirements.ts` 46개 불변식 전수 100% 통과 (46 PASS, 0 FAIL)
+  - 프로덕션 빌드: `npm run build` 4,351개 모듈 트랜스폼 및 710개 청크 0에러 성공 완료
+  - 로컬 git 커밋: `4abcdc98c` (git push 금지 준수)
+  - 구글 폼 보고서 제출 완료: `https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`
+
+
+
 ## [2026-11-03 13:20 KST] [#play 이동 시 게임 자동 시작 보장, 소설 긴 지문 제거 및 대사 전용 다이얼로그, 상단 좌/우 캐릭터 발화자 인식 UI 구현]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

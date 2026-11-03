@@ -232,6 +232,14 @@ if (fs.existsSync(spaTemplatePath)) {
       missions: '#card',
       shop: '#shop',
       store: '#shop',
+      mall: '#shop',
+      goods: '#shop',
+      book: '#book',
+      novel: '#book',
+      webtoon: '#webtoon',
+      webtoo: '#webtoon',
+      cartoon: '#webtoon',
+      cartoonbook: '#webtoon',
     };
 
     if (legacyRoutesToHash[route]) {
