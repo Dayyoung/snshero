@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 06:53 KST] [#mall CARD_DATABASE.find TypeError 버그 수정 및 안전 인덱싱 전환]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 버그 원인 분석**:
+    - `CARD_DATABASE`가 배열이 아닌 `Record<number, DatabaseCard>` 객체 타입이었으나, 목업 프리뷰 함수 및 카드 피커 렌더링에서 `.find()` 및 `.slice()`를 호출하여 `Uncaught TypeError: M.find is not a function` 런타임 에러가 발생함.
+  - **2. 코드 수정 및 안전 인덱싱 전환 (`src/landing/views/MallSection.tsx`)**:
+    - `renderMugMockupPreview` 및 `renderTshirtMockupPreview`에서 `CARD_DATABASE[cardId] || CARD_DATABASE[41] || CARD_DATABASE[1]`로 직접 키 인덱싱하여 단 1회 룩업으로 성능 및 안정성 확보.
+    - 머그컵 및 티셔츠 카드 선택 피커 드로어의 루프를 `Object.values(CARD_DATABASE).slice(0, 110)`로 안전하게 변환.
+    - 카드 명칭 및 속성도 `getLocalizedCharacterName(c.id) || c.title`, `getLocalizedFactionName(card.element)`로 안전하게 참조하도록 수정.
+  - **3. 빌드 및 배포 검증**:
+    - `npm run build` 및 `node scripts/post-build.js` 빌드 성공 (0 error).
+    - 로컬 git 커밋 완료 (`16be7e489`, 지침에 따라 원격 git push 미실행 준수).
+    - 연동 구글 폼 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build` 성공 (0 error)
+  - 로컬 git 커밋: `16be7e489`
+  - 구글 폼 완료 보고서 제출 완료: `[개발] [#mall] CARD_DATABASE TypeError 버그 수정 및 안전 인덱싱 전환`
+
+
 ## [2026-11-04 06:50 KST] [#mall 커스텀 티셔츠 이미지 교체 및 카드 디자인 오버레이·피커 구현]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
