@@ -45,6 +45,8 @@ import {
   handleSettingAction,
   restoreBackupJson,
 } from './views/SettingSection';
+import { audioManager } from './services/audioManager';
+import { t, getCurrentLanguage } from './services/i18n';
 import {
   renderShopView,
   executeShopPurchase,
@@ -330,9 +332,13 @@ export function handleEventDelegation(event: Event): void {
   const target = rawTarget.closest('[data-nav], [data-modal], [data-action]') as HTMLElement | null;
   if (!target) return;
 
+  // Ensure AudioContext is awakened on user click
+  audioManager.getAudioContext();
+
   // Check 1: Top/Side Nav Button Navigation
   const navKey = target.getAttribute('data-nav') as ViewKey | null;
   if (navKey) {
+    audioManager.playClickTick();
     navigateTo(navKey);
     return;
   }
@@ -340,6 +346,7 @@ export function handleEventDelegation(event: Event): void {
   // Check 2: Modal Triggers
   const modalKey = target.getAttribute('data-modal') as ModalKey | null;
   if (modalKey) {
+    audioManager.playClickTick();
     state.activeModal = modalKey;
     state.isSidebarOpen = false;
     renderApp();
@@ -935,7 +942,20 @@ export function mountLanding(): void {
     window.addEventListener('snshero_language_changed', () => {
       renderApp();
     });
+    window.addEventListener('snshero_audio_settings_changed', () => {
+      if (state.activeView === 'setting') {
+        renderApp();
+      }
+    });
   }
+
+  // 7.1 Start BGM if enabled
+  try {
+    const audioSettings = audioManager.getSettings();
+    if (audioSettings.bgmEnabled) {
+      audioManager.playBgm();
+    }
+  } catch {}
 
   // 8. Auto-Play Runner interval for #play view
   if (typeof window !== 'undefined') {

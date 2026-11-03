@@ -2,13 +2,15 @@
  * src/landing/components/Header.tsx
  *
  * Top navigation component adhering to OpenCode Terminal-Flat design.
- * Features exact 6 navigation items: 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰.
+ * Features exact 9 navigation items: 홈, 마이덱, 플레이, 카드, 상점, 굿즈몰, 웹소설, 웹툰, 설정.
+ * Fully supports live 12-language localization (i18n).
  * Includes md: and lg: responsive utilities and 44px+ touch targets.
  * Pure TypeScript template string generator (Zero React runtime).
  */
 
 import { ViewKey, ModalKey, TOP_NAV_ITEMS } from '../types';
 import { getCurrentUser } from '../services/authService';
+import { t, getCurrentLanguage } from '../services/i18n';
 
 export interface HeaderProps {
   activeView: ViewKey;
@@ -19,25 +21,30 @@ export interface HeaderProps {
 
 interface NavItemDef {
   key: ViewKey | 'mall';
-  label: (typeof TOP_NAV_ITEMS)[number];
+  i18nKey: string;
+  defaultLabel: string;
   isModal?: boolean;
 }
 
 export const TOP_NAV_DEFS: NavItemDef[] = [
-  { key: 'home', label: '홈' as any },
-  { key: 'deck', label: '마이덱' as any },
-  { key: 'play', label: '플레이' as any },
-  { key: 'card', label: '카드' as any },
-  { key: 'shop', label: '상점' as any },
-  { key: 'mall', label: '굿즈몰' as any },
-  { key: 'book', label: '웹소설' as any },
-  { key: 'webtoon', label: '웹툰' as any },
-  { key: 'setting', label: '설정' as any },
+  { key: 'home', i18nKey: 'nav_home', defaultLabel: '홈' },
+  { key: 'deck', i18nKey: 'nav_deck', defaultLabel: '마이덱' },
+  { key: 'play', i18nKey: 'nav_play', defaultLabel: '플레이' },
+  { key: 'card', i18nKey: 'nav_card', defaultLabel: '카드' },
+  { key: 'shop', i18nKey: 'nav_shop', defaultLabel: '상점' },
+  { key: 'mall', i18nKey: 'nav_mall', defaultLabel: '굿즈몰' },
+  { key: 'book', i18nKey: 'nav_book', defaultLabel: '웹소설' },
+  { key: 'webtoon', i18nKey: 'nav_webtoon', defaultLabel: '웹툰' },
+  { key: 'setting', i18nKey: 'nav_setting', defaultLabel: '설정' },
 ];
 
 export function renderHeader(activeView: ViewKey): string {
+  const currentLang = getCurrentLanguage();
+  const brandName = currentLang === 'ko' ? '눈히어로.com' : 'SNSHero.com';
+
   const navItemsHtml = TOP_NAV_DEFS.map((item) => {
     const isActive = !item.isModal && activeView === item.key;
+    const label = t(item.i18nKey, item.defaultLabel);
     const activeClass = isActive
       ? 'bg-[#201d1d] text-[#fdfcfc]'
       : 'text-[#646262] hover:text-[#201d1d] hover:bg-[#f1eeee]';
@@ -48,9 +55,9 @@ export function renderHeader(activeView: ViewKey): string {
           type="button"
           data-modal="${item.key}"
           class="nav-item-btn px-3 py-2 text-xs font-semibold rounded-sm transition-colors min-h-[44px] flex items-center justify-center ${activeClass}"
-          aria-label="${item.label} 모달 열기"
+          aria-label="${label} 모달 열기"
         >
-          ${item.label}
+          ${label}
         </button>
       `;
     }
@@ -61,9 +68,9 @@ export function renderHeader(activeView: ViewKey): string {
         data-nav="${item.key}"
         class="nav-item-btn px-3 py-2 text-xs font-semibold rounded-sm transition-colors min-h-[44px] flex items-center justify-center ${activeClass}"
         aria-current="${isActive ? 'page' : 'false'}"
-        aria-label="${item.label} 섹션 이동"
+        aria-label="${label} 섹션 이동"
       >
-        ${item.label}
+        ${label}
       </button>
     `;
   }).join('');
@@ -83,26 +90,26 @@ export function renderHeader(activeView: ViewKey): string {
           </button>
           <a href="#home" data-nav="home" class="brand-link flex items-center gap-2 text-sm md:text-base font-bold tracking-tight text-[#201d1d] min-h-[44px] no-underline">
             <span class="w-2.5 h-2.5 bg-[#201d1d] rounded-none inline-block"></span>
-            <span>눈히어로.com</span>
+            <span>${brandName}</span>
             <span class="hidden md:inline-block text-[11px] font-normal text-[#646262] border border-[rgba(15,0,0,0.12)] px-1.5 py-0.5 rounded-sm">
               v2.1
             </span>
           </a>
         </div>
 
-        <!-- Desktop Navigation Bar (Exact 6 items: 홈, 마이덱, 플레이, 미션, 상점, 쇼핑몰) -->
+        <!-- Desktop Navigation Bar -->
         <nav class="hidden lg:flex items-center gap-1.5 desktop-nav-cluster" aria-label="메인 상단 내비게이션">
           ${navItemsHtml}
         </nav>
 
-        <!-- Right Action: User Login & Game Launch -->
+        <!-- Right Action: Setting, User Login & Game Launch -->
         <div class="flex items-center gap-2">
           <a
             href="#setting"
             data-nav="setting"
             class="p-2 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer no-underline ${activeView === 'setting' ? 'bg-[#201d1d] text-[#fdfcfc]' : ''}"
-            aria-label="게임 환경설정"
-            title="게임 환경설정 (소리/언어/백업)"
+            aria-label="${t('nav_setting')}"
+            title="${t('setting_title')}"
           >
             ⚙️
           </a>
@@ -127,9 +134,9 @@ export function renderHeader(activeView: ViewKey): string {
                 type="button"
                 data-modal="login"
                 class="px-3 py-2 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center cursor-pointer"
-                aria-label="로그인"
+                aria-label="${t('btn_login')}"
               >
-                로그인
+                ${t('btn_login')}
               </button>
             `;
           })()}
@@ -137,9 +144,9 @@ export function renderHeader(activeView: ViewKey): string {
             href="#play"
             data-nav="play"
             class="px-3.5 sm:px-4 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center no-underline"
-            aria-label="플레이 게임 섹션으로 이동"
+            aria-label="${t('btn_game_start')}"
           >
-            게임 시작 →
+            ${t('btn_game_start')}
           </a>
         </div>
       </div>

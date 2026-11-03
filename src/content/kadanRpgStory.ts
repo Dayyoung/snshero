@@ -215,46 +215,46 @@ const encounter = (
 });
 
 export const KADAN_RPG_ENCOUNTERS: KadanRpgEncounter[] = [
-  encounter('enc-ch01', 'kadan_rpg_opp_ch01', [51, 52, 61, 60, 43], 'easy', 'reward-ch01', true),
-  encounter('enc-ch02', 'kadan_rpg_opp_ch02', [44, 45, 46, 70, 74], 'easy', 'reward-ch02', false),
-  encounter('enc-ch03', 'kadan_rpg_opp_ch03', [13, 89, 54, 55, 48], 'easy', 'reward-ch03', false),
-  encounter('enc-ch04', 'kadan_rpg_opp_ch04', [81, 82, 83, 87, 47], 'easy', 'reward-ch04', true),
-  encounter('enc-ch05', 'kadan_rpg_opp_ch05', [13, 25, 51, 74, 70], 'normal', 'reward-ch05', false),
-  encounter('enc-ch06', 'kadan_rpg_opp_ch06', [66, 74, 84, 64, 43], 'normal', 'reward-ch06', false),
-  encounter('enc-ch07', 'kadan_rpg_opp_ch07', [87, 88, 61, 81, 52], 'normal', 'reward-ch07', false),
-  encounter('enc-ch08', 'kadan_rpg_opp_ch08', [90, 71, 11, 60, 49], 'boss', 'reward-ch08', true),
-  encounter('enc-ch09', 'kadan_rpg_opp_ch09', [51, 61, 25, 107, 41], 'normal', 'reward-story', false),
-  encounter('enc-ch10', 'kadan_rpg_opp_ch10', [61, 107, 51, 11, 43], 'normal', 'reward-ally', false),
-  encounter('enc-ch11', 'kadan_rpg_opp_ch11', [11, 13, 89, 74, 43], 'normal', 'reward-story', false),
-  encounter('enc-ch12', 'kadan_rpg_opp_ch12', [99, 49, 61, 107, 43], 'hard', 'reward-ally', false),
-  encounter('enc-ch13', 'kadan_rpg_opp_ch13', [86, 25, 90, 62, 11], 'normal', 'reward-story', false),
-  encounter('enc-ch14', 'kadan_rpg_opp_ch14', [46, 13, 89, 61, 52], 'normal', 'reward-story', false),
-  encounter('enc-ch15', 'kadan_rpg_opp_ch15', [13, 38, 86, 46, 54], 'hard', 'reward-ally', false),
-  encounter('enc-ch16', 'kadan_rpg_opp_ch16', [60, 43, 61, 23, 107], 'boss', 'reward-boss', true),
-  encounter('enc-ch17', 'kadan_rpg_opp_ch17', [84, 64, 81, 46, 11], 'hard', 'reward-story', false),
-  encounter('enc-ch18', 'kadan_rpg_opp_ch18', [69, 99, 64, 62, 11], 'hard', 'reward-story', false),
-  encounter('enc-ch19', 'kadan_rpg_opp_ch19', [25, 45, 13, 69, 62], 'hard', 'reward-ally', false),
-  encounter('enc-ch20', 'kadan_rpg_opp_ch20', [69, 25, 46, 90, 62], 'hard', 'reward-story', false),
-  encounter('enc-ch21', 'kadan_rpg_opp_ch21', [61, 60, 86, 38, 11], 'hard', 'reward-story', false),
-  encounter('enc-ch22', 'kadan_rpg_opp_ch22', [74, 84, 64, 60, 11], 'hard', 'reward-ally', false),
-  encounter('enc-ch23', 'kadan_rpg_opp_ch23', [50, 80, 86, 43, 11], 'hard', 'reward-story', false),
-  encounter('enc-ch24', 'kadan_rpg_opp_ch24', [60, 47, 38, 11, 62], 'boss', 'reward-boss', true),
-  encounter('enc-ch25', 'kadan_rpg_opp_ch25', [61, 60, 80, 11, 41], 'hard', 'reward-story', false),
-  encounter('enc-ch26', 'kadan_rpg_opp_ch26', [61, 60, 80, 41, 11], 'hard', 'reward-story', false),
-  encounter('enc-ch27', 'kadan_rpg_opp_ch27', [47, 81, 64, 84, 11], 'hard', 'reward-story', false),
-  encounter('enc-ch28', 'kadan_rpg_opp_ch28', [61, 86, 11, 62, 41], 'hard', 'reward-ally', false),
-  encounter('enc-ch29', 'kadan_rpg_opp_ch29', [5, 38, 54, 62, 11], 'boss', 'reward-story', false),
-  encounter('enc-ch30', 'kadan_rpg_opp_ch30', [66, 65, 87, 5, 11], 'boss', 'reward-story', false),
-  encounter('enc-ch31', 'kadan_rpg_opp_ch31', [1, 2, 5, 69, 11], 'boss', 'reward-story', false),
-  encounter('enc-ch32', 'kadan_rpg_opp_ch32', [23, 61, 69, 1, 11], 'boss', 'reward-boss', true),
-  encounter('enc-ch33', 'kadan_rpg_opp_ch33', [60, 61, 69, 5, 62], 'boss', 'reward-boss', true),
-  encounter('enc-ch34', 'kadan_rpg_opp_ch34', [25, 45, 74, 60, 70], 'boss', 'reward-story', false),
-  encounter('enc-ch35', 'kadan_rpg_opp_ch35', [49, 25, 74, 70, 61], 'boss', 'reward-ally', false),
-  encounter('enc-ch36', 'kadan_rpg_opp_ch36', [47, 81, 60, 64, 61], 'boss', 'reward-story', false),
-  encounter('enc-ch37', 'kadan_rpg_opp_ch37', [47, 81, 61, 11, 60], 'boss', 'reward-story', false),
-  encounter('enc-ch38', 'kadan_rpg_opp_ch38', [61, 47, 80, 70, 45], 'boss', 'reward-boss', true),
-  encounter('enc-ch39', 'kadan_rpg_opp_ch39', [60, 5, 11, 90, 61], 'boss', 'reward-boss', true),
-  encounter('enc-ch40', 'kadan_rpg_opp_ch40', [41, 50, 43, 47, 11], 'boss', 'reward-ending', true),
+  encounter('enc-ch01', 'kadan_rpg_opp_ch01', [50, 42, 43, 107, 49], 'easy', 'reward-ch01', false),
+  encounter('enc-ch02', 'kadan_rpg_opp_ch02', [49, 50, 42, 45, 46], 'easy', 'reward-ch02', false),
+  encounter('enc-ch03', 'kadan_rpg_opp_ch03', [63, 45, 46, 44, 74], 'easy', 'reward-ch03', false),
+  encounter('enc-ch04', 'kadan_rpg_opp_ch04', [50, 42, 47, 81, 45], 'easy', 'reward-ch04', false),
+  encounter('enc-ch05', 'kadan_rpg_opp_ch05', [70, 63, 48, 89, 50], 'normal', 'reward-ch05', false),
+  encounter('enc-ch06', 'kadan_rpg_opp_ch06', [45, 46, 74, 44, 70], 'normal', 'reward-ch06', false),
+  encounter('enc-ch07', 'kadan_rpg_opp_ch07', [66, 25, 89, 81, 61], 'normal', 'reward-ch07', false),
+  encounter('enc-ch08', 'kadan_rpg_opp_ch08', [50, 66, 90, 62, 11], 'boss', 'reward-ch08', false),
+  encounter('enc-ch09', 'kadan_rpg_opp_ch09', [11, 50, 62, 89, 51], 'normal', 'reward-story', false),
+  encounter('enc-ch10', 'kadan_rpg_opp_ch10', [62, 43, 61, 11, 50], 'normal', 'reward-ally', false),
+  encounter('enc-ch11', 'kadan_rpg_opp_ch11', [62, 43, 50, 11, 42], 'normal', 'reward-story', false),
+  encounter('enc-ch12', 'kadan_rpg_opp_ch12', [43, 89, 11, 107, 49], 'hard', 'reward-ally', false),
+  encounter('enc-ch13', 'kadan_rpg_opp_ch13', [62, 61, 86, 50, 11], 'normal', 'reward-story', false),
+  encounter('enc-ch14', 'kadan_rpg_opp_ch14', [62, 86, 46, 23, 50], 'normal', 'reward-story', false),
+  encounter('enc-ch15', 'kadan_rpg_opp_ch15', [62, 61, 86, 89, 50], 'hard', 'reward-ally', false),
+  encounter('enc-ch16', 'kadan_rpg_opp_ch16', [11, 50, 43, 62, 61], 'boss', 'reward-boss', false),
+  encounter('enc-ch17', 'kadan_rpg_opp_ch17', [46, 84, 62, 11, 64], 'hard', 'reward-story', false),
+  encounter('enc-ch18', 'kadan_rpg_opp_ch18', [62, 25, 11, 50, 23], 'hard', 'reward-story', false),
+  encounter('enc-ch19', 'kadan_rpg_opp_ch19', [62, 25, 23, 11, 50], 'hard', 'reward-ally', false),
+  encounter('enc-ch20', 'kadan_rpg_opp_ch20', [11, 25, 62, 23, 46], 'hard', 'reward-story', false),
+  encounter('enc-ch21', 'kadan_rpg_opp_ch21', [46, 62, 61, 50, 43], 'hard', 'reward-story', false),
+  encounter('enc-ch22', 'kadan_rpg_opp_ch22', [61, 46, 62, 11, 74], 'hard', 'reward-ally', false),
+  encounter('enc-ch23', 'kadan_rpg_opp_ch23', [50, 43, 46, 62, 11], 'hard', 'reward-story', false),
+  encounter('enc-ch24', 'kadan_rpg_opp_ch24', [62, 50, 43, 23, 11], 'boss', 'reward-boss', false),
+  encounter('enc-ch25', 'kadan_rpg_opp_ch25', [62, 61, 11, 89, 60], 'hard', 'reward-story', false),
+  encounter('enc-ch26', 'kadan_rpg_opp_ch26', [61, 62, 11, 89, 13], 'hard', 'reward-story', false),
+  encounter('enc-ch27', 'kadan_rpg_opp_ch27', [62, 11, 50, 43, 61], 'hard', 'reward-story', false),
+  encounter('enc-ch28', 'kadan_rpg_opp_ch28', [61, 13, 89, 62, 60], 'hard', 'reward-ally', false),
+  encounter('enc-ch29', 'kadan_rpg_opp_ch29', [62, 11, 23, 61, 46], 'boss', 'reward-story', false),
+  encounter('enc-ch30', 'kadan_rpg_opp_ch30', [62, 11, 74, 89, 45], 'boss', 'reward-story', false),
+  encounter('enc-ch31', 'kadan_rpg_opp_ch31', [61, 46, 74, 62, 11], 'boss', 'reward-story', false),
+  encounter('enc-ch32', 'kadan_rpg_opp_ch32', [62, 11, 25, 13, 23], 'boss', 'reward-boss', false),
+  encounter('enc-ch33', 'kadan_rpg_opp_ch33', [61, 99, 62, 46, 74], 'boss', 'reward-boss', false),
+  encounter('enc-ch34', 'kadan_rpg_opp_ch34', [62, 61, 45, 46, 74], 'boss', 'reward-story', false),
+  encounter('enc-ch35', 'kadan_rpg_opp_ch35', [62, 11, 45, 74, 13], 'boss', 'reward-ally', false),
+  encounter('enc-ch36', 'kadan_rpg_opp_ch36', [62, 42, 61, 50, 43], 'boss', 'reward-story', false),
+  encounter('enc-ch37', 'kadan_rpg_opp_ch37', [50, 62, 61, 81, 89], 'boss', 'reward-story', false),
+  encounter('enc-ch38', 'kadan_rpg_opp_ch38', [61, 13, 89, 62, 50], 'boss', 'reward-boss', false),
+  encounter('enc-ch39', 'kadan_rpg_opp_ch39', [60, 61, 62, 43, 89], 'boss', 'reward-boss', false),
+  encounter('enc-ch40', 'kadan_rpg_opp_ch40', [62, 50, 11, 46, 81], 'boss', 'reward-ending', false),
   // Legacy aliases for backwards compatibility
   encounter('enc-mid', 'kadan_rpg_opp_shadow_court', [56, 58, 60, 91, 100], 'hard', 'reward-ally'),
   encounter('enc-boss', 'kadan_rpg_opp_arcane_boss', [60, 99, 100, 50, 109], 'boss', 'reward-boss', true),
@@ -370,15 +370,9 @@ export const getDynamicKadanEncounter = (
     else scaledDifficulty = 'boss';
   }
 
-  let cards = baseEncounter?.opponentCardIds || [event.speakerCardId || 41, 1, 2, 3, 4];
-  if (rebirthLevel >= 1) {
-    cards = cards.map((cid, idx) => {
-      if (idx === 0) return cid;
-      if (rebirthLevel >= 2 && idx === 1) return 100;
-      if (rebirthLevel >= 1 && idx === 2 && cid < 40) return 60;
-      return cid;
-    });
-  }
+  const cards = baseEncounter?.opponentCardIds
+    ? [...baseEncounter.opponentCardIds.slice(0, 5)]
+    : [event.speakerCardId || 50, 42, 43, 107, 49];
 
   return {
     id: encId,
@@ -387,7 +381,7 @@ export const getDynamicKadanEncounter = (
     difficulty: scaledDifficulty,
     firstClearRewardId: baseEncounter?.firstClearRewardId || event.rewardId || 'reward-story',
     repeatRewardId: scaledDifficulty === 'boss' ? undefined : 'reward-story',
-    allowLossProgress: chapter <= 4 || [1, 4, 8, 16, 40].includes(chapter),
+    allowLossProgress: false,
   };
 };
 

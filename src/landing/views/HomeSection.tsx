@@ -17,6 +17,7 @@ import { getCharacterAsset, FACTION_PALETTES } from '../services/assetCatalog';
 import { cardNurtureStore } from '../services/cardNurtureStore';
 import { CARD_DATABASE } from '../../cardDatabase';
 import { renderOriginalCardHtml } from '../components/OriginalCardHtml';
+import { t, getCurrentLanguage } from '../services/i18n';
 
 let inspectedHomeCardId: number | null = null;
 
@@ -90,7 +91,7 @@ export function renderHomeSection(): string {
               aria-label="눈히어로.com 공식 로고"
             >
               <img
-                src="/logo-ko.png"
+                src="${t('logo_src', '/logo-ko.png')}"
                 alt="눈히어로.com SNSHero Revolution 공식 로고"
                 class="h-20 sm:h-28 md:h-36 w-auto max-w-full object-contain bg-transparent filter drop-shadow-none"
                 loading="eager"
@@ -99,7 +100,7 @@ export function renderHomeSection(): string {
           </div>
 
           <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm tracking-wider uppercase">
-            <span>눈히어로.com</span>
+            <span>${getCurrentLanguage() === 'ko' ? '눈히어로.com' : 'SNSHero.com'}</span>
             <span class="text-stone-400">·</span>
             <span>SNSHero Revolution</span>
           </div>
@@ -125,10 +126,10 @@ export function renderHomeSection(): string {
                 <span>COOL CARD DECK</span>
               </div>
               <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#201d1d] m-0">
-                대표 출격 덱 5인 스쿼드
+                ${t('home_squad_title', '대표 출격 덱 5인 스쿼드')}
               </h2>
               <div class="text-xs text-stone-600">
-                출격 덱 종합 전투력: <strong class="text-base font-black text-[#201d1d]">${deckTP} CP</strong> (${deckTP} TP)
+                ${t('home_squad_cp', '출격 덱 종합 전투력:')} <strong class="text-base font-black text-[#201d1d]">${deckTP} CP</strong> (${deckTP} TP)
               </div>
             </div>
 
@@ -150,7 +151,7 @@ export function renderHomeSection(): string {
                 class="px-4 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center cursor-pointer no-underline"
                 aria-label="마이덱 편집으로 이동"
               >
-                [덱 편집]
+                ${t('home_edit_deck', '[덱 편집]')}
               </a>
             </div>
           </div>
