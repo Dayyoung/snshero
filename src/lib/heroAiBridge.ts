@@ -5,6 +5,7 @@
  */
 
 import { CARD_DATABASE } from '../cardDatabase';
+import { getBrowserLanguage } from './i18n';
 
 export interface HeroAiState {
   currentView: string;
@@ -46,7 +47,7 @@ export function initHeroAiBridge() {
         const rawInv = localStorage.getItem('hero_inventory');
         if (rawInv) inventory = JSON.parse(rawInv);
         season = localStorage.getItem('hero_current_season') || 'season1';
-        lang = localStorage.getItem('hero_language') || 'ko';
+        lang = localStorage.getItem('hero_language') || getBrowserLanguage();
       } catch {}
 
       const totalMatches = (stats.wins || 0) + (stats.losses || 0);

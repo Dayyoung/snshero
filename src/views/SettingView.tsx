@@ -978,7 +978,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   onClick={() => setIsHapticModalOpen(true)}
                   className="min-h-[44px] px-3 py-1 text-[11px] font-bold border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[#f8f7f7] text-[#201d1d] active:scale-95 transition-all flex items-center justify-center"
                 >
-                  [강도 조절]
+                  {language === 'ko' ? '[강도 조절]' : '[Adjust]'}
                 </button>
                 <button 
                   onClick={() => {
@@ -1709,7 +1709,9 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   {language === 'ko' ? '시트 저장 상태' : 'Sheet Status'}
                 </span>
                 <span className="font-bold text-indigo-700 truncate block">
-                  {pushStatus.hasRegisteredToken ? '✓ 구글 시트 영구 연동' : '대기 중 (미저장)'}
+                  {pushStatus.hasRegisteredToken
+                    ? (language === 'ko' ? '✓ 구글 시트 영구 연동' : '✓ Google Sheet Linked')
+                    : (language === 'ko' ? '대기 중 (미저장)' : 'Pending (Unsaved)')}
                 </span>
               </div>
             </div>

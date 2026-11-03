@@ -5,9 +5,9 @@
  * 1단계: language + lowSpecMode Context 추출
  * 2단계: theme Context 통합
  */
-import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
 import { Language } from '../types';
-import { getBrowserLanguage } from '../lib/i18n';
+import { getBrowserLanguage, LANGUAGES } from '../lib/i18n';
 import { CARD_SKIN_THEME_STORAGE_KEY, normalizeCardSkinTheme, type CardSkinThemeId } from '../content/cardSkinThemes';
 
 import { isHapticEnabled, setHapticEnabled as saveHapticSetting } from '../lib/haptic';
@@ -42,11 +42,34 @@ const GameSettingsContext = createContext<GameSettings | null>(null);
 export function GameSettingsProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('hero_language') as Language;
-      if (saved) return saved;
+      const isUserSelected = localStorage.getItem('hero_language_user_selected') === 'true';
+      if (isUserSelected) {
+        const saved = localStorage.getItem('hero_language') as Language;
+        if (saved && LANGUAGES.some(l => l.code === saved)) {
+          return saved;
+        }
+      }
     }
-    return getBrowserLanguage();
+    const detected = getBrowserLanguage();
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('hero_language', detected);
+    }
+    return detected;
   });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleBrowserLanguageChange = () => {
+      const isUserSelected = localStorage.getItem('hero_language_user_selected') === 'true';
+      if (!isUserSelected) {
+        const nextLang = getBrowserLanguage();
+        localStorage.setItem('hero_language', nextLang);
+        setLanguage(nextLang);
+      }
+    };
+    window.addEventListener('languagechange', handleBrowserLanguageChange);
+    return () => window.removeEventListener('languagechange', handleBrowserLanguageChange);
+  }, []);
 
   const [lowSpecMode, setLowSpecModeState] = useState(() => {
     return typeof window !== 'undefined'
@@ -107,8 +130,12 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
   });
 
   const handleSetLanguage = useCallback((lang: Language) => {
+    localStorage.setItem('hero_language_user_selected', 'true');
     localStorage.setItem('hero_language', lang);
     setLanguage(lang);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('snshero_language_changed', { detail: { lang } }));
+    }
   }, []);
 
   const handleSetLowSpecMode = useCallback((mode: boolean) => {

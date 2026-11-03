@@ -400,7 +400,7 @@ const BossCardItem: React.FC<BossCardItemProps> = ({ boss, lowSpecMode, language
           <div className="absolute inset-0 bg-[#201d1d]/90 flex flex-col items-center justify-center p-4 text-center z-55 font-mono">
             <ShieldAlert size={36} className="text-red-500 mb-2" />
             <span className="text-xs font-bold text-red-400 uppercase tracking-wider bg-red-950/80 px-2.5 py-1 border border-red-500/40 rounded-sm">
-              COOLDOWN (휴식 중)
+              {language === 'ko' ? 'COOLDOWN (휴식 중)' : 'COOLDOWN (RESTING)'}
             </span>
             <span className="text-sm font-bold mt-2 text-stone-200">
               {hours}h {minutes}m {seconds}s
@@ -435,7 +435,7 @@ const BossCardItem: React.FC<BossCardItemProps> = ({ boss, lowSpecMode, language
               : "bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] border border-[#201d1d]"
           )}
         >
-          {isCooldown ? "WAITING..." : "CHALLENGE (대결하기)"}
+          {isCooldown ? "WAITING..." : (language === 'ko' ? "CHALLENGE (대결하기)" : "CHALLENGE (BATTLE)")}
         </button>
       </div>
     </motion.div>
@@ -10410,7 +10410,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         {isRunningLocationDenied && (
           <div className="bg-red-950/80 border-b border-red-500/30 px-6 py-2.5 flex items-center justify-center text-xs font-bold gap-2 text-red-200">
             <AlertCircle size={16} className="text-red-400" />
-            <span>GPS 신호 수신 실패 또는 권한이 거부되었습니다. 기기의 위치설정을 활성화해주세요.</span>
+            <span>
+              {language === 'ko'
+                ? 'GPS 신호 수신 실패 또는 권한이 거부되었습니다. 기기의 위치설정을 활성화해주세요.'
+                : 'Failed to receive GPS signal or permission denied. Please enable location services.'}
+            </span>
           </div>
         )}
 
@@ -10646,7 +10650,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 {/* Earned Cards count */}
                 {runningEarnedCards.length > 0 && (
                   <div className="border border-slate-800 bg-indigo-950/40 p-2 rounded-none mb-4 text-center text-xs">
-                    <span className="text-yellow-400 font-black">🎉 획득한 카드: {runningEarnedCards.length}장!</span>
+                    <span className="text-yellow-400 font-black">
+                      {language === 'ko' ? `🎉 획득한 카드: ${runningEarnedCards.length}장!` : `🎉 Cards Earned: ${runningEarnedCards.length}!`}
+                    </span>
                     <div className="flex gap-1.5 justify-center flex-wrap mt-1.5">
                       {runningEarnedCards.map((c, idx) => (
                         <div key={idx} className="w-8 h-8 border border-white/20 bg-slate-800 rounded flex items-center justify-center text-[10px] font-black uppercase text-white">
@@ -11896,7 +11902,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </div>
 
                   <div className="space-y-2">
-                    <h3 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tighter text-white">웅장한 서사의 마무리</h3>
+                    <h3 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tighter text-white">
+                      {language === 'ko' ? '웅장한 서사의 마무리' : 'Grand Finale of the Epic Story'}
+                    </h3>
                     <p className="text-xs font-bold text-slate-350 leading-relaxed font-mono px-2 pt-1">
                       {language === 'ko' 
                         ? '천상계와의 위대한 결전 끝에 인류와 모든 피조물들은 마침내 평화를 맞이했습니다. 이제 그들을 초월한 새로운 시대가 시작됩니다. 영웅이여, 수고하셨습니다!'

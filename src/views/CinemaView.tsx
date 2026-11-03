@@ -301,7 +301,9 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
               className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer shrink-0 font-mono"
             >
               <List size={16} />
-              <span className="hidden sm:inline">[무비 회차 목록 (40화)]</span>
+              <span className="hidden sm:inline">
+                {language === 'ko' ? '[무비 회차 목록 (40화)]' : '[Movie Episodes (40)]'}
+              </span>
             </button>
           }
         />
@@ -311,10 +313,12 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
       <div className="mb-3 px-3 sm:px-4 py-3 rounded-none border-y border-x-0 border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="px-2 py-0.5 rounded-sm bg-[#fdfcfc] text-[#201d1d] text-[11px] font-bold">
-            [MOVIE 40화]
+            {language === 'ko' ? '[MOVIE 40화]' : '[MOVIE 40 EPs]'}
           </span>
           <span className="text-xs sm:text-sm font-bold text-[#fdfcfc]">
-            무비 시청 시 회차당 +100 SNS 보상이 즉시 지급됩니다.
+            {language === 'ko'
+              ? '무비 시청 시 회차당 +100 SNS 보상이 즉시 지급됩니다.'
+              : 'Earn +100 SNS reward per movie episode watched.'}
           </span>
         </div>
 
@@ -326,7 +330,11 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
             className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-mono text-xs font-bold transition-colors shrink-0"
           >
             <ExternalLink size={14} />
-            <span>[YouTube 무비 제{currentEpisodeNum}화 열기]</span>
+            <span>
+              {language === 'ko'
+                ? `[YouTube 무비 제${currentEpisodeNum}화 열기]`
+                : `[Open YouTube Movie Ep ${currentEpisodeNum}]`}
+            </span>
           </a>
           <a
             href={YOUTUBE_PLAYLIST_URL}

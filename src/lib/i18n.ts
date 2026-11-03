@@ -30,18 +30,44 @@ export const LANGUAGES = [
 ];
 
 export const getBrowserLanguage = (): Language => {
-  if (typeof window === 'undefined') return 'en';
-  const navLang = navigator.language.toLowerCase();
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return 'en';
   
-  // Match full code (e.g., zh-CN)
-  const fullMatch = LANGUAGES.find(l => l.code.toLowerCase() === navLang);
-  if (fullMatch) return (fullMatch.code as Language);
-  
-  // Match prefix (e.g., en-US -> en)
-  const prefix = navLang.split('-')[0];
-  const prefixMatch = LANGUAGES.find(l => l.code.split('-')[0].toLowerCase() === prefix);
-  if (prefixMatch) return (prefixMatch.code as Language);
-  
+  const rawList: string[] = [];
+  if (Array.isArray(navigator.languages) && navigator.languages.length > 0) {
+    rawList.push(...navigator.languages);
+  }
+  if (navigator.language) {
+    rawList.push(navigator.language);
+  }
+
+  for (const raw of rawList) {
+    if (!raw || typeof raw !== 'string') continue;
+    const tag = raw.toLowerCase().trim();
+
+    // Chinese Traditional
+    if (tag.startsWith('zh-tw') || tag.startsWith('zh-hk') || tag.startsWith('zh-mo') || tag.includes('hant')) {
+      return 'zh-TW';
+    }
+    // Chinese Simplified
+    if (tag.startsWith('zh-cn') || tag.startsWith('zh-sg') || tag.includes('hans') || tag === 'zh') {
+      return 'zh-CN';
+    }
+    // English UK
+    if (tag.startsWith('en-gb') || tag.startsWith('en-uk')) {
+      return 'en-GB';
+    }
+
+    // Exact matches
+    const exact = LANGUAGES.find(l => l.code.toLowerCase() === tag);
+    if (exact) return exact.code as Language;
+
+    // Prefix matches (e.g. ko-KR -> ko, ja-JP -> ja, es-MX -> es, en-US -> en)
+    const prefix = tag.split('-')[0];
+    const prefixMatch = LANGUAGES.find(l => l.code.split('-')[0].toLowerCase() === prefix);
+    if (prefixMatch) return prefixMatch.code as Language;
+  }
+
+  // Fallback to English when no supported language is detected
   return 'en';
 };
 

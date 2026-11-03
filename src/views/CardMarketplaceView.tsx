@@ -1176,19 +1176,19 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             {showDirectionSliders && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 bg-[#f8f7f7] rounded-none border border-[rgba(15,0,0,0.12)] text-[10px] font-mono">
                 <div>
-                  <div className="flex justify-between text-[#646262]"><span>▲ 상단</span><span className="font-bold text-[#201d1d]">≥ {minStatUp}</span></div>
+                  <div className="flex justify-between text-[#646262]"><span>▲ {language === 'ko' ? '상단' : 'Top'}</span><span className="font-bold text-[#201d1d]">≥ {minStatUp}</span></div>
                   <input type="range" min={0} max={10} value={minStatUp} onChange={(e) => setMinStatUp(Number(e.target.value))} className="w-full accent-[#201d1d] cursor-pointer" />
                 </div>
                 <div>
-                  <div className="flex justify-between text-[#646262]"><span>▶ 우측</span><span className="font-bold text-[#201d1d]">≥ {minStatRight}</span></div>
+                  <div className="flex justify-between text-[#646262]"><span>▶ {language === 'ko' ? '우측' : 'Right'}</span><span className="font-bold text-[#201d1d]">≥ {minStatRight}</span></div>
                   <input type="range" min={0} max={10} value={minStatRight} onChange={(e) => setMinStatRight(Number(e.target.value))} className="w-full accent-[#201d1d] cursor-pointer" />
                 </div>
                 <div>
-                  <div className="flex justify-between text-[#646262]"><span>▼ 하단</span><span className="font-bold text-[#201d1d]">≥ {minStatDown}</span></div>
+                  <div className="flex justify-between text-[#646262]"><span>▼ {language === 'ko' ? '하단' : 'Bottom'}</span><span className="font-bold text-[#201d1d]">≥ {minStatDown}</span></div>
                   <input type="range" min={0} max={10} value={minStatDown} onChange={(e) => setMinStatDown(Number(e.target.value))} className="w-full accent-[#201d1d] cursor-pointer" />
                 </div>
                 <div>
-                  <div className="flex justify-between text-[#646262]"><span>◀ 좌측</span><span className="font-bold text-[#201d1d]">≥ {minStatLeft}</span></div>
+                  <div className="flex justify-between text-[#646262]"><span>◀ {language === 'ko' ? '좌측' : 'Left'}</span><span className="font-bold text-[#201d1d]">≥ {minStatLeft}</span></div>
                   <input type="range" min={0} max={10} value={minStatLeft} onChange={(e) => setMinStatLeft(Number(e.target.value))} className="w-full accent-[#201d1d] cursor-pointer" />
                 </div>
               </div>
@@ -1351,7 +1351,9 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                   title={language === 'ko' ? '클릭 시 권장가로 자동 입력' : 'Click to auto-fill suggested price'}
                 >
                   <span>💡 {language === 'ko' ? '적정 시장 권장가:' : 'Suggested Price:'}</span>
-                  <span className="underline font-black">[{suggested.toLocaleString()} SNS 자동입력]</span>
+                  <span className="underline font-black">
+                    [{suggested.toLocaleString()} SNS {language === 'ko' ? '자동입력' : 'Auto-Fill'}]
+                  </span>
                 </button>
               );
             })()}

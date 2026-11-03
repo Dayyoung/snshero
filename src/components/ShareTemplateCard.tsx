@@ -82,7 +82,7 @@ const safeCardName = (card: DatabaseCard | undefined, language: Language): strin
 
 /** 눈히어로.com / SNSHero.com 브랜드 로고 */
 const BrandLogo: React.FC = () => {
- const isKo = typeof window === 'undefined' || (localStorage.getItem('hero_language') || 'ko') === 'ko';
+ const isKo = typeof window === 'undefined' ? false : (localStorage.getItem('hero_language') === 'ko');
  return (
  <a
  href="/"

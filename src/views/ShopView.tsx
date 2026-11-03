@@ -4245,8 +4245,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
             {/* ID 518: 일일 할인 50 AP 물약 */}
             <div className="p-3 bg-[#fdfcfc] border border-[#0f0000]/12 rounded-none flex flex-wrap gap-3 items-center justify-between text-[#201d1d]">
               <div className="min-w-0">
-                <div className="font-bold text-[11px] truncate">🧪 50 AP 물약 (50% 할인)</div>
-                <div className="text-xs text-[#646262] mt-1">오늘 구매: {todayApPotionsBought}/2회</div>
+                <div className="font-bold text-[11px] truncate">🧪 {language === 'ko' ? '50 AP 물약 (50% 할인)' : '50 AP Potion (50% OFF)'}</div>
+                <div className="text-xs text-[#646262] mt-1">{language === 'ko' ? `오늘 구매: ${todayApPotionsBought}/2회` : `Today: ${todayApPotionsBought}/2`}</div>
               </div>
               <button
                 type="button"
@@ -4254,45 +4254,45 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 onClick={handleBuyApPotion}
                 className="min-h-11 px-3 py-2 bg-[#201d1d] hover:bg-[#302c2c] disabled:bg-[#f1eeee] disabled:text-[#646262] text-[#fdfcfc] font-bold text-xs rounded-sm transition-colors cursor-pointer shrink-0"
               >
-                {todayApPotionsBought >= 2 ? '[매진]' : '[25 SNS]'}
+                {todayApPotionsBought >= 2 ? (language === 'ko' ? '[매진]' : '[Sold Out]') : '[25 SNS]'}
               </button>
             </div>
 
             {/* ID 548: 10연차 모의 뽑기 (Mock Pull) */}
             <div className="p-3 bg-[#fdfcfc] border border-[#0f0000]/12 rounded-none flex flex-wrap gap-3 items-center justify-between text-[#201d1d]">
               <div className="min-w-0">
-                <div className="font-bold text-[11px] truncate">🎲 10연차 모의 뽑기</div>
-                <div className="text-xs text-[#646262] mt-1">재화 소모 0 (확률 체험)</div>
+                <div className="font-bold text-[11px] truncate">🎲 {language === 'ko' ? '10연차 모의 뽑기' : '10-Pull Mock Simulator'}</div>
+                <div className="text-xs text-[#646262] mt-1">{language === 'ko' ? '재화 소모 0 (확률 체험)' : 'Cost: 0 (Test Rates)'}</div>
               </div>
               <button
                 type="button"
                 onClick={handleMockPull}
                 className="min-h-11 px-3 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm transition-colors cursor-pointer shrink-0"
               >
-                [모의 실행]
+                {language === 'ko' ? '[모의 실행]' : '[Simulate]'}
               </button>
             </div>
 
             {/* ID 533: 중복 마일리지 로테이션 샵 */}
             <div className="p-3 bg-[#fdfcfc] border border-[#0f0000]/12 rounded-none flex flex-wrap gap-3 items-center justify-between text-[#201d1d]">
               <div className="min-w-0">
-                <div className="font-bold text-[11px] truncate">🔄 중복 마일리지 상점</div>
-                <div className="text-xs text-[#646262] mt-1">보유: {dupeMileage} P</div>
+                <div className="font-bold text-[11px] truncate">🔄 {language === 'ko' ? '중복 마일리지 상점' : 'Dupe Mileage Shop'}</div>
+                <div className="text-xs text-[#646262] mt-1">{language === 'ko' ? `보유: ${dupeMileage} P` : `Own: ${dupeMileage} P`}</div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsDupeMileageShopOpen(true)}
                 className="min-h-11 px-3 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm transition-colors cursor-pointer shrink-0"
               >
-                [교환소]
+                {language === 'ko' ? '[교환소]' : '[Exchange]'}
               </button>
             </div>
 
             {/* ID 583: 월간 누적 소환 마일리지 리워드 */}
             <div className="p-3 bg-[#fdfcfc] border border-[#0f0000]/12 rounded-none flex flex-wrap gap-3 items-center justify-between text-[#201d1d]">
               <div className="min-w-0">
-                <div className="font-bold text-[11px] truncate">📈 월간 소환 {monthlyPullCount}/200회</div>
-                <div className="text-xs text-[#646262] mt-1">50/100/200회 마일스톤</div>
+                <div className="font-bold text-[11px] truncate">📈 {language === 'ko' ? `월간 소환 ${monthlyPullCount}/200회` : `Monthly Pulls: ${monthlyPullCount}/200`}</div>
+                <div className="text-xs text-[#646262] mt-1">{language === 'ko' ? '50/100/200회 마일스톤' : '50/100/200 Milestones'}</div>
               </div>
               <div className="flex gap-1 shrink-0">
                 {[50, 100, 200].map(m => {
@@ -4368,7 +4368,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="px-2 py-1 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-none">
-                      HOT DEAL · 1회 한정
+                      {language === 'ko' ? 'HOT DEAL · 1회 한정' : 'HOT DEAL · Once per Account'}
                     </span>
                   </div>
                   <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
@@ -4380,9 +4380,15 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       : 'Purchase for 50 SNS and instantly receive 300 SNS cashback (+250 SNS net profit) + 150 AP + 5 Gold Pack cards with SR+ guarantee!'}
                   </p>
                   <div className="flex flex-wrap gap-2 text-[10px] text-slate-500 dark:text-slate-400 pt-1">
-                    <span className="px-1.5 py-0.5 bg-black/5 dark:bg-white/10 rounded-none font-bold">✓ 300 SNS 캐시백</span>
-                    <span className="px-1.5 py-0.5 bg-black/5 dark:bg-white/10 rounded-none font-bold">✓ 모험 AP +150</span>
-                    <span className="px-1.5 py-0.5 bg-black/5 dark:bg-white/10 rounded-none font-bold">✓ 골드팩 5연 소환 (SR+ 보장)</span>
+                    <span className="px-1.5 py-0.5 bg-black/5 dark:bg-white/10 rounded-none font-bold">
+                      {language === 'ko' ? '✓ 300 SNS 캐시백' : '✓ 300 SNS Cashback'}
+                    </span>
+                    <span className="px-1.5 py-0.5 bg-black/5 dark:bg-white/10 rounded-none font-bold">
+                      {language === 'ko' ? '✓ 모험 AP +150' : '✓ Adventure AP +150'}
+                    </span>
+                    <span className="px-1.5 py-0.5 bg-black/5 dark:bg-white/10 rounded-none font-bold">
+                      {language === 'ko' ? '✓ 골드팩 5연 소환 (SR+ 보장)' : '✓ 5-Gold Pulls (SR+ Guaranteed)'}
+                    </span>
                   </div>
                 </div>
 

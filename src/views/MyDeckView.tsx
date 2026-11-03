@@ -610,7 +610,9 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       } catch {}
 
       const topCard = newlyDrawnCard || updatedDeck[0];
-      const cardName = topCard ? (topCard.title || topCard.name || '최강 영웅') : '최강 영웅';
+      const cardName = topCard
+        ? (language === 'ko' ? (topCard.title || topCard.name || '최강 영웅') : (topCard.title_en || topCard.title || topCard.name || 'Strongest Hero'))
+        : (language === 'ko' ? '최강 영웅' : 'Strongest Hero');
 
       let remainingSec = 2;
       const updateBanner = (sec: number) => {
@@ -2361,28 +2363,28 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       <button
                         onClick={() => { setSortBy('dir_up'); setSortOrder('desc'); }}
                         className={cn("min-h-11 min-w-11 p-1.5 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_up' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
-                        title="상단 스탯 높은순 정렬"
+                        title={language === 'ko' ? "상단 스탯 높은순 정렬" : "Sort by Top Stat Descending"}
                       >
                         ▲
                       </button>
                       <button
                         onClick={() => { setSortBy('dir_right'); setSortOrder('desc'); }}
                         className={cn("min-h-11 min-w-11 p-1.5 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_right' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
-                        title="우측 스탯 높은순 정렬"
+                        title={language === 'ko' ? "우측 스탯 높은순 정렬" : "Sort by Right Stat Descending"}
                       >
                         ▶
                       </button>
                       <button
                         onClick={() => { setSortBy('dir_down'); setSortOrder('desc'); }}
                         className={cn("min-h-11 min-w-11 p-1.5 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_down' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
-                        title="하단 스탯 높은순 정렬"
+                        title={language === 'ko' ? "하단 스탯 높은순 정렬" : "Sort by Bottom Stat Descending"}
                       >
                         ▼
                       </button>
                       <button
                         onClick={() => { setSortBy('dir_left'); setSortOrder('desc'); }}
                         className={cn("min-h-11 min-w-11 p-1.5 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_left' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
-                        title="좌측 스탯 높은순 정렬"
+                        title={language === 'ko' ? "좌측 스탯 높은순 정렬" : "Sort by Left Stat Descending"}
                       >
                         ◀
                       </button>

@@ -84,8 +84,10 @@ const FLAG_MAP: Record<string, string> = {
   vi: '🇻🇳',
 };
 
-const generateMockOpponent = (myPower: number, customProfile?: DynamicDifficultyProfile) => {
+const generateMockOpponent = (myPower: number, customProfile?: DynamicDifficultyProfile, lang?: Language) => {
   const profile = customProfile || getDynamicDifficultyProfile(myPower);
+  const currentLang = lang || (typeof window !== 'undefined' ? ((localStorage.getItem('hero_language') as Language) || 'en') : 'en');
+  const isKo = currentLang === 'ko';
   const mockNames = [
     'SNS_Master', 'Card_Hero', 'AlphaZero', 'Neon_Blade', 
     'Cyber_Ghost', 'Shadow_Striker', 'Pixel_Hunter', 'Bit_Conqueror'
@@ -96,7 +98,9 @@ const generateMockOpponent = (myPower: number, customProfile?: DynamicDifficulty
   const mult = profile.powerMultiplierMin + Math.random() * (profile.powerMultiplierMax - profile.powerMultiplierMin);
   const botPower = Math.max(500, Math.ceil(myPower * mult));
   
-  const tierPrefix = profile.tier === 'mercy' ? '[수습]' : (profile.tier === 'easy' ? '[안정]' : (profile.tier === 'challenging' ? '[정예]' : '[라이벌]'));
+  const tierPrefix = isKo
+    ? (profile.tier === 'mercy' ? '[수습]' : (profile.tier === 'easy' ? '[안정]' : (profile.tier === 'challenging' ? '[정예]' : '[라이벌]')))
+    : (profile.tier === 'mercy' ? '[Novice]' : (profile.tier === 'easy' ? '[Stable]' : (profile.tier === 'challenging' ? '[Elite]' : '[Rival]')));
 
   return {
     id: `bot-optimal-${Date.now()}`,
@@ -709,7 +713,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
     let optimal: any = null;
     if (candidates.length === 0) {
       // 3순위: 그마저도 없을 시 DDA 맞춤형 가상 AI 봇 생성
-      optimal = generateMockOpponent(myPower, dda);
+      optimal = generateMockOpponent(myPower, dda, language);
     } else {
       optimal = candidates.reduce((prev, curr) => {
         const diffCurr = Math.abs(curr.totalPower - targetPower);
@@ -719,7 +723,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
 
       // 만약 선택된 상대가 너무 강하고 연패 중이라면 DDA 봇으로 안전 매칭
       if (dda.tier === 'mercy' && optimal.totalPower > myPower * 1.1) {
-        optimal = generateMockOpponent(myPower, dda);
+        optimal = generateMockOpponent(myPower, dda, language);
       }
     }
 
