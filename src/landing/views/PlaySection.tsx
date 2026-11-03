@@ -962,17 +962,17 @@ function renderAdventureView(): string {
                     .join('')}
                 </div>
 
-                <!-- Player Active Hand Cards (Full Original TCG Card Design Preserved) -->
-                <div class="space-y-2 pt-2 border-t border-white/10">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs text-amber-300 font-bold">
-                      🃏 플레이어 덱 카드 (카드를 터치하여 선택 후 위 3x3 슬롯에 배치):
+                <!-- Player Active Hand Cards (1-Row Dynamic Card Width on Mobile & Desktop + Full Original TCG Card Design) -->
+                <div class="space-y-1.5 sm:space-y-2 pt-2 border-t border-white/10">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="text-[11px] sm:text-xs text-amber-300 font-bold truncate">
+                      🃏 플레이어 덱 카드 (터치 선택 후 3x3 배치):
                     </span>
-                    <span class="text-[11px] text-stone-400 font-mono">
+                    <span class="text-[10px] sm:text-[11px] text-stone-400 font-mono shrink-0">
                       남은 카드: ${playRpgState.playerHand.length}장
                     </span>
                   </div>
-                  <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-2.5 pt-1">
+                  <div class="flex flex-nowrap items-stretch justify-center gap-1 sm:gap-2.5 pt-1.5 w-full">
                     ${playRpgState.playerHand
                       .map((cId, hIdx) => {
                         const isSelected = playRpgState.selectedHandIndex === hIdx;
@@ -981,23 +981,24 @@ function renderAdventureView(): string {
                             type="button"
                             data-action="play-battle-card"
                             data-hand-index="${hIdx}"
-                            class="relative w-full text-left p-0 bg-transparent border-0 cursor-pointer transition-transform ${
+                            class="relative flex-1 min-w-0 max-w-[23%] sm:max-w-[20%] text-left p-0 bg-transparent border-0 cursor-pointer transition-transform ${
                               isSelected
-                                ? '-translate-y-1.5 ring-2 ring-amber-400 rounded-sm'
+                                ? '-translate-y-1.5 ring-2 ring-amber-400 rounded-sm z-20'
                                 : 'hover:-translate-y-0.5 opacity-95 hover:opacity-100'
                             }"
                           >
                             ${
                               isSelected
-                                ? `<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 z-40 px-2 py-0.5 bg-amber-400 text-stone-950 text-[9px] font-black rounded-xs whitespace-nowrap border border-stone-900">▼ 선택됨</span>`
+                                ? `<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 z-40 px-1.5 sm:px-2 py-0.5 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs whitespace-nowrap border border-stone-900">▼ 선택됨</span>`
                                 : ''
                             }
                             ${renderOriginalCardHtml(cId, {
                               isSelected,
                               isOwned: true,
                               showRedDot: false,
+                              size: 'responsive',
                               visualTier: 'bust',
-                              className: 'w-full aspect-[5/7] min-h-[145px] sm:min-h-[185px]',
+                              className: 'w-full min-w-0 aspect-[5/7] sm:min-h-[180px]',
                             })}
                           </button>
                         `;

@@ -112,6 +112,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
   const showRedDot = options.showRedDot ?? (isOwned && cardNurtureStore.hasUnspentPoints(cardId));
   const hideStats = options.hideStats || false;
   const visualTier = options.visualTier || 'bust';
+  const isResponsiveHand = options.size === 'responsive' || options.size === 'sm';
   const bustUrlWithVer = `${asset.bustPngUrl}?v=20261103v4`;
   const primaryImgUrl = visualTier === '7head' ? asset.cutoutUrl : bustUrlWithVer;
   const fallbackImgUrl = visualTier === '7head' ? bustUrlWithVer : asset.seatUrl;
@@ -120,12 +121,17 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
   const customClass = options.className || 'w-full aspect-[5/7] min-h-[220px]';
   const actionAttr = options.action ? `data-action="${options.action}" data-card-id="${cardId}"` : '';
 
+  const cardPadClass = isResponsiveHand ? 'p-1 sm:p-2' : 'p-1.5 sm:p-2';
+  const statCircleClass = isResponsiveHand
+    ? 'h-4 w-4 sm:h-6 sm:w-6 text-[8px] sm:text-xs border sm:border-2'
+    : 'h-5 w-5 sm:h-6 sm:w-6 text-[10px] sm:text-xs border-2';
+
   return `
     <div
       ${actionAttr}
       class="group/orig-card relative flex flex-col justify-between font-mono select-none rounded-sm border-2 ${customClass} ${
         isSelected ? 'ring-2 ring-black shadow-lg scale-[1.02]' : ''
-      } ${isOwned ? '' : 'opacity-85'} transition-all cursor-pointer overflow-hidden p-1.5 sm:p-2"
+      } ${isOwned ? '' : 'opacity-85'} transition-all cursor-pointer overflow-hidden ${cardPadClass}"
       style="
         background-color: ${factionTheme.bg};
         border-color: ${rarityTheme.borderHex};
@@ -157,25 +163,35 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
       ` : ''}
 
       <!-- 1. TCG Header Bar: Rarity Badge, Level, Power & Stars -->
-      <div class="relative z-20 flex items-center justify-between w-full pb-1 border-b border-black/15 text-[10px] leading-none">
-        <div class="flex items-center gap-1">
+      <div class="relative z-20 flex items-center justify-between w-full pb-0.5 sm:pb-1 border-b border-black/15 ${
+        isResponsiveHand ? 'text-[8px] sm:text-[10px]' : 'text-[10px]'
+      } leading-none gap-0.5">
+        <div class="flex items-center gap-0.5 sm:gap-1 min-w-0 truncate">
           <span
-            class="px-1.5 py-0.5 rounded-xs font-black uppercase text-[9px] tracking-tight"
+            class="${
+              isResponsiveHand
+                ? 'px-1 sm:px-1.5 py-0.5 rounded-xs font-black uppercase text-[7px] sm:text-[9px] tracking-tight shrink-0'
+                : 'px-1.5 py-0.5 rounded-xs font-black uppercase text-[9px] tracking-tight'
+            }"
             style="background-color: ${rarityTheme.badgeBg}; color: ${rarityTheme.badgeText};"
           >
-            ${rarityTheme.badgeLabel}
+            ${
+              isResponsiveHand
+                ? `<span class="sm:hidden">${rarity.slice(0, 1).toUpperCase()}</span><span class="hidden sm:inline">${rarityTheme.badgeLabel}</span>`
+                : rarityTheme.badgeLabel
+            }
           </span>
-          <span class="font-bold text-[#201d1d]">Lv.${level}</span>
+          <span class="font-bold text-[#201d1d] truncate">Lv.${level}</span>
         </div>
-        <div class="flex items-center gap-1 font-bold">
+        <div class="flex items-center gap-0.5 sm:gap-1 font-bold shrink-0">
           <span class="text-amber-700">⚡${totalTP}</span>
-          <span class="text-amber-600 text-[10px]">${'★'.repeat(rarityTheme.starCount)}</span>
+          <span class="${isResponsiveHand ? 'hidden sm:inline' : ''} text-amber-600 text-[10px]">${'★'.repeat(rarityTheme.starCount)}</span>
         </div>
       </div>
 
       <!-- 2. Central Illustration Window with Cross Compass HUD -->
       <div
-        class="relative z-10 w-full flex-1 my-1 overflow-hidden border border-black/20 rounded-xs flex items-center justify-center"
+        class="relative z-10 w-full flex-1 my-0.5 sm:my-1 overflow-hidden border border-black/20 rounded-xs flex items-center justify-center"
         style="background-color: ${factionTheme.windowBg};"
       >
         <!-- Background Geometric Magic Circle SVG -->
@@ -190,7 +206,9 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
         </svg>
 
         <!-- Character Art (7-Head Cutout or Bust) -->
-        <div class="relative z-10 w-full h-full flex items-center justify-center p-1.5 overflow-hidden">
+        <div class="relative z-10 w-full h-full flex items-center justify-center ${
+          isResponsiveHand ? 'p-0.5 sm:p-1.5' : 'p-1.5'
+        } overflow-hidden">
           <img
             src="${primaryImgUrl}"
             alt="${asset.nameKo}"
@@ -204,7 +222,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
         ${!hideStats ? `
           <!-- North (Top) -->
           <div
-            class="absolute top-1 left-1/2 -translate-x-1/2 z-30 h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-[#fdfcfc] border-2 flex items-center justify-center font-black text-[10px] sm:text-xs text-[#201d1d] shadow-sm select-none"
+            class="absolute top-0.5 sm:top-1 left-1/2 -translate-x-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-sm select-none"
             style="border-color: ${rarityTheme.statBadgeBorder};"
             title="북(N): ${top}"
           >
@@ -213,7 +231,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
 
           <!-- East (Right) -->
           <div
-            class="absolute right-1 top-1/2 -translate-y-1/2 z-30 h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-[#fdfcfc] border-2 flex items-center justify-center font-black text-[10px] sm:text-xs text-[#201d1d] shadow-sm select-none"
+            class="absolute right-0.5 sm:right-1 top-1/2 -translate-y-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-sm select-none"
             style="border-color: ${rarityTheme.statBadgeBorder};"
             title="동(E): ${right}"
           >
@@ -222,7 +240,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
 
           <!-- South (Bottom) -->
           <div
-            class="absolute bottom-1 left-1/2 -translate-x-1/2 z-30 h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-[#fdfcfc] border-2 flex items-center justify-center font-black text-[10px] sm:text-xs text-[#201d1d] shadow-sm select-none"
+            class="absolute bottom-0.5 sm:bottom-1 left-1/2 -translate-x-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-sm select-none"
             style="border-color: ${rarityTheme.statBadgeBorder};"
             title="남(S): ${bottom}"
           >
@@ -231,7 +249,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
 
           <!-- West (Left) -->
           <div
-            class="absolute left-1 top-1/2 -translate-y-1/2 z-30 h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-[#fdfcfc] border-2 flex items-center justify-center font-black text-[10px] sm:text-xs text-[#201d1d] shadow-sm select-none"
+            class="absolute left-0.5 sm:left-1 top-1/2 -translate-y-1/2 z-30 ${statCircleClass} rounded-full bg-[#fdfcfc] flex items-center justify-center font-black text-[#201d1d] shadow-sm select-none"
             style="border-color: ${rarityTheme.statBadgeBorder};"
             title="서(W): ${left}"
           >
@@ -240,7 +258,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
         ` : ''}
 
         <!-- 5-Step Power Gauge Bar (bottom of illustration) -->
-        <div class="pointer-events-none absolute inset-x-2 bottom-1 z-20 flex items-center gap-0.5">
+        <div class="pointer-events-none absolute inset-x-1 sm:inset-x-2 bottom-0.5 sm:bottom-1 z-20 flex items-center gap-0.5">
           ${[1, 2, 3, 4, 5].map(step => {
             const active = step <= Math.min(5, Math.ceil(totalTP / 6));
             return `
@@ -254,12 +272,16 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
       </div>
 
       <!-- 3. TCG Footer Bar: Ability Badge, Character Name & Code -->
-      <div class="relative z-20 w-full pt-1 border-t border-black/15 flex items-center justify-between text-[10px] leading-tight">
-        <div class="flex items-center gap-1 truncate min-w-0">
-          <span class="text-amber-800 font-bold shrink-0">${abilityTag}</span>
+      <div class="relative z-20 w-full pt-0.5 sm:pt-1 border-t border-black/15 flex items-center justify-between ${
+        isResponsiveHand ? 'text-[8px] sm:text-[10px]' : 'text-[10px]'
+      } leading-tight">
+        <div class="flex items-center gap-0.5 sm:gap-1 truncate min-w-0 w-full ${
+          isResponsiveHand ? 'justify-center sm:justify-start' : ''
+        }">
+          <span class="${isResponsiveHand ? 'hidden sm:inline' : ''} text-amber-800 font-bold shrink-0">${abilityTag}</span>
           <span class="font-black text-[#201d1d] truncate" title="${asset.nameKo}">${asset.nameKo}</span>
         </div>
-        <span class="font-bold text-stone-500 shrink-0 uppercase text-[9px]">${asset.code}</span>
+        <span class="${isResponsiveHand ? 'hidden sm:inline' : ''} font-bold text-stone-500 shrink-0 uppercase text-[9px]">${asset.code}</span>
       </div>
     </div>
   `;
