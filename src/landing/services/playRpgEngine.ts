@@ -961,25 +961,21 @@ export function getEpisodeActualOpponentDeck(chapter: number): {
 }
 
 /**
- * Compute per-direction stat bonus for opponent cards based on reincarnation level and chapter.
- * Reincarnation 0: +0 bonus (standard story progression).
- * Reincarnation 1+: Scales linearly without sudden cliff-like spikes between reincarnation cycles.
- *   - Rebirth 1, Ch 1..15: +1
- *   - Rebirth 1, Ch 16..30: +2
- *   - Rebirth 1, Ch 31..40: +3
- *   - Rebirth 2, Ch 1..15: +3
- *   - Rebirth 2, Ch 16..30: +4
- *   - Rebirth 2, Ch 31..40: +5
+ * Compute per-direction stat bonus for opponent cards based on reincarnation level.
+ * Each reincarnation cycle adds a flat +1 linear bonus to base cap:
+ *   - Reincarnation 0: +0
+ *   - Reincarnation 1: +1
+ *   - Reincarnation 2: +2
+ *   - Reincarnation N: +N
  */
 export function getOpponentRebirthStatBonus(
   rebirthLevel: number = playRpgState.reincarnationLevel,
-  chapter: number = playRpgState.currentChapter
+  _chapter: number = playRpgState.currentChapter
 ): number {
   if (!rebirthLevel || rebirthLevel <= 0) {
     return 0;
   }
-  const chapterOffset = Math.floor(Math.max(0, chapter - 1) / 15);
-  return rebirthLevel + chapterOffset;
+  return rebirthLevel;
 }
 
 /**
@@ -1050,24 +1046,19 @@ function getCardCombatStats(
     const rawBottom = card?.bottom || 3;
     const rawLeft = card?.left || 3;
 
-    // Smooth linear effective progress across all cycles (1, 2, ..., 40, 41, ..., 80, ...)
-    const effectiveProgress = rebirthLevel * 40 + chapter;
+    // Story Chapter progression cap (Ch 1..5: 2 -> Ch 36..40: 9)
+    // Ensures early chapters remain accessible and enjoyable even after reincarnation
+    const chapterClamped = Math.max(1, Math.min(40, chapter));
+    const chapterCap = 2 + Math.floor((chapterClamped - 1) / 5);
 
-    // Linear cap and minStat scaling:
-    // Progress 1 (R0-Ch1): cap = 3, minStat = 1 -> Stats 1~3
-    // Progress 40 (R0-Ch40): cap = 8, minStat = 2 -> Stats 2~8
-    // Progress 41 (R1-Ch1): cap = 8, minStat = 2, bonus = +1 -> Stats 3~9 (Seamless linear transition!)
-    // Progress 80 (R1-Ch40): cap = 14, minStat = 4, bonus = +3 -> Stats 5~15
-    // Progress 81 (R2-Ch1): cap = 14, minStat = 4, bonus = +3 -> Stats 5~15 (Seamless linear transition!)
-    const cap = Math.min(18, 3 + Math.floor(effectiveProgress / 7));
-    const minStat = Math.min(6, Math.max(1, Math.floor(effectiveProgress / 20)));
+    // Linear reincarnation bonus (+1 per cycle)
     const rebirthBonus = getOpponentRebirthStatBonus(rebirthLevel, chapter);
 
     return [
-      Math.min(20, Math.max(minStat, Math.min(rawTop, cap)) + rebirthBonus),
-      Math.min(20, Math.max(minStat, Math.min(rawRight, cap)) + rebirthBonus),
-      Math.min(20, Math.max(minStat, Math.min(rawBottom, cap)) + rebirthBonus),
-      Math.min(20, Math.max(minStat, Math.min(rawLeft, cap)) + rebirthBonus),
+      Math.max(1 + rebirthBonus, Math.min(rawTop, chapterCap) + rebirthBonus),
+      Math.max(1 + rebirthBonus, Math.min(rawRight, chapterCap) + rebirthBonus),
+      Math.max(1 + rebirthBonus, Math.min(rawBottom, chapterCap) + rebirthBonus),
+      Math.max(1 + rebirthBonus, Math.min(rawLeft, chapterCap) + rebirthBonus),
     ];
   }
 
@@ -1294,13 +1285,13 @@ function executeOpponentTurn(): void {
 
   if (emptySlots.length === 0) return;
 
-  // Linear AI smartness progression across cycles and chapters
-  // Reincarnation 0 Ch 1..20: ~15-30% smart move chance
-  // Reincarnation 0 Ch 21..40: ~30-45% smart move chance
-  // Reincarnation 1 Ch 1..40: ~45-75% smart move chance
-  // Reincarnation 2+: 80-95% smart move chance
-  const effectiveProgress = (playRpgState.reincarnationLevel || 0) * 40 + (playRpgState.currentChapter || 1);
-  const smartMoveChance = Math.min(0.95, Math.max(0.15, 0.15 + effectiveProgress * 0.0075));
+  // Linear AI smartness progression across chapters and reincarnation
+  // Ch 1 starts relaxed (~12% smart moves) and rises gradually up to ~55% at Ch 40
+  // Each reincarnation cycle adds a subtle +4% bonus
+  const chapter = Math.max(1, Math.min(40, playRpgState.currentChapter || 1));
+  const chapterSmart = 0.10 + (chapter / 40) * 0.45;
+  const rebirthSmart = Math.min(0.20, (playRpgState.reincarnationLevel || 0) * 0.04);
+  const smartMoveChance = Math.min(0.80, chapterSmart + rebirthSmart);
   const isSmartMove = Math.random() < smartMoveChance;
 
   if (isSmartMove) {
