@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 09:35 KST] [상단 헤더 설정 버튼 옆 음소거(Mute) 원터치 토글 버튼 구현 및 오디오 시스템 연동]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 상단 글로벌 헤더에 1클릭 음소거/음소거 해제 토글 버튼 배치 (`src/landing/components/Header.tsx`)**:
+    - 헤더 우측 유틸리티 영역의 설정 버튼(`[⚙️]`) 바로 좌측 옆에 원터치 음소거 버튼(`data-action="toggle-mute"`) 신규 생성.
+    - 소리 켜짐 상태일 때는 `🔊` (소리 끄기/음소거 툴팁), 음소거 상태일 때는 `🔇` (소리 켜기/음소거 해제 툴팁) 아이콘 자동 전환.
+    - DESIGN.md 표준 준수: 44px+ 터치 타깃(`min-h-[44px] min-w-[44px]`), 1px hairline border, `rounded-sm`(4px) 모서리, 웜크림/잉크 팔레트 일관성 유지.
+  - **2. 마스터 오디오 매니저 음소거 API 및 전역 이벤트 연동 (`src/landing/services/audioManager.ts`, `src/landing/index.ts`)**:
+    - `audioManager.isMuted()`: 로컬스토리지 음소거 플래그(`hero_audio_muted`) 및 BGM/SFX 상태를 종합 검사하여 현재 음소거 여부 반환.
+    - `audioManager.toggleMute()`: 1클릭으로 BGM 정지 및 SFX 음소거(또는 복원 및 BGM 재개) 처리 후 `snshero_audio_settings_changed` 이벤트 디스패치.
+    - `src/landing/index.ts`의 이벤트 위임 핸들러에서 `action === 'toggle-mute'` 연결 및 오디오 변경 이벤트 시 헤더 아이콘 실시간 리렌더링 동기화.
+  - **3. 빌드 및 렌더링 검증**:
+    - `npm run build && node scripts/post-build.js` 프로덕션 빌드 성공 (0 error).
+    - Headless Chrome을 통해 `http://localhost:3000/#setting` 실제 DOM에서 `[🔊] [⚙️]` 버튼 렌더링 정상 검증 완료.
+    - 로컬 git 커밋 완료 (원격 git push 미실행).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build && node scripts/post-build.js` 성공 (0 error)
+  - UI 렌더링 검증: 상단 헤더 설정 버튼 옆 음소거 버튼 정상 마운트 확인 (0 error)
+  - 로컬 git 커밋 완료
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 상단 헤더 설정 버튼 옆 음소거(Mute) 원터치 토글 버튼 구현 및 오디오 시스템 연동 -> 작업완료`
+
+
 ## [2026-11-04 09:35 KST] [카드 외곽 테두리 표시 제거 및 보더리스 플랫 메탈릭 카드 완성]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
