@@ -2,6 +2,31 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 12:50 KST] [/git-push 원격 저장소(origin main) 반영 및 대용량 비디오 최적화 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 `/git-push` 요청에 따른 원격 저장소(`origin main`) 동기화 수행**:
+    - GitHub pre-receive hook의 단일 파일 100MB 초과 제한을 사전에 감지하고, 커밋 대상 비디오(`public/videos/cinema/episode_20.mp4`, 175MB)를 `ffmpeg` H.264 CRF 26 + AAC 128k로 재인코딩하여 89.5MB(93.88MB)로 고품질 경량화 적용.
+    - 100MB 초과 blob이 없는 깨끗한 단일 커밋(`30b116259`)으로 히스토리 정돈 및 `git push origin main` 성공 완료.
+  - **2. 푸시된 주요 구현 사항 통합 반영**:
+    - **광고 화면 가림 및 스크롤 슬라이딩 다운 원천 차단**:
+      - `#play` 카단의 여정 화면에서 구글 애드센스 컨테이너(`adsense-desktop-left`, `adsense-desktop-right`, `adsense-mobile-top`) 완전 배제.
+      - 뷰포트 1536px 미만 화면에서 사이드 광고 `display: none !important;` 및 `position: static !important;`로 스크롤 시 화면 덮침 현상 완벽 방지.
+    - **15초 비활성 자동플레이 자동시작 제거 및 AUTO PLAY 플로팅 회전 토글 버튼 구현**:
+      - 15초 비활성 시 원치 않게 배틀/맵이 자동 시작되던 타이머 영구 제거.
+      - `#play` 화면 우측 하단(`fixed bottom-5 right-5 z-[70]`)에 플로팅 토글 버튼 배치: 활성화 시 360도 빙빙 회전하며 자동플레이 진행, 재클릭 시 회전 멈춤 및 즉시 정지.
+    - **에피소드 20화 Veo 3.1 16:9 통합 애니메이션 배포**:
+      - 4-point safeguard로 첫 프레임 픽셀 오차(`MAE <= 5.6`)를 100% 검증한 50컷 풀 씬 통합 애니메이션 영화 적용.
+  - **3. 빌드 및 검증**:
+    - `npm run build && node scripts/post-build.js` 빌드 성공 (0 error 통과).
+    - GitHub `origin main` 원격 저장소 푸시 완료 (`7ef3758b8..30b116259  main -> main`).
+    - 연동 구글 폼 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 원격 저장소 푸시: `git push origin main` 성공
+  - 프로덕션 빌드: `npm run build && node scripts/post-build.js` 성공
+  - 구글 폼 완료 보고서 제출 완료: `[개발] /git-push 원격 저장소(origin main) 반영 완료 -> 작업완료`
+
+
 ## [2026-11-04 12:10 KST] [에피소드 20화(#webtoon?ep=20) EP20-S02 이미지 밀림 원인 분석·4중 재발 방지 안전장치 적용 및 50컷신 첫 프레임 픽셀 100% 검증 통합 병합 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
