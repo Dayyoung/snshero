@@ -21,8 +21,24 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: Free Disk Space (Ubuntu)
+        run: |
+          echo "=== Disk space before cleanup ==="
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/share/boost
+          sudo docker system prune -af || true
+          echo "=== Disk space after cleanup ==="
+          df -h
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: false
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -42,6 +58,15 @@ jobs:
         env:
           VITE_BASE_PATH: /
           NODE_OPTIONS: "--max-old-space-size=4096"
+
+      - name: Post-Build Workspace Cleanup (Free Disk for Artifact Upload)
+        run: |
+          echo "=== Cleaning up build workspace to maximize disk for artifact compression ==="
+          rm -rf .git
+          rm -rf node_modules
+          rm -rf ~/.npm
+          echo "=== Remaining Disk Space ==="
+          df -h
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
