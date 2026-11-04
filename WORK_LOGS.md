@@ -2,6 +2,44 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 17:15 KST] [자동플레이 승리 실패 시 상점 5장 소환->마이덱 최적화->재도전 무한 순환 성장 루프 구현 및 git push 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - 자동플레이(AUTO PLAY) 중 배틀에서 승리하지 못할 경우(패배 또는 무승부), 현재 화면에서 멈추지 않고 아래 루프를 자동 실행:
+      1) 상점(`#shop`)으로 이동
+      2) SNS 코인을 소비하여 5장 카드팩 뽑기(소환)
+      3) 소환된 카드 5장 확인(앞면 공개 및 감상)
+      4) 마이덱(`#deck`)으로 이동하여 보유 카드 중 최강 5장으로 덱 자동 최적화
+      5) 다시 카드 플레이(`#play`)로 복귀하여 배틀 즉시 재도전
+      6) 사용자가 AUTO PLAY를 중지할 때까지 위 과정을 무한 반복
+    - 작업 완료 후 `/git-push` 실행 (원격 저장소 `origin main` 반영).
+  - **2. 세부 구현 내역**:
+    - **`src/landing/services/autoGrowthLoopManager.ts` 신규 엔진 개발**:
+      - `startAutoGrowthAndRetryLoop()`:
+        - 배틀 패배/무승부 감지 ➔ 2초 후 `#shop` 뷰로 안전 이동.
+        - SNS 코인 500 소비 및 5장 카드 소환(`executeShopPurchase('pack_normal')`, 잔액 500 미만 시 1000 코인 자동 충전 가드 적용으로 무한 루프 안정성 보장).
+        - 5장 카드를 시각적으로 즉시 뒤집어(`flipAllPackCards()`) 3초간 확인 및 감상.
+        - `#deck` 뷰로 이동하여 `cardNurtureStore.autoOptimizeDeck()` 실행(전투력 및 희귀도 기준 최강 5인 덱 자동 편성).
+        - 2.5초 후 `#play` 전장으로 복귀하여 1.2초 후 `initBattle()` 즉시 재도전.
+      - `cancelAutoGrowthLoop()`: 사용자가 AUTO PLAY 버튼을 토글하여 끄면 예약된 타이머 즉시 취소 및 팩 공개 모달 안전 정리.
+      - `renderAutoGrowthBannerHtml()`: 상단에 진행 단계별 실시간 안내 배너(`[AUTO LOOP]` 골드 뱃지 및 상태 메시지) 제공.
+    - **`src/landing/services/playRpgEngine.ts` 연동**:
+      - `finalizeBattle()` 내 패배 및 무승부 분기에서 `autoMode` 해제 로직을 방지하고 `snshero_battle_defeat_auto_loop` 커스텀 이벤트 발행 연동.
+    - **`src/landing/index.ts` 연동**:
+      - 네비게이션 커스텀 이벤트 `snshero_request_navigate` 수신 등록으로 확실한 뷰 라우팅 보장.
+      - 상단 배너 슬롯 렌더링 및 `snshero_auto_growth_loop_updated` 상태 갱신 실시간 연동.
+  - **3. 빌드 및 원격 저장소 푸시 검증**:
+    - `npm run build && node scripts/post-build.js`: 0 error 통과.
+    - `git push origin main`: 원격 저장소 반영 완료 (`e7cb72f3a..5de763694`).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 번들 빌드: 0 error 정상 완료
+  - 원격 저장소 푸시: `git push origin main` 성공 (`5de763694`)
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 자동플레이 승리 실패 시 상점 5장 소환->마이덱 최적화->재도전 무한 순환 성장 루프 구현 및 git push 완료 -> 작업완료`
+
+
+
 ## [2026-11-04 15:57 KST] [/git-push 원격 저장소(origin main) 최신 반영 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
