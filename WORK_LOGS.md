@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 09:35 KST] [카드 외곽 테두리 표시 제거 및 보더리스 플랫 메탈릭 카드 완성]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 카드 등급별 외곽 테두리 및 인셋 테두리 박스섀도우 제거 (`src/landing/components/OriginalCardHtml.ts`)**:
+    - 사용자 요청("카드 배경을 적용했으니까 테두리 표시는 이제 제거하자")에 따라, 금/은/동(Gold / Silver / Bronze) 메탈릭 배경이 적용된 카드들의 외곽 테두리 표시를 전면 제거.
+    - `RARITY_THEMES`의 `borderHex`를 `transparent`, `borderWidth`를 `0px`로 변경.
+    - 은(Silver)과 금(Gold) 카드 등에 정의되어 있던 인셋 테두리선(`inset 0 0 0 1.5px ...`, `inset 0 0 0 2.5px ...`)을 완전히 제거하고, 자연스러운 플랫 드롭 섀도우로 정돈.
+    - `renderRarityFrameSvg` 내의 복잡한 외곽 사각 프레임 및 브라켓 SVG 라인을 전면 제거.
+  - **2. TCG 및 3x3 배틀 슬롯 카드의 테두리 스타일 완전 제거**:
+    - `renderOriginalCardHtml` 및 `renderBattleBoardCardHtml`의 루트 컨테이너 스타일에 `border: none; outline: none;`을 명시 적용하여 픽셀 테두리가 전혀 남지 않는 모던 터미널 플랫 메탈릭 카드 완성.
+  - **3. 빌드 및 배포 검증**:
+    - `npm run build && node scripts/post-build.js` 빌드 성공 (0 error).
+    - 로컬 git 커밋 완료 (원격 git push 미실행).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build && node scripts/post-build.js` 성공 (0 error 통과)
+  - UI 확인: 홈/도감/마이덱/3x3 배틀 보드 등 전 영역 카드에서 두꺼운 외곽 테두리가 완전히 사라지고 메탈릭 배경 자체로 깔끔하게 렌더링됨
+  - 로컬 git 커밋 완료 (`802e3b5db`)
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 카드 외곽 테두리 표시 제거 및 보더리스 플랫 메탈릭 카드 완성 -> 작업완료`
+
+
+
 ## [2026-11-04 09:30 KST] [로컬 3000번 포트 프리뷰 서버 및 실시간 자동 빌드 워처 재가동 및 접속 검증]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
