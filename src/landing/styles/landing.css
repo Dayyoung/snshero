@@ -335,21 +335,8 @@ div[aria-label*="광고"][style*="position: fixed"],
   left: auto !important;
   right: auto !important;
   transform: none !important;
-  overflow: hidden !important;
-  contain: layout paint !important;
-  z-index: 1 !important;
-}
-
-#adsense-desktop-left *,
-#adsense-desktop-right * {
-  position: static !important;
-  float: none !important;
-  top: auto !important;
-  bottom: auto !important;
-  left: auto !important;
-  right: auto !important;
-  transform: none !important;
-  max-width: 100% !important;
+  overflow: visible !important;
+  z-index: 10 !important;
 }
 
 #adsense-desktop-left ins.adsbygoogle,
@@ -359,16 +346,8 @@ div[aria-label*="광고"][style*="position: fixed"],
   max-width: 160px !important;
   height: 600px !important;
   max-height: 600px !important;
-  overflow: hidden !important;
-}
-
-#adsense-desktop-left iframe,
-#adsense-desktop-right iframe {
-  width: 160px !important;
-  max-width: 160px !important;
-  height: 600px !important;
-  max-height: 600px !important;
-  overflow: hidden !important;
+  min-height: 600px !important;
+  margin: 0 auto !important;
 }
 
 /* 1536px 미만 뷰포트(일반 노트북/태블릿/모바일)에서는 데스크톱 양 날개 광고 완전 숨김 (본문 가림 0%) */
@@ -384,37 +363,35 @@ div[aria-label*="광고"][style*="position: fixed"],
 }
 
 /* ==========================================================================
-   Mobile/Tablet Compact Slim AdSense Top Banner (정해진 모바일 상단 50px 영역)
+   Mobile/Tablet Compact Slim AdSense Top Banner (정해진 모바일 상단 영역)
    ========================================================================== */
 #adsense-mobile-top {
   width: 100%;
   max-width: 100%;
   background-color: #f8f7f7;
   border-bottom: 1px solid rgba(15, 0, 0, 0.12);
-  padding: 0 4px;
-  height: 50px !important;
-  max-height: 50px !important;
+  padding: 4px 6px;
+  min-height: 54px;
+  max-height: 72px;
   position: static !important;
   float: none !important;
+  top: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
   overflow: hidden !important;
-  contain: layout paint !important;
-}
-
-#adsense-mobile-top * {
-  position: static !important;
+  z-index: 10 !important;
 }
 
 #adsense-mobile-top .adsense-banner-inner {
   width: 100%;
   max-width: 468px;
-  height: 50px !important;
-  max-height: 50px !important;
   margin: 0 auto;
-  overflow: hidden !important;
+  overflow: hidden;
 }
 
-#adsense-mobile-top ins.adsbygoogle,
-#adsense-mobile-top ins.adsbygoogle * {
+#adsense-mobile-top ins.adsbygoogle {
   display: inline-block !important;
   width: 100% !important;
   max-width: 468px !important;
@@ -422,14 +399,6 @@ div[aria-label*="광고"][style*="position: fixed"],
   max-height: 50px !important;
   min-height: 50px !important;
   margin: 0 auto !important;
-  overflow: hidden !important;
-}
-
-#adsense-mobile-top ins.adsbygoogle iframe,
-#adsense-mobile-top ins.adsbygoogle > div {
-  max-height: 50px !important;
-  height: 50px !important;
-  overflow: hidden !important;
 }
 
 /* 화면 상단/하단을 가리며 내려오는 구글 자동 앵커 및 비네트 오버레이 원천 차단 */

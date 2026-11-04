@@ -1,15 +1,15 @@
 /**
  * src/landing/services/adsenseManager.ts
  *
- * Responsive Google AdSense Configuration & Injection Service.
+ * Responsive Google AdSense Configuration & Injection Service for SNSHero.
  *
- * Requirements:
- *   - Desktop viewports (>= 1024px): Left & Right side gutters (<aside id="adsense-desktop-left">, <aside id="adsense-desktop-right">).
- *   - Mobile/Tablet viewports (< 1024px): Top banner ad unit (<div id="adsense-mobile-top">).
- *   - Non-obstructing layout: Gutters placed outside central container without blocking playfield, hand, or navigation.
- *   - Ad-removal guard: If localStorage.getItem('hero_ad_removed') === 'true', completely suppress all ads.
- *   - Safe error handling: Try/catch around window.adsbygoogle push to prevent unhandled script exceptions.
- * Pure TypeScript (Zero React runtime).
+ * Key Safeguards:
+ *   1. Zero TagError: Never call adsbygoogle.push({}) on hidden/0-width containers (availableWidth=0 prevention).
+ *   2. Zero 400 Bad Request: Never pass invalid dummy slot IDs; omit data-ad-slot if not registered.
+ *   3. Zero duplicate page-level ads: Rely on single official async script tag in index.html/home.html.
+ *   4. Zero screen obstruction: Keep ads in static containers (#adsense-desktop-left, #adsense-desktop-right, #adsense-mobile-top).
+ *   5. Completely suppressed on '#play' gaming route to preserve pure 100dvh gameplay.
+ *   6. Ad-removal guard: If localStorage.getItem('hero_ad_removed') === 'true', completely suppress all ads.
  */
 
 export interface AdSensePlacementResult {
@@ -23,11 +23,7 @@ export const ADSENSE_CONFIG = {
   client: 'ca-pub-6937094123258335',
   storageKey: 'hero_ad_removed',
   breakpointPx: 1024,
-  slots: {
-    desktopLeft: '1000000001',
-    desktopRight: '1000000002',
-    mobileTop: '1000000003',
-  },
+  wideBreakpointPx: 1536,
 } as const;
 
 /**
@@ -58,7 +54,7 @@ export function getAdPlacements(viewportWidth?: number): AdSensePlacementResult 
       ? window.innerWidth
       : 1024;
 
-  if (width >= ADSENSE_CONFIG.breakpointPx) {
+  if (width >= ADSENSE_CONFIG.wideBreakpointPx) {
     return {
       desktopLeft: true,
       desktopRight: true,
@@ -98,7 +94,6 @@ export function renderDesktopLeftGutter(activeView?: string): string {
           class="adsbygoogle"
           style="display:block; width:160px; height:600px; max-width:160px; max-height:600px; margin:0 auto; overflow:hidden;"
           data-ad-client="${ADSENSE_CONFIG.client}"
-          data-ad-slot="${ADSENSE_CONFIG.slots.desktopLeft}"
           data-ad-format="rectangle"
           data-full-width-responsive="false"
         ></ins>
@@ -130,7 +125,6 @@ export function renderDesktopRightGutter(activeView?: string): string {
           class="adsbygoogle"
           style="display:block; width:160px; height:600px; max-width:160px; max-height:600px; margin:0 auto; overflow:hidden;"
           data-ad-client="${ADSENSE_CONFIG.client}"
-          data-ad-slot="${ADSENSE_CONFIG.slots.desktopRight}"
           data-ad-format="rectangle"
           data-full-width-responsive="false"
         ></ins>
@@ -163,9 +157,8 @@ export function renderMobileTopBanner(activeView?: string): string {
             class="adsbygoogle"
             style="display:inline-block; width:100%; max-width:468px; height:50px; max-height:50px; min-height:50px; overflow:hidden;"
             data-ad-client="${ADSENSE_CONFIG.client}"
-            data-ad-slot="${ADSENSE_CONFIG.slots.mobileTop}"
             data-ad-format="horizontal"
-            data-full-width-responsive="false"
+            data-full-width-responsive="true"
           ></ins>
         </div>
       </div>
@@ -223,19 +216,6 @@ export function cleanupUncontainedAds(): void {
       }
     });
 
-    // Neutralize any fixed/sticky positioning injected by Google inside our designated containers
-    document.querySelectorAll('#adsense-desktop-left *, #adsense-desktop-right *, #adsense-mobile-top *').forEach((child) => {
-      const htmlChild = child as HTMLElement;
-      if (htmlChild.style && (htmlChild.style.position === 'fixed' || htmlChild.style.position === 'sticky')) {
-        htmlChild.style.position = 'static';
-        htmlChild.style.top = 'auto';
-        htmlChild.style.bottom = 'auto';
-        htmlChild.style.left = 'auto';
-        htmlChild.style.right = 'auto';
-        htmlChild.style.transform = 'none';
-      }
-    });
-
     // Reset unwanted body padding/margins injected by AdSense
     if (document.body && (document.body.style.paddingTop || document.body.style.marginTop)) {
       document.body.style.paddingTop = '0px';
@@ -266,39 +246,89 @@ export function initAdSenseContainmentObserver(): void {
     // Initial pass
     cleanupUncontainedAds();
   } catch {}
+
+  // Handle viewport resize safely to trigger pushes for newly revealed slots
+  let resizeTimer: any = null;
+  window.addEventListener('resize', () => {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      pushAdSenseTags();
+    }, 200);
+  });
 }
 
 /**
- * Safe initializer to push adsbygoogle instances ONLY within strictly designated containers.
+ * Checks whether an ins.adsbygoogle element is truly visible and has non-zero dimensions in layout.
+ * Prevents "No slot size for availableWidth=0" TagError.
+ */
+function isAdSlotVisible(ins: HTMLElement): boolean {
+  if (!ins || !ins.isConnected) return false;
+  if (ins.offsetParent === null) return false;
+
+  const rect = ins.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) return false;
+
+  let current: HTMLElement | null = ins;
+  while (current && current !== document.body) {
+    const style = window.getComputedStyle(current);
+    if (style.display === 'none' || style.visibility === 'hidden') {
+      return false;
+    }
+    current = current.parentElement;
+  }
+
+  return true;
+}
+
+/**
+ * Safe initializer to push adsbygoogle instances ONLY on truly visible designated containers.
+ * Guaranteed:
+ *   - Zero "availableWidth=0" TagError
+ *   - Zero "Only one enable_page_level_ads" error
+ *   - Zero duplicate pushes on already populated slots
  */
 export function pushAdSenseTags(): void {
   if (isAdRemoved()) return;
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
-  try {
-    // Clean up any uncontained auto ads first
-    cleanupUncontainedAds();
+  // Defer slightly so browser paints and layout calculates accurate widths
+  setTimeout(() => {
+    try {
+      cleanupUncontainedAds();
 
-    // Select ONLY ins elements located within our allowed slot containers
-    const allowedSlots = document.querySelectorAll(
-      '#adsense-desktop-left ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
-      '#adsense-desktop-right ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
-      '#adsense-mobile-top ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
-      '.adsense-container ins.adsbygoogle:not([data-adsbygoogle-status])'
-    );
+      // Find ins elements within designated containers that haven't been pushed yet
+      const candidateSlots = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          '#adsense-desktop-left ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
+          '#adsense-desktop-right ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
+          '#adsense-mobile-top ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
+          '.adsense-container ins.adsbygoogle:not([data-adsbygoogle-status])'
+        )
+      );
 
-    if (allowedSlots.length === 0) return;
+      if (candidateSlots.length === 0) return;
 
-    const win = window as any;
-    win.adsbygoogle = win.adsbygoogle || [];
-    allowedSlots.forEach(() => {
-      try {
-        win.adsbygoogle.push({});
-      } catch (err) {
-        // Safe catch per slot push
-      }
-    });
-  } catch (e) {
-    // Top-level safe catch
-  }
+      const win = window as any;
+      win.adsbygoogle = win.adsbygoogle || [];
+
+      candidateSlots.forEach((slotEl) => {
+        // Strict guard: DO NOT push if element is hidden or has 0 width!
+        if (!isAdSlotVisible(slotEl)) {
+          return;
+        }
+
+        // Mark as pending before push so subsequent calls don't duplicate
+        slotEl.setAttribute('data-adsbygoogle-status', 'pending');
+
+        try {
+          win.adsbygoogle.push({});
+        } catch (err) {
+          // If push fails, release status so it can retry later
+          slotEl.removeAttribute('data-adsbygoogle-status');
+        }
+      });
+    } catch (e) {
+      // Top-level safe catch
+    }
+  }, 80);
 }

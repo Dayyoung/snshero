@@ -1310,33 +1310,20 @@ iframe[name*="google_ads_bottom_frame"],
   overflow: hidden !important;
 }
 
-/* Strict 50px Compact Slim Banner for Mobile & Tablet */
+/* Strict Compact Slim Banner for Mobile & Tablet */
 .adsense-compact-top,
 .adsense-compact-top .adsense-container,
-.adsense-compact-top ins.adsbygoogle,
-.adsense-compact-top ins.adsbygoogle *,
 #adsense-mobile-top,
-#adsense-mobile-top .adsense-banner-inner,
-#adsense-mobile-top ins.adsbygoogle,
-#adsense-mobile-top ins.adsbygoogle * {
-  max-height: 50px !important;
-  overflow: hidden !important;
-  contain: layout paint !important;
+#adsense-mobile-top .adsense-banner-inner {
+  min-height: 50px;
+  max-height: 72px;
+  overflow: hidden;
 }
 
-.adsense-compact-top,
 .adsense-compact-top ins.adsbygoogle,
-#adsense-mobile-top,
 #adsense-mobile-top ins.adsbygoogle {
+  display: inline-block !important;
   height: 50px !important;
   min-height: 50px !important;
-}
-
-.adsense-compact-top ins.adsbygoogle iframe,
-.adsense-compact-top ins.adsbygoogle > div,
-#adsense-mobile-top ins.adsbygoogle iframe,
-#adsense-mobile-top ins.adsbygoogle > div {
   max-height: 50px !important;
-  height: 50px !important;
-  overflow: hidden !important;
 }

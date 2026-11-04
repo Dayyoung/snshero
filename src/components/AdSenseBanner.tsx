@@ -50,15 +50,17 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
  const ins = insRef.current;
  if (!ins) return;
 
- // 이미 광고가 채워졌거나 adsbygoogle 상태가 완료된 경우 중복 push 방지
+ if (ins.offsetWidth <= 0 || ins.offsetParent === null) return;
+
  const status = ins.getAttribute('data-adsbygoogle-status');
- if (status === 'done' || ins.children.length > 0) {
+ if (status === 'done' || status === 'pending' || ins.children.length > 0) {
  isLoadedRef.current = true;
  return;
  }
 
  const win = window as unknown as { adsbygoogle?: Array<Record<string, unknown>> };
  win.adsbygoogle = win.adsbygoogle || [];
+ ins.setAttribute('data-adsbygoogle-status', 'pending');
  win.adsbygoogle.push({});
  isLoadedRef.current = true;
  } catch (e) {
