@@ -39,6 +39,7 @@ import {
   THIEF_DECK_PRESET,
 } from '../../lib/rpg/kadanRpgAmbush';
 import { audioManager } from './audioManager';
+import { preloadNearbyChapterBackgrounds } from './locationBgManager';
 
 // Attach awardBattleVictoryExp and getCard to cardNurtureStore if not already present
 if (typeof (cardNurtureStore as any).getCard !== 'function') {
@@ -708,6 +709,7 @@ export function preloadCharacterBust(cardId: number): void {
  */
 export function preloadDialogueChapterImages(): void {
   if (typeof window === 'undefined') return;
+  preloadNearbyChapterBackgrounds(playRpgState.currentChapter);
   const lines = getCurrentDialogueLines();
   const curIdx = playRpgState.currentDialogueLineIdx;
 

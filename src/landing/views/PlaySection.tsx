@@ -81,6 +81,10 @@ import {
   selectNextChapter,
   PlayTabKey,
 } from '../services/playRpgEngine';
+import {
+  getDialogueBackground,
+  preloadLocationBackground,
+} from '../services/locationBgManager';
 
 /**
  * 40-Episode Quick Jump Drawer Open State for Adventure Tab
@@ -990,6 +994,11 @@ function renderAdventureView(): string {
               const dialogueData = extractDialogueText(line, activeSpeaker.name);
               const activeSpeakerAsset = getCharacterAsset(activeSpeaker.cardId);
 
+              // Canonical location background matching current episode context & keywords
+              const currentChapter = playRpgState.currentChapter;
+              const bgLoc = getDialogueBackground(currentChapter, line.text);
+              preloadLocationBackground(bgLoc.bgJpgUrl);
+
               return `
                 <div
                   id="play-dialogue-modal-root"
@@ -998,8 +1007,21 @@ function renderAdventureView(): string {
                   aria-modal="true"
                   aria-labelledby="dialogue-modal-speaker"
                 >
-                  <!-- 1. 상단 바: 챕터 제목 & 우측 [건너뛰기 ▶] + [✕ 닫기] 버튼 -->
-                  <header class="w-full shrink-0 flex items-center justify-between px-4 sm:px-6 py-3 border-b border-white/10 bg-[#161313]/90 z-20">
+                  <!-- 0. 장소 배경 아트 레이어 & 다크 비네팅 오버레이 -->
+                  <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+                    <img
+                      src="${bgLoc.bgJpgUrl}"
+                      alt="${bgLoc.nameKo}"
+                      class="w-full h-full object-cover object-center filter brightness-[0.72] contrast-[1.08] scale-105 transition-all duration-700 ease-out"
+                    />
+                    <!-- 부드러운 상하 비네팅 및 다크 그라데이션 오버레이로 텍스트/UI 가독성 극대화 -->
+                    <div class="absolute inset-0 bg-gradient-to-b from-[#0e0c0c]/85 via-[#0e0c0c]/55 to-[#0e0c0c]/95"></div>
+                    <!-- 은은한 앰비언트 격자/필름 그레인 느낌 -->
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.6)_100%)]"></div>
+                  </div>
+
+                  <!-- 1. 상단 바: 챕터 제목 & 장소 배지 & 우측 [건너뛰기 ▶] + [✕ 닫기] 버튼 -->
+                  <header class="w-full shrink-0 flex items-center justify-between px-4 sm:px-6 py-3 border-b border-white/10 bg-[#161313]/85 backdrop-blur-md z-20">
                     <div class="flex items-center gap-2 truncate">
                       <span class="px-2 py-0.5 bg-amber-400 text-stone-950 font-black text-[11px] sm:text-xs rounded-sm shrink-0">
                         EPISODE
@@ -1007,12 +1029,16 @@ function renderAdventureView(): string {
                       <span class="text-xs sm:text-sm font-bold text-amber-300 truncate">
                         ${chapterLabel} [${playRpgState.currentDialogueLineIdx + 1} / ${lines.length}]
                       </span>
+                      <!-- 현재 캐노니컬 장소 배지 -->
+                      <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 bg-stone-900/80 border border-amber-400/40 text-amber-200 text-[11px] rounded-sm truncate">
+                        📍 ${isKo ? bgLoc.nameKo : bgLoc.nameEn}
+                      </span>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                       <button
                         type="button"
                         data-action="play-dialogue-skip"
-                        class="px-3 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer active:translate-y-px"
+                        class="px-3 py-1.5 bg-stone-800/90 hover:bg-stone-700 text-stone-300 border border-stone-600 text-xs font-bold rounded-sm min-h-[44px] cursor-pointer active:translate-y-px"
                         aria-label="${tr('대화 건너뛰기 및 전투 직행', 'Skip Dialogue & Start Battle', '会話をスキップして戦闘へ')}"
                       >
                         ${tr('건너뛰기 ▶', 'Skip ▶', 'スキップ ▶')}
@@ -1028,29 +1054,34 @@ function renderAdventureView(): string {
                     </div>
                   </header>
 
-                  <!-- 2. 중앙 메인: 2배 큰 상반신 이미지 + 화자 이름 + 정돈된 대사 박스 -->
-                  <main class="flex-1 w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-4 py-2 sm:py-4 overflow-y-auto space-y-3 sm:space-y-4">
+                  <!-- 2. 중앙 메인: 배경 위에 자연스럽게 서 있는 캐릭터 (경계 박스 완전 제거) + 화자 이름 + 정돈된 대사 박스 -->
+                  <main class="relative z-10 flex-1 w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-4 py-2 sm:py-4 overflow-y-auto space-y-3 sm:space-y-4">
                     
-                    <!-- 2배 큰 상반신 이미지 (기존 w-24 h-24 대비 2배 이상 확대 & 중앙 배치) -->
+                    <!-- 캐릭터 상반신/전신 (경계 박스 border/bg/box-shadow 완전 제거, 자연스러운 입체 드롭 섀도우) -->
                     <div class="flex flex-col items-center shrink-0">
-                      <div class="relative w-48 h-48 sm:w-60 sm:h-60 md:w-64 md:h-64 bg-[#141010] border-2 border-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.2)] rounded-none overflow-hidden flex items-end justify-center transition-all">
+                      <div class="relative w-52 h-52 sm:w-64 sm:h-64 md:w-72 md:h-72 flex items-end justify-center pointer-events-none select-none">
                         <img
                           id="dialogue-speaker-bust-img"
                           src="${activeSpeakerAsset.bustPngUrl}?v=20261103v4"
                           alt="${activeSpeaker.name}"
                           loading="eager"
-                          class="w-full h-full object-contain"
+                          class="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.9)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] transform transition-transform duration-300"
                           onerror="this.src='${activeSpeakerAsset.seatUrl}'; this.onerror=null;"
                         />
                       </div>
-                      <!-- 화자 이름 배지 -->
-                      <div class="mt-2 px-3.5 py-1 bg-amber-400 text-stone-950 font-black text-xs sm:text-sm rounded-sm tracking-wide shadow-md">
-                        <span id="dialogue-modal-speaker">${activeSpeaker.name}</span>
+                      <!-- 화자 이름 배지 & 장소 인디케이터 (모바일 표시용) -->
+                      <div class="mt-2 flex items-center gap-2">
+                        <div class="px-3.5 py-1 bg-amber-400 text-stone-950 font-black text-xs sm:text-sm rounded-sm tracking-wide shadow-md">
+                          <span id="dialogue-modal-speaker">${activeSpeaker.name}</span>
+                        </div>
+                        <span class="sm:hidden px-2 py-0.5 bg-stone-900/85 border border-amber-400/40 text-amber-200 text-[10px] font-bold rounded-sm">
+                          📍 ${isKo ? bgLoc.nameKo : bgLoc.nameEn}
+                        </span>
                       </div>
                     </div>
 
-                    <!-- 대사 박스 (쓸데없는 정보 제거, 중앙 정렬의 큼직하고 편안한 텍스트 가독성) -->
-                    <div class="w-full bg-[#181414] border border-amber-400/40 p-4 sm:p-5 rounded-none shadow-xl">
+                    <!-- 대사 박스: 배경 위 가독성을 높인 반투명 글래스 다크 패널 -->
+                    <div class="w-full bg-[#141111]/90 backdrop-blur-md border border-amber-400/50 p-4 sm:p-5 rounded-none shadow-2xl">
                       <div class="space-y-2">
                         ${dialogueData.text
                           .split('\n\n')
