@@ -173,6 +173,7 @@ export function handleWebtoonAction(action: string, target?: HTMLElement): void 
 export function renderWebtoonSection(): string {
   initWebtoonEpisodeFromUrl();
 
+  const cacheBustVer = `20261105_${Math.floor(Date.now() / 60000)}`;
   const ep = currentWebtoonEpisode;
   const isKo = isKoreanLanguage();
   const epData = MANIFEST[String(ep)];
@@ -196,7 +197,7 @@ export function renderWebtoonSection(): string {
     const activeImage: WebtoonImageItem | undefined = curImages[validIdx];
 
     const rawImgSrc = activeImage?.imageUrl || activeImage?.localArtUrl || '';
-    const imgSrc = rawImgSrc ? `${rawImgSrc}${rawImgSrc.includes('?') ? '&' : '?'}v=20261104_pure2` : '';
+    const imgSrc = rawImgSrc ? `${rawImgSrc}${rawImgSrc.includes('?') ? '&' : '?'}v=${cacheBustVer}` : '';
     const narration = isKo
       ? activeImage?.narrationKo || activeImage?.narrationEn || ''
       : (activeImage?.narrationEn || activeImage?.narrationKo || '').replace(/\s*\(눈히어로\.com\)/g, '');
@@ -549,7 +550,7 @@ export function renderWebtoonSection(): string {
                       : (img.narrationEn || img.narrationKo || '').replace(/\s*\(눈히어로\.com\)/g, '');
                     const dialogues = img.dialogues || [];
                     const rawImgSrc = img.imageUrl || img.localArtUrl || '';
-                    const imgSrc = rawImgSrc ? `${rawImgSrc}${rawImgSrc.includes('?') ? '&' : '?'}v=20261104_pure2` : '';
+                    const imgSrc = rawImgSrc ? `${rawImgSrc}${rawImgSrc.includes('?') ? '&' : '?'}v=${cacheBustVer}` : '';
 
                     return `
                       <!-- Single Webtoon Panel Card (Vertical Flow) -->
