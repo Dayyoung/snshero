@@ -114,6 +114,7 @@ import {
 } from './services/adsenseManager';
 import { cardNurtureStore } from './services/cardNurtureStore';
 import { playRpgState, runAutoStep, ensureGameStarted } from './services/playRpgEngine';
+import { renderAutoGrowthBannerHtml } from './services/autoGrowthLoopManager';
 
 interface LandingState {
   activeView: ViewKey;
@@ -167,6 +168,11 @@ export function renderApp(): void {
 
   root.innerHTML = `
     <div class="w-full min-h-screen overflow-x-hidden flex flex-col bg-[#fdfcfc] text-[#201d1d] font-mono select-none">
+      <!-- Autonomous Growth & Retry Loop Top Banner -->
+      <div id="landing-auto-growth-banner-slot" class="w-full">
+        ${renderAutoGrowthBannerHtml()}
+      </div>
+
       <!-- Top Navigation -->
       <div id="landing-header-slot" class="w-full">
         ${renderHeader(state.activeView)}
@@ -217,9 +223,14 @@ export function renderSectionContent(view: ViewKey): void {
   const mainSlot = document.getElementById('landing-main-slot');
   const headerSlot = document.getElementById('landing-header-slot');
   const sidebarSlot = document.getElementById('landing-sidebar-slot');
+  const autoBannerSlot = document.getElementById('landing-auto-growth-banner-slot');
   const leftGutter = document.getElementById('adsense-desktop-left');
   const rightGutter = document.getElementById('adsense-desktop-right');
   const mobileTop = document.getElementById('adsense-mobile-top');
+
+  if (autoBannerSlot) {
+    autoBannerSlot.innerHTML = renderAutoGrowthBannerHtml();
+  }
 
   if (mainSlot && headerSlot) {
     headerSlot.innerHTML = renderHeader(view);
@@ -1033,6 +1044,18 @@ export function mountLanding(): void {
 
   // 7. Custom store events
   if (typeof window !== 'undefined') {
+    window.addEventListener('snshero_request_navigate', (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail && detail.view && VALID_VIEWS.includes(detail.view)) {
+        navigateTo(detail.view as ViewKey);
+      }
+    });
+    window.addEventListener('snshero_auto_growth_loop_updated', () => {
+      const autoBannerSlot = document.getElementById('landing-auto-growth-banner-slot');
+      if (autoBannerSlot) {
+        autoBannerSlot.innerHTML = renderAutoGrowthBannerHtml();
+      }
+    });
     window.addEventListener('snshero_card_nurture_updated', () => {
       renderApp();
     });

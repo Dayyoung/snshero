@@ -1358,6 +1358,11 @@ export function finalizeBattle(): void {
       setTimeout(() => {
         initBattle();
       }, 3000);
+    } else if (playRpgState.autoMode) {
+      // 자동플레이 중 승리하지 못한 경우: 멈추지 않고 상점 이동 -> 카드 뽑기 -> 5장 확인 -> 마이덱 최적화 -> 재도전 루프 가동!
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('snshero_battle_defeat_auto_loop'));
+      }
     } else {
       playRpgState.autoMode = false;
       try {
@@ -1375,6 +1380,11 @@ export function finalizeBattle(): void {
       setTimeout(() => {
         initBattle();
       }, 3000);
+    } else if (playRpgState.autoMode) {
+      // 자동플레이 중 무승부 시에도 동일하게 자동 성장 & 재도전 루프 가동
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('snshero_battle_defeat_auto_loop'));
+      }
     } else {
       playRpgState.autoMode = false;
       try {
@@ -1600,6 +1610,13 @@ export function toggleAutoMode(): boolean {
   try {
     localStorage.setItem('hero_kadan_rpg_auto_mode', String(playRpgState.autoMode));
   } catch {}
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent('snshero_auto_mode_toggled', {
+        detail: { autoMode: playRpgState.autoMode },
+      })
+    );
+  }
   return playRpgState.autoMode;
 }
 
