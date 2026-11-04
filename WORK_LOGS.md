@@ -2,6 +2,30 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 09:25 KST] [전체 카드 금/은/동 배경 적용 및 초상화 윈도우 종족 색상 집중 적용]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 전체 카드 배경에 금/은/동(Gold / Silver / Bronze) 메탈릭 그라데이션 적용 (`src/landing/components/OriginalCardHtml.ts`)**:
+    - 기존에는 카드 전체가 종족 색상으로 덮여 있어 카드 등급(Rarity)과 종족(Faction)의 구분이 모호했던 문제를 해결하기 위해, 카드 전체 컨테이너 배경(`cardBg`)을 등급별 금/은/동 메탈릭 테마로 전면 개편:
+      - **🥇 금(Gold) 카드**: 눈부신 로열 샴페인 골드 & 황금 메탈릭 그라데이션 (`linear-gradient(145deg, #fefce8 0%, #fef3c7 45%, #fde68a 100%)`)과 3px 골드 앰버 베젤 테두리
+      - **🥈 은(Silver) 카드**: 맑고 깨끗한 플래티넘 실버 메탈릭 그라데이션 (`linear-gradient(145deg, #ffffff 0%, #f1f5f9 45%, #e2e8f0 100%)`)과 2.5px 슬레이트 실버 베젤 테두리
+      - **🥉 동(Bronze) 카드**: 묵직하고 따뜻한 코퍼 브론즈 그라데이션 (`linear-gradient(145deg, #fdf8f4 0%, #f5ece2 45%, #ebdcd0 100%)`)과 2px 코퍼 브라운 베젤 테두리
+  - **2. 캐릭터 초상화(일러스트) 윈도우 배경에 11개 종족 고유 컬러 집중 적용 (`OriginalCardHtml.ts`)**:
+    - 영웅 캐릭터 일러스트가 놓이는 중앙 사각 창(`Central Illustration Window`)의 배경(`windowBg`)과 테두리(`windowBorder`), 내부 마법진 SVG 선(`accent`)에 11개 종족 고유 컬러를 집중 배치:
+      - 물(Water: 아쿠아 블루), 불(Fire: 앰버 레드), 바람(Wind: 민트 틸), 땅(Earth: 라임 올리브), 인간(Human: 로열 블루), 언데드(Undead: 미스틱 퍼플), 엘프(Elf: 에메랄드 그린), 드워프(Dwarf: 토파즈 골드), 몬스터(Monster: 루비 크림슨), 로봇(Robot: 코발트 스틸), 드래곤(Dragon: 마젠타 바이올렛)
+    - 결과적으로 **카드의 전체 몸체는 등급(금/은/동)으로 즉시 식별**되고, **초상화 뒷배경은 종족 색상으로 즉시 식별**되는 완벽한 시각적 계층화 달성.
+  - **3. 원본 카드(`renderOriginalCardHtml`) 및 3x3 배틀 보드 카드(`renderBattleBoardCardHtml`) 전수 일괄 적용**:
+    - 마이덱, 홈 화면 쇼케이스, 카드 도감, 카드 상세 검사 모달, 플레이 배틀 핸드 및 필드 슬롯 카드 전수에서 동일한 프리미엄 금/은/동 + 종족 초상화 비주얼 동기화 완료.
+  - **4. 빌드 및 배포 검증**:
+    - `npm run build && node scripts/post-build.js` 빌드 성공 (0 error).
+    - 로컬 git 커밋 완료 (`468a0fbfc`, 원격 git push 미실행).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build && node scripts/post-build.js` 성공 (0 error)
+  - 로컬 git 커밋: `468a0fbfc`
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 전체 카드 금/은/동 배경 적용 및 초상화 윈도우 종족 색상 집중 적용 -> 작업완료`
+
+
 ## [2026-11-04 09:10 KST] [플레이 맵 목표 지점(GO!) 타일 점프 가림 버그 및 4방향 버튼 타일 가림 완전 해결]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
