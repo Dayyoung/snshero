@@ -1185,7 +1185,7 @@ function renderAdventureView(): string {
                   </h3>
                   ${
                     playRpgState.reincarnationLevel > 0
-                      ? `<span class="px-1.5 py-0.5 bg-purple-950 text-purple-200 border border-purple-500/70 text-[9px] sm:text-[10px] font-black rounded-sm shrink-0">🔥+${rebirthBonus}</span>`
+                      ? `<span class="px-1.5 py-0.5 bg-amber-400 text-stone-950 text-[9px] sm:text-[10px] font-black rounded-sm shrink-0">✨${tr(`영웅오라 +${playRpgState.reincarnationLevel}`, `Hero Aura +${playRpgState.reincarnationLevel}`, `英雄オーラ +${playRpgState.reincarnationLevel}`)}</span>`
                       : ''
                   }
                 </div>

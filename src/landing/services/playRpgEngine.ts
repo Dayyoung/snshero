@@ -962,20 +962,17 @@ export function getEpisodeActualOpponentDeck(chapter: number): {
 
 /**
  * Compute per-direction stat bonus for opponent cards based on reincarnation level.
- * Each reincarnation cycle adds a flat +1 linear bonus to base cap:
- *   - Reincarnation 0: +0
- *   - Reincarnation 1: +1
- *   - Reincarnation 2: +2
- *   - Reincarnation N: +N
+ * By user decree: Reincarnations 1 through 10 are tuned for easy, triumphant progression (+0 opponent buff).
+ * Beyond Reincarnation 10, progressive challenge starts (+1 per cycle above 10).
  */
 export function getOpponentRebirthStatBonus(
   rebirthLevel: number = playRpgState.reincarnationLevel,
   _chapter: number = playRpgState.currentChapter
 ): number {
-  if (!rebirthLevel || rebirthLevel <= 0) {
+  if (!rebirthLevel || rebirthLevel <= 10) {
     return 0;
   }
-  return rebirthLevel;
+  return rebirthLevel - 10;
 }
 
 /**
@@ -990,16 +987,13 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
   playRpgState.lastPlacedSlot = null;
   playRpgState.flippedSlots = [];
 
-  const rebirthBonus = getOpponentRebirthStatBonus(
-    playRpgState.reincarnationLevel,
-    playRpgState.currentChapter
-  );
+  const playerAura = playRpgState.reincarnationLevel;
   playRpgState.battleMessage =
-    rebirthBonus > 0
+    playerAura > 0
       ? tr(
-          `🔥 [환생 ${playRpgState.reincarnationLevel}회차 강화] 상대 모든 카드 스탯 +${rebirthBonus}! 카드를 선택해 빈 슬롯에 배치하세요.`,
-          `🔥 [Reincarnation ${playRpgState.reincarnationLevel} Boost] Opponent all card stats +${rebirthBonus}! Select a card and place it in an empty slot.`,
-          `🔥 [転生${playRpgState.reincarnationLevel}周目強化] 相手全カードステータス+${rebirthBonus}！カードを選択して空きスロットに配置してください。`
+          `✨ [환생 ${playerAura}회차] 영웅 전원 스탯 +${playerAura} 오라 발동! 카드를 선택해 빈 슬롯에 배치하세요.`,
+          `✨ [Rebirth ${playerAura}] Hero Aura +${playerAura} active on all cards! Tap an empty slot to place.`,
+          `✨ [転生${playerAura}周目] 英雄全員ステータス+${playerAura}オーラ発動！空きスロットに配置してください。`
         )
       : tr(
           '카드를 선택한 후 3x3 전장의 빈 슬롯을 터치하세요.',
@@ -1038,37 +1032,44 @@ function getCardCombatStats(
   owner: 'player' | 'opponent' = 'player'
 ): [number, number, number, number] {
   const card = CARD_DATABASE[cardId];
+  const rebirthLevel = playRpgState.reincarnationLevel || 0;
+
   if (owner === 'opponent') {
-    const rebirthLevel = playRpgState.reincarnationLevel || 0;
     const chapter = playRpgState.currentChapter || 1;
     const rawTop = card?.top || 3;
     const rawRight = card?.right || 3;
     const rawBottom = card?.bottom || 3;
     const rawLeft = card?.left || 3;
 
-    // Story Chapter progression cap (Ch 1..5: 2 -> Ch 36..40: 9)
-    // Ensures early chapters remain accessible and enjoyable even after reincarnation
+    // Story Chapter progression cap:
+    // In Reincarnations 1..10, cap starts at 2 (Ch 1..10) and gently rises to 5 (Ch 40)
+    // Ensures opponents are effortlessly defeated in Reincarnations 1..10
     const chapterClamped = Math.max(1, Math.min(40, chapter));
-    const chapterCap = 2 + Math.floor((chapterClamped - 1) / 5);
+    const isEasyReincarnation = rebirthLevel <= 10;
+    const chapterCap = isEasyReincarnation
+      ? 2 + Math.floor((chapterClamped - 1) / 10) // Ch1..10: 2, Ch11..20: 3, Ch21..30: 4, Ch31..40: 5
+      : 3 + Math.floor((chapterClamped - 1) / 5);
 
-    // Linear reincarnation bonus (+1 per cycle)
     const rebirthBonus = getOpponentRebirthStatBonus(rebirthLevel, chapter);
 
     return [
-      Math.max(1 + rebirthBonus, Math.min(rawTop, chapterCap) + rebirthBonus),
-      Math.max(1 + rebirthBonus, Math.min(rawRight, chapterCap) + rebirthBonus),
-      Math.max(1 + rebirthBonus, Math.min(rawBottom, chapterCap) + rebirthBonus),
-      Math.max(1 + rebirthBonus, Math.min(rawLeft, chapterCap) + rebirthBonus),
+      Math.max(1, Math.min(rawTop, chapterCap) + rebirthBonus),
+      Math.max(1, Math.min(rawRight, chapterCap) + rebirthBonus),
+      Math.max(1, Math.min(rawBottom, chapterCap) + rebirthBonus),
+      Math.max(1, Math.min(rawLeft, chapterCap) + rebirthBonus),
     ];
   }
 
+  // Player cards: Base + Level bonuses + Reincarnation Hero Aura (+1 per rebirth level)
+  // Ensures triumphant player progression through Reincarnations 1..10
   const nurture = (cardNurtureStore as any).getCard(cardId);
   const bonus = nurture?.bonusStats || { top: 0, right: 0, bottom: 0, left: 0 };
+  const playerRebirthAura = rebirthLevel;
 
-  const top = (card?.top || 2) + bonus.top;
-  const right = (card?.right || 2) + bonus.right;
-  const bottom = (card?.bottom || 2) + bonus.bottom;
-  const left = (card?.left || 2) + bonus.left;
+  const top = (card?.top || 2) + bonus.top + playerRebirthAura;
+  const right = (card?.right || 2) + bonus.right + playerRebirthAura;
+  const bottom = (card?.bottom || 2) + bonus.bottom + playerRebirthAura;
+  const left = (card?.left || 2) + bonus.left + playerRebirthAura;
 
   return [top, right, bottom, left];
 }
@@ -1285,13 +1286,22 @@ function executeOpponentTurn(): void {
 
   if (emptySlots.length === 0) return;
 
-  // Linear AI smartness progression across chapters and reincarnation
-  // Ch 1 starts relaxed (~12% smart moves) and rises gradually up to ~55% at Ch 40
-  // Each reincarnation cycle adds a subtle +4% bonus
+  // AI smartness: in Reincarnations 1..10, AI plays ultra-casually (5%~15% smart move)
+  // so the player can effortlessly and triumphantly progress
+  const rebirthLevel = playRpgState.reincarnationLevel || 0;
   const chapter = Math.max(1, Math.min(40, playRpgState.currentChapter || 1));
-  const chapterSmart = 0.10 + (chapter / 40) * 0.45;
-  const rebirthSmart = Math.min(0.20, (playRpgState.reincarnationLevel || 0) * 0.04);
-  const smartMoveChance = Math.min(0.80, chapterSmart + rebirthSmart);
+
+  let smartMoveChance: number;
+  if (rebirthLevel <= 10) {
+    // Ultra-forgiving AI for Reincarnations 1..10 (5% at Ch 1 up to 15% at Ch 40)
+    smartMoveChance = 0.05 + (chapter / 40) * 0.10;
+  } else {
+    // Gradual challenge from Reincarnation 11+
+    const chapterSmart = 0.20 + (chapter / 40) * 0.40;
+    const rebirthSmart = Math.min(0.25, (rebirthLevel - 10) * 0.05);
+    smartMoveChance = Math.min(0.80, chapterSmart + rebirthSmart);
+  }
+
   const isSmartMove = Math.random() < smartMoveChance;
 
   if (isSmartMove) {
