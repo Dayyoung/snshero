@@ -962,8 +962,14 @@ export function getEpisodeActualOpponentDeck(chapter: number): {
 
 /**
  * Compute per-direction stat bonus for opponent cards based on reincarnation level and chapter.
- * Reincarnation 0: +0 bonus (standard story balance).
- * Reincarnation 1+: +4 per reincarnation level + chapter scaling, requiring player card upgrades to progress.
+ * Reincarnation 0: +0 bonus (standard story progression).
+ * Reincarnation 1+: Scales linearly without sudden cliff-like spikes between reincarnation cycles.
+ *   - Rebirth 1, Ch 1..15: +1
+ *   - Rebirth 1, Ch 16..30: +2
+ *   - Rebirth 1, Ch 31..40: +3
+ *   - Rebirth 2, Ch 1..15: +3
+ *   - Rebirth 2, Ch 16..30: +4
+ *   - Rebirth 2, Ch 31..40: +5
  */
 export function getOpponentRebirthStatBonus(
   rebirthLevel: number = playRpgState.reincarnationLevel,
@@ -972,8 +978,8 @@ export function getOpponentRebirthStatBonus(
   if (!rebirthLevel || rebirthLevel <= 0) {
     return 0;
   }
-  const chapterTier = Math.floor(Math.max(0, chapter - 1) / 8);
-  return rebirthLevel * 4 + chapterTier * rebirthLevel;
+  const chapterOffset = Math.floor(Math.max(0, chapter - 1) / 15);
+  return rebirthLevel + chapterOffset;
 }
 
 /**
@@ -1044,24 +1050,24 @@ function getCardCombatStats(
     const rawBottom = card?.bottom || 3;
     const rawLeft = card?.left || 3;
 
-    if (rebirthLevel <= 0) {
-      // First playthrough (Reincarnation 0): scale episode character stats smoothly by chapter (1..40)
-      const cap = 2 + Math.floor(chapter / 5);
-      return [
-        Math.max(1, Math.min(rawTop, cap)),
-        Math.max(1, Math.min(rawRight, cap)),
-        Math.max(1, Math.min(rawBottom, cap)),
-        Math.max(1, Math.min(rawLeft, cap)),
-      ];
-    }
+    // Smooth linear effective progress across all cycles (1, 2, ..., 40, 41, ..., 80, ...)
+    const effectiveProgress = rebirthLevel * 40 + chapter;
 
-    // Reincarnation 1+: Full character base stats + progressive Reincarnation bonus
+    // Linear cap and minStat scaling:
+    // Progress 1 (R0-Ch1): cap = 3, minStat = 1 -> Stats 1~3
+    // Progress 40 (R0-Ch40): cap = 8, minStat = 2 -> Stats 2~8
+    // Progress 41 (R1-Ch1): cap = 8, minStat = 2, bonus = +1 -> Stats 3~9 (Seamless linear transition!)
+    // Progress 80 (R1-Ch40): cap = 14, minStat = 4, bonus = +3 -> Stats 5~15
+    // Progress 81 (R2-Ch1): cap = 14, minStat = 4, bonus = +3 -> Stats 5~15 (Seamless linear transition!)
+    const cap = Math.min(18, 3 + Math.floor(effectiveProgress / 7));
+    const minStat = Math.min(6, Math.max(1, Math.floor(effectiveProgress / 20)));
     const rebirthBonus = getOpponentRebirthStatBonus(rebirthLevel, chapter);
+
     return [
-      Math.max(4, rawTop) + rebirthBonus,
-      Math.max(4, rawRight) + rebirthBonus,
-      Math.max(4, rawBottom) + rebirthBonus,
-      Math.max(4, rawLeft) + rebirthBonus,
+      Math.min(20, Math.max(minStat, Math.min(rawTop, cap)) + rebirthBonus),
+      Math.min(20, Math.max(minStat, Math.min(rawRight, cap)) + rebirthBonus),
+      Math.min(20, Math.max(minStat, Math.min(rawBottom, cap)) + rebirthBonus),
+      Math.min(20, Math.max(minStat, Math.min(rawLeft, cap)) + rebirthBonus),
     ];
   }
 
@@ -1288,8 +1294,16 @@ function executeOpponentTurn(): void {
 
   if (emptySlots.length === 0) return;
 
-  // On Reincarnation 1+, AI actively chooses the card & slot that maximizes flips of player cards
-  if (playRpgState.reincarnationLevel >= 1) {
+  // Linear AI smartness progression across cycles and chapters
+  // Reincarnation 0 Ch 1..20: ~15-30% smart move chance
+  // Reincarnation 0 Ch 21..40: ~30-45% smart move chance
+  // Reincarnation 1 Ch 1..40: ~45-75% smart move chance
+  // Reincarnation 2+: 80-95% smart move chance
+  const effectiveProgress = (playRpgState.reincarnationLevel || 0) * 40 + (playRpgState.currentChapter || 1);
+  const smartMoveChance = Math.min(0.95, Math.max(0.15, 0.15 + effectiveProgress * 0.0075));
+  const isSmartMove = Math.random() < smartMoveChance;
+
+  if (isSmartMove) {
     let bestHandIdx = 0;
     let bestSlot = emptySlots[0];
     let bestScore = -1;
@@ -1312,7 +1326,7 @@ function executeOpponentTurn(): void {
     return;
   }
 
-  // Reincarnation 0: Standard AI
+  // Standard casual move (fallback)
   const randomSlot = emptySlots[Math.floor(Math.random() * emptySlots.length)];
   const randomHandIdx = Math.floor(Math.random() * playRpgState.opponentHand.length);
 
