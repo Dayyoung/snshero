@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 09:30 KST] [로컬 3000번 포트 프리뷰 서버 및 실시간 자동 빌드 워처 재가동 및 접속 검증]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 포트 3000 연결 불가(Connection Refused) 원인 파악 및 통합 서버 기동 (`scripts/start-server.sh`)**:
+    - `http://localhost:3000/` 접속 불가 오류 발생 원인 진단: 3000번 포트의 Vite 서버가 실행되어 있지 않은 상태 확인 (`curl: (7) Failed to connect to localhost port 3000`).
+    - `/start-server` 스킬 표준 스크립트(`bash scripts/start-server.sh`)를 백그라운드 데몬으로 즉각 가동:
+      - Vite Preview 정적 서버: `http://0.0.0.0:3000/` (로컬 및 Tailscale Funnel)
+      - W3C Web Push 디스패처 서버: `http://0.0.0.0:3001/`
+      - 실시간 소스코드 감시 자동 빌드 워처: `node scripts/watch-build.js`
+  - **2. 브라우저 실제 렌더링 및 엔드포인트 무결성 검증**:
+    - `curl -sI http://localhost:3000/` -> `HTTP/1.1 200 OK`
+    - `curl -sI http://localhost:3000/setting` -> `HTTP/1.1 200 OK`
+    - Headless Chrome을 통한 `http://localhost:3000/#setting` 실제 DOM 마운트 및 렌더링 테스트 완료: 설정 화면 정상 출력, Google 로그인 블록 정상 제외 확인, JS 에러 0건.
+  - **3. 빌드 및 배포 검증**:
+    - 로컬 git 커밋 완료 (원격 git push 미실행).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 서버 상태: `http://localhost:3000/` (200 OK), `http://localhost:3001/` (200 OK)
+  - 렌더링 검증: Chrome Headless DOM 정상 렌더링 확인 (0 error)
+  - 로컬 git 커밋 완료
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 로컬 3000번 포트 프리뷰 서버 및 실시간 자동 빌드 워처 재가동 및 접속 검증 -> 작업완료`
+
+
 ## [2026-11-04 09:27 KST] [설정 화면(#setting) Google 공식 로그인 및 임시 도메인 전용 Google 프로필 카드 UI 제거]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
