@@ -397,11 +397,10 @@ def human_move_and_click(selector_js: str) -> str:
 def human_idle_jitter():
     run_flow_js("""
     (() => {
-        const x = Math.round(280 + Math.random() * 680);
-        const y = Math.round(180 + Math.random() * 440);
+        const x = Math.round(420 + Math.random() * 480);
+        const y = Math.round(670 + Math.random() * 80);
         document.dispatchEvent(new PointerEvent('pointermove', {bubbles: true, clientX: x, clientY: y, pointerId: 1, pointerType: 'mouse'}));
         document.dispatchEvent(new MouseEvent('mousemove', {bubbles: true, clientX: x, clientY: y}));
-        document.dispatchEvent(new WheelEvent('wheel', {bubbles: true, clientX: x, clientY: y, deltaY: (Math.random() - 0.5) * 60}));
     })()
     """)
 
@@ -518,10 +517,10 @@ def ensure_on_project_grid_and_veo_settings():
     if res == "CLICKED_BACK":
         time.sleep(1.5)
 
-    # Always ensure left sidebar is on `동영상` (`videocam\n동영상`) if image tiles are visible on the grid
+    # Always ensure left sidebar is on `동영상` if image tiles are visible on the grid
     has_img_tiles = run_flow_js("document.querySelectorAll('flow-image-tile').length.toString()")
     if has_img_tiles != "0":
-        human_move_and_click("""Array.from(document.querySelectorAll('mat-nav-list a, mat-nav-list button, flow-project-nav-list *')).find(el => (el.innerText || '').trim() === 'videocam\\n동영상' || (el.innerText || '').trim() === '동영상')""")
+        human_move_and_click("Array.from(document.querySelectorAll('mat-nav-list a, mat-nav-list button, flow-project-nav-list *')).find(el => (el.innerText || '').trim() === '동영상')")
         time.sleep(1.0)
 
     trig_js = """
@@ -614,8 +613,14 @@ def get_video_tile_thumbnails() -> List[str]:
     (() => {
         const sc = document.querySelector('div.cdk-virtual-scrollable.page-container');
         if (sc && sc.scrollTop > 0) sc.scrollTop = 0;
-        const imgs = Array.from(document.querySelectorAll('flow-video-tile img.thumbnail')).map(i => i.src).filter(Boolean);
-        return JSON.stringify(imgs);
+        const urls = Array.from(document.querySelectorAll('flow-video-tile')).map(vt => {
+            const img = vt.querySelector('img.thumbnail');
+            if (img && img.src) return img.src.split('=mm')[0];
+            const vid = vt.querySelector('video');
+            if (vid && vid.src) return vid.src.split('=mm')[0];
+            return '';
+        }).filter(Boolean);
+        return JSON.stringify(urls);
     })()
     """
     raw = run_flow_js(js)
@@ -805,53 +810,88 @@ def attach_image_and_submit_background(png_path: Path, prompt_text: str) -> bool
 
 def resolve_and_download_video_by_thumb(thumb_src: str, expected_code: str, out_mp4: Path) -> Optional[str]:
     """
-    Safeguard #3: Never falls back to `imgs[0]`. Clicks only the exact matching `img.thumbnail`
-    and verifies the downloaded MP4's first frame via Safeguard #4 (`verify_clip_first_frame_matches_scene`).
+    Safeguard #3: Never falls back to `imgs[0]`.
+    First resolves `f"{base_thumb}=mm,22,15"` via a temporary background tab in the Flow window
+    to get the direct `googlevideo.com/videoplayback` MP4 stream without navigating the main tab.
+    Falls back to clicking the exact matching `flow-video-tile` if needed.
     """
-    escaped_thumb = thumb_src.replace("\\", "\\\\").replace('"', '\\"')
+    base_thumb = thumb_src.split("=mm")[0]
+    mm_url = f"{base_thumb}=mm,22,15"
+    proj_id = FLOW_PROJECT_URL.split("/project/")[-1]
 
-    click_js = f"""
-    (() => {{
-        const sc = document.querySelector('div.cdk-virtual-scrollable.page-container');
-        if (sc && sc.scrollTop > 0) sc.scrollTop = 0;
-        performance.clearResourceTimings();
-        const imgs = Array.from(document.querySelectorAll('flow-video-tile img.thumbnail'));
-        const target = imgs.find(i => i.src === "{escaped_thumb}");
-        if (!target) return 'NO_TARGET';
-        target.click();
-        return 'CLICKED';
-    }})()
+    osa_resolve = f"""
+    tell application "Google Chrome"
+        repeat with w in windows
+            repeat with t in tabs of w
+                if URL of t contains "{proj_id}" then
+                    set newTab to make new tab at end of tabs of w with properties {{URL:"{mm_url}"}}
+                    delay 1.3
+                    set finalUrl to URL of newTab
+                    close newTab
+                    return finalUrl
+                end if
+            end repeat
+        end repeat
+        return ""
+    end tell
     """
-    res = run_flow_js(click_js)
-    if res != "CLICKED":
-        return None
+    signed_url: Optional[str] = None
+    try:
+        p = subprocess.run(["osascript", "-e", osa_resolve], capture_output=True, text=True, timeout=12)
+        cand = p.stdout.strip()
+        if cand.startswith("http") and ("googlevideo.com" in cand or "flow-content.google" in cand):
+            signed_url = cand
+    except Exception:
+        signed_url = None
 
-    signed_url = None
-    for _ in range(18):
-        time.sleep(0.6)
-        vids_raw = run_flow_js("""
-        (() => {
-            const vids = performance.getEntriesByType('resource')
-                .map(r => r.name)
-                .filter(n => n.includes('flow-content.google/video/'));
-            return JSON.stringify(vids);
-        })()
-        """)
-        try:
-            vids = json.loads(vids_raw)
-            if vids:
-                signed_url = vids[-1]
-                break
-        except Exception:
-            pass
-
-    run_flow_js("""
-    (() => {
-        const backBtn = document.querySelector('button[aria-label="이전 페이지로 이동하는 뒤로 버튼"]');
-        if (backBtn) backBtn.click();
-    })()
-    """)
-    time.sleep(1.2)
+    if not signed_url:
+        escaped_thumb = base_thumb.replace("\\", "\\\\").replace('"', '\\"')
+        click_js = f"""
+        (() => {{
+            const sc = document.querySelector('div.cdk-virtual-scrollable.page-container');
+            if (sc && sc.scrollTop > 0) sc.scrollTop = 0;
+            performance.clearResourceTimings();
+            const vts = Array.from(document.querySelectorAll('flow-video-tile'));
+            const vt = vts.find(v => {{
+                const img = v.querySelector('img.thumbnail');
+                if (img && img.src && img.src.startsWith("{escaped_thumb}")) return true;
+                const vid = v.querySelector('video');
+                if (vid && vid.src && vid.src.startsWith("{escaped_thumb}")) return true;
+                return false;
+            }});
+            if (!vt) return 'NO_TARGET';
+            const target = vt.querySelector('img.thumbnail') || vt.querySelector('video') || vt.querySelector('div.container');
+            if (!target) return 'NO_TARGET';
+            target.click();
+            return 'CLICKED';
+        }})()
+        """
+        res = run_flow_js(click_js)
+        if res == "CLICKED":
+            for _ in range(18):
+                time.sleep(0.6)
+                vids_raw = run_flow_js("""
+                (() => {
+                    const vids = performance.getEntriesByType('resource')
+                        .map(r => r.name)
+                        .filter(n => n.includes('flow-content.google/video/') || n.includes('googlevideo.com/videoplayback'));
+                    return JSON.stringify(vids);
+                })()
+                """)
+                try:
+                    vids = json.loads(vids_raw)
+                    if vids:
+                        signed_url = vids[-1]
+                        break
+                except Exception:
+                    pass
+            run_flow_js("""
+            (() => {
+                const backBtn = document.querySelector('button[aria-label="이전 페이지로 이동하는 뒤로 버튼"]');
+                if (backBtn) backBtn.click();
+            })()
+            """)
+            time.sleep(1.2)
 
     if not signed_url:
         return None
@@ -864,6 +904,142 @@ def resolve_and_download_video_by_thumb(thumb_src: str, expected_code: str, out_
         out_mp4.write_bytes(data)
         return signed_url
     return None
+
+
+def harvest_existing_clips_from_flow_grid(
+    ep: int,
+    scenes: List[Dict],
+    clips_dir: Path,
+    refs: List,
+    status_data: Dict[str, Dict],
+    status_file: Path,
+):
+    """
+    Scans the Flow `동영상` grid (`scrollTop = 0, 650, 1300, ...`) and harvests any already-generated
+    video clips for Episode `ep` (`[EP{ep:02d}-S{idx:02d}]`) that are not yet saved locally.
+    """
+    missing_indices = {
+        sc["index"]
+        for sc in scenes
+        if not (clips_dir / f"EP{ep:02d}-S{sc['index']:02d}.mp4").exists()
+    }
+    if not missing_indices:
+        return
+
+    ensure_on_project_grid_and_veo_settings()
+    human_move_and_click("Array.from(document.querySelectorAll('mat-nav-list a, mat-nav-list button, flow-project-nav-list *')).find(el => (el.innerText || '').trim() === '동영상')")
+    time.sleep(1.0)
+
+    seen_urls: Set[str] = set()
+    tag_to_url: Dict[str, str] = {}
+    ep_prefix = f"[EP{ep:02d}-S"
+
+    print(f"  🔎 [HARVEST] Scanning Flow Videos grid for {len(missing_indices)} missing Episode {ep:02d} clips...", flush=True)
+    for step in range(48):
+        scroll_y = step * 620
+        run_flow_js(f"""
+        (async () => {{
+            window.__harvestBatch = "RUNNING";
+            const sc = document.querySelector("div.cdk-virtual-scrollable.page-container");
+            if (sc) sc.scrollTop = {scroll_y};
+            await new Promise(r => setTimeout(r, 350));
+            const vts = Array.from(document.querySelectorAll("flow-video-tile"));
+            const out = [];
+            for (const vt of vts) {{
+                const img = vt.querySelector("img.thumbnail");
+                const vid = vt.querySelector("video");
+                const url = (img && img.src ? img.src : (vid && vid.src ? vid.src : "")).split("=mm")[0];
+                if (!url) continue;
+                const redo = vt.querySelector("button[aria-label=\x27프롬프트 재사용\x27]");
+                if (redo) {{
+                    redo.click();
+                    await new Promise(r => setTimeout(r, 75));
+                }}
+                const pm = document.querySelector("div.ProseMirror");
+                const tag = pm ? pm.innerText.trim().slice(0, 12) : "";
+                out.push({{tag, url}});
+            }}
+            window.__harvestBatch = JSON.stringify(out);
+        }})()
+        """)
+        for _ in range(16):
+            time.sleep(0.25)
+            raw = run_flow_js("window.__harvestBatch || ''")
+            if raw and raw != "RUNNING":
+                break
+        try:
+            batch = json.loads(raw)
+        except Exception:
+            batch = []
+
+        new_in_step = 0
+        saw_older_ep = False
+        for item in batch:
+            u = item.get("url", "")
+            t = item.get("tag", "")
+            if u and u not in seen_urls:
+                seen_urls.add(u)
+                new_in_step += 1
+            if t.startswith(ep_prefix) and "]" in t:
+                code = t.split("]", 1)[0].lstrip("[")
+                if code not in tag_to_url and u:
+                    tag_to_url[code] = u
+            elif t.startswith("[EP") and "]" in t:
+                try:
+                    other_ep = int(t[3:5])
+                    if other_ep < ep:
+                        saw_older_ep = True
+                except Exception:
+                    pass
+
+        if len(tag_to_url) >= len(missing_indices) or (step > 2 and new_in_step == 0) or saw_older_ep:
+            break
+
+    run_flow_js("""
+    (() => {
+        const sc = document.querySelector("div.cdk-virtual-scrollable.page-container");
+        if (sc) sc.scrollTop = 0;
+    })()
+    """)
+    clear_composer_strict()
+
+    if not tag_to_url:
+        return
+
+    print(f"  ✨ [HARVEST] Found {len(tag_to_url)} matching video tile(s) on Flow grid for Episode {ep:02d}!", flush=True)
+    for sc in scenes:
+        idx = sc["index"]
+        if idx not in missing_indices:
+            continue
+        code = f"EP{ep:02d}-S{idx:02d}"
+        if code not in tag_to_url:
+            continue
+        clip_path = clips_dir / f"{code}.mp4"
+        thumb_url = tag_to_url[code]
+        signed_url = resolve_and_download_video_by_thumb(thumb_url, code, clip_path)
+        if signed_url and clip_path.exists() and clip_path.stat().st_size > 100000:
+            ok, best_idx, mae = verify_clip_first_frame_matches_scene(clip_path, idx, refs)
+            if ok:
+                mb = clip_path.stat().st_size / (1024 * 1024)
+                print(f"  🌾 [HARVESTED {code}] {clip_path.name} ({mb:.2f} MB | First-Frame MAE={mae:.1f} ✅)", flush=True)
+                status_data[code] = {
+                    "episode": ep,
+                    "index": idx,
+                    "code": code,
+                    "voice_type": sc["voice_type"],
+                    "speaker": sc["speaker"],
+                    "line_en": sc["line_en"],
+                    "clip_path": str(clip_path.relative_to(ROOT)),
+                    "size_bytes": clip_path.stat().st_size,
+                    "first_frame_mae": round(mae, 2),
+                    "video_url": signed_url,
+                    "completed": True,
+                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                }
+                status_file.write_text(json.dumps(status_data, ensure_ascii=False, indent=2), encoding="utf-8")
+            else:
+                print(f"  ⚠️ [HARVEST REJECTED] {code} matched scene_{best_idx:02d} (mae={mae:.1f}); deleting.", flush=True)
+                clip_path.unlink()
 
 
 def concat_all_clips(clip_paths: List[Path], final_mp4: Path):
@@ -951,6 +1127,8 @@ def process_episode(ep: int, manifest: Dict) -> bool:
             if not ok:
                 print(f"  🧹 [AUDIT] Removing mismatched {clip_path.name} (matched scene_{best_idx:02d}, mae={mae:.1f})", flush=True)
                 clip_path.unlink()
+
+    harvest_existing_clips_from_flow_grid(ep, scenes, clips_dir, refs, status_data, status_file)
 
     for pass_num in range(1, 4):
         missing_scenes = [
