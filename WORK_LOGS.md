@@ -2,6 +2,40 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 15:38 KST] [구글 애드센스 광고 미노출 및 브라우저 콘솔 TagError 4종 완벽 해결]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 제보 브라우저 콘솔 에러 4종 정밀 원인 분석 및 해결**:
+    - **(1) `Only one 'enable_page_level_ads' allowed per page`**:
+      - 원인: `index.html`에서 `<script async src="...adsbygoogle.js?client=ca-pub-...">`를 로드하기 전 인라인으로 구식 `enable_page_level_ads: false`를 수동 push하여 스크립트의 자체 자동광고 초기화 루틴과 충돌 발생.
+      - 해결: 인라인 구식 push를 제거하고 구글 공식 표준 단일 async 스크립트 규격으로 통일하여 TagError 100% 제거.
+    - **(2) `TagError: No slot size for availableWidth=0`**:
+      - 원인: 모바일 화면에서 숨겨진(1536px 미만 `hidden 2xl:flex`) 데스크톱 좌우 거터 `<ins>` 요소나, 데스크톱 화면에서 숨겨진 모바일 상단 배너에 무조건 `win.adsbygoogle.push({})`를 실행하여 너비 0인 요소에 대해 광고 렌더링이 즉각 중단됨.
+      - 해결: `adsenseManager.ts` 및 `AdSenseBanner.tsx`에 `isAdSlotVisible()` 가드를 신규 도입하여, 실제로 화면에 마운트되어 0보다 큰 너비(`offsetWidth > 0 && clientWidth > 0 && offsetParent !== null`)를 가진 슬롯만 선별하여 지연 푸시하도록 개선.
+    - **(3) `Failed to load resource: 400 Bad Request` (`slotname=1000000003`)**:
+      - 원인: `ADSENSE_CONFIG.slots`에 `1000000001`~`1000000003`이라는 미등록 가짜 슬롯번호가 지정되어 구글 광고 서버가 잘못된 요청으로 거부.
+      - 해결: 가짜 더미 슬롯 속성을 완전히 제거하고, 구글 공식 반응형 스마트 포맷(`data-ad-format="rectangle"`, `data-ad-format="horizontal"`, `data-full-width-responsive="true"`)으로 정규화하여 400 에러 원천 해결.
+    - **(4) `/110card.png` 404 및 매니페스트 아이콘 에러**:
+      - 원인: `public/manifest.json`에서 참조하는 `/110card.png` 파일 누락.
+      - 해결: `public/card100.png`를 기반으로 `public/110card.png` 복구 생성 완료.
+  - **2. CSS 과도 제한 해제 및 레이아웃 안정화**:
+    - `src/landing/styles/landing.css` 및 `src/index.css`에서 `#adsense-desktop-left *`, `#adsense-mobile-top *`에 걸려있던 `position: static !important;` 및 과도한 높이 강제를 해제하여 애드센스 내부의 `aswift` iframe이 정상 포지셔닝 및 렌더링되도록 수정.
+  - **3. 프로덕션 빌드 및 Headless Chrome 검증**:
+    - `npm run build && node scripts/post-build.js` 0-error 통과.
+    - Headless Chrome (`http://localhost:3000/#home`) 검증:
+      - `TagError` 0건 확인
+      - 400 Bad Request 0건 확인
+      - `/110card.png` 404 0건 확인
+      - `<ins class="adsbygoogle" data-adsbygoogle-status="done">` 및 `googleads.g.doubleclick.net` iframe 정상 마운트 확인 완료.
+    - 로컬 git 커밋 완료 (`104f2af66`, 원격 push 미실행).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build && node scripts/post-build.js` 성공
+  - DOM 렌더링 확인: AdSense iframe 정상 마운트 및 `data-adsbygoogle-status="done"` 완료
+  - 로컬 git 커밋 완료 (`104f2af66`)
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 구글 애드센스 광고 미노출 및 브라우저 콘솔 TagError 4종 완벽 해결 -> 작업완료`
+
+
 ## [2026-11-04 14:53 KST] [#card 카드 도감 화면 보유량/110 n% 카드 보유률 표시 구현]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
