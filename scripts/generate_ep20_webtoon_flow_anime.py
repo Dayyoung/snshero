@@ -582,13 +582,15 @@ def clear_composer_strict() -> bool:
     for _ in range(5):
         js = """
         (() => {
+            const closeBtn = document.querySelector('flow-add-menu-popover-content button[aria-label="닫기"]');
+            if (closeBtn) closeBtn.click();
             const clr = document.querySelector('button[aria-label="프롬프트 지우기"]');
             if (clr) clr.click();
             const chips = Array.from(document.querySelectorAll('button[aria-label="이미지 소재"]'));
             chips.forEach(chip => {
-                const cancelIcon = chip.querySelector('.hover-icon, mat-icon') || chip;
-                cancelIcon.click();
-                chip.click();
+                const cancelIcon = chip.querySelector('mat-icon.hover-icon, .hover-icon');
+                if (cancelIcon) cancelIcon.click();
+                else chip.click();
             });
             const pm = document.querySelector('div.ProseMirror');
             if (pm) {
@@ -705,9 +707,9 @@ def attach_image_and_submit_background(png_path: Path, prompt_text: str) -> bool
             time.sleep(1.5)
             continue
 
-        # Wait up to 22s for `button[aria-label="이미지 소재"]` with `aria-busy="false"` AND new chip src
+        # Wait up to 22s for `button[aria-label="이미지 소재"]` upload to finish (`aria-busy="false"`)
         attached_ready = False
-        new_chip_src = ""
+        saw_busy = False
         chk = "NONE"
         for wait_i in range(44):
             time.sleep(0.5)
@@ -717,26 +719,28 @@ def attach_image_and_submit_background(png_path: Path, prompt_text: str) -> bool
             (() => {
                 const btn = document.querySelector('button[aria-label="이미지 소재"]');
                 if (!btn) return 'NONE';
-                const busy = btn.getAttribute('aria-busy');
+                const busy = btn.getAttribute('aria-busy') || '';
                 const img = btn.querySelector('img.chip-image');
                 const src = img ? img.src : '';
-                if (busy === 'false' && src.includes('http')) return 'READY:' + src;
+                if (busy === 'true') return 'BUSY:true';
+                if (busy === 'false' && (src.includes('http') || btn.querySelector('.chip-placeholder'))) {
+                    return 'READY:' + (src || 'placeholder');
+                }
                 return 'BUSY:' + busy;
             })()
             """)
-            if chk.startswith("READY:"):
-                candidate_src = chk.split("READY:", 1)[1]
-                if candidate_src != LAST_CHIP_IMG_SRC:
-                    attached_ready = True
-                    new_chip_src = candidate_src
-                    break
+            if chk == "BUSY:true":
+                saw_busy = True
+            elif chk.startswith("READY:") and (saw_busy or wait_i >= 2):
+                attached_ready = True
+                break
 
         if not attached_ready:
             print(f"    ⚠️ [Attempt {attempt+1}] Start frame chip not ready ({chk[:40]}). Resetting token & retrying...", flush=True)
             reset_recaptcha_and_botguard_tokens(reason="start-frame upload timeout/block")
             continue
 
-        LAST_CHIP_IMG_SRC = new_chip_src
+        time.sleep(0.5)
 
         # Click ProseMirror with human mouse path and type prompt in human-like chunks
         human_move_and_click("document.querySelector('div.ProseMirror')")
