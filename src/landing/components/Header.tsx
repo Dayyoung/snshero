@@ -10,6 +10,7 @@
 
 import { ViewKey, ModalKey, TOP_NAV_ITEMS } from '../types';
 import { getCurrentUser } from '../services/authService';
+import { audioManager } from '../services/audioManager';
 import { t, tr, getCurrentLanguage } from '../services/i18n';
 
 export interface HeaderProps {
@@ -111,8 +112,19 @@ export function renderHeader(activeView: ViewKey): string {
           ${navItemsHtml}
         </nav>
 
-        <!-- Right Action: Setting, User Login & Game Launch -->
+        <!-- Right Action: Audio Mute, Setting, User Login & Game Launch -->
         <div class="flex items-center gap-2">
+          <!-- Audio Mute / Unmute Button -->
+          <button
+            type="button"
+            data-action="toggle-mute"
+            class="p-2 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer transition-colors ${audioManager.isMuted() ? 'bg-[#edeaea] text-stone-500' : 'text-[#201d1d]'}"
+            aria-label="${audioManager.isMuted() ? tr('소리 켜기 (음소거 해제)', 'Unmute Audio', 'ミュート解除') : tr('소리 끄기 (음소거)', 'Mute Audio', 'ミュート')}"
+            title="${audioManager.isMuted() ? tr('소리 켜기 (음소거 해제)', 'Unmute Audio', 'ミュート解除') : tr('소리 끄기 (음소거)', 'Mute Audio', 'ミュート')}"
+          >
+            <span class="text-sm select-none">${audioManager.isMuted() ? '🔇' : '🔊'}</span>
+          </button>
+
           <a
             href="#setting"
             data-nav="setting"

@@ -112,6 +112,45 @@ class AudioManager {
     };
   }
 
+  // ── Master Mute Management ──────────────────────────────────────────────────
+
+  public isMuted(): boolean {
+    if (typeof localStorage === 'undefined') return false;
+    const isExplicitMute = localStorage.getItem('hero_audio_muted') === 'true';
+    if (isExplicitMute) return true;
+    const settings = this.getSettings();
+    return (!settings.bgmEnabled && !settings.sfxEnabled) || (settings.bgmVolume === 0 && settings.sfxVolume === 0);
+  }
+
+  public toggleMute(): boolean {
+    const currentlyMuted = this.isMuted();
+    const newMuted = !currentlyMuted;
+
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('hero_audio_muted', String(newMuted));
+      if (newMuted) {
+        localStorage.setItem('hero_bgm_enabled', 'false');
+        localStorage.setItem('hero_sfx_enabled', 'false');
+        this.stopBgm();
+      } else {
+        localStorage.setItem('hero_bgm_enabled', 'true');
+        localStorage.setItem('hero_sfx_enabled', 'true');
+        const settings = this.getSettings();
+        if (settings.bgmVolume === 0) {
+          localStorage.setItem('hero_bgm_volume', '50');
+        }
+        if (settings.sfxVolume === 0) {
+          localStorage.setItem('hero_sfx_volume', '70');
+        }
+        this.playBgm();
+        this.playClickTick();
+      }
+    }
+
+    this.dispatchAudioChangedEvent();
+    return newMuted;
+  }
+
   // ── BGM Management ─────────────────────────────────────────────────────────
 
   public playBgm(): void {

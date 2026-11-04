@@ -380,7 +380,10 @@ export function handleEventDelegation(event: Event): void {
   const action = target.getAttribute('data-action');
   if (!action) return;
 
-  if (action === 'toggle-sidebar') {
+  if (action === 'toggle-mute') {
+    audioManager.toggleMute();
+    renderApp();
+  } else if (action === 'toggle-sidebar') {
     state.isSidebarOpen = !state.isSidebarOpen;
     renderApp();
   } else if (action === 'close-sidebar') {
@@ -1050,9 +1053,7 @@ export function mountLanding(): void {
       renderApp();
     });
     window.addEventListener('snshero_audio_settings_changed', () => {
-      if (state.activeView === 'setting') {
-        renderApp();
-      }
+      renderApp();
     });
     window.addEventListener('hero_rpg_board_updated', () => {
       if (state.activeView === 'play') {
