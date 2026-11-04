@@ -332,19 +332,7 @@ def build_scene_prompt(ep_num: int, img: dict) -> dict:
     has_speech = len(dlgs) > 0
     speaker = dlgs[0]["speakerKo"] if has_speech else None
 
-    if ep_num >= 20:
-        chars = extract_accurate_scene_chars(idx, narration_ko, has_speech, speaker, raw_chars)
-    else:
-        chars = list(raw_chars)
-        if has_speech and speaker:
-            sp_key = SPEAKER_KO_TO_CHAR_KEY.get(speaker)
-            if sp_key and sp_key not in chars:
-                chars = [sp_key] + list(chars)
-            elif not sp_key and speaker not in chars:
-                chars = [speaker] + list(chars)
-        if idx > 0 and not has_speech and "SNSHero.com" not in narration_ko:
-            if not any(kw in narration_ko for kw in PERSON_KEYWORDS_KO):
-                chars = []
+    chars = extract_accurate_scene_chars(idx, narration_ko, has_speech, speaker, raw_chars)
 
     if not chars:
         char_section = (
@@ -374,34 +362,22 @@ def build_scene_prompt(ep_num: int, img: dict) -> dict:
             "bright well-lit faces and warm skin tones (100% clean smooth forehead on Kadan with ZERO scars), vivid saturated outfit colors, intense expressive anime eyes, and 100% consistent model-sheet facial/hair/costume proportions."
         )
 
-    if ep_num >= 20:
-        prompt = (
-            f"Generate a vivid, richly colored 16:9 cinematic anime webtoon illustration (1280x720) for Episode {ep_num} Scene {idx} of SNSHero "
-            f"applying ONLY the visual rendering style and vibrant color palette of ufotable / Demon Slayer anime art (while keeping 100% original SNSHero fantasy characters — NEVER copy Demon Slayer character designs or forehead scars).\n\n"
-            f"Art Style & Color Palette (ufotable Sumi-e Ink & Vivid High-Saturation Color Aesthetic — Art Style Only, Original Characters):\n"
-            f"- Vivid high-saturation anime color palette (귀멸의 칼날 원화풍 색감과 화풍만 적용): "
-            f"vivid, rich, luminous, high-saturation colors — vibrant turquoise-cyan, blazing vermilion-crimson, warm golden-amber, "
-            f"luminous emerald-jade, rich wisteria-violet, and warm glowing lantern/sunlight/moonlight illumination.\n"
-            f"- Bright, crystal-clear character & background visibility (NEVER overly dark, NEVER gloomy, NEVER underexposed or muddy grey-black): "
-            f"characters' faces, warm peach-ivory skin tones, vivid hair colors, and colorful fantasy outfits are clearly and vibrantly illuminated with crisp cel-shading.\n"
-            f"- Signature sumi-e ink linework and elemental effects: bold calligraphic black sumi-e ink brush outlines framing bright, saturated colors, "
-            f"paired with dazzling colorful ukiyo-e woodblock-wave elemental slashes (vivid turquoise-blue star waves with crisp white foam, blazing golden-vermilion flames, luminous emerald wind currents).\n"
-            f"{aesthetic_chars}\n\n"
-            f"Scene Narrative & Action:\n"
-            f"{narration_ko}\n({narration_en})\n\n"
-            f"{char_section}"
-        )
-    else:
-        prompt = (
-            f"Generate a bright, vibrant 16:9 cinematic anime webtoon illustration (1280x720) for Episode {ep_num} Scene {idx} of SNSHero.\n\n"
-            f"Art Style & Visual Aesthetic:\n"
-            f"- Bright, luminous, colorful modern fantasy anime style (crisp vibrant colors, high-key clear lighting, Genshin Impact / Makoto Shinkai bright cinematic atmosphere, clean anime cel-shading, sparkling vivid effects, rich saturated colors, NO murky gloom, NO heavy muddy darkness).\n"
-            f"- Beautiful high-clarity anime backgrounds with crisp daylight, glowing atmospheric mist, and vivid skies.\n"
-            f"{aesthetic_chars}\n\n"
-            f"Scene Narrative & Action:\n"
-            f"{narration_ko}\n({narration_en})\n\n"
-            f"{char_section}"
-        )
+    prompt = (
+        f"Generate a vivid, richly colored 16:9 cinematic anime webtoon illustration (1280x720) for Episode {ep_num} Scene {idx} of SNSHero "
+        f"applying ONLY the visual rendering style and vibrant color palette of ufotable / Demon Slayer anime art (while keeping 100% original SNSHero fantasy characters — NEVER copy Demon Slayer character designs or forehead scars).\n\n"
+        f"Art Style & Color Palette (ufotable Sumi-e Ink & Vivid High-Saturation Color Aesthetic — Art Style Only, Original Characters):\n"
+        f"- Vivid high-saturation anime color palette (귀멸의 칼날 원화풍 색감과 화풍만 적용): "
+        f"vivid, rich, luminous, high-saturation colors — vibrant turquoise-cyan, blazing vermilion-crimson, warm golden-amber, "
+        f"luminous emerald-jade, rich wisteria-violet, and warm glowing lantern/sunlight/moonlight illumination.\n"
+        f"- Bright, crystal-clear character & background visibility (NEVER overly dark, NEVER gloomy, NEVER underexposed or muddy grey-black): "
+        f"characters' faces, warm peach-ivory skin tones, vivid hair colors, and colorful fantasy outfits are clearly and vibrantly illuminated with crisp cel-shading.\n"
+        f"- Signature sumi-e ink linework and elemental effects: bold calligraphic black sumi-e ink brush outlines framing bright, saturated colors, "
+        f"paired with dazzling colorful ukiyo-e woodblock-wave elemental slashes (vivid turquoise-blue star waves with crisp white foam, blazing golden-vermilion flames, luminous emerald wind currents).\n"
+        f"{aesthetic_chars}\n\n"
+        f"Scene Narrative & Action:\n"
+        f"{narration_ko}\n({narration_en})\n\n"
+        f"{char_section}"
+    )
 
     if bg:
         prompt += f"Environment & Setting: {bg} (rendered with vivid high-saturation anime color palette, warm glowing illumination, and rich saturated colors — NEVER overly dark)\n"
@@ -445,16 +421,12 @@ def process_episode(manifest: dict, ep_num: int):
     os.makedirs(batch_dir, exist_ok=True)
     batch_size = 6
 
-    if ep_num >= 20:
-        header_line_1_tpl = "Generate {count} vivid, richly colored 16:9 cinematic anime illustrations for Episode {ep:02d} (Scenes {s_start:02d} to {s_end:02d}) of SNSHero applying ONLY the sumi-e ink & high-saturation color art style of ufotable anime (with 100% original SNSHero fantasy characters — NO Demon Slayer character clones, NO forehead scar on Kadan)."
-        header_line_2 = (
-            "Aesthetic & Consistency Requirement: Apply ONLY the vivid high-saturation anime color palette & bold black sumi-e ink brush linework — "
-            "crystal-clear well-lit character visibility (NEVER overly dark or gloomy), ukiyo-e elemental wave/flame/wind effects, "
-            "and 100% strict adherence to each character's [FIXED MODEL SHEET LOCK] (Kadan MUST have a 100% clean smooth forehead with ZERO scars or birthmarks; never copy Tanjiro or Demon Slayer characters)."
-        )
-    else:
-        header_line_1_tpl = "Generate {count} bright, vibrant 16:9 cinematic anime illustrations for Episode {ep:02d} (Scenes {s_start:02d} to {s_end:02d}) of SNSHero."
-        header_line_2 = "Aesthetic requirement: Bright, luminous, colorful modern anime style (Genshin Impact / Makoto Shinkai vibrant high-key aesthetic, clear daylight, crisp vivid colors, zero murky darkness)."
+    header_line_1_tpl = "Generate {count} vivid, richly colored 16:9 cinematic anime illustrations for Episode {ep:02d} (Scenes {s_start:02d} to {s_end:02d}) of SNSHero applying ONLY the sumi-e ink & high-saturation color art style of ufotable anime (with 100% original SNSHero fantasy characters — NO Demon Slayer character clones, NO forehead scar on Kadan)."
+    header_line_2 = (
+        "Aesthetic & Consistency Requirement: Apply ONLY the vivid high-saturation anime color palette & bold black sumi-e ink brush linework — "
+        "crystal-clear well-lit character visibility (NEVER overly dark or gloomy), ukiyo-e elemental wave/flame/wind effects, "
+        "and 100% strict adherence to each character's [FIXED MODEL SHEET LOCK] (Kadan MUST have a 100% clean smooth forehead with ZERO scars or birthmarks; never copy Tanjiro or Demon Slayer characters)."
+    )
 
     for b_idx in range(0, len(prompts), batch_size):
         b_num = (b_idx // batch_size) + 1
@@ -516,14 +488,14 @@ def main():
 
     total_scenes = 0
     episodes_processed = 0
-    for ep_num in range(20, 41):
+    for ep_num in range(1, 41):
         count = process_episode(manifest, ep_num)
         if count > 0:
             total_scenes += count
             episodes_processed += 1
             print(f"Processed EP{ep_num:02d} (Demon Slayer ufotable style + Fixed Character Sheet Lock): {count} scenes")
 
-    print(f"\nAll episodes 20 to 40 updated! Total episodes: {episodes_processed}, Total scenes: {total_scenes}")
+    print(f"\nAll episodes 1 to 40 updated! Total episodes: {episodes_processed}, Total scenes: {total_scenes}")
 
 
 if __name__ == "__main__":
