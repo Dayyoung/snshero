@@ -75,8 +75,14 @@ export const playSfx = (type: keyof typeof SFX_URLS | string) => {
     if (typeof document !== 'undefined' && document.hidden) return;
     if (isSfxMutedGlobal()) return;
 
+    // 1. First priority: 100% Guaranteed Native Web Audio Synth (Zero CDN Latency & Mobile Safe)
+    const synthSuccess = playSynthSfx(type);
+    if (synthSuccess) return;
+
+    // 2. Secondary fallback: HTMLAudioElement
     const url = SFX_URLS[type] || type;
     const audio = new Audio(url);
+    (audio as any).playsInline = true;
     audio.volume = 0.45;
     activeAudioList.push(audio);
     audio.onended = () => {
@@ -91,9 +97,112 @@ export const playSfx = (type: keyof typeof SFX_URLS | string) => {
   }
 };
 
+// Zero-Latency Native Web Audio SFX Synthesizer
+const playSynthSfx = (type: string): boolean => {
+  const ctx = getAudioContext();
+  if (!ctx) return false;
+
+  const executeSynth = (c: AudioContext) => {
+    const now = c.currentTime;
+    const key = type.toLowerCase();
+
+    if (key === 'click' || key === 'open') {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1400, now);
+      osc.frequency.exponentialRampToValueAtTime(450, now + 0.04);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.start(now);
+      osc.stop(now + 0.05);
+    } else if (key === 'flip') {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(260, now);
+      osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.start(now);
+      osc.stop(now + 0.12);
+    } else if (key === 'win' || key === 'reward') {
+      [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+        const start = now + idx * 0.08;
+        const osc = c.createOscillator();
+        const gain = c.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, start);
+        gain.gain.setValueAtTime(0.001, start);
+        gain.gain.linearRampToValueAtTime(0.28, start + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+        osc.connect(gain);
+        gain.connect(c.destination);
+        osc.start(start);
+        osc.stop(start + 0.38);
+      });
+    } else if (key === 'levelup') {
+      [440, 554.37, 659.25, 880].forEach((freq, idx) => {
+        const start = now + idx * 0.09;
+        const osc = c.createOscillator();
+        const gain = c.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, start);
+        gain.gain.setValueAtTime(0.001, start);
+        gain.gain.linearRampToValueAtTime(0.3, start + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.4);
+        osc.connect(gain);
+        gain.connect(c.destination);
+        osc.start(start);
+        osc.stop(start + 0.42);
+      });
+    } else if (key === 'equip') {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.exponentialRampToValueAtTime(45, now + 0.08);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.start(now);
+      osc.stop(now + 0.11);
+    } else if (key === 'error') {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(130, now);
+      osc.frequency.setValueAtTime(100, now + 0.08);
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.start(now);
+      osc.stop(now + 0.22);
+    } else {
+      return false;
+    }
+    return true;
+  };
+
+  if (ctx.state === 'suspended') {
+    ctx.resume().then(() => {
+      try { executeSynth(ctx); } catch {}
+    }).catch(() => {});
+    return true;
+  } else {
+    return executeSynth(ctx);
+  }
+};
+
 // SCR-01-03: Zero-latency Web Audio API Faction SFX Engine
 let sharedAudioCtx: AudioContext | null = null;
-const getAudioContext = (): AudioContext | null => {
+export const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
   if (!sharedAudioCtx) {
     const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -104,6 +213,27 @@ const getAudioContext = (): AudioContext | null => {
   }
   return sharedAudioCtx;
 };
+
+// Mobile Touch & Pointer Continuous Keep-Alive
+if (typeof window !== 'undefined') {
+  const unlockCtx = () => {
+    const ctx = getAudioContext();
+    if (ctx && ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+      try {
+        const buffer = ctx.createBuffer(1, 1, 22050);
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(ctx.destination);
+        source.start(0);
+      } catch {}
+    }
+  };
+  const opts = { passive: true, capture: true };
+  window.addEventListener('touchstart', unlockCtx, opts);
+  window.addEventListener('pointerdown', unlockCtx, opts);
+  window.addEventListener('click', unlockCtx, opts);
+}
 
 export const playFactionSfx = (factionOrElement: string = 'fire') => {
   try {

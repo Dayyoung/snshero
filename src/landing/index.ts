@@ -379,8 +379,8 @@ export function handleEventDelegation(event: Event): void {
   const target = rawTarget.closest('[data-nav], [data-modal], [data-action]') as HTMLElement | null;
   if (!target) return;
 
-  // Ensure AudioContext is awakened on user click
-  audioManager.getAudioContext();
+  // Ensure AudioContext is awakened and unlocked on mobile gesture
+  audioManager.unlockMobileAudio();
 
   // Check 1: Top/Side Nav Button Navigation
   const navKey = target.getAttribute('data-nav') as ViewKey | null;

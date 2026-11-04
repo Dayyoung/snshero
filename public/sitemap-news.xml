@@ -2,7 +2,117 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793826480000_0</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793830620000_0</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-04T22:17:00.000Z</news:publication_date>
+      <news:title><![CDATA[Forbes Technology Council Urges Corporate Boards to Align Governance With Federal Super Intelligence Standards]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1793830560000_1</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-04T22:16:00.000Z</news:publication_date>
+      <news:title><![CDATA[Midterm Election Shifts Prompt Pentagon Review of Autonomous Warfare Funding and Defense Procurement Coalitions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1793830500000_2</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-04T22:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Pentagon Enlists 25 Defense Tech Vendors to Demonstrate One-Way Kinetic Drones in Initial Gauntlet Trials]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1793830440000_3</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-04T22:14:00.000Z</news:publication_date>
+      <news:title><![CDATA[Allied Defense Initiative Pairs American Sensor Payloads With New Zealand Low-Cost Kinetic Drones]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1793830380000_4</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-04T22:13:00.000Z</news:publication_date>
+      <news:title><![CDATA[Overland AI Delivers Off-Road Autonomous Navigation Kits for Armored Robotic Breaching Vehicles]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1793830320000_5</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-04T22:12:00.000Z</news:publication_date>
+      <news:title><![CDATA[Nvidia Unveils AI-Native Telecommunications Platform to Anchor Enterprise 6G and Edge Automation]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1793830260000_6</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-04T22:11:00.000Z</news:publication_date>
+      <news:title><![CDATA[Meta Reorganizes 7,000 Technical Workers Into Dedicated AI Units to Accelerate Enterprise Model Integration]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1793830200000_7</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-04T22:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Deloitte Framework Details How Heavy Industry Deploys AI-Native Systems Integration for Operational Excellence]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1793830140000_8</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-04T22:09:00.000Z</news:publication_date>
+      <news:title><![CDATA[Chief Legal Officers Prepare Governance Mandates as Enterprise Decisions Increasingly Rely on AI Agents]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1793830080000_9</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-04T22:08:00.000Z</news:publication_date>
+      <news:title><![CDATA[Digital Publishing Industry Negotiates New Economic Models as Autonomous AI Agents Scrape Web Content]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1793826480000_10</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -13,7 +123,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793826420000_1</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793826420000_11</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -24,7 +134,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793826360000_2</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793826360000_12</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -35,7 +145,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793826300000_3</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793826300000_13</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -46,7 +156,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793826240000_4</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793826240000_14</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -57,7 +167,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793826180000_5</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793826180000_15</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -68,7 +178,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793826120000_6</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793826120000_16</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -79,7 +189,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793826060000_7</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793826060000_17</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -90,7 +200,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793826000000_8</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793826000000_18</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -101,7 +211,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793825940000_9</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793825940000_19</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -112,7 +222,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793823060000_10</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793823060000_20</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -123,7 +233,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793823000000_11</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793823000000_21</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -134,7 +244,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793822940000_12</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793822940000_22</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -145,7 +255,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793822880000_13</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793822880000_23</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -156,7 +266,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793822820000_14</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793822820000_24</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -167,7 +277,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793822760000_15</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793822760000_25</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -178,7 +288,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793822700000_16</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793822700000_26</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -189,7 +299,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793822640000_17</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793822640000_27</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -200,7 +310,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793822580000_18</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793822580000_28</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -211,7 +321,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793822520000_19</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793822520000_29</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -222,7 +332,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793819820000_20</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793819820000_30</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -233,7 +343,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793819760000_21</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793819760000_31</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -244,7 +354,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793819700000_22</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793819700000_32</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -255,7 +365,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793819640000_23</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793819640000_33</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -266,7 +376,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793819580000_24</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793819580000_34</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -277,7 +387,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793819520000_25</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793819520000_35</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -288,7 +398,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793819460000_26</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793819460000_36</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -299,7 +409,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793819400000_27</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793819400000_37</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -310,7 +420,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793819340000_28</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793819340000_38</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -321,7 +431,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793819280000_29</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793819280000_39</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -332,7 +442,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793815440000_30</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793815440000_40</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -343,7 +453,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793815380000_31</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793815380000_41</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -354,7 +464,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793815320000_32</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793815320000_42</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -365,7 +475,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793815260000_33</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793815260000_43</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -376,7 +486,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793815200000_34</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793815200000_44</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -387,7 +497,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793815140000_35</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793815140000_45</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -398,7 +508,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793815080000_36</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793815080000_46</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -409,7 +519,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793815020000_37</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793815020000_47</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -420,7 +530,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793814960000_38</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793814960000_48</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -431,7 +541,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793814900000_39</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793814900000_49</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -442,7 +552,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793813160000_40</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793813160000_50</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -453,7 +563,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793813100000_41</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793813100000_51</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -464,7 +574,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793813040000_42</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793813040000_52</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -475,7 +585,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793812980000_43</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793812980000_53</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -486,7 +596,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793812920000_44</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793812920000_54</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -497,7 +607,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793812860000_45</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793812860000_55</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -508,7 +618,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793812800000_46</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793812800000_56</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -519,7 +629,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793812740000_47</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793812740000_57</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -530,7 +640,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793812680000_48</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793812680000_58</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -541,7 +651,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793812620000_49</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793812620000_59</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -552,7 +662,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793808060000_50</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793808060000_60</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -563,7 +673,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793808000000_51</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793808000000_61</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -574,7 +684,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793807940000_52</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793807940000_62</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -585,7 +695,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793807880000_53</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793807880000_63</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -596,7 +706,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793807820000_54</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793807820000_64</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -607,7 +717,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793807760000_55</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793807760000_65</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -618,7 +728,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793807700000_56</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793807700000_66</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -629,7 +739,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793807640000_57</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793807640000_67</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -640,7 +750,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793807580000_58</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793807580000_68</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -651,7 +761,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793807520000_59</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793807520000_69</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -662,7 +772,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793805180000_60</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793805180000_70</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -673,7 +783,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793805120000_61</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793805120000_71</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -684,7 +794,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793805060000_62</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793805060000_72</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -695,7 +805,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793805000000_63</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793805000000_73</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -706,7 +816,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793804940000_64</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793804940000_74</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -717,7 +827,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793804880000_65</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793804880000_75</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -728,7 +838,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793804820000_66</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793804820000_76</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -739,7 +849,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793804760000_67</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793804760000_77</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -750,7 +860,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793804700000_68</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793804700000_78</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -761,7 +871,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793804640000_69</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793804640000_79</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -772,7 +882,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793800860000_70</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793800860000_80</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -783,7 +893,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793800800000_71</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793800800000_81</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -794,7 +904,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793800740000_72</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793800740000_82</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -805,7 +915,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793800680000_73</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793800680000_83</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -816,7 +926,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793800620000_74</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793800620000_84</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -827,7 +937,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793800560000_75</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793800560000_85</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -838,7 +948,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793800500000_76</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793800500000_86</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -849,7 +959,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793800440000_77</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793800440000_87</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -860,7 +970,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793800380000_78</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793800380000_88</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -871,7 +981,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793800320000_79</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793800320000_89</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -882,7 +992,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793797320000_80</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793797320000_90</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -893,7 +1003,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793797260000_81</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793797260000_91</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -904,7 +1014,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793797200000_82</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793797200000_92</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -915,7 +1025,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793797140000_83</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793797140000_93</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -926,7 +1036,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793797080000_84</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793797080000_94</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -937,7 +1047,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793797020000_85</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793797020000_95</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -948,7 +1058,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793796960000_86</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793796960000_96</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -959,7 +1069,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793796900000_87</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793796900000_97</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -970,7 +1080,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793796840000_88</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793796840000_98</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -981,7 +1091,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793796780000_89</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1793796780000_99</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -989,116 +1099,6 @@
       </news:publication>
       <news:publication_date>2026-11-04T12:53:00.000Z</news:publication_date>
       <news:title><![CDATA[Higgsfield Introduces AI-Native Vibe Editor to Automate Enterprise Motion Graphics and Media Production]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793794740000_90</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-04T12:19:00.000Z</news:publication_date>
-      <news:title><![CDATA[Elon Musk Announces Rebranding of SpaceX AI Division to SpaceXSI to Match Super Intelligence Pivot]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793794680000_91</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-04T12:18:00.000Z</news:publication_date>
-      <news:title><![CDATA[President Trump Reaffirms Federal Shift to Super Intelligence Across Tech and Defense Sectors]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793794620000_92</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-04T12:17:00.000Z</news:publication_date>
-      <news:title><![CDATA[White House Mandates Renaming Artificial Intelligence to Super Intelligence Across Federal Health and Research Databases]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793794560000_93</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-04T12:16:00.000Z</news:publication_date>
-      <news:title><![CDATA[Pentagon Structures $450 Million Drone Dominance Phase 3 as Gauntlet 2.5 Trials Move to November]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793794500000_94</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-04T12:15:00.000Z</news:publication_date>
-      <news:title><![CDATA[Inside the Pentagon's Blueprint to Spend $50 Billion on Mass Autonomous Drone Warfare by 2030]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793794440000_95</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-04T12:14:00.000Z</news:publication_date>
-      <news:title><![CDATA[Army Leadership Prepares for Post-Drone Battlefield as Low-Cost Swarms Reshape Kinetic Engagements]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793794380000_96</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-04T12:13:00.000Z</news:publication_date>
-      <news:title><![CDATA[OutSystems Survey Finds 94% of Enterprise Leaders Concerned by Agent Sprawl as Agentic AI Goes Mainstream]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793794320000_97</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-04T12:12:00.000Z</news:publication_date>
-      <news:title><![CDATA[Agentic Platforms and AI-Native Architecture Redefine Core Enterprise System Integration in 2026]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793794260000_98</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-04T12:11:00.000Z</news:publication_date>
-      <news:title><![CDATA[Qualcomm, gFiber, and Gemtek Unveil World's First AI-Native Wi-Fi 8 Broadband Gateway With Edge Agentic Capabilities]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1793794200000_99</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-04T12:10:00.000Z</news:publication_date>
-      <news:title><![CDATA[Sierra Nevada Corporation Withdraws From Navy T-45 Trainer Jet Replacement Program Amid Systems Integration Shift]]></news:title>
     </news:news>
   </url>
 </urlset>

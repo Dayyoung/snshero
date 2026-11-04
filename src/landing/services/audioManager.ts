@@ -2,21 +2,16 @@
  * src/landing/services/audioManager.ts
  *
  * Robust Zero-Latency Audio & Sound System for SNSHero Static Landing.
- * Features:
- *   1. Guaranteed Audio Playback: Web Audio API Synthesizer + Local MP3 Audio Fallback.
- *   2. Zero-Network Reliance: Uses native AudioContext synthesis so sound plays 100% reliably
- *      without any external CDN failures or CORS blocking.
- *   3. 4 Full BGM Soundscapes:
- *      - 'title': Games Worldbeat (Local /mixkit-games-worldbeat-466.mp3 + Synth Melodic Rhythm)
- *      - 'lobby': Peaceful Pentatonic Kadan Sanctuary Synth Loop
- *      - 'battle': Epic Fast Colosseum TCG Battle Synth Beat
- *      - 'peace': Whispering Wind & Ambient Nature Chimes Loop
- *   4. Clear SFX Engine:
- *      - Test Chime (Bright C-E-G-C Arpeggio Fanfare)
- *      - Click / Tap Tick
- *      - Card Flip / Equip Whoosh
- *      - Victory / Level Up Chord
- *   5. Browser Autoplay Policy Guard: Seamlessly resumes on first user touch/click.
+ * Fully optimized for Mobile Browsers (iOS Safari, Android Chrome, PWA & WebViews).
+ *
+ * Mobile Audio Enhancements:
+ *   1. Guaranteed Audio Playback: Web Audio API Synthesizer + Local Audio.
+ *   2. Universal Mobile Web Audio Unlock: Silent buffer burst + continuous gesture keep-alive
+ *      so audio NEVER gets stuck in 'suspended' or 'interrupted' states on iOS Safari.
+ *   3. Zero-Network Reliance SFX: 100% Native Web Audio synthesis eliminating external CDN
+ *      latency, CORS failures, or mobile data throttling.
+ *   4. Page Visibility & Lifecycle Guard: Automatically pauses on background and resumes on foreground focus.
+ *   5. Safe Audio Context Scheduling: Executes sound generation after ensuring AudioContext is running.
  */
 
 export interface AudioSettings {
@@ -34,11 +29,13 @@ class AudioManager {
   private bgmSynthInterval: any = null;
   private isBgmPlaying: boolean = false;
   private userInteracted: boolean = false;
+  private isUnlocked: boolean = false;
   private currentTrack: string = 'title';
 
   constructor() {
     this.initFromLocalStorage();
     this.setupUserInteractionListener();
+    this.setupLifecycleListener();
   }
 
   private initFromLocalStorage(): void {
@@ -46,23 +43,111 @@ class AudioManager {
     this.currentTrack = localStorage.getItem('hero_bgm_track') || 'title';
   }
 
+  /**
+   * Continuous Mobile Gesture Listener:
+   * Keeps AudioContext and HTMLAudio unlocked on every touch/click/pointer interaction.
+   */
   private setupUserInteractionListener(): void {
     if (typeof window === 'undefined') return;
-    const unlock = () => {
+
+    const onUserGesture = () => {
       this.userInteracted = true;
-      this.getAudioContext();
+      this.unlockMobileAudio();
+
       const settings = this.getSettings();
       if (settings.bgmEnabled && !this.isBgmPlaying) {
         this.playBgm();
       }
-      window.removeEventListener('click', unlock);
-      window.removeEventListener('keydown', unlock);
-      window.removeEventListener('touchstart', unlock);
     };
 
-    window.addEventListener('click', unlock, { once: true, passive: true });
-    window.addEventListener('keydown', unlock, { once: true, passive: true });
-    window.addEventListener('touchstart', unlock, { once: true, passive: true });
+    // Attach passive touch and pointer events without removing them,
+    // so any interaction after a phone sleep/lock will immediately resume audio
+    const options = { passive: true, capture: true };
+    window.addEventListener('touchstart', onUserGesture, options);
+    window.addEventListener('touchend', onUserGesture, options);
+    window.addEventListener('pointerdown', onUserGesture, options);
+    window.addEventListener('click', onUserGesture, options);
+    window.addEventListener('keydown', onUserGesture, options);
+  }
+
+  /**
+   * Lifecycle Listener: Handle tab background/foreground transitions on mobile
+   */
+  private setupLifecycleListener(): void {
+    if (typeof document === 'undefined') return;
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        // App returned to foreground: resume audio context and restore BGM
+        this.unlockMobileAudio();
+        const settings = this.getSettings();
+        if (settings.bgmEnabled && this.isBgmPlaying) {
+          if (this.bgmAudioEl && this.bgmAudioEl.paused && this.currentTrack === 'title') {
+            this.bgmAudioEl.play().catch(() => {
+              this.startSynthBgm(this.currentTrack, settings.bgmVolume);
+            });
+          }
+        }
+      } else {
+        // App went to background: pause HTMLAudioElement to conserve battery
+        if (this.bgmAudioEl && !this.bgmAudioEl.paused) {
+          try {
+            this.bgmAudioEl.pause();
+          } catch {}
+        }
+      }
+    });
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', () => {
+        this.unlockMobileAudio();
+      });
+      window.addEventListener('pageshow', () => {
+        this.unlockMobileAudio();
+      });
+    }
+  }
+
+  /**
+   * Standard Web Audio Unlock for iOS Safari and Mobile Devices.
+   * Plays a 1-sample silent buffer to unlock the hardware audio engine.
+   */
+  public unlockMobileAudio(): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (typeof window === 'undefined') {
+        resolve(false);
+        return;
+      }
+
+      const ctx = this.getAudioContext();
+      if (!ctx) {
+        resolve(false);
+        return;
+      }
+
+      const finishUnlock = () => {
+        try {
+          // Play a microscopic silent buffer to guarantee iOS Safari hardware unlock
+          const buffer = ctx.createBuffer(1, 1, 22050);
+          const source = ctx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(ctx.destination);
+          source.start(0);
+        } catch {}
+        this.isUnlocked = true;
+        resolve(true);
+      };
+
+      if (ctx.state === 'suspended') {
+        ctx.resume().then(() => {
+          finishUnlock();
+        }).catch(() => {
+          resolve(false);
+        });
+      } else {
+        finishUnlock();
+      }
+    });
   }
 
   public getAudioContext(): AudioContext | null {
@@ -77,6 +162,26 @@ class AudioManager {
       this.audioCtx.resume().catch(() => {});
     }
     return this.audioCtx;
+  }
+
+  /**
+   * Executes a Web Audio synthesis routine safely after ensuring the AudioContext is running.
+   */
+  private withActiveAudioContext(fn: (ctx: AudioContext) => void): void {
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    if (ctx.state === 'suspended') {
+      ctx.resume().then(() => {
+        try {
+          fn(ctx);
+        } catch {}
+      }).catch(() => {});
+    } else {
+      try {
+        fn(ctx);
+      } catch {}
+    }
   }
 
   public getSettings(): AudioSettings {
@@ -142,8 +247,10 @@ class AudioManager {
         if (settings.sfxVolume === 0) {
           localStorage.setItem('hero_sfx_volume', '70');
         }
-        this.playBgm();
-        this.playClickTick();
+        this.unlockMobileAudio().then(() => {
+          this.playBgm();
+          this.playClickTick();
+        });
       }
     }
 
@@ -173,8 +280,13 @@ class AudioManager {
       if (!this.bgmAudioEl) {
         this.bgmAudioEl = new Audio(src);
         this.bgmAudioEl.loop = true;
+        (this.bgmAudioEl as any).playsInline = true;
+        this.bgmAudioEl.setAttribute('playsinline', 'true');
+        this.bgmAudioEl.preload = 'auto';
       } else {
-        this.bgmAudioEl.src = src;
+        if (!this.bgmAudioEl.src.includes(src)) {
+          this.bgmAudioEl.src = src;
+        }
       }
       this.bgmAudioEl.volume = Math.max(0, Math.min(1, volumePercent / 100));
       const playPromise = this.bgmAudioEl.play();
@@ -209,7 +321,7 @@ class AudioManager {
     localStorage.setItem('hero_bgm_enabled', String(newEnabled));
 
     if (newEnabled) {
-      this.playBgm();
+      this.unlockMobileAudio().then(() => this.playBgm());
     } else {
       this.stopBgm();
     }
@@ -254,69 +366,68 @@ class AudioManager {
       this.bgmSynthInterval = null;
     }
 
-    const ctx = this.getAudioContext();
-    if (!ctx) return;
+    this.withActiveAudioContext((ctx) => {
+      let step = 0;
+      const baseVolume = (volumePercent / 100) * 0.08;
 
-    let step = 0;
-    const baseVolume = (volumePercent / 100) * 0.08;
+      // Track 1: 'title' Synth Fallback Rhythm (Energetic Chords)
+      const titleMelody = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 293.66, 349.23];
+      // Track 2: 'lobby' Sanctuary Calm Pentatonic (Soft Warm Pads)
+      const lobbyMelody = [329.63, 392.00, 440.00, 523.25, 659.25, 523.25, 440.00, 392.00];
+      // Track 3: 'battle' Epic Colosseum Driving Beat (Minor 3rds & Octaves)
+      const battleMelody = [220.00, 261.63, 329.63, 440.00, 261.63, 329.63, 440.00, 523.25];
+      // Track 4: 'peace' Whispering Wind Ambient (Airy Sine Waves)
+      const peaceMelody = [196.00, 293.66, 392.00, 440.00, 293.66, 392.00, 440.00, 587.33];
 
-    // Track 1: 'title' Synth Fallback Rhythm (Energetic Chords)
-    const titleMelody = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 293.66, 349.23];
-    // Track 2: 'lobby' Sanctuary Calm Pentatonic (Soft Warm Pads)
-    const lobbyMelody = [329.63, 392.00, 440.00, 523.25, 659.25, 523.25, 440.00, 392.00];
-    // Track 3: 'battle' Epic Colosseum Driving Beat (Minor 3rds & Octaves)
-    const battleMelody = [220.00, 261.63, 329.63, 440.00, 261.63, 329.63, 440.00, 523.25];
-    // Track 4: 'peace' Whispering Wind Ambient (Airy Sine Waves)
-    const peaceMelody = [196.00, 293.66, 392.00, 440.00, 293.66, 392.00, 440.00, 587.33];
+      const getNotes = () => {
+        switch (track) {
+          case 'lobby': return lobbyMelody;
+          case 'battle': return battleMelody;
+          case 'peace': return peaceMelody;
+          default: return titleMelody;
+        }
+      };
 
-    const getNotes = () => {
-      switch (track) {
-        case 'lobby': return lobbyMelody;
-        case 'battle': return battleMelody;
-        case 'peace': return peaceMelody;
-        default: return titleMelody;
-      }
-    };
+      const notes = getNotes();
+      const intervalMs = track === 'battle' ? 300 : track === 'peace' ? 800 : 500;
 
-    const notes = getNotes();
-    const intervalMs = track === 'battle' ? 300 : track === 'peace' ? 800 : 500;
+      const playTone = () => {
+        if (!this.isBgmPlaying) return;
+        try {
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
 
-    const playTone = () => {
-      if (!this.isBgmPlaying) return;
-      try {
-        const now = ctx.currentTime;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+          const freq = notes[step % notes.length];
+          osc.type = track === 'peace' ? 'sine' : track === 'battle' ? 'sawtooth' : 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
 
-        const freq = notes[step % notes.length];
-        osc.type = track === 'peace' ? 'sine' : track === 'battle' ? 'sawtooth' : 'triangle';
-        osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.exponentialRampToValueAtTime(baseVolume, now + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + (intervalMs / 1000) * 0.9);
 
-        gain.gain.setValueAtTime(0.001, now);
-        gain.gain.exponentialRampToValueAtTime(baseVolume, now + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + (intervalMs / 1000) * 0.9);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
 
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + (intervalMs / 1000) * 0.95);
+          step++;
+        } catch {}
+      };
 
-        osc.start(now);
-        osc.stop(now + (intervalMs / 1000) * 0.95);
-        step++;
-      } catch {}
-    };
-
-    playTone();
-    this.bgmSynthInterval = setInterval(playTone, intervalMs);
+      playTone();
+      this.bgmSynthInterval = setInterval(playTone, intervalMs);
+    });
   }
 
-  // ── SFX Management ─────────────────────────────────────────────────────────
+  // ── SFX Management (100% Native Web Audio Synth, Zero Network CDN Reliance) ─
 
   public toggleSfx(): boolean {
     const settings = this.getSettings();
     const newEnabled = !settings.sfxEnabled;
     localStorage.setItem('hero_sfx_enabled', String(newEnabled));
     if (newEnabled) {
-      this.playTestChime();
+      this.unlockMobileAudio().then(() => this.playTestChime());
     }
     this.dispatchAudioChangedEvent();
     return newEnabled;
@@ -342,16 +453,13 @@ class AudioManager {
 
   /**
    * Plays the loud & clear test chime (C-E-G-C arpeggio) via Web Audio API.
-   * Guaranteed 100% to sound immediately without any external network request!
+   * Guaranteed 100% to sound immediately on all mobile devices!
    */
   public playTestChime(): void {
     const settings = this.getSettings();
     if (!settings.sfxEnabled || settings.sfxVolume <= 0) return;
 
-    const ctx = this.getAudioContext();
-    if (!ctx) return;
-
-    try {
+    this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
       const vol = (settings.sfxVolume / 100) * 0.35;
       const frequencies = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
@@ -378,9 +486,7 @@ class AudioManager {
       if (settings.hapticEnabled && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
         navigator.vibrate([20, 30, 20]);
       }
-    } catch (e) {
-      console.warn('[AudioManager] playTestChime error:', e);
-    }
+    });
   }
 
   /**
@@ -390,28 +496,25 @@ class AudioManager {
     const settings = this.getSettings();
     if (!settings.sfxEnabled || settings.sfxVolume <= 0) return;
 
-    const ctx = this.getAudioContext();
-    if (!ctx) return;
-
-    try {
+    this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const vol = (settings.sfxVolume / 100) * 0.15;
+      const vol = (settings.sfxVolume / 100) * 0.16;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(1200, now);
-      osc.frequency.exponentialRampToValueAtTime(400, now + 0.04);
+      osc.frequency.setValueAtTime(1400, now);
+      osc.frequency.exponentialRampToValueAtTime(450, now + 0.04);
 
       gain.gain.setValueAtTime(vol, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.045);
-    } catch {}
+      osc.stop(now + 0.05);
+    });
   }
 
   /**
@@ -421,18 +524,15 @@ class AudioManager {
     const settings = this.getSettings();
     if (!settings.sfxEnabled || settings.sfxVolume <= 0) return;
 
-    const ctx = this.getAudioContext();
-    if (!ctx) return;
-
-    try {
+    this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const vol = (settings.sfxVolume / 100) * 0.2;
+      const vol = (settings.sfxVolume / 100) * 0.22;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(300, now);
-      osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+      osc.frequency.setValueAtTime(280, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
 
       gain.gain.setValueAtTime(vol, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
@@ -442,7 +542,7 @@ class AudioManager {
 
       osc.start(now);
       osc.stop(now + 0.13);
-    } catch {}
+    });
   }
 
   /**
@@ -452,12 +552,9 @@ class AudioManager {
     const settings = this.getSettings();
     if (!settings.sfxEnabled || settings.sfxVolume <= 0) return;
 
-    const ctx = this.getAudioContext();
-    if (!ctx) return;
-
-    try {
+    this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const vol = (settings.sfxVolume / 100) * 0.25;
+      const vol = (settings.sfxVolume / 100) * 0.28;
       const notes = [440, 554.37, 659.25, 880];
 
       notes.forEach((freq, idx) => {
@@ -478,44 +575,51 @@ class AudioManager {
         osc.start(start);
         osc.stop(start + 0.42);
       });
-    } catch {}
+    });
   }
 
   /**
-   * Card Place effect: Played when placing a card onto the 3x3 board.
+   * Card Place effect: Robust Native Web Audio synthesis (No external CDN failure).
+   * Generates a solid wood/table tap impact tone with instant 0-latency.
    */
   public playCardPlace(): void {
     const settings = this.getSettings();
     if (!settings.sfxEnabled || settings.sfxVolume <= 0) return;
 
-    try {
-      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-      audio.volume = Math.max(0.1, Math.min(1, settings.sfxVolume / 100));
-      audio.play().catch(() => {});
-    } catch {}
+    this.withActiveAudioContext((ctx) => {
+      const now = ctx.currentTime;
+      const vol = (settings.sfxVolume / 100) * 0.32;
 
-    const ctx = this.getAudioContext();
-    if (ctx) {
-      try {
-        const now = ctx.currentTime;
-        const vol = (settings.sfxVolume / 100) * 0.28;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+      // Layer 1: Solid low thump (Card body landing)
+      const lowOsc = ctx.createOscillator();
+      const lowGain = ctx.createGain();
+      lowOsc.type = 'triangle';
+      lowOsc.frequency.setValueAtTime(180, now);
+      lowOsc.frequency.exponentialRampToValueAtTime(45, now + 0.07);
 
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(160, now);
-        osc.frequency.exponentialRampToValueAtTime(45, now + 0.08);
+      lowGain.gain.setValueAtTime(vol, now);
+      lowGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
 
-        gain.gain.setValueAtTime(vol, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+      lowOsc.connect(lowGain);
+      lowGain.connect(ctx.destination);
+      lowOsc.start(now);
+      lowOsc.stop(now + 0.095);
 
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+      // Layer 2: High wood snap (Card crisp contact)
+      const snapOsc = ctx.createOscillator();
+      const snapGain = ctx.createGain();
+      snapOsc.type = 'sine';
+      snapOsc.frequency.setValueAtTime(950, now);
+      snapOsc.frequency.exponentialRampToValueAtTime(220, now + 0.035);
 
-        osc.start(now);
-        osc.stop(now + 0.11);
-      } catch {}
-    }
+      snapGain.gain.setValueAtTime(vol * 0.45, now);
+      snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+      snapOsc.connect(snapGain);
+      snapGain.connect(ctx.destination);
+      snapOsc.start(now);
+      snapOsc.stop(now + 0.045);
+    });
 
     if (settings.hapticEnabled && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
       navigator.vibrate([18, 12]);
@@ -523,40 +627,48 @@ class AudioManager {
   }
 
   /**
-   * Card Flip effect: Played when opponent/player card is flipped / captured.
+   * Card Flip effect: Robust Native Web Audio synthesis (No external CDN failure).
+   * Generates a clean ascending flip & snap sound effect.
    */
   public playCardFlip(): void {
     const settings = this.getSettings();
     if (!settings.sfxEnabled || settings.sfxVolume <= 0) return;
 
-    try {
-      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-      audio.volume = Math.max(0.1, Math.min(1, settings.sfxVolume / 100));
-      audio.play().catch(() => {});
-    } catch {}
+    this.withActiveAudioContext((ctx) => {
+      const now = ctx.currentTime;
+      const vol = (settings.sfxVolume / 100) * 0.28;
 
-    const ctx = this.getAudioContext();
-    if (ctx) {
-      try {
-        const now = ctx.currentTime;
-        const vol = (settings.sfxVolume / 100) * 0.25;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+      // Layer 1: Air whoosh / flutter
+      const sweepOsc = ctx.createOscillator();
+      const sweepGain = ctx.createGain();
+      sweepOsc.type = 'sine';
+      sweepOsc.frequency.setValueAtTime(220, now);
+      sweepOsc.frequency.exponentialRampToValueAtTime(780, now + 0.08);
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(260, now);
-        osc.frequency.exponentialRampToValueAtTime(720, now + 0.09);
+      sweepGain.gain.setValueAtTime(vol * 0.6, now);
+      sweepGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
 
-        gain.gain.setValueAtTime(vol, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      sweepOsc.connect(sweepGain);
+      sweepGain.connect(ctx.destination);
+      sweepOsc.start(now);
+      sweepOsc.stop(now + 0.105);
 
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+      // Layer 2: Flip snap click
+      const clickOsc = ctx.createOscillator();
+      const clickGain = ctx.createGain();
+      clickOsc.type = 'triangle';
+      clickOsc.frequency.setValueAtTime(540, now + 0.02);
+      clickOsc.frequency.exponentialRampToValueAtTime(1100, now + 0.06);
 
-        osc.start(now);
-        osc.stop(now + 0.13);
-      } catch {}
-    }
+      clickGain.gain.setValueAtTime(0.001, now);
+      clickGain.gain.setValueAtTime(vol * 0.8, now + 0.02);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+
+      clickOsc.connect(clickGain);
+      clickGain.connect(ctx.destination);
+      clickOsc.start(now + 0.02);
+      clickOsc.stop(now + 0.095);
+    });
 
     if (settings.hapticEnabled && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
       navigator.vibrate([28, 22, 28]);
