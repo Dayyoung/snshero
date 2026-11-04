@@ -86,12 +86,33 @@ export function renderCardSection(): string {
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 font-mono text-[#201d1d] select-none">
       <!-- Compact Section Header & Select Box Filters -->
       <section class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-3.5 sm:p-5 rounded-none shadow-none mb-5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h1 class="text-lg sm:text-2xl font-black text-[#201d1d] m-0 leading-tight">
-              ${tr('카드 (Card Collection &amp; Nurture)', 'Cards (Card Collection &amp; Nurture)', 'カード (Card Collection &amp; Nurture)')}
-            </h1>
-            <p class="text-[11px] sm:text-xs text-stone-500 mt-0.5 m-0">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center gap-2.5">
+              <h1 class="text-lg sm:text-2xl font-black text-[#201d1d] m-0 leading-tight">
+                ${tr('카드 (Card Collection &amp; Nurture)', 'Cards (Card Collection &amp; Nurture)', 'カード (Card Collection &amp; Nurture)')}
+              </h1>
+              <!-- Card Collection Rate Badge -->
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm tracking-wide">
+                <span class="text-amber-400">★</span>
+                <span>${collection.ownedCount} / 110</span>
+                <span class="text-stone-400">·</span>
+                <span>${collection.percentage}%</span>
+                <span class="text-stone-400">·</span>
+                <span>${tr('카드 보유률', 'Card Collection Rate', 'カード保有率', {
+                  'zh-CN': '卡牌收集率',
+                  'zh-TW': '卡牌收集率',
+                  de: 'Kartensammlungsrate',
+                  es: 'Tasa de colección',
+                  fr: 'Taux de collection',
+                  id: 'Koleksi Kartu',
+                  ru: 'Сбор карт',
+                  th: 'อัตราสะสมการ์ด',
+                  vi: 'Tỷ lệ thu thập',
+                })}</span>
+              </div>
+            </div>
+            <p class="text-[11px] sm:text-xs text-stone-500 m-0">
               ${tr(
                 '카드를 터치하여 상세 확인 및 스탯 강화를 진행하세요.',
                 'Tap any card to inspect details and allocate stat points.',
@@ -154,14 +175,56 @@ export function renderCardSection(): string {
             </label>
           </div>
         </div>
+
+        <!-- Collection Rate Progress Bar Card -->
+        <div class="mt-4 pt-3.5 border-t border-[rgba(15,0,0,0.08)]">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs font-bold mb-2">
+            <span class="text-stone-700 flex items-center gap-1.5">
+              <span class="inline-block w-2.5 h-2.5 bg-[#201d1d] rounded-none"></span>
+              <span>${tr('카드 보유률', 'Card Collection Rate', 'カード保有率', {
+                'zh-CN': '卡牌收集率',
+                'zh-TW': '卡牌收集率',
+                de: 'Kartensammlungsrate',
+                es: 'Tasa de colección',
+                fr: 'Taux de collection',
+                id: 'Koleksi Kartu',
+                ru: 'Сбор карт',
+                th: 'อัตราสะสมการ์ด',
+                vi: 'Tỷ lệ thu thập',
+              })}:</span>
+              <strong class="text-[#201d1d] text-sm font-black">${collection.ownedCount} / 110 (${collection.percentage}%)</strong>
+            </span>
+            <span class="text-stone-500 font-mono text-[11px] sm:text-xs">
+              ${collection.ownedCount >= 110
+                ? tr('전체 수집 완료 (ALL CLEAR)', 'All Collected (ALL CLEAR)', '全収集完了')
+                : `${110 - collection.ownedCount}${tr('종 미보유', ' remaining', '種未保有')}`}
+            </span>
+          </div>
+          <div class="w-full bg-[#f1eeee] h-2.5 rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)]">
+            <div
+              class="h-full bg-[#201d1d] transition-all duration-300"
+              style="width: ${collection.percentage}%;"
+              role="progressbar"
+              aria-valuenow="${collection.ownedCount}"
+              aria-valuemin="0"
+              aria-valuemax="110"
+              aria-label="${tr('카드 보유률', 'Card Collection Rate', 'カード保有率')}"
+            ></div>
+          </div>
+        </div>
       </section>
 
       <!-- 110 Card Comprehensive Grid (Original TCG Card Design) -->
       <section class="space-y-4">
-        <div class="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.08)]">
-          <span class="text-xs font-bold text-[#201d1d] uppercase">
-            ${tr('전체 카드 목록', 'All Cards', '全カード一覧')} (${filteredCardIds.length} / 110)
-          </span>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[rgba(15,0,0,0.08)]">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold text-[#201d1d] uppercase">
+              ${tr('전체 카드 목록', 'All Cards', '全カード一覧')} (${filteredCardIds.length} / 110)
+            </span>
+            <span class="text-[11px] text-stone-500 font-semibold">
+              · ${tr('카드 보유률', 'Collection Rate', '保有率')}: <strong class="text-[#201d1d]">${collection.ownedCount}/110 (${collection.percentage}%)</strong>
+            </span>
+          </div>
           <span class="text-xs text-stone-500">
             ${tr(
               '카드를 클릭하여 상세 정보 확인 및 팝업 모달에서 육성을 진행하세요.',
