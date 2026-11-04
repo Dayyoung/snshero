@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 14:03 KST] [GitHub Actions Pages 배포 러너 디스크 부족(No space left on device) 해결]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 에러 원인 정밀 분석 (`deploy.yml` 워크플로우 크래시)**:
+    - GitHub Actions 호스팅 러너(`ubuntu-latest`)는 기본 루트 디스크(~75GB) 중 약 55GB 이상을 Android SDK, .NET SDK, Haskell, CodeQL, Docker 등이 차지하고 있어 기본 가용 공간이 약 14~18GB에 불과함.
+    - 본 프로젝트는 `dist/`(약 4.8GB), 워크스페이스(3.9GB), `npm install` 캐시 등이 결합된 상태에서 `upload-pages-artifact`가 배포용 `artifact.tar` 압축 파일을 생성하는 과정에서 러너 디스크 공간이 0바이트로 완전 고갈됨.
+    - 그 결과 GitHub Actions Runner Worker가 자체 진단 로그(`Worker_...log`)조차 기록하지 못하고 `System.IO.IOException: No space left on device` 치명적 크래시 발생.
+  - **2. 3중 방어 디스크 최적화 워크플로우 적용 (`.github/workflows/deploy.yml`)**:
+    - **방어 1 (`Free Disk Space (Ubuntu)`)**:
+      - 빌드 시작 전 불필요한 사전 설치 도구(`/usr/share/dotnet`, `/usr/local/lib/android`, `/opt/ghc`, `/opt/hostedtoolcache/CodeQL`, `/usr/local/share/boost`, Docker 캐시)를 강제 제거하여 **45GB 이상의 여유 디스크 공간을 즉시 확보** (러너 여유 공간 15GB -> 60GB+ 대폭 확장).
+    - **방어 2 (`Shallow Checkout`)**:
+      - `actions/checkout@v4`에 `fetch-depth: 1` 및 `lfs: false`를 명시하여 단일 최신 커밋만 clone, 네트워크 및 불필요한 과거 히스토리 디스크 낭비 100% 방지.
+    - **방어 3 (`Post-Build Workspace Cleanup`)**:
+      - `npm run build` 완료 후 배포에 필요한 `./dist`만 남기고 `.git`, `node_modules`, `~/.npm`을 즉시 삭제하여 `upload-pages-artifact`의 tar 아카이브 압축 공간을 수십 GB 추가 확보.
+  - **3. 원격 저장소 푸시 및 검증**:
+    - `.github/workflows/deploy.yml` 커밋 및 `git push origin main` 완료 (`ae6a3bfbc`).
+    - 연동 구글 폼 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 원격 저장소 푸시: `git push origin main` 성공
+  - 구글 폼 완료 보고서 제출 완료: `[개발] GitHub Actions Pages 배포 러너 디스크 부족(No space left on device) 해결 -> 작업완료`
+
+
 ## [2026-11-04 12:50 KST] [/git-push 원격 저장소(origin main) 반영 및 대용량 비디오 최적화 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
