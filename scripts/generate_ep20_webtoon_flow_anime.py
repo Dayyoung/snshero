@@ -1329,6 +1329,12 @@ def process_episode(ep: int, manifest: Dict) -> bool:
         cinema_mp4.write_bytes(final_mp4.read_bytes())
         print(f"✅ Updated {cinema_mp4.relative_to(ROOT)}", flush=True)
 
+        dist_cinema_dir = ROOT / "dist/videos/cinema"
+        if dist_cinema_dir.exists():
+            dist_cinema_mp4 = dist_cinema_dir / f"episode_{ep:02d}.mp4"
+            dist_cinema_mp4.write_bytes(final_mp4.read_bytes())
+            print(f"✅ Updated {dist_cinema_mp4.relative_to(ROOT)}", flush=True)
+
         submit_episode_report(ep, ep_title, total_scenes, final_mp4)
         return True
 
