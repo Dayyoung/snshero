@@ -391,18 +391,6 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
         aria-hidden="true"
       ></div>
 
-      <!-- 3. Diagonal Corner Ownership Ribbon (좌상단 파란띠/빨간띠) -->
-      <div class="pointer-events-none absolute -top-1 -left-1 z-35 h-9 w-9 sm:h-11 sm:w-11 overflow-hidden select-none">
-        <div
-          class="absolute -left-3.5 sm:-left-4.5 top-1.5 sm:top-2 w-14 sm:w-16 -rotate-45 py-0.2 sm:py-0.5 text-center text-[6px] sm:text-[7px] font-black uppercase text-white tracking-tighter shadow-md ${
-            isPlayer
-              ? 'bg-blue-600 border-y border-sky-300'
-              : 'bg-red-600 border-y border-rose-300'
-          }"
-        >
-          ${isPlayer ? tr('내카드', 'MINE', '自') : tr('상대', 'ENEMY', '敵')}
-        </div>
-      </div>
 
       <!-- Central Flip! Flash Impact Overlay -->
       ${

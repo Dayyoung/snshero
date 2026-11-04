@@ -643,5 +643,50 @@
     "video_url": "https://flow.google.com/asb/ANqvLOYNkkYWsd-BIwA4SqdqwPysFowyvf29Q5q-qkW4WAwC1nAP66yvM8o0Y0-TxqPNYY5foGL5tbXgC6R1IUCqVNqt8iduyUBtSPv5lQUwVAX8oAJKjyEsl67D0rvpwsEerap0765ElUEOh6-nAKZSP6oU6lWaltSKOyjnVKfFVA=mm,22,15",
     "completed": true,
     "timestamp": "2026-11-05T07:06:38+0900"
+  },
+  "EP26-S06": {
+    "episode": 26,
+    "index": 6,
+    "code": "EP26-S06",
+    "voice_type": "narrator",
+    "speaker": "Narrator",
+    "line_en": "Bracing his Dragon Breaker shield, Kadan surveyed the parapets with sharp eyes.",
+    "prompt": "[EP26-S06] 2D dark-fantasy anime cutscene animation. Animate the attached start frame smoothly over 6 seconds: Smooth cinematic 2D anime camera movement and atmospheric particle animation featuring Kadan in a towering dragon precipice among crags. All characters on screen keep their mouths completely closed. Off-screen, a gentle, soft-spoken male narrator voice speaks in English: \"Bracing his Dragon Breaker shield, Kadan surveyed the parapets with sharp eyes.\" Strict no-text rule: do not render any text, subtitles, or watermarks.",
+    "clip_path": "public/anime-character-sheets/videos/ep26_landscape/clips/EP26-S06.mp4",
+    "size_bytes": 3152849,
+    "first_frame_mae": 4.57,
+    "video_url": "https://flow.google.com/asb/ANqvLObBlTgjJXTHCqbOH88mz_mJiBU4VijO2PoJG4NFXkN-oq_XfkpNS284PxOcXnfji9YctlwRoLis4-pJ_EuFZCu2SQSTXDZbY3DhkYt0Gm9uViBoxdvhwzG0u8qIfTt2kLEuFIwPzQWBJU-GOITjbkIAFvDCr_58ZyMD40dK8A=mm,22,15",
+    "completed": true,
+    "timestamp": "2026-11-05T07:08:44+0900"
+  },
+  "EP26-S18": {
+    "episode": 26,
+    "index": 18,
+    "code": "EP26-S18",
+    "voice_type": "narrator",
+    "speaker": "Narrator",
+    "line_en": "Advancing into the central courtyard, a gilded balcony door creaked open, revealing Count Balthazar.",
+    "prompt": "[EP26-S18] 2D dark-fantasy anime cutscene animation. Animate the attached start frame smoothly over 6 seconds: Smooth cinematic 2D anime camera movement and atmospheric particle animation featuring Medusa Gorgo in the fantasy realm. All characters on screen keep their mouths completely closed. Off-screen, a gentle, soft-spoken male narrator voice speaks in English: \"Advancing into the central courtyard, a gilded balcony door creaked open, revealing Count Balthazar.\" Strict no-text rule: do not render any text, subtitles, or watermarks.",
+    "clip_path": "public/anime-character-sheets/videos/ep26_landscape/clips/EP26-S18.mp4",
+    "size_bytes": 3494304,
+    "first_frame_mae": 6.48,
+    "video_url": "https://flow.google.com/asb/ANqvLOYJpou8Ckp0SCWzzC-dUrgg0YmLt4lTDGL2wSXjicuHkkhT2Vx8sw1oiORZx5x2MDgjswq97h8APXQ2FgGUrZqXKrvTMztE0V45F91PyBaFAG4MIwB1cP6muhMksfs6tlAFAT_nEwI-GTFI1SFOA2gWUQBosJEMLGJ8GF3zVA=mm,22,15",
+    "completed": true,
+    "timestamp": "2026-11-05T07:10:24+0900"
+  },
+  "EP26-S24": {
+    "episode": 26,
+    "index": 24,
+    "code": "EP26-S24",
+    "voice_type": "male",
+    "speaker": "Ignis",
+    "line_en": "Wielding his iron weapon, Ignis stepped forward.",
+    "prompt": "[EP26-S24] 2D dark-fantasy anime cutscene animation. Animate the attached start frame smoothly over 6 seconds: Cinematic 2D anime motion in the fantasy realm as Ignis speaks expressively with natural lip motion, flowing hair and garments, and atmospheric lighting. The male character (Ignis) speaks in English with a young male voice within 6 seconds: \"Wielding his iron weapon, Ignis stepped forward.\" Other characters keep their mouths closed. Strict no-text rule: do not render any text, subtitles, or watermarks.",
+    "clip_path": "public/anime-character-sheets/videos/ep26_landscape/clips/EP26-S24.mp4",
+    "size_bytes": 4152334,
+    "first_frame_mae": 7.78,
+    "video_url": "https://flow.google.com/asb/ANqvLOZweNrwX3P276uqRTw7rNAAUryCUye3QcRV36n6FTknhfHaD5w8DnOoCcSpvWnl4Y4vLSg5Bs8N0VaJv-95Qq4ousT_PEhA6NEBoAqxxH06njl2EnksLS67LnHKkUsDwXElDcmqd1e1I15geEdee24IRmRehoUj1XG4wo24kw=mm,22,15",
+    "completed": true,
+    "timestamp": "2026-11-05T07:11:59+0900"
   }
 }
