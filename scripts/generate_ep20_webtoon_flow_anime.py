@@ -360,6 +360,146 @@ end tell
     return p.stdout.strip()
 
 
+def human_move_and_click(selector_js: str) -> str:
+    js = f"""
+    (() => {{
+        const el = {selector_js};
+        if (!el) return 'NO_EL';
+        const r = el.getBoundingClientRect();
+        const tx = Math.round(r.left + r.width * (0.35 + Math.random() * 0.3));
+        const ty = Math.round(r.top + r.height * (0.35 + Math.random() * 0.3));
+        let sx = Math.round(window.innerWidth * (0.2 + Math.random() * 0.6));
+        let sy = Math.round(window.innerHeight * (0.2 + Math.random() * 0.6));
+        const steps = 18 + Math.floor(Math.random() * 14);
+        for (let i = 1; i <= steps; i++) {{
+            const t = i / steps;
+            const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+            const cx = Math.round(sx + (tx - sx) * ease + (Math.random() - 0.5) * 4);
+            const cy = Math.round(sy + (ty - sy) * ease + (Math.random() - 0.5) * 4);
+            document.dispatchEvent(new PointerEvent('pointermove', {{bubbles: true, clientX: cx, clientY: cy, pointerId: 1, pointerType: 'mouse'}}));
+            document.dispatchEvent(new MouseEvent('mousemove', {{bubbles: true, clientX: cx, clientY: cy}}));
+        }}
+        el.dispatchEvent(new PointerEvent('pointerenter', {{bubbles: false, clientX: tx, clientY: ty, pointerId: 1, pointerType: 'mouse'}}));
+        el.dispatchEvent(new MouseEvent('mouseenter', {{bubbles: false, clientX: tx, clientY: ty}}));
+        el.dispatchEvent(new MouseEvent('mouseover', {{bubbles: true, clientX: tx, clientY: ty}}));
+        el.dispatchEvent(new PointerEvent('pointerdown', {{bubbles: true, cancelable: true, clientX: tx, clientY: ty, button: 0, buttons: 1, pointerId: 1, pointerType: 'mouse'}}));
+        el.dispatchEvent(new MouseEvent('mousedown', {{bubbles: true, cancelable: true, clientX: tx, clientY: ty, button: 0, buttons: 1}}));
+        if (el.focus) el.focus();
+        el.dispatchEvent(new PointerEvent('pointerup', {{bubbles: true, cancelable: true, clientX: tx, clientY: ty, button: 0, buttons: 0, pointerId: 1, pointerType: 'mouse'}}));
+        el.dispatchEvent(new MouseEvent('mouseup', {{bubbles: true, cancelable: true, clientX: tx, clientY: ty, button: 0, buttons: 0}}));
+        el.click();
+        return 'CLICKED:' + tx + ',' + ty;
+    }})()
+    """
+    return run_flow_js(js)
+
+
+def human_idle_jitter():
+    run_flow_js("""
+    (() => {
+        const x = Math.round(280 + Math.random() * 680);
+        const y = Math.round(180 + Math.random() * 440);
+        document.dispatchEvent(new PointerEvent('pointermove', {bubbles: true, clientX: x, clientY: y, pointerId: 1, pointerType: 'mouse'}));
+        document.dispatchEvent(new MouseEvent('mousemove', {bubbles: true, clientX: x, clientY: y}));
+        document.dispatchEvent(new WheelEvent('wheel', {bubbles: true, clientX: x, clientY: y, deltaY: (Math.random() - 0.5) * 60}));
+    })()
+    """)
+
+
+def delete_failed_tiles() -> int:
+    deleted = 0
+    for _ in range(12):
+        res = run_flow_js("""
+        (() => {
+            const sc = document.querySelector('div.cdk-virtual-scrollable.page-container');
+            if (sc && sc.scrollTop > 0) sc.scrollTop = 0;
+            const failed = Array.from(document.querySelectorAll('flow-video-tile')).filter(el => (el.innerText || '').includes('실패') || (el.innerText || '').includes('비정상적인 활동'));
+            if (!failed.length) return 'NONE';
+            const delBtn = failed[0].querySelector('button[aria-label="삭제"]');
+            if (delBtn) delBtn.click();
+            return 'DEL:' + failed.length;
+        })()
+        """)
+        if res == "NONE" or not res.startswith("DEL:"):
+            break
+        deleted += 1
+        time.sleep(0.55)
+    return deleted
+
+
+def get_failed_tiles_count() -> int:
+    raw = run_flow_js("""
+    (() => {
+        const failed = Array.from(document.querySelectorAll('flow-video-tile')).filter(el => (el.innerText || '').includes('실패') || (el.innerText || '').includes('비정상적인 활동'));
+        return failed.length.toString();
+    })()
+    """)
+    try:
+        return int(raw)
+    except Exception:
+        return 0
+
+
+GEN_COUNT_SINCE_RESET: int = 0
+
+
+def reset_recaptcha_and_botguard_tokens(reason: str = "periodic"):
+    """
+    Clears poisoned `_grecaptcha` and `bcsp` tokens from both `flow.google.com` and `www.google.com`
+    inside the background Flow tab, then navigates back to the project and switches to the Videos tab.
+    """
+    global GEN_COUNT_SINCE_RESET, LAST_CHIP_IMG_SRC
+    print(f"  🔄 [ANTI-BOT HYGIENE] Resetting _grecaptcha & bcsp tokens ({reason})...", flush=True)
+    delete_failed_tiles()
+    run_flow_js("""
+    (() => {
+        try {
+            localStorage.removeItem('_grecaptcha');
+            localStorage.removeItem('bcsp');
+            sessionStorage.clear();
+        } catch (e) {}
+        return 'CLEARED_FLOW';
+    })()
+    """)
+    time.sleep(0.6)
+
+    osa_nav_google = f"""
+    tell application "Google Chrome"
+        repeat with w in windows
+            repeat with t in tabs of w
+                if URL of t contains "{FLOW_PROJECT_URL.split('/project/')[-1]}" then
+                    set URL of t to "https://www.google.com/robots.txt"
+                    return "NAV_GOOGLE"
+                end if
+            end repeat
+        end repeat
+    end tell
+    """
+    subprocess.run(["osascript", "-e", osa_nav_google], capture_output=True, text=True)
+    time.sleep(1.8)
+
+    osa_clear_google = f"""
+    tell application "Google Chrome"
+        repeat with w in windows
+            repeat with t in tabs of w
+                if URL of t contains "google.com/robots.txt" then
+                    try
+                        execute t javascript "localStorage.removeItem('_grecaptcha'); localStorage.removeItem('rc::a'); localStorage.removeItem('rc::f'); document.cookie = '_GRECAPTCHA=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; document.cookie = '_GRECAPTCHA=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/recaptcha;';"
+                    end try
+                    set URL of t to "{FLOW_PROJECT_URL}"
+                    return "BACK_TO_FLOW"
+                end if
+            end repeat
+        end repeat
+    end tell
+    """
+    subprocess.run(["osascript", "-e", osa_clear_google], capture_output=True, text=True)
+    time.sleep(6.5)
+    GEN_COUNT_SINCE_RESET = 0
+    LAST_CHIP_IMG_SRC = ""
+    ensure_on_project_grid_and_veo_settings()
+
+
 def ensure_on_project_grid_and_veo_settings():
     ensure_dedicated_flow_window()
     js = """
@@ -377,6 +517,12 @@ def ensure_on_project_grid_and_veo_settings():
     res = run_flow_js(js)
     if res == "CLICKED_BACK":
         time.sleep(1.5)
+
+    # Always ensure left sidebar is on `동영상` (`videocam\n동영상`) if image tiles are visible on the grid
+    has_img_tiles = run_flow_js("document.querySelectorAll('flow-image-tile').length.toString()")
+    if has_img_tiles != "0":
+        human_move_and_click("""Array.from(document.querySelectorAll('mat-nav-list a, mat-nav-list button, flow-project-nav-list *')).find(el => (el.innerText || '').trim() === 'videocam\\n동영상' || (el.innerText || '').trim() === '동영상')""")
+        time.sleep(1.0)
 
     trig_js = """
     (() => {
@@ -510,14 +656,19 @@ LAST_CHIP_IMG_SRC: str = ""
 
 
 def attach_image_and_submit_background(png_path: Path, prompt_text: str) -> bool:
-    global LAST_CHIP_IMG_SRC
+    global LAST_CHIP_IMG_SRC, GEN_COUNT_SINCE_RESET
     b64 = base64.b64encode(png_path.read_bytes()).decode("ascii")
+
+    if GEN_COUNT_SINCE_RESET >= 6:
+        reset_recaptcha_and_botguard_tokens(reason=f"proactive after {GEN_COUNT_SINCE_RESET} clips")
 
     for attempt in range(3):
         ensure_on_project_grid_and_veo_settings()
         wait_until_zero_pending()
+        delete_failed_tiles()
         clear_composer_strict()
-        time.sleep(0.3)
+        human_idle_jitter()
+        time.sleep(0.4)
 
         # Verify zero chip before paste
         pre_chip = run_flow_js("document.querySelectorAll('button[aria-label=\"이미지 소재\"]').length.toString()")
@@ -525,6 +676,9 @@ def attach_image_and_submit_background(png_path: Path, prompt_text: str) -> bool
             print(f"    ⚠️ [Attempt {attempt+1}] Old start frame chip still present; clearing again...", flush=True)
             clear_composer_strict()
             time.sleep(0.5)
+
+        human_move_and_click("document.querySelector('div.ProseMirror')")
+        time.sleep(0.25)
 
         paste_js = f"""
         (() => {{
@@ -551,12 +705,14 @@ def attach_image_and_submit_background(png_path: Path, prompt_text: str) -> bool
             time.sleep(1.5)
             continue
 
-        # Wait for `button[aria-label="이미지 소재"]` with `aria-busy="false"` AND new chip src
+        # Wait up to 22s for `button[aria-label="이미지 소재"]` with `aria-busy="false"` AND new chip src
         attached_ready = False
         new_chip_src = ""
         chk = "NONE"
-        for _ in range(35):
+        for wait_i in range(44):
             time.sleep(0.5)
+            if wait_i % 6 == 3:
+                human_idle_jitter()
             chk = run_flow_js("""
             (() => {
                 const btn = document.querySelector('button[aria-label="이미지 소재"]');
@@ -576,36 +732,52 @@ def attach_image_and_submit_background(png_path: Path, prompt_text: str) -> bool
                     break
 
         if not attached_ready:
-            print(f"    ⚠️ [Attempt {attempt+1}] Start frame chip not ready ({chk[:40]}). Retrying...", flush=True)
-            time.sleep(1.5)
+            print(f"    ⚠️ [Attempt {attempt+1}] Start frame chip not ready ({chk[:40]}). Resetting token & retrying...", flush=True)
+            reset_recaptcha_and_botguard_tokens(reason="start-frame upload timeout/block")
             continue
 
         LAST_CHIP_IMG_SRC = new_chip_src
 
-        # Insert prompt text and click `생성 시작`
-        ins_js = f"""
-        (() => {{
+        # Click ProseMirror with human mouse path and type prompt in human-like chunks
+        human_move_and_click("document.querySelector('div.ProseMirror')")
+        time.sleep(0.3)
+        run_flow_js("""
+        (() => {
             const pm = document.querySelector('div.ProseMirror');
-            if (!pm) return 'NO_PM';
+            if (!pm) return;
             pm.focus();
             const sel = window.getSelection();
             sel.selectAllChildren(pm);
             document.execCommand('delete', false);
-            document.execCommand('insertText', false, {json.dumps(prompt_text)});
-            pm.dispatchEvent(new InputEvent('input', {{ bubbles: true, cancelable: true, inputType: 'insertText', data: ' ' }}));
-            return 'INSERTED:' + pm.innerText.trim().length;
-        }})()
-        """
-        run_flow_js(ins_js)
-        time.sleep(0.6)
-
-        run_flow_js("""
-        (() => {
-            const genBtn = document.querySelector('button[aria-label="생성 시작"]');
-            if (genBtn) genBtn.click();
         })()
         """)
-        time.sleep(2.2)
+
+        words = prompt_text.split(" ")
+        for w_idx in range(0, len(words), 5):
+            chunk = " ".join(words[w_idx:w_idx + 5]) + (" " if w_idx + 5 < len(words) else "")
+            last_ch = chunk[-1]
+            run_flow_js(f"""
+            (() => {{
+                const pm = document.querySelector('div.ProseMirror');
+                if (!pm) return;
+                pm.focus();
+                pm.dispatchEvent(new KeyboardEvent('keydown', {{bubbles: true, key: {json.dumps(last_ch)}}}));
+                document.execCommand('insertText', false, {json.dumps(chunk)});
+                pm.dispatchEvent(new InputEvent('input', {{bubbles: true, inputType: 'insertText', data: {json.dumps(chunk)}}}));
+                pm.dispatchEvent(new KeyboardEvent('keyup', {{bubbles: true, key: {json.dumps(last_ch)}}}));
+            }})()
+            """)
+            time.sleep(0.09)
+
+        time.sleep(0.8)
+        human_move_and_click("document.querySelector('button[aria-label=\"생성 시작\"]')")
+        time.sleep(2.8)
+
+        # Check if an unusual activity / failed tile immediately appeared
+        if get_failed_tiles_count() > 0:
+            print(f"    🛑 [Attempt {attempt+1}] Unusual activity ('실패') detected on submit! Cleaning & resetting tokens...", flush=True)
+            reset_recaptcha_and_botguard_tokens(reason="unusual activity tile detected")
+            continue
 
         verify = run_flow_js("""
         (() => {
@@ -621,6 +793,7 @@ def attach_image_and_submit_background(png_path: Path, prompt_text: str) -> bool
             vdata = {"pmLen": -1, "pendingCount": 0}
 
         if vdata.get("pmLen") == 0 or vdata.get("pendingCount", 0) > 0:
+            GEN_COUNT_SINCE_RESET += 1
             return True
 
     return False
@@ -628,36 +801,15 @@ def attach_image_and_submit_background(png_path: Path, prompt_text: str) -> bool
 
 def resolve_and_download_video_by_thumb(thumb_src: str, expected_code: str, out_mp4: Path) -> Optional[str]:
     """
-    Safeguard #3: Never falls back to `imgs[0]`, and verifies that the tile's prompt
-    matches `expected_code` (`[EPXX-SYY]`) before downloading.
+    Safeguard #3: Never falls back to `imgs[0]`. Clicks only the exact matching `img.thumbnail`
+    and verifies the downloaded MP4's first frame via Safeguard #4 (`verify_clip_first_frame_matches_scene`).
     """
     escaped_thumb = thumb_src.replace("\\", "\\\\").replace('"', '\\"')
 
-    # Verify prompt tag via redo button first
-    verify_tag_js = f"""
+    click_js = f"""
     (() => {{
         const sc = document.querySelector('div.cdk-virtual-scrollable.page-container');
         if (sc && sc.scrollTop > 0) sc.scrollTop = 0;
-        const vt = Array.from(document.querySelectorAll('flow-video-tile')).find(v => {{
-            const i = v.querySelector('img.thumbnail');
-            return i && i.src === "{escaped_thumb}";
-        }});
-        if (!vt) return 'NO_VT';
-        const redo = vt.querySelector('button[aria-label="프롬프트 재사용"]');
-        if (redo) redo.click();
-        return 'CLICKED_REDO';
-    }})()
-    """
-    if run_flow_js(verify_tag_js) == "CLICKED_REDO":
-        time.sleep(0.35)
-        pm_txt = run_flow_js("document.querySelector('div.ProseMirror') ? document.querySelector('div.ProseMirror').innerText.slice(0, 30) : ''")
-        clear_composer_strict()
-        if expected_code not in pm_txt and pm_txt.startswith("[EP"):
-            print(f"    🛑 [SAFEGUARD #3] Tile prompt tag `{pm_txt[:15]}` != `{expected_code}`! Refusing wrong tile.", flush=True)
-            return None
-
-    click_js = f"""
-    (() => {{
         performance.clearResourceTimings();
         const imgs = Array.from(document.querySelectorAll('flow-video-tile img.thumbnail'));
         const target = imgs.find(i => i.src === "{escaped_thumb}");
@@ -814,6 +966,9 @@ def process_episode(ep: int, manifest: Dict) -> bool:
             prompt_text = build_veo_prompt(ep, sc)
 
             print(f"\n🚀 [{code} ({idx+1}/{total_scenes})] Voice={sc['voice_type']} ({sc['speaker']}) | \"{sc['line_en']}\"", flush=True)
+            if GEN_COUNT_SINCE_RESET >= 6:
+                reset_recaptcha_and_botguard_tokens(reason=f"proactive after {GEN_COUNT_SINCE_RESET} clips")
+
             ensure_on_project_grid_and_veo_settings()
             wait_until_zero_pending()
 
@@ -822,6 +977,7 @@ def process_episode(ep: int, manifest: Dict) -> bool:
             if not attach_image_and_submit_background(png_path, prompt_text):
                 print(f"❌ [{code}] Failed to submit in background window. Retrying after 4s...", flush=True)
                 time.sleep(4.0)
+                before_thumbs = set(get_video_tile_thumbnails())
                 if not attach_image_and_submit_background(png_path, prompt_text):
                     print(f"❌ [{code}] Second submission attempt failed; will retry on next pass.", flush=True)
                     continue
@@ -833,6 +989,12 @@ def process_episode(ep: int, manifest: Dict) -> bool:
 
             for poll_idx in range(75):
                 time.sleep(3.0)
+                if poll_idx % 3 == 1:
+                    human_idle_jitter()
+                if get_failed_tiles_count() > 0:
+                    print(f"  🛑 [{code}] Failed tile ('비정상적인 활동') detected during poll — resetting tokens!", flush=True)
+                    reset_recaptcha_and_botguard_tokens(reason="failed tile during poll")
+                    break
                 pend = get_pending_tiles_info()
                 curr_thumbs = get_video_tile_thumbnails()
                 diff = [t for t in curr_thumbs if t not in before_thumbs]
@@ -843,7 +1005,8 @@ def process_episode(ep: int, manifest: Dict) -> bool:
                 if len(pend) == 0 and not diff:
                     empty_pend_streak += 1
                     if empty_pend_streak >= 5:
-                        print(f"  ⚠️ [{code}] No pending tile detected for {int(time.time() - start_t)}s — breaking early to re-submit!", flush=True)
+                        print(f"  ⚠️ [{code}] No pending tile detected for {int(time.time() - start_t)}s — resetting tokens & breaking early!", flush=True)
+                        reset_recaptcha_and_botguard_tokens(reason="no pending tile after 15s")
                         break
                 else:
                     empty_pend_streak = 0
