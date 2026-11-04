@@ -2,6 +2,37 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 06:45 KST] [스토리 대화 화면 장소 배경 아트(LOC 20종) 적용 및 캐릭터 경계 박스 완전 제거]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "케릭터가 대사할때 뒷배경이 없으니까 밋밋하다. `/Users/dayyoung/project/snshero/public/anime-character-sheets/locations` 해당 리소스는 배경장소 시트야. 알맞는 배경을 선택해서 케릭터 뒤에 표시해줄래."
+    - "케릭터 경계 박스도 없애주고"
+  - **2. 캐노니컬 장소 배경 매니저 신규 구현 (`src/landing/services/locationBgManager.ts`)**:
+    - `public/anime-character-sheets/locations/art/` 내의 20종 고해상도 장소 아트(`LOC_001_Elwin_Village.jpg` ~ `LOC_020_Altar_of_Ruin_Two_Graves.jpg`) 전수 등록.
+    - 1~40화 전 에피소드별 스토리 기반 1:1 캐노니컬 대표 장소 매핑(`CHAPTER_PRIMARY_LOCATIONS`) 구축.
+    - 대사 텍스트 내 특정 장소 키워드(예: '절벽', '바람의 섬', '호수', '노역소', '동굴', '서고', '제단' 등)를 실시간 감지하여 최적의 배경으로 동적 스위칭하는 스마트 키워드 디텍터 탑재.
+    - 배경 이미지 사전 로딩 헬퍼(`preloadLocationBackground`, `preloadNearbyChapterBackgrounds`) 구현.
+  - **3. 캐릭터 대화 모달 비주얼 노벨 룩 전면 혁신 (`src/landing/views/PlaySection.tsx`)**:
+    - **장소 배경 레이어**: 대화 모달(`#play-dialogue-modal-root`) 최하단에 전체화면 와이드 배경 이미지 및 은은한 비네팅/다크 그라데이션 오버레이를 배치하여 깊이 있는 몰입감과 텍스트 시인성 확보.
+    - **캐릭터 경계 박스 완전 제거**: 기존의 사각형 테두리 박스(`border-2 border-amber-400/80`, `bg-[#141010]`, `shadow`)를 100% 제거하고, 투명 컨테이너 위에서 자연스러운 입체 드롭 섀도우(`drop-shadow-[0_12px_24px_rgba(0,0,0,0.9)]`)를 적용하여 캐릭터가 배경 앞에 서 있는 비주얼 노벨 스타일 연출 완성.
+    - **크기 및 반응형 확장**: 기존 대비 크기를 시원하게 확장(`w-52 h-52 sm:w-64 sm:h-64 md:w-72 md:h-72`).
+    - **장소 인디케이터 배지**: 상단 헤더 및 모바일에 현재 장소 배지(`📍 [장소명]`)를 감각적으로 표시.
+    - **대사 박스 다크 글래스모피즘**: 반투명 잉크 다크 패널(`bg-[#141111]/90 backdrop-blur-md`)을 적용하여 배경과 조화를 이루면서도 대사의 가독성을 완벽하게 보장.
+    - **엔진 호환성 보존**: `id="dialogue-speaker-bust-img"` 속성을 온전히 유지하여 `playRpgEngine.ts`의 로딩 완료 감지 및 자동 진행 체크 로직과의 100% 완벽 호환 유지.
+  - **4. 프리로더 및 번들 최적화 연동 (`src/landing/services/playRpgEngine.ts`)**:
+    - `preloadDialogueChapterImages()` 호출 시 인접 챕터의 장소 배경 이미지도 병렬 프리로드하도록 연동하여 씬 전환 시 깜빡임 없이 즉각 노출 보장.
+  - **5. 빌드 및 완료 보고 검증**:
+    - `npm run build && node scripts/post-build.js`: 0 error 정상 통과.
+    - 로컬 git 커밋 완료 (`839693bb7`). (원격 저장은 사용자 명시 요청 시에만 수행 원칙 준수)
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 번들 빌드: 0 error 정상 완료
+  - 로컬 Git 커밋: `839693bb7`
+  - 구글 폼 완료 보고서 제출: `[개발] 스토리 대화 화면 장소 배경 아트 적용 및 캐릭터 경계 박스 제거 -> 작업완료`
+
+
+
 ## [2026-11-04 20:07 KST] [환생 10회차까지 쉽게 깰 수 있도록 난이도 전면 개편(영웅 환생 오라+상대 캡 억제+캐주얼 AI) 및 git push 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
