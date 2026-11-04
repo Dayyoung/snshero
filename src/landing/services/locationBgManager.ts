@@ -267,27 +267,21 @@ export const CHAPTER_PRIMARY_LOCATIONS: Record<number, string> = {
 };
 
 /**
- * 대사 텍스트와 챕터 번호로부터 가장 적합한 배경 장소 메타데이터 반환
+ * 에피소드(챕터 1~40) 기준 단일 고정 캐노니컬 배경 장소 반환
+ * 에피소드 진행 중 대화나 카드플레이에서 배경이 전환되어 시야가 산만해지는 것을 방지하고,
+ * 각 에피소드 당 단 1개의 고유한 대표 배경 아트를 일관되게 유지합니다.
  */
-export function getDialogueBackground(chapter: number, dialogueText?: string): LocationMeta {
-  const normText = (dialogueText || '').toLowerCase();
-
-  // 1. 대사 텍스트 내 특정 장소 키워드 검출 (우선 매칭)
-  if (normText.length > 0) {
-    const locEntries = Object.values(CANONICAL_LOCATIONS);
-    for (const loc of locEntries) {
-      for (const kw of loc.keywords) {
-        if (normText.includes(kw)) {
-          return loc;
-        }
-      }
-    }
-  }
-
-  // 2. 챕터별 기본 캐노니컬 장소 매핑
+export function getEpisodeBackground(chapter: number): LocationMeta {
   const safeChapter = Math.max(1, Math.min(40, chapter || 1));
   const locId = CHAPTER_PRIMARY_LOCATIONS[safeChapter] || 'LOC-001';
   return CANONICAL_LOCATIONS[locId] || CANONICAL_LOCATIONS['LOC-001'];
+}
+
+/**
+ * 대사 화면 배경 헬퍼 (에피소드당 1개 고정 배경 반환 보장)
+ */
+export function getDialogueBackground(chapter: number, _dialogueText?: string): LocationMeta {
+  return getEpisodeBackground(chapter);
 }
 
 /**

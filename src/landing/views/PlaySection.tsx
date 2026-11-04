@@ -82,6 +82,7 @@ import {
   PlayTabKey,
 } from '../services/playRpgEngine';
 import {
+  getEpisodeBackground,
   getDialogueBackground,
   preloadLocationBackground,
 } from '../services/locationBgManager';
@@ -994,9 +995,9 @@ function renderAdventureView(): string {
               const dialogueData = extractDialogueText(line, activeSpeaker.name);
               const activeSpeakerAsset = getCharacterAsset(activeSpeaker.cardId);
 
-              // Canonical location background matching current episode context & keywords
+              // Canonical single fixed location background for this episode
               const currentChapter = playRpgState.currentChapter;
-              const bgLoc = getDialogueBackground(currentChapter, line.text);
+              const bgLoc = getEpisodeBackground(currentChapter);
               preloadLocationBackground(bgLoc.bgJpgUrl);
 
               return `
@@ -1197,6 +1198,10 @@ function renderAdventureView(): string {
                 playRpgState.reincarnationLevel,
                 currentChapter,
               );
+              // Single fixed canonical location background for the active episode battle
+              const bgLoc = getEpisodeBackground(currentChapter);
+              preloadLocationBackground(bgLoc.bgJpgUrl);
+
               return `
             <div
               id="play-battle-modal-root"
@@ -1205,11 +1210,26 @@ function renderAdventureView(): string {
               aria-modal="true"
               aria-labelledby="battle-modal-title"
             >
-              <!-- 1. 상단 바: 챕터 / 대결 상대 / 닫기 버튼 -->
-              <header class="w-full shrink-0 flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3 border-b border-white/10 bg-[#0c1222]/95 z-20">
+              <!-- 0. 에피소드 고정 장소 배경 아트 레이어 & 배틀 전용 다크 비네팅 오버레이 -->
+              <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+                <img
+                  src="${bgLoc.bgJpgUrl}"
+                  alt="${bgLoc.nameKo}"
+                  class="w-full h-full object-cover object-center filter brightness-[0.55] contrast-[1.12] scale-105"
+                />
+                <!-- 부드러운 상하 비네팅 및 다크 그라데이션 오버레이로 배틀 보드 및 카드 가독성 확보 -->
+                <div class="absolute inset-0 bg-gradient-to-b from-[#060a14]/90 via-[#060a14]/65 to-[#060a14]/95"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_25%,rgba(0,0,0,0.7)_100%)]"></div>
+              </div>
+
+              <!-- 1. 상단 바: 챕터 / 장소 배지 / 대결 상대 / 닫기 버튼 -->
+              <header class="w-full shrink-0 flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3 border-b border-white/10 bg-[#0c1222]/90 backdrop-blur-md z-20">
                 <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 truncate">
                   <span class="px-2 py-0.5 bg-amber-400 text-stone-950 text-[10px] sm:text-xs font-black rounded-sm shrink-0">
                     ${chapterLabel}
+                  </span>
+                  <span class="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 bg-stone-900/80 border border-amber-400/40 text-amber-200 text-[10px] font-bold rounded-sm shrink-0">
+                    📍 ${isKo ? bgLoc.nameKo : bgLoc.nameEn}
                   </span>
                   <h3 id="battle-modal-title" class="text-xs sm:text-sm md:text-base font-black text-white m-0 truncate">
                     vs ${epDeck.leaderName} ${tr('외', '& others', '他')} (${epDeck.deckNames.slice(0, 3).join('·')})
@@ -1231,7 +1251,7 @@ function renderAdventureView(): string {
               </header>
 
               <!-- 2. 중앙 메인: 턴 안내 바 + 3x3 전장 보드 필드 + 전투 승패 결과 -->
-              <main class="flex-1 w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-3 py-1 sm:py-3 overflow-y-auto space-y-2 sm:space-y-3">
+              <main class="relative z-10 flex-1 w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-3 py-1 sm:py-3 overflow-y-auto space-y-2 sm:space-y-3">
                 <!-- 실시간 턴 안내 및 캐던스 바 -->
                 <div class="w-full flex items-center justify-between px-3 py-1.5 bg-[#0e1628] border border-white/10 text-xs rounded-none font-mono select-none">
                   <div class="flex items-center gap-2 min-w-0">
@@ -1361,7 +1381,7 @@ function renderAdventureView(): string {
               </main>
 
               <!-- 3. 하단 바: Player Active Hand Cards (한 손 조작 최적화) -->
-              <footer class="w-full shrink-0 border-t border-white/10 bg-[#090f1e]/98 px-3 py-2 sm:py-3 z-20">
+              <footer class="relative w-full shrink-0 border-t border-white/10 bg-[#090f1e]/90 backdrop-blur-md px-3 py-2 sm:py-3 z-20">
                 <div class="w-full max-w-2xl mx-auto flex flex-col items-center">
                   <div class="w-full flex items-center justify-between pb-1 text-[10px] sm:text-[11px] text-stone-400 font-mono">
                     <span>${tr('내 핸드 카드', 'My Hand Cards', '手札カード')} (${playRpgState.playerHand.length})</span>
