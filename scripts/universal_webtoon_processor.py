@@ -597,14 +597,8 @@ def process_episode_images(ep_num: int, force: bool = False):
         if not force and os.path.exists(dst_path) and os.path.getmtime(dst_path) >= os.path.getmtime(src_path):
             continue
 
-        im = Image.open(src_path).convert("RGBA")
-        if ep_num >= 20:
-            im = apply_demon_slayer_vibrant_color_grade(im)
+        im = Image.open(src_path).convert("RGB")
         im_resized = im.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
-        if ep_num >= 20:
-            im_resized, cleaned_px = remove_kadan_forehead_scar_pil(im_resized)
-            if cleaned_px > 0:
-                print(f"[EP{ep_num:02d}] Scene {s_idx:02d}: Removed Kadan forehead scar ({cleaned_px} px restored)")
 
         metadata_comment = {
             "episode": ep_num,
@@ -614,27 +608,17 @@ def process_episode_images(ep_num: int, force: bool = False):
 
         if s_idx in dialogue_map:
             dlg = dialogue_map[s_idx]
-            mx, my = embed_hidden_bottom_ai_marker(im_resized, dlg.get("cardId", 0), s_idx)
-
             metadata_comment.update({
                 "speaker": dlg["speaker"],
                 "speakerEn": dlg.get("speakerEn", ""),
                 "cardId": dlg.get("cardId", 0),
                 "dialogue": dlg["text"],
-                "aiMarker": {
-                    "type": "hidden_bottom_stego_strip",
-                    "visibleToHuman": False,
-                    "x": mx,
-                    "y": my,
-                    "width": 4,
-                    "height": 1
-                }
             })
-            print(f"[EP{ep_num:02d}] Scene {s_idx:02d} ({dlg['speaker']}): Embedded hidden bottom AI marker at ({mx}, {my})")
+            print(f"[EP{ep_num:02d}] Scene {s_idx:02d} ({dlg['speaker']}): Pure original WebP + EXIF metadata")
         else:
-            print(f"[EP{ep_num:02d}] Scene {s_idx:02d}: Narration/Ensemble (0 markers)")
+            print(f"[EP{ep_num:02d}] Scene {s_idx:02d}: Pure original WebP")
 
-        final_rgb = im_resized.convert("RGB")
+        final_rgb = im_resized
         # Save as high-performance WebP with embedded JSON metadata in EXIF/XMP comment
         exif = final_rgb.getexif()
         # 0x9286 is UserComment / 0x010E is ImageDescription for AI metadata readers
@@ -642,7 +626,7 @@ def process_episode_images(ep_num: int, force: bool = False):
         final_rgb.save(
             dst_path,
             "WEBP",
-            quality=82,
+            quality=88,
             method=6,
             exif=exif.tobytes()
         )
