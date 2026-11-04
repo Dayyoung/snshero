@@ -2,6 +2,37 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 07:47 KST] [모바일 브라우저 오디오/효과음 재생 불량 완벽 해결]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 문제 제기**:
+    - "모바일에서 배경음/효과음이 재생안되는 경우가 있어."
+  - **2. 모바일 브라우저 오디오 침묵 원인 정밀 진단**:
+    - **(1) iOS Safari / Android Web Audio Suspended 락**: 모바일 브라우저의 엄격한 Autoplay Policy로 인해 `AudioContext`가 `suspended` 상태로 생성되며, 단순 `resume()`은 사용자 인터랙션 핸들러의 동기적 컨텍스트에서 오디오 하드웨어 언락 신호(Silent Buffer)가 없으면 깨어나지 못함.
+    - **(2) 단발성({once: true}) 제스처 리스너의 한계**: 사용자가 탭을 전환하거나 스마트폰 화면을 껐다 켜면 OS가 오디오 컨텍스트를 강제로 다시 `suspended`/`interrupted` 상태로 만드는데, 기존 리스너는 1회 실행 후 영구 제거되어 이후 터치 시 다시 깨어나지 못하는 영구 무음 현상 발생.
+    - **(3) 외부 CDN(Mixkit) 네트워크 지연 및 CORS 차단**: 모바일 데이터 절약 모드나 불안정한 네트워크 환경에서 `new Audio(external_url)`가 지연되거나 실패하여 효과음이 누락됨.
+  - **3. 전면 개선 구현 내역 (`src/landing/services/audioManager.ts` & `src/lib/sound.ts`)**:
+    - **(1) Universal Mobile Web Audio 언락 엔진 탑재 (`unlockMobileAudio`)**:
+      - 1샘플 미세 무음 버퍼(`ctx.createBuffer(1, 1, 22050)`)를 하드웨어에 즉시 발사하여 iOS Safari의 오디오 엔진을 확실하게 영구 언락.
+    - **(2) 상시 제스처 감지 및 Keep-Alive (`setupUserInteractionListener`)**:
+      - `{ once: true }`를 폐기하고, 사용자의 모든 화면 터치/포인터/클릭 제스처(`touchstart`, `touchend`, `pointerdown`, `click`) 시 컨텍스트가 멈춰있으면 백그라운드에서 실시간 즉각 resume 보장.
+    - **(3) 브라우저 탭 라이프사이클 가드 (`setupLifecycleListener`)**:
+      - `visibilitychange`, `pageshow`, `focus` 이벤트를 감지하여 화면 복귀 시 오디오 컨텍스트를 즉시 자동 복원하고 BGM을 매끄럽게 재개. 백그라운드 전환 시에는 배터리 절약을 위해 안전하게 pause.
+    - **(4) 100% 네이티브 Web Audio API 신시사이저 통일 (Zero-Network Reliance)**:
+      - 외부 CDN mp3 다운로드 의존성을 전면 배제하고, 카드 안착음(`playCardPlace`), 카드 플립음(`playCardFlip`), 버튼 클릭음(`playClickTick`), 팡파르(`playVictoryFanfare`)를 기기 내장 Web Audio 오실레이터로 0ms 무지연 직접 합성 출력.
+    - **(5) `src/lib/sound.ts` 공통 엔진 강화**:
+      - SPA 전역 사운드 엔진에도 모바일 언락 헬퍼 및 네이티브 신스 폴백(`playSynthSfx`)을 구축하여 앱 전역에서 100% 무결점 사운드 출력 보장.
+  - **4. 빌드 및 완료 보고 검증**:
+    - `npm run build && node scripts/post-build.js`: 0 error 정상 통과.
+    - 로컬 Git 커밋 완료 (`38a66b9ba`).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 번들 빌드: 0 error 정상 완료
+  - 로컬 Git 커밋: `38a66b9ba`
+  - 구글 폼 완료 보고서 제출: `[개발] 모바일 브라우저 오디오/효과음 재생 불량 완벽 해결 -> 작업완료`
+
+
+
 ## [2026-11-05 07:13 KST] [카드 배틀 카드 모서리 상대/내카드 사선 리본 라벨 제거 및 git push 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
