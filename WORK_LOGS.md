@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 14:53 KST] [#card 카드 도감 화면 보유량/110 n% 카드 보유률 표시 구현]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요청**: `#card` 화면에 현재 보유 중인 고유 카드 수량 대비 110종 수집율(`보유량/110 n% 카드 보유률`) 표시.
+  - **2. 카드 보유률 UI/UX 3단계 다층 반영 (`src/landing/views/CardSection.tsx`)**:
+    - **(1) 상단 메인 헤더 배지**: `카드 (Card Collection & Nurture)` 타이틀 옆에 `★ ${collection.ownedCount} / 110 · ${collection.percentage}% · 카드 보유률` 잉크 다크 플랫 뱃지 신규 배치.
+    - **(2) 수집 진척도 게이지 바 (Progress Bar)**: 헤더 하단에 `카드 보유률: ${collection.ownedCount} / 110 (${collection.percentage}%)` 굵은 수치 강조 및 게이지 바(`style="width: ${collection.percentage}%;"`), 우측 잔여 미보유 종수 표시.
+    - **(3) 전체 카드 목록 헤더 연동**: `전체 카드 목록 (XX / 110)` 옆에 `카드 보유률: XX/110 (XX.X%)`를 상시 노출하여 필터 전환 시에도 혼동 없이 전체 보유율 확인 가능.
+  - **3. 다국어(i18n) 12개 언어팩 완벽 지원**:
+    - 한국어(`카드 보유률`), 영어(`Card Collection Rate`), 일본어(`カード保有率`), 중국어 간체/번체(`卡牌收集率`), 독일어(`Kartensammlungsrate`), 스페인어, 프랑스어, 인도네시아어, 러시아어, 태국어, 베트남어 전 언어팩 대응.
+  - **4. 빌드 및 DOM 검증**:
+    - `npm run build && node scripts/post-build.js` 프로덕션 빌드 성공 (0 error 통과).
+    - Headless Chrome (`http://localhost:3000/#card`) DOM 덤프 검증: `★ 5 / 110 · 4.5% · 카드 보유률` 및 프로그레스 바 정상 렌더링 확인 완료.
+    - 로컬 git 커밋 완료 (`b1926691f`, 원격 push 미실행).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build && node scripts/post-build.js` 성공
+  - DOM 렌더링 확인: `#card` 화면에 `5 / 110 (4.5%) 카드 보유률` 정상 노출 확인
+  - 로컬 git 커밋 완료 (`b1926691f`)
+  - 구글 폼 완료 보고서 제출 완료: `[개발] #card 카드 도감 화면 보유량/110 n% 카드 보유률 표시 구현 -> 작업완료`
+
+
 ## [2026-11-04 14:03 KST] [GitHub Actions Pages 배포 러너 디스크 부족(No space left on device) 해결]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
