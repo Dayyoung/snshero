@@ -582,6 +582,9 @@ def find_generated_scene_images(ep_num: int):
 def process_episode_images(ep_num: int, force: bool = False):
     out_dir = f"public/images/webtoon/episode_{ep_num:02d}"
     os.makedirs(out_dir, exist_ok=True)
+    dist_out_dir = f"dist/images/webtoon/episode_{ep_num:02d}"
+    if os.path.exists("dist"):
+        os.makedirs(dist_out_dir, exist_ok=True)
 
     dialogue_map = get_manifest_dialogues(ep_num)
     scene_map = find_generated_scene_images(ep_num)
@@ -630,6 +633,9 @@ def process_episode_images(ep_num: int, force: bool = False):
             method=6,
             exif=exif.tobytes()
         )
+        if os.path.exists("dist"):
+            import shutil
+            shutil.copy2(dst_path, os.path.join(dist_out_dir, f"scene_{s_idx:02d}.webp"))
         processed += 1
 
     print(f"[EP{ep_num:02d}] Processed and updated: {processed} scenes.")
