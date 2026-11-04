@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 09:27 KST] [설정 화면(#setting) Google 공식 로그인 및 임시 도메인 전용 Google 프로필 카드 UI 제거]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 설정 화면 계정 관리 섹션의 Google 로그인 전환 카드 UI 전면 제거 (`src/landing/views/SettingSection.tsx`)**:
+    - 사용자 요청에 따라 설정 화면(`#setting`)의 인증 및 계정 관리 섹션(`3. AUTHENTICATION & ACCOUNT`) 내에 존재하던 다음 2개 카드 블록 제거:
+      1) **Google 공식 로그인 카드**: `data-action="setting-login-google"`, Google 로그인 버튼 및 설명
+      2) **⚡ 임시 도메인 전용 Google 프로필 카드**: `data-action="setting-login-simulated"`, Firebase 미승인 도메인(Tailscale 등) fallback 버튼 및 설명
+    - 계정 관리 영역은 현재 프로필 카드(아바타, 닉네임, 계정 뱃지, UID/이메일 정보) 및 계정 관리 액션 버튼(닉네임 변경, 로그아웃)만을 깔끔하고 미니멀하게 유지.
+  - **2. 빌드 및 배포 검증**:
+    - `npm run build && node scripts/post-build.js` 빌드 성공 (0 error).
+    - 로컬 git 커밋 완료 (원격 git push 미실행).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build && node scripts/post-build.js` 성공 (0 error)
+  - UI 확인: `#setting` 화면에서 Google 공식 로그인 및 임시 도메인 프로필 카드 완전 제거 완료
+  - 로컬 git 커밋 완료
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 설정 화면(#setting) Google 공식 로그인 및 임시 도메인 전용 Google 프로필 카드 UI 제거 -> 작업완료`
+
+
 ## [2026-11-04 09:25 KST] [전체 카드 금/은/동 배경 적용 및 초상화 윈도우 종족 색상 집중 적용]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
