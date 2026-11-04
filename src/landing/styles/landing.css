@@ -62,7 +62,7 @@ body {
    Ergonomic 44px+ Mobile Touch Target Standard
    ========================================================================== */
 .touch-target,
-button,
+button:not([data-action="play-tile-click"]),
 [role="button"],
 a.btn,
 .nav-link,
@@ -70,6 +70,13 @@ a.btn,
 .nav-item-btn,
 .sidebar-item-btn {
   min-height: 44px;
+  box-sizing: border-box;
+  touch-action: manipulation;
+}
+
+button[data-action="play-tile-click"] {
+  min-height: 0;
+  min-width: 0;
   box-sizing: border-box;
   touch-action: manipulation;
 }

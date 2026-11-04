@@ -794,14 +794,15 @@ function renderAdventureView(): string {
                         data-x="${tileX}"
                         data-y="${tileY}"
                         ${isBlocked ? 'disabled' : ''}
-                        class="group relative w-full h-full min-w-0 min-h-0 rounded-none overflow-hidden m-0 p-0 border-0 outline-none select-none flex items-center justify-center transition-none ${
+                        style="min-height: 0; min-width: 0; aspect-ratio: 1 / 1;"
+                        class="group relative w-full h-full min-w-0 min-h-0 aspect-square rounded-none m-0 p-0 border-0 outline-none select-none flex items-center justify-center transition-none ${
                           isBlocked
-                            ? 'cursor-not-allowed opacity-60'
+                            ? 'cursor-not-allowed opacity-60 overflow-hidden'
                             : isTarget
-                            ? 'cursor-pointer z-10'
+                            ? 'cursor-pointer z-20 overflow-visible'
                             : isHero
-                            ? 'cursor-default z-20'
-                            : 'cursor-pointer hover:brightness-105 active:brightness-110'
+                            ? 'cursor-default z-20 overflow-visible'
+                            : 'cursor-pointer hover:brightness-105 active:brightness-110 overflow-hidden'
                         }"
                         aria-label="${tr('타일', 'Tile', 'タイル')} (${tileX + 1}, ${tileY + 1})"
                       >
@@ -832,14 +833,19 @@ function renderAdventureView(): string {
                         ${
                           isTarget
                             ? `
-                              <div class="absolute inset-0 border border-amber-400 sm:border-2 pointer-events-none z-10 shadow-[inset_0_0_8px_rgba(251,191,36,0.6)] flex flex-col items-center justify-center animate-bounce">
+                              <!-- Fixed Golden Tile Highlight Frame (Anchored to Tile, Never Jump) -->
+                              <div class="absolute inset-0 border-2 border-amber-400 bg-amber-400/15 pointer-events-none z-10 shadow-[inset_0_0_10px_rgba(251,191,36,0.7)] ring-1 ring-amber-300"></div>
+
+                              <!-- Animated Bouncing Sprite & GO Badge Inside Tile Frame -->
+                              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-20 animate-bounce">
                                 <img
                                   src="${eventImg}"
                                   alt="${tr('목표 지점', 'Target Node', '目標地点')}"
-                                  class="w-[65%] h-[65%] max-w-[28px] max-h-[28px] object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
+                                  style="aspect-ratio: 1 / 1;"
+                                  class="w-[52%] aspect-square max-w-[26px] max-h-[26px] shrink-0 object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
                                   draggable="false"
                                 />
-                                <span class="absolute -bottom-0.5 px-1 py-0 bg-amber-400 text-stone-950 text-[6px] sm:text-[8px] font-black rounded-none whitespace-nowrap shadow-md border border-stone-900 leading-none">
+                                <span class="mt-0.5 px-1.5 py-0.2 bg-amber-400 text-stone-950 text-[7px] sm:text-[9px] font-black rounded-xs whitespace-nowrap shadow-md border border-stone-950 leading-none">
                                   GO!
                                 </span>
                               </div>
@@ -852,11 +858,15 @@ function renderAdventureView(): string {
                           isHero
                             ? `
                               <div class="absolute inset-0 border border-amber-300 sm:border-2 pointer-events-none z-20 shadow-[inset_0_0_8px_rgba(251,191,36,0.8)] flex items-center justify-center">
-                                <div class="w-[80%] h-[80%] max-w-[36px] max-h-[36px] rounded-full border border-amber-300 sm:border-2 bg-slate-950 p-0.5 shadow-[0_0_12px_rgba(251,191,36,0.9)] ring-1 sm:ring-2 ring-amber-400 flex items-center justify-center overflow-hidden animate-pulse pointer-events-none select-none">
+                                <div
+                                  style="aspect-ratio: 1 / 1;"
+                                  class="w-[78%] aspect-square max-w-[36px] max-h-[36px] shrink-0 rounded-full border border-amber-300 sm:border-2 bg-slate-950 p-0.5 shadow-[0_0_12px_rgba(251,191,36,0.9)] ring-1 sm:ring-2 ring-amber-400 flex items-center justify-center overflow-hidden animate-pulse pointer-events-none select-none"
+                                >
                                   <img
                                     src="/rpg/kadan-map/hero-kadan.png"
                                     alt="${tr('카단', 'Kadan', 'カダン')}"
-                                    class="w-full h-full object-cover rounded-full"
+                                    style="aspect-ratio: 1 / 1;"
+                                    class="w-full h-full aspect-square object-cover object-center rounded-full block"
                                     draggable="false"
                                     onerror="this.src='/seat/Kadan.png'; this.onerror=null;"
                                   />
@@ -876,67 +886,70 @@ function renderAdventureView(): string {
                     `;
                   }).join('')}
                 </div>
+              </div>
 
-                <!-- 2. Overlaid 4-Way Compass Buttons (동서남북 반투명 오버레이) -->
-                <!-- North (북 / 위로 이동) -->
-                <div class="absolute top-1.5 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
-                  <button
-                    type="button"
-                    data-action="play-move-up"
-                    class="w-10 h-8 sm:w-14 sm:h-11 bg-[#201d1d]/85 text-[#fdfcfc] hover:bg-[#201d1d] hover:text-amber-400 border border-white/30 text-xs sm:text-sm font-black rounded-sm backdrop-blur-xs flex items-center justify-center cursor-pointer active:translate-y-px shadow-lg transition-colors"
-                    aria-label="${tr('위로 이동', 'Move Up', '上へ移動')}"
-                    title="${tr('위로 이동 (W / ↑)', 'Move Up (W / ↑)', '上へ移動 (W / ↑)')}"
-                  >
-                    ▲
-                  </button>
-                </div>
+              <!-- 2. Independent Under-Map 4-Way Directional Controller (Zero Tile Occlusion) -->
+              <div class="mt-4 flex flex-col items-center justify-center select-none font-mono">
+                <!-- North (위로) -->
+                <button
+                  type="button"
+                  data-action="play-move-up"
+                  class="w-14 h-10 sm:w-16 sm:h-11 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] hover:text-amber-400 border border-white/20 text-sm font-black rounded-sm flex items-center justify-center cursor-pointer active:translate-y-px shadow-md transition-colors min-h-[44px]"
+                  aria-label="${tr('위로 이동', 'Move Up', '上へ移動')}"
+                  title="${tr('위로 이동 (W / ↑)', 'Move Up (W / ↑)', '上へ移動 (W / ↑)')}"
+                >
+                  ▲
+                </button>
 
-                <!-- South (남 / 아래로 이동) -->
-                <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
-                  <button
-                    type="button"
-                    data-action="play-move-down"
-                    class="w-10 h-8 sm:w-14 sm:h-11 bg-[#201d1d]/85 text-[#fdfcfc] hover:bg-[#201d1d] hover:text-amber-400 border border-white/30 text-xs sm:text-sm font-black rounded-sm backdrop-blur-xs flex items-center justify-center cursor-pointer active:translate-y-px shadow-lg transition-colors"
-                    aria-label="${tr('아래로 이동', 'Move Down', '下へ移動')}"
-                    title="${tr('아래로 이동 (S / ↓)', 'Move Down (S / ↓)', '下へ移動 (S / ↓)')}"
-                  >
-                    ▼
-                  </button>
-                </div>
-
-                <!-- West (서 / 왼쪽으로 이동) -->
-                <div class="absolute left-1.5 top-1/2 -translate-y-1/2 z-30 pointer-events-auto">
+                <!-- Middle Row: West + Movement Mode Label + East -->
+                <div class="flex items-center gap-2 my-1">
                   <button
                     type="button"
                     data-action="play-move-left"
-                    class="w-10 h-8 sm:w-14 sm:h-11 bg-[#201d1d]/85 text-[#fdfcfc] hover:bg-[#201d1d] hover:text-amber-400 border border-white/30 text-xs sm:text-sm font-black rounded-sm backdrop-blur-xs flex items-center justify-center cursor-pointer active:translate-y-px shadow-lg transition-colors"
+                    class="w-14 h-10 sm:w-16 sm:h-11 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] hover:text-amber-400 border border-white/20 text-sm font-black rounded-sm flex items-center justify-center cursor-pointer active:translate-y-px shadow-md transition-colors min-h-[44px]"
                     aria-label="${tr('왼쪽으로 이동', 'Move Left', '左へ移動')}"
                     title="${tr('왼쪽으로 이동 (A / ←)', 'Move Left (A / ←)', '左へ移動 (A / ←)')}"
                   >
                     ◀
                   </button>
-                </div>
-
-                <!-- East (동 / 오른쪽으로 이동) -->
-                <div class="absolute right-1.5 top-1/2 -translate-y-1/2 z-30 pointer-events-auto">
+                  <div class="w-20 sm:w-24 text-center">
+                    <span class="text-[10px] sm:text-xs font-bold text-stone-400 tracking-wider">
+                      ${tr('[이동]', '[MOVE]', '[移動]')}
+                    </span>
+                  </div>
                   <button
                     type="button"
                     data-action="play-move-right"
-                    class="w-10 h-8 sm:w-14 sm:h-11 bg-[#201d1d]/85 text-[#fdfcfc] hover:bg-[#201d1d] hover:text-amber-400 border border-white/30 text-xs sm:text-sm font-black rounded-sm backdrop-blur-xs flex items-center justify-center cursor-pointer active:translate-y-px shadow-lg transition-colors"
+                    class="w-14 h-10 sm:w-16 sm:h-11 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] hover:text-amber-400 border border-white/20 text-sm font-black rounded-sm flex items-center justify-center cursor-pointer active:translate-y-px shadow-md transition-colors min-h-[44px]"
                     aria-label="${tr('오른쪽으로 이동', 'Move Right', '右へ移動')}"
                     title="${tr('오른쪽으로 이동 (D / →)', 'Move Right (D / →)', '右へ移動 (D / →)')}"
                   >
                     ▶
                   </button>
                 </div>
+
+                <!-- South (아래로) -->
+                <button
+                  type="button"
+                  data-action="play-move-down"
+                  class="w-14 h-10 sm:w-16 sm:h-11 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] hover:text-amber-400 border border-white/20 text-sm font-black rounded-sm flex items-center justify-center cursor-pointer active:translate-y-px shadow-md transition-colors min-h-[44px]"
+                  aria-label="${tr('아래로 이동', 'Move Down', '下へ移動')}"
+                  title="${tr('아래로 이동 (S / ↓)', 'Move Down (S / ↓)', '下へ移動 (S / ↓)')}"
+                >
+                  ▼
+                </button>
               </div>
 
               <!-- Movement Guide Hint -->
-              <div class="mt-3 text-center">
+              <div class="mt-2 text-center">
                 <span class="text-[11px] sm:text-xs text-stone-400 font-mono">
                   ${tr(
-                    '[타일 위 동서남북 버튼, 방향키(↑↓←→), W/A/S/D 키 또는 타일 직접 터치로 이동]',
-                    '[Move via on-tile Compass buttons (N/S/W/E), Arrow keys, W/A/S/D, or tap any tile directly]',
+                    '[방향키 버튼, 키보드(↑↓←→ / W·A·S·D) 또는 타일 직접 터치로 이동]',
+                    '[Move via Direction buttons, Arrow keys / W·A·S·D, or tap any tile directly]',
+                    '[方向キー・キーボード(↑↓←→ / W·A·S·D)・タイル直接タップで移動]'
+                  )}
+                </span>
+              </div>
                     '[タイル上東西南北ボタン・矢印キー・W/A/S/D・タイル直接タップで移動]'
                   )}
                 </span>
@@ -1965,37 +1978,7 @@ function renderWebtoonView(): string {
 export function renderPlaySection(): string {
   return `
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 font-mono select-none text-[#201d1d]">
-      <!-- 1. Master Section Header & Badges -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.12)] gap-2 mb-6">
-        <div>
-          <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[11px] font-bold rounded-sm tracking-wider uppercase mb-1">
-            <span>${tr('눈히어로.com', 'SNSHero.com', 'SNSHero.com')}</span>
-            <span class="text-stone-400">·</span>
-            <span>${tr('카단의 여정 (2D 모험 RPG)', "Kadan's Journey (2D Adventure RPG)", 'カダンの旅 (2D冒険RPG)')}</span>
-          </div>
-          <h1 class="text-xl sm:text-2xl font-black text-[#201d1d] m-0 tracking-tight">
-            ${tr('카단의 모험 & 3x3 전술 카드 배틀', "Kadan's Adventure & 3x3 Tactical Card Battle", 'カダンの冒険 ＆ 3x3戦術カードバトル')}
-          </h1>
-          <p class="text-xs text-stone-500 m-0 pt-0.5">
-            ${tr(
-              '2D 타일 탐험 · 에피소드 스토리 다이얼로그 · 3x3 전술 카드 배틀 루프',
-              '2D Tile Exploration · Episode Story Dialogues · 3x3 Tactical Card Battle Loop',
-              '2Dタイル探検・エピソードストーリー対話・3x3戦術カードバトルループ'
-            )}
-          </p>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <span class="px-2.5 py-1 bg-[#f1eeee] text-[#201d1d] text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.12)]">
-            EP.${String(playRpgState.currentChapter).padStart(2, '0')} / 40
-          </span>
-          <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-sm border border-emerald-300">
-            ${tr('절찬 연재중', 'Now Serializing', '絶賛連載中')}
-          </span>
-        </div>
-      </div>
-
-      <!-- 2. Adventure RPG View (카단의 여정) -->
+      <!-- Adventure RPG View (카단의 여정) -->
       <div id="kadan-journey-stage" class="w-full">
         ${renderAdventureView()}
       </div>

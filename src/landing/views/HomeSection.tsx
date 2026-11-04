@@ -82,13 +82,22 @@ export function renderHomeSection(): string {
       <!-- Cool Card Deck Showcase (Main Header + Fan-Folded 5-Card Preview with Rotational Offsets & CP) -->
       <section id="home-deck-showcase" data-testid="cool-card-deck" class="w-full bg-[#fdfcfc] border-b border-[rgba(15,0,0,0.12)] py-10 sm:py-14 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12">
         <div class="w-full max-w-7xl mx-auto space-y-6">
-          <!-- Main Hero Title & Description Header -->
-          <div class="space-y-3 pb-4 border-b border-[rgba(15,0,0,0.12)]">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight m-0">
-              ${tr('빛과 어둠의 11개 종족 대서사시,', 'Epic Saga of 11 Factions of Light and Darkness,', '光と闇の11種族が織りなす大叙事詩、')}<br/>
-              <span class="text-[#201d1d] border-b-2 border-[#201d1d]">${tr('카단과 성진호흡의 원클릭 AI 배틀', 'One-Click AI Battles of Kadan &amp; Star Breathing', 'カダンと星辰呼吸のワンクリックAIバトル')}</span>
-            </h1>
-            <p class="text-xs sm:text-sm md:text-base text-stone-600 leading-relaxed max-w-2xl m-0">
+          <!-- Main Hero Logo & Description Header (Centered) -->
+          <div class="flex flex-col items-center text-center space-y-3 pb-4 border-b border-[rgba(15,0,0,0.12)]">
+            <a
+              href="#home"
+              data-nav="home"
+              class="inline-flex items-center justify-center cursor-pointer bg-transparent transition-opacity hover:opacity-90 min-h-[44px]"
+              aria-label="${getCurrentLanguage() === 'ko' ? '눈히어로.com 공식 로고' : 'SNSHero.com Official Logo'}"
+            >
+              <img
+                src="${t('logo_src', '/logo-ko.png')}"
+                alt="${getCurrentLanguage() === 'ko' ? '눈히어로.com SNSHero Revolution 공식 로고' : 'SNSHero.com SNSHero Revolution Official Logo'}"
+                class="h-32 sm:h-44 md:h-56 lg:h-64 w-auto max-w-full object-contain bg-transparent filter drop-shadow-none mx-auto"
+                loading="eager"
+              />
+            </a>
+            <p class="text-xs sm:text-sm md:text-base text-stone-600 leading-relaxed max-w-2xl mx-auto m-0">
               ${tr(
                 '눈히어로(SnowHero)는 110종의 고유 영웅 카드와 40부작 공식 판타지 웹소설·웹게임·웹툰·애니메이션 시네마가 유기적으로 연결된 차세대 웹 카드 게임입니다.',
                 'SNSHero is a next-gen web card game seamlessly connecting 110 unique hero cards with a 40-episode official fantasy web novel, web game, webtoon, and anime cinema.',

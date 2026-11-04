@@ -23,6 +23,7 @@ import {
   getSelectedDeckCardId,
   setInspectedDeckCardId,
   getInspectedDeckCardId,
+  setDeckOptimizeNotice,
 } from './views/MyDeckSection';
 import { renderPlaySection, handlePlayAction, stopPlayTts } from './views/PlaySection';
 import {
@@ -427,9 +428,25 @@ export function handleEventDelegation(event: Event): void {
       cardNurtureStore.setDeckCard(slotIndex, cardId);
       setEditingSlotIndex(null);
       setSelectedDeckCardId(cardId);
+      setDeckOptimizeNotice(null);
       state.selectedDeckCardId = cardId;
       renderApp();
     }
+  } else if (action === 'auto-optimize-deck') {
+    const res = cardNurtureStore.autoOptimizeDeck();
+    const firstId = res.newDeckIds[0] || 1;
+    setSelectedDeckCardId(firstId);
+    state.selectedDeckCardId = firstId;
+    if (res.changed) {
+      setDeckOptimizeNotice(
+        `⚡ 보유 영웅 중 최고 전투력 조합으로 덱이 자동 최적화되었습니다! (${res.previousTP} TP → ${res.newTP} TP)`
+      );
+    } else {
+      setDeckOptimizeNotice(
+        `✅ 현재 이미 보유 카드 중 최고 전투력 조합(${res.newTP} TP)으로 편성되어 있습니다.`
+      );
+    }
+    renderApp();
   } else if (action === 'select-card') {
     const cardId = Number(target.getAttribute('data-card-id'));
     if (cardId) {
@@ -444,6 +461,12 @@ export function handleEventDelegation(event: Event): void {
     const direction = target.getAttribute('data-direction') as 'top' | 'right' | 'bottom' | 'left';
     if (cardId && direction && cardNurtureStore.isCardOwned(cardId)) {
       cardNurtureStore.allocateStat(cardId, direction);
+      renderApp();
+    }
+  } else if (action === 'use-exp-elixir') {
+    const cardId = Number(target.getAttribute('data-card-id'));
+    if (cardId && cardNurtureStore.isCardOwned(cardId)) {
+      cardNurtureStore.useExpElixir(cardId);
       renderApp();
     }
   } else if (action === 'filter-card-element') {
@@ -921,6 +944,14 @@ export function mountLanding(): void {
       } catch {}
     } else if (action && action.startsWith('setting-')) {
       handleSettingAction(action, target);
+      renderApp();
+    } else if (action === 'filter-card-owned-select') {
+      const val = (target as HTMLSelectElement).value as 'all' | 'owned' | 'unowned';
+      setOwnedFilter(val || 'all');
+      renderApp();
+    } else if (action === 'filter-card-element-select') {
+      const val = (target as HTMLSelectElement).value || 'all';
+      setElementFilter(val);
       renderApp();
     }
   });

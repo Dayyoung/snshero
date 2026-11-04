@@ -336,32 +336,6 @@ export const ALL_SHOP_PRODUCTS: ShopCardProduct[] = [
     shortSpec: '광고 제거 영구 적용 · 보상 즉시 획득',
     actionText: '충전 & 결제하기',
   },
-  {
-    id: 'item_novel_pass',
-    category: 'ITEM',
-    name: '공식 웹소설 110화 전편 패스',
-    badge: '세계관 비전서',
-    priceText: '1,000 SNS',
-    priceCoins: 1000,
-    priceUsd: 3.5,
-    priceKrw: 5000,
-    description: '네이버/문피아 연재 중인 눈히어로 공식 110화 풀 텍스트 열람 및 히든 칭호 해금권.',
-    shortSpec: '110화 무제한 정주행 · 히든 스탯 영구 버프 지급',
-    actionText: '구매하기 (1,000 SNS)',
-  },
-  {
-    id: 'item_anime_cinema',
-    category: 'ITEM',
-    name: '공식 3D/2D 애니 극장판 티켓',
-    badge: '시네마 패스',
-    priceText: '1,200 SNS',
-    priceCoins: 1200,
-    priceUsd: 4.0,
-    priceKrw: 6000,
-    description: '카단의 여정 40부작 및 Veo 3.1 기반 공식 컷신 애니메이션 무제한 고화질 스트리밍.',
-    shortSpec: '40부작 풀에피소드 1080p 고화질 감상',
-    actionText: '구매하기 (1,200 SNS)',
-  },
 
   // ── COIN (코인 충전 패키지) ──────────────────────────────────────────────
   {
@@ -1126,24 +1100,22 @@ export function executeShopPurchase(productId: string): {
 
   // If item pack or content pass
   if (item.id === 'item_exp_pack') {
-    for (let cId = 1; cId <= 5; cId++) {
-      cardNurtureStore.addExp(cId, 1000);
-    }
+    const totalElixirs = cardNurtureStore.addExpElixirs(10);
     itemPurchaseSuccessModal = {
       itemId: item.id,
       itemName: tr('EXP 영약팩 (대용량)', 'EXP Elixir Pack (Large)', 'EXP霊薬パック (大容量)'),
       category: 'ITEM',
       icon: '🧪',
       message: tr(
-        'EXP 영약 10병이 투여되어 대표 덱 영웅들의 경험치가 각각 +1,000 EXP씩 크게 상승했습니다! 마이덱에서 성장한 영웅 스탯을 확인해보세요.',
-        '10 EXP Elixirs applied! Main deck heroes gained +1,000 EXP each. Check their upgraded stats in My Deck.',
-        'EXP霊薬10本が付与され、代表デッキ英雄の経験値がそれぞれ+1,000 EXP上昇しました！マイデッキで成長したステータスを確認してください。'
+        `EXP 영약 10병(병당 +500 EXP)이 인벤토리에 지급되었습니다! (현재 보유: ${totalElixirs}병) [마이덱] 또는 [카드] 화면에서 원하는 영웅을 클릭해 [🧪 EXP 영약 투여] 버튼을 눌러 즉시 레벨업하세요.`,
+        `10 EXP Elixirs (+500 EXP each) added to your inventory! (Owned: ${totalElixirs}) Open any hero in [My Deck] or [Cards] and click [Use EXP Elixir] to level up.`,
+        `EXP霊薬10本(1本+500 EXP)がインベントリに支給されました！(現在保有: ${totalElixirs}本) [マイデッキ]または[カード]画面で英雄を選択し、[EXP霊薬投与]ボタンでレベルアップできます。`
       ),
       remainingCoins,
     };
     return {
       success: true,
-      message: 'EXP 영약 10병이 지급되어 대표 덱 영웅들의 경험치가 크게 상승했습니다!',
+      message: `EXP 영약 10병이 지급되었습니다! (현재 보유: ${totalElixirs}병)`,
     };
   }
 
@@ -2100,9 +2072,9 @@ export const SHOP_CATEGORY_SECTIONS: ShopCategorySectionMeta[] = [
     badgeKo: 'ITEMS & PASSES',
     badgeEn: 'ITEMS & PASSES',
     badgeJa: 'アイテム＆パス',
-    descKo: '영웅 즉시 레벨업 경험치 영약, 110화 웹소설 전편 열람권 및 광고 영구 제거 혜택',
-    descEn: 'Hero instant level-up EXP elixirs, all 110 web novel chapters pass, and permanent ad removal.',
-    descJa: '英雄即時レベルアップ経験値霊薬、全110話Web小説パス、広告永久解除特典',
+    descKo: '영웅 즉시 레벨업 경험치 영약(10병 세트) 및 광고 영구 제거 혜택',
+    descEn: 'Hero instant level-up EXP elixirs (10-pack) and permanent ad removal.',
+    descJa: '英雄即時レベルアップ経験値霊薬（10本セット）および広告永久解除特典',
     icon: '🧪',
   },
   {
@@ -2302,32 +2274,15 @@ export function renderShopView(): string {
             </p>
           </div>
 
-          <!-- Currency & Recharge Bar -->
-          <div class="flex flex-wrap items-center gap-3 p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none">
+          <!-- Coin Balance Display Only -->
+          <div class="inline-flex items-center gap-3 px-4 py-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none shrink-0">
             <div class="text-right">
-              <div class="text-[10px] text-stone-500 uppercase tracking-wider">
-                ${tr('보유 골드', 'Gold Balance', '保有ゴールド')}: <span class="font-bold text-[#201d1d]">${gold.toLocaleString()} G</span>
+              <div class="text-[10px] text-stone-500 uppercase tracking-wider font-bold">
+                ${tr('보유 코인', 'Coin Balance', '保有コイン')}
               </div>
               <div class="text-base sm:text-lg font-black text-[#201d1d]">
                 ${coins.toLocaleString()} SNS
               </div>
-            </div>
-
-            <div class="flex items-center gap-1.5">
-              <button
-                type="button"
-                data-action="open-coin-charge-modal"
-                class="px-3.5 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center whitespace-nowrap cursor-pointer shadow-none"
-              >
-                + ${tr('코인 충전', 'Top Up Coins', 'コインチャージ')}
-              </button>
-              <a
-                href="#mall"
-                data-nav="mall"
-                class="px-3 py-2 bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#e8e5e5] transition-colors min-h-[44px] flex items-center justify-center whitespace-nowrap cursor-pointer no-underline"
-              >
-                📦 ${tr('굿즈몰 이동 →', 'Merch Mall →', 'グッズモールへ →')}
-              </a>
             </div>
           </div>
         </div>

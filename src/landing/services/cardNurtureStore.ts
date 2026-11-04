@@ -25,6 +25,7 @@ import { INITIAL_SKILLS } from '../../constants';
 export const STORAGE_KEY = 'hero_card_nurturing';
 export const DECK_STORAGE_KEY = 'hero_deck';
 export const REPEAT_HUNTING_KEY = 'hero_repeat_hunting';
+export const EXP_ELIXIR_STORAGE_KEY = 'hero_exp_elixirs';
 
 export interface CardNurtureStoragePayload {
   cards: Record<number, CardNurtureData>;
@@ -247,6 +248,70 @@ export class CardNurtureStore implements NurtureState {
   }
 
   /**
+   * Automatically compose the 5-card active deck with the strongest owned cards
+   * sorted by totalTP DESC -> level DESC -> rarity rank DESC -> cardId ASC.
+   */
+  autoOptimizeDeck(): {
+    previousDeckIds: number[];
+    newDeckIds: number[];
+    previousTP: number;
+    newTP: number;
+    changed: boolean;
+  } {
+    this.ensureValidDeck();
+    const previousDeckIds = [...this.activeDeckIds];
+    const previousTP = this.getDeckTP();
+
+    const rarityRank: Record<string, number> = {
+      gold: 3,
+      silver: 2,
+      bronze: 1,
+    };
+
+    const ownedCards = this.getOwnedCards();
+    const sorted = [...ownedCards].sort((a, b) => {
+      if (b.totalTP !== a.totalTP) return b.totalTP - a.totalTP;
+      if (b.level !== a.level) return b.level - a.level;
+      const rA = rarityRank[(CARD_DATABASE[a.cardId]?.rarity || 'bronze').toLowerCase()] || 1;
+      const rB = rarityRank[(CARD_DATABASE[b.cardId]?.rarity || 'bronze').toLowerCase()] || 1;
+      if (rB !== rA) return rB - rA;
+      return a.cardId - b.cardId;
+    });
+
+    const top5Ids: number[] = [];
+    for (const item of sorted) {
+      if (!top5Ids.includes(item.cardId)) {
+        top5Ids.push(item.cardId);
+      }
+      if (top5Ids.length === 5) break;
+    }
+
+    // Fallback if fewer than 5 owned cards
+    for (let id = 1; id <= 110 && top5Ids.length < 5; id++) {
+      if (!top5Ids.includes(id)) {
+        top5Ids.push(id);
+      }
+    }
+
+    const changed = previousDeckIds.some((id, idx) => id !== top5Ids[idx]);
+    this.activeDeckIds = top5Ids;
+    this.saveToStorage();
+    this.dispatchUpdateEvent(top5Ids[0]);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('snshero_deck_updated'));
+    }
+
+    const newTP = this.getDeckTP();
+    return {
+      previousDeckIds,
+      newDeckIds: [...this.activeDeckIds],
+      previousTP,
+      newTP,
+      changed,
+    };
+  }
+
+  /**
    * Nurture card: grants EXP, triggers level-up with stat points, enforces max level 100 cap
    */
   nurtureCard(cardId: number, expGain: number = 50): { expGained: number; leveledUp: boolean; newLevel: number } {
@@ -301,6 +366,82 @@ export class CardNurtureStore implements NurtureState {
    */
   addExp(cardId: number, expGain: number = 50): { expGained: number; leveledUp: boolean; newLevel: number } {
     return this.nurtureCard(cardId, expGain);
+  }
+
+  /**
+   * Get current owned EXP Elixir bottle count from LocalStorage
+   */
+  getExpElixirCount(): number {
+    if (typeof localStorage === 'undefined') return 0;
+    try {
+      const raw = localStorage.getItem(EXP_ELIXIR_STORAGE_KEY);
+      const parsed = raw ? parseInt(raw, 10) : 0;
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  /**
+   * Add EXP Elixir bottles to inventory (e.g., +10 bottles on purchasing item_exp_pack)
+   */
+  addExpElixirs(bottles: number = 10): number {
+    const current = this.getExpElixirCount();
+    const next = Math.max(0, current + bottles);
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem(EXP_ELIXIR_STORAGE_KEY, String(next));
+      } catch {}
+    }
+    this.dispatchUpdateEvent();
+    return next;
+  }
+
+  /**
+   * Consume 1 EXP Elixir bottle (+500 EXP) on a specific owned hero card
+   */
+  useExpElixir(cardId: number): {
+    success: boolean;
+    remainingElixirs: number;
+    expGained: number;
+    leveledUp: boolean;
+    newLevel: number;
+  } {
+    const current = this.getExpElixirCount();
+    if (current <= 0 || !this.isCardOwned(cardId)) {
+      return {
+        success: false,
+        remainingElixirs: current,
+        expGained: 0,
+        leveledUp: false,
+        newLevel: this.cards[cardId]?.level || 1,
+      };
+    }
+    const card = this.cards[cardId];
+    if (card && card.level >= 100) {
+      return {
+        success: false,
+        remainingElixirs: current,
+        expGained: 0,
+        leveledUp: false,
+        newLevel: 100,
+      };
+    }
+
+    const next = current - 1;
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem(EXP_ELIXIR_STORAGE_KEY, String(next));
+      } catch {}
+    }
+    const res = this.nurtureCard(cardId, 500);
+    return {
+      success: true,
+      remainingElixirs: next,
+      expGained: res.expGained,
+      leveledUp: res.leveledUp,
+      newLevel: res.newLevel,
+    };
   }
 
   /**

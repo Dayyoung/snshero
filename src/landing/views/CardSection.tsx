@@ -84,140 +84,74 @@ export function renderCardSection(): string {
 
   return `
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 font-mono text-[#201d1d] select-none">
-      <!-- Section Header -->
-      <section class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 sm:p-8 rounded-none shadow-none space-y-6 mb-8">
-        <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-[rgba(15,0,0,0.08)] gap-4">
+      <!-- Compact Section Header & Select Box Filters -->
+      <section class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-3.5 sm:p-5 rounded-none shadow-none mb-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div class="inline-flex items-center gap-2 px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm tracking-wider uppercase mb-2">
-              <span>${tr('카드 도감 및 육성', 'Card Codex &amp; Nurture', 'カード図鑑＆育成')}</span>
-              <span class="text-stone-400">·</span>
-              <span>${tr('110종 영웅 컬렉션', '110 Hero Collection', '全110種英雄コレクション')}</span>
-            </div>
-            <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#201d1d] m-0">
+            <h1 class="text-lg sm:text-2xl font-black text-[#201d1d] m-0 leading-tight">
               ${tr('카드 (Card Collection &amp; Nurture)', 'Cards (Card Collection &amp; Nurture)', 'カード (Card Collection &amp; Nurture)')}
             </h1>
-            <p class="text-xs sm:text-sm text-stone-600 mt-1 m-0">
+            <p class="text-[11px] sm:text-xs text-stone-500 mt-0.5 m-0">
               ${tr(
-                '110종의 영웅 카드를 수집하고 최대 100레벨까지 육성하세요. 레벨업 시 획득한 스탯 포인트로 4방향 파워를 강화할 수 있습니다.',
-                'Collect all 110 hero cards and nurture them up to Lv.100. Allocate stat points earned on level-up to enhance 4-way directional power.',
-                '全110種の英雄カードを収集し、最大Lv.100まで育成しましょう。レベルアップ時に獲得したポイントで4方向ステータスを強化できます。'
+                '카드를 터치하여 상세 확인 및 스탯 강화를 진행하세요.',
+                'Tap any card to inspect details and allocate stat points.',
+                'カードをタップして詳細確認およびステータス強化を行えます。'
               )}
             </p>
           </div>
 
-          <!-- Collection Rate & TP Summary Box -->
-          <div class="flex flex-wrap sm:flex-nowrap items-center gap-3">
-            <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-right min-w-[130px]">
-              <div class="text-[10px] text-stone-500 uppercase tracking-wider">${tr('카드 수집율', 'Collection Rate', 'カード収集率')}</div>
-              <div class="text-sm sm:text-base font-bold text-[#201d1d]">
-                ${tr('수집율:', 'Collected:', '収集率:')} ${collection.ownedCount} / 110 (${collection.percentage}%)
-              </div>
-            </div>
-            <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-right min-w-[100px]">
-              <div class="text-[10px] text-stone-500 uppercase tracking-wider">${tr('덱 파워 (Deck TP)', 'Deck TP', 'デッキパワー (Deck TP)')}</div>
-              <div class="text-sm sm:text-base font-bold text-[#201d1d]">${deckTP} TP</div>
-            </div>
-            <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-right min-w-[100px]">
-              <div class="text-[10px] text-stone-500 uppercase tracking-wider">${tr('총 파워 (Total TP)', 'Total TP', '総パワー (Total TP)')}</div>
-              <div class="text-sm sm:text-base font-bold text-[#201d1d]">${totalTP} TP</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Collection Progress Bar -->
-        <div class="space-y-1">
-          <div class="flex justify-between text-[11px] text-stone-500">
-            <span>${tr(`컬렉션 달성도 (${collection.ownedCount} / 110장 보유)`, `Collection Progress (${collection.ownedCount} / 110 Owned)`, `コレクション達成度 (${collection.ownedCount} / 110枚保有)`)}</span>
-            <span>${collection.percentage}%</span>
-          </div>
-          <div class="w-full bg-[#f1eeee] h-2 rounded-sm overflow-hidden">
-            <div class="bg-[#201d1d] h-full transition-all duration-300" style="width: ${collection.percentage}%"></div>
-          </div>
-        </div>
-
-        <!-- Filter Bar -->
-        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
-          <!-- Ownership Filter -->
-          <div class="flex flex-wrap items-center gap-1.5">
-            <span class="text-xs text-stone-500 mr-1">${tr('분류:', 'Filter:', '分類:')}</span>
-            <button
-              type="button"
-              data-action="filter-card-owned"
-              data-filter="all"
-              class="px-3 py-1.5 text-xs rounded-sm border min-h-[44px] flex items-center justify-center cursor-pointer ${
-                localState.ownedFilter === 'all'
-                  ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
-                  : 'bg-[#f8f7f7] text-stone-700 border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
-              }"
-            >
-              ${tr('전체', 'All', 'すべて')} (110)
-            </button>
-            <button
-              type="button"
-              data-action="filter-card-owned"
-              data-filter="owned"
-              class="px-3 py-1.5 text-xs rounded-sm border min-h-[44px] flex items-center justify-center cursor-pointer ${
-                localState.ownedFilter === 'owned'
-                  ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
-                  : 'bg-[#f8f7f7] text-stone-700 border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
-              }"
-            >
-              ${tr('보유', 'Owned', '保有')} (${collection.ownedCount})
-            </button>
-            <button
-              type="button"
-              data-action="filter-card-owned"
-              data-filter="unowned"
-              class="px-3 py-1.5 text-xs rounded-sm border min-h-[44px] flex items-center justify-center cursor-pointer ${
-                localState.ownedFilter === 'unowned'
-                  ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
-                  : 'bg-[#f8f7f7] text-stone-700 border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
-              }"
-            >
-              ${tr('미보유', 'Unowned', '未保有')} (${110 - collection.ownedCount})
-            </button>
-          </div>
-
-          <!-- Element Filter Pills -->
-          <div class="flex flex-wrap items-center gap-1">
-            <button
-              type="button"
-              data-action="filter-card-element"
-              data-element="all"
-              class="px-2 py-1 text-[11px] rounded-sm border min-h-[44px] flex items-center justify-center cursor-pointer ${
-                localState.elementFilter === 'all'
-                  ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
-                  : 'bg-[#f8f7f7] text-stone-600 border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
-              }"
-            >
-              ${tr('전체 속성', 'All Elements', '全属性')}
-            </button>
-            ${[
-              { key: 'water', name: tr('물', 'Water', '水') },
-              { key: 'fire', name: tr('불', 'Fire', '火') },
-              { key: 'wind', name: tr('바람', 'Wind', '風') },
-              { key: 'earth', name: tr('땅', 'Earth', '地') },
-              { key: 'human', name: tr('휴먼', 'Human', '人間') },
-              { key: 'undead', name: tr('언데드', 'Undead', 'アンデッド') },
-              { key: 'elf', name: tr('엘프', 'Elf', 'エルフ') },
-              { key: 'dwarf', name: tr('드워프', 'Dwarf', 'ドワーフ') },
-              { key: 'monster', name: tr('마수', 'Monster', '魔獣') },
-              { key: 'robot', name: tr('로봇', 'Robot', 'ロボット') },
-              { key: 'dragon', name: tr('드래곤', 'Dragon', 'ドラゴン') },
-            ].map((f) => `
-              <button
-                type="button"
-                data-action="filter-card-element"
-                data-element="${f.key}"
-                class="px-2 py-1 text-[11px] rounded-sm border min-h-[44px] flex items-center justify-center cursor-pointer ${
-                  localState.elementFilter === f.key
-                    ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
-                    : 'bg-[#f8f7f7] text-stone-600 border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]'
-                }"
+          <!-- Compact Select Box Filters (1 Row on Mobile & Desktop) -->
+          <div class="grid grid-cols-2 sm:flex items-center gap-2 shrink-0">
+            <!-- Ownership Filter Select -->
+            <label class="flex items-center gap-1.5 text-xs text-stone-600">
+              <span class="sr-only">${tr('분류', 'Filter', '分類')}</span>
+              <select
+                data-action="filter-card-owned-select"
+                aria-label="${tr('보유 여부 필터', 'Ownership Filter', '保有フィルター')}"
+                class="w-full sm:w-auto px-2.5 py-2 text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.18)] bg-[#f8f7f7] text-[#201d1d] min-h-[40px] cursor-pointer focus:outline-none focus:border-[#201d1d]"
               >
-                ${f.name}
-              </button>
-            `).join('')}
+                <option value="all" ${localState.ownedFilter === 'all' ? 'selected' : ''}>
+                  ${tr('분류: 전체', 'Filter: All', '分類: すべて')} (110)
+                </option>
+                <option value="owned" ${localState.ownedFilter === 'owned' ? 'selected' : ''}>
+                  ${tr('분류: 보유', 'Filter: Owned', '分類: 保有')} (${collection.ownedCount})
+                </option>
+                <option value="unowned" ${localState.ownedFilter === 'unowned' ? 'selected' : ''}>
+                  ${tr('분류: 미보유', 'Filter: Unowned', '分類: 未保有')} (${110 - collection.ownedCount})
+                </option>
+              </select>
+            </label>
+
+            <!-- Element Filter Select -->
+            <label class="flex items-center gap-1.5 text-xs text-stone-600">
+              <span class="sr-only">${tr('속성', 'Element', '属性')}</span>
+              <select
+                data-action="filter-card-element-select"
+                aria-label="${tr('속성 필터', 'Element Filter', '属性フィルター')}"
+                class="w-full sm:w-auto px-2.5 py-2 text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.18)] bg-[#f8f7f7] text-[#201d1d] min-h-[40px] cursor-pointer focus:outline-none focus:border-[#201d1d]"
+              >
+                <option value="all" ${localState.elementFilter === 'all' ? 'selected' : ''}>
+                  ${tr('속성: 전체 속성', 'Element: All', '属性: 全属性')}
+                </option>
+                ${[
+                  { key: 'water', name: tr('물', 'Water', '水') },
+                  { key: 'fire', name: tr('불', 'Fire', '火') },
+                  { key: 'wind', name: tr('바람', 'Wind', '風') },
+                  { key: 'earth', name: tr('땅', 'Earth', '地') },
+                  { key: 'human', name: tr('휴먼', 'Human', '人間') },
+                  { key: 'undead', name: tr('언데드', 'Undead', 'アンデッド') },
+                  { key: 'elf', name: tr('엘프', 'Elf', 'エルフ') },
+                  { key: 'dwarf', name: tr('드워프', 'Dwarf', 'ドワーフ') },
+                  { key: 'monster', name: tr('마수', 'Monster', '魔獣') },
+                  { key: 'robot', name: tr('로봇', 'Robot', 'ロボット') },
+                  { key: 'dragon', name: tr('드래곤', 'Dragon', 'ドラゴン') },
+                ].map((f) => `
+                  <option value="${f.key}" ${localState.elementFilter === f.key ? 'selected' : ''}>
+                    ${tr('속성:', 'Element:', '属性:')} ${f.name}
+                  </option>
+                `).join('')}
+              </select>
+            </label>
           </div>
         </div>
       </section>
@@ -337,12 +271,45 @@ export function renderCardSection(): string {
                       </div>
                     </div>
 
-                    <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-xs text-stone-600">
-                      <span class="text-emerald-700 font-bold">${tr('[EXP 획득 가이드]', '[EXP Guide]', '[EXP獲得ガイド]')}</span> ${tr(
-                        '배틀 승리 시 덱 출격 카드 5장에 자동 지급됩니다 (+50 EXP).',
-                        'Automatically awarded (+50 EXP) to all 5 active deck cards upon battle victory.',
-                        'バトル勝利時に出撃デッキの5枚へ自動支給されます (+50 EXP)。'
-                      )}
+                    <div class="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-xs text-stone-600 space-y-2.5">
+                      <div>
+                        <span class="text-emerald-700 font-bold">${tr('[EXP 획득 가이드]', '[EXP Guide]', '[EXP獲得ガイド]')}</span> ${tr(
+                          '배틀 승리 시 덱 출격 카드 5장에 자동 지급(+50 EXP)되거나, 상점에서 구매한 EXP 영약(+500 EXP)을 즉시 투여할 수 있습니다.',
+                          'Earned automatically (+50 EXP) upon battle victory, or use an EXP Elixir (+500 EXP) purchased from the Shop.',
+                          'バトル勝利時に自動支給(+50 EXP)されるほか、ショップで購入したEXP霊薬(+500 EXP)を即時投与できます。'
+                        )}
+                      </div>
+                      <div class="flex items-center justify-between gap-2 pt-1 border-t border-[rgba(15,0,0,0.08)]">
+                        <span class="text-[11px] font-bold text-[#201d1d]">
+                          🧪 ${tr('보유 EXP 영약:', 'Owned EXP Elixirs:', '保有EXP霊薬:')} <strong class="text-emerald-700">${cardNurtureStore.getExpElixirCount()}${tr('병', ' bottles', '本')}</strong>
+                        </span>
+                        ${
+                          cardNurtureStore.getExpElixirCount() > 0
+                            ? `
+                              <button
+                                type="button"
+                                data-action="use-exp-elixir"
+                                data-card-id="${selectedCard.cardId}"
+                                ${selectedCard.level >= 100 ? 'disabled' : ''}
+                                class="px-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-sm min-h-[40px] inline-flex items-center justify-center gap-1 cursor-pointer transition-colors ${
+                                  selectedCard.level >= 100 ? 'opacity-40 cursor-not-allowed' : ''
+                                }"
+                              >
+                                🧪 ${tr('EXP 영약 투여 (+500 EXP)', 'Use EXP Elixir (+500 EXP)', 'EXP霊薬投与 (+500 EXP)')}
+                              </button>
+                            `
+                            : `
+                              <a
+                                href="#shop"
+                                data-nav="shop"
+                                data-action="close-card-inspector"
+                                class="px-3 py-2 bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[40px] inline-flex items-center justify-center no-underline cursor-pointer"
+                              >
+                                🛒 ${tr('상점에서 영약 구매 →', 'Buy Elixirs in Shop →', 'ショップで霊薬購入 →')}
+                              </a>
+                            `
+                        }
+                      </div>
                     </div>
                   ` : `
                     <!-- Unowned Notice -->

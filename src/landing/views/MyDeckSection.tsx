@@ -28,13 +28,19 @@ export interface MyDeckSectionState {
   editingSlotIndex: number | null; // 0..4 when drawer is open, null when closed
   selectedCardId: number;          // card currently shown in bottom detail preview
   inspectedCardId: number | null;  // modal popup for mobile & desktop card deep inspect
+  optimizeNotice: string | null;   // feedback notice when auto-optimize is triggered
 }
 
 export const deckSectionState: MyDeckSectionState = {
   editingSlotIndex: null,
   selectedCardId: 1,
   inspectedCardId: null,
+  optimizeNotice: null,
 };
+
+export function setDeckOptimizeNotice(notice: string | null): void {
+  deckSectionState.optimizeNotice = notice;
+}
 
 export function setEditingSlotIndex(slotIndex: number | null): void {
   deckSectionState.editingSlotIndex = slotIndex;
@@ -443,6 +449,37 @@ function renderDeckCardDetailModal(cardId: number): string {
               </span>
               <span class="text-[10px] text-stone-500 font-bold">${tr('전투력:', 'Combat Power:', '戦闘力:')} ${stats.totalTP} TP</span>
             </div>
+            <div class="flex items-center justify-between gap-2 pt-2 border-t border-[rgba(15,0,0,0.08)]">
+              <span class="text-[11px] font-bold text-[#201d1d]">
+                🧪 ${tr('보유 EXP 영약:', 'Owned EXP Elixirs:', '保有EXP霊薬:')} <strong class="text-emerald-700">${cardNurtureStore.getExpElixirCount()}${tr('병', ' bottles', '本')}</strong>
+              </span>
+              ${
+                cardNurtureStore.getExpElixirCount() > 0
+                  ? `
+                    <button
+                      type="button"
+                      data-action="use-exp-elixir"
+                      data-card-id="${cardId}"
+                      ${stats.level >= 100 ? 'disabled' : ''}
+                      class="px-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-sm min-h-[40px] inline-flex items-center justify-center gap-1 cursor-pointer transition-colors ${
+                        stats.level >= 100 ? 'opacity-40 cursor-not-allowed' : ''
+                      }"
+                    >
+                      🧪 ${tr('EXP 영약 투여 (+500 EXP)', 'Use EXP Elixir (+500 EXP)', 'EXP霊薬投与 (+500 EXP)')}
+                    </button>
+                  `
+                  : `
+                    <a
+                      href="#shop"
+                      data-nav="shop"
+                      data-action="close-deck-card-modal"
+                      class="px-3 py-2 bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] text-xs font-bold rounded-sm min-h-[40px] inline-flex items-center justify-center no-underline cursor-pointer"
+                    >
+                      🛒 ${tr('상점에서 영약 구매 →', 'Buy Elixirs in Shop →', 'ショップで霊薬購入 →')}
+                    </a>
+                  `
+              }
+            </div>
           </div>
 
           <!-- 4-Way Compass Stats Breakdown Grid -->
@@ -522,8 +559,8 @@ export function renderMyDeckSection(selectedCardId?: number): string {
 
   return `
     <div class="w-full flex flex-col font-mono text-[#201d1d] select-none">
-      <!-- 1. Header & TP Metric Overview -->
-      <section class="w-full bg-[#fdfcfc] border-b border-[rgba(15,0,0,0.12)] py-8 px-4 sm:px-6 md:px-8 lg:px-12">
+      <!-- 1. Header & Active 5 Card Deck Slots (Top 3 / Bottom 2 Centered) -->
+      <section class="w-full bg-[#fdfcfc] border-b border-[rgba(15,0,0,0.12)] py-8 px-3 sm:px-6 md:px-8 lg:px-12">
         <div class="w-full max-w-7xl mx-auto space-y-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[rgba(15,0,0,0.12)]">
             <div>
@@ -541,10 +578,102 @@ export function renderMyDeckSection(selectedCardId?: number): string {
                 )}
               </p>
             </div>
+            <div class="flex flex-col sm:items-end gap-2">
+              <button
+                type="button"
+                data-action="auto-optimize-deck"
+                class="px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs sm:text-sm font-black rounded-sm min-h-[44px] inline-flex items-center justify-center gap-2 cursor-pointer transition-opacity shadow-xs"
+              >
+                <span>⚡</span>
+                <span>${tr('자동최적화 (최강 덱 편성)', 'Auto Optimize Deck', '自動最適化 (最強デッキ編成)')}</span>
+              </button>
+              <div class="text-[11px] text-stone-500 font-mono">
+                ${tr(
+                  '보유 카드 중 최고 전투력 5장 자동 배치 또는 슬롯별 [영웅 교체]',
+                  'Auto-equip top 5 owned cards by TP or click [Swap Hero] per slot',
+                  '保有カードから最高戦闘力5枚を自動配置、または各スロットで[英雄入替]'
+                )}
+              </div>
+            </div>
           </div>
 
-          <!-- 3-Tier Metric Dashboard: Deck TP, Total TP, Squad Capacity -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          ${
+            deckSectionState.optimizeNotice
+              ? `
+                <div class="px-3.5 py-2.5 bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-bold flex items-center justify-between gap-2">
+                  <span>${deckSectionState.optimizeNotice}</span>
+                </div>
+              `
+              : ''
+          }
+
+          <!-- 5 Card Slots Grid: Top Row 3 Cards (col-span-2) / Bottom Row 2 Cards Centered (col-start-2, col-start-4) on Mobile & Desktop -->
+          <div class="grid grid-cols-6 gap-2 sm:gap-4 max-w-4xl mx-auto">
+            ${activeDeckIds.map((cardId, index) => {
+              const stats = getCardEffectiveStats(cardId);
+              const isSelected = cardId === currentSelectedId;
+              const hasRedDot = stats.statPoints > 0;
+              const gridPositionClass =
+                index === 3
+                  ? 'col-span-2 col-start-2'
+                  : index === 4
+                  ? 'col-span-2 col-start-4'
+                  : 'col-span-2';
+
+              return `
+                <div
+                  data-slot-index="${index}"
+                  class="${gridPositionClass} relative border-2 ${isSelected ? 'border-[#201d1d] bg-[#f8f7f7] shadow-md' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]'} p-1.5 sm:p-3 rounded-none flex flex-col justify-between space-y-1.5 sm:space-y-2 hover:border-[#201d1d] transition-all min-w-0"
+                >
+                  <!-- Top Row: Slot Number Badge -->
+                  <div class="flex items-center justify-between w-full pb-1 border-b border-[rgba(15,0,0,0.08)]">
+                    <span class="text-[8px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 ${isSelected ? 'bg-[#201d1d] text-[#fdfcfc]' : 'bg-[#f1eeee] text-[#646262]'} rounded-sm whitespace-nowrap">
+                      SLOT 0${index + 1}
+                    </span>
+                    <span class="text-[9px] sm:text-[10px] font-bold text-stone-600 whitespace-nowrap">
+                      ${stats.totalTP} TP
+                    </span>
+                  </div>
+
+                  <!-- Authentic Original TCG Card Component (Click to inspect) -->
+                  <div
+                    role="button"
+                    tabindex="0"
+                    data-action="select-deck-card"
+                    data-card-id="${cardId}"
+                    class="w-full cursor-pointer"
+                    title="${tr('클릭하여 상세 정보 팝업 보기', 'Click to inspect card details', 'クリックして詳細情報を表示')}"
+                  >
+                    ${renderOriginalCardHtml(cardId, {
+                      action: 'select-deck-card',
+                      isSelected,
+                      isOwned: true,
+                      level: stats.level,
+                      showRedDot: hasRedDot,
+                      size: 'responsive',
+                      className: 'w-full aspect-[5/7] min-w-0',
+                    })}
+                  </div>
+
+                  <!-- Bottom Slot Action: Card Swap Button (44px+ touch target) -->
+                  <div class="w-full pt-0.5 sm:pt-1">
+                    <button
+                      type="button"
+                      data-action="open-deck-swap-drawer"
+                      data-slot-index="${index}"
+                      class="w-full py-2 sm:py-2.5 px-1.5 sm:px-3 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-[10px] sm:text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer transition-opacity whitespace-nowrap"
+                    >
+                      <span>🔄</span>
+                      <span>${tr('영웅 교체', 'Swap Hero', '英雄入替')}</span>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- 3-Tier Metric Dashboard (Moved Below Deck Cards): Deck TP, Total TP, Squad Capacity -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-[rgba(15,0,0,0.12)]">
             <!-- Metric 1: Deck TP -->
             <div class="border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-5 rounded-none flex flex-col justify-between space-y-2">
               <div class="flex items-center justify-between text-xs font-bold text-stone-500 uppercase tracking-wider">
@@ -594,85 +723,6 @@ export function renderMyDeckSection(selectedCardId?: number): string {
                 ${tr('수집율:', 'Collection:', '収集率:')} ${cardNurtureStore.ownedCardIds.length} / 110 (${((cardNurtureStore.ownedCardIds.length / 110) * 100).toFixed(1)}%)
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 2. Active 5 Card Deck Slots Grid -->
-      <section class="w-full bg-[#fdfcfc] border-b border-[rgba(15,0,0,0.12)] py-10 px-4 sm:px-6 md:px-8 lg:px-12">
-        <div class="w-full max-w-7xl mx-auto space-y-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2">
-            <div>
-              <span class="text-[11px] text-[#646262] font-bold uppercase tracking-wider">${tr('현재 출격 슬롯', 'ACTIVE SQUAD SLOTS', '現在の出撃スロット')}</span>
-              <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#201d1d] m-0">
-                ${tr('활성 5개 덱 슬롯 (ACTIVE 5 DECK SLOTS)', 'Active 5 Deck Slots (ACTIVE 5 DECK SLOTS)', '有効5デッキスロット (ACTIVE 5 DECK SLOTS)')}
-              </h2>
-            </div>
-            <div class="text-xs text-stone-500 font-mono">
-              ${tr(
-                '슬롯의 [영웅 교체]를 클릭하여 보유 영웅으로 교체 편성',
-                'Click [Swap Hero] on any slot to customize your squad',
-                'スロットの[英雄入替]をクリックして保有英雄と入替編成'
-              )}
-            </div>
-          </div>
-
-          <!-- 5 Card Slots Responsive Grid (Original TCG Card Design) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            ${activeDeckIds.map((cardId, index) => {
-              const stats = getCardEffectiveStats(cardId);
-              const isSelected = cardId === currentSelectedId;
-              const hasRedDot = stats.statPoints > 0;
-
-              return `
-                <div
-                  data-slot-index="${index}"
-                  class="relative border-2 ${isSelected ? 'border-[#201d1d] bg-[#f8f7f7] shadow-md' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]'} p-3 rounded-none flex flex-col justify-between space-y-2 hover:border-[#201d1d] transition-all"
-                >
-                  <!-- Top Row: Slot Number Badge -->
-                  <div class="flex items-center justify-between w-full pb-1 border-b border-[rgba(15,0,0,0.08)]">
-                    <span class="text-[10px] font-black px-2 py-0.5 ${isSelected ? 'bg-[#201d1d] text-[#fdfcfc]' : 'bg-[#f1eeee] text-[#646262]'} rounded-sm">
-                      SLOT 0${index + 1}
-                    </span>
-                    <span class="text-[10px] font-bold text-stone-600">
-                      ${stats.totalTP} TP
-                    </span>
-                  </div>
-
-                  <!-- Authentic Original TCG Card Component (Click to inspect) -->
-                  <div
-                    role="button"
-                    tabindex="0"
-                    data-action="select-deck-card"
-                    data-card-id="${cardId}"
-                    class="w-full cursor-pointer"
-                    title="${tr('클릭하여 상세 정보 팝업 보기', 'Click to inspect card details', 'クリックして詳細情報を表示')}"
-                  >
-                    ${renderOriginalCardHtml(cardId, {
-                      action: 'select-deck-card',
-                      isSelected,
-                      isOwned: true,
-                      level: stats.level,
-                      showRedDot: hasRedDot,
-                      className: 'w-full aspect-[5/7] min-w-[130px] sm:min-w-[150px]',
-                    })}
-                  </div>
-
-                  <!-- Bottom Slot Action: Card Swap Button (44px+ touch target) -->
-                  <div class="w-full pt-1">
-                    <button
-                      type="button"
-                      data-action="open-deck-swap-drawer"
-                      data-slot-index="${index}"
-                      class="w-full py-2.5 px-3 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs font-bold rounded-sm min-h-[44px] inline-flex items-center justify-center gap-1.5 cursor-pointer transition-opacity"
-                    >
-                      <span>🔄</span>
-                      <span>${tr('영웅 교체', 'Swap Hero', '英雄入替')}</span>
-                    </button>
-                  </div>
-                </div>
-              `;
-            }).join('')}
           </div>
         </div>
       </section>
