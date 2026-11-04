@@ -32,26 +32,26 @@ export interface OriginalCardRenderOptions {
   visualTier?: '7head' | 'bust';
 }
 
-const FACTION_SURFACES: Record<string, { bg: string; windowBg: string; accent: string; darkText: string }> = {
-  water:   { bg: '#d9effc', windowBg: '#e0f2fe', accent: '#0284c7', darkText: '#0369a1' },
-  fire:    { bg: '#fce1ce', windowBg: '#ffedd5', accent: '#dc2626', darkText: '#b91c1c' },
-  wind:    { bg: '#e1f3ef', windowBg: '#ccfbf1', accent: '#0d9488', darkText: '#0f766e' },
-  earth:   { bg: '#ebedc8', windowBg: '#f7fee7', accent: '#65a30d', darkText: '#4d7c0f' },
-  human:   { bg: '#f6edcf', windowBg: '#fef3c7', accent: '#2563eb', darkText: '#1d4ed8' },
-  undead:  { bg: '#ece0f4', windowBg: '#f3e8ff', accent: '#7c3aed', darkText: '#6d28d9' },
-  elf:     { bg: '#e0efd6', windowBg: '#dcfce7', accent: '#16a34a', darkText: '#15803d' },
-  dwarf:   { bg: '#efe2d1', windowBg: '#fef3c7', accent: '#b45309', darkText: '#92400e' },
-  monster: { bg: '#e5ead4', windowBg: '#ecfccb', accent: '#be123c', darkText: '#9f1239' },
-  robot:   { bg: '#e3e9ef', windowBg: '#e2e8f0', accent: '#0369a1', darkText: '#075985' },
-  dragon:  { bg: '#f1def0', windowBg: '#fae8ff', accent: '#991b1b', darkText: '#7f1d1d' },
+const FACTION_SURFACES: Record<string, { windowBg: string; windowBorder: string; accent: string; darkText: string }> = {
+  water:   { windowBg: 'linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%)', windowBorder: '#0284c7', accent: '#0284c7', darkText: '#0369a1' },
+  fire:    { windowBg: 'linear-gradient(180deg, #ffedd5 0%, #fed7aa 100%)', windowBorder: '#ea580c', accent: '#dc2626', darkText: '#b91c1c' },
+  wind:    { windowBg: 'linear-gradient(180deg, #ccfbf1 0%, #99f6e4 100%)', windowBorder: '#0d9488', accent: '#0d9488', darkText: '#0f766e' },
+  earth:   { windowBg: 'linear-gradient(180deg, #f7fee7 0%, #d9f99d 100%)', windowBorder: '#65a30d', accent: '#65a30d', darkText: '#4d7c0f' },
+  human:   { windowBg: 'linear-gradient(180deg, #eff6ff 0%, #bfdbfe 100%)', windowBorder: '#2563eb', accent: '#2563eb', darkText: '#1d4ed8' },
+  undead:  { windowBg: 'linear-gradient(180deg, #f3e8ff 0%, #ddd6fe 100%)', windowBorder: '#7c3aed', accent: '#7c3aed', darkText: '#6d28d9' },
+  elf:     { windowBg: 'linear-gradient(180deg, #dcfce7 0%, #bbf7d0 100%)', windowBorder: '#16a34a', accent: '#16a34a', darkText: '#15803d' },
+  dwarf:   { windowBg: 'linear-gradient(180deg, #fef3c7 0%, #fde68a 100%)', windowBorder: '#d97706', accent: '#b45309', darkText: '#92400e' },
+  monster: { windowBg: 'linear-gradient(180deg, #ffe4e6 0%, #fecdd3 100%)', windowBorder: '#e11d48', accent: '#be123c', darkText: '#9f1239' },
+  robot:   { windowBg: 'linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%)', windowBorder: '#475569', accent: '#0369a1', darkText: '#075985' },
+  dragon:  { windowBg: 'linear-gradient(180deg, #fae8ff 0%, #f5d0fe 100%)', windowBorder: '#c026d3', accent: '#991b1b', darkText: '#7f1d1d' },
 };
 
 const RARITY_THEMES: Record<string, {
+  cardBg: string;
   borderHex: string;
   borderWidth: string;
   frameShadow: string;
   selectedShadow: string;
-  windowBorderStyle: string;
   badgeBg: string;
   badgeStyle: string;
   badgeText: string;
@@ -61,12 +61,12 @@ const RARITY_THEMES: Record<string, {
   statBadgeStyle: string;
 }> = {
   bronze: {
-    // 동카드: 단순하고 담백한 매트 동테 (Simple Matte Bronze)
+    // 동(Bronze) 카드: 은은하고 묵직한 코퍼 브론즈 전체 배경
+    cardBg: 'linear-gradient(145deg, #fdf8f4 0%, #f5ece2 45%, #ebdcd0 100%)',
     borderHex: '#8c5230',
     borderWidth: '2px',
-    frameShadow: '0 1px 3px rgba(67, 20, 7, 0.16)',
+    frameShadow: '0 1px 3px rgba(67, 20, 7, 0.16), inset 0 0 0 1px rgba(254, 215, 170, 0.5)',
     selectedShadow: '0 8px 20px -4px rgba(124, 71, 36, 0.45), 0 0 0 2px #201d1d',
-    windowBorderStyle: 'border: 1px solid rgba(124, 71, 36, 0.45);',
     badgeBg: '#6b3e23',
     badgeStyle: 'background: #6b3e23; color: #ffedd5; border: 1px solid #8c5230;',
     badgeText: '#ffedd5',
@@ -76,12 +76,12 @@ const RARITY_THEMES: Record<string, {
     statBadgeStyle: 'border-color: #8c5230; background: #fdfcfc; color: #431407;',
   },
   silver: {
-    // 은카드: 무난하고 깔끔한 메탈릭 은테 (Clean Metallic Silver Bezel)
-    borderHex: '#94a3b8',
+    // 은(Silver) 카드: 세련되고 맑은 플래티넘 실버 메탈릭 전체 배경
+    cardBg: 'linear-gradient(145deg, #ffffff 0%, #f1f5f9 45%, #e2e8f0 100%)',
+    borderHex: '#64748b',
     borderWidth: '2.5px',
-    frameShadow: 'inset 0 0 0 1.5px #f1f5f9, inset 0 0 0 2.5px #64748b, 0 2px 8px rgba(71, 85, 105, 0.28)',
-    selectedShadow: 'inset 0 0 0 1.5px #f1f5f9, inset 0 0 0 2.5px #64748b, 0 10px 24px -4px rgba(71, 85, 105, 0.55), 0 0 0 2px #334155',
-    windowBorderStyle: 'border: 1.5px solid #94a3b8; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.65);',
+    frameShadow: 'inset 0 0 0 1.5px #f8fafc, inset 0 0 0 2.5px #475569, 0 2px 8px rgba(71, 85, 105, 0.28)',
+    selectedShadow: 'inset 0 0 0 1.5px #f8fafc, inset 0 0 0 2.5px #475569, 0 10px 24px -4px rgba(71, 85, 105, 0.55), 0 0 0 2px #334155',
     badgeBg: '#475569',
     badgeStyle: 'background: linear-gradient(135deg, #334155 0%, #64748b 50%, #334155 100%); color: #f8fafc; border: 1px solid #cbd5e1;',
     badgeText: '#f8fafc',
@@ -91,12 +91,12 @@ const RARITY_THEMES: Record<string, {
     statBadgeStyle: 'border-color: #64748b; background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%); color: #0f172a; box-shadow: 0 1px 4px rgba(51,65,85,0.4);',
   },
   gold: {
-    // 금카드: 화려한 다중 레이어 황금 베젤 & 광채 금테 (Ornate Royal Gold Bezel & Glow)
-    borderHex: '#eab308',
+    // 금(Gold) 카드: 눈부신 로열 샴페인 골드 & 황금 메탈릭 전체 배경
+    cardBg: 'linear-gradient(145deg, #fefce8 0%, #fef3c7 45%, #fde68a 100%)',
+    borderHex: '#d97706',
     borderWidth: '3px',
     frameShadow: 'inset 0 0 0 1.5px #fef08a, inset 0 0 0 3px #b45309, inset 0 0 12px rgba(250, 204, 21, 0.35), 0 0 12px rgba(234, 179, 8, 0.55), 0 4px 10px rgba(146, 64, 14, 0.3)',
     selectedShadow: 'inset 0 0 0 1.5px #fef08a, inset 0 0 0 3px #b45309, 0 0 20px rgba(234, 179, 8, 0.85), 0 10px 25px -4px rgba(146, 64, 14, 0.5)',
-    windowBorderStyle: 'border: 1.5px solid #d97706; box-shadow: 0 0 8px rgba(234, 179, 8, 0.45), inset 0 0 0 1px #fef08a;',
     badgeBg: '#854d0e',
     badgeStyle: 'background: linear-gradient(135deg, #78350f 0%, #d97706 50%, #92400e 100%); color: #fef08a; border: 1px solid #fde047; box-shadow: 0 0 6px rgba(234,179,8,0.5);',
     badgeText: '#fef9c3',
@@ -255,7 +255,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
         isSelected ? 'ring-2 ring-black scale-[1.02]' : ''
       } ${isOwned ? '' : 'opacity-85'} transition-all cursor-pointer overflow-hidden ${cardPadClass}"
       style="
-        background-color: ${factionTheme.bg};
+        background: ${rarityTheme.cardBg};
         border-style: solid;
         border-width: ${rarityTheme.borderWidth};
         border-color: ${rarityTheme.borderHex};
@@ -341,19 +341,23 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
         </div>
       </div>
 
-      <!-- 2. Central Illustration Window (Clear View of Hero Art) -->
+      <!-- 2. Central Illustration Window (Clear View of Hero Art with Distinct Faction Background) -->
       <div
-        class="relative z-10 w-full flex-1 my-0.5 sm:my-1 overflow-hidden rounded-xs flex items-center justify-center"
-        style="background-color: ${factionTheme.windowBg}; ${rarityTheme.windowBorderStyle}"
+        class="relative z-10 w-full flex-1 my-0.5 sm:my-1 overflow-hidden rounded-xs flex items-center justify-center shadow-inner"
+        style="
+          background: ${factionTheme.windowBg};
+          border: 1.5px solid ${factionTheme.windowBorder};
+          box-shadow: inset 0 0 10px rgba(0,0,0,0.08);
+        "
       >
         <!-- Background Geometric Magic Circle SVG -->
         <svg
           viewBox="0 0 100 100"
-          class="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-20"
+          class="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-25"
           aria-hidden="true"
         >
           <circle cx="50" cy="50" r="38" fill="none" stroke="${factionTheme.accent}" stroke-width="1.2" stroke-dasharray="3 2" />
-          <circle cx="50" cy="50" r="28" fill="none" stroke="${rarityTheme.borderHex}" stroke-width="1" />
+          <circle cx="50" cy="50" r="28" fill="none" stroke="${factionTheme.windowBorder}" stroke-width="1" />
           <polygon points="50,14 81,68 19,68" fill="none" stroke="${factionTheme.accent}" stroke-width="0.8" />
         </svg>
 
@@ -444,7 +448,7 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
       data-rarity="${rarity}"
       class="group/slot-card relative flex flex-col justify-between font-mono select-none rounded-xs w-full aspect-[5/7] p-1 sm:p-1.5 overflow-hidden transition-all ${ownerRingClass} ${animClass} ${className || ''}"
       style="
-        background-color: ${factionTheme.bg};
+        background: ${rarityTheme.cardBg};
         border-style: solid;
         border-width: ${rarityTheme.borderWidth};
         border-color: ${rarityTheme.borderHex};
@@ -523,10 +527,13 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
         </span>
       </div>
 
-      <!-- 2. Central Illustration Window -->
+      <!-- 2. Central Illustration Window (Faction Color Surface) -->
       <div
-        class="relative z-10 w-full flex-1 my-0.5 overflow-hidden border border-black/20 rounded-xs flex items-center justify-center"
-        style="background-color: ${factionTheme.windowBg};"
+        class="relative z-10 w-full flex-1 my-0.5 overflow-hidden rounded-xs flex items-center justify-center shadow-inner"
+        style="
+          background: ${factionTheme.windowBg};
+          border: 1px solid ${factionTheme.windowBorder};
+        "
       >
         <img
           src="${asset.bustPngUrl}?v=20261103v4"
