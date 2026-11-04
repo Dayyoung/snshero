@@ -345,8 +345,8 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
 
   const isPlayer = owner === 'player';
   const ownerRingClass = isPlayer
-    ? 'ring-2 ring-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.5)]'
-    : 'ring-2 ring-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.5)]';
+    ? 'ring-2 ring-blue-500 shadow-[0_0_14px_rgba(59,130,246,0.55)]'
+    : 'ring-2 ring-red-500 shadow-[0_0_14px_rgba(239,68,68,0.55)]';
 
   const animClass = isFlipped
     ? 'animate-card-flip ring-4 ring-cyan-400 shadow-[0_0_24px_rgba(34,211,238,1)]'
@@ -359,6 +359,7 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
   return `
     <div
       data-rarity="${rarity}"
+      data-owner="${owner}"
       class="group/slot-card relative flex flex-col justify-between font-mono select-none rounded-xs w-full aspect-[5/7] p-1 sm:p-1.5 overflow-hidden transition-all ${ownerRingClass} ${animClass} ${className || ''}"
       style="
         background: ${rarityTheme.cardBg};
@@ -366,9 +367,42 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
         outline: none;
         box-shadow: ${rarityTheme.frameShadow};
       "
-      aria-label="${asset.nameKo} (${isPlayer ? 'P1' : 'AI'})"
+      aria-label="${asset.nameKo} (${isPlayer ? '내 카드 P1' : '상대 카드 AI'})"
     >
       ${renderRarityFrameSvg(rarity)}
+
+      <!-- 1. Full-Width Ownership Top Ribbon Stripe (내카드: 파란띠 / 상대: 빨간띠) -->
+      <div
+        class="absolute top-0 inset-x-0 h-1 sm:h-1.5 z-30 pointer-events-none select-none ${
+          isPlayer
+            ? 'bg-blue-600 shadow-[0_1px_3px_rgba(37,99,235,0.7)]'
+            : 'bg-red-600 shadow-[0_1px_3px_rgba(220,38,38,0.7)]'
+        }"
+        aria-hidden="true"
+      ></div>
+
+      <!-- 2. Full-Width Ownership Bottom Ribbon Stripe (내카드: 파란띠 / 상대: 빨간띠) -->
+      <div
+        class="absolute bottom-0 inset-x-0 h-1 sm:h-1.5 z-30 pointer-events-none select-none ${
+          isPlayer
+            ? 'bg-blue-600 shadow-[0_-1px_3px_rgba(37,99,235,0.7)]'
+            : 'bg-red-600 shadow-[0_-1px_3px_rgba(220,38,38,0.7)]'
+        }"
+        aria-hidden="true"
+      ></div>
+
+      <!-- 3. Diagonal Corner Ownership Ribbon (좌상단 파란띠/빨간띠) -->
+      <div class="pointer-events-none absolute -top-1 -left-1 z-35 h-9 w-9 sm:h-11 sm:w-11 overflow-hidden select-none">
+        <div
+          class="absolute -left-3.5 sm:-left-4.5 top-1.5 sm:top-2 w-14 sm:w-16 -rotate-45 py-0.2 sm:py-0.5 text-center text-[6px] sm:text-[7px] font-black uppercase text-white tracking-tighter shadow-md ${
+            isPlayer
+              ? 'bg-blue-600 border-y border-sky-300'
+              : 'bg-red-600 border-y border-rose-300'
+          }"
+        >
+          ${isPlayer ? tr('내카드', 'MINE', '自') : tr('상대', 'ENEMY', '敵')}
+        </div>
+      </div>
 
       <!-- Central Flip! Flash Impact Overlay -->
       ${
@@ -422,24 +456,26 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
         ${right}
       </div>
 
-      <!-- 1. Header Bar: Owner Badge & Rarity -->
-      <div class="relative z-20 flex items-center justify-between w-full pb-0.5 border-b border-black/15 text-[8px] sm:text-[9px] leading-none gap-0.5">
-        <span class="px-1 py-0.2 rounded-xs font-black uppercase tracking-tight ${
-          isPlayer ? 'bg-sky-500 text-slate-950' : 'bg-rose-500 text-white'
-        }">
-          ${isPlayer ? 'P1' : 'AI'}
-        </span>
+      <!-- 4. Header Bar: Full Ownership Ribbon Band (내카드: 파란띠 / 상대: 빨간띠) -->
+      <div
+        class="relative z-20 flex items-center justify-between w-full px-1 py-0.5 text-[8px] sm:text-[9px] font-black leading-none rounded-none text-white shadow-xs select-none ${
+          isPlayer
+            ? 'bg-gradient-to-r from-blue-700 via-sky-600 to-blue-700 border-b border-blue-400/50'
+            : 'bg-gradient-to-r from-red-700 via-rose-600 to-red-700 border-b border-rose-400/50'
+        }"
+      >
+        <div class="flex items-center gap-1 min-w-0 truncate">
+          <span class="inline-block w-1.5 h-1.5 rounded-full ${isPlayer ? 'bg-sky-200' : 'bg-rose-200'} shrink-0"></span>
+          <span class="truncate tracking-tight uppercase">${isPlayer ? tr('내 카드 (P1)', 'MY CARD (P1)', '自カード') : tr('상대 카드 (AI)', 'ENEMY (AI)', '敵カード')}</span>
+        </div>
         <!-- Spacer for North Stat Badge -->
         <div class="w-4 shrink-0 pointer-events-none"></div>
-        <span
-          class="px-1 py-0.2 rounded-xs font-black uppercase text-[7px] sm:text-[8px] tracking-tight"
-          style="background-color: ${rarityTheme.badgeBg}; color: ${rarityTheme.badgeText};"
-        >
-          ${rarity.slice(0, 1).toUpperCase()}
+        <span class="font-bold opacity-95 text-[7px] sm:text-[8px] shrink-0">
+          ${rarity.slice(0, 1).toUpperCase()} · ⚡${totalTP}
         </span>
       </div>
 
-      <!-- 2. Central Illustration Window (Faction Color Surface) -->
+      <!-- 5. Central Illustration Window (Faction Color Surface) -->
       <div
         class="relative z-10 w-full flex-1 my-0.5 overflow-hidden rounded-xs flex items-center justify-center shadow-inner"
         style="
@@ -456,12 +492,17 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
         />
       </div>
 
-      <!-- 3. Footer Bar: Character Name -->
-      <div class="relative z-20 w-full pt-0.5 border-t border-black/15 flex items-center justify-between text-[8px] sm:text-[9px] leading-tight">
-        <span class="font-black text-[#201d1d] truncate" title="${asset.nameKo}">${asset.nameKo}</span>
+      <!-- 6. Footer Bar: Character Name with Ownership Bottom Ribbon Accent -->
+      <div class="relative z-20 w-full pt-0.5 border-t border-black/15 flex items-center justify-between text-[8px] sm:text-[9px] leading-tight select-none">
+        <div class="flex items-center gap-1 truncate min-w-0">
+          <span class="inline-block w-1.5 h-1.5 rounded-none ${isPlayer ? 'bg-blue-600' : 'bg-red-600'} shrink-0"></span>
+          <span class="font-black text-[#201d1d] truncate" title="${asset.nameKo}">${asset.nameKo}</span>
+        </div>
         <!-- Spacer for South Stat Badge -->
         <div class="w-4 shrink-0 pointer-events-none"></div>
-        <span class="font-bold text-amber-700 text-[8px]">⚡${totalTP}</span>
+        <span class="font-bold ${isPlayer ? 'text-blue-700' : 'text-red-700'} text-[8px] shrink-0">
+          ${isPlayer ? 'P1' : 'AI'}
+        </span>
       </div>
     </div>
   `;
