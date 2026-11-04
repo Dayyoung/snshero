@@ -77,14 +77,16 @@ export function getAdPlacements(viewportWidth?: number): AdSensePlacementResult 
 
 /**
  * Renders Desktop Left Side Gutter Ad Unit (<aside id="adsense-desktop-left">)
+ * Restricted to ultra-wide desktop viewports (>= 1536px 2xl) to prevent encroaching on main content.
+ * Completely hidden on game viewports ('play') to guarantee zero game/touch obstruction.
  */
-export function renderDesktopLeftGutter(): string {
-  if (isAdRemoved()) return '';
+export function renderDesktopLeftGutter(activeView?: string): string {
+  if (isAdRemoved() || activeView === 'play') return '';
 
   return `
     <aside
       id="adsense-desktop-left"
-      class="adsense-gutter adsense-desktop-left hidden lg:flex flex-col items-center justify-start py-6 px-2 w-[160px] xl:w-[200px] shrink-0 text-center select-none"
+      class="adsense-gutter adsense-desktop-left hidden 2xl:flex flex-col items-center justify-start py-6 px-2 w-[160px] shrink-0 text-center select-none"
       aria-label="Google AdSense Left Wing"
     >
       <div class="w-full border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-2 rounded-none">
@@ -94,10 +96,10 @@ export function renderDesktopLeftGutter(): string {
         </div>
         <ins
           class="adsbygoogle"
-          style="display:block; min-height:600px; width:100%; min-width:140px;"
+          style="display:block; width:160px; height:600px; max-width:160px; max-height:600px; margin:0 auto; overflow:hidden;"
           data-ad-client="${ADSENSE_CONFIG.client}"
           data-ad-slot="${ADSENSE_CONFIG.slots.desktopLeft}"
-          data-ad-format="vertical"
+          data-ad-format="rectangle"
           data-full-width-responsive="false"
         ></ins>
       </div>
@@ -107,14 +109,16 @@ export function renderDesktopLeftGutter(): string {
 
 /**
  * Renders Desktop Right Side Gutter Ad Unit (<aside id="adsense-desktop-right">)
+ * Restricted to ultra-wide desktop viewports (>= 1536px 2xl) to prevent encroaching on main content.
+ * Completely hidden on game viewports ('play') to guarantee zero game/touch obstruction.
  */
-export function renderDesktopRightGutter(): string {
-  if (isAdRemoved()) return '';
+export function renderDesktopRightGutter(activeView?: string): string {
+  if (isAdRemoved() || activeView === 'play') return '';
 
   return `
     <aside
       id="adsense-desktop-right"
-      class="adsense-gutter adsense-desktop-right hidden lg:flex flex-col items-center justify-start py-6 px-2 w-[160px] xl:w-[200px] shrink-0 text-center select-none"
+      class="adsense-gutter adsense-desktop-right hidden 2xl:flex flex-col items-center justify-start py-6 px-2 w-[160px] shrink-0 text-center select-none"
       aria-label="Google AdSense Right Wing"
     >
       <div class="w-full border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-2 rounded-none">
@@ -124,10 +128,10 @@ export function renderDesktopRightGutter(): string {
         </div>
         <ins
           class="adsbygoogle"
-          style="display:block; min-height:600px; width:100%; min-width:140px;"
+          style="display:block; width:160px; height:600px; max-width:160px; max-height:600px; margin:0 auto; overflow:hidden;"
           data-ad-client="${ADSENSE_CONFIG.client}"
           data-ad-slot="${ADSENSE_CONFIG.slots.desktopRight}"
-          data-ad-format="vertical"
+          data-ad-format="rectangle"
           data-full-width-responsive="false"
         ></ins>
       </div>
@@ -138,9 +142,10 @@ export function renderDesktopRightGutter(): string {
 /**
  * Renders Mobile/Tablet Top Banner Ad Unit (<div id="adsense-mobile-top">)
  * Compact slim banner format (50px mobile, 60px tablet) to prevent blocking screen content.
+ * Completely hidden on game viewports ('play') to preserve full screen gameplay.
  */
-export function renderMobileTopBanner(): string {
-  if (isAdRemoved()) return '';
+export function renderMobileTopBanner(activeView?: string): string {
+  if (isAdRemoved() || activeView === 'play') return '';
 
   return `
     <div
@@ -196,7 +201,18 @@ export function cleanupUncontainedAds(): void {
     ];
 
     document.querySelectorAll(uncontainedSelectors.join(',')).forEach((el) => {
-      // Protect legitimate ads inside our containers
+      // Remove any fixed/sticky overlay unconditionally across entire page
+      const htmlEl = el as HTMLElement;
+      if (htmlEl.style && (htmlEl.style.position === 'fixed' || htmlEl.style.position === 'sticky')) {
+        try {
+          htmlEl.remove();
+        } catch {
+          htmlEl.style.display = 'none';
+        }
+        return;
+      }
+
+      // Protect legitimate static ads inside designated containers
       if (el.closest('#adsense-desktop-left, #adsense-desktop-right, #adsense-mobile-top, .adsense-container')) {
         return;
       }
@@ -204,6 +220,19 @@ export function cleanupUncontainedAds(): void {
         el.remove();
       } catch {
         (el as HTMLElement).style.display = 'none';
+      }
+    });
+
+    // Neutralize any fixed/sticky positioning injected by Google inside our designated containers
+    document.querySelectorAll('#adsense-desktop-left *, #adsense-desktop-right *, #adsense-mobile-top *').forEach((child) => {
+      const htmlChild = child as HTMLElement;
+      if (htmlChild.style && (htmlChild.style.position === 'fixed' || htmlChild.style.position === 'sticky')) {
+        htmlChild.style.position = 'static';
+        htmlChild.style.top = 'auto';
+        htmlChild.style.bottom = 'auto';
+        htmlChild.style.left = 'auto';
+        htmlChild.style.right = 'auto';
+        htmlChild.style.transform = 'none';
       }
     });
 

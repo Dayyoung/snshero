@@ -168,10 +168,11 @@ export function initPlayRpgState(): void {
   if (typeof localStorage === 'undefined') return;
 
   try {
-    const savedAuto = localStorage.getItem('hero_kadan_rpg_auto_mode');
-    if (savedAuto === 'true') {
-      playRpgState.autoMode = true;
-    }
+    // Auto-mode starts strictly paused by default so it never runs automatically without user interaction
+    playRpgState.autoMode = false;
+    try {
+      localStorage.setItem('hero_kadan_rpg_auto_mode', 'false');
+    } catch {}
 
     const savedRepeat = localStorage.getItem('hero_repeat_hunting');
     playRpgState.repeatHunting = savedRepeat === 'true';

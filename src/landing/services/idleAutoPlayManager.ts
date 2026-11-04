@@ -365,8 +365,12 @@ export class IdleAutoPlayManager {
 
 export const idleAutoPlayManager = IdleAutoPlayManager.getInstance();
 
-export function initIdleAutoPlay(options?: IdleAutoPlayOptions): IdleAutoPlayManager {
-  const manager = IdleAutoPlayManager.getInstance(options);
-  manager.start();
+/**
+ * Disabled: 15-second inactivity auto-play transition has been permanently removed by user request.
+ * Functions as a safe no-op to preserve backwards compatibility with any existing imports.
+ */
+export function initIdleAutoPlay(_options?: IdleAutoPlayOptions): IdleAutoPlayManager {
+  const manager = IdleAutoPlayManager.getInstance();
+  manager.stop();
   return manager;
 }

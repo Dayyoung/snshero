@@ -113,7 +113,6 @@ import {
   initAdSenseContainmentObserver,
 } from './services/adsenseManager';
 import { cardNurtureStore } from './services/cardNurtureStore';
-import { initIdleAutoPlay } from './services/idleAutoPlayManager';
 import { playRpgState, runAutoStep, ensureGameStarted } from './services/playRpgEngine';
 
 interface LandingState {
@@ -173,8 +172,8 @@ export function renderApp(): void {
         ${renderHeader(state.activeView)}
       </div>
 
-      <!-- Mobile Top AdSense Banner (viewports < 1024px) -->
-      ${renderMobileTopBanner()}
+      <!-- Mobile Top AdSense Banner (viewports < 1024px, completely suppressed on 'play') -->
+      ${renderMobileTopBanner(state.activeView)}
 
       <!-- Side Navigation -->
       <div id="landing-sidebar-slot">
@@ -186,10 +185,10 @@ export function renderApp(): void {
         ${renderModals(state.activeModal)}
       </div>
 
-      <!-- Central Content Area with Desktop Side Gutters (viewports >= 1024px) -->
+      <!-- Central Content Area with Desktop Side Gutters (ultra-wide viewports >= 1536px 2xl, suppressed on 'play') -->
       <div class="w-full flex-1 flex flex-row justify-center relative min-h-0">
         <!-- Desktop Left Gutter -->
-        ${renderDesktopLeftGutter()}
+        ${renderDesktopLeftGutter(state.activeView)}
 
         <!-- Central Main Application Slot -->
         <main id="landing-main-slot" class="w-full max-w-7xl flex-1 flex flex-col min-w-0">
@@ -197,7 +196,7 @@ export function renderApp(): void {
         </main>
 
         <!-- Desktop Right Gutter -->
-        ${renderDesktopRightGutter()}
+        ${renderDesktopRightGutter(state.activeView)}
       </div>
 
       <!-- Terminal Footer -->
@@ -218,6 +217,9 @@ export function renderSectionContent(view: ViewKey): void {
   const mainSlot = document.getElementById('landing-main-slot');
   const headerSlot = document.getElementById('landing-header-slot');
   const sidebarSlot = document.getElementById('landing-sidebar-slot');
+  const leftGutter = document.getElementById('adsense-desktop-left');
+  const rightGutter = document.getElementById('adsense-desktop-right');
+  const mobileTop = document.getElementById('adsense-mobile-top');
 
   if (mainSlot && headerSlot) {
     headerSlot.innerHTML = renderHeader(view);
@@ -225,7 +227,18 @@ export function renderSectionContent(view: ViewKey): void {
       sidebarSlot.innerHTML = renderSidebar(state.isSidebarOpen, view);
     }
     mainSlot.innerHTML = renderActiveViewContent(view);
-    pushAdSenseTags();
+
+    // Suppress ads completely during gameplay to guarantee zero touch/viewport obstruction
+    if (view === 'play') {
+      if (leftGutter) leftGutter.style.display = 'none';
+      if (rightGutter) rightGutter.style.display = 'none';
+      if (mobileTop) mobileTop.style.display = 'none';
+    } else {
+      if (leftGutter) leftGutter.style.display = '';
+      if (rightGutter) rightGutter.style.display = '';
+      if (mobileTop) mobileTop.style.display = '';
+      pushAdSenseTags();
+    }
     window.scrollTo({ top: 0, behavior: 'instant' });
   } else {
     renderApp();
@@ -914,14 +927,7 @@ export function mountLanding(): void {
     }
   }
 
-  // 3. Initialize Global 15-Second Idle Auto-Play Transition
-  initIdleAutoPlay({
-    timeoutMs: 15000,
-    targetUrl: 'https://dayyoung-macbookpro.tail3717a4.ts.net/#play',
-    fallbackHash: '#play',
-  });
-
-  // 4. Register Event Listeners
+  // 3. Register Event Listeners (15-second idle auto-play permanently removed by user request)
   document.addEventListener('click', handleEventDelegation);
   document.addEventListener('change', (event: Event) => {
     const target = event.target as HTMLElement;

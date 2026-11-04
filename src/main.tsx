@@ -4,7 +4,6 @@ import App from './App.tsx';
 import ErrorBoundary from './components/ErrorBoundary.tsx';
 import { initWebMcpService } from './lib/webMcpService.ts';
 import { initHeroAiBridge } from './lib/heroAiBridge.ts';
-import { initIdleAutoPlay } from './landing/services/idleAutoPlayManager.ts';
 import './index.css';
 
 // Initialize WebMCP (Web Model Context Protocol) and HeroAI Bridge for AI Agent interaction
@@ -151,13 +150,6 @@ if (typeof window !== 'undefined') {
 }
 
 if (!isApiRoute) {
-  // Initialize Global 15-Second Idle Auto-Play Transition
-  initIdleAutoPlay({
-    timeoutMs: 15000,
-    targetUrl: 'https://dayyoung-macbookpro.tail3717a4.ts.net/#play',
-    fallbackHash: '#play',
-  });
-
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <ErrorBoundary>

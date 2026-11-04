@@ -2,6 +2,103 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-04 12:10 KST] [에피소드 20화(#webtoon?ep=20) EP20-S02 이미지 밀림 원인 분석·4중 재발 방지 안전장치 적용 및 50컷신 첫 프레임 픽셀 100% 검증 통합 병합 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. `EP20-S02.mp4`에 `SCENE 01` 이미지가 들어간 근본 원인 3가지 규명**:
+    - (1) `EP20-S01` 생성 중(`flow-pending-tile` 40%) 타임아웃 후 `EP20-S02` 제출 시, 직후 완료된 `EP20-S01` 타일을 `EP20-S02` 폴링 루프가 새 타일로 오인해 다운로드하는 한 칸 밀림(Off-by-One Shift) 현상 확인.
+    - (2) `resolve_and_download_video_by_thumb` 내 `imgs.find(...) || imgs[0]` 폴백으로 인해 썸네일 미일치 시 그리드 첫 번째 타일이 다운로드되는 버그 확인.
+    - (3) 다운로드 직후 첫 프레임(`t=0.0s`)과 원본 `scene_YY.webp` 간 픽셀 일치 여부를 검증하는 단계 부재 확인.
+  - **2. 재발 방지 4중 안전장치 (`scripts/generate_ep20_webtoon_flow_anime.py`) 구현 및 EP20~EP40 연속 자동화 지원**:
+    - **Safeguard #1 (`wait_until_zero_pending`)**: 다음 컷 이미지 첨부 및 제출 전 `flow-pending-tile` 개수가 `0`이 될 때까지 대기.
+    - **Safeguard #2 (`clear_composer_strict` + `LAST_CHIP_IMG_SRC`)**: 기존 `이미지 소재` 칩 완전 삭제 후 `count === 0` 확인 및 신규 첨부 칩 이미지 URL 변경 확인.
+    - **Safeguard #3 (프롬프트 태그 `[EPXX-SYY]` 대조 및 `|| imgs[0]` 폴백 제거)**: 완료 타일의 프롬프트 태그가 해당 컷 번호와 일치하는지 확인하고 잘못된 폴백 제거.
+    - **Safeguard #4 (`verify_clip_first_frame_matches_scene`)**: 다운로드 직후 `ffmpeg`으로 첫 프레임(`t=0.0s`)을 추출해 원본 `scene_YY.webp`와 픽셀 오차(`MAE < 15.0`) 및 최우선 매칭 여부를 검증.
+  - **3. 에피소드 20화 전체 50컷(`EP20-S00` ~ `EP20-S49`) 첫 프레임 전수 검증 및 재병합 완료**:
+    - 기존 47개 클립 첫 프레임 픽셀 매칭 재정렬(`MAE <= 5.6`) 및 누락 3개 클립(`EP20-S02` MAE=2.7, `EP20-S33` MAE=3.7, `EP20-S36` MAE=5.2) 재생성·검증 완료.
+    - 50/50 전수 검증된 클립을 `SNSHero_Anime_EP20_The_Wave_That_Swallowed_the_Flower_Ship_16x9.mp4` (`174.56 MB`), `/Users/dayyoung/Desktop/내문서/movie/SNSHero_Anime_EP20_The_Wave_That_Swallowed_the_Flower_Ship_16x9.mp4`, `public/videos/cinema/episode_20.mp4`에 통합 병합 완료.
+- **검증 결과**:
+  - `EP20-S00.mp4` ~ `EP20-S49.mp4` 50개 전수 첫 프레임 픽셀 일치(`MAE <= 5.6`) 확인 완료
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 에피소드 20화(#webtoon?ep=20) 전체 50컷신 첫 프레임 픽셀 100% 검증 기반 Veo 3.1 Lite 가로모드 애니메이션 생성 및 병합 완료 -> 작업완료`
+
+
+## [2026-11-04 12:00 KST] [15초 비활성 자동플레이 자동시작 제거 및 우측하단 AUTO PLAY 플로팅 회전 토글 버튼 구현]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 15초 비활성 시 자동플레이 자동 시작 로직 전면 제거 (`idleAutoPlayManager.ts`, `index.ts`, `main.tsx`)**:
+    - 사용자 요청("15초 지나면 자동플레이 되는게 거슬린다. 자동플레이 자동시작은 없애자") 완벽 반영.
+    - `src/landing/index.ts` 및 `src/main.tsx`에서 15초 비활성 감시 타이머인 `initIdleAutoPlay({ timeoutMs: 15000, ... })` 호출을 영구 제거.
+    - `idleAutoPlayManager.ts`의 `initIdleAutoPlay()`를 no-op 안전 처리하여 백그라운드에서 임의로 화면 전환이나 자동 진행이 시작되지 않도록 차단.
+    - `playRpgEngine.ts`의 초기 `playRpgState.autoMode`를 기본 `false`로 설정하여 페이지 진입 시 자동으로 움직이지 않도록 보장.
+  - **2. 우측 하단 AUTO PLAY 플로팅 회전 토글 버튼 신규 구현 (`src/landing/views/PlaySection.tsx`)**:
+    - `#play` 화면(카단의 여정 맵, 스토리 다이얼로그 모달, 3x3 배틀 필드 보드) 최상위 레이어 우측 하단(`fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[70]`)에 플로팅 버튼(`renderAutoPlayFloatingButton`) 배치.
+    - **빙빙 돌아가는 회전 애니메이션 연출**:
+      - 자동플레이 활성화(`ON`) 시: 버튼 외곽의 대시 링 및 중심 회전 룬 심볼이 `animate-spin`으로 계속 360도 빙빙 돌아가며 황금빛 앰버 글로우와 함께 생동감 있게 가동 중임을 직관적으로 표출.
+    - **원클릭 토글 정지 및 재생**:
+      - 실행 중 버튼을 누르면: `playRpgState.autoMode = false`로 즉시 토글되어 빙빙 돌던 회전이 멈추고 현재 화면(맵, 대화, 배틀)에서 자동 진행이 즉각 정지.
+      - 다시 버튼을 누르면: `playRpgState.autoMode = true`로 다시 토글되어 버튼이 빙빙 돌며 자동플레이 재생 재개.
+      - 클릭 시 햅틱 진동 피드백(`navigator.vibrate([15, 30, 15])`) 연동.
+  - **3. 빌드 및 DOM 검증**:
+    - `npm run build && node scripts/post-build.js` 빌드 성공 (0 error 통과).
+    - Headless Chrome으로 `#play` 화면 DOM 덤프 검증: `play-floating-auto-dock` 플로팅 버튼 정상 마운트 확인.
+    - 로컬 git 커밋 완료 (`f93d60bc6`, 원격 git push 미실행).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build && node scripts/post-build.js` 성공 (0 error 통과)
+  - DOM 렌더링 확인: `#play` 화면 우측 하단에 AUTO PLAY 플로팅 버튼 렌더링 확인, 15초 자동 이동 로직 0건 확인
+  - 로컬 git 커밋 완료 (`f93d60bc6`)
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 15초 비활성 자동플레이 자동시작 제거 및 우측하단 AUTO PLAY 플로팅 회전 토글 버튼 구현 -> 작업완료`
+
+
+
+## [2026-11-04 11:48 KST] [에피소드 20화(#webtoon?ep=20) 전체 50컷신 기반 Google Flow Veo 3.1 Lite 가로모드(16:9) 6초 영어 음성 애니메이션 전수 생성 및 통합 병합 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 에피소드 20화(`#webtoon?ep=20` - 꽃배를 삼킨 파도 / The Wave That Swallowed the Flower Ship) 50개 컷신 전수 동영상화**:
+    - `public/images/webtoon/episode_20/scene_00.webp` ~ `scene_49.webp` (총 50컷)를 1280×720 가로모드(16:9) 시작 프레임(`시작`)으로 첨부하여 Google Flow 프로젝트(`https://flow.google.com/project/edfe90d0-0c4e-4c65-b957-301846853a31`)에서 `Veo 3.1 - Lite` (가로 16:9, 720p, 6초, x1) 모델로 50개 클립(`EP20-S00.mp4` ~ `EP20-S49.mp4`) 전수 생성 및 다운로드 완료.
+  - **2. 별도 백그라운드 크롬 창 분리 및 AppleScript 무간섭 자동화 (`scripts/generate_ep20_webtoon_flow_anime.py`)**:
+    - 사용자의 메인 인터넷 브라우징 창과 충돌하거나 포커스/클립보드를 가로채지 않도록 별도 크롬 창으로 Flow 프로젝트를 분리하고, 탭 내부 `DataTransfer` + `ClipboardEvent('paste')` 및 AppleScript 기반으로 50개 컷신을 순차 생성.
+  - **3. 영문판 기준 3대 영어 보이스 디렉션 (6초 이내 텍스트 요약) 완벽 반영**:
+    - **대사 없는 컷신 (40개 컷)**: 화면 내 모든 인물은 입을 다물고 침묵하며, 배경에서 나긋하고 부드러운 남자 내레이터 목소리(`gentle, soft-spoken male narrator voice`)가 6초 이내 영문 내레이션을 낭독.
+    - **남성 캐릭터 대사 컷신 (7개 컷 - Zephyr, Rondol, Kadan, Ignis)**: 젊은 남자 목소리(`young male voice`)로 6초 이내 영문 대사 발화 (`EP20-S05`, `EP20-S20`, `EP20-S23`, `EP20-S29`, `EP20-S36`, `EP20-S44`, `EP20-S46`).
+    - **여성 캐릭터 대사 컷신 (3개 컷 - Celia)**: 젊은 여자 목소리(`young female voice`)로 6초 이내 영문 대사 발화 (`EP20-S10`, `EP20-S16`, `EP20-S17`).
+  - **4. 50개 클립 다운로드 및 단일 풀 에피소드 애니메이션 병합 완료**:
+    - 개별 클립 경로: `public/anime-character-sheets/videos/ep20_landscape/clips/EP20-S00.mp4` ~ `EP20-S49.mp4` (50/50개 완비).
+    - 통합 애니메이션(16:9, 1280×720, H.264 + AAC, 총 298.54초 / 약 5분, 174.99MB):
+      - `public/anime-character-sheets/videos/ep20_landscape/SNSHero_Anime_EP20_The_Wave_That_Swallowed_the_Flower_Ship_16x9.mp4`
+      - `/Users/dayyoung/Desktop/내문서/movie/SNSHero_Anime_EP20_The_Wave_That_Swallowed_the_Flower_Ship_16x9.mp4`
+      - `public/videos/cinema/episode_20.mp4`
+- **검증 결과**:
+  - `ffprobe` 검증: 1280×720 (`h264` 비디오 + `aac` 오디오), 총 재생시간 `298.54초`(50컷 × 6초), 파일 크기 `183,491,282 bytes` (174.99 MB) 정상 확인.
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 에피소드 20화(#webtoon?ep=20) 전체 50컷신 기반 Google Flow Veo 3.1 Lite 가로모드(16:9) 6초 영어 음성 애니메이션 전수 생성 및 통합 병합 완료 -> 작업완료`
+
+## [2026-11-04 10:26 KST] [광고 화면 가림 및 스크롤 슬라이딩 다운 원천 차단 (정해진 위치 100% 고정, #play 완전 배제)]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 카드플레이(#play) 게임 화면 내 광고 100% 완전 배제 (`src/landing/services/adsenseManager.ts`, `src/landing/index.ts`)**:
+    - 사용자 피드백("아직도 광고가 정해진 위치에 표시 안되고 화면을 가리면서 내려오고있어") 접수 및 원인 정밀 분석.
+    - `renderDesktopLeftGutter`, `renderDesktopRightGutter`, `renderMobileTopBanner`에 `activeView === 'play'` 차단 조건을 적용하여, 게임 플레이 화면에서는 데스크톱 사이드 거터와 모바일 상단 배너를 아예 DOM에서 렌더링하지 않도록 원천 배제.
+    - `renderSectionContent`의 뷰 전환 로직에서도 `view === 'play'` 진입 시 모든 광고 컨테이너를 즉각 `display: none` 처리하여 3x3 배틀 및 타일맵 조작부 침범 0% 달성.
+  - **2. 데스크톱 양 날개 거터 광고 뷰포트 상향 및 노트북 화면 보호 (`src/landing/styles/landing.css`)**:
+    - 일반 랩탑(맥북 프로 등 1024px~1500px 수준)에서 좌우 거터가 본문 양옆을 쥐어짜거나 겹치던 문제를 해결하기 위해, 거터 노출 브레이크포인트를 `2xl` (1536px 이상)로 전격 상향.
+    - `@media (max-width: 1535px)`에서 좌우 거터를 `display: none !important;`로 완전 숨겨 노트북 및 태블릿 환경에서 본문 콘텐츠(카드, 덱, 맵) 가림 0% 보장.
+    - 1536px+ 초대형 모니터에서만 본문(1280px) 양옆의 광활한 여백에 정적으로 안전하게 안착.
+  - **3. 구글 스크립트의 fixed/sticky 슬라이딩 다운 및 오버레이 원천 무력화**:
+    - `#adsense-desktop-left`, `#adsense-desktop-right`, `#adsense-mobile-top` 및 내부 모든 자식 요소에 `position: static !important;`, `transform: none !important;`, `top: auto !important;`를 강제 적용하여 구글 애드센스가 스크롤 시 화면을 가리며 따라 내려오게 만들던 인라인 fixed/sticky 동작을 물리적으로 차단.
+    - `cleanupUncontainedAds()`의 MutationObserver 감시 범위를 강화하여 페이지 전체의 fixed/sticky 오버레이 및 앵커 배너(`google_ads_top_frame` 등)를 실시간 감지하여 즉시 소멸.
+  - **4. 빌드 및 배포 검증**:
+    - `npm run build && node scripts/post-build.js` 빌드 성공 (0 error 통과).
+    - Headless Chrome으로 `#play` 화면 DOM 덤프 검증: 구글 광고 요소 0건(클린 뷰) 확인.
+    - 로컬 git 커밋 완료 (원격 git push 미실행).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료.
+- **검증 결과**:
+  - 프로덕션 빌드: `npm run build && node scripts/post-build.js` 성공 (0 error 통과)
+  - DOM 렌더링 검증: `#play` 화면 내 광고 요소 0건 완전 제거, 1536px 미만 뷰포트에서 거터 가림 0건 확인
+  - 로컬 git 커밋 완료 (`224d66d69`)
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 광고 화면 가림 및 스크롤 슬라이딩 다운 원천 차단 (정해진 위치 100% 고정, #play 완전 배제) -> 작업완료`
+
+
+
 ## [2026-11-04 10:18 KST] [/git-push 사용자 요청에 따른 원격 저장소(origin main) 반영 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

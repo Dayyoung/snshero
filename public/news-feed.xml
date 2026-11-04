@@ -9,7 +9,7 @@
     <link>https://snshero.com/reddit</link>
     <description>실시간 구글 뉴스(Google News US Edition) 기반 신속하고 정확한 글로벌 뉴스 및 인공지능 요약 브리핑 - SNSHero News</description>
     <language>en-US</language>
-    <lastBuildDate>Wed, 04 Nov 2026 00:45:19 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 04 Nov 2026 03:50:14 GMT</lastBuildDate>
     <atom:link href="https://snshero.com/news-feed.xml" rel="self" type="application/rss+xml" />
     <image>
       <url>https://snshero.com/logo.jpg</url>
@@ -17,9 +17,609 @@
       <link>https://snshero.com/reddit</link>
     </image>
     <item>
+      <title><![CDATA[Leonardo Integrates Shield AI Hivemind to Power Autonomous Helicopter Missions]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793762640000_0</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793762640000_0</guid>
+      <pubDate>Wed, 04 Nov 2026 03:24:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Defense contractor Leonardo announced a partnership integrating Shield AI's Hivemind autonomy software development kit into its Proteus rotary-wing unmanned aircraft, enabling autonomous anti-submarine warfare, surveillance, and tactical logistics across contested maritime domains.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/11/leonardo-proteus-hivemind.jpg" alt="Leonardo Integrates Shield AI Hivemind to Power Autonomous Helicopter Missions" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Defense contractor Leonardo announced a partnership integrating Shield AI's Hivemind autonomy software development kit into its Proteus rotary-wing unmanned aircraft, enabling autonomous anti-submarine warfare, surveillance, and tactical logistics across contested maritime domains.</p>
+          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/11/03/leonardo-shield-ai-proteus-hivemind/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/11/leonardo-proteus-hivemind.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/11/leonardo-proteus-hivemind.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Leonardo Integrates Shield AI Hivemind to Power Autonomous Helicopter Missions]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Federal Policy Framework Defines Transition Toward Super Intelligence Terminology Across Agencies]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793762580000_1</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793762580000_1</guid>
+      <pubDate>Wed, 04 Nov 2026 03:23:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_nextgov]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Nextgov/FCW details executive policy directives establishing 'Super Intelligence' as the official federal designation for advanced frontier AI models, structuring agency oversight under the White House AI Accord and NIST technical safety standards.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://cdn.nextgov.com/media/img/cd/2026/09/super-intelligence-white-house.jpg" alt="Federal Policy Framework Defines Transition Toward Super Intelligence Terminology Across Agencies" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Nextgov/FCW details executive policy directives establishing 'Super Intelligence' as the official federal designation for advanced frontier AI models, structuring agency oversight under the White House AI Accord and NIST technical safety standards.</p>
+          <p><small>출처 및 원문: <a href="https://www.nextgov.com/artificial-intelligence/2026/09/super-intelligence-presidents-new-term-ai-explained/416164/">nextgov.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://cdn.nextgov.com/media/img/cd/2026/09/super-intelligence-white-house.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://cdn.nextgov.com/media/img/cd/2026/09/super-intelligence-white-house.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Federal Policy Framework Defines Transition Toward Super Intelligence Terminology Across Agencies]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Defense Autonomous Warfare Group Emphasizes Communicative Data Architecture for Autonomy Command]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793762520000_2</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793762520000_2</guid>
+      <pubDate>Wed, 04 Nov 2026 03:22:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defenseone]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Defense strategists highlight that the Pentagon's emerging Autonomous Warfare Command must prioritize resilient forward-edge data architectures over specific hardware, enabling frontline warfighters to instantly integrate disparate robotic platforms in GPS-denied environments.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.defenseone.com/assets/dawg-autonomy-command.jpg" alt="Defense Autonomous Warfare Group Emphasizes Communicative Data Architecture for Autonomy Command" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Defense strategists highlight that the Pentagon's emerging Autonomous Warfare Command must prioritize resilient forward-edge data architectures over specific hardware, enabling frontline warfighters to instantly integrate disparate robotic platforms in GPS-denied environments.</p>
+          <p><small>출처 및 원문: <a href="https://www.defenseone.com/policy/2026/10/pentagon-autonomy-command-patriot-maven/416444/">defenseone.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.defenseone.com/assets/dawg-autonomy-command.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.defenseone.com/assets/dawg-autonomy-command.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Defense Autonomous Warfare Group Emphasizes Communicative Data Architecture for Autonomy Command]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Defense Contractors Prepare Autonomous Cargo Drone Demonstrations for U.S. Marine Corps]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793762460000_3</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793762460000_3</guid>
+      <pubDate>Wed, 04 Nov 2026 03:21:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Military technology vendors are preparing field demonstrations of medium-lift autonomous cargo unmanned aerial systems for the Marine Corps, aiming to automate tactical logistics resupply across contested expeditionary combat outposts.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.defensenews.com/assets/usmc-cargo-drone-demo.jpg" alt="Defense Contractors Prepare Autonomous Cargo Drone Demonstrations for U.S. Marine Corps" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Military technology vendors are preparing field demonstrations of medium-lift autonomous cargo unmanned aerial systems for the Marine Corps, aiming to automate tactical logistics resupply across contested expeditionary combat outposts.</p>
+          <p><small>출처 및 원문: <a href="https://www.defensenews.com/industry/techwatch/2026/11/03/defense-contractors-to-demo-cargo-drones-for-us-marine-corps/">defensenews.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.defensenews.com/assets/usmc-cargo-drone-demo.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.defensenews.com/assets/usmc-cargo-drone-demo.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Defense Contractors Prepare Autonomous Cargo Drone Demonstrations for U.S. Marine Corps]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Shield AI Deploys Hivemind Autonomy Pilot in Low Earth Orbit for First Space Mission]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793762400000_4</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793762400000_4</guid>
+      <pubDate>Wed, 04 Nov 2026 03:20:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Defense technology startup Shield AI successfully operated its Hivemind autonomous pilot software in low Earth orbit, demonstrating software-defined satellite maneuvering and autonomous domain awareness without ground station telemetry links.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/08/shield-ai-hivemind-orbit.jpg" alt="Shield AI Deploys Hivemind Autonomy Pilot in Low Earth Orbit for First Space Mission" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Defense technology startup Shield AI successfully operated its Hivemind autonomous pilot software in low Earth orbit, demonstrating software-defined satellite maneuvering and autonomous domain awareness without ground station telemetry links.</p>
+          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/08/26/shield-ai-hivemind-space-autonomy/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/08/shield-ai-hivemind-orbit.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/08/shield-ai-hivemind-orbit.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Shield AI Deploys Hivemind Autonomy Pilot in Low Earth Orbit for First Space Mission]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[AuxoAI Raises $20M Led by NTT VC to Scale Enterprise AI Transformation Consulting and Native Delivery]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793762340000_5</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793762340000_5</guid>
+      <pubDate>Wed, 04 Nov 2026 03:19:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Enterprise transformation firm AuxoAI secured over $20 million in venture funding backed by NTT Venture Capital and ServiceNow leadership to deploy specialized consulting talent and proprietary AI-native infrastructure across major enterprise cloud ecosystems.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/10/auxoai-funding-enterprise-ax.jpg" alt="AuxoAI Raises $20M Led by NTT VC to Scale Enterprise AI Transformation Consulting and Native Delivery" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Enterprise transformation firm AuxoAI secured over $20 million in venture funding backed by NTT Venture Capital and ServiceNow leadership to deploy specialized consulting talent and proprietary AI-native infrastructure across major enterprise cloud ecosystems.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/10/20/auxoai-raises-over-20m-to-bring-ai-expertise-to-the-enterprise-and-redesign-how-work-gets-done/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/10/auxoai-funding-enterprise-ax.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/10/auxoai-funding-enterprise-ax.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[AuxoAI Raises $20M Led by NTT VC to Scale Enterprise AI Transformation Consulting and Native Delivery]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Cross-Department Agentic AI Orchestration Emerges as Crucial Differentiator in Enterprise Deployments]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793762280000_6</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793762280000_6</guid>
+      <pubDate>Wed, 04 Nov 2026 03:18:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Analysis from Qlik Connect 2026 underscores that enterprise agentic AI success hinges on cross-functional process orchestration aligned with measurable business KPIs rather than standalone technology investments, preventing isolated agent bottlenecks.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/04/qlik-connect-orchestration.jpg" alt="Cross-Department Agentic AI Orchestration Emerges as Crucial Differentiator in Enterprise Deployments" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Analysis from Qlik Connect 2026 underscores that enterprise agentic AI success hinges on cross-functional process orchestration aligned with measurable business KPIs rather than standalone technology investments, preventing isolated agent bottlenecks.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/04/16/agentic-ai-orchestration-separates-winners-laggards-qlikconnect/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/04/qlik-connect-orchestration.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/04/qlik-connect-orchestration.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Cross-Department Agentic AI Orchestration Emerges as Crucial Differentiator in Enterprise Deployments]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[IBM Generates Multi-Billion Dollar Productivity Savings by Re-architecting Systems Around Intelligent Workflows]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793762220000_7</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793762220000_7</guid>
+      <pubDate>Wed, 04 Nov 2026 03:17:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[IBM demonstrated significant enterprise value creation by dismantling siloed shared-services departments and deploying end-to-end intelligent AI workflows, achieving a 75% improvement in cycle time velocity and targeting $5.5 billion in annual productivity gains.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/09/ibm-intelligent-workflows-ax.jpg" alt="IBM Generates Multi-Billion Dollar Productivity Savings by Re-architecting Systems Around Intelligent Workflows" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>IBM demonstrated significant enterprise value creation by dismantling siloed shared-services departments and deploying end-to-end intelligent AI workflows, achieving a 75% improvement in cycle time velocity and targeting $5.5 billion in annual productivity gains.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/09/23/workforce-economics-ai-csuite-ibm-ibmtransformationedgeseries/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/09/ibm-intelligent-workflows-ax.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/09/ibm-intelligent-workflows-ax.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[IBM Generates Multi-Billion Dollar Productivity Savings by Re-architecting Systems Around Intelligent Workflows]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Managed Service Providers Shift Toward Predictive AI Agents to Accelerate Enterprise Incident Resolution]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793762160000_8</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793762160000_8</guid>
+      <pubDate>Wed, 04 Nov 2026 03:16:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Managed service leaders at Elevate 2026 revealed how deploying autonomous AI agents like Edwin AI reduced complex troubleshooting from 50 hours to three minutes, shifting IT service economics from reactive ticket remediation to proactive prevention.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/10/elevate-ai-observability-msp.jpg" alt="Managed Service Providers Shift Toward Predictive AI Agents to Accelerate Enterprise Incident Resolution" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Managed service leaders at Elevate 2026 revealed how deploying autonomous AI agents like Edwin AI reduced complex troubleshooting from 50 hours to three minutes, shifting IT service economics from reactive ticket remediation to proactive prevention.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/10/15/ai-driven-observability-logicmonitor-elevate-2026-logicmonitorelevate/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/10/elevate-ai-observability-msp.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/10/elevate-ai-observability-msp.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Managed Service Providers Shift Toward Predictive AI Agents to Accelerate Enterprise Incident Resolution]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Boardroom Mandates Accelerate Enterprise Transition from Experimental AI Pilots to Production Scale]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793762100000_9</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793762100000_9</guid>
+      <pubDate>Wed, 04 Nov 2026 03:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Cloud technology strategists at Google Cloud Next emphasized that enterprise leaders face an urgent 12-month window to implement agentic governance and production-scale change management before industry competitors leapfrog legacy architectures.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/04/google-cloud-next-boardroom-ai.jpg" alt="Boardroom Mandates Accelerate Enterprise Transition from Experimental AI Pilots to Production Scale" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Cloud technology strategists at Google Cloud Next emphasized that enterprise leaders face an urgent 12-month window to implement agentic governance and production-scale change management before industry competitors leapfrog legacy architectures.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/04/28/enterprise-ai-transformation-now-boardroom-mandate-googlecloudnext/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/04/google-cloud-next-boardroom-ai.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/04/google-cloud-next-boardroom-ai.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Boardroom Mandates Accelerate Enterprise Transition from Experimental AI Pilots to Production Scale]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Pentagon Accelerates Operational Shift Toward Heavy Autonomous Ground Combat Robots]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793757780000_10</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793757780000_10</guid>
+      <pubDate>Wed, 04 Nov 2026 02:03:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defenseone]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The Department of Defense expanded procurement of autonomous unmanned ground combat vehicles, funding $92 million in USMC ROGUE Fires systems and deploying Overland AI's IBEX robotic platforms to operate across contested electronic warfare environments without continuous network links.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.defenseone.com/assets/pentagon-ground-combat-robotics.jpg" alt="Pentagon Accelerates Operational Shift Toward Heavy Autonomous Ground Combat Robots" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The Department of Defense expanded procurement of autonomous unmanned ground combat vehicles, funding $92 million in USMC ROGUE Fires systems and deploying Overland AI's IBEX robotic platforms to operate across contested electronic warfare environments without continuous network links.</p>
+          <p><small>출처 및 원문: <a href="https://www.defenseone.com/defense-systems/2026/11/pentagon-ukraine-ground-robots/417011/">defenseone.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.defenseone.com/assets/pentagon-ground-combat-robotics.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.defenseone.com/assets/pentagon-ground-combat-robotics.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Pentagon Accelerates Operational Shift Toward Heavy Autonomous Ground Combat Robots]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Pentagon Leadership Outlines Strategic Framework for Dedicated Autonomous Warfare Command]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793757720000_11</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793757720000_11</guid>
+      <pubDate>Wed, 04 Nov 2026 02:02:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defenseone]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Defense Department planners developed proposals for a specialized four-star Autonomous Warfare Command designed to streamline military acquisition pipelines and centralize operational fielding of AI-directed drone swarms and uncrewed tactical formations.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.defenseone.com/assets/autonomous-warfare-command-pentagon.jpg" alt="Pentagon Leadership Outlines Strategic Framework for Dedicated Autonomous Warfare Command" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Defense Department planners developed proposals for a specialized four-star Autonomous Warfare Command designed to streamline military acquisition pipelines and centralize operational fielding of AI-directed drone swarms and uncrewed tactical formations.</p>
+          <p><small>출처 및 원문: <a href="https://www.defenseone.com/policy/2026/09/hegseth-plans-autonomous-warfare-command/416358/">defenseone.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.defenseone.com/assets/autonomous-warfare-command-pentagon.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.defenseone.com/assets/autonomous-warfare-command-pentagon.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Pentagon Leadership Outlines Strategic Framework for Dedicated Autonomous Warfare Command]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Thales Subsidiary Wins U.S. Navy Contract for Autonomous Remote Mine Hunting Modules]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793757660000_12</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793757660000_12</guid>
+      <pubDate>Wed, 04 Nov 2026 02:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The U.S. Navy awarded a modernization contract to a Thales defense subsidiary to deliver unmanned, remote mine-countermeasures mission payloads capable of autonomous acoustic and optical detection in contested littoral zones.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://breakingdefense.com/wp-content/uploads/2026/11/thales-mine-hunting-drone.jpg" alt="Thales Subsidiary Wins U.S. Navy Contract for Autonomous Remote Mine Hunting Modules" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The U.S. Navy awarded a modernization contract to a Thales defense subsidiary to deliver unmanned, remote mine-countermeasures mission payloads capable of autonomous acoustic and optical detection in contested littoral zones.</p>
+          <p><small>출처 및 원문: <a href="https://breakingdefense.com/2026/11/thales-subsidiary-lands-us-navy-contract-for-remote-mine-hunting-modules/">breakingdefense.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://breakingdefense.com/wp-content/uploads/2026/11/thales-mine-hunting-drone.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://breakingdefense.com/wp-content/uploads/2026/11/thales-mine-hunting-drone.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Thales Subsidiary Wins U.S. Navy Contract for Autonomous Remote Mine Hunting Modules]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[EY Defines AI-Native Transformation as Reimagining Core Business Roles Over Tool Adoption]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793757600000_13</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793757600000_13</guid>
+      <pubDate>Wed, 04 Nov 2026 02:00:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Technology leadership at Ernst & Young outlined an AI-native operational blueprint emphasizing that true enterprise transformation requires restructuring entire workflows into Value Blueprints rather than merely automating isolated task checklists.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/01/ey-ai-native-ces.jpg" alt="EY Defines AI-Native Transformation as Reimagining Core Business Roles Over Tool Adoption" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Technology leadership at Ernst & Young outlined an AI-native operational blueprint emphasizing that true enterprise transformation requires restructuring entire workflows into Value Blueprints rather than merely automating isolated task checklists.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/01/21/ey-ai-native-rethinking-work-not-tools-ces2026/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/01/ey-ai-native-ces.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/01/ey-ai-native-ces.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[EY Defines AI-Native Transformation as Reimagining Core Business Roles Over Tool Adoption]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Atlas Deploys Multi-Agent AI System to Automate 3D Asset Generation Workflows for AAA Studios]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793757540000_14</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793757540000_14</guid>
+      <pubDate>Wed, 04 Nov 2026 01:59:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Creative software platform Atlas exited beta with a non-destructive multi-agent AI system adopted by major gaming studios like Square Enix to automate complex 3D asset pipelines while preserving precise human oversight across standard game engines.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/03/atlas-multi-agent-gaming.jpg" alt="Atlas Deploys Multi-Agent AI System to Automate 3D Asset Generation Workflows for AAA Studios" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Creative software platform Atlas exited beta with a non-destructive multi-agent AI system adopted by major gaming studios like Square Enix to automate complex 3D asset pipelines while preserving precise human oversight across standard game engines.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/03/09/atlas-rolls-multi-agent-ai-system-automate-game-asset-production/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/03/atlas-multi-agent-gaming.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/03/atlas-multi-agent-gaming.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Atlas Deploys Multi-Agent AI System to Automate 3D Asset Generation Workflows for AAA Studios]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Atlassian Highlights Urgency for Enterprises to Embed AI-Native Workflows into Daily Team Collaboration]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793757480000_15</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793757480000_15</guid>
+      <pubDate>Wed, 04 Nov 2026 01:58:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Research presented at Atlassian Team '26 revealed that while 85% of knowledge workers interact with AI models, only 29% have embedded agents into core workflows, underscoring the competitive imperative to transition toward AI-native teamwork.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/05/atlassian-ai-native-teams.jpg" alt="Atlassian Highlights Urgency for Enterprises to Embed AI-Native Workflows into Daily Team Collaboration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Research presented at Atlassian Team '26 revealed that while 85% of knowledge workers interact with AI models, only 29% have embedded agents into core workflows, underscoring the competitive imperative to transition toward AI-native teamwork.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/05/06/ai-native-teamwork-spotlighted-atlassianteam/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/05/atlassian-ai-native-teams.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/05/atlassian-ai-native-teams.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Atlassian Highlights Urgency for Enterprises to Embed AI-Native Workflows into Daily Team Collaboration]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Cloud-Native Evolution to AI-Native Focuses on Context Delivery Lifecycle and Low-Density Metadata]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793757420000_16</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793757420000_16</guid>
+      <pubDate>Wed, 04 Nov 2026 01:57:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Technology strategists at KubeCon Europe framed context as the fundamental currency of the agentic era, demonstrating that transitioning from software delivery to a context delivery lifecycle enables autonomous swarms to navigate complex enterprise systems.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/03/cloud-native-ai-context.jpg" alt="Cloud-Native Evolution to AI-Native Focuses on Context Delivery Lifecycle and Low-Density Metadata" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Technology strategists at KubeCon Europe framed context as the fundamental currency of the agentic era, demonstrating that transitioning from software delivery to a context delivery lifecycle enables autonomous swarms to navigate complex enterprise systems.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/03/27/cloud-native-ai-native-role-context-density/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/03/cloud-native-ai-context.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/03/cloud-native-ai-context.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Cloud-Native Evolution to AI-Native Focuses on Context Delivery Lifecycle and Low-Density Metadata]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Dell Technologies Asserts AI-Native Enterprise Operating Models Are Essential for Enterprise Survival]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793757360000_17</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793757360000_17</guid>
+      <pubDate>Wed, 04 Nov 2026 01:56:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[At Dell Technologies World 2026, Dell leadership articulated how iterative internal adoption transformed routine knowledge operations into an AI-native architecture, advising enterprise leaders to build specialized super-user workforces.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/05/dell-tech-world-ai-native.jpg" alt="Dell Technologies Asserts AI-Native Enterprise Operating Models Are Essential for Enterprise Survival" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>At Dell Technologies World 2026, Dell leadership articulated how iterative internal adoption transformed routine knowledge operations into an AI-native architecture, advising enterprise leaders to build specialized super-user workforces.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/05/19/becoming-ai-native-enterprise-no-longer-optional-delltechworld/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/05/dell-tech-world-ai-native.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/05/dell-tech-world-ai-native.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Dell Technologies Asserts AI-Native Enterprise Operating Models Are Essential for Enterprise Survival]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[AI-Native Security Startup Glow Reaches Unicorn Valuation to Guard Against Autonomous Agent Risks]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793757300000_18</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793757300000_18</guid>
+      <pubDate>Wed, 04 Nov 2026 01:55:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Cybersecurity venture Glow achieved unicorn status following a $180 million funding round, launching AI-native endpoint protection to defend enterprise networks against unmanaged shadow AI deployments, configuration drift, and third-party agent plugins.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/07/glow-security-unicorn-ai.jpg" alt="AI-Native Security Startup Glow Reaches Unicorn Valuation to Guard Against Autonomous Agent Risks" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Cybersecurity venture Glow achieved unicorn status following a $180 million funding round, launching AI-native endpoint protection to defend enterprise networks against unmanaged shadow AI deployments, configuration drift, and third-party agent plugins.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/07/22/ai-native-endpoint-security-startup-glow-born-unicorn-raising-180m/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/07/glow-security-unicorn-ai.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/07/glow-security-unicorn-ai.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[AI-Native Security Startup Glow Reaches Unicorn Valuation to Guard Against Autonomous Agent Risks]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[U.S. Army Activates Second Expeditionary Cyber Battalion to Deploy Drone Warfare and Tactical CEMA]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793757240000_19</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793757240000_19</guid>
+      <pubDate>Wed, 04 Nov 2026 01:54:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_c4isrnet]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The U.S. Army prepared to stand up a second expeditionary cyber battalion to provide tactical electromagnetic and cyber combat power, integrating prototype drone technologies and autonomous sensors under its Transforming in Contact operational doctrine.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.c4isrnet.com/assets/us-army-cyber-battalion.jpg" alt="U.S. Army Activates Second Expeditionary Cyber Battalion to Deploy Drone Warfare and Tactical CEMA" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The U.S. Army prepared to stand up a second expeditionary cyber battalion to provide tactical electromagnetic and cyber combat power, integrating prototype drone technologies and autonomous sensors under its Transforming in Contact operational doctrine.</p>
+          <p><small>출처 및 원문: <a href="https://www.c4isrnet.com/battlefield-tech/2026/10/15/us-army-to-stand-up-second-expeditionary-cyber-battalion-in-coming-months/">c4isrnet.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.c4isrnet.com/assets/us-army-cyber-battalion.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.c4isrnet.com/assets/us-army-cyber-battalion.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[U.S. Army Activates Second Expeditionary Cyber Battalion to Deploy Drone Warfare and Tactical CEMA]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Agentic AI Architecture Drives Critical Demand for Real-Time Operational Databases]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793755500000_20</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793755500000_20</guid>
+      <pubDate>Wed, 04 Nov 2026 01:25:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Analysis from EVOLVE26 highlights that production deployments of autonomous AI agents necessitate purpose-built real-time data architectures, illustrated by PhoenixAI and Cloudera partnering to provide isolated AgentBase context environments with strict governance guardrails.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/11/agentic-ai-database-evolve.jpg" alt="Agentic AI Architecture Drives Critical Demand for Real-Time Operational Databases" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Analysis from EVOLVE26 highlights that production deployments of autonomous AI agents necessitate purpose-built real-time data architectures, illustrated by PhoenixAI and Cloudera partnering to provide isolated AgentBase context environments with strict governance guardrails.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/11/01/agentic-ai-architecture-demands-real-time-databases-evolve26/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/11/agentic-ai-database-evolve.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/11/agentic-ai-database-evolve.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Agentic AI Architecture Drives Critical Demand for Real-Time Operational Databases]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Euno Secures $23M Funding Round to Build AI-Native Context Brain for Autonomous Enterprise Agents]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793755440000_21</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793755440000_21</guid>
+      <pubDate>Wed, 04 Nov 2026 01:24:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Startup Euno raised $23 million in venture financing to construct an AI-native operational context platform that transforms accumulated organizational knowledge and workflow traces into actionable, trusted intelligence for enterprise agentic swarms.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/09/euno-funding-agentic-context.jpg" alt="Euno Secures $23M Funding Round to Build AI-Native Context Brain for Autonomous Enterprise Agents" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Startup Euno raised $23 million in venture financing to construct an AI-native operational context platform that transforms accumulated organizational knowledge and workflow traces into actionable, trusted intelligence for enterprise agentic swarms.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/09/09/euno-raises-23m-to-build-the-ai-native-context-brain-for-autonomous-agents/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/09/euno-funding-agentic-context.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/09/euno-funding-agentic-context.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Euno Secures $23M Funding Round to Build AI-Native Context Brain for Autonomous Enterprise Agents]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[AI-Native Software Development Reshapes Engineering Teams Beyond Basic Code Generation]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793755380000_22</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793755380000_22</guid>
+      <pubDate>Wed, 04 Nov 2026 01:23:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Engineering organizations are expanding AI adoption from simple coding copilots into spec-driven, AI-native workflows where autonomous agents act as full teammates handling ticket analysis, specification generation, and daily operational planning.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/07/ai-native-software-engineering.jpg" alt="AI-Native Software Development Reshapes Engineering Teams Beyond Basic Code Generation" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Engineering organizations are expanding AI adoption from simple coding copilots into spec-driven, AI-native workflows where autonomous agents act as full teammates handling ticket analysis, specification generation, and daily operational planning.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/07/31/ai-native-software-development-engineering-model-appdevangle/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/07/ai-native-software-engineering.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/07/ai-native-software-engineering.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[AI-Native Software Development Reshapes Engineering Teams Beyond Basic Code Generation]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[AI-Native Services Transform Professional Services Delivery Through Context-Aware Agent Integration]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793755320000_23</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793755320000_23</guid>
+      <pubDate>Wed, 04 Nov 2026 01:22:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Research from theCUBE explores how professional services firms are fusing structured business records with unstructured communication streams using knowledge graphs and domain-specific agents to achieve fully context-aware operational delivery.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/07/ai-native-services-cube.jpg" alt="AI-Native Services Transform Professional Services Delivery Through Context-Aware Agent Integration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Research from theCUBE explores how professional services firms are fusing structured business records with unstructured communication streams using knowledge graphs and domain-specific agents to achieve fully context-aware operational delivery.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/07/30/ai-native-services-thecube-research-analysis-cubeconversations/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/07/ai-native-services-cube.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/07/ai-native-services-cube.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[AI-Native Services Transform Professional Services Delivery Through Context-Aware Agent Integration]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Cloud Readiness and Data Governance Define Business Margins in Enterprise AI-Native Strategies]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793755260000_24</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793755260000_24</guid>
+      <pubDate>Wed, 04 Nov 2026 01:21:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Enterprise technology leaders emphasize that flexible cloud architectures, comprehensive data privacy, and robust security foundations serve as non-negotiable prerequisites for achieving sustainable profit margins in an AI-native operational model.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://siliconangle.com/wp-content/uploads/2026/05/ai-native-cloud-margins.jpg" alt="Cloud Readiness and Data Governance Define Business Margins in Enterprise AI-Native Strategies" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Enterprise technology leaders emphasize that flexible cloud architectures, comprehensive data privacy, and robust security foundations serve as non-negotiable prerequisites for achieving sustainable profit margins in an AI-native operational model.</p>
+          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/05/07/ai-native-strategy-evolution-business-margins-atlassianteam/">siliconangle.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/05/ai-native-cloud-margins.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://siliconangle.com/wp-content/uploads/2026/05/ai-native-cloud-margins.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Cloud Readiness and Data Governance Define Business Margins in Enterprise AI-Native Strategies]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Pentagon Structures $54 Billion Autonomous Warfare Funding Allocation Through Flexible Acquisition Channels]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793755200000_25</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793755200000_25</guid>
+      <pubDate>Wed, 04 Nov 2026 01:20:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defenseone]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The Department of Defense and DAWG structured a $54.6 billion autonomous warfare initiative across multi-year flexible funding pools to prevent procurement bottlenecks and enable phased capital deployment as autonomous combat technologies mature.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.defenseone.com/assets/pentagon-autonomous-warfare-budget.jpg" alt="Pentagon Structures $54 Billion Autonomous Warfare Funding Allocation Through Flexible Acquisition Channels" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The Department of Defense and DAWG structured a $54.6 billion autonomous warfare initiative across multi-year flexible funding pools to prevent procurement bottlenecks and enable phased capital deployment as autonomous combat technologies mature.</p>
+          <p><small>출처 및 원문: <a href="https://www.defenseone.com/ideas/2026/05/pentagons-54-billion-bet-autonomous-warfare/413735/">defenseone.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.defenseone.com/assets/pentagon-autonomous-warfare-budget.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.defenseone.com/assets/pentagon-autonomous-warfare-budget.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Pentagon Structures $54 Billion Autonomous Warfare Funding Allocation Through Flexible Acquisition Channels]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Defense Startup Advances 300-kW Class High-Energy Laser Concept for Autonomous Aerial Drone Defense]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793755140000_26</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793755140000_26</guid>
+      <pubDate>Wed, 04 Nov 2026 01:19:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[American defense innovators are developing high-power 300-kilowatt airborne laser systems mounted on autonomous unmanned aerial vehicles to provide high-altitude, speed-of-light directed energy interception against adversarial missile and drone threats.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/09/laser-carrying-drone.jpg" alt="Defense Startup Advances 300-kW Class High-Energy Laser Concept for Autonomous Aerial Drone Defense" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>American defense innovators are developing high-power 300-kilowatt airborne laser systems mounted on autonomous unmanned aerial vehicles to provide high-altitude, speed-of-light directed energy interception against adversarial missile and drone threats.</p>
+          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/09/28/us-laser-carrying-drone/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/09/laser-carrying-drone.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/09/laser-carrying-drone.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Defense Startup Advances 300-kW Class High-Energy Laser Concept for Autonomous Aerial Drone Defense]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[U.S. Marine Corps Awards $20 Million Contract to Field Autonomous Ground Tactical Vehicles]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793755080000_27</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793755080000_27</guid>
+      <pubDate>Wed, 04 Nov 2026 01:18:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The U.S. Marine Corps committed $20 million to procure and field its first production batch of autonomous unmanned ground vehicles, designed to conduct tactical reconnaissance, logistics transport, and casualty evacuation in austere combat theaters.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.militarytimes.com/assets/usmc-autonomous-ground-vehicle.jpg" alt="U.S. Marine Corps Awards $20 Million Contract to Field Autonomous Ground Tactical Vehicles" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The U.S. Marine Corps committed $20 million to procure and field its first production batch of autonomous unmanned ground vehicles, designed to conduct tactical reconnaissance, logistics transport, and casualty evacuation in austere combat theaters.</p>
+          <p><small>출처 및 원문: <a href="https://www.militarytimes.com/news/your-military/2026/06/29/usmc-awards-20-million-contract-for-first-autonomous-ground-vehicles/">militarytimes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.militarytimes.com/assets/usmc-autonomous-ground-vehicle.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.militarytimes.com/assets/usmc-autonomous-ground-vehicle.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[U.S. Marine Corps Awards $20 Million Contract to Field Autonomous Ground Tactical Vehicles]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Arizona National Guard Becomes First Military Unit to Field Advanced Gray Eagle 25M Drones]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793755020000_28</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793755020000_28</guid>
+      <pubDate>Wed, 04 Nov 2026 01:17:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The Arizona Army National Guard achieved operational fielding of General Atomics Gray Eagle 25M unmanned aircraft systems, equipping multi-domain task forces with upgraded synthetic aperture radars, satellite comms, and autonomous reconnaissance payloads.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.militarytimes.com/assets/gray-eagle-25m-drone.jpg" alt="Arizona National Guard Becomes First Military Unit to Field Advanced Gray Eagle 25M Drones" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The Arizona Army National Guard achieved operational fielding of General Atomics Gray Eagle 25M unmanned aircraft systems, equipping multi-domain task forces with upgraded synthetic aperture radars, satellite comms, and autonomous reconnaissance payloads.</p>
+          <p><small>출처 및 원문: <a href="https://www.militarytimes.com/industry/techwatch/2026/10/16/arizona-guard-first-to-field-gray-eagle-25m-drone/">militarytimes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.militarytimes.com/assets/gray-eagle-25m-drone.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.militarytimes.com/assets/gray-eagle-25m-drone.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Arizona National Guard Becomes First Military Unit to Field Advanced Gray Eagle 25M Drones]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Rugged Tactical Workstation Delivers AI-Powered Edge Processing for Deployed Military Drone Units]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793754960000_29</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793754960000_29</guid>
+      <pubDate>Wed, 04 Nov 2026 01:16:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[DT Research introduced the LT365PA ruggedized computing station pairing dedicated neural accelerators with tactical edge hardware, allowing deployed military units to process drone video telemetry and execute real-time AI computer vision without cloud connectivity.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/11/tactical-workstation-drone-ai.jpg" alt="Rugged Tactical Workstation Delivers AI-Powered Edge Processing for Deployed Military Drone Units" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>DT Research introduced the LT365PA ruggedized computing station pairing dedicated neural accelerators with tactical edge hardware, allowing deployed military units to process drone video telemetry and execute real-time AI computer vision without cloud connectivity.</p>
+          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/11/03/workstation-military-mission-data/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/11/tactical-workstation-drone-ai.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/11/tactical-workstation-drone-ai.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Rugged Tactical Workstation Delivers AI-Powered Edge Processing for Deployed Military Drone Units]]></media:title>
+      </media:content>
+    </item>
+    <item>
       <title><![CDATA[Grafana Labs Leans on AI Agents to Automate Full-Stack Observability Across Cloud and AI Workloads]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793750820000_0</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750820000_0</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793750820000_30</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750820000_30</guid>
       <pubDate>Wed, 04 Nov 2026 00:07:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -38,8 +638,8 @@
     </item>
     <item>
       <title><![CDATA[Kore.ai Launches Autoloop to Continuously Tune Enterprise AI Agents Post-Deployment]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793750760000_1</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750760000_1</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793750760000_31</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750760000_31</guid>
       <pubDate>Wed, 04 Nov 2026 00:06:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -58,8 +658,8 @@
     </item>
     <item>
       <title><![CDATA[IBM Champions Enterprise AI Orchestration and Hybrid Governance Ahead of TechXchange 2026]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793750700000_2</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750700000_2</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793750700000_32</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750700000_32</guid>
       <pubDate>Wed, 04 Nov 2026 00:05:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -78,8 +678,8 @@
     </item>
     <item>
       <title><![CDATA[Appian Emphasizes Enterprise AI Orchestration for Mission-Critical Process Automation]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793750640000_3</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750640000_3</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793750640000_33</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750640000_33</guid>
       <pubDate>Wed, 04 Nov 2026 00:04:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -98,8 +698,8 @@
     </item>
     <item>
       <title><![CDATA[Agentic Security Takes Center Stage at RSAC 2026 Amid Enterprise Adoption Challenges]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793750580000_4</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750580000_4</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793750580000_34</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750580000_34</guid>
       <pubDate>Wed, 04 Nov 2026 00:03:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -118,8 +718,8 @@
     </item>
     <item>
       <title><![CDATA[AUSA 2026 Report Examines Modernization Priorities Across Autonomous Warfare and Drone Fleets]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793750520000_5</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750520000_5</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793750520000_35</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750520000_35</guid>
       <pubDate>Wed, 04 Nov 2026 00:02:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -138,8 +738,8 @@
     </item>
     <item>
       <title><![CDATA[Small Unmanned Systems Begin Inflow Under Pentagon's Drone Dominance Push]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793750460000_6</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750460000_6</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793750460000_36</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750460000_36</guid>
       <pubDate>Wed, 04 Nov 2026 00:01:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -158,8 +758,8 @@
     </item>
     <item>
       <title><![CDATA[Shield AI Prepares for Maiden Flight of Autonomous Unmanned Fighter Jet]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793750400000_7</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750400000_7</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793750400000_37</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750400000_37</guid>
       <pubDate>Wed, 04 Nov 2026 00:00:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_defenseone]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -178,8 +778,8 @@
     </item>
     <item>
       <title><![CDATA[High-Speed Shahed Proliferation Sparks Development of New Jet-Powered Drone Interceptors]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793750340000_8</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750340000_8</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793750340000_38</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750340000_38</guid>
       <pubDate>Tue, 03 Nov 2026 23:59:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_defenseone]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -198,8 +798,8 @@
     </item>
     <item>
       <title><![CDATA[U.S. Army Plans Dedicated Command Structure for Unmanned and Autonomous Warfare]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793750280000_9</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750280000_9</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793750280000_39</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793750280000_39</guid>
       <pubDate>Tue, 03 Nov 2026 23:58:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -218,8 +818,8 @@
     </item>
     <item>
       <title><![CDATA[SiliconANGLE: NanoCo Raises $12M to Accelerate NanoClaw, a Secure, Enterprise-Grade Agentic AI Assistant for Every Office Worker]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793746860000_10</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746860000_10</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793746860000_40</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746860000_40</guid>
       <pubDate>Tue, 03 Nov 2026 23:01:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -238,8 +838,8 @@
     </item>
     <item>
       <title><![CDATA[SiliconANGLE: Agentic Workflows Make Speed a Requirement, Says Cerebras]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793746800000_11</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746800000_11</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793746800000_41</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746800000_41</guid>
       <pubDate>Tue, 03 Nov 2026 23:00:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -258,8 +858,8 @@
     </item>
     <item>
       <title><![CDATA[SiliconANGLE: Fieldguide Raises $75M on $700M Valuation to Scale Agentic AI for Audit and Advisory Firms]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793746740000_12</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746740000_12</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793746740000_42</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746740000_42</guid>
       <pubDate>Tue, 03 Nov 2026 22:59:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -278,8 +878,8 @@
     </item>
     <item>
       <title><![CDATA[The Defense Post: US Tackles Drone Problem With Low-Cost VTOL Interceptor]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793746680000_13</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746680000_13</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793746680000_43</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746680000_43</guid>
       <pubDate>Tue, 03 Nov 2026 22:58:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -298,8 +898,8 @@
     </item>
     <item>
       <title><![CDATA[The Defense Post: Ukraine Adds Jet-Powered Interceptor to Neutralize Shahed-Type Drones]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793746620000_14</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746620000_14</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793746620000_44</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746620000_44</guid>
       <pubDate>Tue, 03 Nov 2026 22:57:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -318,8 +918,8 @@
     </item>
     <item>
       <title><![CDATA[The Defense Post: US Air Forces Central Expands Reach With Ultra-Long-Endurance Drone]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793746560000_15</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746560000_15</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793746560000_45</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746560000_45</guid>
       <pubDate>Tue, 03 Nov 2026 22:56:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -338,8 +938,8 @@
     </item>
     <item>
       <title><![CDATA[The Defense Post: Spain's New Drone Interceptor Hitches a Ride on Larger UAV to Extend Reach]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793746500000_16</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746500000_16</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793746500000_46</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746500000_46</guid>
       <pubDate>Tue, 03 Nov 2026 22:55:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -358,8 +958,8 @@
     </item>
     <item>
       <title><![CDATA[The Defense Post: Teledyne's Rogue 1 Loitering Munition Gets Extended Reach, Smarter Strike Profile]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793746440000_17</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746440000_17</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793746440000_47</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746440000_47</guid>
       <pubDate>Tue, 03 Nov 2026 22:54:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -378,8 +978,8 @@
     </item>
     <item>
       <title><![CDATA[The Defense Post: US Adds Two New Drone Test Sites to Expand Innovation in Aviation]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793746380000_18</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746380000_18</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793746380000_48</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746380000_48</guid>
       <pubDate>Tue, 03 Nov 2026 22:53:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -398,8 +998,8 @@
     </item>
     <item>
       <title><![CDATA[The Defense Post: Ukraine Develops Loitering Drone Interceptor to Down Enemy Recon UAVs]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793746320000_19</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746320000_19</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793746320000_49</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793746320000_49</guid>
       <pubDate>Tue, 03 Nov 2026 22:52:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -414,606 +1014,6 @@
       <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/07/ukraine-drone-interceptor.jpg" length="240000" type="image/jpeg" />
       <media:content url="https://thedefensepost.com/wp-content/uploads/2026/07/ukraine-drone-interceptor.jpg" medium="image" width="1200" height="675">
         <media:title><![CDATA[The Defense Post: Ukraine Develops Loitering Drone Interceptor to Down Enemy Recon UAVs]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: Google Cloud Invests $750M to Fuel the Agentic Enterprise]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793744820000_20</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793744820000_20</guid>
-      <pubDate>Tue, 03 Nov 2026 22:27:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE reports on Google Cloud establishing a $750 million partner fund to equip its 120,000-member ecosystem with forward-deployed engineering capacity, tools, and skills to accelerate enterprise transitions toward autonomous agentic architectures.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/04/google-cloud-agentic-fund.jpg" alt="SiliconANGLE: Google Cloud Invests $750M to Fuel the Agentic Enterprise" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE reports on Google Cloud establishing a $750 million partner fund to equip its 120,000-member ecosystem with forward-deployed engineering capacity, tools, and skills to accelerate enterprise transitions toward autonomous agentic architectures.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/04/22/google-cloud-invests-750m-fuel-agentic-enterprise-googlecloudnext/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/04/google-cloud-agentic-fund.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/04/google-cloud-agentic-fund.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: Google Cloud Invests $750M to Fuel the Agentic Enterprise]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: Pivot Pulls in $40M to Push Agentic AI Deeper into Enterprise Procurement]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793744760000_21</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793744760000_21</guid>
-      <pubDate>Tue, 03 Nov 2026 22:26:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE covers AI procurement startup Pivot raising $40 million in Series B funding to expand its agentic AI operating system, embedding autonomous agents into enterprise ERP stacks to automate complex vendor sourcing, approvals, and contract intake.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/05/pivot-procurement-ai.jpg" alt="SiliconANGLE: Pivot Pulls in $40M to Push Agentic AI Deeper into Enterprise Procurement" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE covers AI procurement startup Pivot raising $40 million in Series B funding to expand its agentic AI operating system, embedding autonomous agents into enterprise ERP stacks to automate complex vendor sourcing, approvals, and contract intake.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/05/21/pivot-pulls-40m-push-agentic-ai-deeper-enterprise-procurement/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/05/pivot-procurement-ai.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/05/pivot-procurement-ai.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: Pivot Pulls in $40M to Push Agentic AI Deeper into Enterprise Procurement]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: Agentic E-Commerce Startup ZyG Gets $58M to Help Solo Inventors Compete With Biggest Global Brands]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793744700000_22</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793744700000_22</guid>
-      <pubDate>Tue, 03 Nov 2026 22:25:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE reveals autonomous commerce startup ZyG securing $58 million in funding backed by Bessemer Venture Partners to deploy fleets of autonomous AI agents that handle end-to-end product design, market research, and automated global supply chain logistics.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/03/zyg-agentic-ecommerce.jpg" alt="SiliconANGLE: Agentic E-Commerce Startup ZyG Gets $58M to Help Solo Inventors Compete With Biggest Global Brands" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE reveals autonomous commerce startup ZyG securing $58 million in funding backed by Bessemer Venture Partners to deploy fleets of autonomous AI agents that handle end-to-end product design, market research, and automated global supply chain logistics.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/03/05/agentic-e-commerce-startup-zyg-gets-58m-help-solo-inventors-compete-biggest-global-brands/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/03/zyg-agentic-ecommerce.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/03/zyg-agentic-ecommerce.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: Agentic E-Commerce Startup ZyG Gets $58M to Help Solo Inventors Compete With Biggest Global Brands]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: JetStream Security, Guild.ai and WorkOS Land Fresh Funding Amid Growing Agentic AI Infrastructure Push]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793744640000_23</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793744640000_23</guid>
-      <pubDate>Tue, 03 Nov 2026 22:24:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE reports on surging venture investments across agentic infrastructure, with JetStream Security, Guild.ai, and WorkOS securing fresh funding rounds to build identity verification, compliance guardrails, and runtime controls for autonomous AI agents.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/03/agentic-infrastructure-funding.jpg" alt="SiliconANGLE: JetStream Security, Guild.ai and WorkOS Land Fresh Funding Amid Growing Agentic AI Infrastructure Push" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE reports on surging venture investments across agentic infrastructure, with JetStream Security, Guild.ai, and WorkOS securing fresh funding rounds to build identity verification, compliance guardrails, and runtime controls for autonomous AI agents.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/03/03/jetstream-security-guild-ai-workos-land-fresh-funding-amid-growing-agentic-ai-infrastructure-push/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/03/agentic-infrastructure-funding.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/03/agentic-infrastructure-funding.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: JetStream Security, Guild.ai and WorkOS Land Fresh Funding Amid Growing Agentic AI Infrastructure Push]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[The Defense Post: AV's Mayhem 10 to Gain AI Hunter-Killer Swarm Capability]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793744580000_24</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793744580000_24</guid>
-      <pubDate>Tue, 03 Nov 2026 22:23:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Defense Post details AeroVironment partnering with Applied Intuition to integrate Acuity autonomy software into the Mayhem 10 UAS, enabling single operators to coordinate autonomous hunter-killer drone swarms across contested military airspace.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/07/av-mayhem-swarm.jpg" alt="The Defense Post: AV&apos;s Mayhem 10 to Gain AI Hunter-Killer Swarm Capability" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Defense Post details AeroVironment partnering with Applied Intuition to integrate Acuity autonomy software into the Mayhem 10 UAS, enabling single operators to coordinate autonomous hunter-killer drone swarms across contested military airspace.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/07/31/us-mayhem-ai-swarm/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/07/av-mayhem-swarm.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/07/av-mayhem-swarm.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[The Defense Post: AV's Mayhem 10 to Gain AI Hunter-Killer Swarm Capability]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[The Defense Post: Fortem's DroneHunter Returns: Version 5.0 Targets Swarms With Autonomous Capture]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793744520000_25</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793744520000_25</guid>
-      <pubDate>Tue, 03 Nov 2026 22:22:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Defense Post highlights Fortem Technologies unveiling the DroneHunter 5.0, equipping autonomous interceptor drones with onboard dual cameras and edge AI compute to autonomously track, pursue, and net enemy drone swarms in GPS-degraded zones.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/01/dronehunter-5-interceptor.jpg" alt="The Defense Post: Fortem&apos;s DroneHunter Returns: Version 5.0 Targets Swarms With Autonomous Capture" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Defense Post highlights Fortem Technologies unveiling the DroneHunter 5.0, equipping autonomous interceptor drones with onboard dual cameras and edge AI compute to autonomously track, pursue, and net enemy drone swarms in GPS-degraded zones.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/01/22/fortem-dronehunter-autonomous-version/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/01/dronehunter-5-interceptor.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/01/dronehunter-5-interceptor.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[The Defense Post: Fortem's DroneHunter Returns: Version 5.0 Targets Swarms With Autonomous Capture]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[The Defense Post: US Navy Launches Center for Robotic, Autonomous Warfare]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793744460000_26</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793744460000_26</guid>
-      <pubDate>Tue, 03 Nov 2026 22:21:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Defense Post covers the US Navy activating the Robotic and Autonomous Systems Warfighting Development Center (RASWDC) at Little Creek, Virginia, establishing operational testing, tactical doctrine, and fleet training for uncrewed multi-domain systems.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/09/navy-raswdc-center.jpg" alt="The Defense Post: US Navy Launches Center for Robotic, Autonomous Warfare" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Defense Post covers the US Navy activating the Robotic and Autonomous Systems Warfighting Development Center (RASWDC) at Little Creek, Virginia, establishing operational testing, tactical doctrine, and fleet training for uncrewed multi-domain systems.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/09/30/us-navy-center-robotic-warfare/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/09/navy-raswdc-center.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/09/navy-raswdc-center.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[The Defense Post: US Navy Launches Center for Robotic, Autonomous Warfare]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[The Defense Post: US Navy Plans Separate Commander for Robotic Autonomous Systems]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793744400000_27</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793744400000_27</guid>
-      <pubDate>Tue, 03 Nov 2026 22:20:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Defense Post reports on Chief of Naval Operations Adm. Daryl Caudle announcing plans to establish a dedicated Robotic Autonomous Systems (RAS) Commander to oversee and orchestrate uncrewed combat assets within carrier strike groups.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/02/navy-ras-commander.jpg" alt="The Defense Post: US Navy Plans Separate Commander for Robotic Autonomous Systems" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Defense Post reports on Chief of Naval Operations Adm. Daryl Caudle announcing plans to establish a dedicated Robotic Autonomous Systems (RAS) Commander to oversee and orchestrate uncrewed combat assets within carrier strike groups.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/02/23/us-robotic-systems-commander/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/02/navy-ras-commander.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/02/navy-ras-commander.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[The Defense Post: US Navy Plans Separate Commander for Robotic Autonomous Systems]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[The Defense Post: Pentagon Begins Hunt for USVs That Can Deploy Attack Drones]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793744340000_28</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793744340000_28</guid>
-      <pubDate>Tue, 03 Nov 2026 22:19:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Defense Post reports on the Defense Innovation Unit launching the SWAP-USV program to procure autonomous uncrewed surface vessels capable of deploying autonomous loitering attack drones against asymmetric maritime threats.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/07/swap-usv-drone-deployment.jpg" alt="The Defense Post: Pentagon Begins Hunt for USVs That Can Deploy Attack Drones" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Defense Post reports on the Defense Innovation Unit launching the SWAP-USV program to procure autonomous uncrewed surface vessels capable of deploying autonomous loitering attack drones against asymmetric maritime threats.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/07/31/pentagon-usv-deploy-drones/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/07/swap-usv-drone-deployment.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/07/swap-usv-drone-deployment.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[The Defense Post: Pentagon Begins Hunt for USVs That Can Deploy Attack Drones]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[The Defense Post: New 38-Meter MUSV for US Military to Feature AI-Driven Autonomy]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793744280000_29</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793744280000_29</guid>
-      <pubDate>Tue, 03 Nov 2026 22:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Defense Post details Hanwha Defense USA partnering with Magnet Defense to construct a 38-meter medium uncrewed surface vessel (MUSV) featuring integrated AI autonomy software and robotic shipyard manufacturing for US naval warfare.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/04/hanwha-musv-autonomy.jpg" alt="The Defense Post: New 38-Meter MUSV for US Military to Feature AI-Driven Autonomy" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Defense Post details Hanwha Defense USA partnering with Magnet Defense to construct a 38-meter medium uncrewed surface vessel (MUSV) featuring integrated AI autonomy software and robotic shipyard manufacturing for US naval warfare.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/04/29/us-military-musv-autonomy/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/04/hanwha-musv-autonomy.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/04/hanwha-musv-autonomy.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[The Defense Post: New 38-Meter MUSV for US Military to Feature AI-Driven Autonomy]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Breaking Defense: Drone Companies, Admin Leaders Meet for First White House 'Drone Dominance' Meeting]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793739960000_30</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793739960000_30</guid>
-      <pubDate>Tue, 03 Nov 2026 21:06:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Breaking Defense reports on the Trump administration hosting commercial drone executives at the White House to coordinate the $1 billion Drone Dominance initiative, aligning private sector manufacturing with military fielding timelines.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://breakingdefense.com/wp-content/uploads/sites/13/2026/08/white-house-drone-dominance.jpg" alt="Breaking Defense: Drone Companies, Admin Leaders Meet for First White House &apos;Drone Dominance&apos; Meeting" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Breaking Defense reports on the Trump administration hosting commercial drone executives at the White House to coordinate the $1 billion Drone Dominance initiative, aligning private sector manufacturing with military fielding timelines.</p>
-          <p><small>출처 및 원문: <a href="https://breakingdefense.com/2026/08/drone-companies-trump-admin-leaders-meet-for-first-white-house-done-dominance-meeting/">breakingdefense.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://breakingdefense.com/wp-content/uploads/sites/13/2026/08/white-house-drone-dominance.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://breakingdefense.com/wp-content/uploads/sites/13/2026/08/white-house-drone-dominance.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Breaking Defense: Drone Companies, Admin Leaders Meet for First White House 'Drone Dominance' Meeting]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Breaking Defense: Pentagon Officials Broadly Detail $55 Billion Drone Plan Under DAWG]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793739900000_31</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793739900000_31</guid>
-      <pubDate>Tue, 03 Nov 2026 21:05:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Breaking Defense details the Department of Defense outlining a $55 billion autonomous systems roadmap under the Defense Autonomous Warfare Group (DAWG), utilizing flexible reconciliation funding to mass-produce autonomous air, ground, and maritime platforms.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://breakingdefense.com/wp-content/uploads/sites/13/2026/04/dawg-55b-drone-plan.jpg" alt="Breaking Defense: Pentagon Officials Broadly Detail $55 Billion Drone Plan Under DAWG" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Breaking Defense details the Department of Defense outlining a $55 billion autonomous systems roadmap under the Defense Autonomous Warfare Group (DAWG), utilizing flexible reconciliation funding to mass-produce autonomous air, ground, and maritime platforms.</p>
-          <p><small>출처 및 원문: <a href="https://breakingdefense.com/2026/04/pentagon-officials-broadly-detail-55-billion-drone-plan-under-dawg/">breakingdefense.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://breakingdefense.com/wp-content/uploads/sites/13/2026/04/dawg-55b-drone-plan.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://breakingdefense.com/wp-content/uploads/sites/13/2026/04/dawg-55b-drone-plan.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Breaking Defense: Pentagon Officials Broadly Detail $55 Billion Drone Plan Under DAWG]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[The Defense Post: MQ-20 Avenger to Support US Navy's Autonomy Battle Planning Effort]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793739840000_32</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793739840000_32</guid>
-      <pubDate>Tue, 03 Nov 2026 21:04:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Defense Post highlights the US Navy partnering with General Atomics to deploy the MQ-20 Avenger for Collaborative Autonomy Mission Planning, integrating AI behavioral tasking and automated debrief algorithms with fleet fighter aircraft.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/04/mq-20-avenger-navy.jpg" alt="The Defense Post: MQ-20 Avenger to Support US Navy&apos;s Autonomy Battle Planning Effort" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Defense Post highlights the US Navy partnering with General Atomics to deploy the MQ-20 Avenger for Collaborative Autonomy Mission Planning, integrating AI behavioral tasking and automated debrief algorithms with fleet fighter aircraft.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/04/22/us-mq20-autonomy-planning/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/04/mq-20-avenger-navy.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/04/mq-20-avenger-navy.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[The Defense Post: MQ-20 Avenger to Support US Navy's Autonomy Battle Planning Effort]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: With $35M in Early Funding, Baselayer Is Building the Trust Layer for the Agentic Economy]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793739780000_33</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793739780000_33</guid>
-      <pubDate>Tue, 03 Nov 2026 21:03:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE covers identity infrastructure startup Baselayer raising $35 million in early funding led by M13 to establish trust protocols, verifiable credentials, and compliance frameworks for autonomous AI agents conducting financial transactions.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/09/baselayer-agentic-trust.jpg" alt="SiliconANGLE: With $35M in Early Funding, Baselayer Is Building the Trust Layer for the Agentic Economy" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE covers identity infrastructure startup Baselayer raising $35 million in early funding led by M13 to establish trust protocols, verifiable credentials, and compliance frameworks for autonomous AI agents conducting financial transactions.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/09/22/with-35m-in-series-a-funding-baselayer-is-building-the-trust-layer-for-the-agentic-economy/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/09/baselayer-agentic-trust.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/09/baselayer-agentic-trust.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: With $35M in Early Funding, Baselayer Is Building the Trust Layer for the Agentic Economy]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: PagerDuty Debuts Paige AI Agent With Renamed PD Reliability Platform and PD Labs]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793739720000_34</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793739720000_34</guid>
-      <pubDate>Tue, 03 Nov 2026 21:02:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE reports on PagerDuty unveiling Paige, an autonomous incident-response AI agent integrated into its redesigned PD Reliability Platform to automate root-cause diagnostics, incident orchestration, and system remediation.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/11/pagerduty-paige-ai-agent.jpg" alt="SiliconANGLE: PagerDuty Debuts Paige AI Agent With Renamed PD Reliability Platform and PD Labs" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE reports on PagerDuty unveiling Paige, an autonomous incident-response AI agent integrated into its redesigned PD Reliability Platform to automate root-cause diagnostics, incident orchestration, and system remediation.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/11/03/pagerduty-debuts-paige-ai-agent-with-renamed-pd-reliability-platform-and-pd-labs/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/11/pagerduty-paige-ai-agent.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/11/pagerduty-paige-ai-agent.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: PagerDuty Debuts Paige AI Agent With Renamed PD Reliability Platform and PD Labs]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: Modiqo Raises $3M in Pre-Seed Funding to Help AI Agents Learn by Rote]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793739660000_35</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793739660000_35</guid>
-      <pubDate>Tue, 03 Nov 2026 21:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE covers agentic infrastructure startup Modiqo securing $3 million in pre-seed funding to build Rote, a platform that connects AI agents to enterprise APIs without servers or SDKs, converting successful task executions into reusable workflows.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/05/modiqo-rote-agentic.jpg" alt="SiliconANGLE: Modiqo Raises $3M in Pre-Seed Funding to Help AI Agents Learn by Rote" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE covers agentic infrastructure startup Modiqo securing $3 million in pre-seed funding to build Rote, a platform that connects AI agents to enterprise APIs without servers or SDKs, converting successful task executions into reusable workflows.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/05/28/modiqo-raises-3m-pre-seed-funding-help-ai-agents-learn-rote/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/05/modiqo-rote-agentic.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/05/modiqo-rote-agentic.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: Modiqo Raises $3M in Pre-Seed Funding to Help AI Agents Learn by Rote]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: Cloudera Spotlights Agentic Workflows and Context-Rich Enterprise AI at Evolve26]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793739600000_36</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793739600000_36</guid>
-      <pubDate>Tue, 03 Nov 2026 21:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE reports on Cloudera introducing agentic workflow frameworks and semantic data architectures at Evolve26, enabling enterprises to operationalize collaborative multi-agent swarms across hybrid and multi-cloud data estates.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/10/cloudera-evolve26-agentic.jpg" alt="SiliconANGLE: Cloudera Spotlights Agentic Workflows and Context-Rich Enterprise AI at Evolve26" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE reports on Cloudera introducing agentic workflow frameworks and semantic data architectures at Evolve26, enabling enterprises to operationalize collaborative multi-agent swarms across hybrid and multi-cloud data estates.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/10/22/cloudera-agentic-workflows-evolve26/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/10/cloudera-evolve26-agentic.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/10/cloudera-evolve26-agentic.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: Cloudera Spotlights Agentic Workflows and Context-Rich Enterprise AI at Evolve26]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Breaking Defense: SOCOM Taps Aeon for Limited Run of Shoulder-Fired Zeus With $13.8M Deal]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793739540000_37</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793739540000_37</guid>
-      <pubDate>Tue, 03 Nov 2026 20:59:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Breaking Defense reports on US Special Operations Command awarding a $13.8 million contract to Aeon for the Zeus modular smart missile, designed for multi-domain employment from soldier shoulders, uncrewed vehicles, and autonomous maritime vessels.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://breakingdefense.com/wp-content/uploads/sites/13/2026/11/aeon-zeus-socom.jpg" alt="Breaking Defense: SOCOM Taps Aeon for Limited Run of Shoulder-Fired Zeus With $13.8M Deal" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Breaking Defense reports on US Special Operations Command awarding a $13.8 million contract to Aeon for the Zeus modular smart missile, designed for multi-domain employment from soldier shoulders, uncrewed vehicles, and autonomous maritime vessels.</p>
-          <p><small>출처 및 원문: <a href="https://breakingdefense.com/2026/11/socom-taps-aeon-for-limited-run-of-shoulder-fired-zeus-with-13-8m-deal/">breakingdefense.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://breakingdefense.com/wp-content/uploads/sites/13/2026/11/aeon-zeus-socom.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://breakingdefense.com/wp-content/uploads/sites/13/2026/11/aeon-zeus-socom.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Breaking Defense: SOCOM Taps Aeon for Limited Run of Shoulder-Fired Zeus With $13.8M Deal]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Defense News: Oshkosh Partners With Startup to Build Military Drones]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793739480000_38</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793739480000_38</guid>
-      <pubDate>Tue, 03 Nov 2026 20:58:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Defense News highlights Oshkosh Defense partnering with Silicon Valley startup Grid Aero to mass-manufacture the Lifter autonomous uncrewed aircraft, combining automotive manufacturing scale with rapid-fielding drone technology.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://www.defensenews.com/wp-content/uploads/2026/11/oshkosh-grid-aero-lifter.jpg" alt="Defense News: Oshkosh Partners With Startup to Build Military Drones" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Defense News highlights Oshkosh Defense partnering with Silicon Valley startup Grid Aero to mass-manufacture the Lifter autonomous uncrewed aircraft, combining automotive manufacturing scale with rapid-fielding drone technology.</p>
-          <p><small>출처 및 원문: <a href="https://www.defensenews.com/industry/techwatch/2026/11/02/oshkosh-partners-with-startup-to-build-military-drones/">defensenews.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://www.defensenews.com/wp-content/uploads/2026/11/oshkosh-grid-aero-lifter.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://www.defensenews.com/wp-content/uploads/2026/11/oshkosh-grid-aero-lifter.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Defense News: Oshkosh Partners With Startup to Build Military Drones]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Defense News: Australia Preps Bluebottle USV for Submarine-Hunting Role]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793739420000_39</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793739420000_39</guid>
-      <pubDate>Tue, 03 Nov 2026 20:57:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Defense News details the Royal Australian Navy equipping Ocius Bluebottle uncrewed surface vessels with advanced sonar arrays and autonomous navigation software to conduct persistent, autonomous anti-submarine warfare patrols.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://www.defensenews.com/wp-content/uploads/2026/11/australia-bluebottle-usv.jpg" alt="Defense News: Australia Preps Bluebottle USV for Submarine-Hunting Role" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Defense News details the Royal Australian Navy equipping Ocius Bluebottle uncrewed surface vessels with advanced sonar arrays and autonomous navigation software to conduct persistent, autonomous anti-submarine warfare patrols.</p>
-          <p><small>출처 및 원문: <a href="https://www.defensenews.com/global/asia-pacific/2026/11/03/australia-preps-bluebottle-usv-for-submarine-hunting-role/">defensenews.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://www.defensenews.com/wp-content/uploads/2026/11/australia-bluebottle-usv.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://www.defensenews.com/wp-content/uploads/2026/11/australia-bluebottle-usv.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Defense News: Australia Preps Bluebottle USV for Submarine-Hunting Role]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: Snowflake Expands Agentic AI Platform With Business Context and Governance Tools]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793737620000_40</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793737620000_40</guid>
-      <pubDate>Tue, 03 Nov 2026 20:27:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE reports on Snowflake introducing business context and governance capabilities for its agentic AI platform, enabling enterprise organizations to manage, audit, and orchestrate autonomous AI agents with role-based policies and enterprise data safeguards.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/11/snowflake-agentic-governance.jpg" alt="SiliconANGLE: Snowflake Expands Agentic AI Platform With Business Context and Governance Tools" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE reports on Snowflake introducing business context and governance capabilities for its agentic AI platform, enabling enterprise organizations to manage, audit, and orchestrate autonomous AI agents with role-based policies and enterprise data safeguards.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/11/03/snowflake-expands-agentic-ai-platform-with-business-context-and-governance-tools/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/11/snowflake-agentic-governance.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/11/snowflake-agentic-governance.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: Snowflake Expands Agentic AI Platform With Business Context and Governance Tools]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: AI Agent Developer Manus Raises $500M+ at Reported $4B Valuation]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793737560000_41</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793737560000_41</guid>
-      <pubDate>Tue, 03 Nov 2026 20:26:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE covers autonomous AI agent startup Manus raising over $500 million in a new funding round led by Boyu Capital at a $4 billion valuation to scale its general-purpose autonomous workflow agents across global enterprises.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/10/manus-ai-agents.jpg" alt="SiliconANGLE: AI Agent Developer Manus Raises $500M+ at Reported $4B Valuation" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE covers autonomous AI agent startup Manus raising over $500 million in a new funding round led by Boyu Capital at a $4 billion valuation to scale its general-purpose autonomous workflow agents across global enterprises.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/10/08/ai-agent-developer-manus-raises-500m-at-reported-4b-valuation/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/10/manus-ai-agents.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/10/manus-ai-agents.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: AI Agent Developer Manus Raises $500M+ at Reported $4B Valuation]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: Rein Security Raises $25M to Rein in Insecure AI Agents]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793737500000_42</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793737500000_42</guid>
-      <pubDate>Tue, 03 Nov 2026 20:25:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE details cybersecurity startup Rein Security securing $25 million in funding to protect enterprises from autonomous agent risks, providing runtime containment and access validation for AI agents executing corporate operations.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/10/rein-security-agents.jpg" alt="SiliconANGLE: Rein Security Raises $25M to Rein in Insecure AI Agents" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE details cybersecurity startup Rein Security securing $25 million in funding to protect enterprises from autonomous agent risks, providing runtime containment and access validation for AI agents executing corporate operations.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/10/08/rein-security-raises-25m-to-rein-in-insecure-ai-agents/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/10/rein-security-agents.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/10/rein-security-agents.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: Rein Security Raises $25M to Rein in Insecure AI Agents]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SiliconANGLE: Surf AI Launches Agentic Security Operations Platform With $57M Funding Round]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793737440000_43</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793737440000_43</guid>
-      <pubDate>Tue, 03 Nov 2026 20:24:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SiliconANGLE reports on Surf AI securing $57 million in combined seed and Series A funding to launch an agentic security operations platform that coordinates autonomous software agents across enterprise cloud and SaaS ecosystems to remediate configuration and access risks.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://siliconangle.com/wp-content/uploads/2026/03/surf-ai-agentic-secops.jpg" alt="SiliconANGLE: Surf AI Launches Agentic Security Operations Platform With $57M Funding Round" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SiliconANGLE reports on Surf AI securing $57 million in combined seed and Series A funding to launch an agentic security operations platform that coordinates autonomous software agents across enterprise cloud and SaaS ecosystems to remediate configuration and access risks.</p>
-          <p><small>출처 및 원문: <a href="https://siliconangle.com/2026/03/17/surf-ai-launches-agentic-security-operations-platform-57m-funding-round/">siliconangle.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://siliconangle.com/wp-content/uploads/2026/03/surf-ai-agentic-secops.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://siliconangle.com/wp-content/uploads/2026/03/surf-ai-agentic-secops.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SiliconANGLE: Surf AI Launches Agentic Security Operations Platform With $57M Funding Round]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Breaking Defense: In First, Air Force Fires Live Shot Off CCA Wingman Drone]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793737380000_44</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793737380000_44</guid>
-      <pubDate>Tue, 03 Nov 2026 20:23:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Breaking Defense reports that the US Air Force executed its first successful live missile launch from an autonomous Collaborative Combat Aircraft prototype, validating autonomous target acquisition and tracking during live-fire weapons tests.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://breakingdefense.com/wp-content/uploads/sites/13/2026/07/cca-live-missile-firing.jpg" alt="Breaking Defense: In First, Air Force Fires Live Shot Off CCA Wingman Drone" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Breaking Defense reports that the US Air Force executed its first successful live missile launch from an autonomous Collaborative Combat Aircraft prototype, validating autonomous target acquisition and tracking during live-fire weapons tests.</p>
-          <p><small>출처 및 원문: <a href="https://breakingdefense.com/2026/07/in-first-air-force-fires-live-shot-off-cca-wingman-drone/">breakingdefense.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://breakingdefense.com/wp-content/uploads/sites/13/2026/07/cca-live-missile-firing.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://breakingdefense.com/wp-content/uploads/sites/13/2026/07/cca-live-missile-firing.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Breaking Defense: In First, Air Force Fires Live Shot Off CCA Wingman Drone]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Breaking Defense: Drone Dominance: Pentagon to Order 30,000 One-Way Drones in 'Next Few Days']]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793737320000_45</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793737320000_45</guid>
-      <pubDate>Tue, 03 Nov 2026 20:22:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Breaking Defense details the Department of Defense announcing plans to place orders for 30,000 small, one-way attack drones under its Gauntlet unmanned competition, delivering mass autonomous loitering munitions to frontline combat units.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://breakingdefense.com/wp-content/uploads/sites/13/2026/03/drone-dominance-30k-order.jpg" alt="Breaking Defense: Drone Dominance: Pentagon to Order 30,000 One-Way Drones in &apos;Next Few Days&apos;" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Breaking Defense details the Department of Defense announcing plans to place orders for 30,000 small, one-way attack drones under its Gauntlet unmanned competition, delivering mass autonomous loitering munitions to frontline combat units.</p>
-          <p><small>출처 및 원문: <a href="https://breakingdefense.com/2026/03/drone-dominance-pentagon-to-order-30000-one-way-drones-in-next-few-days/">breakingdefense.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://breakingdefense.com/wp-content/uploads/sites/13/2026/03/drone-dominance-30k-order.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://breakingdefense.com/wp-content/uploads/sites/13/2026/03/drone-dominance-30k-order.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Breaking Defense: Drone Dominance: Pentagon to Order 30,000 One-Way Drones in 'Next Few Days']]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[The Defense Post: US Air Force Expands Push for Anti-UAS, Kamikaze Drone Tech]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793737260000_46</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793737260000_46</guid>
-      <pubDate>Tue, 03 Nov 2026 20:21:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Defense Post highlights the US Air Force issuing multiple industry solicitations for autonomous drone detection, counter-UAS interceptors, and offensive loitering munitions capable of autonomous target classification and navigation in GPS-denied environments.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/03/usaf-anti-uas-kamikaze.jpg" alt="The Defense Post: US Air Force Expands Push for Anti-UAS, Kamikaze Drone Tech" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Defense Post highlights the US Air Force issuing multiple industry solicitations for autonomous drone detection, counter-UAS interceptors, and offensive loitering munitions capable of autonomous target classification and navigation in GPS-denied environments.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/03/24/us-anti-uas-kamikaze-drone/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/03/usaf-anti-uas-kamikaze.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/03/usaf-anti-uas-kamikaze.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[The Defense Post: US Air Force Expands Push for Anti-UAS, Kamikaze Drone Tech]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[The Defense Post: AEVEX to Assist on US Air Force Autonomous Missions]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793737200000_47</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793737200000_47</guid>
-      <pubDate>Tue, 03 Nov 2026 20:20:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Defense Post details defense contractor AEVEX securing $15.6 million in contracts to support US Air Force autonomous flight operations, providing adaptable autonomous platforms and engineering services for long-range, high-payload missions.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/05/aevex-autonomous-aircraft.jpg" alt="The Defense Post: AEVEX to Assist on US Air Force Autonomous Missions" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Defense Post details defense contractor AEVEX securing $15.6 million in contracts to support US Air Force autonomous flight operations, providing adaptable autonomous platforms and engineering services for long-range, high-payload missions.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/05/26/us-autonomous-missions-aevex/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/05/aevex-autonomous-aircraft.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/05/aevex-autonomous-aircraft.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[The Defense Post: AEVEX to Assist on US Air Force Autonomous Missions]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[The Defense Post: USSOCOM Opens Search for AI-Enabled Drone Vision Trainer]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793737140000_48</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793737140000_48</guid>
-      <pubDate>Tue, 03 Nov 2026 20:19:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Defense Post covers US Special Operations Command launching a competition in partnership with SOFWERX to acquire synthetic data generation platforms that train artificial intelligence computer vision models across multi-domain uncrewed systems.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/06/ussocom-ai-vision-trainer.jpg" alt="The Defense Post: USSOCOM Opens Search for AI-Enabled Drone Vision Trainer" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Defense Post covers US Special Operations Command launching a competition in partnership with SOFWERX to acquire synthetic data generation platforms that train artificial intelligence computer vision models across multi-domain uncrewed systems.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/06/16/us-ai-drone-vision-trainer/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/06/ussocom-ai-vision-trainer.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/06/ussocom-ai-vision-trainer.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[The Defense Post: USSOCOM Opens Search for AI-Enabled Drone Vision Trainer]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Defense News: US Navy Launches New Golden Fleet-Era USV Program, Terminates Old One]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793737080000_49</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793737080000_49</guid>
-      <pubDate>Tue, 03 Nov 2026 20:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Defense News reports on the US Navy restructuring its unmanned surface vessel roadmap, terminating legacy prototyping efforts to launch a new Golden Fleet-era autonomous surface combatant program aimed at scalable operational integration with battle fleets.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://www.defensenews.com/wp-content/uploads/2026/03/golden-fleet-usv-navy.jpg" alt="Defense News: US Navy Launches New Golden Fleet-Era USV Program, Terminates Old One" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Defense News reports on the US Navy restructuring its unmanned surface vessel roadmap, terminating legacy prototyping efforts to launch a new Golden Fleet-era autonomous surface combatant program aimed at scalable operational integration with battle fleets.</p>
-          <p><small>출처 및 원문: <a href="https://www.defensenews.com/news/your-navy/2026/03/26/us-navy-launches-new-golden-fleet-era-usv-program-terminates-old-one/">defensenews.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://www.defensenews.com/wp-content/uploads/2026/03/golden-fleet-usv-navy.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://www.defensenews.com/wp-content/uploads/2026/03/golden-fleet-usv-navy.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Defense News: US Navy Launches New Golden Fleet-Era USV Program, Terminates Old One]]></media:title>
       </media:content>
     </item>
   </channel>

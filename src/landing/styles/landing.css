@@ -319,29 +319,68 @@ div[aria-label*="광고"][style*="position: fixed"],
 }
 
 /* ==========================================================================
-   Dedicated Desktop Side Gutters (정해진 데스크톱 양 날개 영역)
+   Dedicated Desktop Side Gutters (정해진 데스크톱 1536px+ 양 날개 영역)
+   - 1536px 미만 뷰포트에서는 화면 가림 방지를 위해 완전 숨김
+   - position: static 강제로 구글 스크립트의 sticky/fixed 슬라이딩 동작 100% 원천 차단
    ========================================================================== */
 #adsense-desktop-left,
 #adsense-desktop-right {
   width: 160px !important;
-  max-width: 200px !important;
-  min-width: 140px !important;
+  max-width: 160px !important;
+  min-width: 160px !important;
+  position: static !important;
+  float: none !important;
+  top: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
   overflow: hidden !important;
   contain: layout paint !important;
+  z-index: 1 !important;
+}
+
+#adsense-desktop-left *,
+#adsense-desktop-right * {
+  position: static !important;
+  float: none !important;
+  top: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+  max-width: 100% !important;
 }
 
 #adsense-desktop-left ins.adsbygoogle,
 #adsense-desktop-right ins.adsbygoogle {
   display: block !important;
-  width: 100% !important;
-  max-width: 200px !important;
+  width: 160px !important;
+  max-width: 160px !important;
+  height: 600px !important;
+  max-height: 600px !important;
   overflow: hidden !important;
 }
 
 #adsense-desktop-left iframe,
 #adsense-desktop-right iframe {
-  max-width: 100% !important;
+  width: 160px !important;
+  max-width: 160px !important;
+  height: 600px !important;
+  max-height: 600px !important;
   overflow: hidden !important;
+}
+
+/* 1536px 미만 뷰포트(일반 노트북/태블릿/모바일)에서는 데스크톱 양 날개 광고 완전 숨김 (본문 가림 0%) */
+@media (max-width: 1535px) {
+  #adsense-desktop-left,
+  #adsense-desktop-right {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
 }
 
 /* ==========================================================================
@@ -355,8 +394,14 @@ div[aria-label*="광고"][style*="position: fixed"],
   padding: 0 4px;
   height: 50px !important;
   max-height: 50px !important;
+  position: static !important;
+  float: none !important;
   overflow: hidden !important;
   contain: layout paint !important;
+}
+
+#adsense-mobile-top * {
+  position: static !important;
 }
 
 #adsense-mobile-top .adsense-banner-inner {
@@ -385,4 +430,25 @@ div[aria-label*="광고"][style*="position: fixed"],
   max-height: 50px !important;
   height: 50px !important;
   overflow: hidden !important;
+}
+
+/* 화면 상단/하단을 가리며 내려오는 구글 자동 앵커 및 비네트 오버레이 원천 차단 */
+body > div[id*="aswift_"][style*="position: fixed"],
+body > div[id*="aswift_"][style*="position:fixed"],
+body > div[id*="google_ads_iframe"][style*="position: fixed"],
+body > div[id*="google_ads_iframe"][style*="position:fixed"],
+iframe[name*="google_ads_top_frame"],
+iframe[name*="google_ads_bottom_frame"],
+ins.adsbygoogle[data-anchor-status],
+.google-auto-placed,
+.adsbygoogle-noab-wrap {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0px !important;
+  max-height: 0px !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  z-index: -9999 !important;
 }

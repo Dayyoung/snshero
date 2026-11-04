@@ -304,6 +304,11 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
 
     // RPG loop toggles
     case 'play-toggle-auto':
+      try {
+        if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+          navigator.vibrate?.([15, 30, 15]);
+        }
+      } catch {}
       toggleAutoMode();
       break;
     case 'play-toggle-repeat':
@@ -1968,8 +1973,99 @@ function renderWebtoonView(): string {
 }
 
 // ============================================================================
-// 4. Main Exported Renderer
+// 4. Floating AUTO PLAY Button & Main Exported Renderer
 // ============================================================================
+
+/**
+ * Render Floating AUTO PLAY Action Button at Bottom-Right (z-[70])
+ * - Spins continuously (animate-spin) when auto-play is running
+ * - Click toggles auto-play ON/OFF on the current view (map, dialogue, battle)
+ * - Restores idle pause on stop, and resumes on next toggle
+ */
+export function renderAutoPlayFloatingButton(): string {
+  const isAuto = playRpgState.autoMode;
+
+  return `
+    <aside
+      id="play-floating-auto-dock"
+      class="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[70] select-none pointer-events-auto font-mono"
+      aria-label="${tr('자동플레이 컨트롤러', 'Auto Play Controller', '自動プレイコントローラー')}"
+    >
+      <button
+        type="button"
+        data-action="play-toggle-auto"
+        class="group relative flex flex-col items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 transition-all cursor-pointer select-none active:scale-95 shadow-2xl ${
+          isAuto
+            ? 'bg-amber-400 text-stone-950 border-amber-300 shadow-[0_0_24px_rgba(251,191,36,0.9)] ring-2 ring-amber-300 scale-105'
+            : 'bg-[#201d1d] text-[#fdfcfc] border-white/20 hover:border-amber-400 hover:scale-105'
+        }"
+        aria-label="${isAuto ? tr('자동플레이 중지', 'Stop Auto Play', '自動プレイ停止') : tr('자동플레이 시작', 'Start Auto Play', '自動プレイ開始')}"
+        title="${isAuto ? tr('자동플레이 중지 (클릭 시 멈춤)', 'Stop Auto Play', 'クリックで停止') : tr('자동플레이 시작 (클릭 시 재생)', 'Start Auto Play', 'クリックで再生')}"
+      >
+        <!-- Outer Spinning Dash Ring (활성화 시 빙빙 돌아가는 외곽 대시 링) -->
+        <div
+          class="pointer-events-none absolute inset-[-3px] rounded-full border-2 border-dashed ${
+            isAuto
+              ? 'border-stone-950 animate-spin opacity-100'
+              : 'border-white/20 opacity-40 group-hover:border-amber-400/50'
+          }"
+          style="animation-duration: 2.5s;"
+        ></div>
+
+        <!-- Center Spinning Icon (활성화 시 빙빙 돌아가는 중심 회전 룬) -->
+        <div
+          class="pointer-events-none flex items-center justify-center transition-transform ${
+            isAuto ? 'animate-spin' : ''
+          }"
+          style="animation-duration: 1.8s;"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            class="w-6 h-6 sm:w-7 sm:h-7 ${isAuto ? 'text-stone-950' : 'text-amber-400'}"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            ${
+              isAuto
+                ? `
+                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                  <path d="M16 21h5v-5" />
+                  <polygon points="13 2 9 13 12 13 11 22 15 11 12 11" fill="currentColor" stroke="none" />
+                `
+                : `
+                  <circle cx="12" cy="12" r="10" stroke-dasharray="4 2" />
+                  <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" />
+                `
+            }
+          </svg>
+        </div>
+
+        <!-- Floating Badge Label (AUTO PLAY) -->
+        <span class="text-[7.5px] sm:text-[8.5px] font-black uppercase tracking-tight leading-none mt-0.5 pointer-events-none font-mono ${
+          isAuto ? 'text-stone-950 font-black' : 'text-white'
+        }">
+          AUTO
+        </span>
+      </button>
+
+      <!-- Sub Status Pill below button -->
+      <div class="mt-1 text-center pointer-events-none">
+        <span class="inline-block px-1.5 py-0.5 text-[7.5px] sm:text-[8.5px] font-black rounded-xs shadow-md border ${
+          isAuto
+            ? 'bg-amber-400 text-stone-950 border-stone-900 animate-pulse'
+            : 'bg-[#201d1d] text-stone-300 border-white/20'
+        }">
+          ${isAuto ? '● RUNNING' : '▶ AUTO PLAY'}
+        </span>
+      </div>
+    </aside>
+  `;
+}
 
 /**
  * Main render function for the PlaySection view.
@@ -1982,6 +2078,9 @@ export function renderPlaySection(): string {
       <div id="kadan-journey-stage" class="w-full">
         ${renderAdventureView()}
       </div>
+
+      <!-- Floating AUTO PLAY Action Button (Fixed Bottom-Right) -->
+      ${renderAutoPlayFloatingButton()}
     </div>
   `;
 }
