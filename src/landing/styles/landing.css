@@ -532,14 +532,14 @@ ins.adsbygoogle iframe,
     right: 0 !important;
     width: 100vw !important;
     max-width: 100vw !important;
-    height: 58px !important;
-    min-height: 58px !important;
-    max-height: 58px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
     z-index: 60 !important;
     background-color: #0c1220 !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
-    padding: 2px 4px !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6) !important;
+    padding: 1px 2px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -552,24 +552,26 @@ ins.adsbygoogle iframe,
   body:has(#play-battle-modal-root) #adsense-mobile-top > div {
     background-color: #0c1220 !important;
     border-color: rgba(255, 255, 255, 0.15) !important;
+    height: 50px !important;
+    max-height: 50px !important;
   }
 
-  /* 대사화면 및 플레이(배틀) 모달: 상단 배너(58px) 바로 아래부터 화면 하단까지 채움 */
+  /* 대사화면 및 플레이(배틀) 모달: 상단 배너(52px) 바로 아래부터 화면 하단까지 채움 */
   body.has-active-rpg-modal #play-dialogue-modal-root,
   body.has-active-rpg-modal #play-battle-modal-root,
   body:has(#play-dialogue-modal-root) #play-dialogue-modal-root,
   body:has(#play-battle-modal-root) #play-battle-modal-root,
   .play-rpg-fullscreen-modal {
     position: fixed !important;
-    top: 58px !important;
+    top: 52px !important;
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
     width: 100vw !important;
     max-width: 100vw !important;
-    height: calc(100vh - 58px) !important;
-    height: calc(100dvh - 58px) !important;
-    max-height: calc(100dvh - 58px) !important;
+    height: calc(100vh - 52px) !important;
+    height: calc(100dvh - 52px) !important;
+    max-height: calc(100dvh - 52px) !important;
     z-index: 50 !important;
   }
 }
@@ -588,16 +590,17 @@ body:has(#play-battle-modal-root) #adsense-desktop-right .text-stone-500 {
 }
 
 /* ==========================================================================
-   Mobile/Tablet Compact Slim AdSense Top Banner (정해진 모바일 상단 영역)
+   Mobile/Tablet Compact Slim Ribbon AdSense Top Banner (컴팩트 320x50 현수막 띠 배너)
    ========================================================================== */
 #adsense-mobile-top {
   width: 100%;
   max-width: 100%;
   background-color: #f8f7f7;
   border-bottom: 1px solid rgba(15, 0, 0, 0.12);
-  padding: 4px 6px;
-  min-height: 54px;
-  max-height: 72px;
+  padding: 1px 2px;
+  height: 52px;
+  min-height: 52px;
+  max-height: 52px;
   position: static !important;
   float: none !important;
   top: auto !important;
@@ -607,23 +610,41 @@ body:has(#play-battle-modal-root) #adsense-desktop-right .text-stone-500 {
   transform: none !important;
   overflow: hidden !important;
   z-index: 10 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 #adsense-mobile-top .adsense-banner-inner {
   width: 100%;
-  max-width: 468px;
+  max-width: 320px;
+  height: 50px;
+  max-height: 50px;
   margin: 0 auto;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #adsense-mobile-top ins.adsbygoogle {
   display: inline-block !important;
-  width: 100% !important;
-  max-width: 468px !important;
+  width: 320px !important;
+  max-width: 100% !important;
   height: 50px !important;
   max-height: 50px !important;
   min-height: 50px !important;
   margin: 0 auto !important;
+  overflow: hidden !important;
+}
+
+#adsense-mobile-top iframe,
+#adsense-mobile-top div[id*="_host"] {
+  height: 50px !important;
+  max-height: 50px !important;
+  width: 320px !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
 }
 
 /* 화면 상단/하단을 가리며 내려오는 구글 자동 앵커 바만 선별 차단 */

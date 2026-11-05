@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 11:50 KST] [모바일(너비<높이) 상단 구글 광고를 표준 320x50 컴팩트 현수막 띠 배너로 축소 및 슬림화]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 문제 제기 및 요구사항**:
+    - "모바일 (너비<높이)에서 표시되는 상단광고가 너무 길어. 현수막 배너 광고처럼 작은 광고로 표시해줘."
+  - **2. 모바일 광고 세로 과대 팽창 원인 분석**:
+    - 기존 `ensureInsTagInContainer`에서 `data-full-width-responsive="true"`가 활성화되어 있어, 구글 애드센스 자바스크립트가 모바일 세로 뷰포트에서 높이를 100px~250px(대형 사각형 배너 등)으로 임의 자동 확장(팽창)시켜 화면 상단을 과도하게 가리고 게임 및 본문 가독성을 해치는 문제 발생.
+  - **3. 표준 320x50 컴팩트 현수막 띠 배너 규격화 (`adsenseManager.ts`, `landing.css`)**:
+    - **반응형 팽창 차단 (`adsenseManager.ts`)**:
+      - `data-full-width-responsive` 속성을 `'false'`로 변경하여 구글의 임의 높이 확장 차단.
+      - `<ins>` 태그 스타일을 `display:inline-block; width:320px; max-width:100%; height:50px; min-height:50px; max-height:50px; margin:0 auto; overflow:hidden;`으로 표준 모바일 리본 띠 배너(320x50) 규격으로 고정.
+      - `renderMobileTopBanner` 컨테이너의 불필요한 라벨 여백을 슬림화하여 전체 높이를 52px로 최소화.
+    - **초슬림 현수막 띠 배너 레이아웃 강제 (`landing.css`)**:
+      - `#adsense-mobile-top`의 높이를 52px (`height: 52px; min-height: 52px; max-height: 52px;`)로 완전 슬림화.
+      - 내부 `ins.adsbygoogle`, `iframe`, `div[id*="_host"]`의 높이를 `height: 50px !important; max-height: 50px !important;` 및 `width: 320px !important;`로 고정하여 배너 오버플로우 원천 차단.
+      - 대사화면 및 배틀화면 모달 활성화 시에도 모달 시작점을 `top: 52px; height: calc(100dvh - 52px);`로 동기화하여 모바일 게임 플레이 가시 영역을 대폭 확장.
+  - **4. 빌드 및 검증**:
+    - `npm run build && node scripts/post-build.js`: 4,362개 모듈 트랜스파일 및 0 error 프로덕션 빌드 성공.
+- **검증 결과**:
+  - 모바일(너비 < 높이) 환경에서 상단 광고가 세로로 길어지지 않고 슬림한 320x50 현수막 띠 배너 형태로 작고 깔끔하게 노출됨을 확인.
+  - 빌드 성공 (0 error).
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 모바일(너비<높이) 상단 구글 광고를 표준 320x50 컴팩트 현수막 띠 배너로 축소 및 슬림화 -> 작업완료`.
+
 ## [2026-11-05 10:20 KST] [대사화면 및 플레이(배틀)화면 구글 배너 상시 노출 레이아웃 및 모달 인셋 동기화 구축]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

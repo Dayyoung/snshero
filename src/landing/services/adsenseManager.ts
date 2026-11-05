@@ -85,9 +85,10 @@ function ensureInsTagInContainer(container: HTMLElement, format: 'vertical' | 'h
     ins.setAttribute('data-ad-format', 'vertical');
     ins.setAttribute('data-full-width-responsive', 'false');
   } else {
-    ins.style.cssText = 'display:block; width:100%; min-width:280px; max-width:468px; height:50px; min-height:50px; margin:0 auto;';
+    // 320x50 모바일 표준 컴팩트 현수막 띠 배너 규격 (높이 자동 뻥튀기 방지)
+    ins.style.cssText = 'display:inline-block; width:320px; max-width:100%; height:50px; min-height:50px; max-height:50px; margin:0 auto; overflow:hidden;';
     ins.setAttribute('data-ad-format', 'horizontal');
-    ins.setAttribute('data-full-width-responsive', 'true');
+    ins.setAttribute('data-full-width-responsive', 'false');
   }
 
   wrapper.appendChild(ins);
@@ -167,7 +168,7 @@ export function renderDesktopRightGutter(_activeView?: string): string {
 
 /**
  * Renders Mobile/Tablet Top Banner Ad Unit (<div id="adsense-mobile-top">)
- * Dynamically displayed when Width <= Height (Portrait).
+ * Dynamically displayed as a slim 320x50 ribbon banner when Width <= Height (Portrait).
  */
 export function renderMobileTopBanner(_activeView?: string): string {
   if (isAdRemoved()) return '';
@@ -175,16 +176,12 @@ export function renderMobileTopBanner(_activeView?: string): string {
   return `
     <div
       id="adsense-mobile-top"
-      class="adsense-banner-top w-full bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] text-center px-2 py-0.5 select-none overflow-hidden"
-      style="display: none;"
-      aria-label="Google AdSense Mobile Banner"
+      class="adsense-banner-top w-full bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] text-center px-1 select-none overflow-hidden"
+      style="display: none; height: 52px; min-height: 52px; max-height: 52px;"
+      aria-label="Google AdSense Mobile Ribbon Banner"
     >
-      <div class="adsense-banner-inner max-w-sm sm:max-w-md mx-auto overflow-hidden">
-        <div class="flex items-center justify-between text-[8px] font-mono text-stone-400 uppercase tracking-wider px-1 leading-none mb-0.5">
-          <span>[AD] Google Ads</span>
-          <span class="text-[7px] text-stone-300">Sponsored</span>
-        </div>
-        <div class="adsense-slot-wrapper w-full min-h-[50px] flex items-center justify-center overflow-hidden"></div>
+      <div class="adsense-banner-inner max-w-[320px] mx-auto h-[50px] overflow-hidden flex items-center justify-center">
+        <div class="adsense-slot-wrapper w-full h-[50px] min-h-[50px] max-h-[50px] flex items-center justify-center overflow-hidden"></div>
       </div>
     </div>
   `;
