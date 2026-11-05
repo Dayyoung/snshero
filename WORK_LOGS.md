@@ -2,6 +2,30 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 09:40 KST] [구글 애드센스 배너 정상 표시 복구(CSS 호스트 숨김 해제) 및 #play 배틀 뷰 광고 노출 활성화]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 문제 제기 및 요구사항**:
+    - "배너안에 광고가 여전히 표시안돼. #play 에서도 표시되게 해줘."
+  - **2. 광고 미표시 근본 원인 분석**:
+    - 구글 애드센스가 성공적으로 광고를 반환하여 `<ins>` 내부에 `<div id="aswift_1_host">`와 `<iframe id="aswift_1">`를 주입하고 `data-ad-status="filled"`까지 완료되었음에도,
+    - `src/landing/styles/landing.css` 및 `src/index.css`에 전면 광고(비네트)를 차단하기 위해 무차별 적용되었던 `#aswift_0_host ~ #aswift_5_host { display: none !important; width: 0 !important; height: 0 !important; visibility: hidden !important; opacity: 0 !important; }` 규칙 때문에 정상적인 배너 호스트 div 자체가 브라우저 화면에서 완전히 지워져 빈 상자만 보였던 치명적 결함 발견.
+  - **3. CSS 가시성 복구 및 오버레이 선별 격리 (`landing.css`, `src/index.css`)**:
+    - `#aswift_0_host ~ #aswift_5_host` 무차별 숨김 규칙 전면 삭제.
+    - 화면 덮개형 전면 광고(`div[id*="aswift"][style*="position: fixed"]`)만 선별 차단하고,
+    - 지정된 배너 컨테이너(`.adsense-gutter`, `#adsense-desktop-left`, `#adsense-desktop-right`, `#adsense-mobile-top`, `.adsense-slot-wrapper`, `ins.adsbygoogle`) 내부의 모든 `div[id*="_host"]` 및 `iframe[id*="aswift"]`에 `display: inline-block / block !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;`를 명시하여 100% 정상 가시성 복구.
+  - **4. #play (게임 플레이 화면) 배너 광고 노출 활성화 (`adsenseManager.ts`, `landing/index.ts`)**:
+    - 기존에 `activeView === 'play'` 시 배너를 숨기던 차단 조건을 전면 제거.
+    - 사용자의 요청에 따라 `#play` 배틀 화면에서도 가로 화면(너비 > 높이) 시 좌우 거터 배너, 세로 화면(너비 <= 높이) 시 상단 배너가 정상적으로 연동 및 표시되도록 구현.
+  - **5. 빌드 및 검증**:
+    - `npm run build && node scripts/post-build.js`: 0 error 정상 완료.
+    - 로컬 Git 커밋 및 연동 구글 폼 작업 보고서 제출.
+- **검증 결과**:
+  - 프로덕션 빌드 성공 (0 error)
+  - 로컬 Git 커밋 완료
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 구글 애드센스 배너 정상 표시 복구(CSS 호스트 숨김 해제) 및 #play 배틀 뷰 광고 노출 활성화 -> 작업완료`
+
+
 ## [2026-11-05 09:15 KST] [공식 굿즈몰(#mall) 트래픽 절감 10개 페이징 처리, 경량 JPG 브라우징 및 구매자 전용 투명 PNG 다운로드 구현]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

@@ -191,9 +191,7 @@ export function renderApp(): void {
 
     // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
     syncAdSenseRatioLayout(state.activeView);
-    if (state.activeView !== 'play') {
-      pushAdSenseTags(state.activeView);
-    }
+    pushAdSenseTags(state.activeView);
     return;
   }
 
@@ -246,9 +244,7 @@ export function renderApp(): void {
 
   // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
   syncAdSenseRatioLayout(state.activeView);
-  if (state.activeView !== 'play') {
-    pushAdSenseTags(state.activeView);
-  }
+  pushAdSenseTags(state.activeView);
 }
 
 /**
@@ -275,21 +271,10 @@ export function renderSectionContent(view: ViewKey): void {
     }
     mainSlot.innerHTML = renderActiveViewContent(view);
 
-    // Suppress ads completely during gameplay to guarantee zero touch/viewport obstruction
-    if (view === 'play') {
-      if (leftGutter) leftGutter.style.display = 'none';
-      if (rightGutter) rightGutter.style.display = 'none';
-      if (mobileTop) mobileTop.style.display = 'none';
-    } else {
-      if (leftGutter) leftGutter.style.display = '';
-      if (rightGutter) rightGutter.style.display = '';
-      if (mobileTop) mobileTop.style.display = '';
-      // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
-  syncAdSenseRatioLayout(state.activeView);
-  if (state.activeView !== 'play') {
-    pushAdSenseTags(state.activeView);
-  }
-    }
+    // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
+    syncAdSenseRatioLayout(view);
+    pushAdSenseTags(view);
+
     window.scrollTo({ top: 0, behavior: 'instant' });
   } else {
     renderApp();

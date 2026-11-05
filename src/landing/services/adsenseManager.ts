@@ -81,7 +81,7 @@ function ensureInsTagInContainer(container: HTMLElement, format: 'vertical' | 'h
   ins.setAttribute('data-ad-client', ADSENSE_CONFIG.client);
 
   if (format === 'vertical') {
-    ins.style.cssText = 'display:block; width:160px; height:600px; max-width:160px; max-height:600px; margin:0 auto; overflow:hidden;';
+    ins.style.cssText = 'display:block; width:160px; min-height:600px; margin:0 auto;';
     ins.setAttribute('data-ad-format', 'vertical');
     ins.setAttribute('data-full-width-responsive', 'false');
   } else {
@@ -119,8 +119,8 @@ function cleanupUnloadedInsTag(container: HTMLElement): void {
  * Renders Desktop Left Side Gutter Ad Unit (<aside id="adsense-desktop-left">)
  * Dynamically displayed when Width > Height (Landscape).
  */
-export function renderDesktopLeftGutter(activeView?: string): string {
-  if (isAdRemoved() || activeView === 'play') return '';
+export function renderDesktopLeftGutter(_activeView?: string): string {
+  if (isAdRemoved()) return '';
 
   return `
     <aside
@@ -144,8 +144,8 @@ export function renderDesktopLeftGutter(activeView?: string): string {
  * Renders Desktop Right Side Gutter Ad Unit (<aside id="adsense-desktop-right">)
  * Dynamically displayed when Width > Height (Landscape).
  */
-export function renderDesktopRightGutter(activeView?: string): string {
-  if (isAdRemoved() || activeView === 'play') return '';
+export function renderDesktopRightGutter(_activeView?: string): string {
+  if (isAdRemoved()) return '';
 
   return `
     <aside
@@ -169,8 +169,8 @@ export function renderDesktopRightGutter(activeView?: string): string {
  * Renders Mobile/Tablet Top Banner Ad Unit (<div id="adsense-mobile-top">)
  * Dynamically displayed when Width <= Height (Portrait).
  */
-export function renderMobileTopBanner(activeView?: string): string {
-  if (isAdRemoved() || activeView === 'play') return '';
+export function renderMobileTopBanner(_activeView?: string): string {
+  if (isAdRemoved()) return '';
 
   return `
     <div
@@ -231,17 +231,17 @@ let isObserverInitialized = false;
  * Synchronizes ad container display styles strictly based on aspect ratio:
  * - Width > Height (Landscape): Left & Right gutters visible (display: flex), Top banner hidden (display: none).
  * - Width <= Height (Portrait): Top banner visible (display: block), Left & Right gutters hidden (display: none).
- * - Play route or VIP ad-free: All hidden (display: none).
+ * - VIP ad-free: All hidden (display: none).
  */
-export function syncAdSenseRatioLayout(activeView?: string): void {
+export function syncAdSenseRatioLayout(_activeView?: string): void {
   if (typeof document === 'undefined') return;
 
   const leftGutter = document.getElementById('adsense-desktop-left');
   const rightGutter = document.getElementById('adsense-desktop-right');
   const mobileTop = document.getElementById('adsense-mobile-top');
 
-  // 1. VIP ad-removal or #play gaming route: suppress all ads 100%
-  if (isAdRemoved() || activeView === 'play') {
+  // 1. VIP ad-removal: suppress all ads 100%
+  if (isAdRemoved()) {
     if (leftGutter) {
       leftGutter.style.setProperty('display', 'none', 'important');
       cleanupUnloadedInsTag(leftGutter);
@@ -360,7 +360,7 @@ function isAdSlotVisible(ins: HTMLElement): boolean {
  *   - Strict aspect-ratio compliance (Width > Height: Left & Right; Width <= Height: Top)
  */
 export function pushAdSenseTags(activeView?: string): void {
-  if (isAdRemoved() || activeView === 'play') return;
+  if (isAdRemoved()) return;
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
   // Sync ratio layout immediately so active containers are mounted and sized

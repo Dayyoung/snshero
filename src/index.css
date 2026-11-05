@@ -1286,17 +1286,15 @@ html, body {
 .adsbygoogle-noab-wrap,
 ins.adsbygoogle[data-anchor-status],
 div[id*="aswift"][style*="position: fixed"],
+div[id*="aswift"][style*="position:fixed"],
 div[id*="google_ads_iframe"][style*="position: fixed"],
+div[id*="google_ads_iframe"][style*="position:fixed"],
 div[aria-label*="Advertisement"][style*="position: fixed"],
+div[aria-label*="Advertisement"][style*="position:fixed"],
 div[aria-label*="광고"][style*="position: fixed"],
+div[aria-label*="광고"][style*="position:fixed"],
 iframe[name*="google_ads_top_frame"],
-iframe[name*="google_ads_bottom_frame"],
-#aswift_0_host,
-#aswift_1_host,
-#aswift_2_host,
-#aswift_3_host,
-#aswift_4_host,
-#aswift_5_host {
+iframe[name*="google_ads_bottom_frame"] {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
@@ -1308,6 +1306,33 @@ iframe[name*="google_ads_bottom_frame"],
   opacity: 0 !important;
   z-index: -9999 !important;
   overflow: hidden !important;
+}
+
+/* Designated banner slot ads and iframes are 100% visible and unsuppressed */
+.adsense-gutter div[id*="_host"],
+.adsense-slot-wrapper div[id*="_host"],
+ins.adsbygoogle div[id*="_host"],
+#adsense-desktop-left div[id*="_host"],
+#adsense-desktop-right div[id*="_host"],
+#adsense-mobile-top div[id*="_host"] {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.adsense-gutter iframe,
+.adsense-slot-wrapper iframe,
+ins.adsbygoogle iframe,
+#adsense-desktop-left iframe,
+#adsense-desktop-right iframe,
+#adsense-mobile-top iframe {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 /* Strict Compact Slim Banner for Mobile & Tablet */
