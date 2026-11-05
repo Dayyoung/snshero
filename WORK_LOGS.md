@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 12:49 KST] [사용자 요청 기반 원격 저장소 푸시(/git-push) 완료: 광고/배틀/캐릭터 시트 최적화 반영]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 명령**: `/git-push` 호출에 따라 로컬에 누적 커밋된 작업 내역들을 원격 저장소(`origin/main`)로 안전하게 일괄 푸시.
+  - **2. 반영된 주요 커밋 내역**:
+    - `60c1942a5`: 카드 배틀 사전 이미지 프리로딩 프로그레스바 도입 및 3x3 보드 슬롯 단위 Diffing으로 카드 깜박임 완전 박멸
+    - `6d62a974c`: 대사화면 및 플레이(배틀)화면 구글 배너 상시 노출 레이아웃 및 모달 인셋 동기화
+    - `021e954bd`: 모바일(너비<높이) 상단 구글 광고를 표준 320x50 컴팩트 현수막 띠 배너로 축소 및 슬림화
+    - `873ab8cf8`: feat(anime-sheets): generate all 110 ufotable transparent RGBA character cutouts/sheets and 20 16:9 location sheets in Google Flow
+    - `9459e1a5d`: feat(assets): optimize 110 character transparent cutouts/busts and apply ufotable cards & 20 location backgrounds to dialogue and card play
+    - `32e22505c`: chore(assets): update character sheets and cutscene generation scripts
+  - **3. 푸시 결과**:
+    - 원격 대상: `https://github.com/Dayyoung/snshero` (`origin/main`)
+    - 푸시 범위: `05893c93d..32e22505c main -> main` (총 6개 커밋, 2,583개 객체 전송 완료)
+    - GitHub Actions 자동 배포 트리거 완료.
+- **검증 결과**:
+  - `git status`: 워킹트리 동기화 완료 (`Your branch is up to date with 'origin/main'`).
+  - 구글 폼 완료 보고서 제출 완료: `[배포] 사용자 요청 기반 원격 저장소 푸시(/git-push) 완료 -> 작업완료`.
+
 ## [2026-11-05 12:15 KST] [110종 ufotable 캐릭터 투명 배경/품질 최적화, 카드 7등신·상반신 이미지 전면 교체 및 20종 장소 배경 대화·카드플레이 적용]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
