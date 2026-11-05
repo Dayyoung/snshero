@@ -417,11 +417,96 @@ ins.adsbygoogle iframe,
 }
 
 /* ==========================================================================
-   화면 비율 기준 구글 배너 반응형 규칙 (Aspect-Ratio Responsive Rules)
-   - 화면비율 너비 > 높이 (Landscape): 좌우 구글 배너 표시, 상단 배너 숨김
-   - 화면비율 너비 <= 높이 (Portrait): 상단 구글 배너 표시, 좌우 배너 숨김
+   화면 비율 및 뷰포트 기준 구글 배너 반응형 규칙 (Aspect-Ratio & Viewport Responsive Rules)
+   - 와이드 데스크톱 가로 모드 (Width >= 1280px & Height >= 650px & Landscape): 좌우 양 날개 거터(160x600) 배너
+   - 태블릿 가로/세로, 스마트폰, 세로 모드 (Width < 1280px 또는 Height < 650px, 또는 Portrait):
+     좌우 거터 완전 숨김 + 컴팩트 상단 띠 배너(320x50) 활성화
+   - 대사/배틀 모달 활성화 시 뒷배경 틈새 노출 100% 원천 차단 (Zero-Gap Fullscreen Protection)
    ========================================================================== */
-@media (orientation: landscape) {
+
+/* 대사/배틀 모달 활성화 시 브라우저 베이스 배경도 딥 다크로 일치 (틈새 흰색 깜빡임 방지) */
+body.has-active-rpg-modal {
+  background-color: #060a14 !important;
+}
+
+body.has-active-rpg-modal #landing-root {
+  background-color: #060a14 !important;
+}
+
+/* 1. 태블릿(가로/세로) 및 모바일 기기: 너비 1280px 미만 또는 높이 650px 미만, 또는 세로 모드 */
+@media (max-width: 1279px), (max-height: 649px), (orientation: portrait) {
+  /* 좌우 데스크톱 거터 광고 완전 숨김 (화면 침범 및 배경 노출 결함 원천 차단) */
+  #adsense-desktop-left,
+  #adsense-desktop-right {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  /* 상단 컴팩트 320x50 현수막 띠 배너 활성화 */
+  body.has-active-rpg-modal #adsense-mobile-top,
+  body:has(#play-dialogue-modal-root) #adsense-mobile-top,
+  body:has(#play-battle-modal-root) #adsense-mobile-top {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    z-index: 60 !important;
+    background-color: #0c1220 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    padding: 1px 2px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    visibility: visible !important;
+  }
+
+  body.has-active-rpg-modal #adsense-mobile-top > div,
+  body:has(#play-dialogue-modal-root) #adsense-mobile-top > div,
+  body:has(#play-battle-modal-root) #adsense-mobile-top > div {
+    background-color: #0c1220 !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    height: 50px !important;
+    max-height: 50px !important;
+  }
+
+  /* 대사화면 및 플레이(배틀) 모달: 상단 배너 아래부터 전체 화면 100% 꽉 채움 (좌우 틈새 0px 무결점) */
+  body.has-active-rpg-modal #play-dialogue-modal-root,
+  body.has-active-rpg-modal #play-battle-modal-root,
+  body:has(#play-dialogue-modal-root) #play-dialogue-modal-root,
+  body:has(#play-battle-modal-root) #play-battle-modal-root,
+  .play-rpg-fullscreen-modal {
+    position: fixed !important;
+    top: 52px !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: calc(100vh - 52px) !important;
+    height: calc(100dvh - 52px) !important;
+    max-height: calc(100dvh - 52px) !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    z-index: 50 !important;
+    background-color: #060a14 !important;
+  }
+}
+
+/* 2. 대화면 와이드 데스크톱 가로 모드 (너비 1280px 이상 AND 높이 650px 이상 AND 가로 방향) */
+@media (min-width: 1280px) and (min-height: 650px) and (orientation: landscape) {
+  /* 상단 배너 숨김 */
   #adsense-mobile-top {
     display: none !important;
     visibility: hidden !important;
@@ -491,7 +576,7 @@ ins.adsbygoogle iframe,
     border-color: rgba(255, 255, 255, 0.15) !important;
   }
 
-  /* 대사화면 및 플레이(배틀) 모달: 좌우 160px 배너 사이에 완벽 배치 */
+  /* 대사화면 및 플레이(배틀) 모달: 전체 100vw를 안전하게 커버하고, 좌우 160px 패딩으로 콘텐츠 정렬 */
   body.has-active-rpg-modal #play-dialogue-modal-root,
   body.has-active-rpg-modal #play-battle-modal-root,
   body:has(#play-dialogue-modal-root) #play-dialogue-modal-root,
@@ -500,79 +585,16 @@ ins.adsbygoogle iframe,
     position: fixed !important;
     top: 0 !important;
     bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
     height: 100vh !important;
     height: 100dvh !important;
-    left: 160px !important;
-    right: 160px !important;
-    width: calc(100vw - 320px) !important;
-    max-width: calc(100vw - 320px) !important;
+    padding-left: 160px !important;
+    padding-right: 160px !important;
     z-index: 50 !important;
-  }
-}
-
-@media (orientation: portrait) {
-  #adsense-desktop-left,
-  #adsense-desktop-right {
-    display: none !important;
-    visibility: hidden !important;
-    width: 0 !important;
-    height: 0 !important;
-    overflow: hidden !important;
-    padding: 0 !important;
-    border: none !important;
-  }
-
-  /* 대사화면 및 플레이(배틀) 모달 활성화 시 상단 배너 최상단 고정 */
-  body.has-active-rpg-modal #adsense-mobile-top,
-  body:has(#play-dialogue-modal-root) #adsense-mobile-top,
-  body:has(#play-battle-modal-root) #adsense-mobile-top {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    height: 52px !important;
-    min-height: 52px !important;
-    max-height: 52px !important;
-    z-index: 60 !important;
-    background-color: #0c1220 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
-    padding: 1px 2px !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    overflow: hidden !important;
-    visibility: visible !important;
-  }
-
-  body.has-active-rpg-modal #adsense-mobile-top > div,
-  body:has(#play-dialogue-modal-root) #adsense-mobile-top > div,
-  body:has(#play-battle-modal-root) #adsense-mobile-top > div {
-    background-color: #0c1220 !important;
-    border-color: rgba(255, 255, 255, 0.15) !important;
-    height: 50px !important;
-    max-height: 50px !important;
-  }
-
-  /* 대사화면 및 플레이(배틀) 모달: 상단 배너(52px) 바로 아래부터 화면 하단까지 채움 */
-  body.has-active-rpg-modal #play-dialogue-modal-root,
-  body.has-active-rpg-modal #play-battle-modal-root,
-  body:has(#play-dialogue-modal-root) #play-dialogue-modal-root,
-  body:has(#play-battle-modal-root) #play-battle-modal-root,
-  .play-rpg-fullscreen-modal {
-    position: fixed !important;
-    top: 52px !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    height: calc(100vh - 52px) !important;
-    height: calc(100dvh - 52px) !important;
-    max-height: calc(100dvh - 52px) !important;
-    z-index: 50 !important;
+    background-color: #060a14 !important;
   }
 }
 

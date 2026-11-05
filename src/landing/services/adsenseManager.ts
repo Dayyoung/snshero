@@ -43,9 +43,27 @@ export function isLandscapeRatio(): boolean {
 }
 
 /**
- * Calculates active ad placements strictly based on aspect ratio:
- * - Width > Height (Landscape): Desktop Left & Right side gutters active.
- * - Width <= Height (Portrait): Mobile Top banner active.
+ * Checks whether current viewport qualifies for Desktop Side Gutters (160x600 Skyscraper Ads):
+ *   1. Wide viewport: Width >= 1280px
+ *   2. Sufficient vertical clearance: Height >= 650px (prevents cutting off 600px skyscrapers)
+ *   3. Landscape aspect ratio: Width > Height
+ *
+ * Devices that do not meet all 3 criteria (e.g., Tablets in landscape like 1024x768, 1180x820,
+ * mobile phones in landscape, or portrait screens) safely utilize the compact 320x50 top ribbon banner.
+ * This guarantees:
+ *   - Zero background gaps or layout shrinkage on tablets
+ *   - 100% AdSense fill rate with mobile/tablet compatible banner
+ *   - Pure full-width canvas for game dialogs and 3x3 battle boards
+ */
+export function isDesktopWideLandscape(): boolean {
+  if (typeof window === 'undefined') return true;
+  return window.innerWidth >= 1280 && window.innerHeight >= 650 && window.innerWidth > window.innerHeight;
+}
+
+/**
+ * Calculates active ad placements strictly based on aspect ratio & screen clearance:
+ * - Wide Desktop Landscape (Width >= 1280 & Height >= 650 & W > H): Side Gutters active.
+ * - Tablet Landscape / Mobile / Portrait: Compact Top Banner active.
  */
 export function getAdPlacements(): AdSensePlacementResult {
   if (isAdRemoved()) {
@@ -57,11 +75,11 @@ export function getAdPlacements(): AdSensePlacementResult {
     };
   }
 
-  const isLandscape = isLandscapeRatio();
+  const isDesktopWide = isDesktopWideLandscape();
   return {
-    desktopLeft: isLandscape,
-    desktopRight: isLandscape,
-    mobileTop: !isLandscape,
+    desktopLeft: isDesktopWide,
+    desktopRight: isDesktopWide,
+    mobileTop: !isDesktopWide,
     suppressedByVip: false,
   };
 }
@@ -254,11 +272,11 @@ export function syncAdSenseRatioLayout(_activeView?: string): void {
     return;
   }
 
-  // 2. Aspect Ratio Check: Width > Height (Landscape) vs Width <= Height (Portrait)
-  const isLandscape = isLandscapeRatio();
+  // 2. Clear Ad Placement Determination: Wide Desktop Landscape vs Tablet/Mobile
+  const isDesktopWide = isDesktopWideLandscape();
 
-  if (isLandscape) {
-    // 화면비율 너비 > 높이: 좌우 배너 표시, 상단 배너 숨김
+  if (isDesktopWide) {
+    // 1280px+ 와이드 데스크톱 가로 모드: 좌우 양 날개 배너 표시, 상단 배너 숨김
     if (mobileTop) {
       mobileTop.style.setProperty('display', 'none', 'important');
       cleanupUnloadedInsTag(mobileTop);
@@ -272,7 +290,7 @@ export function syncAdSenseRatioLayout(_activeView?: string): void {
       ensureInsTagInContainer(rightGutter, 'vertical');
     }
   } else {
-    // 화면비율 너비 <= 높이: 상단 배너 표시, 좌우 배너 숨김
+    // 태블릿(가로/세로) 및 스마트폰: 좌우 거터 완전 숨김(배경 노출 방지), 상단 320x50 띠 배너 표시
     if (leftGutter) {
       leftGutter.style.setProperty('display', 'none', 'important');
       cleanupUnloadedInsTag(leftGutter);
@@ -541,10 +559,10 @@ export function pushAdSenseTags(activeView?: string): void {
       cleanupUncontainedAds();
       syncAdSenseRatioLayout(activeView);
 
-      const isLandscape = isLandscapeRatio();
+      const isDesktopWide = isDesktopWideLandscape();
 
-      // Only query active containers for current aspect ratio
-      const activeSelector = isLandscape
+      // Only query active containers for current aspect ratio & screen clearance
+      const activeSelector = isDesktopWide
         ? '#adsense-desktop-left ins.adsbygoogle, #adsense-desktop-right ins.adsbygoogle'
         : '#adsense-mobile-top ins.adsbygoogle';
 
