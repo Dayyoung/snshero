@@ -25,7 +25,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Elwin Village',
     nameJa: 'エルウィン村',
     descriptionKo: '설원 속 작은 변경 마을이자 카단과 알리시아의 고향',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg?v=20261105u2',
     keywords: ['엘윈', '마을', '고향', '설원', '눈보라', '집', '오두막', 'elwin', 'village', 'snow'],
   },
   'LOC-002': {
@@ -35,7 +35,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Drunken Bell Tower',
     nameJa: '酔鐘楼',
     descriptionKo: '오랜 역사를 간직한 변경의 종탑과 모험가들의 주점',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg?v=20261105u2',
     keywords: ['종탑', '주점', '취종루', '술집', '선술집', '탑', 'tavern', 'bell tower'],
   },
   'LOC-003': {
@@ -45,7 +45,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Mistfall Cliff',
     nameJa: '霧降の崖',
     descriptionKo: '자욱한 독안개와 험준한 암벽이 이어지는 운명의 낭떠러지',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg?v=20261105u2',
     keywords: ['절벽', '안개', '미스트폴', '낭떠러지', '낙하', '추락', 'cliff', 'mistfall'],
   },
   'LOC-004': {
@@ -55,7 +55,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Great Plains of the Wildlands',
     nameJa: '荒野の大平原',
     descriptionKo: '끝없는 지평선과 몬스터들이 출몰하는 거친 황야',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_004_Great_Plains_of_the_Wildlands.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_004_Great_Plains_of_the_Wildlands.jpg?v=20261105u2',
     keywords: ['평원', '황무지', '황야', '들판', '초원', '대평원', 'plains', 'wildlands'],
   },
   'LOC-005': {
@@ -65,7 +65,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Pegasus Valley',
     nameJa: '天馬の谷',
     descriptionKo: '하늘을 가르는 야생 기수들과 적갈기의 전설이 서린 협곡',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_005_Pegasus_Valley.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_005_Pegasus_Valley.jpg?v=20261105u2',
     keywords: ['천마', '페가수스', '계곡', '적갈기', '기수', '말', '길들이기', '협곡', 'valley', 'pegasus'],
   },
   'LOC-006': {
@@ -75,7 +75,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Lighthaven Inner Forum',
     nameJa: 'ライトヘイブン中央広場',
     descriptionKo: '왕국의 번화한 중심지이자 수많은 모험가들이 교류하는 광장',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_006_Lighthaven_Inner_Forum.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_006_Lighthaven_Inner_Forum.jpg?v=20261105u2',
     keywords: ['광장', '라이트헤이븐', '시장', '도시', '중앙', '시가지', 'lighthaven', 'forum', 'plaza'],
   },
   'LOC-007': {
@@ -85,7 +85,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Red Glass Palace',
     nameJa: '紅硝子宮',
     descriptionKo: '핏빛 유리와 불꽃의 마력이 깃든 비밀 궁전',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg?v=20261105u2',
     keywords: ['궁전', '홍유리궁', '궁', '성', '적유리', 'palace', 'glass palace'],
   },
   'LOC-008': {
@@ -95,7 +95,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Seventh Subterranean Labor Camp',
     nameJa: '第七地下強制労働所',
     descriptionKo: '어두운 지하 깊숙한 갱도와 노예 노동자들의 반란이 일어난 현장',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_008_Seventh_Subterranean_Labor_Camp.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_008_Seventh_Subterranean_Labor_Camp.jpg?v=20261105u2',
     keywords: ['노역소', '지하', '갱도', '광산', '감옥', '수용소', '채굴', 'labor camp', 'mine', 'subterranean'],
   },
   'LOC-009': {
@@ -105,7 +105,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Cloud Return Manor Mist Lake',
     nameJa: '雲還荘の霧湖',
     descriptionKo: '신비로운 안개와 물안개가 피어오르는 명문 가문의 은신처',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_009_Cloud_Return_Manor_Mist_Lake.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_009_Cloud_Return_Manor_Mist_Lake.jpg?v=20261105u2',
     keywords: ['호수', '구름귀환장', '장원', '연못', '물가', '정원', 'mist lake', 'manor'],
   },
   'LOC-010': {
@@ -115,7 +115,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Whispering Wind Island',
     nameJa: '囁く風の島',
     descriptionKo: '신성한 바람의 결계와 고대 비전이 잠든 성역의 섬',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg?v=20261105u2',
     keywords: ['바람의 섬', '섬', '바람', '해안', '신전', '바다', 'island', 'wind island'],
   },
   'LOC-011': {
@@ -125,7 +125,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Black Temple Jade Barrier Spire',
     nameJa: '黒祠堂の玉結界尖塔',
     descriptionKo: '어둠의 사당과 비취 결계가 충돌하는 영혼의 첨탑',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_011_Black_Temple_Jade_Barrier_Spire.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_011_Black_Temple_Jade_Barrier_Spire.jpg?v=20261105u2',
     keywords: ['사당', '흑사당', '첨탑', '결계', '탑', '신당', 'temple', 'spire', 'barrier'],
   },
   'LOC-012': {
@@ -135,7 +135,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Sky Altar',
     nameJa: '天空の祭壇',
     descriptionKo: '구름 위 드높은 하늘에서 별과 신의 계시를 받는 신성한 제단',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_012_Sky_Altar.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_012_Sky_Altar.jpg?v=20261105u2',
     keywords: ['천공', '하늘 제단', '제단', '하늘', '성진', '별', 'altar', 'sky altar'],
   },
   'LOC-013': {
@@ -145,7 +145,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Flower Ship Siren Strait',
     nameJa: '花船のセイレン海峡',
     descriptionKo: '화려한 유람선과 치명적인 마물의 노랫소리가 울리는 해협',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_013_Flower_Ship_Siren_Strait.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_013_Flower_Ship_Siren_Strait.jpg?v=20261105u2',
     keywords: ['꽃배', '세이렌', '해협', '배', '선상', '바다', '항해', 'ship', 'strait', 'siren'],
   },
   'LOC-014': {
@@ -155,7 +155,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Mount Dragonhorn Dragon Grotto',
     nameJa: '竜角山の竜洞',
     descriptionKo: '고대 용의 숨결과 마그마가 잠든 험준한 산악 동굴',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_014_Mount_Dragonhorn_Dragon_Grotto.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_014_Mount_Dragonhorn_Dragon_Grotto.jpg?v=20261105u2',
     keywords: ['용각산', '용동', '용', '동굴', '화산', '용의 둥지', 'dragon', 'grotto', 'cave'],
   },
   'LOC-015': {
@@ -165,7 +165,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'The Sealed Chamber',
     nameJa: '封印の密室',
     descriptionKo: '수백 년간 아무도 발을 들이지 못한 고대 봉인의 방',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_015_The_Sealed_Chamber.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_015_The_Sealed_Chamber.jpg?v=20261105u2',
     keywords: ['밀실', '봉인', '비밀방', '금지구역', 'chamber', 'sealed chamber'],
   },
   'LOC-016': {
@@ -175,7 +175,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Jade Council Hall',
     nameJa: '翡翠評議会議事堂',
     descriptionKo: '권력과 정쟁이 오가는 왕국 최고 원로들의 호화로운 회의장',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_016_Jade_Council_Hall.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_016_Jade_Council_Hall.jpg?v=20261105u2',
     keywords: ['평의회', '의사당', '비취', '원로회', '회의실', '심판', 'council', 'hall'],
   },
   'LOC-017': {
@@ -185,7 +185,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Citadel of the Four Gates',
     nameJa: '四門の城砦',
     descriptionKo: '수천의 군세를 막아서는 난공불락의 거대한 철벽 요새',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg?v=20261105u2',
     keywords: ['성채', '사문', '관문', '요새', '성벽', '공성전', '성문', 'citadel', 'fortress'],
   },
   'LOC-018': {
@@ -195,7 +195,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Quicksand River Black Marsh',
     nameJa: '流砂河の黒沼',
     descriptionKo: '발을 디디면 삼켜지는 유사와 맹독 마수가 도사리는 검은 늪',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg?v=20261105u2',
     keywords: ['늪', '유사하', '흑늪', '늪지대', '진흙', '수렁', 'marsh', 'swamp'],
   },
   'LOC-019': {
@@ -205,7 +205,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Black Citadel Starlight Archive',
     nameJa: '黒城の星光書庫',
     descriptionKo: '세계의 모든 비밀과 금단의 마법서가 보관된 거대한 도서관',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg?v=20261105u2',
     keywords: ['서고', '도서관', '흑성', '책', '문헌', '기록', '비기', 'archive', 'library'],
   },
   'LOC-020': {
@@ -215,7 +215,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
     nameEn: 'Altar of Ruin Two Graves',
     nameJa: '破滅の祭壇・二つの墓',
     descriptionKo: '숙명의 라이벌과 영웅들의 최후 결전이 펼쳐지는 파멸의 제단',
-    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg',
+    bgJpgUrl: '/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg?v=20261105u2',
     keywords: ['파멸 제단', '무덤', '결전', '두 무덤', '종말', '묘지', 'graves', 'altar of ruin'],
   },
 };

@@ -83,7 +83,8 @@ def remove_white_bg_clean(
 
     dist = np.sqrt(np.sum((255.0 - arr) ** 2, axis=2))
     sat = np.max(arr, axis=2) - np.min(arr, axis=2)
-    bg_cand = (dist < 36.0) & (sat < 24.0)
+    # Slightly wider outer candidate mask so studio shadows/halos around hair & capes are caught
+    bg_cand = (dist < 44.0) & (sat < 28.0)
 
     visited = np.zeros((h, w), dtype=bool)
     q = deque()
@@ -103,9 +104,13 @@ def remove_white_bg_clean(
             visited[y, w - 1] = True
             q.append((y, w - 1))
 
-    # Seed unambiguous pure-white interior gaps (between legs/arms/weapons) >= 5x5 px
-    pure_white = (dist < 7.5) & (sat < 5.5)
-    pw_img = Image.fromarray((pure_white * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(5))
+    # Protect character face zone (eyes/teeth/expressions) from interior gap seeding
+    yy, xx = np.meshgrid(np.arange(h), np.arange(w), indexing="ij")
+    face_box = (yy >= int(h * 0.05)) & (yy <= int(h * 0.23)) & (xx >= int(w * 0.34)) & (xx <= int(w * 0.66))
+
+    # Seed unambiguous white interior gaps (between hair strands, legs, arms, weapons, bowstrings) >= 3x3 px
+    pure_white = (dist < 14.0) & (sat < 10.0) & (~face_box)
+    pw_img = Image.fromarray((pure_white * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))
     pw_seeds = np.array(pw_img) > 128
     sy_arr, sx_arr = np.where(pw_seeds & (~visited))
     for sy, sx in zip(sy_arr, sx_arr):
@@ -120,18 +125,33 @@ def remove_white_bg_clean(
                 q.append((ny, nx))
 
     alpha = np.ones((h, w), dtype=np.float32) * 255.0
-    ramp = np.clip((dist - 14.0) / 22.0, 0.0, 1.0) * 255.0
+    ramp = np.clip((dist - 16.0) / 26.0, 0.0, 1.0) * 255.0
     alpha[visited] = ramp[visited]
 
-    # Defringe 1px white halo
-    edge_zone = (alpha > 10.0) & (alpha < 245.0)
+    # Smooth alpha edge slightly and erode sub-pixel white fringe
+    alpha_im = Image.fromarray(np.clip(alpha, 0, 255).astype(np.uint8))
+    alpha_smooth = np.array(alpha_im.filter(ImageFilter.GaussianBlur(radius=0.55)), dtype=np.float32)
+    alpha = np.where(visited, np.minimum(alpha, alpha_smooth), alpha)
+    alpha[alpha < 14.0] = 0.0
+
+    # True color decontamination (un-premultiply white from semi-transparent edge pixels)
+    edge_zone = (alpha > 0.0) & (alpha < 252.0)
     if np.any(edge_zone):
+        a_norm = np.clip(alpha / 255.0, 0.12, 1.0)
         for c_i in range(3):
             cv = arr[:, :, c_i]
-            arr[:, :, c_i] = np.where(edge_zone, np.clip((cv - 255.0 * 0.25) / 0.75, 0.0, 255.0), cv)
+            defringed = (cv - (1.0 - a_norm) * 255.0) / a_norm
+            arr[:, :, c_i] = np.where(edge_zone, np.clip(defringed, 0.0, 255.0), cv)
+
+    # Crisp ufotable anime quality enhancement (lineart sharpness + cel-shading contrast + saturation)
+    rgb_im = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
+    rgb_im = ImageEnhance.Sharpness(rgb_im).enhance(1.18)
+    rgb_im = ImageEnhance.Contrast(rgb_im).enhance(1.05)
+    rgb_im = ImageEnhance.Color(rgb_im).enhance(1.06)
+    enhanced_rgb = np.array(rgb_im, dtype=np.uint8)
 
     rgba = np.zeros((h, w, 4), dtype=np.uint8)
-    rgba[:, :, :3] = np.clip(arr, 0, 255).astype(np.uint8)
+    rgba[:, :, :3] = enhanced_rgb
     rgba[:, :, 3] = np.clip(alpha, 0, 255).astype(np.uint8)
     return Image.fromarray(rgba)
 
@@ -654,35 +674,12 @@ CUSTOM_BUST_SPECS: dict[int, tuple[float, float, float]] = {
 
 def extract_head_hair_bust(anime_cutout: Image.Image, cid: int) -> Image.Image:
     """
-    Standardized Head & Chest Bust Extractor with Robust Percentile Head-Centering:
-    - Extracts the head, neck, shoulders, and chest/upper torso (~45% of total character height).
-    - Uses explicit custom bounding specs for wide-weapon or asymmetrical poses.
-    - Uses robust percentile trimming (p10..p90) on the head/face zone (5%~22% height) to eliminate
-      stray weapon tips, magic sparks, or background wing outliers.
-    - Centers the 1:1 square canvas PRECISELY on the character's facial/head axis so that every character's
-      head is positioned at the exact 50% horizontal center.
+    Standardized Head, Hair & Chest Bust Extractor with Zero-Clip Crown Margin:
+    - Extracts 100% of the top hair/crown/tiara/horns (`y0 = 0`) down to the chest/upper torso (~48% height).
+    - Uses robust percentile trimming (p12..p88) on the head/shoulders zone (4%~32% height) to eliminate
+      stray weapon tips, magic sparks, or wide wing outliers while centering the character's head/face axis.
     """
     aw, ah = anime_cutout.size
-    if cid in CUSTOM_BUST_SPECS:
-        cx_r, y0_r, y1_r = CUSTOM_BUST_SPECS[cid]
-        y0 = max(0, int(round(ah * y0_r)))
-        y1 = min(ah, int(round(ah * y1_r)))
-        crop_h = max(40, y1 - y0)
-        target_w = crop_h
-        head_cx = aw * cx_r
-        x0 = int(round(head_cx - target_w / 2))
-        x1 = x0 + target_w
-
-        crop_canvas = Image.new("RGBA", (target_w, crop_h), (0, 0, 0, 0))
-        src_x0 = max(0, x0)
-        src_x1 = min(aw, x1)
-        src_y0 = max(0, y0)
-        src_y1 = min(ah, y1)
-
-        sub = anime_cutout.crop((src_x0, src_y0, src_x1, src_y1))
-        crop_canvas.paste(sub, (src_x0 - x0, src_y0 - y0), sub)
-        return crop_canvas
-
     cut_arr = np.array(anime_cutout)
     fg = cut_arr[:, :, 3] > 20
     ys, xs = np.where(fg)
@@ -692,23 +689,24 @@ def extract_head_hair_bust(anime_cutout: Image.Image, cid: int) -> Image.Image:
     y_min, y_max = int(ys.min()), int(ys.max())
     char_h = max(1, y_max - y_min)
 
-    # Top crown margin (2% above highest character pixel)
-    y0 = max(0, y_min - int(char_h * 0.02))
-    # Head + neck + chest + upper waist (45% of character height)
-    y1 = min(ah, y_min + int(char_h * 0.45))
+    # Zero top clipping: start above the highest character pixel with a clean breathing margin
+    top_pad = max(8, int(char_h * 0.025))
+    y0 = max(0, y_min - top_pad)
+    # Head + full hair + neck + shoulders + chest/upper torso (48% of character height)
+    y1 = min(ah, y_min + int(char_h * 0.48))
     crop_h = max(40, y1 - y0)
 
-    # Robust Head-Centering Algorithm:
-    hy0 = y_min + int(char_h * 0.05)
-    hy1 = y_min + int(char_h * 0.22)
+    # Robust Head & Upper-Torso Centering Algorithm:
+    hy0 = y_min + int(char_h * 0.04)
+    hy1 = y_min + int(char_h * 0.30)
     h_mask = (ys >= hy0) & (ys <= hy1)
     if not np.any(h_mask):
-        h_mask = (ys >= y_min) & (ys <= y_min + int(char_h * 0.30))
+        h_mask = (ys >= y_min) & (ys <= y_min + int(char_h * 0.38))
     h_xs = xs[h_mask]
 
-    # Outlier-resistant percentile trimming (ignores sparks, stray wings, antenna tips)
-    p10, p90 = np.percentile(h_xs, [10, 90])
-    core_xs = h_xs[(h_xs >= p10) & (h_xs <= p90)]
+    # Outlier-resistant percentile trimming (ignores extended spears, bows, wings)
+    p12, p88 = np.percentile(h_xs, [12, 88])
+    core_xs = h_xs[(h_xs >= p12) & (h_xs <= p88)]
     if len(core_xs) > 0:
         core_mid = (core_xs.min() + core_xs.max()) / 2.0
         core_mean = float(core_xs.mean())
@@ -716,7 +714,7 @@ def extract_head_hair_bust(anime_cutout: Image.Image, cid: int) -> Image.Image:
     else:
         head_cx = float((h_xs.min() + h_xs.max()) / 2.0)
 
-    # 1:1 square aspect ratio centered exactly around head_cx
+    # 1:1 square aspect ratio centered around head_cx
     target_w = crop_h
     x0 = int(round(head_cx - target_w / 2))
     x1 = x0 + target_w
@@ -735,13 +733,13 @@ def extract_head_hair_bust(anime_cutout: Image.Image, cid: int) -> Image.Image:
 def render_head_hair_bust_assets(anime_cutout: Image.Image, cid: int) -> tuple[Image.Image, Image.Image]:
     """
     Renders BOTH:
-    1. 500x500 HD Transparent RGBA Upper-Body Portrait (`{cid:03d}_bust.png` — loaded first by `mode === 'bust'`!)
+    1. 600x600 HD Transparent RGBA Upper-Body Portrait (`{cid:03d}_bust.png` — loaded first by `mode === 'bust'`!)
     2. 600x600 HD Studio-White RGB Upper-Body Portrait (`{cid:03d}_bust.jpg`)
     """
     bust_crop = extract_head_hair_bust(anime_cutout, cid)
 
-    png_canvas = Image.new("RGBA", (500, 500), (0, 0, 0, 0))
-    paste_centered(png_canvas, bust_crop, (12, 12, 488, 500), align_bottom=True, bottom_pad=0)
+    png_canvas = Image.new("RGBA", (600, 600), (0, 0, 0, 0))
+    paste_centered(png_canvas, bust_crop, (14, 14, 586, 600), align_bottom=True, bottom_pad=0)
 
     jpg_canvas = Image.new("RGBA", (600, 600), (255, 255, 255, 255))
     paste_centered(jpg_canvas, bust_crop, (16, 16, 584, 600), align_bottom=True, bottom_pad=0)
@@ -1049,12 +1047,26 @@ def main() -> None:
 
     anime_cutouts: dict[int, Image.Image] = {}
 
+    raw_solo_dir = OUT_ROOT / "raw_ufotable_solo"
+    raw_solo_files = {
+        cid: raw_solo_dir / f"{cid:03d}_{cards[cid]['seat_filename'].replace('.png', '')}.jpg"
+        for cid in range(1, 111)
+    }
     existing_cutouts = {
         cid: CUTOUT_DIR / f"{cid:03d}_{cards[cid]['seat_filename'].replace('.png', '')}.png"
         for cid in range(1, 111)
     }
     loaded_from_existing_cutouts = False
-    if all(p.exists() for p in existing_cutouts.values()):
+    if all(p.exists() for p in raw_solo_files.values()):
+        print("Re-processing all 110 ufotable raw solo images with clean RGBA transparent background & image quality optimization...")
+        for cid, raw_p in raw_solo_files.items():
+            im = Image.open(raw_p).convert("RGB")
+            rgba = clean_cutout_specks(remove_white_bg_clean(im), keep_only_main=False)
+            anime_cutouts[cid] = rgba
+            rgba.save(existing_cutouts[cid], "PNG", optimize=True)
+        loaded_from_existing_cutouts = True
+        print("Optimized and saved all 110 RGBA transparent cutouts in public/anime-character-sheets/cutouts/!")
+    elif all(p.exists() for p in existing_cutouts.values()):
         for cid, p in existing_cutouts.items():
             anime_cutouts[cid] = Image.open(p).convert("RGBA")
         loaded_from_existing_cutouts = True

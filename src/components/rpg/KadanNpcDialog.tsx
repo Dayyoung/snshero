@@ -41,6 +41,8 @@ import {
   saveKadanArtStyleMode,
   type KadanArtStyleMode,
 } from '../../hooks/useKadanRpgProgress';
+import { getEpisodeBackground } from '../../landing/services/locationBgManager';
+import { getCharacterAsset } from '../../landing/services/assetCatalog';
 
 interface KadanNpcDialogProps {
   event: KadanRpgEvent;
@@ -690,6 +692,11 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     `/images/webtoon/episode_${String(event.chapterNumber).padStart(2, '0')}/scene_01.webp`;
 
   const displayImageUrl = getAssetUrl(resolveArtStyleUrl(rawSceneUrl));
+  const episodeBgLoc = useMemo(() => getEpisodeBackground(event.chapterNumber || 1), [event.chapterNumber]);
+  const activeSpeakerAsset = useMemo(
+    () => getCharacterAsset(currentLine?.cardId ?? event.speakerCardId ?? 41),
+    [currentLine?.cardId, event.speakerCardId]
+  );
 
   const sceneCharacters: KadanRpgSceneCharacter[] = useMemo(() => {
     if (currentLine?.sceneCharacters && currentLine.sceneCharacters.length > 0) {
@@ -965,42 +972,50 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
           </div>
         </div>
 
-        {/* 우측/하단: ② 등장인물 캐스트 바 + ③ 몰입형 대사 및 선택지 영역 */}
-        <div className="flex-1 min-h-0 flex flex-col overflow-hidden bg-[#141218]">
-          {/* ② 등장인물 (간결한 캐릭터 바) */}
-          <div className="shrink-0 px-3 sm:px-5 py-2.5 bg-[#1b1822] border-b border-stone-800 flex items-center gap-2 overflow-x-auto custom-scrollbar">
+        {/* 우측/하단: ② 등장인물 캐스트 바 + ③ 몰입형 대사 및 선택지 영역 (16:9 ufotable 장소 배경 적용) */}
+        <div className="relative flex-1 min-h-0 flex flex-col overflow-hidden bg-[#141218]">
+          {/* 장소 배경 아트 레이어 & 다크 비네팅 오버레이 */}
+          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none">
+            <img
+              src={getAssetUrl(episodeBgLoc.bgJpgUrl)}
+              alt={isEn ? episodeBgLoc.nameEn : episodeBgLoc.nameKo}
+              className="h-full w-full object-cover object-center brightness-[0.42] contrast-[1.08]"
+            />
+            <div className="absolute inset-0 bg-[#121016]/65" />
+          </div>
+
+          {/* ② 등장인물 (간결한 캐릭터 바 + 상반신 아바타) */}
+          <div className="relative z-10 shrink-0 px-3 sm:px-5 py-2.5 bg-[#1b1822]/90 backdrop-blur-xs border-b border-stone-800 flex items-center gap-2 overflow-x-auto custom-scrollbar">
             <span className="shrink-0 text-xs font-mono font-bold text-stone-400">
               {language === 'ko' ? '등장인물' : 'Cast'}
             </span>
             {sceneCharacters.map((ch) => {
               const isSpk = ch.isSpeaker || ch.cardId === currentLine.cardId;
-              const seatUrl = ch.seatAsset ? getAssetUrl(ch.seatAsset) : null;
+              const charAsset = getCharacterAsset(ch.cardId);
+              const bustUrl = getAssetUrl(charAsset.bustPngUrl);
+              const fallbackSeatUrl = ch.seatAsset ? getAssetUrl(ch.seatAsset) : getAssetUrl(charAsset.seatUrl);
               return (
                 <div
                   key={ch.cardId}
                   className={cn(
                     'shrink-0 flex items-center gap-2 rounded-sm border px-2.5 py-1',
                     isSpk
-                      ? 'bg-amber-950/80 border-amber-400 text-amber-200'
-                      : 'bg-stone-900 border-stone-700 text-stone-300'
+                      ? 'bg-amber-950/85 border-amber-400 text-amber-200'
+                      : 'bg-stone-900/90 border-stone-700 text-stone-300'
                   )}
                 >
                   <div className="h-7 w-7 shrink-0 overflow-hidden rounded-none border border-stone-600 bg-stone-950">
-                    {seatUrl ? (
-                      <img
-                        src={seatUrl}
-                        alt={isEn ? ch.nameEn : ch.nameKo}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <div
-                        className="h-full w-full bg-center bg-no-repeat"
-                        style={{
-                          ...getCharacterPortraitStyle(ch.cardId),
-                          aspectRatio: '256 / 296',
-                        }}
-                      />
-                    )}
+                    <img
+                      src={bustUrl}
+                      alt={isEn ? ch.nameEn : ch.nameKo}
+                      className="h-full w-full object-contain"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (target.src !== fallbackSeatUrl) {
+                          target.src = fallbackSeatUrl;
+                        }
+                      }}
+                    />
                   </div>
                   <span className="text-xs sm:text-sm font-mono font-bold">
                     {isEn ? ch.nameEn : ch.nameKo}
@@ -1008,16 +1023,28 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                 </div>
               );
             })}
+            <span className="ml-auto shrink-0 rounded-sm border border-amber-400/40 bg-stone-950/80 px-2 py-0.5 text-[11px] font-mono text-amber-200">
+              📍 {isEn ? episodeBgLoc.nameEn : episodeBgLoc.nameKo}
+            </span>
           </div>
 
-          {/* ③ 해당 대사 (전체화면 남은 영역을 꽉 채우는 몰입형 대화창) */}
-          <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-4 sm:p-6 flex flex-col justify-between gap-4">
-            <div className="rounded-none border border-stone-800 bg-[#0f0d13] p-4 sm:p-5 flex-1 flex flex-col">
+          {/* ③ 해당 대사 (장소 배경 위 몰입형 대화창 + 화자 상반신 일러스트) */}
+          <div className="relative z-10 flex-1 min-h-0 overflow-y-auto custom-scrollbar p-4 sm:p-6 flex flex-col justify-between gap-4">
+            <div className="rounded-none border border-stone-700/80 bg-[#0f0d13]/85 backdrop-blur-xs p-4 sm:p-5 flex-1 flex flex-col">
               <div className="mb-3 flex items-center justify-between gap-2 border-b border-stone-800/80 pb-2.5">
-                <span className="inline-flex items-center gap-1.5 rounded-sm bg-amber-500/20 border border-amber-500/60 px-2.5 py-1 text-xs sm:text-sm font-mono font-black text-amber-300">
-                  <Icon size={14} />
-                  {currentLine.name}
-                </span>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="h-11 w-11 shrink-0 overflow-hidden rounded-sm border border-amber-400/60 bg-stone-950">
+                    <img
+                      src={getAssetUrl(activeSpeakerAsset.bustPngUrl)}
+                      alt={currentLine.name}
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 rounded-sm bg-amber-500/20 border border-amber-500/60 px-2.5 py-1 text-xs sm:text-sm font-mono font-black text-amber-300 truncate">
+                    <Icon size={14} />
+                    {currentLine.name}
+                  </span>
+                </div>
                 {autoMode && (
                   <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono font-bold text-cyan-300">
                     <Bot size={13} className="animate-spin" />

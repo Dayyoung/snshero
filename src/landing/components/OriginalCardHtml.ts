@@ -148,9 +148,8 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
   const hideStats = options.hideStats || false;
   const visualTier = options.visualTier || 'bust';
   const isResponsiveHand = options.size === 'responsive' || options.size === 'sm';
-  const bustUrlWithVer = `${asset.bustPngUrl}?v=20261103v4`;
-  const primaryImgUrl = visualTier === '7head' ? asset.cutoutUrl : bustUrlWithVer;
-  const fallbackImgUrl = visualTier === '7head' ? bustUrlWithVer : asset.seatUrl;
+  const primaryImgUrl = visualTier === '7head' ? asset.cutoutUrl : asset.bustPngUrl;
+  const fallbackImgUrl = visualTier === '7head' ? asset.bustPngUrl : asset.cutoutUrl;
 
   // Custom size or default container-adaptive styling
   const customClass = options.className || 'w-full aspect-[5/7] min-h-[220px]';
@@ -478,7 +477,7 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
           class="max-w-full max-h-full object-contain filter drop-shadow-none"
           loading="eager"
           decoding="sync"
-          onerror="this.src='${asset.seatUrl}'; this.onerror=null;"
+          onerror="this.src='${asset.cutoutUrl}'; this.onerror=null;"
         />
       </div>
 

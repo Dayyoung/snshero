@@ -171,7 +171,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  }, [isDamaged]);
 
  const visualCardId = useMemo(() => getVisualCardId(activeCard), [activeCard]);
- const useAttackMotionArt = Boolean(showAttackMotion || (isActionMotionSupported && isOnBoard));
+ const useAttackMotionArt = Boolean(isActionMotionSupported && (showAttackMotion || isOnBoard));
  const attackMotionMeta = useMemo(() => visualCardId ? getCharacterAttackMotionMeta(visualCardId) : undefined, [visualCardId]);
  const ipProfile = useMemo(() => visualCardId ? getCharacterIpProfile(visualCardId) : undefined, [visualCardId]);
  const rarityTier = useMemo(() => {
@@ -791,9 +791,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
       }
       transition={{ duration: performanceMode ? 0 : 0.42, ease: 'easeOut' }}
       className={cn(
-       effectiveDisplayMode === 'full7'
-        ? "h-full w-auto max-w-none shrink-0 object-cover object-center"
-        : "h-full w-full object-contain"
+       "h-full w-full object-contain object-center"
       )}
       referrerPolicy="no-referrer"
       onError={() => setImageSourceIndex(currentIndex => currentIndex + 1)}

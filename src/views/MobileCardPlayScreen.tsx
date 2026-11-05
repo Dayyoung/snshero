@@ -20,7 +20,8 @@ import {
   getNormalizedElement,
   getCardStatWithBonus
 } from '../constants';
-import { cn, getCardSpriteStyle } from '../lib/utils';
+import { cn, getAssetUrl, getCardSpriteStyle } from '../lib/utils';
+import { getEpisodeBackground, CANONICAL_LOCATIONS } from '../landing/services/locationBgManager';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { CardItem } from '../components/CardItem';
 import { BoardAttackVectorOverlay, type PlacedCardAttackEvent } from '../components/battle/CardAttackMotionEffect';
@@ -341,6 +342,24 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     if (isDemoPlayActive()) return getDemoPlayStep();
     return 'ranking';
   }, [activeDivertedMode]);
+
+  const battleLocationBg = useMemo(() => {
+    const chMatch = opponentName?.match(/(?:제\s*|Ch\.|EP\.|Episode\s*)(\d+)/i);
+    if (chMatch && chMatch[1]) {
+      return getEpisodeBackground(parseInt(chMatch[1], 10));
+    }
+    if (towerFloor && towerFloor > 0) {
+      const locIdx = ((towerFloor - 1) % 20) + 1;
+      const locKey = `LOC-${String(locIdx).padStart(3, '0')}`;
+      return CANONICAL_LOCATIONS[locKey] || getEpisodeBackground(1);
+    }
+    if (targetCardId && targetCardId > 0) {
+      const locIdx = ((targetCardId - 1) % 20) + 1;
+      const locKey = `LOC-${String(locIdx).padStart(3, '0')}`;
+      return CANONICAL_LOCATIONS[locKey] || getEpisodeBackground(1);
+    }
+    return getEpisodeBackground(1);
+  }, [opponentName, towerFloor, targetCardId]);
 
   useEffect(() => {
     try {
@@ -1739,12 +1758,22 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     <div 
       id="mobile-card-play-viewport"
       className={cn(
-        "fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-pan-y bg-[#fdfcfc] text-[#201d1d] flex flex-col font-mono z-[100] pb-safe [&_button]:min-h-11 [&_button]:min-w-11 [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#201d1d]",
+        "fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-pan-y bg-[#0e0c0c] text-[#201d1d] flex flex-col font-mono z-[100] pb-safe [&_button]:min-h-11 [&_button]:min-w-11 [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#201d1d]",
         suppressMotion && "[&_*]:animate-none [&_*]:transition-none"
       )}
     >
+      {/* ─── 0. 16:9 ufotable 장소 배경 레이어 ─── */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none">
+        <img
+          src={getAssetUrl(battleLocationBg.bgJpgUrl)}
+          alt={language === 'ko' ? battleLocationBg.nameKo : battleLocationBg.nameEn}
+          className="h-full w-full object-cover object-center brightness-[0.55] contrast-[1.08]"
+        />
+        <div className="absolute inset-0 bg-[#fdfcfc]/78" />
+      </div>
+
       {/* Header actions retain 44px touch targets plus the top safe area - z-[9999] 최상위 우선순위 부여 */}
-      <header className="sticky top-0 w-full pt-[env(safe-area-inset-top,0px)] px-2 border-b border-[#0f0000]/12 flex items-center gap-2 shrink-0 z-[9999] bg-[#fdfcfc] shadow-2xs">
+      <header className="sticky top-0 w-full pt-[env(safe-area-inset-top,0px)] px-2 border-b border-[#0f0000]/12 flex items-center gap-2 shrink-0 z-[9999] bg-[#fdfcfc]/92 backdrop-blur-xs shadow-2xs">
         <button
           type="button"
           onClick={handleExitGame}
@@ -1925,7 +1954,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       )}
 
       {/* ─── 상하 스크롤 배틀 컨테이너 (UI 축소 원천 차단 및 시원한 크기 보장) ─── */}
-      <div className="flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden touch-pan-y overscroll-y-contain flex flex-col items-center gap-2 p-2 pb-[max(16px,env(safe-area-inset-bottom,0px))] [@media(max-height:500px)_and_(min-width:480px)]:grid [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[minmax(140px,1fr)_minmax(144px,1.4fr)_minmax(140px,1fr)] [@media(max-height:500px)_and_(min-width:480px)]:grid-rows-[48px_minmax(0,1fr)_48px] [@media(max-height:500px)_and_(min-width:480px)]:overflow-hidden">
+      <div className="relative z-10 flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden touch-pan-y overscroll-y-contain flex flex-col items-center gap-2 p-2 pb-[max(16px,env(safe-area-inset-bottom,0px))] [@media(max-height:500px)_and_(min-width:480px)]:grid [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[minmax(140px,1fr)_minmax(144px,1.4fr)_minmax(140px,1fr)] [@media(max-height:500px)_and_(min-width:480px)]:grid-rows-[48px_minmax(0,1fr)_48px] [@media(max-height:500px)_and_(min-width:480px)]:overflow-hidden">
       {/* ─── 2. 상대 덱 (Opponent Deck: 접기 가능 홀더 바 & 기본 접힌 상태) ─────────────── */}
       <div 
         id="mobile-card-opponent-deck"

@@ -97,18 +97,18 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
 
   const [cardDisplayMode, setCardDisplayModeState] = useState<CardDisplayMode>(() => {
     if (typeof window !== 'undefined') {
-      const migratedToChibi3Default = localStorage.getItem('hero_card_display_mode_chibi3_default_v2');
-      if (!migratedToChibi3Default) {
-        localStorage.setItem('hero_card_display_mode_chibi3_default_v2', 'true');
-        localStorage.setItem(CARD_DISPLAY_MODE_STORAGE_KEY, 'chibi3');
-        return 'chibi3';
+      const migratedToUfotableBustDefault = localStorage.getItem('hero_card_display_mode_ufotable_default_v1');
+      if (!migratedToUfotableBustDefault) {
+        localStorage.setItem('hero_card_display_mode_ufotable_default_v1', 'true');
+        localStorage.setItem(CARD_DISPLAY_MODE_STORAGE_KEY, 'bust');
+        return 'bust';
       }
       const saved = localStorage.getItem(CARD_DISPLAY_MODE_STORAGE_KEY);
       if (saved === 'full7' || saved === 'bust' || saved === 'chibi3') {
         return saved;
       }
     }
-    return 'chibi3';
+    return 'bust';
   });
 
   const [targetFps, setTargetFpsState] = useState<TargetFps>(() => {

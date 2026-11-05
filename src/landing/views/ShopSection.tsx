@@ -1230,8 +1230,8 @@ function simulatePackDraw(
 
     const asset = getCharacterAsset(picked.id);
     const pad3 = String(picked.id).padStart(3, '0');
-    const bustUrl = asset.bustPngUrl || `/anime-character-sheets/busts/${pad3}_bust.png`;
-    const seatUrl = asset.seatUrl || `/seat/${asset.nameEn}.png`;
+    const bustUrl = asset.bustPngUrl || `/anime-character-sheets/busts/${pad3}_bust.png?v=20261105u2`;
+    const seatUrl = asset.cutoutUrl || asset.seatUrl || `/seat/${asset.nameEn}.png`;
     const fallbackUrl =
       asset.fallbackSvgDataUri ||
       generateTerminalFlatPlaceholder(asset.nameKo || `영웅 #${picked.id}`, asset.faction || 'human');

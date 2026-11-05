@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 12:15 KST] [110종 ufotable 캐릭터 투명 배경/품질 최적화, 카드 7등신·상반신 이미지 전면 교체 및 20종 장소 배경 대화·카드플레이 적용]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 110종 캐릭터 투명 배경(`RGBA`) 및 이미지 품질 최적화 (`scripts/build_110_anime_character_sheets.py`)**:
+    - **투명 배경 정밀화 (`remove_white_bg_clean`)**: 얼굴(눈동자·치아) 보호 영역(`face_box`)을 유지하면서 머리카락 사이, 무기/활줄, 팔다리 사이의 내부 흰색 틈새(`>= 3x3 px`, `dist < 14.0 & sat < 10.0`)까지 깔끔하게 투명화하고, 경계선 화이트 헤일로(White Halo) 제거(Color Decontamination Un-premultiply) 및 알파 소프트닝을 적용.
+    - **화질 향상**: ufotable 셀 애니메이션 선화 및 색감을 살리는 `Sharpness(1.18)`, `Contrast(1.05)`, `Color(1.06)` 최적화를 110종 전수 `cutouts/*.png`에 반영.
+    - **상반신(`busts/*_bust.png`) 정수리/머리장식 잘림 0% 해결 (`extract_head_hair_bust`)**: 구형 다중 시트 시절 하드코딩된 `CUSTOM_BUST_SPECS`를 제거하고, 캐릭터 최상단 픽셀 위 여백(`y0 = max(0, y_min - top_pad)`)부터 가슴/상반신(`48%`)까지 100% 보존하여 600x600 고해상도 RGBA PNG(`001_bust.png` ~ `110_bust.png`) 및 JPG로 재렌더링 완료.
+  - **2. 전체 카드 7등신(`cutouts`) & 상반신(`busts`) 이미지 전면 교체 및 캐시 갱신**:
+    - `src/landing/services/assetCatalog.ts`, `src/content/cardImageVariants.ts`, `src/landing/components/OriginalCardHtml.ts`, `src/landing/views/PlaySection.tsx`, `src/landing/views/ShopSection.tsx`, `src/landing/services/playRpgEngine.ts`에 최신 버전 쿼리(`?v=20261105u2`) 적용 및 `src/landing/index.ts` 미디어 캐시 키(`snshero-media-v12-ufotable20261105`) 갱신.
+    - `src/contexts/GameSettingsContext.tsx` 및 `src/components/CardItem.tsx`에서 새로 최적화된 ufotable 상반신/7등신 일러스트가 카드 및 3x3 보드에서 즉시 선명하게 표시되도록 연동.
+  - **3. 20종 16:9 장소 배경(`LOC-001` ~ `LOC-020`) 대화(`대화`) 및 카드플레이(`카드플레이`) 전면 적용**:
+    - `src/landing/services/locationBgManager.ts`의 20종 와이드 배경(`LOC_001` ~ `LOC_020`) URL을 최신 버전(`?v=20261105u2`)으로 갱신하여 랜딩 대화창(`PlaySection.tsx`) 및 3x3 배틀 배경에 즉시 반영.
+    - React 앱 대화창(`src/components/rpg/KadanNpcDialog.tsx`) 및 카드플레이 화면(`src/views/MobileCardPlayScreen.tsx`)에도 `getEpisodeBackground` 기반 16:9 ufotable 장소 배경 레이어와 화자 상반신 아바타를 적용.
+- **검증 결과**:
+  - `041_Kadan.png`, `062_Celia.png`, `041_bust.png`, `062_bust.png` 등 110종 전수 투명 배경 및 머리장식 무결점 확인.
+  - `npm run build` 프로덕션 빌드 성공 (0 error).
+  - 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-11-05 11:50 KST] [모바일(너비<높이) 상단 구글 광고를 표준 320x50 컴팩트 현수막 띠 배너로 축소 및 슬림화]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

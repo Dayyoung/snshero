@@ -1205,11 +1205,11 @@ export function mountLanding(): void {
     }, 700);
   }
 
-  // 9. Purge stale Service Worker media caches so updated bust assets load immediately
+  // 9. Purge stale Service Worker media caches so updated ufotable character & background assets load immediately
   if (typeof window !== 'undefined' && 'caches' in window) {
     caches.keys().then((keys) => {
       keys.forEach((key) => {
-        if (key !== 'snshero-media-v10-busts20261103') {
+        if (key !== 'snshero-media-v12-ufotable20261105') {
           caches.delete(key).catch(() => {});
         }
       });

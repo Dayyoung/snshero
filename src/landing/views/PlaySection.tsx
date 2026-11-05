@@ -1478,11 +1478,11 @@ function renderAdventureView(): string {
                       <div class="relative w-52 h-52 sm:w-64 sm:h-64 md:w-72 md:h-72 flex items-end justify-center pointer-events-none select-none">
                         <img
                           id="dialogue-speaker-bust-img"
-                          src="${activeSpeakerAsset.bustPngUrl}?v=20261103v4"
+                          src="${activeSpeakerAsset.bustPngUrl}"
                           alt="${activeSpeaker.name}"
                           loading="eager"
                           class="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.9)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] transform transition-transform duration-300"
-                          onerror="this.src='${activeSpeakerAsset.seatUrl}'; this.onerror=null;"
+                          onerror="this.src='${activeSpeakerAsset.cutoutUrl}'; this.onerror=null;"
                         />
                       </div>
                       <!-- 화자 이름 배지 & 장소 인디케이터 (모바일 표시용) -->

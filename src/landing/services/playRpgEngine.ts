@@ -684,7 +684,7 @@ export const AUTO_STEP_INTERVAL_MS = 2800; // 2x slower than previous 1400ms
  */
 export function getCharacterBustUrl(cardId: number): string {
   const asset = getCharacterAsset(cardId);
-  return `${asset.bustPngUrl}?v=20261103v4`;
+  return asset.bustPngUrl;
 }
 
 /**
@@ -1017,9 +1017,9 @@ export async function preloadBattleImages(
 
   const loadSingle = async (cardId: number): Promise<void> => {
     const card = CARD_DATABASE[cardId];
-    const padId = String(cardId).padStart(3, '0');
-    const bustUrl = `/anime-character-sheets/busts/${padId}_bust.png?v=20261103v4`;
-    const fallbackUrl = `/seat/${card?.englishName || card?.title || 'Devastator'}.png`;
+    const asset = getCharacterAsset(cardId);
+    const bustUrl = asset.bustPngUrl;
+    const fallbackUrl = asset.cutoutUrl || `/seat/${card?.englishName || card?.title || 'Devastator'}.png`;
 
     const heroName = getLocalizedCharacterName(cardId) || card?.title || `Hero #${cardId}`;
 
