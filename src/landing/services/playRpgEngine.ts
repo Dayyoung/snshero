@@ -108,6 +108,7 @@ export interface PlayRpgState {
   currentDialoguePartIdx: number;     // 0: 첫 번째 파트, 1: 두 번째 파트 (대사 분할 시)
   dialogueTypingComplete: boolean;    // 현재 파트 글자 출력 완료 여부
   dialogueDisplayedLength: number;    // 현재 표시된 글자 수
+  dialogueCompletedAt: number;        // 대사 출력 완료 시각 (대사 종료 후 0.1초 즉시 다음 진행 지원)
   selectedChoiceIdx: number | null;
   choiceTimerSec: number;
   activeBuff: string | null;
@@ -162,6 +163,7 @@ export const playRpgState: PlayRpgState = {
   currentDialoguePartIdx: 0,
   dialogueTypingComplete: false,
   dialogueDisplayedLength: 0,
+  dialogueCompletedAt: 0,
   selectedChoiceIdx: null,
   choiceTimerSec: 5.0,
   activeBuff: null,
@@ -649,6 +651,43 @@ export function getCurrentDialogueParts(): { parts: string[]; currentPart: strin
 }
 
 let dialogueTypingTimer: any = null;
+let dialogueAutoAdvanceTimer: any = null;
+
+export function clearDialogueAutoAdvanceTimer(): void {
+  if (dialogueAutoAdvanceTimer) {
+    clearTimeout(dialogueAutoAdvanceTimer);
+    dialogueAutoAdvanceTimer = null;
+  }
+}
+
+/**
+ * Automatically advances to the next dialogue part or line exactly 100ms (0.1s) after typing completes.
+ * Directly fulfills user requirement: "대사가 끝나면 바로 0.1초후에 다음 대사를 진행할 수 있도록 해줘."
+ */
+export function scheduleDialogueAutoAdvance(): void {
+  if (typeof window === 'undefined') return;
+  clearDialogueAutoAdvanceTimer();
+
+  // In autoMode, automatically proceed to next part/line with zero lingering pause (0.1s)
+  if (!playRpgState.autoMode) return;
+
+  dialogueAutoAdvanceTimer = setTimeout(() => {
+    dialogueAutoAdvanceTimer = null;
+    if (playRpgState.subState !== 'dialogue' || !playRpgState.autoMode) return;
+
+    const lines = getCurrentDialogueLines();
+    const curLine = lines[playRpgState.currentDialogueLineIdx];
+    if (curLine?.choices && curLine.choices.length > 0) {
+      selectDialogueChoice(0);
+    } else {
+      advanceDialoguePartOrLine();
+    }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('snshero_play_rpg_updated'));
+    }
+  }, 100);
+}
 
 /**
  * Starts typewriter effect with Animal Crossing micro-synth chatter
@@ -660,6 +699,7 @@ export function startDialogueTyping(fullText: string, onTick?: (displayed: strin
     clearInterval(dialogueTypingTimer);
     dialogueTypingTimer = null;
   }
+  clearDialogueAutoAdvanceTimer();
 
   playRpgState.dialogueTypingComplete = false;
   playRpgState.dialogueDisplayedLength = 0;
@@ -668,6 +708,8 @@ export function startDialogueTyping(fullText: string, onTick?: (displayed: strin
   const totalLen = fullText.length;
   if (totalLen <= 0) {
     playRpgState.dialogueTypingComplete = true;
+    playRpgState.dialogueCompletedAt = Date.now();
+    scheduleDialogueAutoAdvance();
     return;
   }
 
@@ -708,7 +750,9 @@ export function startDialogueTyping(fullText: string, onTick?: (displayed: strin
         dialogueTypingTimer = null;
       }
       playRpgState.dialogueTypingComplete = true;
+      playRpgState.dialogueCompletedAt = Date.now();
       playRpgState.lastAutoStepAt = Date.now();
+      scheduleDialogueAutoAdvance();
     }
   }, 35);
 }
@@ -721,8 +765,10 @@ export function skipDialogueTyping(fullText: string): void {
     clearInterval(dialogueTypingTimer);
     dialogueTypingTimer = null;
   }
+  clearDialogueAutoAdvanceTimer();
   playRpgState.dialogueDisplayedLength = fullText.length;
   playRpgState.dialogueTypingComplete = true;
+  playRpgState.dialogueCompletedAt = Date.now();
   playRpgState.lastAutoStepAt = Date.now();
 
   const textEl = document.getElementById('dialogue-text-content');
@@ -737,6 +783,8 @@ export function skipDialogueTyping(fullText: string): void {
   if (indicatorEl) {
     indicatorEl.style.opacity = '1';
   }
+
+  scheduleDialogueAutoAdvance();
 }
 
 /**
@@ -744,6 +792,7 @@ export function skipDialogueTyping(fullText: string): void {
  * If currently typing, instantly completes typing first (skip typing).
  */
 export function advanceDialoguePartOrLine(): { completed: boolean; readyForBattle: boolean } {
+  clearDialogueAutoAdvanceTimer();
   const { parts, currentPart } = getCurrentDialogueParts();
 
   // 1. If currently typing: skip typing to show full text immediately
@@ -779,6 +828,7 @@ export function advanceDialoguePartOrLine(): { completed: boolean; readyForBattl
  * Moves back to previous dialogue part or previous script line.
  */
 export function prevDialoguePartOrLine(): { moved: boolean; lineIndex: number } {
+  clearDialogueAutoAdvanceTimer();
   if (playRpgState.currentDialoguePartIdx > 0) {
     playRpgState.currentDialoguePartIdx -= 1;
     playRpgState.dialogueLineStartedAt = Date.now();
@@ -1086,83 +1136,32 @@ export function preloadDialogueChapterImages(): void {
 
 /**
  * Check if the dialogue is ready to advance in auto-play mode.
- * Guaranteed:
- *   - NEVER hangs: hard safety deadline (3200ms) forces progression even on slow/broken network
- *   - Smooth experience: waits for current speaker image to load up to normal interval
- *   - Battle transition: immediately ready when reaching the final dialogue line
+ * Satisfies user requirement: "대사가 끝나면 바로 0.1초후에 다음 대사를 진행할 수 있도록 해줘."
+ * - Waits for typewriter typing animation to complete
+ * - Exactly 0.1s (100ms) pause after completion before advancing
+ * - Hard safety watchdog (2500ms) guarantees no hanging
  */
 export function isDialogueReadyToAdvance(): boolean {
   if (typeof window === 'undefined' || typeof document === 'undefined') {
     return true;
   }
 
-  // 1. Hard Safety Watchdog: If 3500ms have elapsed on this dialogue line, NEVER hang!
+  // 1. Hard Safety Watchdog: If 2500ms have elapsed on this dialogue line, NEVER hang!
   const now = Date.now();
   const elapsed = now - (playRpgState.dialogueLineStartedAt || now);
-  if (elapsed >= 3500) {
+  if (elapsed >= 2500) {
     return true;
   }
 
-  // 1-1. If typewriter animation is still active, wait for typing to finish (unless 3500ms watchdog fires)
+  // 2. If typewriter animation is still active, wait for typing to finish
   if (!playRpgState.dialogueTypingComplete) {
     return false;
   }
 
-  // 1-2. Minimum reading time after typing finishes
-  if (elapsed < 1500) {
+  // 3. Exactly 0.1 second (100ms) pause after dialogue typing finishes
+  const completedElapsed = now - (playRpgState.dialogueCompletedAt || now);
+  if (completedElapsed < 100) {
     return false;
-  }
-
-  // 2. Verify current speaker bust image in the live DOM
-  // If complete (whether loaded or errored out), treat as ready
-  const domImg = document.getElementById('dialogue-speaker-bust-img') as HTMLImageElement | null;
-  if (domImg) {
-    if (!domImg.complete) {
-      return false; // currently downloading
-    }
-  }
-
-  const lines = getCurrentDialogueLines();
-  const curIdx = playRpgState.currentDialogueLineIdx;
-  const curLine = lines[curIdx];
-
-  // If choice prompt exists, choices don't need next image gating
-  if (curLine?.choices && curLine.choices.length > 0) {
-    return true;
-  }
-
-  if (curLine) {
-    const curSpk = resolveDialogueSpeakers(curLine);
-    const curActive = curSpk.activeSide === 'left' ? curSpk.left : curSpk.right;
-    const curUrl = getCharacterBustUrl(curActive.cardId);
-    if (domImg && domImg.complete) {
-      markBustUrlLoaded(curUrl);
-    } else if (!isBustUrlLoaded(curUrl)) {
-      preloadCharacterBust(curActive.cardId);
-      return false;
-    }
-  }
-
-  // 3. If this is the final line before battle, do NOT block dialogue advance!
-  // Battle state itself has full 0%~100% pre-caching progress bar.
-  if (curIdx >= lines.length - 1) {
-    return true;
-  }
-
-  // 4. Verify NEXT line's speaker image is cached/loading
-  const nextLine = lines[curIdx + 1];
-  if (nextLine) {
-    const nextSpk = resolveDialogueSpeakers(nextLine);
-    const nextActive = nextSpk.activeSide === 'left' ? nextSpk.left : nextSpk.right;
-    const nextUrl = getCharacterBustUrl(nextActive.cardId);
-    if (!isBustUrlLoaded(nextUrl)) {
-      preloadCharacterBust(nextActive.cardId);
-      // If we've already waited at least 1800ms, don't hold the user back further
-      if (elapsed >= 1800) {
-        return true;
-      }
-      return false;
-    }
   }
 
   return true;
@@ -1172,6 +1171,7 @@ export function isDialogueReadyToAdvance(): boolean {
  * Trigger dialogue cutscene overlay
  */
 export function triggerDialogue(event: KadanRpgEvent): void {
+  clearDialogueAutoAdvanceTimer();
   playRpgState.subState = 'dialogue';
   playRpgState.currentDialogueLineIdx = 0;
   playRpgState.currentDialoguePartIdx = 0;
@@ -1192,6 +1192,7 @@ export function triggerDialogue(event: KadanRpgEvent): void {
  * Close dialogue modal and stop active auto-play
  */
 export function closeDialogueAndStopPlay(): void {
+  clearDialogueAutoAdvanceTimer();
   if (reincarnationIntervalId) {
     clearInterval(reincarnationIntervalId);
     reincarnationIntervalId = null;
@@ -2344,6 +2345,13 @@ export function toggleAutoMode(): boolean {
   try {
     localStorage.setItem('hero_kadan_rpg_auto_mode', String(playRpgState.autoMode));
   } catch {}
+  if (playRpgState.autoMode) {
+    if (playRpgState.subState === 'dialogue' && playRpgState.dialogueTypingComplete) {
+      scheduleDialogueAutoAdvance();
+    }
+  } else {
+    clearDialogueAutoAdvanceTimer();
+  }
   if (typeof window !== 'undefined') {
     window.dispatchEvent(
       new CustomEvent('snshero_auto_mode_toggled', {
@@ -2402,10 +2410,11 @@ export function runAutoStep(respectSpeedAndImageGate: boolean = false): boolean 
 
   if (respectSpeedAndImageGate) {
     const now = Date.now();
-    if (playRpgState.lastAutoStepAt > 0 && now - playRpgState.lastAutoStepAt < AUTO_STEP_INTERVAL_MS) {
-      return false;
-    }
-    if (playRpgState.subState === 'dialogue' && !isDialogueReadyToAdvance()) {
+    if (playRpgState.subState === 'dialogue') {
+      if (!isDialogueReadyToAdvance()) {
+        return false;
+      }
+    } else if (playRpgState.lastAutoStepAt > 0 && now - playRpgState.lastAutoStepAt < AUTO_STEP_INTERVAL_MS) {
       return false;
     }
   }

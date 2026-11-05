@@ -1193,8 +1193,14 @@ export function mountLanding(): void {
     }
   } catch {}
 
-  // 8. Auto-Play Runner interval for #play view (2x slower 2800ms step + bust image load readiness gate)
+  // 8. Auto-Play Runner interval for #play view (100ms tick + instant 0.1s dialogue advance)
   if (typeof window !== 'undefined') {
+    window.addEventListener('snshero_play_rpg_updated', () => {
+      if (state.activeView === 'play') {
+        renderApp();
+      }
+    });
+
     setInterval(() => {
       if (state.activeView === 'play' && playRpgState.autoMode) {
         const didStep = runAutoStep(true);
@@ -1202,7 +1208,7 @@ export function mountLanding(): void {
           renderApp();
         }
       }
-    }, 700);
+    }, 100);
   }
 
   // 9. Purge stale Service Worker media caches so updated ufotable character & background assets load immediately
