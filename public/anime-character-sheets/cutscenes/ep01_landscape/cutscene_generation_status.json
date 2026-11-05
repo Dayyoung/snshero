@@ -221,5 +221,300 @@
     "submitted": true,
     "extracted": true,
     "timestamp": "2026-11-05T12:46:24+0900"
+  },
+  "EP01-CUT13": {
+    "cutNumber": 13,
+    "cutCode": "EP01-CUT13",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_043_Balian.png",
+      "UFO3_LOC_001_Elwin_Village.jpg",
+      "UFO3_PROP_001_Silver_Dagger.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/78a5c0fb-ea3d-45ff-b332-71390df193e7?Expires=1793871994&KeyName=labs-flow-prod-cdn-key&Signature=MqQ5nC2EcqbgGWtUk7r_G_IQyfk",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT13_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT13): Balian pressed his hand to his chest as he received the companion blade. \"And mine shall be named Ignis, that his spirit may never lose its way, even within the furnace of tribulation.\" SETTING & LIGHTING (LOC-001 Elwin Village): Interior of the weathered log tavern hidden behind the village smithy in Elwin Village (Location Art: /anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg), rough oak tables, glowing red charcoal brazier, earthenware flasks on timber shelves, frost seeping through heavy pine door hinges, outside howling blue-white blizzard. APPEARING CHARACTERS: Balian (strictly match attached UFO3_043_Balian.png: short golden-blond hair with silver winged circlet, silver-and-white Holy Knight cross plate armor and crimson cape, wielding glowing cyan Arcane Spear and iron cross-shield). PROPS & HOLDERS: Silver Dagger: Balian (7-head-tall cutout: /anime-character-sheets/cutouts/043_Balian.png) holds the companion Silver Dagger (PROP-001) pressed against his chest. Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:48:13+0900"
+  },
+  "EP01-CUT14": {
+    "cutNumber": 14,
+    "cutCode": "EP01-CUT14",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_050_Aleksandar.png",
+      "UFO3_043_Balian.png",
+      "UFO3_049_Hercul.png",
+      "UFO3_LOC_001_Elwin_Village.jpg",
+      "UFO3_PROP_001_Silver_Dagger.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/fd6eadb0-3782-4027-87ad-c4c8a3c0759d?Expires=1793872007&KeyName=labs-flow-prod-cdn-key&Signature=O6mSuHMop321gWjlGn0I4PCSlGo",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT14_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT14): Raising cups filled not with wine but with melted snowfall, the three warriors consecrated their vows for the unborn children. Yet fate was swifter and far crueler than their hopes. SETTING & LIGHTING (LOC-001 Elwin Village): Interior of the weathered log tavern hidden behind the village smithy in Elwin Village (Location Art: /anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg), rough oak tables, glowing red charcoal brazier, earthenware flasks on timber shelves, frost seeping through heavy pine door hinges, outside howling blue-white blizzard. APPEARING CHARACTERS: Aleksandar (strictly match attached UFO3_050_Aleksandar.png: chestnut-brown hair and trimmed beard with slender golden circlet, royal-blue and gold Arcane Holy Knight coat with grey wolf-fur shoulder mantle, wielding Twin Arcane Longswords) ; Balian (strictly match attached UFO3_043_Balian.png: short golden-blond hair with silver winged circlet, silver-and-white Holy Knight cross plate armor and crimson cape, wielding glowing cyan Arcane Spear and iron cross-shield) ; Hercul (strictly match attached UFO3_049_Hercul.png: towering muscular paladin with wild dark-brown mane and full beard, tattered dark cloak and leather bandolier, cracked golden seal at belt, golden-mana gauntlets, holding twin Silver Runic Daggers and crescent greatsword). PROPS & HOLDERS: Earthenware Cups of Melted Snowfall & Twin Silver Daggers: Aleksandar (050_Aleksandar.png), Balian (043_Balian.png), and Hercul (049_Hercul.png) each hold an earthenware cup of melted snowfall raised in a solemn toast while the two Silver Daggers (PROP-001) rest on the oak table. Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:48:13+0900"
+  },
+  "EP01-CUT15": {
+    "cutNumber": 15,
+    "cutCode": "EP01-CUT15",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_042_Elwin.png",
+      "UFO3_061_Lucian.png",
+      "UFO3_LOC_001_Elwin_Village.jpg",
+      "UFO3_PROP_008_Moonlit_Herb.jpg",
+      "UFO3_PROP_012_Throne_Seal.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/f2890f21-e4fe-4640-b110-61c43e3b55b4?Expires=1793872023&KeyName=labs-flow-prod-cdn-key&Signature=S5K8vc9H8KI5UbiXowDmzpAQoYY",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT15_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT15): Three mornings later, amid a blinding snow fog, the young highborn Lucian encountered Aleksandar's wife, Elwin, on the village perimeter. Disguised as an injured merchant who had lost his mount, Lucian concealed beneath his ermine cloak the serpentine crest of the Red Glass Court. When Elwin offered him warm barley broth and tended his fabricated scars with boundless mercy, a twisted, possessive obsession ignited within Lucian's corrupt heart. To claim her as his own, he fabricated imperial charges declaring the entire settlement a nest of insurgents. SETTING & LIGHTING (LOC-001 Elwin Village): Anime environment concept art of Elwin Village in the Kingdom of Lighthaven, a snowbound medieval frontier village at the edge of jagged mountains under a fierce blue-white blizzard, stone-roofed cottages, timber watchtower, frozen stone bridge, warm amber lantern light glowing from windows, Makoto Shinkai and ufotable background style, 8k. APPEARING CHARACTERS: Elwin (strictly match attached UFO3_042_Elwin.png: graceful northern warrior-mother and Aleksandar's wife, golden Valkyrie crown-braided hair with side ringlets, sapphire-blue eyes, silver-and-blue bodice under dark-navy wool cloak trimmed with white winter fur, holding the glowing Silver Runic Dagger) ; Lucian (strictly match attached UFO3_061_Lucian.png: highborn nobleman of the Red Glass Court, silky long emerald-green hair, pointed elf ears, dark-emerald and gold coat with white ermine fur cloak and golden serpentine crest brooch, wielding emerald arcane greatbow and noble sword). PROPS & HOLDERS: Moonlit Herb: Elwin holds/carries Moonlit Herb (PROP-008) ; Throne Seal: Lucian holds/carries Throne Seal (PROP-012). Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:48:13+0900"
+  },
+  "EP01-CUT16": {
+    "cutNumber": 16,
+    "cutCode": "EP01-CUT16",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_050_Aleksandar.png",
+      "UFO3_043_Balian.png",
+      "UFO3_042_Elwin.png",
+      "UFO3_107_Ysela.png",
+      "UFO3_061_Lucian.png"
+    ],
+    "imageUrl": "https://flow-content.google/image/4bc94968-8ad8-49c6-abad-9677790b5c88?Expires=1793872038&KeyName=labs-flow-prod-cdn-key&Signature=vNayQaSP0W0dZnY3J5oWL60GUVI",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT16_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT16): At dawn, iron-clad legionnaires encircled the village under cover of burning pitch. Torches set the straw thatch ablaze. Aleksandar shoved the pregnant Elwin toward the secret northern waterway, drawing his dual swords to hold the solitary wooden bridge alone. Balian concealed his expectant wife, Ysela, within the covered cart, brandishing his arcane spear. Dozens of times they shattered the advancing lines, but Lucian mercilessly drove captive villagers forward as living shields. SETTING & LIGHTING (LOC-001 Elwin Village): Solitary wooden suspension bridge over an icy torrent in burning Elwin Village (Location Art: /anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg), straw-thatched roofs ablaze with orange fire against a blinding dawn blizzard, heavy mooring cables over a freezing gorge. APPEARING CHARACTERS: Aleksandar (strictly match attached UFO3_050_Aleksandar.png: chestnut-brown hair and trimmed beard with slender golden circlet, royal-blue and gold Arcane Holy Knight coat with grey wolf-fur shoulder mantle, wielding Twin Arcane Longswords) ; Balian (strictly match attached UFO3_043_Balian.png: short golden-blond hair with silver winged circlet, silver-and-white Holy Knight cross plate armor and crimson cape, wielding glowing cyan Arcane Spear and iron cross-shield) ; Elwin (strictly match attached UFO3_042_Elwin.png: graceful northern warrior-mother and Aleksandar's wife, golden Valkyrie crown-braided hair with side ringlets, sapphire-blue eyes, silver-and-blue bodice under dark-navy wool cloak trimmed with white winter fur, holding the glowing Silver Runic Dagger) ; Ysela (strictly match attached UFO3_107_Ysela.png: Balian's wife and Starlight Dragon-Priestess, long luminous sapphire-lavender hair with pearl-gold dragon horns, starlight-indigo and silver gown with winter shawl) ; Lucian (strictly match attached UFO3_061_Lucian.png: highborn nobleman of the Red Glass Court, silky long emerald-green hair, pointed elf ears, dark-emerald and gold coat with white ermine fur cloak and golden serpentine crest brooch, wielding emerald arcane greatbow and noble sword). PROPS & HOLDERS: Salt-Crystal Spear & Arcane Chains: Balian (7-head-tall cutout: /anime-character-sheets/cutouts/043_Balian.png) wields the azure-sparking Arcane Spear (PROP-020) in combat stance ; Obsidian Greatsword: Aleksandar (7-head-tall cutout: /anime-character-sheets/cutouts/050_Aleksandar.png) wields his forged twin arcane longswords in both hands (referencing PROP-014 blade craft). Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:48:13+0900"
+  },
+  "EP01-CUT17": {
+    "cutNumber": 17,
+    "cutCode": "EP01-CUT17",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_050_Aleksandar.png",
+      "UFO3_061_Lucian.png",
+      "UFO3_LOC_001_Elwin_Village.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/89a25262-dc46-4ea5-a2df-07f2ce1c5662?Expires=1793872104&KeyName=labs-flow-prod-cdn-key&Signature=BY-S_gF0o_jROjnRm-zwDR7Ektk",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT17_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT17): \"Surrender your steel, Aleksandar!\" Lucian sneered from horseback atop the ridge. \"Confess your treason, and I may grant your woman her wretched life!\" SETTING & LIGHTING (LOC-001 Elwin Village): Solitary wooden suspension bridge over an icy torrent in burning Elwin Village (Location Art: /anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg), straw-thatched roofs ablaze with orange fire against a blinding dawn blizzard, heavy mooring cables over a freezing gorge. APPEARING CHARACTERS: Aleksandar (strictly match attached UFO3_050_Aleksandar.png: chestnut-brown hair and trimmed beard with slender golden circlet, royal-blue and gold Arcane Holy Knight coat with grey wolf-fur shoulder mantle, wielding Twin Arcane Longswords) ; Lucian (strictly match attached UFO3_061_Lucian.png: highborn nobleman of the Red Glass Court, silky long emerald-green hair, pointed elf ears, dark-emerald and gold coat with white ermine fur cloak and golden serpentine crest brooch, wielding emerald arcane greatbow and noble sword). PROPS & HOLDERS: Aleksandar's Signature Gear: Aleksandar (7-head-tall cutout: /anime-character-sheets/cutouts/050_Aleksandar.png) carries their signature equipment (7-head-tall muscular northern warrior wielding masterwork twin arcane longswords). Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:49:42+0900"
+  },
+  "EP01-CUT18": {
+    "cutNumber": 18,
+    "cutCode": "EP01-CUT18",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_050_Aleksandar.png",
+      "UFO3_LOC_001_Elwin_Village.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/acc9aca6-ab8f-4870-ad85-3e6b59f1d21e?Expires=1793872114&KeyName=labs-flow-prod-cdn-key&Signature=9NVrN8ebMxtKBxlmxICQNrvzzTw",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT18_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT18): Refusing to strike the innocent captives, Aleksandar deflected blows with the blunt spines of his swords, absorbing spear thrusts and glowing profusely from shoulder and thigh. Looking upon the burning village, his eyes burned with unyielding resolve. \"My wife's life is not a favor to be bartered from a traitor's tongue!\" SETTING & LIGHTING (LOC-001 Elwin Village): Solitary wooden suspension bridge over an icy torrent in burning Elwin Village (Location Art: /anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg), straw-thatched roofs ablaze with orange fire against a blinding dawn blizzard, heavy mooring cables over a freezing gorge. APPEARING CHARACTERS: Aleksandar (strictly match attached UFO3_050_Aleksandar.png: chestnut-brown hair and trimmed beard with slender golden circlet, royal-blue and gold Arcane Holy Knight coat with grey wolf-fur shoulder mantle, wielding Twin Arcane Longswords). PROPS & HOLDERS: Aleksandar's Signature Gear: Aleksandar (7-head-tall cutout: /anime-character-sheets/cutouts/050_Aleksandar.png) carries their signature equipment (7-head-tall muscular northern warrior wielding masterwork twin arcane longswords). Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:49:42+0900"
+  },
+  "EP01-CUT19": {
+    "cutNumber": 19,
+    "cutCode": "EP01-CUT19",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_050_Aleksandar.png",
+      "UFO3_LOC_001_Elwin_Village.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/e1b07890-a5cb-44db-af74-20a460315045?Expires=1793872121&KeyName=labs-flow-prod-cdn-key&Signature=sCy8a0nVYQgXz7KY1WpGSKkZgmw",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT19_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT19): With a thunderous cry, Aleksandar parted the massive mooring cables supporting the span. shouting legionnaires plunged headlong into the icy torrent below. SETTING & LIGHTING (LOC-001 Elwin Village): Solitary wooden suspension bridge over an icy torrent in burning Elwin Village (Location Art: /anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg), straw-thatched roofs ablaze with orange fire against a blinding dawn blizzard, heavy mooring cables over a freezing gorge. APPEARING CHARACTERS: Aleksandar (strictly match attached UFO3_050_Aleksandar.png: chestnut-brown hair and trimmed beard with slender golden circlet, royal-blue and gold Arcane Holy Knight coat with grey wolf-fur shoulder mantle, wielding Twin Arcane Longswords). PROPS & HOLDERS: Aleksandar's Signature Gear: Aleksandar (7-head-tall cutout: /anime-character-sheets/cutouts/050_Aleksandar.png) carries their signature equipment (7-head-tall muscular northern warrior wielding masterwork twin arcane longswords). Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:49:42+0900"
+  },
+  "EP01-CUT20": {
+    "cutNumber": 20,
+    "cutCode": "EP01-CUT20",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_043_Balian.png",
+      "UFO3_107_Ysela.png",
+      "UFO3_061_Lucian.png",
+      "UFO3_LOC_001_Elwin_Village.jpg",
+      "UFO3_PROP_018_Crimson_Mane_Warhorse_Tack.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/a5724ec7-6c0b-4374-ae21-ac495521858b?Expires=1793872135&KeyName=labs-flow-prod-cdn-key&Signature=BG-r2AoKg4dJkPGhpIQWABr4mok",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT20_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT20): Near the rear alleys, Balian's escape cart overturned under iron chains. Ysela crawled desperately through the mud, shielding her belly with both arms, only to be blocked by Lucian's warhorse. She hurled a handful of frozen slush into the nobleman's face with fierce defiance. \"Lay no hand upon me, monster!\" SETTING & LIGHTING (LOC-001 Elwin Village): Anime environment concept art of Elwin Village in the Kingdom of Lighthaven, a snowbound medieval frontier village at the edge of jagged mountains under a fierce blue-white blizzard, stone-roofed cottages, timber watchtower, frozen stone bridge, warm amber lantern light glowing from windows, Makoto Shinkai and ufotable background style, 8k. APPEARING CHARACTERS: Balian (strictly match attached UFO3_043_Balian.png: short golden-blond hair with silver winged circlet, silver-and-white Holy Knight cross plate armor and crimson cape, wielding glowing cyan Arcane Spear and iron cross-shield) ; Ysela (strictly match attached UFO3_107_Ysela.png: Balian's wife and Starlight Dragon-Priestess, long luminous sapphire-lavender hair with pearl-gold dragon horns, starlight-indigo and silver gown with winter shawl) ; Lucian (strictly match attached UFO3_061_Lucian.png: highborn nobleman of the Red Glass Court, silky long emerald-green hair, pointed elf ears, dark-emerald and gold coat with white ermine fur cloak and golden serpentine crest brooch, wielding emerald arcane greatbow and noble sword). PROPS & HOLDERS: Crimson Mane Warhorse Tack: Lucian holds/carries Crimson Mane Warhorse Tack (PROP-018). Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:49:42+0900"
+  },
+  "EP01-CUT21": {
+    "cutNumber": 21,
+    "cutCode": "EP01-CUT21",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_043_Balian.png",
+      "UFO3_107_Ysela.png",
+      "UFO3_LOC_001_Elwin_Village.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/e4606fa7-1e6f-4a0e-9d5c-450a55fc9197?Expires=1793872194&KeyName=labs-flow-prod-cdn-key&Signature=KDlJKHahdA0oVKPPp3_PpcDfzwU",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT21_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT21): Hearing her desperate cry and believing she had slipped past the cordon, Balian charged toward the precipice to draw the pursuing cavalry away from her. \"Live, Ysela! You must live!\" SETTING & LIGHTING (LOC-001 Elwin Village): Anime environment concept art of Elwin Village in the Kingdom of Lighthaven, a snowbound medieval frontier village at the edge of jagged mountains under a fierce blue-white blizzard, stone-roofed cottages, timber watchtower, frozen stone bridge, warm amber lantern light glowing from windows, Makoto Shinkai and ufotable background style, 8k. APPEARING CHARACTERS: Balian (strictly match attached UFO3_043_Balian.png: short golden-blond hair with silver winged circlet, silver-and-white Holy Knight cross plate armor and crimson cape, wielding glowing cyan Arcane Spear and iron cross-shield) ; Ysela (strictly match attached UFO3_107_Ysela.png: Balian's wife and Starlight Dragon-Priestess, long luminous sapphire-lavender hair with pearl-gold dragon horns, starlight-indigo and silver gown with winter shawl). PROPS & HOLDERS: Balian's Signature Gear: Balian (7-head-tall cutout: /anime-character-sheets/cutouts/043_Balian.png) carries their signature equipment (7-head-tall veteran spearman wielding a glowing cyan-runed Arcane Spear and heavy iron cross-shield). Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:51:21+0900"
+  },
+  "EP01-CUT22": {
+    "cutNumber": 22,
+    "cutCode": "EP01-CUT22",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_043_Balian.png",
+      "UFO3_107_Ysela.png",
+      "UFO3_061_Lucian.png",
+      "UFO3_LOC_007_Red_Glass_Palace.jpg",
+      "UFO3_PROP_020_Salt_Crystal_Spear_Arcane_Chains.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/e2ebbad7-0eaf-4cc4-9460-3693bf3f232e?Expires=1793872212&KeyName=labs-flow-prod-cdn-key&Signature=Pdf4VtWFSecGEk-CYs7RTx58qps",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT22_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT22): Snapping his spear haft, Balian dragged several mounted foes with him over the mist-shrouded chasm into the raging river rapids. In the chaos, Lucian threw his heavy cloak over the unconscious Ysela and whisked her south toward the imperial palace. SETTING & LIGHTING (LOC-007 Red Glass Palace (Flame Court)): Anime environment concept art of the Red Glass Palace and Flame Court, an imposing dark-fantasy palace court built of towering black obsidian pillars and glowing crimson stained-glass spires, arcane braziers burning with ruby fire, polished red crystal floor. APPEARING CHARACTERS: Balian (strictly match attached UFO3_043_Balian.png: short golden-blond hair with silver winged circlet, silver-and-white Holy Knight cross plate armor and crimson cape, wielding glowing cyan Arcane Spear and iron cross-shield) ; Ysela (strictly match attached UFO3_107_Ysela.png: Balian's wife and Starlight Dragon-Priestess, long luminous sapphire-lavender hair with pearl-gold dragon horns, starlight-indigo and silver gown with winter shawl) ; Lucian (strictly match attached UFO3_061_Lucian.png: highborn nobleman of the Red Glass Court, silky long emerald-green hair, pointed elf ears, dark-emerald and gold coat with white ermine fur cloak and golden serpentine crest brooch, wielding emerald arcane greatbow and noble sword). PROPS & HOLDERS: Salt-Crystal Spear & Arcane Chains: Balian (7-head-tall cutout: /anime-character-sheets/cutouts/043_Balian.png) wields and snaps the shaft of his glowing cyan Arcane Spear (PROP-020) to drag enemy cavalry over the cliff. Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:51:21+0900"
+  },
+  "EP01-CUT23": {
+    "cutNumber": 23,
+    "cutCode": "EP01-CUT23",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_050_Aleksandar.png",
+      "UFO3_042_Elwin.png",
+      "UFO3_LOC_001_Elwin_Village.jpg",
+      "UFO3_PROP_014_Obsidian_Greatsword.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/b3bb8adb-7b75-4569-9ee7-5354d8ca51fe?Expires=1793872227&KeyName=labs-flow-prod-cdn-key&Signature=XbLW2HwhEDlOXyiFOayVoVzOlxM",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT23_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT23): On the ruined bridge, Aleksandar broke his twin swords across the breastplate of the final commander before collapsing upon one knee. Through the blinding snow, his fading eyes caught a fleeting glimpse of Elwin's cloaked figure escaping into the safety of the northern wilderness. SETTING & LIGHTING (LOC-001 Elwin Village): Solitary wooden suspension bridge over an icy torrent in burning Elwin Village (Location Art: /anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg), straw-thatched roofs ablaze with orange fire against a blinding dawn blizzard, heavy mooring cables over a freezing gorge. APPEARING CHARACTERS: Aleksandar (strictly match attached UFO3_050_Aleksandar.png: chestnut-brown hair and trimmed beard with slender golden circlet, royal-blue and gold Arcane Holy Knight coat with grey wolf-fur shoulder mantle, wielding Twin Arcane Longswords) ; Elwin (strictly match attached UFO3_042_Elwin.png: graceful northern warrior-mother and Aleksandar's wife, golden Valkyrie crown-braided hair with side ringlets, sapphire-blue eyes, silver-and-blue bodice under dark-navy wool cloak trimmed with white winter fur, holding the glowing Silver Runic Dagger). PROPS & HOLDERS: Obsidian Greatsword: Aleksandar (7-head-tall cutout: /anime-character-sheets/cutouts/050_Aleksandar.png) wields his forged twin arcane longswords in both hands (referencing PROP-014 blade craft). Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:51:21+0900"
+  },
+  "EP01-CUT24": {
+    "cutNumber": 24,
+    "cutCode": "EP01-CUT24",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_042_Elwin.png",
+      "UFO3_LOC_001_Elwin_Village.jpg",
+      "UFO3_PROP_001_Silver_Dagger.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/173b4806-d490-4164-93af-c8513e7eb253?Expires=1793872240&KeyName=labs-flow-prod-cdn-key&Signature=HgNTE4WO0nE2Eqi7n1-_vqvpJuQ",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT24_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT24): Reaching the frozen tundra, Elwin dropped to her knees, looking back toward the pillars of smoke rising from their ruined home. Beneath her bodice, the silver dagger resonated faintly against the broken sword-sheath of her husband. Inside her womb, the unborn child kicked with sudden strength. SETTING & LIGHTING (LOC-001 Elwin Village): Frozen northern tundra ridge overlooking the distant burning ruins and black smoke pillars of Elwin Village (Location Art: /anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg), vast windswept snowfield under a pale stormy sky, exposed patches of frozen dark loam. APPEARING CHARACTERS: Elwin (strictly match attached UFO3_042_Elwin.png: graceful northern warrior-mother and Aleksandar's wife, golden Valkyrie crown-braided hair with side ringlets, sapphire-blue eyes, silver-and-blue bodice under dark-navy wool cloak trimmed with white winter fur, holding the glowing Silver Runic Dagger). PROPS & HOLDERS: Silver Dagger: Elwin (7-head-tall cutout: /anime-character-sheets/cutouts/042_Elwin.png) carries the glowing Silver Dagger (PROP-001) and Aleksandar's broken sword-sheath tucked against her bodice. Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:51:21+0900"
+  },
+  "EP01-CUT25": {
+    "cutNumber": 25,
+    "cutCode": "EP01-CUT25",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_042_Elwin.png",
+      "UFO3_LOC_001_Elwin_Village.jpg",
+      "UFO3_PROP_001_Silver_Dagger.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/8e4ea4e8-7d61-4de2-87e8-44099bce2810?Expires=1793872293&KeyName=labs-flow-prod-cdn-key&Signature=PUVrBmygYmlW-RM9GeGyU-NRONA",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT25_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT25): The elderly refugees who caught up with her could not bear to speak Aleksandar's demise aloud. Elwin did not ask. She tucked the broken sheath against her breast, scooped away the snow with bare fingers, and buried a fistful of golden wheat seeds into the frozen loam. SETTING & LIGHTING (LOC-001 Elwin Village): Frozen northern tundra ridge overlooking the distant burning ruins and black smoke pillars of Elwin Village (Location Art: /anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg), vast windswept snowfield under a pale stormy sky, exposed patches of frozen dark loam. APPEARING CHARACTERS: Elwin (strictly match attached UFO3_042_Elwin.png: graceful northern warrior-mother and Aleksandar's wife, golden Valkyrie crown-braided hair with side ringlets, sapphire-blue eyes, silver-and-blue bodice under dark-navy wool cloak trimmed with white winter fur, holding the glowing Silver Runic Dagger). PROPS & HOLDERS: Silver Dagger & Fistful of Golden Wheat Seeds: Elwin (7-head-tall cutout: /anime-character-sheets/cutouts/042_Elwin.png) clutches Aleksandar's broken sword-sheath and the glowing Silver Dagger (PROP-001) close to her heart with one hand while planting a fistful of golden wheat seeds into the frozen snow-covered earth with her bare fingers. Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:52:37+0900"
+  },
+  "EP01-CUT26": {
+    "cutNumber": 26,
+    "cutCode": "EP01-CUT26",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_042_Elwin.png",
+      "UFO3_LOC_001_Elwin_Village.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/e4572728-352f-47be-9c48-dec3a808e5a2?Expires=1793872301&KeyName=labs-flow-prod-cdn-key&Signature=Sjh_khWtUbPlTGK-G5QAkPznYmI",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT26_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT26): \"Even if we never return,\" she whispered softly, \"someone must live to bake bread upon this ground once more.\" SETTING & LIGHTING (LOC-001 Elwin Village): Frozen northern tundra ridge overlooking the distant burning ruins and black smoke pillars of Elwin Village (Location Art: /anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg), vast windswept snowfield under a pale stormy sky, exposed patches of frozen dark loam. APPEARING CHARACTERS: Elwin (strictly match attached UFO3_042_Elwin.png: graceful northern warrior-mother and Aleksandar's wife, golden Valkyrie crown-braided hair with side ringlets, sapphire-blue eyes, silver-and-blue bodice under dark-navy wool cloak trimmed with white winter fur, holding the glowing Silver Runic Dagger). PROPS & HOLDERS: Elwin's Signature Gear: Elwin (7-head-tall cutout: /anime-character-sheets/cutouts/042_Elwin.png) carries their signature equipment (7-head-tall graceful northern swordswoman and mother in a warm frontier wool cloak over a linen dress (heavily pregnant in EP01)). Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:52:37+0900"
+  },
+  "EP01-CUT27": {
+    "cutNumber": 27,
+    "cutCode": "EP01-CUT27",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_042_Elwin.png",
+      "UFO3_LOC_001_Elwin_Village.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/1bc2b1dd-6c4f-4ccd-812c-c7e84e84b88a?Expires=1793872311&KeyName=labs-flow-prod-cdn-key&Signature=iirPhcKs94NkTBlHFchLXA-5LcA",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT27_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT27): Wiping the frozen tears from her cheeks, Elwin turned north into the gale. \"My child, you were not born to carry the burden of vengeance,\" her voice rang steady against the wind. \"Only promise me that you will never bow your head before a lie.\" SETTING & LIGHTING (LOC-001 Elwin Village): Frozen northern tundra ridge overlooking the distant burning ruins and black smoke pillars of Elwin Village (Location Art: /anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg), vast windswept snowfield under a pale stormy sky, exposed patches of frozen dark loam. APPEARING CHARACTERS: Elwin (strictly match attached UFO3_042_Elwin.png: graceful northern warrior-mother and Aleksandar's wife, golden Valkyrie crown-braided hair with side ringlets, sapphire-blue eyes, silver-and-blue bodice under dark-navy wool cloak trimmed with white winter fur, holding the glowing Silver Runic Dagger). PROPS & HOLDERS: Elwin's Signature Gear: Elwin (7-head-tall cutout: /anime-character-sheets/cutouts/042_Elwin.png) carries their signature equipment (7-head-tall graceful northern swordswoman and mother in a warm frontier wool cloak over a linen dress (heavily pregnant in EP01)). Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:52:38+0900"
+  },
+  "EP01-CUT28": {
+    "cutNumber": 28,
+    "cutCode": "EP01-CUT28",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "🍌 Nano Banana 2.1 (ufotable style)",
+    "attachedReferenceFiles": [
+      "UFO3_042_Elwin.png",
+      "UFO3_LOC_001_Elwin_Village.jpg",
+      "UFO3_PROP_001_Silver_Dagger.jpg"
+    ],
+    "imageUrl": "https://flow-content.google/image/e1afb9e7-1ef3-4d7a-9958-2db14feb4d1e?Expires=1793872323&KeyName=labs-flow-prod-cdn-key&Signature=KdZuuRGCoHViaX1KJTWUSJz5HDo",
+    "localImage": "public/anime-character-sheets/cutscenes/ep01_landscape/images/EP01_CUT28_cutscene.jpg",
+    "prompt": "Masterpiece 16:9 widescreen 2D dark-fantasy anime cinema still in Demon Slayer: Kimetsu no Yaiba (ufotable) and Makoto Shinkai studio style. STRICT VISUAL CONSISTENCY WITH ATTACHED REFERENCE SHEETS: You MUST strictly preserve the exact face, hair color/style, outfit/armor, and weapon/prop design of every attached character sheet, prop sheet, and location sheet. SCENE ACTION (EP01-CUT28): The blizzard buried the crimson light of two brave men, yet the seeds beneath the snow and the twin silver daggers glowed in the darkness like an ember that no storm could ever quench. SETTING & LIGHTING (LOC-001 Elwin Village): Anime environment concept art of Elwin Village in the Kingdom of Lighthaven, a snowbound medieval frontier village at the edge of jagged mountains under a fierce blue-white blizzard, stone-roofed cottages, timber watchtower, frozen stone bridge, warm amber lantern light glowing from windows, Makoto Shinkai and ufotable background style, 8k. APPEARING CHARACTERS: Elwin (strictly match attached UFO3_042_Elwin.png: graceful northern warrior-mother and Aleksandar's wife, golden Valkyrie crown-braided hair with side ringlets, sapphire-blue eyes, silver-and-blue bodice under dark-navy wool cloak trimmed with white winter fur, holding the glowing Silver Runic Dagger). PROPS & HOLDERS: Silver Dagger: Elwin holds and wields the Silver Dagger (PROP-001). Bold ufotable anime linework, dramatic volumetric lighting, rich cel-shaded depth, cinematic 16:9 widescreen composition. STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, or UI anywhere in the image.",
+    "submitted": true,
+    "extracted": true,
+    "timestamp": "2026-11-05T12:52:38+0900"
   }
 }

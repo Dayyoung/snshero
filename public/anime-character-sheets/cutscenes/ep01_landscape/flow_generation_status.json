@@ -3,5 +3,8 @@
   "orientation": "landscape",
   "totalCutscenes": 28,
   "completedCutscenes": 28,
-  "updatedAt": "2026-10-28T19:40:22+0900"
+  "excludedCutscenes": 0,
+  "exportedImages": 28,
+  "finished": true,
+  "updatedAt": "2026-11-05T12:52:38+0900"
 }

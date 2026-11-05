@@ -20208,3 +20208,11 @@
   2. **20종 공식 배경장소 시트 (`LOC-001` ~ `LOC-020`, 16:9 와이드스크린 `1376x768`)**:
      - Google Flow (`🍌 Nano Banana 2.1`, `16:9` 가로 와이드 `1376x768`)에서 ufotable & 신카이 마코토 화풍으로 20개 소설 핵심 배경장소(`LOC_001_Elwin_Village` ~ `LOC_020_Altar_of_Ruin_Two_Graves`) 원화(`public/anime-character-sheets/locations/art/`) 및 스튜디오 설정 시트(`public/anime-character-sheets/locations/sheets/`), 20선 종합 포스터(`locations_20_poster.jpg`) 전수 생성 완료.
 - **검증 및 보고**: 110개 캐릭터 RGBA 투명배경 추출 비율 및 20개 16:9 배경장소 해상도(`1376x768`) 전수 검증 완료, 구글 폼 보고 제출 완료.
+
+## [2026-11-05 14:06:55] ufotable 캐릭터/소품/장소 시트 기반 에피소드 1화 컷신 28장 및 Veo 3.1 Lite 통합 동영상 제작 완료
+- **작업 내역**:
+  1. 에피소드 1화 소설 등장인물(`042_Elwin`, `043_Balian`, `049_Hercul`, `050_Aleksandar`, `060_Death_Knight_Artus`, `061_Lucian`, `107_Ysela`)의 ufotable 화풍 7등신 투명 배경 컷아웃 시트, 배경장소 시트(`LOC-001` 엘윈 마을, `LOC-007` 붉은 유리 궁전), 소품 시트(`PROP-001` 은단검, `PROP-003` 쌍검, `PROP-004` 비전 창 등 7종) 총 16종을 Google Flow 프로젝트에 업로드 및 연동.
+  2. `🍌 Nano Banana 2.1` (가로 `16:9`)로 컷별 최대 5장의 레퍼런스 시트를 첨부하여 에피소드 1화 28개 컷신 이미지(`EP01_CUT01_cutscene.jpg` ~ `EP01_CUT28_cutscene.jpg`) 전수 생성 완료.
+  3. 생성된 28개 컷신 이미지를 `Veo 3.1 - Lite` (`16:9`, `6초`, `프레임` 모드)의 `시작` 프레임으로 첨부하여 28개 6초 애니메이션 클립(`EP01-CUT01.mp4` ~ `EP01-CUT28.mp4`) 전수 생성 및 다운로드 완료.
+  4. 기본 자막 트랙 미포함(`-sn`) 원칙을 준수하여 28개 클립을 1개의 통합 MP4(`1280x720`, `24fps`, `167.15초`, `111.2MB`)로 병합하고 외부 한/영 자막(`.ko.srt`/`.vtt`, `.en.srt`/`.vtt`)을 생성하여 `public/anime-character-sheets/videos/ep01_landscape/` 및 `/Users/dayyoung/Desktop/내문서/movie/episode_01.mp4`에 저장 완료.
+- **검증 및 보고**: `ffprobe` 스트림/길이/무자막 트랙 검증 완료 및 구글 폼 작업완료 보고서 제출 완료.
