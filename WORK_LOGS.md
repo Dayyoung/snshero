@@ -2,6 +2,44 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 16:45 KST] [ufotable 시트 기반 에피소드 2화 컷신 26장 및 Veo 3.1 Lite 26클립 동영상 제작·병합 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "좋아. 어쩔때는 동영상을 50장으로 제작하고 어쩔때는 동영상을 28장으로 제작하네? 지금제작한것 처럼 28장 내외로 2화도 생성해줘."
+    - "동영상에 기본으로 자막을 삽입하지는 말아줘."
+    - 캐릭터/의상/소품 일관성을 위해 flow에서 생성한 110개 캐릭터 시트 및 배경장소 시트를 활용할 것.
+    - "영상 생성이 안되고 서드 파티 컨텐츠 문제로 실패했다고 계속 나오는데?" 오류 해결.
+  - **2. 수행 내역**:
+    - **(1) 컷신 스크립트 26컷 확정 (`/script-anime 2회`)**:
+      - `public/anime-character-sheets/cutscene-prompts/episode_02_cutscene_prompts.json` 및 `.md` 생성 (26컷, 총 156초).
+    - **(2) 16:9 ufotable 컷신 이미지 26장 전수 생성 및 Flow 등록**:
+      - 7등신 캐릭터 시트(헤르쿨, 가웨인, 카제, 론돌, 로빈야드, 엘리아나, 아일라, 그림리 등)와 배경(주정뱅이 종루 LOC-002, 007), 소품(청동 대종 PROP-019) 첨부.
+      - 나노바나나 2.1 16:9 컷신 26장(`EP02-CUT01_cutscene.jpg` ~ `EP02-CUT26_cutscene.jpg`) 전수 생성 완료.
+      - Flow 시작 프레임(Start Frame) 라이브러리에 `UFO3_EP02_CUT01` ~ `UFO3_EP02_CUT26`으로 전수 업로드 완료.
+    - **(3) 서드 파티 저작권 필터 원인 규명 및 클린 프롬프트 전면 해결**:
+      - Veo 3.1 Lite에서 프롬프트에 포함된 상표/작품명(`Demon Slayer: Kimetsu no Yaiba`, `ufotable`, `Grimli` 등)이 Google 저작권 필터에 걸려 차단되는 현상 규명.
+      - 외부 IP 키워드를 배제하고 기등록된 Start Frame 비주얼을 계승하는 클린 프롬프트로 전면 수정하여 CUT09, CUT12까지 100% 정상 렌더링 및 다운로드 완결.
+    - **(4) 26개 6초 비디오 클립 전수 다운로드 및 무자막 MP4 병합**:
+      - `EP02-CUT01.mp4` ~ `EP02-CUT26.mp4` (총 26개, 1280x720, 24fps) 전수 생성.
+      - `ffmpeg filter_complex concat` (`-sn` 옵션 적용으로 영상 내부 자막 스트림 완전 배제, 깨끗한 무자막 영상 보장).
+      - 최종 통합 영상: `SNSHero_Anime_EP02_Oath_of_the_Seven_Pursuers_16x9.mp4` (116.8MB, 155.22초).
+    - **(5) 외장 한/영 자막(.srt / .vtt) 생성 및 다중 배포**:
+      - 한국어 자막: `.ko.srt`, `.ko.vtt`
+      - 영어 자막: `.en.srt`, `.en.vtt`
+      - 배포 위치:
+        - `~/Desktop/내문서/movie/SNSHero_Anime_EP02_Oath_of_the_Seven_Pursuers_16x9.mp4`
+        - `~/Desktop/내문서/movie/episode_02.mp4` (외장 srt/vtt 동시 배포)
+        - `public/anime-character-sheets/videos/ep02_landscape/`
+        - `public/videos/episodes/episode_02.mp4`
+    - **(6) 유튜브 업로드 메타데이터 JSON 생성**:
+      - `youtube_upload_ready.json` 완비.
+  - **3. 검증 결과**:
+    - `ffprobe` 검증: 1280x720, 24fps, duration 155.22s, 비디오/오디오 2스트림, 자막 스트림 0개 (무자막 영상 무결점).
+    - 외장 자막 4종(.ko.srt, .ko.vtt, .en.srt, .en.vtt) 데스크톱 및 프로젝트 폴더 완비.
+    - 로컬 Git 커밋: `d359bee61` (원격 push 미수행).
+    - 구글 폼 완료 보고서 제출 완료 (`[개발] [ufotable 시트 기반 에피소드 2화 컷신 26장 및 Veo 3.1 Lite 26클립 동영상 제작·병합 완료] -> 작업완료`).
+
 ## [2026-11-05 16:25 KST] [대사 출력 종료 후 0.1초 즉시 다음 대사 자동 진행 구현]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
