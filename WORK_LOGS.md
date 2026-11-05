@@ -2,6 +2,40 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 17:16 KST] [상대방 카드 AI 전술 배치 및 착수 전 빨간색 AI 조준 슬롯 실시간 시각화 구현]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "그리고 지금 상대방 카드도 ai 로직으로 카드를 놓을 수 있게해줘. 놓기전에 상대방도 빨간색으로 AI 추천칸을 표시하고 카드를 놓아줘."
+  - **2. 세부 구현 내역**:
+    - **(1) 상대방 전용 전술 AI 엔진 탑재 (`src/landing/services/playRpgEngine.ts`)**:
+      - `findBestOpponentTacticalMove()`:
+        - 상대방 손패(`opponentHand`)와 비어있는 3x3 전장 슬롯들을 전수 탐색.
+        - 플레이어 배치 카드 공명 역전(공격적 뒤집기 Flip 점수 가산).
+        - 플레이어 남은 손패 스탯 대비 방어적 취약성 위협(threats) 감산.
+        - 코너 방어 진형(+3500) 및 중앙 제어 위치 가산점 산출.
+        - 최고 기대값의 `handIdx`, `slotIdx`, `reason`, `flipsCount`를 도출하여 `playRpgState.aiOpponentSuggestedMove`에 저장.
+    - **(2) 착수 전 빨간색 AI 조준 슬롯 실시간 시각화 (`src/landing/views/PlaySection.tsx`)**:
+      - `getSlotSignature(sIdx)`에 `opp-ai` 시그니처를 연동하여 `syncBattleDomInPlace()`를 통해 깜빡임 없이 즉각 업데이트.
+      - 상대방 AI가 조준 중인 슬롯에:
+        - 선명한 붉은 테두리 및 펄스 발광: `border-2 border-red-500 bg-red-950/40 text-red-300 ring-2 ring-red-500/60 shadow-lg shadow-red-950/50 animate-pulse`
+        - 헤더: `#슬롯번호` & `⚠️ 적 AI`
+        - 중앙 타깃 아이콘: `🎯` & `[적 AI 조준]` (다국어 지원)
+        - 하단 전술 의도 표시: `공명 역전 2장!`, `플레이어 카드 역전`, `코너 방어 진형` 등 실시간 표기.
+    - **(3) 생각하는 템포 딜레이 연동 (`executeOpponentTurn`)**:
+      - 턴 전환 시 빨간색 조준 슬롯을 약 850ms 동안 선명하게 노출하여 플레이어가 상대의 전략을 인지할 수 있도록 한 뒤, 계산된 최적의 수로 슬롯에 카드를 착수.
+  - **3. 빌드 및 검증**:
+    - `npm run build && node scripts/post-build.js`: 0 error 정상 통과.
+    - `curl -I http://localhost:3000/card-play`: HTTP 200 OK 응답 확인.
+    - 로컬 Git 커밋 완료 (`296fa45e2`).
+    - 연동 구글 폼 완료 보고서 제출 완료 (`[개발] 상대방 카드 AI 전술 배치 및 착수 전 빨간색 AI 추천 슬롯 표시 구현 -> 작업완료`).
+- **검증 결과**:
+  - 상대방 턴 시작 즉시 상대 AI가 조준하는 슬롯에 빨간색 AI 추천칸(`⚠️ 적 AI`, `🎯`, `[적 AI 조준]`)이 선명하게 표시됨.
+  - 850ms 후 상대방이 해당 슬롯에 정확하게 카드를 배치하며 실감 나는 카드 배틀 전개 확인.
+  - 프로덕션 번들 빌드: 0 error 정상 완료
+  - 로컬 Git 커밋: `296fa45e2`
+  - 구글 폼 완료 보고서 제출: 완료
+
 ## [2026-11-05 16:45 KST] [ufotable 시트 기반 에피소드 2화 컷신 26장 및 Veo 3.1 Lite 26클립 동영상 제작·병합 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
