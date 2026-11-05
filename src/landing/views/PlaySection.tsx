@@ -518,73 +518,169 @@ export function renderBattleStatusBarHtml(): string {
 }
 
 /**
+ * Generates an immutable signature for a 3x3 battle board slot.
+ * If signature hasn't changed, DOM manipulation is skipped 100%, preventing re-render blinking!
+ */
+export function getSlotSignature(sIdx: number): string {
+  const slot = playRpgState.battleBoard[sIdx];
+  if (!slot) {
+    const isOpponentTurn = playRpgState.turn === 'opponent';
+    const isAiSuggested = !isOpponentTurn && playRpgState.aiSuggestedMove?.slotIdx === sIdx;
+    return `empty:${sIdx}:${isOpponentTurn ? 'opp' : 'user'}:${isAiSuggested ? 'ai' : 'none'}`;
+  }
+  const isJustPlaced = playRpgState.lastPlacedSlot === sIdx;
+  const isFlipped = playRpgState.flippedSlots?.includes(sIdx);
+  return `card:${sIdx}:${slot.cardId}:${slot.owner}:${slot.stats.join(',')}:${isJustPlaced ? 'placed' : 'settled'}:${isFlipped ? 'flip' : 'static'}`;
+}
+
+/**
+ * Render single slot inner content HTML
+ */
+export function renderSingleSlotContentHtml(sIdx: number): string {
+  const slot = playRpgState.battleBoard[sIdx];
+  if (!slot) {
+    const isOpponentTurn = playRpgState.turn === 'opponent';
+    const isAiSuggested = !isOpponentTurn && playRpgState.aiSuggestedMove?.slotIdx === sIdx;
+    return `
+      <button
+        type="button"
+        id="battle-slot-${sIdx}"
+        ${isOpponentTurn ? 'disabled' : `data-action="play-battle-slot" data-slot="${sIdx}"`}
+        class="relative w-full h-full aspect-[5/7] border-2 border-dashed ${
+          isOpponentTurn
+            ? 'border-stone-700/60 bg-stone-900/40 text-stone-600 cursor-wait'
+            : isAiSuggested
+            ? 'border-emerald-400 bg-[#064e3b]/30 text-emerald-300 ring-2 ring-emerald-400/40 cursor-pointer active:scale-98 animate-pulse'
+            : 'border-amber-400/40 hover:border-amber-300 bg-[#0e1628]/60 hover:bg-[#131f38] text-amber-300 cursor-pointer active:scale-98'
+        } rounded-xs flex flex-col items-center justify-between p-1.5 sm:p-2 transition-transform select-none shadow-sm"
+        aria-label="${tr(`슬롯 ${sIdx + 1} 배치`, `Place in Slot ${sIdx + 1}`, `スロット${sIdx + 1}に配置`)}"
+      >
+        <!-- Slot Header -->
+        <div class="w-full flex items-center justify-between text-[9px] sm:text-[10px] font-mono ${isOpponentTurn ? 'text-stone-600' : isAiSuggested ? 'text-emerald-300 font-bold' : 'text-stone-400/80'}">
+          <span>#${sIdx + 1}</span>
+          <span class="${isOpponentTurn ? 'text-stone-700' : isAiSuggested ? 'text-emerald-400' : 'text-amber-400/60'}">${isAiSuggested ? '🤖 AI' : '✦'}</span>
+        </div>
+
+        <!-- Center Target / Seal Cue -->
+        <div class="flex flex-col items-center justify-center gap-1 my-auto">
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border ${
+            isOpponentTurn
+              ? 'border-stone-700 bg-black/40 text-stone-600'
+              : isAiSuggested
+              ? 'border-emerald-400 bg-emerald-950/80 text-emerald-300'
+              : 'border-amber-400/40 bg-black/50 text-amber-400'
+          } flex items-center justify-center text-xs sm:text-sm font-black">
+            ${isOpponentTurn ? '⏳' : isAiSuggested ? '🎯' : '+'}
+          </div>
+          <span class="text-[10px] sm:text-[11px] font-black tracking-wider ${isOpponentTurn ? 'text-stone-600' : isAiSuggested ? 'text-emerald-300' : 'text-amber-400'}">
+            ${isOpponentTurn ? tr('대기...', 'WAIT', '待機...') : isAiSuggested ? tr('[AI 추천]', '[AI BEST]', '[AI推奨]') : tr('[배치]', '[PLACE]', '[配置]')}
+          </span>
+        </div>
+
+        <!-- Footer Cue -->
+        <div class="text-[8px] sm:text-[9px] font-mono truncate ${isOpponentTurn ? 'text-stone-700' : isAiSuggested ? 'text-emerald-300/90 font-bold' : 'text-stone-400/60'}">
+          ${isOpponentTurn ? 'AI TURN' : isAiSuggested ? (playRpgState.aiSuggestedMove?.reason || 'BEST MOVE') : 'TAP HERE'}
+        </div>
+      </button>
+    `;
+  }
+
+  return `
+    <div id="battle-slot-${sIdx}" class="w-full h-full aspect-[5/7]">
+      ${renderBattleBoardCardHtml({
+        cardId: slot.cardId,
+        stats: slot.stats,
+        owner: slot.owner,
+        isJustPlaced: playRpgState.lastPlacedSlot === sIdx,
+        isFlipped: playRpgState.flippedSlots?.includes(sIdx),
+      })}
+    </div>
+  `;
+}
+
+/**
+ * Render single slot wrapper with signature
+ */
+export function renderSingleSlotWrapperHtml(sIdx: number): string {
+  const signature = getSlotSignature(sIdx);
+  return `
+    <div id="battle-slot-wrapper-${sIdx}" data-slot-index="${sIdx}" data-slot-signature="${signature}" class="w-full aspect-[5/7]">
+      ${renderSingleSlotContentHtml(sIdx)}
+    </div>
+  `;
+}
+
+/**
  * Render 3x3 Battle Board 9-Slot Grid
  * - Keeps fixed aspect-[5/7] slots to prevent any layout shifts
- * - Renders FLIP badge and 3D card rotation on flipped cards
+ * - Renders slot wrappers for zero-flicker in-place diffing
  */
 export function renderBattleBoardGridHtml(): string {
-  return playRpgState.battleBoard
-    .map((slot, sIdx) => {
-      if (!slot) {
-        const isOpponentTurn = playRpgState.turn === 'opponent';
-        const isAiSuggested = !isOpponentTurn && playRpgState.aiSuggestedMove?.slotIdx === sIdx;
-        return `
-          <button
-            type="button"
-            id="battle-slot-${sIdx}"
-            ${isOpponentTurn ? 'disabled' : `data-action="play-battle-slot" data-slot="${sIdx}"`}
-            class="relative w-full aspect-[5/7] border-2 border-dashed ${
-              isOpponentTurn
-                ? 'border-stone-700/60 bg-stone-900/40 text-stone-600 cursor-wait'
-                : isAiSuggested
-                ? 'border-emerald-400 bg-[#064e3b]/30 text-emerald-300 ring-2 ring-emerald-400/40 cursor-pointer active:scale-98 animate-pulse'
-                : 'border-amber-400/40 hover:border-amber-300 bg-[#0e1628]/60 hover:bg-[#131f38] text-amber-300 cursor-pointer active:scale-98'
-            } rounded-xs flex flex-col items-center justify-between p-1.5 sm:p-2 transition-transform select-none shadow-sm"
-            aria-label="${tr(`슬롯 ${sIdx + 1} 배치`, `Place in Slot ${sIdx + 1}`, `スロット${sIdx + 1}に配置`)}"
-          >
-            <!-- Slot Header -->
-            <div class="w-full flex items-center justify-between text-[9px] sm:text-[10px] font-mono ${isOpponentTurn ? 'text-stone-600' : isAiSuggested ? 'text-emerald-300 font-bold' : 'text-stone-400/80'}">
-              <span>#${sIdx + 1}</span>
-              <span class="${isOpponentTurn ? 'text-stone-700' : isAiSuggested ? 'text-emerald-400' : 'text-amber-400/60'}">${isAiSuggested ? '🤖 AI' : '✦'}</span>
-            </div>
+  return Array.from({ length: 9 }, (_, sIdx) => renderSingleSlotWrapperHtml(sIdx)).join('');
+}
 
-            <!-- Center Target / Seal Cue -->
-            <div class="flex flex-col items-center justify-center gap-1 my-auto">
-              <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border ${
-                isOpponentTurn
-                  ? 'border-stone-700 bg-black/40 text-stone-600'
-                  : isAiSuggested
-                  ? 'border-emerald-400 bg-emerald-950/80 text-emerald-300'
-                  : 'border-amber-400/40 bg-black/50 text-amber-400'
-              } flex items-center justify-center text-xs sm:text-sm font-black">
-                ${isOpponentTurn ? '⏳' : isAiSuggested ? '🎯' : '+'}
-              </div>
-              <span class="text-[10px] sm:text-[11px] font-black tracking-wider ${isOpponentTurn ? 'text-stone-600' : isAiSuggested ? 'text-emerald-300' : 'text-amber-400'}">
-                ${isOpponentTurn ? tr('대기...', 'WAIT', '待機...') : isAiSuggested ? tr('[AI 추천]', '[AI BEST]', '[AI推奨]') : tr('[배치]', '[PLACE]', '[配置]')}
-              </span>
-            </div>
+/**
+ * Render Battle Asset Preloading Screen with High-Precision Terminal-Flat Progress Bar
+ */
+export function renderBattleLoadingHtml(): string {
+  const progress = playRpgState.battleLoadingProgress || 0;
+  const cardName = playRpgState.battleLoadingCardName || '';
 
-            <!-- Footer Cue -->
-            <div class="text-[8px] sm:text-[9px] font-mono truncate ${isOpponentTurn ? 'text-stone-700' : isAiSuggested ? 'text-emerald-300/90 font-bold' : 'text-stone-400/60'}">
-              ${isOpponentTurn ? 'AI TURN' : isAiSuggested ? (playRpgState.aiSuggestedMove?.reason || 'BEST MOVE') : 'TAP HERE'}
-            </div>
-          </button>
-        `;
-      }
+  return `
+    <div id="battle-loading-card" class="w-full max-w-[340px] sm:max-w-[380px] mx-auto p-5 sm:p-6 bg-[#0c1220] border-2 border-amber-400 text-center space-y-4 shadow-2xl rounded-none font-mono select-none">
+      <div class="flex items-center justify-between text-xs text-amber-400 pb-2 border-b border-amber-400/20">
+        <span class="flex items-center gap-1.5 font-bold">
+          <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          [PRELOAD ASSETS]
+        </span>
+        <span class="font-bold">10 HERO CARDS</span>
+      </div>
 
-      return `
-        <div id="battle-slot-${sIdx}" class="w-full aspect-[5/7]">
-          ${renderBattleBoardCardHtml({
-            cardId: slot.cardId,
-            stats: slot.stats,
-            owner: slot.owner,
-            isJustPlaced: playRpgState.lastPlacedSlot === sIdx,
-            isFlipped: playRpgState.flippedSlots?.includes(sIdx),
-          })}
+      <div class="space-y-1">
+        <div class="text-sm sm:text-base font-black text-[#fdfcfc] tracking-wide">
+          ⚔️ ${tr('전투 준비: 영웅 카드 사전 캐싱 중...', 'Preparing Battle: Pre-caching Hero Assets...', '戦闘準備：英雄カード事前キャッシュ中...')}
         </div>
-      `;
-    })
-    .join('');
+        <p id="battle-loading-card-name" class="text-[11px] sm:text-xs text-stone-400 truncate">
+          ${cardName ? `[${cardName}] ${tr('고화질 렌더링 준비 완료', 'Rendering Ready', 'レンダリング準備完了')}` : tr('데이터 디코딩 진행 중...', 'Decoding data in progress...', 'データデコード中...')}
+        </p>
+      </div>
+
+      <!-- High-Precision Terminal-Flat Progress Bar -->
+      <div class="w-full bg-stone-900 border border-stone-700 h-5 rounded-xs overflow-hidden p-0.5 shadow-inner">
+        <div
+          id="battle-loading-progress-bar"
+          class="h-full bg-gradient-to-r from-amber-500 via-emerald-400 to-emerald-300 transition-all duration-150 ease-out flex items-center justify-end pr-1 text-[9px] font-black text-stone-950"
+          style="width: ${progress}%;"
+        >
+          ${progress > 15 ? `${progress}%` : ''}
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-[10px] text-stone-400 pt-1 font-mono">
+        <span>${tr('깜박임 방지 GPU 메모리 프리로드', 'Zero-Flicker GPU Memory Preload', 'フリッカー防止GPUメモリロード')}</span>
+        <span id="battle-loading-progress-text" class="font-bold text-amber-300">${progress}% / 100%</span>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Render Central Battle Area: switches smoothly between Preload Progress Bar and 3x3 Board Grid
+ */
+export function renderBattleMainAreaHtml(): string {
+  if (playRpgState.battleLoading) {
+    return `
+      <div id="battle-loading-container" class="w-full flex items-center justify-center py-6 sm:py-10">
+        ${renderBattleLoadingHtml()}
+      </div>
+    `;
+  }
+
+  return `
+    <div id="battle-board-grid-slots" class="grid grid-cols-3 gap-1.5 sm:gap-2.5 w-full max-w-[285px] sm:max-w-[360px] md:max-w-[400px] mx-auto select-none p-1.5 sm:p-2.5 bg-[#0c1220] border-2 border-amber-400/60 shadow-2xl rounded-none">
+      ${renderBattleBoardGridHtml()}
+    </div>
+  `;
 }
 
 /**
@@ -690,17 +786,55 @@ export function renderBattleHandRowHtml(): string {
 }
 
 /**
- * In-Place DOM Synchronizer for 3x3 Card Battle (Anti-Flicker)
- * Updates only the battle sub-elements (#battle-status-bar, #battle-board-grid,
- * #battle-result-container, #battle-hand-row) directly in the existing DOM.
- * Eliminates full mainSlot.innerHTML destruction and repaints, preventing screen/card blinking.
- * Returns true if the battle DOM was located and updated in-place; false if not currently in battle.
+ * In-Place DOM Synchronizer for 3x3 Card Battle (Zero-Flicker)
+ * - Updates loading progress in-place during pre-battle asset caching.
+ * - Performs Slot-Level Diffing on the 3x3 board: only modifies the exact slot that changed!
+ * - Never destroys existing card DOM elements or <img> tags, 100% eliminating screen flickering.
  */
 export function syncBattleDomInPlace(): boolean {
   if (typeof document === 'undefined') return false;
   const boardEl = document.getElementById('battle-board-grid');
   if (!boardEl) return false;
 
+  // 1. Handle Battle Preloading Screen (Asset Caching & Progress Bar)
+  if (playRpgState.battleLoading) {
+    const loadingCard = document.getElementById('battle-loading-card');
+    if (loadingCard) {
+      // In-place update of progress bar and card name (zero layout shift)
+      const progressBar = document.getElementById('battle-loading-progress-bar');
+      const progressText = document.getElementById('battle-loading-progress-text');
+      const cardNameEl = document.getElementById('battle-loading-card-name');
+      const prog = playRpgState.battleLoadingProgress || 0;
+      const name = playRpgState.battleLoadingCardName || '';
+
+      if (progressBar) {
+        progressBar.style.width = `${prog}%`;
+        progressBar.textContent = prog > 15 ? `${prog}%` : '';
+      }
+      if (progressText) {
+        progressText.textContent = `${prog}% / 100%`;
+      }
+      if (cardNameEl && name) {
+        cardNameEl.textContent = `[${name}] ${tr('고화질 렌더링 준비 완료', 'Rendering Ready', 'レンダリング準備完了')}`;
+      }
+    } else {
+      boardEl.innerHTML = renderBattleMainAreaHtml();
+    }
+
+    const statusBarEl = document.getElementById('battle-status-bar');
+    if (statusBarEl) {
+      statusBarEl.innerHTML = renderBattleStatusBarHtml();
+    }
+    return true;
+  }
+
+  // 2. Transition from Loading to 3x3 Battle Field
+  const loadingContainer = document.getElementById('battle-loading-container');
+  if (loadingContainer && !playRpgState.battleLoading) {
+    boardEl.innerHTML = renderBattleMainAreaHtml();
+  }
+
+  // 3. Status Bar & Controls In-Place Update
   const statusBarEl = document.getElementById('battle-status-bar');
   if (statusBarEl) {
     statusBarEl.innerHTML = renderBattleStatusBarHtml();
@@ -721,8 +855,24 @@ export function syncBattleDomInPlace(): boolean {
     handCountEl.textContent = `(${playRpgState.playerHand.length})`;
   }
 
-  // Update board grid slots
-  boardEl.innerHTML = renderBattleBoardGridHtml();
+  // 4. Zero-Flicker Slot-Level Diffing on 3x3 Board
+  // Only touch the exact slot whose signature changed; keep other 8 slots 100% intact!
+  for (let sIdx = 0; sIdx < 9; sIdx++) {
+    const slotWrapper = document.getElementById(`battle-slot-wrapper-${sIdx}`);
+    const targetSignature = getSlotSignature(sIdx);
+
+    if (!slotWrapper) {
+      // If slots container missing, mount full grid
+      boardEl.innerHTML = renderBattleMainAreaHtml();
+      break;
+    }
+
+    const currentSignature = slotWrapper.getAttribute('data-slot-signature');
+    if (currentSignature !== targetSignature) {
+      slotWrapper.setAttribute('data-slot-signature', targetSignature);
+      slotWrapper.innerHTML = renderSingleSlotContentHtml(sIdx);
+    }
+  }
 
   return true;
 }
@@ -1494,8 +1644,8 @@ function renderAdventureView(): string {
                 </div>
 
                 <!-- 3x3 Battle Field Board (고정 aspect-[5/7] 슬롯으로 카드 배치 전후 높이 100% 동일 유지) -->
-                <div id="battle-board-grid" class="grid grid-cols-3 gap-1.5 sm:gap-2.5 w-full max-w-[285px] sm:max-w-[360px] md:max-w-[400px] mx-auto select-none p-1.5 sm:p-2.5 bg-[#0c1220] border-2 border-amber-400/60 shadow-2xl rounded-none">
-                  ${renderBattleBoardGridHtml()}
+                <div id="battle-board-grid" class="w-full">
+                  ${renderBattleMainAreaHtml()}
                 </div>
 
                 <!-- Battle Result Controls (Victory Required to Advance Chapter) -->

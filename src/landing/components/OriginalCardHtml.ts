@@ -282,7 +282,8 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
             src="${primaryImgUrl}"
             alt="${asset.nameKo}"
             class="max-w-full max-h-full object-contain filter drop-shadow-none ${isOwned ? '' : 'grayscale opacity-70'} group-hover/orig-card:scale-105 transition-transform duration-200"
-            loading="lazy"
+            loading="${isResponsiveHand ? 'eager' : 'lazy'}"
+            decoding="${isResponsiveHand ? 'sync' : 'async'}"
             onerror="this.src='${fallbackImgUrl}'; this.onerror=null;"
           />
         </div>
@@ -476,7 +477,7 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
           alt="${asset.nameKo}"
           class="max-w-full max-h-full object-contain filter drop-shadow-none"
           loading="eager"
-          decoding="async"
+          decoding="sync"
           onerror="this.src='${asset.seatUrl}'; this.onerror=null;"
         />
       </div>

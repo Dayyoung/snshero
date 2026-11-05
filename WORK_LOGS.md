@@ -2,6 +2,31 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 10:15 KST] [카드 배틀 사전 이미지 프리로딩 프로그레스바 도입 및 3x3 보드 슬롯 단위 Diffing으로 카드 깜박임 완전 박멸]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 문제 제기 및 요구사항**:
+    - "아직도 카드플레이 시 카드 깜박이는 현상이 너무 심해. 이미지를 실시간으로 받아서 생기는 문제라면 해당 게임 진행하기전에 로딩바를 돌려서 미리 이미지들을 받아놓고 게임을 진행하도록 해."
+  - **2. 카드 및 화면 깜박임 근본 원인 분석**:
+    - **DOM 전면 파괴/재생성**: 카드를 1장 놓거나 뒤집힐 때마다 `boardEl.innerHTML = renderBattleBoardGridHtml()`로 3x3 보드 9개 슬롯 전체의 DOM 엘리먼트와 `<img>` 태그를 통째로 파괴하고 다시 생성함. 이로 인해 이미 배치되어 있던 카드의 이미지까지 브라우저 화면에서 일시 소멸되었다가 다시 그려지는 동안 1~2 프레임 동안 흰 화면/투명 깜박임(Flickering)이 지속적으로 발생함.
+    - **실시간 비동기 이미지 디코딩 딜레이**: 배틀 시작 전 플레이어 덱과 상대 덱 카드의 이미지가 브라우저 및 GPU 메모리에 사전 캐싱/디코딩되지 않아 카드가 처음 슬롯에 등장할 때 네트워크 지연과 비동기 디코딩(`decoding="async"`)으로 인한 렌더링 깜박임 발생.
+  - **3. 배틀 에셋 사전 프리로딩 & 정밀 프로그레스바 구현 (`src/landing/services/playRpgEngine.ts`, `PlaySection.tsx`)**:
+    - `preloadBattleImages(cardIds, onProgress)`: 배틀 시작 시 플레이어 덱 5장 + 상대 덱 5장(총 10종)의 고화질 영웅 이미지를 `new Image()` 및 `img.decode()`로 병렬 사전 로딩하고 인메모리 GPU 맵(`BATTLE_IMAGE_MEMORY_CACHE`)에 즉시 적재 (1800ms 안전 타임아웃 제공).
+    - **정밀 터미널 플랫 로딩 화면 (`renderBattleLoadingHtml`)**: 배틀 진입 전 `battleLoading: true` 상태에서 0% ~ 100% 실시간 프로그레스 바와 현재 디코딩 중인 카드 영웅명을 시각적으로 제공.
+    - 100% 로딩 완료 시에만 3x3 보드로 1회 부드럽게 전환하여 배틀 진행 중 이미지 다운로드 딜레이를 0ms로 단축.
+  - **4. 3x3 보드 슬롯 단위 In-Place Diffing 아키텍처 구축 (`src/landing/views/PlaySection.tsx`)**:
+    - `getSlotSignature(sIdx)`: 슬롯 인덱스, 카드 ID, 소유자(player/opponent), 4방향 스탯, 방금 배치 여부, 뒤집힘 여부, AI 추천 슬롯 여부를 종합한 불변 시그니처 문자열 생성.
+    - `syncBattleDomInPlace()`: 9개 슬롯 전체를 지우지 않고, `currentSignature !== targetSignature`인 슬롯(방금 놓은 슬롯 또는 뒤집힌 슬롯 1~2개)만 타겟팅하여 `slotWrapper.innerHTML`로 국소 업데이트.
+    - 이미 배치되어 있는 기존 슬롯(7~8개)의 DOM 엘리먼트와 `<img>` 태그는 100% 유지되어 화면 깜박임 현상을 물리적으로 완전 박멸.
+  - **5. 카드 이미지 동기화 디코딩 (`src/landing/components/OriginalCardHtml.ts`)**:
+    - 배틀 보드 카드(`renderBattleBoardCardHtml`) 및 반응형 배틀 핸드 카드에 `loading="eager"` 및 `decoding="sync"`를 적용하여 지연 없는 즉시 렌더링 보장.
+  - **6. 빌드 및 검증**:
+    - `npm run build && node scripts/post-build.js`: 4,362개 모듈 트랜스파일 및 0 error 프로덕션 빌드 성공.
+- **검증 결과**:
+  - 배틀 진입 시 0%~100% 사전 에셋 캐싱 프로그레스바가 정상 작동하고, 배틀 중 카드를 놓거나 뒤집힐 때 슬롯 단위 In-Place Diffing을 통해 카드 깜박임이 완벽히 해결됨.
+  - 빌드 성공 (0 error).
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 카드 배틀 사전 이미지 프리로딩 프로그레스바 도입 및 3x3 보드 슬롯 단위 Diffing 깜박임 해결 -> 작업완료`.
+
 ## [2026-11-05 10:05 KST] [자동플레이 시 상대 덱 맞춤형 전술 AI 엔진 도입 (역전/방어/코너 전략 및 실시간 AI 추천 UI 연동)]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

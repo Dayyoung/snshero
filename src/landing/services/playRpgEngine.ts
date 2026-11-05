@@ -123,6 +123,11 @@ export interface PlayRpgState {
   flippedSlots: number[];
   aiSuggestedMove: PlayerTacticalMove | null;
 
+  // Battle Preload & Anti-Flicker Caching State
+  battleLoading: boolean;
+  battleLoadingProgress: number; // 0 ~ 100
+  battleLoadingCardName: string;
+
   // Arcade Sub-state
   arcadeQuery: string;
   arcadeElement: string;
@@ -166,6 +171,10 @@ export const playRpgState: PlayRpgState = {
   lastPlacedSlot: null,
   flippedSlots: [],
   aiSuggestedMove: null,
+
+  battleLoading: false,
+  battleLoadingProgress: 0,
+  battleLoadingCardName: '',
 
   arcadeQuery: '',
   arcadeElement: 'all',
@@ -988,16 +997,90 @@ export function getOpponentRebirthStatBonus(
 }
 
 /**
- * Initialize 3x3 Tactical Battle
+ * In-memory decoded image cache to prevent browser re-decoding / flickering.
  */
-export function initBattle(customOpponentCards?: number[], customOpponentName?: string): void {
-  playRpgState.subState = 'battle';
+const BATTLE_IMAGE_MEMORY_CACHE = new Map<string, HTMLImageElement>();
+
+/**
+ * Preload all hero card visual assets for the upcoming battle into browser & GPU memory.
+ * Provides real-time percentage progress (0% ~ 100%) for smooth loading bar display.
+ */
+export async function preloadBattleImages(
+  cardIds: number[],
+  onProgress?: (progress: number, heroName: string) => void
+): Promise<void> {
+  if (typeof window === 'undefined') return;
+
+  const uniqueIds = Array.from(new Set(cardIds));
+  const total = uniqueIds.length;
+  let loaded = 0;
+
+  const loadSingle = async (cardId: number): Promise<void> => {
+    const card = CARD_DATABASE[cardId];
+    const padId = String(cardId).padStart(3, '0');
+    const bustUrl = `/anime-character-sheets/busts/${padId}_bust.png?v=20261103v4`;
+    const fallbackUrl = `/seat/${card?.englishName || card?.title || 'Devastator'}.png`;
+
+    const heroName = getLocalizedCharacterName(cardId) || card?.title || `Hero #${cardId}`;
+
+    if (BATTLE_IMAGE_MEMORY_CACHE.has(bustUrl)) {
+      loaded++;
+      if (onProgress) onProgress(Math.min(100, Math.round((loaded / total) * 100)), heroName);
+      return;
+    }
+
+    try {
+      const img = new Image();
+      img.src = bustUrl;
+      if ('decode' in img) {
+        await Promise.race([
+          img.decode(),
+          new Promise((r) => setTimeout(r, 800)),
+        ]);
+      } else {
+        await new Promise((resolve) => {
+          img.onload = resolve;
+          img.onerror = resolve;
+          setTimeout(resolve, 800);
+        });
+      }
+      BATTLE_IMAGE_MEMORY_CACHE.set(bustUrl, img);
+    } catch {
+      try {
+        const fImg = new Image();
+        fImg.src = fallbackUrl;
+        if ('decode' in fImg) await fImg.decode();
+        BATTLE_IMAGE_MEMORY_CACHE.set(bustUrl, fImg);
+      } catch {}
+    }
+
+    loaded++;
+    if (onProgress) {
+      const progress = Math.min(100, Math.round((loaded / total) * 100));
+      onProgress(progress, heroName);
+    }
+  };
+
+  // Run in parallel with a hard safety deadline of 1800ms
+  await Promise.race([
+    Promise.all(uniqueIds.map((cid) => loadSingle(cid))),
+    new Promise((r) => setTimeout(r, 1800)),
+  ]);
+}
+
+function setupBattleStateInternal(
+  playerHand: number[],
+  opponentHand: number[],
+  customOpponentName?: string
+): void {
   playRpgState.battleBoard = Array(9).fill(null);
   playRpgState.battleWinner = null;
   playRpgState.selectedHandIndex = 0;
   playRpgState.turn = 'player';
   playRpgState.lastPlacedSlot = null;
   playRpgState.flippedSlots = [];
+  playRpgState.playerHand = [...playerHand];
+  playRpgState.opponentHand = [...opponentHand];
 
   const playerAura = playRpgState.reincarnationLevel;
   playRpgState.battleMessage =
@@ -1013,20 +1096,11 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
           '手札からカードを選択し、3x3盤面の空きスロットをタップしてください。'
         );
 
-  // Player Hand: 5 active deck cards
-  const activeDeck = (cardNurtureStore as any).getDeckCardIds
-    ? (cardNurtureStore as any).getDeckCardIds()
-    : [1, 2, 3, 4, 5];
-  playRpgState.playerHand = activeDeck.length === 5 ? [...activeDeck] : [1, 2, 3, 4, 5];
-
-  // Opponent Hand: Strictly composed of the actual appearing characters in the current chapter
-  if (customOpponentCards && customOpponentCards.length >= 5) {
-    playRpgState.opponentHand = customOpponentCards.slice(0, 5);
-    playRpgState.opponentName = customOpponentName || tr('기습 적군', 'Ambush Enemy', '奇襲敵軍');
+  if (customOpponentName) {
+    playRpgState.opponentName = customOpponentName;
   } else {
-    const epDeck = getEpisodeActualOpponentDeck(playRpgState.currentChapter);
-    playRpgState.opponentHand = [...epDeck.cardIds];
     const chapLabel = formatChapterLabel(playRpgState.currentChapter, playRpgState.reincarnationLevel);
+    const epDeck = getEpisodeActualOpponentDeck(playRpgState.currentChapter);
     const secondName = epDeck.deckNames[1] ? `·${epDeck.deckNames[1]}` : '';
     playRpgState.opponentName = tr(
       `${chapLabel} 등장인물 (${epDeck.leaderName}${secondName} 외)`,
@@ -1040,6 +1114,56 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
   if (playRpgState.aiSuggestedMove) {
     playRpgState.selectedHandIndex = playRpgState.aiSuggestedMove.handIdx;
   }
+}
+
+/**
+ * Initialize 3x3 Tactical Battle with Visual Preloading Progress Bar
+ */
+export function initBattle(customOpponentCards?: number[], customOpponentName?: string): void {
+  playRpgState.subState = 'battle';
+
+  // Gather hands to preload
+  const activeDeck = (cardNurtureStore as any).getDeckCardIds
+    ? (cardNurtureStore as any).getDeckCardIds()
+    : [1, 2, 3, 4, 5];
+  const playerHand = activeDeck.length === 5 ? [...activeDeck] : [1, 2, 3, 4, 5];
+
+  let opponentHand: number[];
+  if (customOpponentCards && customOpponentCards.length >= 5) {
+    opponentHand = customOpponentCards.slice(0, 5);
+  } else {
+    const epDeck = getEpisodeActualOpponentDeck(playRpgState.currentChapter);
+    opponentHand = [...epDeck.cardIds];
+  }
+
+  // Activate preloading screen with progress bar
+  playRpgState.battleLoading = true;
+  playRpgState.battleLoadingProgress = 0;
+  playRpgState.battleLoadingCardName = tr('영웅 카드 이미지 사전 캐싱 중...', 'Preloading Hero Assets...', 'カード画像事前読み込み中...');
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('hero_rpg_board_updated'));
+  }
+
+  preloadBattleImages([...playerHand, ...opponentHand], (prog, heroName) => {
+    playRpgState.battleLoadingProgress = prog;
+    playRpgState.battleLoadingCardName = heroName;
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('hero_rpg_board_updated'));
+    }
+  }).then(() => {
+    playRpgState.battleLoading = false;
+    setupBattleStateInternal(playerHand, opponentHand, customOpponentName);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('hero_rpg_board_updated'));
+    }
+  }).catch(() => {
+    playRpgState.battleLoading = false;
+    setupBattleStateInternal(playerHand, opponentHand, customOpponentName);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('hero_rpg_board_updated'));
+    }
+  });
 }
 
 /**
