@@ -1,210 +1,116 @@
 {
-  "EP02-CUT01": {
-    "cutNumber": 1,
-    "cutCode": "EP02-CUT01",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:06:01+0900"
-  },
-  "EP02-CUT02": {
-    "cutNumber": 2,
-    "cutCode": "EP02-CUT02",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:08:18+0900"
-  },
-  "EP02-CUT03": {
-    "cutNumber": 3,
-    "cutCode": "EP02-CUT03",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:10:50+0900"
-  },
-  "EP02-CUT04": {
-    "cutNumber": 4,
-    "cutCode": "EP02-CUT04",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:13:14+0900"
-  },
-  "EP02-CUT05": {
-    "cutNumber": 5,
-    "cutCode": "EP02-CUT05",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:15:28+0900"
-  },
-  "EP02-CUT06": {
-    "cutNumber": 6,
-    "cutCode": "EP02-CUT06",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:17:45+0900"
-  },
-  "EP02-CUT07": {
-    "cutNumber": 7,
-    "cutCode": "EP02-CUT07",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:19:48+0900"
-  },
   "EP02-CUT08": {
     "cutNumber": 8,
     "cutCode": "EP02-CUT08",
     "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:22:05+0900"
+    "aspectRatio": "16:9",
+    "model": "Nano Banana 2.1 (ufotable 16:9)",
+    "attachedRefs": [
+      "UFO3_049_Hercul.png"
+    ],
+    "imagePath": "public/anime-character-sheets/cutscenes/ep02_landscape/images/EP02-CUT08_cutscene.jpg",
+    "imageSizeBytes": 801821,
+    "imageUrl": "https://flow-content.google/image/64ffdfdf-7c1a-4764-8593-7b48a0e0727d?Expires=1793879753&KeyName=labs-flow-prod-cdn-key&Signature=CNkhPeLX4Vz2K6SLMF1SfkL5P5U",
+    "timestamp": "2026-11-05T14:57:17+0900"
   },
   "EP02-CUT09": {
     "cutNumber": 9,
     "cutCode": "EP02-CUT09",
     "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:24:23+0900"
+    "aspectRatio": "16:9",
+    "model": "Nano Banana 2.1 (ufotable 16:9)",
+    "attachedRefs": [
+      "UFO3_049_Hercul.png"
+    ],
+    "imagePath": "public/anime-character-sheets/cutscenes/ep02_landscape/images/EP02-CUT09_cutscene.jpg",
+    "imageSizeBytes": 834704,
+    "imageUrl": "https://flow-content.google/image/3a42f9e4-f4a4-4a82-97a3-4a6ac17d0d34?Expires=1793879771&KeyName=labs-flow-prod-cdn-key&Signature=6G6HBgXeJ9JmZwo5ogYD4cZsXo0",
+    "timestamp": "2026-11-05T14:57:29+0900"
   },
   "EP02-CUT10": {
     "cutNumber": 10,
     "cutCode": "EP02-CUT10",
     "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:26:38+0900"
+    "aspectRatio": "16:9",
+    "model": "Nano Banana 2.1 (ufotable 16:9)",
+    "attachedRefs": [],
+    "imagePath": "public/anime-character-sheets/cutscenes/ep02_landscape/images/EP02-CUT10_cutscene.jpg",
+    "imageSizeBytes": 984797,
+    "imageUrl": "https://flow-content.google/image/e98526df-a32d-41a8-8c7e-b389e80b3ccc?Expires=1793879788&KeyName=labs-flow-prod-cdn-key&Signature=rgGc51aZjs4V4y-GA4Was_pwULA",
+    "timestamp": "2026-11-05T14:57:42+0900"
   },
   "EP02-CUT11": {
     "cutNumber": 11,
     "cutCode": "EP02-CUT11",
     "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:28:47+0900"
+    "aspectRatio": "16:9",
+    "model": "Nano Banana 2.1 (ufotable 16:9)",
+    "attachedRefs": [
+      "UFO3_049_Hercul.png"
+    ],
+    "imagePath": "public/anime-character-sheets/cutscenes/ep02_landscape/images/EP02-CUT11_cutscene.jpg",
+    "imageSizeBytes": 808139,
+    "imageUrl": "https://flow-content.google/image/40b5b3b5-24f8-4859-bfb5-1bef36300ae8?Expires=1793879803&KeyName=labs-flow-prod-cdn-key&Signature=wLyap1WDB4EFYfI5aOg70egq0Nk",
+    "timestamp": "2026-11-05T14:58:00+0900"
   },
   "EP02-CUT12": {
     "cutNumber": 12,
     "cutCode": "EP02-CUT12",
     "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:30:49+0900"
+    "aspectRatio": "16:9",
+    "model": "Nano Banana 2.1 (ufotable 16:9)",
+    "attachedRefs": [
+      "UFO3_049_Hercul.png"
+    ],
+    "imagePath": "public/anime-character-sheets/cutscenes/ep02_landscape/images/EP02-CUT12_cutscene.jpg",
+    "imageSizeBytes": 806115,
+    "imageUrl": "https://flow-content.google/image/df2af122-fb6a-47b5-9cb1-9bf87ae1f847?Expires=1793880023&KeyName=labs-flow-prod-cdn-key&Signature=E20meGgWY1XKdNR0pFC-6NfGPWE",
+    "timestamp": "2026-11-05T15:01:50+0900"
   },
   "EP02-CUT13": {
     "cutNumber": 13,
     "cutCode": "EP02-CUT13",
     "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:32:52+0900"
+    "aspectRatio": "16:9",
+    "model": "Nano Banana 2.1 (ufotable 16:9)",
+    "attachedRefs": [
+      "UFO3_049_Hercul.png",
+      "UFO3_061_Lucian.png",
+      "UFO3_LOC_007_Red_Glass_Palace.jpg"
+    ],
+    "imagePath": "public/anime-character-sheets/cutscenes/ep02_landscape/images/EP02-CUT13_cutscene.jpg",
+    "imageSizeBytes": 889645,
+    "imageUrl": "https://flow-content.google/image/bf2fd778-a0e6-4675-9e2c-a3ef1655b4b7?Expires=1793880040&KeyName=labs-flow-prod-cdn-key&Signature=lHV1iCZY8KDFaeVtOTGkqMLjhSg",
+    "timestamp": "2026-11-05T15:02:04+0900"
   },
   "EP02-CUT14": {
     "cutNumber": 14,
     "cutCode": "EP02-CUT14",
     "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:34:36+0900"
+    "aspectRatio": "16:9",
+    "model": "Nano Banana 2.1 (ufotable 16:9)",
+    "attachedRefs": [],
+    "imagePath": "public/anime-character-sheets/cutscenes/ep02_landscape/images/EP02-CUT14_cutscene.jpg",
+    "imageSizeBytes": 840469,
+    "imageUrl": "https://flow-content.google/image/b0b0b6b1-89ed-4613-b977-2368dc3bdad3?Expires=1793880049&KeyName=labs-flow-prod-cdn-key&Signature=qVNBeGwIIjCPTzgMEB5DtHaFOic",
+    "timestamp": "2026-11-05T15:02:17+0900"
   },
   "EP02-CUT15": {
     "cutNumber": 15,
     "cutCode": "EP02-CUT15",
     "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:36:58+0900"
-  },
-  "EP02-CUT16": {
-    "cutNumber": 16,
-    "cutCode": "EP02-CUT16",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:39:25+0900"
-  },
-  "EP02-CUT17": {
-    "cutNumber": 17,
-    "cutCode": "EP02-CUT17",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:41:35+0900"
-  },
-  "EP02-CUT18": {
-    "cutNumber": 18,
-    "cutCode": "EP02-CUT18",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:43:35+0900"
-  },
-  "EP02-CUT19": {
-    "cutNumber": 19,
-    "cutCode": "EP02-CUT19",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:45:37+0900"
-  },
-  "EP02-CUT20": {
-    "cutNumber": 20,
-    "cutCode": "EP02-CUT20",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:47:46+0900"
-  },
-  "EP02-CUT21": {
-    "cutNumber": 21,
-    "cutCode": "EP02-CUT21",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:49:28+0900"
-  },
-  "EP02-CUT22": {
-    "cutNumber": 22,
-    "cutCode": "EP02-CUT22",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:51:36+0900"
-  },
-  "EP02-CUT23": {
-    "cutNumber": 23,
-    "cutCode": "EP02-CUT23",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:53:30+0900"
-  },
-  "EP02-CUT24": {
-    "cutNumber": 24,
-    "cutCode": "EP02-CUT24",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:55:32+0900"
-  },
-  "EP02-CUT25": {
-    "cutNumber": 25,
-    "cutCode": "EP02-CUT25",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:57:22+0900"
-  },
-  "EP02-CUT26": {
-    "cutNumber": 26,
-    "cutCode": "EP02-CUT26",
-    "orientation": "landscape",
-    "excluded": true,
-    "attempts": 3,
-    "timestamp": "2026-10-28T22:59:20+0900"
+    "aspectRatio": "16:9",
+    "model": "Nano Banana 2.1 (ufotable 16:9)",
+    "attachedRefs": [
+      "UFO3_050_Aleksandar.png",
+      "UFO3_043_Balian.png",
+      "UFO3_049_Hercul.png",
+      "UFO3_LOC_001_Elwin_Village.jpg",
+      "UFO3_PROP_001_Silver_Dagger.jpg"
+    ],
+    "imagePath": "public/anime-character-sheets/cutscenes/ep02_landscape/images/EP02-CUT15_cutscene.jpg",
+    "imageSizeBytes": 872890,
+    "imageUrl": "https://flow-content.google/image/52e1551f-d013-4967-b72e-fca26c6103f5?Expires=1793880072&KeyName=labs-flow-prod-cdn-key&Signature=JyHaX3TJxbXzvAvZFbTTFhfQnXI",
+    "timestamp": "2026-11-05T15:02:30+0900"
   }
 }

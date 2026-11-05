@@ -4,7 +4,10 @@
 - **컷신 규격**: 1컷당 **6초 동영상 (`6-Second Video Cutscene`)** × 총 **26컷** (총 러닝타임 약 `2분 36초`)
 - **첨부 캐릭터 시트 기준**: **7등신 전신 컷아웃 (`public/anime-character-sheets/cutouts/XXX_Name.png`)**
 - **현재 회차 전체 스토리 요약 (Story Consistency Summary)**:
-  - **KR**: 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - **KR**: 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - **EN**: `Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.`
 - **필수 준수 규칙**:
   1. 모든 컷신 프롬프트에는 **현재 회차 전체 스토리 요약**이 포함되어 컷 간 스토리 일관성을 유지합니다.
@@ -20,7 +23,10 @@
 - **원문 소설 구간 (EN)**: When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. For three days and three nights he had ridden without pause. Though his greaves were caked in mud and freezing slush, the paladin planted his holy warhammer deep into the drift and fell to his knees to search for Aleksandar's traces. From beneath the shattered bridge, amidst the ice-choked shallows, his fingers drew forth the broken blade of a twin sword. Along the jagged fuller lay a cruel serrated groove and imperial seal never found on standard Shadow Realm armaments.
 - **원문 소설 구간 (KR)**: 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 사흘 밤낮을 쉬지 않고 말을 달려온 그의 두 발은 진흙과 서릿발로 뒤덮여 무감각해져 있었으나, 헤르쿨은 성스러운 황금 철퇴를 눈 속에 박아 넣은 채 무릎을 꿇고 알렉산다르의 흔적을 수색했다. 무너진 다리 아래 서리꽃이 핀 여울에서 마침내 건져 올린 것은 반 토막 난 쌍검의 칼날이었다. 검면에는 정규 섀도우렐름 병기에는 결코 존재하지 않는 톱니 모양의 잔혹한 홈과 왕실 문장이 깊게 패여 있었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -57,7 +63,10 @@
 - **원문 소설 구간 (EN)**: "The royal insignia of Lighthaven's elite frontier high command... This was no barbarian raid. The slaughter was engineered from within the palace walls."
 - **원문 소설 구간 (KR)**: “이것은 국경을 지키는 라이트헤븐 정예 사령부의 문장... 외부의 적이 아니라, 왕국 내부의 권력자가 설계를 주도했다는 명백한 증거다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -94,7 +103,10 @@
 - **원문 소설 구간 (EN)**: Hercul's jaw hardened with righteous fury. Carefully burying the remains of the slaughtered villagers beneath clean drifts of snow, he wrapped the broken blade alongside Aleksandar's scabbard and followed the scent of the conspirators southward toward Sevenbridge, the bustling port metropolis where sea fog mingled with the shouts of merchants and desperate refugees. Sweeping through the narrow labyrinth of the fishmongers' quarter, Hercul found himself confronted by seven formidable figures bristling with lethal intent.
 - **원문 소설 구간 (KR)**: 헤르쿨의 굳은 턱선이 억누를 수 없는 분노로 파르르 떨렸다. 마을 회관 잿더미 아래에서 억울하게 학살당한 주민들의 유해를 수습하여 정성껏 눈무덤을 쌓은 헤르쿨은, 두 자루의 부러진 검날과 낡은 가죽집을 소중히 챙긴 뒤 흉적들의 냄새를 좇아 남방의 거대한 무역 항구인 세븐브리지로 향했다. 해무가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다. 어시장 안쪽, 생선 비린내와 썩은 그물 냄새가 진동하는 낡은 창고 골목을 은밀히 수색하던 헤르쿨은, 뜻밖에도 살기를 뿜어내는 기이한 일곱 사람의 무리와 정면으로 충돌했다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -131,7 +143,10 @@
 - **원문 소설 구간 (EN)**: At their forefront loomed Grimli, a broad-shouldered dwarven blacksmith resting a colossal maul across his scarred pauldrons. Flanking him was Aila the Demon Hunter, her scarlet braids drawn back as she leveled a cocked heavy crossbow with narrowed eyes. Beside them stood Eliana, an apothecary hung with leather herb-pouches, Gawain, a blind tracker tracing subterranean reverberations with an iron staff, Kaze, a flamboyant gambler flicking silver shillings between his knuckles, Rondol, a canal boatman who commanded water currents with runic paddles, and Robinyard, an agile acrobat balancing effortlessly along the eaves. They were frontier outlaws, distinct in race, tongue, and weapon.
 - **원문 소설 구간 (KR)**: 무리의 앞머리에는 거대한 쇠망치를 어깨에 멘 드워프 대장장이 그림리가 성큼 걸어 나와 버티고 섰고, 그 뒤로 붉은 머리를 길게 땋아 올린 명사수 에일라가 쇠뇌의 장전을 마친 채 서늘한 눈을 가늘게 뜨고 있었다. 약초 주머니를 주렁주렁 매단 노련한 약제사 엘리아나, 쇠지팡이로 바닥의 미세한 진동을 읽는 맹인 추적자 가웨인, 번뜩이는 은화를 손가락 사이로 현란하게 굴리는 도박사 카제, 강나루의 물길을 부리는 뱃사공 론돌, 그리고 지붕 처마 위에서 고양이처럼 날렵하게 균형을 잡는 유랑 곡예사 로비냐드까지. 종족도, 출신도, 무기도 제각각인 변방의 이단아들이었다. “성기사의 황금 망토를 두른 궁정 똥개가 기어이 여기까지 냄새를 맡고 기어들어 왔군!”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -168,7 +183,10 @@
 - **원문 소설 구간 (EN)**: "A gilded hound from the royal holy guard sniffing around our docks!" Grimli spat on the cobbles, his gravelly voice grating like iron on grindstone.
 - **원문 소설 구간 (KR)**: 그림리가 거친 가래침을 판석 위에 뱉으며 쇳소리 나는 목소리로 으르렁거렸다. 첫 만남은 최악의 오해로 번져 나갔다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -205,7 +223,10 @@
 - **원문 소설 구간 (EN)**: The encounter flared instantly into violent misunderstanding. Hercul had acted on intelligence warning of child slavers operating from the docks, while the Seven Pursuers took one look at Hercul's golden tabard and branded him an imperial inquisitor dispatched by the Red Glass Court to destroy the evidence of their atrocities.
 - **원문 소설 구간 (KR)**: 헤르쿨은 세븐브리지의 전쟁고아들을 암흑가 노예선으로 팔아넘기는 유괴단이 암약한다는 비밀 밀고를 믿고 있었고, 일곱 사람은 헤르쿨의 화려한 성기사 복식을 보고 붉은 유리 궁정에서 증거를 인멸하기 위해 파견한 황실 암살관이라 확신했던 것이다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-007` **Red Glass Palace (Flame Court)** (붉은 유리 궁전 (불꽃 궁정)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg)
@@ -242,7 +263,10 @@
 - **원문 소설 구간 (EN)**: "You will tear not one orphan from this harbor, court lapdog! Drop your steel!" Aila barked, her bowstring snapping with lethal resonance.
 - **원문 소설 구간 (KR)**: “황궁의 충견 놈들에게 넘겨줄 아이는 단 한 놈도 없다! 그 더러운 무기를 버려라!” 에일라의 차가운 일갈과 함께 팽팽하게 당겨진 석궁 시위가 허공을 튕겼다. 은빛 살촉이 헤르쿨의 눈전을 정밀하게 겨누고 쇄도했다. 헤르쿨은 반사적으로 황금빛 방호진을 전개하며 날아오는 화살들을 쳐냈다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-007` **Red Glass Palace (Flame Court)** (붉은 유리 궁전 (불꽃 궁정)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg)
@@ -279,7 +303,10 @@
 - **원문 소설 구간 (EN)**: A silver-tipped quarrel whistled straight for Hercul's eyes. Reflexively, the knight flared his radiant barrier, deflecting the projectile upward. The kinetic shock tore market awnings to shreds and hurled wooden crates across the quay. Each time Grimli's maul battered the translucent golden dome, harmonious shockwaves rippled out to the distant maritime bell tower.
 - **원문 소설 구간 (KR)**: 그 충격으로 시장통의 차양 천막이 갈기갈기 찢겨 나가고 생선 상자들이 공중으로 치솟았다. 그림리의 육중한 쇠망치가 방호 결계를 후려칠 때마다 거대한 종소리 같은 성스러운 파문이 멀리 해안 시계탑까지 울려 퍼졌다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-002` **Drunken Bell Tower** (취선루 (거대 청동 종탑 객잔)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg)
@@ -316,7 +343,10 @@
 - **원문 소설 구간 (EN)**: Gawain tapped his staff, his ears twitching as he parsed the cadence of Hercul's stance. "Hold your hands, Grimli! His tread bears no bloodlust toward the innocent!"
 - **원문 소설 구간 (KR)**: 가웨인은 바닥을 울리는 헤르쿨의 호흡에서 순수한 무인의 절제를 감지했다. “잠깐, 그림리! 저자의 발소리에는 죄 없는 자를 해치려는 살기가 실려 있지 않다!”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-002` **Drunken Bell Tower** (취선루 (거대 청동 종탑 객잔)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg)
@@ -353,7 +383,10 @@
 - **원문 소설 구간 (EN)**: Yet the roar of battle drowned his counsel. Kaze cast seven silver coins into the air, pinpointing micro-fractures in Hercul's barrier, while Rondol summoned seawater from the canal to freeze around the knight's boots. As Hercul channeled his inner flame to shatter the frost, Eliana hurled a vial of pulverized sun-peppers, raising a blinding, pungent cloud of vapor. Despite his burning eyes, Hercul tilted his shield to keep flying splinters from striking nearby commoners.
 - **원문 소설 구간 (KR)**: 그러나 격돌의 소용돌이 속에서 동료들을 제지하기엔 주변의 소음이 너무 거셌다. 카제가 허공으로 뿌린 일곱 개의 은화가 방호진의 결절점에 부딪치며 미세한 균열을 짚어냈고, 론돌이 바닷물을 수로에서 끌어올려 헤르쿨의 발목을 얼어붙은 족쇄로 묶었다. 헤르쿨이 마나를 폭발시켜 얼음을 깨뜨리려 하자, 엘리아나가 던진 매운 최루 독초 가루가 돌풍을 타고 일어났다. 헤르쿨은 기침을 터뜨리면서도 시장 사람들에게 파편이 튀지 않도록 방패의 각도를 필사적으로 돌렸다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-002` **Drunken Bell Tower** (취선루 (거대 청동 종탑 객잔)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg)
@@ -390,7 +423,10 @@
 - **원문 소설 구간 (EN)**: The skirmish was halted by a ragged young girl who darted out from behind Aila's cloak, clutching Hercul's torn surcoat with tears streaming down her soot-streaked cheeks.
 - **원문 소설 구간 (KR)**: 일촉즉발의 유혈 난투를 멈추어 세운 것은 에일라의 망토 뒤에서 뛰쳐나온 어린 피난민 소녀였다. 누더기를 걸친 아이는 헤르쿨의 찢어진 옷자락을 붙잡으며 눈물범벅이 된 얼굴로 소리쳤다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-002` **Drunken Bell Tower** (취선루 (거대 청동 종탑 객잔)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg)
@@ -427,7 +463,10 @@
 - **원문 소설 구간 (EN)**: "Sir Knight, please cease! These people are not slavers! They risked their very lives to drag us from the hold of the slave galleys destined for the Red Glass Court!"
 - **원문 소설 구간 (KR)**: “기사님, 제발 멈추세요! 이분들은 우리를 팔아넘기는 유괴범이 아니에요! 붉은 유리 궁정의 지하 감옥으로 끌려가던 우리를 목숨 걸고 구해 주신 분들이라고요!”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-007` **Red Glass Palace (Flame Court)** (붉은 유리 궁전 (불꽃 궁정)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg)
@@ -464,7 +503,10 @@
 - **원문 소설 구간 (EN)**: Hercul's warhammer froze mid-swing. The Seven Pursuers lowered their arms in sheepish disbelief. From his travel pouch, Hercul produced the merchant ledger recovered from the burnt wagon. Impressed across its parchment was Prince Lucian's personal wax seal, detailing orders for the total liquidation of the Arcane Holy Order and the trafficking of survivors. On disparate paths of vengeance and justice, these warriors had chased the same monstrous serpent.
 - **원문 소설 구간 (KR)**: 헤르쿨의 황금 철퇴가 허공에서 우뚝 멎었다. 일곱 추적자 역시 당황한 기색으로 무기를 거두었다. 헤르쿨이 품속에서 꺼내 놓은 노예 상인들의 비밀 장부에는, 놀랍게도 루시안의 친필 서명과 아케 성기사단 말살 지령이 선명하게 찍혀 있었다. 서로 다른 길에서 불의를 쫓던 의인들이 마침내 하나의 진실 앞에서 마주한 순간이었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-007` **Red Glass Palace (Flame Court)** (붉은 유리 궁전 (불꽃 궁정)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg)
@@ -501,7 +543,10 @@
 - **원문 소설 구간 (EN)**: Grimli rested his hammer on the flagstones, letting out a rough bellow of laughter. "Curse my squinting eyes. An honest-to-god holy knight rather than a court lackey. We were too hasty with our bolts, brother."
 - **원문 소설 구간 (KR)**: 그림리는 헛기침을 삼키며 쇠망치를 바닥에 내려놓았다. “빌어먹을, 궁정 놈들의 개가 아니라 진짜 뼈대 있는 성기사였단 말인가. 겉모습만 보고 섣불리 화살을 날렸군 그래. 이 부둣가에 궁정 첩자들이 하도 들끓어서 눈이 뒤집혔던 게지.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-007` **Red Glass Palace (Flame Court)** (붉은 유리 궁전 (불꽃 궁정)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg)
@@ -538,7 +583,10 @@
 - **원문 소설 구간 (EN)**: Raising Aleksandar's broken sword, Hercul recounted the tragic stand at Elwin village, the valor of Aleksandar and Balian, and the grim fate of the two expectant mothers. Then, revealing the gleaming silver dagger, he bowed his head with profound solemnity.
 - **원문 소설 구간 (KR)**: 헤르쿨은 부러진 검을 높이 들어 올리며 엘윈 마을에서 일어난 비극과, 쌍검사 알렉산다르와 창술사 발리안의 숭고한 희생을 전했다. 그리고 품속의 은빛 단검을 보여 주며 고개를 숙였다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -575,7 +623,10 @@
 - **원문 소설 구간 (EN)**: "Aleksandar's wife escaped into the savage frost of the northern Wildlands. Balian's child has been dragged south into the viper's nest of Lucian's court. I implore you, champions of the frontier. Seek out Aleksandar's bloodline in the howling northern plains and shield the child from destruction."
 - **원문 소설 구간 (KR)**: “알렉산다르의 아내는 만삭의 몸으로 북쪽 얼어붙은 와일드랜드로 탈출했소. 발리안의 아이는 루시안의 궁정으로 끌려갔지. 부디 간청하오. 황야의 사나운 바람 속에서 알렉산다르의 핏줄이 살아남을 수 있도록 찾아내 거두어 주시오.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -612,7 +663,10 @@
 - **원문 소설 구간 (EN)**: Gawain rested his hands upon his iron staff, nodding with calm dignity. "We are men and women who dwell within the border shadows. But we will never allow the blood of a hero to freeze unavenged upon the wastes."
 - **원문 소설 구간 (KR)**: 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. “우리는 대륙의 그림자 속을 걷는 거친 사냥꾼들이오. 하지만 의로운 영웅의 피가 북풍 속에서 얼어 죽는 꼴은 차마 두고 볼 수 없지.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -649,7 +703,10 @@
 - **원문 소설 구간 (EN)**: Aila slid her crossbow onto her back, her hazel eyes softening with determination. "Consider it done. We shall comb every nomad encampment until Aleksandar's son is safe in our hands. We will forge him into a warrior whom no northern wolf can break."
 - **원문 소설 구간 (KR)**: 에일라 역시 고개를 끄덕이며 석궁을 등 뒤로 돌렸다. “좋아요. 우리 일곱 사람이 북방의 유목민 천막들을 샅샅이 뒤져 알렉산다르의 아들을 찾아내겠어요. 황야의 거친 늑대들에게도 찢기지 않는 단단한 무인으로 키워내지요. 활 쏘는 법부터 사냥의 숨결까지 모조리 가르치겠어요.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -686,7 +743,10 @@
 - **원문 소설 구간 (EN)**: Kaze chuckled, flicking a shining crown between his fingers. "And I shall grant him the sharpest instincts and dagger arts to outwit any scoundrel on this continent."
 - **원문 소설 구간 (KR)**: 카제가 손가락 사이로 은화를 튕기며 씨익 웃었다. “거기다 세상의 사기꾼들에게 속지 않는 날카로운 눈치와 비검술까지 덤으로 얹어주지.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -723,7 +783,10 @@
 - **원문 소설 구간 (EN)**: Rondol nodded, securing his oar. "And the endurance to navigate tempestuous tides upon unyielding waters."
 - **원문 소설 구간 (KR)**: 론돌이 물통을 정리하며 말했다. “물살을 타는 법과 거센 풍랑 속에서 배를 모는 끈기도 결코 빼놓을 수 없소.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -760,7 +823,10 @@
 - **원문 소설 구간 (EN)**: Eliana patted her leather satchel. "And the wisdom of nature to identify deadly venoms and mend shattered bones."
 - **원문 소설 구간 (KR)**: 엘리아나 역시 약초 단지를 챙기며 고개를 끄덕였다. “대륙의 독초를 가려내고 상처를 싸매는 치유의 지혜도 내가 온전히 전수하겠어요.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -797,7 +863,10 @@
 - **원문 소설 구간 (EN)**: Robinyard leaped lightly from the eaves, landing gracefully beside them. "With my acrobatic balance to dance across chasms without fear, the boy will be peerless."
 - **원문 소설 구간 (KR)**: 로비냐드는 지붕 위에서 가볍게 뛰어내려 착지하며 미소를 지었다. “천 길 낭떠러지에서도 사뿐히 살아남는 곡예사의 줄타기 균형감각까지 가르쳐 주면 완벽하겠군.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-001` **Elwin Village** (엘윈 마을) — [배경 원화(`/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_001_Elwin_Village_sheet.jpg)
@@ -834,7 +903,10 @@
 - **원문 소설 구간 (EN)**: Hercul placed a fist over his heart in gratitude. "Then I shall plunge into the gilded darkness of the Red Glass Court to watch over Balian's child. I swear by my sacred vows that the Shadow Realm shall not corrupt his soul."
 - **원문 소설 구간 (KR)**: 헤르쿨이 가슴을 쓸어내리며 답했다. “고맙소. 그렇다면 나는 남쪽 붉은 유리 궁정의 어둠 속으로 잠입해 발리안의 아이를 찾아내겠소. 섀도우렐름의 사악한 마도사들이 그 아이의 영혼을 타락시키지 못하도록 진실의 룬을 지킬 것이오.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-007` **Red Glass Palace (Flame Court)** (붉은 유리 궁전 (불꽃 궁정)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_007_Red_Glass_Palace_sheet.jpg)
@@ -871,7 +943,10 @@
 - **원문 소설 구간 (EN)**: Gawain's lips curled into a fierce smile as he offered a parting wager. "Then let us seal one more compact, Paladin. In eighteen years, on the night of the midwinter solstice, let us convene atop the Star-Drunken Bell Tower in the heart of the continent. Bring forth the boy you have guided, and we shall bring the boy we have tempered in the blizzard. Let an honorable martial duel reveal whose path forged the truer shield for this broken realm."
 - **원문 소설 구간 (KR)**: 가웨인이 미소를 지으며 제안했다. “그렇다면 하나의 맹세를 더합시다, 성기사여. 지금으로부터 정확히 열여덟 해가 흐른 뒤, 대륙 중앙의 별취한 종탑에서 다시 만납시다.” “당신이 기른 아이와 우리 일곱 사람이 길러낸 아이를 마주 세워, 누구의 가르침이 더 올곧게 세상의 불의를 갈랐는지 무인의 결투로 확인하는 것이 어떻겠소?”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-002` **Drunken Bell Tower** (취선루 (거대 청동 종탑 객잔)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg)
@@ -908,7 +983,10 @@
 - **원문 소설 구간 (EN)**: Hercul brought his silver dagger against Gawain's iron staff, the chime of white metal echoing over the misty bay like a consecrated pledge. "So be it! Not for vanity or pride, but to prove that the legacy of their fathers lives on to pierce the darkness of this world!"
 - **원문 소설 구간 (KR)**: 헤르쿨은 자신의 은빛 단검을 가웨인의 쇠지팡이에 부딪치며 맑은 파열음을 울렸다. “좋소! 승패를 떠나, 두 아이가 부모의 숭고한 뜻을 이어받아 이 썩어빠진 대륙을 구할 진정한 등불이 되었음을 증명하는 의식이 될 것이오!”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-002` **Drunken Bell Tower** (취선루 (거대 청동 종탑 객잔)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg)
@@ -945,7 +1023,10 @@
 - **원문 소설 구간 (EN)**: Thus was born the legend of the Oath of the Seven Pursuers. Turning their steeds toward the howling blizzards of the north, the seven outlaws rode into destiny, while Hercul walked alone into the blood-scented shadows of the southern courts. Two divergent fates set forth across the vast canvas of the Arcane continent.
 - **원문 소설 구간 (KR)**: 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다. 일곱 사람은 혹한의 칼바람이 부는 북쪽 국경을 향해 말머리를 돌렸고, 헤르쿨은 홀로 핏빛 장막이 드리운 남방 궁정의 심연으로 발걸음을 옮겼다. 두 줄기의 갈라진 운명이 대륙의 지평선 너머로 아득하게 뻗어 나갔다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다.
+  - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 02 ('Oath of the Seven Pursuers'): When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. As the conflict escalates (Gawain rested his hands upon his iron staff, nodding with calm dignity.), the episode culminates when thus was born the legend of the Oath of the Seven Pursuers.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-002` **Drunken Bell Tower** (취선루 (거대 청동 종탑 객잔)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_002_Drunken_Bell_Tower_sheet.jpg)

@@ -2,6 +2,36 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 15:40 KST] [자동플레이 대사화면 멈춤 버그 해결: 캐시 키 정규화 및 3.2초 하드 세이프티 워치독 도입]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 문제 제기**:
+    - "지금 자동플레이 모드인데 대사에서 멈춰있는 경우가 있어."
+  - **2. 대사 멈춤(Freezing) 근본 원인 분석 (`src/landing/services/playRpgEngine.ts`)**:
+    - **원인 1 (중복 쿼리스트링 및 캐시 키 불일치)**:
+      - `asset.bustPngUrl`에 이미 버전 쿼리(`?v=20261105u2`)가 포함되어 있었으나, `preloadCharacterBust()`에서 `${asset.bustPngUrl}?v=20261103v4`를 추가하여 이중 쿼리 URL(`...png?v=20261105u2?v=20261103v4`)을 생성하고 `loadedBustUrls`에 저장함.
+      - 반면 `isDialogueReadyToAdvance()`는 `asset.bustPngUrl` 원본 키를 조회하므로 `loadedBustUrls.has(...)`가 영원히 `false`가 되어 대사 진행이 영구 차단됨.
+    - **원인 2 (마지막 대사 라인 배틀 전환 차단)**:
+      - 대사의 마지막 줄(`curIdx >= lines.length - 1`)에서 상대방 리더 카드의 `firstOpponentUrl`을 검사할 때도 동일한 키 불일치로 `!loadedBustUrls.has(...)`가 항상 참이 되어 무조건 `return false;`를 반환, 배틀로 진입하지 못하고 100% 멈춤 현상 발생.
+    - **원인 3 (안전 타임아웃의 완전한 부재)**:
+      - 이미지 로딩이 지연되거나 네트워크 이상 발생 시 자동플레이가 다음 대사로 넘어가지 못하고 무기한 대기함.
+  - **3. 핵심 버그 수정 및 워치독 구축 (`src/landing/services/playRpgEngine.ts`)**:
+    - **URL 캐시 키 정규화 (`normalizeImageUrl`, `markBustUrlLoaded`, `isBustUrlLoaded`)**:
+      - 쿼리스트링 유무와 상관없이 순수 경로와 전체 URL을 둘 다 `loadedBustUrls`에 듀얼 등록/확인하여 캐시 미스 원천 차단.
+      - `preloadCharacterBust()`에서 `getCharacterBustUrl(cardId)` 단일 정규화 함수를 사용하도록 통일하고, 이미지 로딩 에러 시에도 `markBustUrlLoaded`를 호출하여 게임 블로킹 방지.
+    - **하드 세이프티 워치독(Hard Safety Watchdog) 구축**:
+      - `playRpgState.dialogueLineStartedAt` 타임스탬프를 대사 전환(`triggerDialogue`, `advanceDialogue`, `prevDialogue`)마다 기록.
+      - 대사 한 줄에서 3200ms(3.2초) 이상 경과 시 이미지 로딩 여부와 무관하게 무조건 `true`를 반환하여 영구 멈춤 물리적 차단.
+      - 이미 1800ms 이상 경과한 경우 다음 화자 이미지 다운로드 대기 없이 즉시 진행(소프트 게이트).
+    - **마지막 대사 라인 배틀 직행 보장**:
+      - 마지막 대사 줄(`curIdx >= lines.length - 1`) 도달 시 배틀 진입 시 자체 0%~100% 프리로딩 프로그레스바가 동작하므로 즉시 `return true;` 반환.
+      - `runAutoStep`에서 대사 끝 도달 시 즉시 `advanceDialogue()`로 배틀 전환.
+- **검증 결과**:
+  - `npm run build && node scripts/post-build.js` 빌드 성공 (0 error).
+  - 자동플레이 모드에서 에피소드 대사 연속 자동 진행 및 배틀 진입 안정성 검증 완료.
+  - 구글 폼 완료 보고서 제출 완료.
+
+
 ## [2026-11-05 12:49 KST] [사용자 요청 기반 원격 저장소 푸시(/git-push) 완료: 광고/배틀/캐릭터 시트 최적화 반영]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

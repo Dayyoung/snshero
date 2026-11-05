@@ -1,1 +1,2 @@
-
+file '/Users/dayyoung/project/snshero/public/anime-character-sheets/videos/ep02_landscape/clips/EP02-CUT01.mp4'
+file '/Users/dayyoung/project/snshero/public/anime-character-sheets/videos/ep02_landscape/clips/EP02-CUT02.mp4'

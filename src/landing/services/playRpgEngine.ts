@@ -109,6 +109,7 @@ export interface PlayRpgState {
   choiceTimerSec: number;
   activeBuff: string | null;
   lastAutoStepAt: number;
+  dialogueLineStartedAt: number;
 
   // Battle Sub-state
   battleBoard: (BattleSlotState | null)[]; // 9 slots
@@ -159,6 +160,7 @@ export const playRpgState: PlayRpgState = {
   choiceTimerSec: 5.0,
   activeBuff: null,
   lastAutoStepAt: 0,
+  dialogueLineStartedAt: 0,
 
   battleBoard: Array(9).fill(null),
   playerHand: [1, 2, 3, 4, 5],
@@ -680,7 +682,32 @@ const loadingBustUrls = new Set<string>();
 export const AUTO_STEP_INTERVAL_MS = 2800; // 2x slower than previous 1400ms
 
 /**
- * Get versioned bust URL for a character cardId
+ * Normalize image URL to clean pathname for reliable cache hit matching
+ */
+function normalizeImageUrl(url: string): string {
+  if (!url) return '';
+  return url.split('?')[0].split('#')[0];
+}
+
+/**
+ * Record image URL as loaded (stores both raw URL and clean pathname)
+ */
+function markBustUrlLoaded(url: string): void {
+  if (!url) return;
+  loadedBustUrls.add(url);
+  loadedBustUrls.add(normalizeImageUrl(url));
+}
+
+/**
+ * Check if image URL is marked as loaded
+ */
+function isBustUrlLoaded(url: string): boolean {
+  if (!url) return true;
+  return loadedBustUrls.has(url) || loadedBustUrls.has(normalizeImageUrl(url));
+}
+
+/**
+ * Get canonical versioned bust URL for a character cardId
  */
 export function getCharacterBustUrl(cardId: number): string {
   const asset = getCharacterAsset(cardId);
@@ -693,14 +720,14 @@ export function getCharacterBustUrl(cardId: number): string {
 export function preloadCharacterBust(cardId: number): void {
   if (typeof window === 'undefined' || typeof Image === 'undefined') return;
   const asset = getCharacterAsset(cardId);
-  const url = `${asset.bustPngUrl}?v=20261103v4`;
-  if (loadedBustUrls.has(url) || loadingBustUrls.has(url)) return;
+  const url = getCharacterBustUrl(cardId);
+  if (isBustUrlLoaded(url) || loadingBustUrls.has(url)) return;
 
   loadingBustUrls.add(url);
   const img = new Image();
   img.onload = () => {
     loadingBustUrls.delete(url);
-    loadedBustUrls.add(url);
+    markBustUrlLoaded(url);
   };
   img.onerror = () => {
     const fallback = asset.seatUrl;
@@ -708,16 +735,16 @@ export function preloadCharacterBust(cardId: number): void {
       const fbImg = new Image();
       fbImg.onload = () => {
         loadingBustUrls.delete(url);
-        loadedBustUrls.add(url);
+        markBustUrlLoaded(url);
       };
       fbImg.onerror = () => {
         loadingBustUrls.delete(url);
-        loadedBustUrls.add(url);
+        markBustUrlLoaded(url); // even on fallback error, mark loaded so we never block game progression
       };
       fbImg.src = fallback;
     } else {
       loadingBustUrls.delete(url);
-      loadedBustUrls.add(url);
+      markBustUrlLoaded(url); // prevent game blockage
     }
   };
   img.src = url;
@@ -752,54 +779,73 @@ export function preloadDialogueChapterImages(): void {
 }
 
 /**
- * Check if both the currently displayed speaker bust image AND the next dialogue speaker bust image
- * have completely finished loading before allowing auto-play to advance.
+ * Check if the dialogue is ready to advance in auto-play mode.
+ * Guaranteed:
+ *   - NEVER hangs: hard safety deadline (3200ms) forces progression even on slow/broken network
+ *   - Smooth experience: waits for current speaker image to load up to normal interval
+ *   - Battle transition: immediately ready when reaching the final dialogue line
  */
 export function isDialogueReadyToAdvance(): boolean {
   if (typeof window === 'undefined' || typeof document === 'undefined') {
     return true;
   }
 
-  // 1. Verify current speaker bust image in the live DOM has finished loading
+  // 1. Hard Safety Watchdog: If 3200ms have elapsed on this dialogue line, NEVER hang!
+  const now = Date.now();
+  const elapsed = now - (playRpgState.dialogueLineStartedAt || now);
+  if (elapsed >= 3200) {
+    return true;
+  }
+
+  // 2. Verify current speaker bust image in the live DOM
+  // If complete (whether loaded or errored out), treat as ready
   const domImg = document.getElementById('dialogue-speaker-bust-img') as HTMLImageElement | null;
-  if (domImg && (!domImg.complete || domImg.naturalWidth === 0)) {
-    return false;
+  if (domImg) {
+    if (!domImg.complete) {
+      return false; // currently downloading
+    }
   }
 
   const lines = getCurrentDialogueLines();
   const curIdx = playRpgState.currentDialogueLineIdx;
   const curLine = lines[curIdx];
+
+  // If choice prompt exists, choices don't need next image gating
+  if (curLine?.choices && curLine.choices.length > 0) {
+    return true;
+  }
+
   if (curLine) {
     const curSpk = resolveDialogueSpeakers(curLine);
     const curActive = curSpk.activeSide === 'left' ? curSpk.left : curSpk.right;
     const curUrl = getCharacterBustUrl(curActive.cardId);
-    if (domImg && domImg.complete && domImg.naturalWidth > 0) {
-      loadedBustUrls.add(curUrl);
-    } else if (!loadedBustUrls.has(curUrl)) {
+    if (domImg && domImg.complete) {
+      markBustUrlLoaded(curUrl);
+    } else if (!isBustUrlLoaded(curUrl)) {
       preloadCharacterBust(curActive.cardId);
       return false;
     }
   }
 
-  // 2. Verify the NEXT dialogue line's speaker bust image is completely loaded
-  if (curIdx + 1 < lines.length) {
-    const nextLine = lines[curIdx + 1];
+  // 3. If this is the final line before battle, do NOT block dialogue advance!
+  // Battle state itself has full 0%~100% pre-caching progress bar.
+  if (curIdx >= lines.length - 1) {
+    return true;
+  }
+
+  // 4. Verify NEXT line's speaker image is cached/loading
+  const nextLine = lines[curIdx + 1];
+  if (nextLine) {
     const nextSpk = resolveDialogueSpeakers(nextLine);
     const nextActive = nextSpk.activeSide === 'left' ? nextSpk.left : nextSpk.right;
     const nextUrl = getCharacterBustUrl(nextActive.cardId);
-    if (!loadedBustUrls.has(nextUrl)) {
+    if (!isBustUrlLoaded(nextUrl)) {
       preloadCharacterBust(nextActive.cardId);
-      return false;
-    }
-  } else {
-    // On final line before battle, ensure opponent deck leader bust is loaded
-    const epDeck = getEpisodeActualOpponentDeck(playRpgState.currentChapter);
-    if (epDeck.cardIds[0]) {
-      const firstOpponentUrl = getCharacterBustUrl(epDeck.cardIds[0]);
-      if (!loadedBustUrls.has(firstOpponentUrl)) {
-        preloadCharacterBust(epDeck.cardIds[0]);
-        return false;
+      // If we've already waited at least 1800ms, don't hold the user back further
+      if (elapsed >= 1800) {
+        return true;
       }
+      return false;
     }
   }
 
@@ -816,6 +862,7 @@ export function triggerDialogue(event: KadanRpgEvent): void {
   playRpgState.choiceTimerSec = playRpgState.autoMode ? 3.0 : 5.0;
   playRpgState.activeAmbush = null;
   playRpgState.lastAutoStepAt = Date.now();
+  playRpgState.dialogueLineStartedAt = Date.now();
   preloadDialogueChapterImages();
 }
 
@@ -861,6 +908,7 @@ export function prevDialogue(): { moved: boolean; lineIndex: number } {
     playRpgState.selectedChoiceIdx = null;
     playRpgState.choiceTimerSec = playRpgState.autoMode ? 3.0 : 5.0;
     playRpgState.lastAutoStepAt = Date.now();
+    playRpgState.dialogueLineStartedAt = Date.now();
     preloadDialogueChapterImages();
     return { moved: true, lineIndex: playRpgState.currentDialogueLineIdx };
   }
@@ -877,6 +925,7 @@ export function advanceDialogue(): { completed: boolean; readyForBattle: boolean
     playRpgState.selectedChoiceIdx = null;
     playRpgState.choiceTimerSec = playRpgState.autoMode ? 3.0 : 5.0;
     playRpgState.lastAutoStepAt = Date.now();
+    playRpgState.dialogueLineStartedAt = Date.now();
     preloadDialogueChapterImages();
     return { completed: false, readyForBattle: false };
   }
@@ -2044,8 +2093,12 @@ export function runAutoStep(respectSpeedAndImageGate: boolean = false): boolean 
       return true;
     }
   } else if (playRpgState.subState === 'dialogue') {
-    // If choice prompt active, auto-select option 0
     const lines = getCurrentDialogueLines();
+    if (lines.length === 0 || playRpgState.currentDialogueLineIdx >= lines.length - 1) {
+      // If script empty or reached end of dialogue, transition directly to battle
+      advanceDialogue();
+      return true;
+    }
     const currentLine = lines[playRpgState.currentDialogueLineIdx];
     if (currentLine?.choices && currentLine.choices.length > 0) {
       selectDialogueChoice(0);
