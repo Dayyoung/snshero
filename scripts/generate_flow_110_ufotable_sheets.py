@@ -117,20 +117,19 @@ NOVEL_LORE_OVERRIDES = {
         "Holding a twin-serpent bronze ritual staff with a purple jewel."
     ),
     42: (
-        "Elwin, 55-year-old retired legendary swordmaster and Kadan's mentor from Elwin Village in the novel. "
-        "Tall seasoned 7.5-head-tall anime veteran swordsman, silver-streaked dark hair tied in a low tail, neatly trimmed grey beard, "
-        "calm piercing steel-grey eyes, a faded diagonal scar across his cheek. "
-        "Wearing a weathered navy-blue swordsman coat over a scarred leather breastplate, simple linen tunic, "
-        "wrapped leather gauntlets, dark trousers, and worn riding boots. "
-        "Resting both hands on the pommel of a classic steel longsword in a scabbard."
+        "Elwin, Kadan's mother and Aleksandar's wife, graceful and courageous northern swordswoman from Elwin Village in the novel. "
+        "Graceful 7.5-head-tall anime heroine and northern warrior-mother, royal golden Valkyrie crown-braided hair with soft side ringlets, "
+        "warm sapphire-blue eyes, gentle yet resolute maternal expression. "
+        "Wearing a silver-and-royal-blue Holy Knight armored bodice under a warm dark-navy frontier wool cloak trimmed with white winter fur, "
+        "a long navy battle skirt, and leather boots. "
+        "Holding a glowing Silver Runic Dagger close to her heart in one hand and a frost-runed Arcane Holy Knight longsword at her side."
     ),
     107: (
-        "Ysela, ancient silver dragon-priestess and oracle of the Star Sanctum from the novel. "
-        "Ethereal 7.5-head-tall anime dragon-maiden, floor-length luminous silver-lavender hair, "
-        "graceful curved pearl-white dragon horns rising from her temples, luminous violet-diamond eyes. "
-        "Wearing a regal astral-white and starlight-indigo ceremonial gown with silver dragon-scale shoulder armor, "
-        "a translucent celestial silk shawl, and silver greaves. "
-        "Cradling a crystal Star-Compass astrolabe orb in her hands."
+        "Ysela, Ignis's mother and Balian's wife, noble Starlight Dragon-Priestess from the novel. "
+        "Ethereal 7.5-head-tall anime dragon-priestess heroine, floor-length luminous sapphire-lavender hair adorned with starlight hairpins, "
+        "graceful curved pearl-gold dragon horns rising from her temples, luminous golden-violet eyes. "
+        "Wearing a regal starlight-indigo and silver-white northern ceremonial gown with silver dragon-scale shoulder armor and a warm celestial winter shawl. "
+        "Cradling a glowing crystal Star-Orb in her hands."
     ),
     74: (
         "Grimli, master dwarf runesmith and forge-warrior from the Iron Citadel in the novel. "
@@ -141,12 +140,12 @@ NOVEL_LORE_OVERRIDES = {
         "Hoisting a massive rune-etched Dwarven Forge Warhammer over his right shoulder and holding forged iron tongs in his left hand."
     ),
     49: (
-        "Hercul, colossal undefeated gladiator champion of the Grand Colosseum from the novel. "
-        "Towering heavily muscled 8-head-tall anime berserker-champion, wild mane of golden-brown hair, "
-        "piercing amber eyes, battle scars across his chest and shoulders. "
-        "Wearing a Nemean golden-lion pelt draped over his left shoulder with the lion's mane framing his neck, "
-        "heavy bronze-and-leather gladiator belt and armored kilt (pteruges), spiked bronze cestus gauntlets, and bronze lion-faced greaves. "
-        "Wielding a massive iron-banded Colosseum War Club in his right hand."
+        "Hercul, towering surviving paladin of the Arcane Holy Knights and master of the Seven Pursuers from the novel. "
+        "Towering heavily muscled 8-head-tall anime veteran warrior-paladin, wild mane of dark chestnut-brown long hair and thick full beard, "
+        "fierce yet warm amber-brown eyes, battle scars across his muscular chest. "
+        "Wearing a weathered leather bandolier and tattered Holy Knight pilgrim cloak over his broad shoulders, "
+        "a cracked golden Holy Knights seal at his war-belt, radiant golden-mana gauntlets on his forearms, and iron-plated boots. "
+        "Holding twin glowing Silver Runic Daggers in his right hand and a massive golden-runed crescent greatsword in his left hand."
     ),
     45: (
         "Gawain, blind ascetic warrior-monk of the Silent Temple from the novel. "
@@ -157,20 +156,20 @@ NOVEL_LORE_OVERRIDES = {
         "Holding a tall bronze six-ringed Khakkhara monk staff (석장) vertically in his right hand."
     ),
     50: (
-        "Aleksandar, supreme Imperator and conqueror king in golden imperial armor from the novel. "
-        "Commanding 7.5-head-tall anime emperor-knight, wavy golden-blonde hair crowned with a golden laurel wreath, "
-        "piercing crimson-gold eyes, noble bearded jawline. "
-        "Wearing resplendent golden-and-crimson Imperial sun-lion plate armor with ornate eagle pauldrons, "
-        "a royal crimson velvet cape trimmed with white ermine fur, and golden greaves. "
-        "Holding a jewel-encrusted Imperial Gladius sword in his right hand and a golden sovereign orb in his left."
+        "Aleksandar, Kadan's father and Elwin's husband, descendant of the fallen Order of Arcane Holy Knights and legendary northern twin-blade hunter from the novel. "
+        "Commanding 7.5-head-tall muscular anime northern warrior-knight, neat chestnut-brown hair and trimmed beard crowned with a slender golden circlet, "
+        "piercing steel-blue eyes, resolute noble expression. "
+        "Wearing a royal-blue and gold-trimmed Arcane Holy Knight armored coat over a dark frontier tunic, grey winter wolf-fur shoulder mantle, "
+        "reinforced leather bracers, and armored riding boots. "
+        "Wielding his masterwork Twin Arcane Longswords (벼린 아케인 쌍검)—one glowing silver-blue runic longsword in each hand."
     ),
     61: (
-        "Lucian, noble silver-haired vampire blade-aristocrat and dusk duelist from the novel. "
-        "Tall slender 7.5-head-tall anime nobleman, silky silver-white hair, pale aristocrat complexion, "
-        "glowing crimson-red eyes, composed enigmatic smile. "
-        "Wearing a tailored black-and-burgundy Victorian gothic tailcoat with silver filigree lapels, "
-        "a high white cravat with a blood-ruby brooch, black leather gloves, and buckled riding boots. "
-        "Holding an ornate silver-hilted blood-steel Rapier at his side."
+        "Lucian, ambitious highborn nobleman of the Red Glass Court who raided Elwin Village in the novel. "
+        "Tall slender 7.5-head-tall anime highborn nobleman, silky long emerald-green hair, pointed noble elf ears, "
+        "cold crimson-gold eyes, arrogant aristocratic sneer. "
+        "Wearing an ornate dark-emerald and black-gold Red Glass Court noble uniform coat, "
+        "a luxurious white ermine fur cloak fastened with a golden serpentine crest brooch, black leather gloves, and tall buckled riding boots. "
+        "Holding an ornate emerald-and-gold Arcane Greatbow with a glowing green mana arrow in his left hand and a rune-etched noble sword at his hip."
     ),
     66: (
         "Malfuon, arch-druid elder of the World Tree from the novel. "
@@ -205,12 +204,12 @@ NOVEL_LORE_OVERRIDES = {
         "Holding a twin-bladed silver Wind-Halberd."
     ),
     43: (
-        "Balian, veteran Crusader Paladin commander of the Holy Order from the novel. "
-        "Tall rugged 7.5-head-tall anime paladin, short blond hair, square jaw with light stubble, "
-        "steely blue eyes. "
-        "Wearing polished silver-and-white Crusader full plate armor emblazoned with a golden cross on the chest tabard, "
-        "heavy pauldrons, white cape, and steel sabatons. "
-        "Holding a two-handed Crusader Claymore and a heraldic heater shield."
+        "Balian, Ignis's father and Ysela's husband, veteran Arcane Spearman of the fallen Order of Arcane Holy Knights from the novel. "
+        "Tall rugged 7.5-head-tall anime paladin-spearman, short golden-blond hair with a silver winged knight circlet on his brow, "
+        "steely cyan-blue eyes, square jaw with light stubble. "
+        "Wearing polished silver-and-white Arcane Holy Knight plate armor emblazoned with a golden cross tabard, "
+        "heavy pauldrons, a deep crimson winter cape, and steel sabatons. "
+        "Wielding his signature glowing cyan-runed Arcane Spear (아케인 창) in his right hand and a weathered iron cross-shield on his left arm."
     ),
     86: (
         "Leonar, proud Lion-Beastkin warrior king of the Savanna Clans from the novel. "

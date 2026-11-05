@@ -1379,14 +1379,37 @@ def main() -> None:
     poster.save(OUT_ROOT / "all_110_cast_poster.jpg", "JPEG", quality=90, optimize=True)
     print("Saved all_110_cast_poster.jpg!")
 
-    # 10. Save manifest.json
+    # 10. Save manifest.json (including 20 canonical locations and 20 canonical props)
+    from build_locations_and_props_sheets import LOCATIONS, PROPS
+    built_locations = [
+        {
+            **loc,
+            "artUrl": f"/anime-character-sheets/locations/art/{loc['code'].replace('-', '_')}_{loc['slug']}.jpg",
+            "sheetUrl": f"/anime-character-sheets/locations/sheets/{loc['code'].replace('-', '_')}_{loc['slug']}_sheet.jpg",
+        }
+        for loc in LOCATIONS
+    ]
+    built_props = [
+        {
+            **prop,
+            "artUrl": f"/anime-character-sheets/props/art/{prop['code'].replace('-', '_')}_{prop['slug']}.jpg",
+            "sheetUrl": f"/anime-character-sheets/props/sheets/{prop['code'].replace('-', '_')}_{prop['slug']}_sheet.jpg",
+        }
+        for prop in PROPS
+    ]
     manifest_data = {
         "project": "SNSHero — Kadan's Journey (카단의 여정) 110 Animation Character Sheets",
         "totalCharacters": 110,
         "totalFactions": 11,
+        "totalLocations": len(built_locations),
+        "totalProps": len(built_props),
         "overviewPosterUrl": "/anime-character-sheets/all_110_cast_poster.jpg",
+        "locationsPosterUrl": "/anime-character-sheets/all_20_locations_poster.jpg",
+        "propsPosterUrl": "/anime-character-sheets/all_20_props_poster.jpg",
         "factions": faction_sheet_meta,
         "characters": manifest_entries,
+        "locations": built_locations,
+        "props": built_props,
     }
     (OUT_ROOT / "manifest.json").write_text(
         json.dumps(manifest_data, ensure_ascii=False, indent=2), encoding="utf-8"
