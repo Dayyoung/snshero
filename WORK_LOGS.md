@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 16:14 KST] [대사창 resolveActiveDialogueSpeaker 누락 정의 및 ReferenceError 완벽 해결]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 제보 문제**:
+    - `http://localhost:3000/#play` 접속 시 `Uncaught ReferenceError: resolveActiveDialogueSpeaker is not defined` 에러 발생.
+  - **2. 원인 분석**:
+    - 대사 분할 함수 `getCurrentDialogueParts()` 및 `PlaySection.tsx`에서 활성 화자를 찾기 위해 `resolveActiveDialogueSpeaker(line)`을 호출하였으나, 실제 함수 정의가 누락되어 런타임 ReferenceError 발생.
+  - **3. 해결 조치**:
+    - `src/landing/services/playRpgEngine.ts`에 `resolveActiveDialogueSpeaker` 함수를 명시적으로 정의하고 export:
+      ```ts
+      export function resolveActiveDialogueSpeaker(line: KadanRpgNovelScriptLine): DialogueSpeakerInfo {
+        const speakers = resolveDialogueSpeakers(line);
+        return speakers.activeSide === 'left' ? speakers.left : speakers.right;
+      }
+      ```
+    - `src/landing/views/PlaySection.tsx`의 import 및 활성 화자 조회 로직을 일관되게 정돈.
+  - **4. 빌드 및 검증**:
+    - `npm run build && node scripts/post-build.js`: 0 error 정상 통과.
+    - 신규 메인 번들 `main--CEHVsTu.js` 정상 생성 및 정적 프리뷰 서버 반영 확인.
+    - 로컬 Git 커밋 완료 (`166fe8136`).
+    - 연동 구글 폼 완료 보고서 제출 완료 (`[개발] 대사창 resolveActiveDialogueSpeaker 정의 및 ReferenceError 해결 -> 작업완료`).
+
 ## [2026-11-05 16:06 KST] [동물의 숲 대사 타자기 효과음 및 최대 3줄 2회 분할 대사 출력 구현]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
