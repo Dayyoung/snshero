@@ -2,6 +2,43 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 16:06 KST] [동물의 숲 대사 타자기 효과음 및 최대 3줄 2회 분할 대사 출력 구현]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 문제 제기 및 요구사항**:
+    - 대사가 너무 길면 글이 너무 많아져 화면을 가리는 이슈 발생.
+    - 대사를 최대 3줄 단위로 끊어서 긴 대사의 경우 2번에 걸쳐 분할 표시(`[1/2]`, `[2/2]`).
+    - 대사가 출력될 때 효과음이 없어 썰렁하므로 '동물의 숲'처럼 글자가 하나씩 나오며 띠리리리 소리가 나도록 구현 요청.
+  - **2. 세부 구현 내역**:
+    - **(1) 동물의 숲 스타일 Web Audio API 펜타토닉 비프 효과음 (`src/landing/services/audioManager.ts`)**:
+      - `audioManager.playDialogueChirp(char?: string)` 구현:
+        - 펜타토닉 음계 기반 480Hz~1040Hz 피치 변조 초단타(35ms) 마이크로 신스 톤 비프음(Animalese Chirp).
+        - 글자의 유니코드 값에 따라 자연스러운 음계 변화를 부여하여 동물의 숲 특유의 경쾌하고 귀여운 짹짹 말소리 효과 완성.
+    - **(2) 대사 최대 3줄 2회 분할 및 타이핑 타이머 엔진 (`src/landing/services/playRpgEngine.ts`)**:
+      - `condenseDialogueQuote(rawQuote, maxLen=75)`: 지나치게 긴 따옴표 대사를 비주얼 노벨 규격에 맞게 콤팩트화.
+      - `splitDialogueIntoParts(fullText, maxPartLen=55)`: 대사가 55자를 초과할 경우 문장 부호(. ! ? 등) 또는 쉼표/어절 단위로 최대 2개 파트로 분할하여 1개 파트당 3줄 이내로 유지.
+      - `getCurrentDialogueParts()`: 현재 씬 대사의 파트 목록, 현재 파트 텍스트, 분할 인덱스(`curPartIdx`, `totalParts`), 다음 파트 여부 반환.
+      - `startDialogueTyping(fullText, onTick)`: 35ms 주기로 글자를 1자씩 순차 출력하며 매 글자마다 `playDialogueChirp` 재생.
+      - `advanceDialoguePartOrLine()` / `prevDialoguePartOrLine()`:
+        - 타이핑 중 탭/클릭 시: 타이핑 애니메이션을 즉시 건너뛰고 전체 글자 즉시 표시.
+        - 타이핑 완료 후 탭/클릭 시: 다음 파트(`[2/2]`)로 진행하거나 다음 대사/씬으로 부드럽게 전진.
+      - 자동 모드(`isDialogueReadyToAdvance` & `runAutoStep`): 타이핑 중에는 자동 넘김을 멈추고 대기하며, 타이핑 완료 후 1.5초간 대사를 음미한 뒤 자연스럽게 다음 파트로 자동 진행.
+    - **(3) 대사 모달 뷰 최적화 및 파트 인디케이터 배지 (`src/landing/views/PlaySection.tsx`)**:
+      - 대사창 크기를 최대 3줄 규격(`max-h-[140px]`, `p-3.5 sm:p-4`)으로 슬림화하여 화면 가림 방지.
+      - 2회 분할 시 우측 상단에 `[1/2 ▼]`, `[2/2 ▶]` 골드 배지 실시간 표시.
+      - 대사창 전체 탭(`data-action="play-dialogue-tap"`) 이벤트 바인딩으로 모바일 원핸드 터치 즉시 스킵 & 다음 진행 완벽 지원.
+  - **3. 빌드 및 검증**:
+    - `npm run build && node scripts/post-build.js`: 0 error 정상 통과.
+    - 로컬 Git 커밋 완료 (`df9c6c6cb`).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료 (`[개발] 동물의 숲 대사 타자기 효과음 및 3줄 2회 분할 출력 구현 -> 작업완료`).
+- **검증 결과**:
+  - 대사 3줄 초과 시: 최대 2개 파트로 분할되어 2번에 걸쳐 깔끔하게 표시.
+  - 동물의 숲 효과음: 글자 타이핑과 동시에 Web Audio API 펜타토닉 띠리리리 소리 지연 없이 상쾌하게 재생.
+  - 모바일 터치: 대사창 어디를 탭하든 즉시 출력 및 다음 파트 전환 지원.
+  - 프로덕션 번들 빌드: 0 error 정상 완료
+  - 로컬 Git 커밋: `df9c6c6cb`
+  - 구글 폼 완료 보고서 제출: 완료
+
 ## [2026-11-05 15:51 KST] [사용자 요청 원격 푸시(/git-push) 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
