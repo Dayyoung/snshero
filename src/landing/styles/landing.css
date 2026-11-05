@@ -431,6 +431,83 @@ ins.adsbygoogle iframe,
     padding: 0 !important;
     border: none !important;
   }
+
+  /* 대사화면 및 플레이(배틀) 모달 활성화 시 좌우 배너 최상위 고정 */
+  body.has-active-rpg-modal #adsense-desktop-left,
+  body:has(#play-dialogue-modal-root) #adsense-desktop-left,
+  body:has(#play-battle-modal-root) #adsense-desktop-left {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 160px !important;
+    max-width: 160px !important;
+    min-width: 160px !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 60 !important;
+    background-color: #060a14 !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.5) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow-y: auto !important;
+    visibility: visible !important;
+  }
+
+  body.has-active-rpg-modal #adsense-desktop-right,
+  body:has(#play-dialogue-modal-root) #adsense-desktop-right,
+  body:has(#play-battle-modal-root) #adsense-desktop-right {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    width: 160px !important;
+    max-width: 160px !important;
+    min-width: 160px !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 60 !important;
+    background-color: #060a14 !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.5) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow-y: auto !important;
+    visibility: visible !important;
+  }
+
+  body.has-active-rpg-modal #adsense-desktop-left > div,
+  body.has-active-rpg-modal #adsense-desktop-right > div,
+  body:has(#play-dialogue-modal-root) #adsense-desktop-left > div,
+  body:has(#play-dialogue-modal-root) #adsense-desktop-right > div,
+  body:has(#play-battle-modal-root) #adsense-desktop-left > div,
+  body:has(#play-battle-modal-root) #adsense-desktop-right > div {
+    background-color: #0c1220 !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+  }
+
+  /* 대사화면 및 플레이(배틀) 모달: 좌우 160px 배너 사이에 완벽 배치 */
+  body.has-active-rpg-modal #play-dialogue-modal-root,
+  body.has-active-rpg-modal #play-battle-modal-root,
+  body:has(#play-dialogue-modal-root) #play-dialogue-modal-root,
+  body:has(#play-battle-modal-root) #play-battle-modal-root,
+  .play-rpg-fullscreen-modal {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    left: 160px !important;
+    right: 160px !important;
+    width: calc(100vw - 320px) !important;
+    max-width: calc(100vw - 320px) !important;
+    z-index: 50 !important;
+  }
 }
 
 @media (orientation: portrait) {
@@ -444,6 +521,70 @@ ins.adsbygoogle iframe,
     padding: 0 !important;
     border: none !important;
   }
+
+  /* 대사화면 및 플레이(배틀) 모달 활성화 시 상단 배너 최상단 고정 */
+  body.has-active-rpg-modal #adsense-mobile-top,
+  body:has(#play-dialogue-modal-root) #adsense-mobile-top,
+  body:has(#play-battle-modal-root) #adsense-mobile-top {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    max-height: 58px !important;
+    z-index: 60 !important;
+    background-color: #0c1220 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    padding: 2px 4px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    visibility: visible !important;
+  }
+
+  body.has-active-rpg-modal #adsense-mobile-top > div,
+  body:has(#play-dialogue-modal-root) #adsense-mobile-top > div,
+  body:has(#play-battle-modal-root) #adsense-mobile-top > div {
+    background-color: #0c1220 !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+  }
+
+  /* 대사화면 및 플레이(배틀) 모달: 상단 배너(58px) 바로 아래부터 화면 하단까지 채움 */
+  body.has-active-rpg-modal #play-dialogue-modal-root,
+  body.has-active-rpg-modal #play-battle-modal-root,
+  body:has(#play-dialogue-modal-root) #play-dialogue-modal-root,
+  body:has(#play-battle-modal-root) #play-battle-modal-root,
+  .play-rpg-fullscreen-modal {
+    position: fixed !important;
+    top: 58px !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: calc(100vh - 58px) !important;
+    height: calc(100dvh - 58px) !important;
+    max-height: calc(100dvh - 58px) !important;
+    z-index: 50 !important;
+  }
+}
+
+/* 대사/배틀 모달 활성화 시 배너 내부 라벨 텍스트 가독성 최적화 */
+body.has-active-rpg-modal #adsense-mobile-top .text-stone-500,
+body.has-active-rpg-modal #adsense-desktop-left .text-stone-500,
+body.has-active-rpg-modal #adsense-desktop-right .text-stone-500,
+body:has(#play-dialogue-modal-root) #adsense-mobile-top .text-stone-500,
+body:has(#play-dialogue-modal-root) #adsense-desktop-left .text-stone-500,
+body:has(#play-dialogue-modal-root) #adsense-desktop-right .text-stone-500,
+body:has(#play-battle-modal-root) #adsense-mobile-top .text-stone-500,
+body:has(#play-battle-modal-root) #adsense-desktop-left .text-stone-500,
+body:has(#play-battle-modal-root) #adsense-desktop-right .text-stone-500 {
+  color: #94a3b8 !important;
 }
 
 /* ==========================================================================

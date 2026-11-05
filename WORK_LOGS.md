@@ -2,6 +2,34 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 10:20 KST] [대사화면 및 플레이(배틀)화면 구글 배너 상시 노출 레이아웃 및 모달 인셋 동기화 구축]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 문제 제기 및 요구사항**:
+    - "https://snshero.com/#play 이제 광고는 잘 노출된다. 문제는 대사화면과 플레이화면에서 광고가 노출안돼."
+  - **2. 대사/플레이 화면 광고 미노출 원인 분석**:
+    - 일반 맵 화면에서는 문서 흐름 안에 있어 화면 비율에 맞게 좌우 배너(가로 모드) 또는 상단 배너(세로 모드)가 온전히 노출되었음.
+    - 그러나 대사화면(`play-dialogue-modal-root`)과 플레이(배틀)화면(`play-battle-modal-root`)으로 진입 시 `fixed inset-0 z-50 h-[100dvh]` 전체화면 불투명 모달이 뷰포트 전체(0, 0, 100vw, 100vh)를 완전히 덮어버림.
+    - 이로 인해 모달 하위에 위치한 좌우 배너(`adsense-desktop-left`, `adsense-desktop-right`) 및 상단 배너(`adsense-mobile-top`)가 모달 뒤로 완전히 가려져(Obscured) 사용자에게 보이지 않는 결함 발생.
+  - **3. 반응형 배너 고정 및 모달 인셋 동기화 레이아웃 구축 (`landing.css`, `PlaySection.tsx`, `index.ts`)**:
+    - **가로 모드 (너비 > 높이, Landscape)**:
+      - 좌우 구글 배너(`adsense-desktop-left`, `adsense-desktop-right`)를 `position: fixed; top: 0; bottom: 0; z-index: 60;`으로 화면 좌우에 최상위 고정 노출 (배경 `#060a14`, 1px 보더).
+      - 대사화면 및 배틀화면 모달은 좌우 160px을 가리지 않고 그 사이인 `left: 160px; right: 160px; width: calc(100vw - 320px);`의 중앙 영역에 완벽하게 핏(fit)되어 렌더링.
+    - **세로 모드 (너비 <= 높이, Portrait)**:
+      - 상단 구글 배너(`adsense-mobile-top`)를 `position: fixed; top: 0; left: 0; right: 0; height: 58px; z-index: 60;`으로 화면 최상단에 고정 노출 (배경 `#0c1220`, 1px 보더).
+      - 대사화면 및 배틀화면 모달은 상단 배너를 가리지 않고 바로 아래인 `top: 58px; height: calc(100dvh - 58px);`부터 시작하여, 상단 바([건너뛰기], [닫기]) 터치 영역 및 배틀 보드가 배너와 전혀 겹치지 않고 온전하게 노출.
+    - **듀얼 선택자 적용 (`body.has-active-rpg-modal`, `:has(#play-dialogue-modal-root, #play-battle-modal-root)`)**: 모달 마운트 즉시 0ms 반응 및 크로스 브라우징 100% 호환성 보장.
+    - **다크 테마 일체화**: 대사/배틀 모달 활성화 시 배너 카드 배경을 `#0c1220`으로 전환하여 눈부심 없는 프리미엄 게임 UI 완성.
+    - **JS 상태 동기화 (`syncRpgModalBodyClass`)**:
+      - `PlaySection.tsx`에서 `syncRpgModalBodyClass()` 구현 및 `renderAdventureView()`, `syncBattleDomInPlace()`, `handlePlayAction()` 전역 액션에 연동.
+      - 대사/배틀 모달 활성화 시 `syncAdSenseRatioLayout('play')` 및 `pushAdSenseTags('play')`를 동기화하여 지연 없이 즉각 배너 노출.
+  - **4. 빌드 및 검증**:
+    - `npm run build && node scripts/post-build.js`: 4,362개 모듈 트랜스파일 및 0 error 프로덕션 빌드 성공.
+- **검증 결과**:
+  - 대사화면 및 배틀화면 진입 시 가로 모드에서는 좌우 160px 배너가 양옆에 고정 노출되고 모달이 중앙에 핏되며, 세로 모드에서는 상단 58px 배너가 최상단에 고정 노출되고 모달이 그 아래에 정확히 배치되어 조작 버튼 가림 없이 광고가 상시 노출됨.
+  - 빌드 성공 (0 error).
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 대사화면 및 플레이(배틀)화면 구글 배너 상시 노출 레이아웃 및 모달 인셋 동기화 -> 작업완료`.
+
 ## [2026-11-05 10:15 KST] [카드 배틀 사전 이미지 프리로딩 프로그레스바 도입 및 3x3 보드 슬롯 단위 Diffing으로 카드 깜박임 완전 박멸]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

@@ -25,7 +25,13 @@ import {
   getInspectedDeckCardId,
   setDeckOptimizeNotice,
 } from './views/MyDeckSection';
-import { renderPlaySection, handlePlayAction, stopPlayTts, syncBattleDomInPlace } from './views/PlaySection';
+import {
+  renderPlaySection,
+  handlePlayAction,
+  stopPlayTts,
+  syncBattleDomInPlace,
+  syncRpgModalBodyClass,
+} from './views/PlaySection';
 import {
   renderCardSection,
   setSelectedCardId,
@@ -193,6 +199,11 @@ export function renderApp(): void {
     footerSlot.innerHTML = renderFooter();
 
     // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
+    if (state.activeView === 'play') {
+      syncRpgModalBodyClass();
+    } else {
+      document.body.classList.remove('has-active-rpg-modal');
+    }
     syncAdSenseRatioLayout(state.activeView);
     pushAdSenseTags(state.activeView);
     return;
@@ -246,6 +257,11 @@ export function renderApp(): void {
   `;
 
   // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
+  if (state.activeView === 'play') {
+    syncRpgModalBodyClass();
+  } else {
+    document.body.classList.remove('has-active-rpg-modal');
+  }
   syncAdSenseRatioLayout(state.activeView);
   pushAdSenseTags(state.activeView);
   protectLinksFromVignette();
@@ -276,6 +292,11 @@ export function renderSectionContent(view: ViewKey): void {
     mainSlot.innerHTML = renderActiveViewContent(view);
 
     // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
+    if (view === 'play') {
+      syncRpgModalBodyClass();
+    } else {
+      document.body.classList.remove('has-active-rpg-modal');
+    }
     syncAdSenseRatioLayout(view);
     pushAdSenseTags(view);
     protectLinksFromVignette();

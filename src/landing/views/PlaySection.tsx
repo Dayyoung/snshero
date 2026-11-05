@@ -86,6 +86,7 @@ import {
   getDialogueBackground,
   preloadLocationBackground,
 } from '../services/locationBgManager';
+import { syncAdSenseRatioLayout, pushAdSenseTags } from '../services/adsenseManager';
 
 /**
  * 40-Episode Quick Jump Drawer Open State for Adventure Tab
@@ -487,6 +488,7 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
     default:
       break;
   }
+  syncRpgModalBodyClass();
 }
 
 // ============================================================================
@@ -793,6 +795,7 @@ export function renderBattleHandRowHtml(): string {
  */
 export function syncBattleDomInPlace(): boolean {
   if (typeof document === 'undefined') return false;
+  syncRpgModalBodyClass();
   const boardEl = document.getElementById('battle-board-grid');
   if (!boardEl) return false;
 
@@ -877,6 +880,31 @@ export function syncBattleDomInPlace(): boolean {
   return true;
 }
 
+/**
+ * Synchronize body class for active RPG modal state (Dialogue / Battle / Reincarnation)
+ * Ensures that Google AdSense banners (Side Gutters on Landscape, Top Banner on Portrait)
+ * remain 100% visible, fully rendered, and un-obscured with dedicated layout offsets.
+ */
+export function syncRpgModalBodyClass(): void {
+  if (typeof document === 'undefined') return;
+  const isModalActive =
+    playRpgState.subState === 'dialogue' ||
+    playRpgState.subState === 'battle' ||
+    playRpgState.subState === 'reincarnation';
+
+  if (isModalActive) {
+    document.body.classList.add('has-active-rpg-modal');
+  } else {
+    document.body.classList.remove('has-active-rpg-modal');
+  }
+
+  // Defer slightly to guarantee DOM elements are rendered before sync
+  setTimeout(() => {
+    syncAdSenseRatioLayout('play');
+    pushAdSenseTags('play');
+  }, 30);
+}
+
 // ============================================================================
 // 3. Tab Sub-Renderers
 // ============================================================================
@@ -885,6 +913,7 @@ export function syncBattleDomInPlace(): boolean {
  * Render Tab 1: 2D Tile Adventure Map & RPG Battle Loop
  */
 function renderAdventureView(): string {
+  syncRpgModalBodyClass();
   const isKo = isKoreanLanguage();
   const currentChapter = playRpgState.currentChapter;
   const rebirthLevel = playRpgState.reincarnationLevel;
@@ -1389,7 +1418,7 @@ function renderAdventureView(): string {
               return `
                 <div
                   id="play-dialogue-modal-root"
-                  class="fixed inset-0 z-50 flex flex-col justify-between bg-[#0e0c0c] text-[#fdfcfc] font-mono select-none overflow-hidden h-[100dvh]"
+                  class="play-rpg-fullscreen-modal fixed inset-0 z-50 flex flex-col justify-between bg-[#0e0c0c] text-[#fdfcfc] font-mono select-none overflow-hidden h-[100dvh]"
                   role="dialog"
                   aria-modal="true"
                   aria-labelledby="dialogue-modal-speaker"
@@ -1591,7 +1620,7 @@ function renderAdventureView(): string {
               return `
             <div
               id="play-battle-modal-root"
-              class="fixed inset-0 z-50 flex flex-col justify-between bg-[#060a14] text-[#fdfcfc] font-mono select-none overflow-hidden h-[100dvh]"
+              class="play-rpg-fullscreen-modal fixed inset-0 z-50 flex flex-col justify-between bg-[#060a14] text-[#fdfcfc] font-mono select-none overflow-hidden h-[100dvh]"
               role="dialog"
               aria-modal="true"
               aria-labelledby="battle-modal-title"
