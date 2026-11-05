@@ -74,6 +74,7 @@ import {
   startDialogueTyping,
   skipDialogueTyping,
   resolveDialogueSpeakers,
+  resolveActiveDialogueSpeaker,
   ensureGameStarted,
   formatChapterLabel,
   closeDialogueAndStopPlay,
@@ -1411,8 +1412,7 @@ function renderAdventureView(): string {
 
               // Clean dialogue text & speaker resolution (Single alternating active speaker bust only)
               preloadDialogueChapterImages();
-              const speakers = resolveDialogueSpeakers(line);
-              const activeSpeaker = speakers.activeSide === 'left' ? speakers.left : speakers.right;
+              const activeSpeaker = resolveActiveDialogueSpeaker(line);
               const { parts, currentPart, isNarration } = getCurrentDialogueParts();
               const totalParts = parts.length;
               const curPartIdx = Math.max(0, Math.min(totalParts - 1, playRpgState.currentDialoguePartIdx));

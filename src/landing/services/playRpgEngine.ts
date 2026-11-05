@@ -974,6 +974,14 @@ export function resolveDialogueSpeakers(line: KadanRpgNovelScriptLine): Resolved
   };
 }
 
+/**
+ * Resolves the currently active speaker from a dialogue line
+ */
+export function resolveActiveDialogueSpeaker(line: KadanRpgNovelScriptLine): DialogueSpeakerInfo {
+  const speakers = resolveDialogueSpeakers(line);
+  return speakers.activeSide === 'left' ? speakers.left : speakers.right;
+}
+
 const loadedBustUrls = new Set<string>();
 const loadingBustUrls = new Set<string>();
 
