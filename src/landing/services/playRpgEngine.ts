@@ -108,7 +108,7 @@ export interface PlayRpgState {
   currentDialoguePartIdx: number;     // 0: 첫 번째 파트, 1: 두 번째 파트 (대사 분할 시)
   dialogueTypingComplete: boolean;    // 현재 파트 글자 출력 완료 여부
   dialogueDisplayedLength: number;    // 현재 표시된 글자 수
-  dialogueCompletedAt: number;        // 대사 출력 완료 시각 (대사 종료 후 0.1초 즉시 다음 진행 지원)
+  dialogueCompletedAt: number;        // 대사 출력 완료 시각 (대사 종료 후 1.0초 뒤 다음 진행 지원)
   selectedChoiceIdx: number | null;
   choiceTimerSec: number;
   activeBuff: string | null;
@@ -663,14 +663,14 @@ export function clearDialogueAutoAdvanceTimer(): void {
 }
 
 /**
- * Automatically advances to the next dialogue part or line exactly 100ms (0.1s) after typing completes.
- * Directly fulfills user requirement: "대사가 끝나면 바로 0.1초후에 다음 대사를 진행할 수 있도록 해줘."
+ * Automatically advances to the next dialogue part or line exactly 1000ms (1.0s) after typing completes.
+ * Directly fulfills user requirement: "다음 대사로 넘어가기전에 딜레이를 1초로 변경"
  */
 export function scheduleDialogueAutoAdvance(): void {
   if (typeof window === 'undefined') return;
   clearDialogueAutoAdvanceTimer();
 
-  // In autoMode, automatically proceed to next part/line with zero lingering pause (0.1s)
+  // In autoMode, automatically proceed to next part/line after a comfortable 1.0s pause
   if (!playRpgState.autoMode) return;
 
   dialogueAutoAdvanceTimer = setTimeout(() => {
@@ -688,7 +688,7 @@ export function scheduleDialogueAutoAdvance(): void {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('snshero_play_rpg_updated'));
     }
-  }, 100);
+  }, 1000);
 }
 
 /**
@@ -1138,20 +1138,20 @@ export function preloadDialogueChapterImages(): void {
 
 /**
  * Check if the dialogue is ready to advance in auto-play mode.
- * Satisfies user requirement: "대사가 끝나면 바로 0.1초후에 다음 대사를 진행할 수 있도록 해줘."
+ * Satisfies user requirement: "다음 대사로 넘어가기전에 딜레이를 1초로 변경"
  * - Waits for typewriter typing animation to complete
- * - Exactly 0.1s (100ms) pause after completion before advancing
- * - Hard safety watchdog (2500ms) guarantees no hanging
+ * - Exactly 1.0s (1000ms) pause after completion before advancing
+ * - Hard safety watchdog (4000ms) guarantees no hanging
  */
 export function isDialogueReadyToAdvance(): boolean {
   if (typeof window === 'undefined' || typeof document === 'undefined') {
     return true;
   }
 
-  // 1. Hard Safety Watchdog: If 2500ms have elapsed on this dialogue line, NEVER hang!
+  // 1. Hard Safety Watchdog: If 4000ms have elapsed on this dialogue line, NEVER hang!
   const now = Date.now();
   const elapsed = now - (playRpgState.dialogueLineStartedAt || now);
-  if (elapsed >= 2500) {
+  if (elapsed >= 4000) {
     return true;
   }
 
@@ -1160,9 +1160,9 @@ export function isDialogueReadyToAdvance(): boolean {
     return false;
   }
 
-  // 3. Exactly 0.1 second (100ms) pause after dialogue typing finishes
+  // 3. Exactly 1.0 second (1000ms) pause after dialogue typing finishes
   const completedElapsed = now - (playRpgState.dialogueCompletedAt || now);
-  if (completedElapsed < 100) {
+  if (completedElapsed < 1000) {
     return false;
   }
 

@@ -1193,7 +1193,7 @@ export function mountLanding(): void {
     }
   } catch {}
 
-  // 8. Auto-Play Runner interval for #play view (100ms tick + instant 0.1s dialogue advance)
+  // 8. Auto-Play Runner interval for #play view (100ms tick + 1.0s dialogue advance)
   if (typeof window !== 'undefined') {
     window.addEventListener('snshero_play_rpg_updated', () => {
       if (state.activeView === 'play') {
