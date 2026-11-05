@@ -20161,3 +20161,13 @@
   3. `EP33` 22/52컷(`00-07`, `18-23`, `35-42`) 생성 및 후처리 완료 (잔여 30컷 쿼터 리셋 시각 `17:41:12 KST` 가시적 타이머 연동).
 - **검증 결과**: `EP25_S42`, `EP27_S05`, `EP27_S38`, `EP28_S31`, `EP28_S45`, `EP28_S47`, `EP30_S26`, `EP31_S38`, `EP32_S06`, `EP32_S45` 시각 검증 완료.
 - **구글 폼 보고**: 제출 완료 (`작업완료`).
+
+## 2026-11-05 11:55 (KST) — Google Flow (Nano Banana 2.1) 기반 110종 캐릭터 투명배경 시트 & 20종 배경장소 시트 전수 생성 완료
+- **작업 내용**:
+  1. **110종 캐릭터 시트 (ufotable 화풍 + 소설 설정 100% 반영 + 완전 투명배경 RGBA PNG)**:
+     - Google Flow (`🍌 Nano Banana 2.1`, `3:4` 세로 전신 `896x1200`)에서 5개 동시 병렬 배치 파이프라인(`scripts/generate_flow_110_ufotable_sheets.py`)으로 `001_Aquaris` ~ `110_Bahamut` 전수 생성.
+     - 소설 『카단의 여정』 주요 등장인물(`041_Kadan`, `062_Celia`, `011_Ignis`, `046_Rondol`, `070_Aila`, `044_Kaze`, `063_Eliana`, `089_Medusa_Gorgo`, `042_Elwin`, `107_Ysela`, `074_Grimli`, `049_Hercul`, `045_Gawain`, `050_Aleksandar`, `061_Lucian`, `066_Malfuon` 등) 외모·복장·전용 무기/방패/소품 설정 일관성 고정.
+     - 배경/텍스트/보조 컷이 일절 포함되지 않은 단일 전신 투명배경 `RGBA PNG` 파일 110종(`public/anime-character-sheets/cutouts/001_Aquaris.png` ~ `110_Bahamut.png`) 및 스튜디오 설정 시트 110종(`public/anime-character-sheets/sheets/`), 11개 진영 마스터 시트(`public/anime-character-sheets/factions/`), 전체 총람 포스터(`all_110_cast_poster.jpg`) 업데이트 완료 (인게임 카드 리소스 `public/seat/*.png`, `public/cards1.png`는 사용자 요청에 따라 미변경 유지).
+  2. **20종 공식 배경장소 시트 (`LOC-001` ~ `LOC-020`, 16:9 와이드스크린 `1376x768`)**:
+     - Google Flow (`🍌 Nano Banana 2.1`, `16:9` 가로 와이드 `1376x768`)에서 ufotable & 신카이 마코토 화풍으로 20개 소설 핵심 배경장소(`LOC_001_Elwin_Village` ~ `LOC_020_Altar_of_Ruin_Two_Graves`) 원화(`public/anime-character-sheets/locations/art/`) 및 스튜디오 설정 시트(`public/anime-character-sheets/locations/sheets/`), 20선 종합 포스터(`locations_20_poster.jpg`) 전수 생성 완료.
+- **검증 및 보고**: 110개 캐릭터 RGBA 투명배경 추출 비율 및 20개 16:9 배경장소 해상도(`1376x768`) 전수 검증 완료, 구글 폼 보고 제출 완료.
