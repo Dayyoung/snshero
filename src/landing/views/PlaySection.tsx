@@ -68,6 +68,11 @@ import {
   closeArcadeModal,
   rollRandomArcadeGame,
   extractDialogueText,
+  getCurrentDialogueParts,
+  advanceDialoguePartOrLine,
+  prevDialoguePartOrLine,
+  startDialogueTyping,
+  skipDialogueTyping,
   resolveDialogueSpeakers,
   ensureGameStarted,
   formatChapterLabel,
@@ -347,12 +352,13 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
       break;
     }
 
-    // Dialogue actions
+    // Dialogue actions (Animal Crossing typewriter & multi-part split pagination)
     case 'play-dialogue-prev':
-      prevDialogue();
+      prevDialoguePartOrLine();
       break;
     case 'play-dialogue-next':
-      advanceDialogue();
+    case 'play-dialogue-tap':
+      advanceDialoguePartOrLine();
       break;
     case 'play-dialogue-skip':
       initBattle();
@@ -1407,8 +1413,19 @@ function renderAdventureView(): string {
               preloadDialogueChapterImages();
               const speakers = resolveDialogueSpeakers(line);
               const activeSpeaker = speakers.activeSide === 'left' ? speakers.left : speakers.right;
-              const dialogueData = extractDialogueText(line, activeSpeaker.name);
+              const { parts, currentPart, isNarration } = getCurrentDialogueParts();
+              const totalParts = parts.length;
+              const curPartIdx = Math.max(0, Math.min(totalParts - 1, playRpgState.currentDialoguePartIdx));
+              const hasNextPart = curPartIdx < totalParts - 1;
+              const isVeryFinal = isFinal && !hasNextPart;
               const activeSpeakerAsset = getCharacterAsset(activeSpeaker.cardId);
+
+              // Kick off Animal Crossing typewriter audio & text if not yet typing
+              setTimeout(() => {
+                if (!playRpgState.dialogueTypingComplete && playRpgState.dialogueDisplayedLength === 0) {
+                  startDialogueTyping(currentPart);
+                }
+              }, 40);
 
               // Canonical single fixed location background for this episode
               const currentChapter = playRpgState.currentChapter;
@@ -1487,8 +1504,8 @@ function renderAdventureView(): string {
                       </div>
                       <!-- 화자 이름 배지 & 장소 인디케이터 (모바일 표시용) -->
                       <div class="mt-2 flex items-center gap-2">
-                        <div class="px-3.5 py-1 bg-amber-400 text-stone-950 font-black text-xs sm:text-sm rounded-sm tracking-wide shadow-md">
-                          <span id="dialogue-modal-speaker">${activeSpeaker.name}</span>
+                        <div class="px-3.5 py-1 ${isNarration ? 'bg-stone-800 text-amber-300 border border-amber-400/40' : 'bg-amber-400 text-stone-950'} font-black text-xs sm:text-sm rounded-sm tracking-wide shadow-md">
+                          <span id="dialogue-modal-speaker">${isNarration ? (isKo ? '📖 상황' : '📖 Narration') : activeSpeaker.name}</span>
                         </div>
                         <span class="sm:hidden px-2 py-0.5 bg-stone-900/85 border border-amber-400/40 text-amber-200 text-[10px] font-bold rounded-sm">
                           📍 ${isKo ? bgLoc.nameKo : bgLoc.nameEn}
@@ -1496,19 +1513,40 @@ function renderAdventureView(): string {
                       </div>
                     </div>
 
-                    <!-- 대사 박스: 배경 위 가독성을 높인 반투명 글래스 다크 패널 -->
-                    <div class="w-full bg-[#141111]/90 backdrop-blur-md border border-amber-400/50 p-4 sm:p-5 rounded-none shadow-2xl">
-                      <div class="space-y-2">
-                        ${dialogueData.text
-                          .split('\n\n')
-                          .map(
-                            (paragraph) => `
-                          <p class="text-sm sm:text-base md:text-lg font-bold text-amber-50 leading-relaxed m-0 text-center break-keep">
-                            ${paragraph}
-                          </p>
-                        `
-                          )
-                          .join('')}
+                    <!-- 대사 박스: 최대 3줄 분량으로 컴팩트하게 분할(1/2, 2/2) + 동물의 숲 타이핑 효과음 -->
+                    <div
+                      class="w-full max-w-xl mx-auto bg-[#141111]/92 backdrop-blur-md border border-amber-400/50 p-3.5 sm:p-4 rounded-none shadow-2xl relative cursor-pointer select-none"
+                      data-action="play-dialogue-tap"
+                      role="button"
+                      tabindex="0"
+                      aria-label="${tr('대사 계속 읽기 (탭하면 즉시 출력 및 다음 진행)', 'Continue dialogue (tap to skip typing or advance)', '会話を続ける（タップで早送り・次へ）')}"
+                    >
+                      <!-- 파트 분할 인디케이터 배지 (대사가 길어 2번에 걸쳐 보여줄 때) -->
+                      ${
+                        totalParts > 1
+                          ? `
+                            <div class="absolute -top-3 right-3 px-2 py-0.5 bg-amber-400 text-stone-950 text-[10px] font-black rounded-sm shadow-md flex items-center gap-1">
+                              <span>[${curPartIdx + 1}/${totalParts}]</span>
+                              <span class="text-[9px] animate-bounce">${hasNextPart ? '▼' : '▶'}</span>
+                            </div>
+                          `
+                          : ''
+                      }
+
+                      <!-- 동물의 숲 스타일 한 글자씩 출력되는 타이핑 텍스트 + 커서 -->
+                      <div class="min-h-[48px] sm:min-h-[58px] flex items-center justify-center text-center">
+                        <p class="text-sm sm:text-base font-bold text-amber-50 leading-relaxed m-0 break-keep">
+                          <span id="dialogue-text-content">${currentPart}</span>
+                          <span id="dialogue-typing-cursor" class="inline-block w-1.5 h-4 bg-amber-400 ml-1 animate-pulse align-middle" style="display: none;"></span>
+                        </p>
+                      </div>
+
+                      <!-- 하단 우측 진행 안내 가이드 인디케이터 -->
+                      <div class="flex items-center justify-between pt-2 border-t border-white/10 text-[10px] text-stone-400">
+                        <span class="opacity-70">${tr('💡 화면이나 대사창을 탭하면 빠르게 진행됩니다', '💡 Tap dialogue box to skip typing or advance', '💡 画面タップで早送り・次へ')}</span>
+                        <span id="dialogue-next-indicator" class="text-amber-400 font-bold flex items-center gap-0.5 transition-opacity duration-200">
+                          ${hasNextPart ? tr('계속 읽기 ▼', 'Continue ▼', '続き ▼') : isFinal ? tr('전투 직전 ▶', 'To Battle ▶', '戦闘へ ▶') : tr('다음 대화 ▶', 'Next ▶', '次へ ▶')}
+                        </span>
                       </div>
 
                       <!-- 선택지가 있을 경우 -->
@@ -1564,9 +1602,9 @@ function renderAdventureView(): string {
                         <button
                           type="button"
                           data-action="play-dialogue-prev"
-                          ${playRpgState.currentDialogueLineIdx <= 0 ? 'disabled' : ''}
+                          ${playRpgState.currentDialogueLineIdx <= 0 && curPartIdx <= 0 ? 'disabled' : ''}
                           class="px-3 sm:px-4 py-2.5 ${
-                            playRpgState.currentDialogueLineIdx <= 0
+                            playRpgState.currentDialogueLineIdx <= 0 && curPartIdx <= 0
                               ? 'bg-stone-900 text-stone-600 border border-stone-800 cursor-not-allowed'
                               : 'bg-stone-800 hover:bg-stone-700 text-stone-100 border border-stone-500 cursor-pointer active:translate-y-px'
                           } text-xs font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1"
@@ -1575,7 +1613,7 @@ function renderAdventureView(): string {
                           ◀ ${tr('이전', 'Prev', '前へ')}
                         </button>
                         ${
-                          isFinal
+                          isVeryFinal
                             ? `
                               <button
                                 type="button"
@@ -1591,7 +1629,7 @@ function renderAdventureView(): string {
                                 data-action="play-dialogue-next"
                                 class="px-4 sm:px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs sm:text-sm font-black rounded-sm min-h-[44px] transition-colors flex items-center gap-1 cursor-pointer active:translate-y-px"
                               >
-                                ${tr('다음 대화 ▶', 'Next ▶', '次へ ▶')}
+                                ${hasNextPart ? tr(`다음 (${curPartIdx + 1}/${totalParts}) ▼`, `Next (${curPartIdx + 1}/${totalParts}) ▼`, `次へ (${curPartIdx + 1}/${totalParts}) ▼`) : tr('다음 대화 ▶', 'Next ▶', '次へ ▶')}
                               </button>
                             `
                         }

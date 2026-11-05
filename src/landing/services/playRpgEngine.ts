@@ -105,6 +105,9 @@ export interface PlayRpgState {
 
   // Dialogue Sub-state
   currentDialogueLineIdx: number;
+  currentDialoguePartIdx: number;     // 0: 첫 번째 파트, 1: 두 번째 파트 (대사 분할 시)
+  dialogueTypingComplete: boolean;    // 현재 파트 글자 출력 완료 여부
+  dialogueDisplayedLength: number;    // 현재 표시된 글자 수
   selectedChoiceIdx: number | null;
   choiceTimerSec: number;
   activeBuff: string | null;
@@ -156,6 +159,9 @@ export const playRpgState: PlayRpgState = {
   repeatHunting: false,
 
   currentDialogueLineIdx: 0,
+  currentDialoguePartIdx: 0,
+  dialogueTypingComplete: false,
+  dialogueDisplayedLength: 0,
   selectedChoiceIdx: null,
   choiceTimerSec: 5.0,
   activeBuff: null,
@@ -375,7 +381,76 @@ export function ensureGameStarted(): void {
 }
 
 /**
+ * Truncates and condenses dialogue quote to crisp, impactful game visual-novel length (max 70~80 chars).
+ * Prevents dialogue boxes from becoming bloated novels with excessive lines.
+ */
+function condenseDialogueQuote(rawQuote: string, maxLen: number = 75): string {
+  let clean = rawQuote.trim();
+  const hasKoreanQuotes = clean.startsWith('“') && clean.endsWith('”');
+  const hasDoubleQuotes = clean.startsWith('"') && clean.endsWith('"');
+  if (hasKoreanQuotes || hasDoubleQuotes) {
+    clean = clean.slice(1, -1).trim();
+  }
+
+  // If already concise, wrap back in quotes
+  if (clean.length <= maxLen) {
+    return `“${clean}”`;
+  }
+
+  // Split into sentences using delimiter (. ! ?)
+  const sentences = clean
+    .split(/(?<=[.!?])\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+
+  if (sentences.length > 1) {
+    let result = '';
+    for (const sent of sentences) {
+      const candidate = result ? `${result} ${sent}` : sent;
+      if (candidate.length <= maxLen) {
+        result = candidate;
+      } else {
+        break;
+      }
+    }
+    if (result.length > 0) {
+      return `“${result}”`;
+    }
+    const trimmed = sentences[0].slice(0, maxLen - 3).trim();
+    return `“${trimmed}...”`;
+  }
+
+  const trimmed = clean.slice(0, maxLen - 3).trim();
+  return `“${trimmed}...”`;
+}
+
+function condenseEnglishQuote(rawQuote: string, maxLen: number = 100): string {
+  let clean = rawQuote.trim();
+  if ((clean.startsWith('“') && clean.endsWith('”')) || (clean.startsWith('"') && clean.endsWith('"'))) {
+    clean = clean.slice(1, -1).trim();
+  }
+  if (clean.length <= maxLen) return `"${clean}"`;
+
+  const sentences = clean.split(/(?<=[.!?])\s+/).filter((s) => s.trim().length > 0);
+  if (sentences.length > 1) {
+    let result = '';
+    for (const sent of sentences) {
+      const candidate = result ? `${result} ${sent}` : sent;
+      if (candidate.length <= maxLen) {
+        result = candidate;
+      } else {
+        break;
+      }
+    }
+    if (result.length > 0) return `"${result}"`;
+  }
+  return `"${clean.slice(0, maxLen - 3).trim()}..."`;
+}
+
+/**
  * Extract clean, concise dialogue quote from script line (대사만 추출)
+ * Strictly limits to a single impactful dialogue quote (max 75 chars)
+ * to keep the visual-novel reading experience swift and prevent screen clutter.
  */
 export function extractDialogueText(
   line: KadanRpgNovelScriptLine,
@@ -386,50 +461,39 @@ export function extractDialogueText(
   if (!isKo) {
     // Non-Korean languages default novel/story dialogues to English
     if (line.dialogueQuoteEn && line.dialogueQuoteEn.trim().length > 0) {
-      let quote = line.dialogueQuoteEn.trim();
-      if (!quote.startsWith('“') && !quote.startsWith('"')) {
-        quote = `"${quote}"`;
-      }
-      quote = quote.replace(/”\s*“/g, '”\n\n“').replace(/"\s*"/g, '"\n\n"');
-      return { text: quote, isNarration: false };
+      const matches = line.dialogueQuoteEn.match(/[“"][^”"]+[”"]/g);
+      const quote = matches && matches.length > 0 ? matches[0] : line.dialogueQuoteEn;
+      return { text: condenseEnglishQuote(quote, 110), isNarration: false };
     }
 
     if (line.subCuts && line.subCuts.length > 0) {
-      const cutQuotes: string[] = [];
       for (const cut of line.subCuts) {
         const srcEn = cut.dialogueEn || cut.narrationEn || '';
-        if (srcEn.trim()) {
-          const matches = srcEn.match(/[“"][^”"]+[”"]/g);
-          if (matches && matches.length > 0) {
-            cutQuotes.push(...matches);
-          }
+        const matches = srcEn.match(/[“"][^”"]+[”"]/g);
+        if (matches && matches.length > 0) {
+          return { text: condenseEnglishQuote(matches[0], 110), isNarration: false };
         }
-      }
-      if (cutQuotes.length > 0) {
-        const uniqueQuotes = Array.from(new Set(cutQuotes));
-        return { text: uniqueQuotes.join('\n\n'), isNarration: false };
       }
     }
 
     if (line.textEn && line.textEn.trim()) {
       const matches = line.textEn.match(/[“"][^”"]+[”"]/g);
       if (matches && matches.length > 0) {
-        const uniqueQuotes = Array.from(new Set(matches));
-        return { text: uniqueQuotes.join('\n\n'), isNarration: false };
+        return { text: condenseEnglishQuote(matches[0], 110), isNarration: false };
       }
       const sentences = line.textEn
         .replace(/\n+/g, ' ')
         .split(/[.!?]/)
         .map((s) => s.trim())
         .filter((s) => s.length > 0);
-      const summary = sentences.slice(0, 2).join('. ') + (sentences.length > 0 ? '.' : '');
-      return { text: summary || line.textEn.slice(0, 120) + '...', isNarration: true };
+      const summary = sentences.length > 0 ? sentences[0] + '.' : line.textEn.slice(0, 90) + '...';
+      const cleanSummary = summary.length > 100 ? summary.slice(0, 97) + '...' : summary;
+      return { text: cleanSummary, isNarration: true };
     }
   }
 
-  // 0. preferredSpeakerName이 지정된 경우, subCuts에서 해당 화자의 대사를 최우선 추출
+  // 1. preferredSpeakerName이 지정되고 subCuts가 있는 경우: 해당 화자의 발언 1개만 정밀 추출
   if (preferredSpeakerName && line.subCuts && line.subCuts.length > 0) {
-    const speakerQuotes: string[] = [];
     for (const cut of line.subCuts) {
       const cutSpk = (cut.speakerKo || '').trim();
       if (
@@ -441,65 +505,299 @@ export function extractDialogueText(
         const srcText = cut.dialogueKo || cut.narrationKo || '';
         const matches = srcText.match(/[“"][^”"]+[”"]/g);
         if (matches && matches.length > 0) {
-          speakerQuotes.push(...matches);
+          return { text: condenseDialogueQuote(matches[0], 75), isNarration: false };
         }
       }
     }
-    if (speakerQuotes.length > 0) {
-      const uniqueQuotes = Array.from(new Set(speakerQuotes));
-      return { text: uniqueQuotes.join('\n\n'), isNarration: false };
-    }
   }
 
-  // 1. 이미 정제된 dialogueQuoteKo가 있는 경우 최우선 채택
+  // 2. 이미 정제된 dialogueQuoteKo가 있는 경우: 복수 대사가 병합되어 있어도 첫 번째 대표 대사 1개만 컴팩트 압축
   if (line.dialogueQuoteKo && line.dialogueQuoteKo.trim().length > 0) {
-    let quote = line.dialogueQuoteKo.trim();
-    if (!quote.startsWith('“') && !quote.startsWith('"')) {
-      quote = `“${quote}”`;
+    const raw = line.dialogueQuoteKo.trim();
+    const matches = raw.match(/[“"][^”"]+[”"]/g);
+    if (matches && matches.length > 0) {
+      return { text: condenseDialogueQuote(matches[0], 75), isNarration: false };
     }
-    // 복수 대사 따옴표 분리 포맷팅
-    quote = quote.replace(/”\s*“/g, '”\n\n“').replace(/"\s*"/g, '"\n\n"');
-    return { text: quote, isNarration: false };
+    return { text: condenseDialogueQuote(raw, 75), isNarration: false };
   }
 
-  // 2. subCuts에서 따옴표 대사가 있는지 확인
+  // 3. subCuts에서 큰따옴표 대사 탐색 (첫 번째 대사 1개만)
   if (line.subCuts && line.subCuts.length > 0) {
-    const cutQuotes: string[] = [];
     for (const cut of line.subCuts) {
       if (cut.dialogueKo && cut.dialogueKo.trim()) {
         const matches = cut.dialogueKo.match(/[“"][^”"]+[”"]/g);
         if (matches && matches.length > 0) {
-          cutQuotes.push(...matches);
+          return { text: condenseDialogueQuote(matches[0], 75), isNarration: false };
         }
       }
     }
-    if (cutQuotes.length > 0) {
-      // 중복 대사 제거 및 병합
-      const uniqueQuotes = Array.from(new Set(cutQuotes));
-      return { text: uniqueQuotes.join('\n\n'), isNarration: false };
-    }
   }
 
-  // 3. line.text에서 큰따옴표 대사 추출
+  // 4. line.text에서 큰따옴표 대사 탐색 (첫 번째 대사 1개만)
   if (line.text && line.text.trim()) {
     const matches = line.text.match(/[“"][^”"]+[”"]/g);
     if (matches && matches.length > 0) {
-      const uniqueQuotes = Array.from(new Set(matches));
-      return { text: uniqueQuotes.join('\n\n'), isNarration: false };
+      return { text: condenseDialogueQuote(matches[0], 75), isNarration: false };
     }
 
-    // 4. 큰따옴표 대사가 전혀 없는 순수 지문/내레이션 문단인 경우:
-    // 전체 소설 본문 대신 1~2문장의 핵심 상황만 간결하게 표시 (최대 90자 이내)
+    // 5. 큰따옴표 대사가 전혀 없는 순수 지문/내레이션 문단:
+    // 장황한 소설 문단 전체 대신, 1문장(최대 65자 이내)의 핵심 정황만 간결하게 표시
     const sentences = line.text
       .replace(/\n+/g, ' ')
       .split(/[.!?]/)
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
-    const summary = sentences.slice(0, 2).join('. ') + (sentences.length > 0 ? '.' : '');
-    return { text: summary || line.text.slice(0, 80) + '...', isNarration: true };
+    const firstSentence = sentences.length > 0 ? sentences[0] + '.' : line.text.slice(0, 60) + '...';
+    const cleanSentence = firstSentence.length > 65 ? firstSentence.slice(0, 62) + '...' : firstSentence;
+    return { text: cleanSentence, isNarration: true };
   }
 
   return { text: isKo ? '“서약은 얼어붙지 않는다.”' : '"An oath never freezes."', isNarration: false };
+}
+
+/**
+ * Splits dialogue text into compact 1~3 line chunks (max 50~55 chars per part).
+ * If the dialogue is long, it breaks into 2 sequential parts for comfortable reading.
+ */
+export function splitDialogueIntoParts(fullText: string, maxPartLen: number = 55): string[] {
+  const clean = fullText.trim();
+  if (!clean) return [''];
+
+  const hasKoreanQuotes = clean.startsWith('“') && clean.endsWith('”');
+  const hasDoubleQuotes = clean.startsWith('"') && clean.endsWith('"');
+  const quoteCharL = hasKoreanQuotes ? '“' : hasDoubleQuotes ? '"' : '';
+  const quoteCharR = hasKoreanQuotes ? '”' : hasDoubleQuotes ? '"' : '';
+
+  let inner = clean;
+  if (quoteCharL && quoteCharR) {
+    inner = clean.slice(1, -1).trim();
+  }
+
+  // Short enough: return single part
+  if (inner.length <= maxPartLen) {
+    return [clean];
+  }
+
+  // Split by sentence boundaries (. ! ?)
+  const sentences = inner
+    .split(/(?<=[.!?])\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+
+  if (sentences.length >= 2) {
+    const part1 = sentences[0];
+    let part2 = sentences.slice(1).join(' ');
+    if (part2.length > maxPartLen + 15) {
+      const sub = part2
+        .split(/(?<=[.!?])\s+/)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+      part2 = sub[0];
+    }
+    const res1 = quoteCharL ? `${quoteCharL}${part1}${quoteCharR}` : part1;
+    const res2 = quoteCharL ? `${quoteCharL}${part2}${quoteCharR}` : part2;
+    return [res1, res2];
+  }
+
+  // Single long sentence: split near comma or whitespace around middle
+  const mid = Math.floor(inner.length / 2);
+  let splitIdx = -1;
+  for (let i = Math.max(20, mid - 15); i < Math.min(inner.length - 10, mid + 15); i++) {
+    if (inner[i] === ',' || inner[i] === '，') {
+      splitIdx = i + 1;
+      break;
+    }
+  }
+  if (splitIdx === -1) {
+    for (let i = Math.max(15, mid - 15); i < Math.min(inner.length - 10, mid + 15); i++) {
+      if (inner[i] === ' ') {
+        splitIdx = i;
+        break;
+      }
+    }
+  }
+  if (splitIdx === -1) {
+    splitIdx = mid;
+  }
+
+  const p1 = inner.slice(0, splitIdx).trim();
+  const p2 = inner.slice(splitIdx).trim();
+  const res1 = quoteCharL ? `${quoteCharL}${p1}${quoteCharR}` : p1;
+  const res2 = quoteCharL ? `${quoteCharL}${p2}${quoteCharR}` : p2;
+  return [res1, res2];
+}
+
+/**
+ * Returns dialogue parts for the current active line
+ */
+export function getCurrentDialogueParts(): { parts: string[]; currentPart: string; isNarration: boolean } {
+  const lines = getCurrentDialogueLines();
+  const currentLine = lines[playRpgState.currentDialogueLineIdx];
+  if (!currentLine) {
+    return { parts: ['“서약은 얼어붙지 않는다.”'], currentPart: '“서약은 얼어붙지 않는다.”', isNarration: false };
+  }
+
+  const activeSpeaker = resolveActiveDialogueSpeaker(currentLine);
+  const dialogueData = extractDialogueText(currentLine, activeSpeaker.name);
+  const parts = splitDialogueIntoParts(dialogueData.text);
+  const clampedIdx = Math.max(0, Math.min(parts.length - 1, playRpgState.currentDialoguePartIdx));
+  return {
+    parts,
+    currentPart: parts[clampedIdx] || parts[0],
+    isNarration: dialogueData.isNarration,
+  };
+}
+
+let dialogueTypingTimer: any = null;
+
+/**
+ * Starts typewriter effect with Animal Crossing micro-synth chatter
+ */
+export function startDialogueTyping(fullText: string, onTick?: (displayed: string, isDone: boolean) => void): void {
+  if (typeof window === 'undefined') return;
+
+  if (dialogueTypingTimer) {
+    clearInterval(dialogueTypingTimer);
+    dialogueTypingTimer = null;
+  }
+
+  playRpgState.dialogueTypingComplete = false;
+  playRpgState.dialogueDisplayedLength = 0;
+  playRpgState.dialogueLineStartedAt = Date.now();
+
+  const totalLen = fullText.length;
+  if (totalLen <= 0) {
+    playRpgState.dialogueTypingComplete = true;
+    return;
+  }
+
+  let curLen = 0;
+  // 35ms per character creates the classic Animal Crossing / Pokemon typing cadence
+  dialogueTypingTimer = setInterval(() => {
+    curLen++;
+    playRpgState.dialogueDisplayedLength = curLen;
+
+    const char = fullText[curLen - 1];
+    // Play Animal Crossing cute pitch-varied chirp for non-whitespace characters
+    if (char && char.trim().length > 0) {
+      audioManager.playDialogueChirp(char);
+    }
+
+    // Direct DOM sync for smooth zero-lag animation
+    const textEl = document.getElementById('dialogue-text-content');
+    if (textEl) {
+      const isDone = curLen >= totalLen;
+      textEl.textContent = fullText.slice(0, curLen);
+      const cursorEl = document.getElementById('dialogue-typing-cursor');
+      if (cursorEl) {
+        cursorEl.style.display = isDone ? 'none' : 'inline-block';
+      }
+      const indicatorEl = document.getElementById('dialogue-next-indicator');
+      if (indicatorEl) {
+        indicatorEl.style.opacity = isDone ? '1' : '0.2';
+      }
+    }
+
+    if (onTick) {
+      onTick(fullText.slice(0, curLen), curLen >= totalLen);
+    }
+
+    if (curLen >= totalLen) {
+      if (dialogueTypingTimer) {
+        clearInterval(dialogueTypingTimer);
+        dialogueTypingTimer = null;
+      }
+      playRpgState.dialogueTypingComplete = true;
+      playRpgState.lastAutoStepAt = Date.now();
+    }
+  }, 35);
+}
+
+/**
+ * Immediately skips typewriter animation to complete the text on user tap
+ */
+export function skipDialogueTyping(fullText: string): void {
+  if (dialogueTypingTimer) {
+    clearInterval(dialogueTypingTimer);
+    dialogueTypingTimer = null;
+  }
+  playRpgState.dialogueDisplayedLength = fullText.length;
+  playRpgState.dialogueTypingComplete = true;
+  playRpgState.lastAutoStepAt = Date.now();
+
+  const textEl = document.getElementById('dialogue-text-content');
+  if (textEl) {
+    textEl.textContent = fullText;
+  }
+  const cursorEl = document.getElementById('dialogue-typing-cursor');
+  if (cursorEl) {
+    cursorEl.style.display = 'none';
+  }
+  const indicatorEl = document.getElementById('dialogue-next-indicator');
+  if (indicatorEl) {
+    indicatorEl.style.opacity = '1';
+  }
+}
+
+/**
+ * Advances to next dialogue part or advances to next script line / battle.
+ * If currently typing, instantly completes typing first (skip typing).
+ */
+export function advanceDialoguePartOrLine(): { completed: boolean; readyForBattle: boolean } {
+  const { parts, currentPart } = getCurrentDialogueParts();
+
+  // 1. If currently typing: skip typing to show full text immediately
+  if (!playRpgState.dialogueTypingComplete) {
+    skipDialogueTyping(currentPart);
+    audioManager.playClickTick();
+    return { completed: false, readyForBattle: false };
+  }
+
+  // 2. If multi-part dialogue has next part available: advance part!
+  if (playRpgState.currentDialoguePartIdx < parts.length - 1) {
+    playRpgState.currentDialoguePartIdx += 1;
+    playRpgState.dialogueLineStartedAt = Date.now();
+    playRpgState.lastAutoStepAt = Date.now();
+    const nextPart = parts[playRpgState.currentDialoguePartIdx];
+    startDialogueTyping(nextPart);
+    audioManager.playClickTick();
+    return { completed: false, readyForBattle: false };
+  }
+
+  // 3. Current line completed: advance to next dialogue line or battle!
+  playRpgState.currentDialoguePartIdx = 0;
+  audioManager.playClickTick();
+  const res = advanceDialogue();
+  if (!res.completed && !res.readyForBattle) {
+    const nextLineData = getCurrentDialogueParts();
+    startDialogueTyping(nextLineData.currentPart);
+  }
+  return res;
+}
+
+/**
+ * Moves back to previous dialogue part or previous script line.
+ */
+export function prevDialoguePartOrLine(): { moved: boolean; lineIndex: number } {
+  if (playRpgState.currentDialoguePartIdx > 0) {
+    playRpgState.currentDialoguePartIdx -= 1;
+    playRpgState.dialogueLineStartedAt = Date.now();
+    playRpgState.lastAutoStepAt = Date.now();
+    const { currentPart } = getCurrentDialogueParts();
+    startDialogueTyping(currentPart);
+    audioManager.playClickTick();
+    return { moved: true, lineIndex: playRpgState.currentDialogueLineIdx };
+  }
+
+  // If at part 0: go back to previous line
+  playRpgState.currentDialoguePartIdx = 0;
+  audioManager.playClickTick();
+  const res = prevDialogue();
+  if (res.moved) {
+    const { currentPart } = getCurrentDialogueParts();
+    startDialogueTyping(currentPart);
+  }
+  return res;
 }
 
 export interface DialogueSpeakerInfo {
@@ -790,11 +1088,21 @@ export function isDialogueReadyToAdvance(): boolean {
     return true;
   }
 
-  // 1. Hard Safety Watchdog: If 3200ms have elapsed on this dialogue line, NEVER hang!
+  // 1. Hard Safety Watchdog: If 3500ms have elapsed on this dialogue line, NEVER hang!
   const now = Date.now();
   const elapsed = now - (playRpgState.dialogueLineStartedAt || now);
-  if (elapsed >= 3200) {
+  if (elapsed >= 3500) {
     return true;
+  }
+
+  // 1-1. If typewriter animation is still active, wait for typing to finish (unless 3500ms watchdog fires)
+  if (!playRpgState.dialogueTypingComplete) {
+    return false;
+  }
+
+  // 1-2. Minimum reading time after typing finishes
+  if (elapsed < 1500) {
+    return false;
   }
 
   // 2. Verify current speaker bust image in the live DOM
@@ -858,12 +1166,18 @@ export function isDialogueReadyToAdvance(): boolean {
 export function triggerDialogue(event: KadanRpgEvent): void {
   playRpgState.subState = 'dialogue';
   playRpgState.currentDialogueLineIdx = 0;
+  playRpgState.currentDialoguePartIdx = 0;
+  playRpgState.dialogueTypingComplete = false;
   playRpgState.selectedChoiceIdx = null;
   playRpgState.choiceTimerSec = playRpgState.autoMode ? 3.0 : 5.0;
   playRpgState.activeAmbush = null;
   playRpgState.lastAutoStepAt = Date.now();
   playRpgState.dialogueLineStartedAt = Date.now();
   preloadDialogueChapterImages();
+  setTimeout(() => {
+    const { currentPart } = getCurrentDialogueParts();
+    startDialogueTyping(currentPart);
+  }, 60);
 }
 
 /**
@@ -873,6 +1187,10 @@ export function closeDialogueAndStopPlay(): void {
   if (reincarnationIntervalId) {
     clearInterval(reincarnationIntervalId);
     reincarnationIntervalId = null;
+  }
+  if (dialogueTypingTimer) {
+    clearInterval(dialogueTypingTimer);
+    dialogueTypingTimer = null;
   }
   playRpgState.autoMode = false;
   playRpgState.subState = 'map';
@@ -905,6 +1223,7 @@ export function getCurrentDialogueLines(): KadanRpgNovelScriptLine[] {
 export function prevDialogue(): { moved: boolean; lineIndex: number } {
   if (playRpgState.currentDialogueLineIdx > 0) {
     playRpgState.currentDialogueLineIdx -= 1;
+    playRpgState.currentDialoguePartIdx = 0;
     playRpgState.selectedChoiceIdx = null;
     playRpgState.choiceTimerSec = playRpgState.autoMode ? 3.0 : 5.0;
     playRpgState.lastAutoStepAt = Date.now();
@@ -922,6 +1241,7 @@ export function advanceDialogue(): { completed: boolean; readyForBattle: boolean
   const lines = getCurrentDialogueLines();
   if (playRpgState.currentDialogueLineIdx < lines.length - 1) {
     playRpgState.currentDialogueLineIdx += 1;
+    playRpgState.currentDialoguePartIdx = 0;
     playRpgState.selectedChoiceIdx = null;
     playRpgState.choiceTimerSec = playRpgState.autoMode ? 3.0 : 5.0;
     playRpgState.lastAutoStepAt = Date.now();
@@ -2094,8 +2414,7 @@ export function runAutoStep(respectSpeedAndImageGate: boolean = false): boolean 
     }
   } else if (playRpgState.subState === 'dialogue') {
     const lines = getCurrentDialogueLines();
-    if (lines.length === 0 || playRpgState.currentDialogueLineIdx >= lines.length - 1) {
-      // If script empty or reached end of dialogue, transition directly to battle
+    if (lines.length === 0) {
       advanceDialogue();
       return true;
     }
@@ -2103,7 +2422,7 @@ export function runAutoStep(respectSpeedAndImageGate: boolean = false): boolean 
     if (currentLine?.choices && currentLine.choices.length > 0) {
       selectDialogueChoice(0);
     } else {
-      advanceDialogue();
+      advanceDialoguePartOrLine();
     }
     return true;
   } else if (playRpgState.subState === 'battle') {

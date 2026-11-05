@@ -523,6 +523,48 @@ class AudioManager {
   }
 
   /**
+   * Animal Crossing (동물의 숲) Style Cute Animalese Chirp SFX
+   * Plays a pitch-varied playful micro-synth tone for typewriter text rendering.
+   */
+  public playDialogueChirp(char?: string): void {
+    const settings = this.getSettings();
+    if (!settings.sfxEnabled || settings.sfxVolume <= 0) return;
+
+    this.withActiveAudioContext((ctx) => {
+      const now = ctx.currentTime;
+      // Gentle, friendly chattering volume
+      const vol = (settings.sfxVolume / 100) * 0.20;
+
+      // Pentatonic pitch offsets for melodic animalese chatter
+      const pitchOffsets = [0, 2, 4, 7, 9, 12, 14, 16];
+      let baseFreq = 520; // C5 base
+      if (char && char.length > 0) {
+        const code = char.charCodeAt(0);
+        const semitone = pitchOffsets[code % pitchOffsets.length];
+        baseFreq = 480 * Math.pow(2, semitone / 12);
+      } else {
+        baseFreq = 480 + Math.random() * 240;
+      }
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'triangle'; // Soft, warm retro-cartoon whistle tone
+      osc.frequency.setValueAtTime(baseFreq, now);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.06, now + 0.03);
+
+      gain.gain.setValueAtTime(vol, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.038);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.04);
+    });
+  }
+
+  /**
    * Card Flip & Whoosh effect for deck/card interactions.
    */
   public playCardWhoosh(): void {
