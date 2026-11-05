@@ -2,6 +2,41 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 15:50 KST] [태블릿 가로모드 광고 미출력 및 대사/배틀 모달 배경 노출 버그 완벽 해결]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 문제 제기**:
+    - "테블릿 너비 > 높이 모드에서 광고는 안나오고 뒤에 배경이 보이는 이슈가 있어."
+  - **2. 태블릿 가로 모드 복합 결함 원인 정밀 분석**:
+    - **원인 1 (미디어 쿼리 상 좌우 160px 강제 여백 및 뒷배경 누출)**:
+      - 기존 CSS의 `@media (orientation: landscape)` 블록에서 대사/배틀 모달(`.play-rpg-fullscreen-modal`, `#play-dialogue-modal-root`, `#play-battle-modal-root`)을 `left: 160px !important; right: 160px !important; width: calc(100vw - 320px) !important;`로 강제 축소함.
+      - 태블릿 가로 모드(예: 1024x768)에서는 뷰포트 높이(실제 브라우저 가용 높이 약 600px 미만) 및 너비 부족으로 인해 160x600 세로 스카이스크래퍼 광고가 AdSense에서 송출되지 않거나 좌우 거터가 숨겨짐.
+      - 결과적으로 좌우 160px 영역에 광고도 없고 거터도 빈 상태에서 모달이 중앙 704px로 갇혀, **좌우 0~160px 및 100vw-160px~100vw 영역으로 뒤쪽 랜딩 페이지의 원래 흰색/웜크림 배경이 훤히 비치는 현상 발생**.
+    - **원인 2 (화면비율만 체크하는 광고 배치 판별 로직의 한계)**:
+      - `adsenseManager.ts`의 `isLandscapeRatio()`가 오직 `window.innerWidth > window.innerHeight`만 검사하여, 너비가 좁고 높이가 낮은 태블릿 가로 및 모바일 가로 환경에서도 무조건 데스크톱 160x600 스카이스크래퍼 광고를 시도하여 AdSense No-Fill 및 레이아웃 붕괴를 초래함.
+  - **3. 전면 개선 구현 내역**:
+    - **(1) 와이드 데스크톱 vs 태블릿/모바일 판별 정밀화 (`src/landing/services/adsenseManager.ts`)**:
+      - `isDesktopWideLandscape()` 헬퍼 함수 도입: `window.innerWidth >= 1280 && window.innerHeight >= 650 && window.innerWidth > window.innerHeight` 3개 조건을 모두 만족하는 진정한 와이드 데스크톱에서만 좌우 160x600 거터를 활성화.
+      - 1280px 미만인 태블릿(가로/세로) 및 모바일은 좌우 거터를 완전 숨기고, 구글 애드센스 송출률 1위인 **컴팩트 320x50 상단 띠 배너 (`#adsense-mobile-top`)를 100% 정상 활성화**.
+    - **(2) 대사/배틀 모달 100vw 풀와이드 제로-갭(Zero-Gap) 보호 (`src/landing/styles/landing.css`)**:
+      - 태블릿 및 모바일(`@media (max-width: 1279px), (max-height: 649px), (orientation: portrait)`):
+        - 좌우 데스크톱 거터 광고를 `display: none !important`로 완전 숨김.
+        - 상단 52px 배너 아래에 대사/배틀 모달을 `top: 52px; left: 0; right: 0; width: 100vw; height: calc(100dvh - 52px); padding: 0;`으로 100% 꽉 채워 좌우 틈새 원천 소멸.
+      - 와이드 데스크톱(`@media (min-width: 1280px) and (min-height: 650px) and (orientation: landscape)`):
+        - 모달 자체와 배경 이미지를 `position: fixed; inset: 0; width: 100vw;`로 전체화면을 단단히 덮고, `padding-left/right: 160px`로 내부 콘텐츠를 거터 안쪽 안전 영역에 완벽 정렬.
+        - 광고 로딩 지연이나 미출력 시에도 뒤쪽 웹페이지가 비치지 않고 아름다운 장소 배경 아트와 다크 비네팅이 자연스럽게 이어짐.
+      - `body.has-active-rpg-modal` 활성화 시 body 배경색도 `#060a14 !important`로 일치시켜 렌더링 전환 찰나의 흰색 깜빡임까지 원천 차단.
+  - **4. 빌드 및 검증**:
+    - `npm run build && node scripts/post-build.js`: 0 error 정상 통과.
+    - 로컬 Git 커밋 완료 (`219c93834`).
+    - 연동 구글 폼 작업 완료 보고서 제출 완료 (`[개발] 태블릿 가로모드 광고 미출력 및 대사/배틀 모달 배경 노출 버그 해결 -> 작업완료`).
+- **검증 결과**:
+  - 태블릿 가로 모드(너비 < 1280px): 좌우 틈새 0px 전체화면 밀착 + 상단 320x50 배너 광고 100% 정상 송출
+  - 와이드 데스크톱(너비 >= 1280px): 좌우 160x600 거터 정상 배치 + 배경 아트 100vw 풀와이드 안착
+  - 프로덕션 번들 빌드: 0 error 정상 완료
+  - 로컬 Git 커밋: `219c93834`
+  - 구글 폼 완료 보고서 제출: 완료
+
 ## [2026-11-05 15:40 KST] [사용자 요청 원격 푸시(/git-push) 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
