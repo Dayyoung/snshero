@@ -2,6 +2,39 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 09:56 KST] [구글 비네트(#google_vignette) 전면광고 닫힘 불가 해결 및 긴급 탈출(Rescue) 닫기 시스템 구축]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 문제 제기 및 요구사항**:
+    - "https://snshero.com/#google_vignette 이렇게 주소가 변경되면서 광고가 표시되는 순간 광고가 닫기 를 눌러도 안닫혀."
+    - 사용자가 제공한 DOM 상태: `<body aria-hidden="true">` 및 `#google_vignette` 해시에서 사이트가 멈추는 현상 발생.
+  - **2. 닫힘 불가 및 먹통 근본 원인 분석**:
+    - **CSS 차단 충돌**: `landing.css` 및 `src/index.css`의 `div[id*="aswift"][style*="position: fixed"]` 숨김 규칙에 의해 비네트 호스트/닫기 버튼 컨테이너에 `display: none !important; pointer-events: none !important;`가 걸려 닫기 버튼 클릭 이벤트가 원천 차단됨.
+    - **body의 `aria-hidden="true"` 잠김**: 구글 비네트가 body를 `aria-hidden="true"`로 잠근 상태에서 닫기 스크립트 콜백이 실행되지 못해 사이트 전체가 상호작용 불능 상태로 잔류함.
+    - **SPA 해시 라우터 오류**: `#google_vignette` 유입 시 `parseRoute()`가 인식하지 못해 메인 뷰를 강제로 `'home'`으로 초기화하고 원래 탐색 위치를 유실함.
+    - **내부 링크의 무분별한 비네트 트리거**: 앱 내부 탭/내비게이션 이동 시에도 구글 자동광고가 전면 비네트를 가로챔.
+  - **3. 핵심 해결책 구현**:
+    - **CSS 규칙 정돈 (`src/index.css`, `src/landing/styles/landing.css`)**:
+      - 비네트 오버레이와 닫기 버튼 컨테이너에 걸려 있던 `pointer-events: none` 및 `display: none`을 해제하고 `pointer-events: auto !important; visibility: visible !important;`를 보장하여 구글 공식 닫기 버튼 상호작용 복구.
+    - **공식 `data-google-vignette="false"` 전면 적용 (`adsenseManager.ts`, `Header.tsx`, `Sidebar.tsx`, `landing/index.ts`)**:
+      - 구글 애드센스 공식 표준 속성인 `data-google-vignette="false"`를 상단 헤더, 사이드바, 푸터, 모든 내부 `a` 및 버튼 요소에 자동 부여하여 앱 내부 내비게이션 클릭 시 비네트가 불필요하게 가로채는 것을 원천 차단.
+    - **해시 라우터 방어 (`hashRouter.ts`, `landing/index.ts`)**:
+      - `sanitizeHashString()`을 통해 `#google_vignette`를 깨끗하게 제거하고 원래 대상 뷰를 정확히 파싱.
+      - `hashchange` 및 `popstate`에서 `#google_vignette` 감지 시 뷰 리셋을 중단하고 비네트 안전 관리자로 인계.
+    - **비상 탈출(Rescue) 닫기 시스템 구축 (`adsenseManager.ts`)**:
+      - `#google_vignette` 또는 `body[aria-hidden="true"]` 발생 시 화면 우측 상단(z-index: 2147483647)에 OpenCode Terminal-Flat **`[✕ 닫기 (Close Ad)]` 긴급 탈출 버튼** 자동 마운트.
+      - ESC 키 입력, 브라우저 뒤로가기, 탈출 버튼 클릭 시 즉시 `dismissGoogleVignette()` 실행:
+        - `body`의 `aria-hidden="true"`, `overflow`, `pointer-events` 속성 즉시 정상 해제.
+        - URL에서 `#google_vignette`를 제거하고 원래 페이지 해시로 안전하게 복원 (`history.replaceState`).
+        - 화면에 남은 비네트 fixed 오버레이를 완전히 닫아 사용자가 절대 광고에 갇히지 않도록 4중 안전망 보장.
+  - **4. 빌드 및 검증**:
+    - `npm run build && node scripts/post-build.js`: 0 error 통과.
+    - 로컬 Git 커밋(`b38567e12`) 및 구글 폼 보고 완료.
+- **검증 결과**:
+  - 구글 비네트 전면광고 닫힘 불가 및 `#google_vignette` 화면 먹통 문제 영구 해결.
+  - 프로덕션 빌드 성공 (0 error).
+  - 구글 폼 완료 보고서 제출 완료: `[개발] 구글 비네트(#google_vignette) 전면광고 닫힘 불가 해결 및 긴급 탈출(Rescue) 닫기 시스템 구축 -> 작업완료`.
+
 ## [2026-11-05 09:40 KST] [구글 애드센스 배너 정상 표시 복구(CSS 호스트 숨김 해제) 및 #play 배틀 뷰 광고 노출 활성화]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
