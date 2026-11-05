@@ -9,7 +9,7 @@
     <link>https://snshero.com/reddit</link>
     <description>실시간 구글 뉴스(Google News US Edition) 기반 신속하고 정확한 글로벌 뉴스 및 인공지능 요약 브리핑 - SNSHero News</description>
     <language>en-US</language>
-    <lastBuildDate>Thu, 05 Nov 2026 00:14:13 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 05 Nov 2026 00:40:13 GMT</lastBuildDate>
     <atom:link href="https://snshero.com/news-feed.xml" rel="self" type="application/rss+xml" />
     <image>
       <url>https://snshero.com/logo.jpg</url>
@@ -17,9 +17,209 @@
       <link>https://snshero.com/reddit</link>
     </image>
     <item>
+      <title><![CDATA[President Trump Issues Directive Banning Term 'AI' Across Federal Documentation in Favor of Super Intelligence]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793837580000_0</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793837580000_0</guid>
+      <pubDate>Thu, 05 Nov 2026 00:13:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_newsweek]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Newsweek reports on Donald Trump establishing a government-wide policy barring executive agencies from using 'artificial intelligence,' enforcing 'Super Intelligence' across federal communications, research grants, and public releases.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://assets.newsweek.com/wp-content/uploads/2026/10/GettyImages-458585447.jpg" alt="President Trump Issues Directive Banning Term &apos;AI&apos; Across Federal Documentation in Favor of Super Intelligence" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Newsweek reports on Donald Trump establishing a government-wide policy barring executive agencies from using 'artificial intelligence,' enforcing 'Super Intelligence' across federal communications, research grants, and public releases.</p>
+          <p><small>출처 및 원문: <a href="https://www.newsweek.com/donald-trump-ai-term-banned-words-list-12625820">newsweek.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://assets.newsweek.com/wp-content/uploads/2026/10/GettyImages-458585447.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://assets.newsweek.com/wp-content/uploads/2026/10/GettyImages-458585447.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[President Trump Issues Directive Banning Term 'AI' Across Federal Documentation in Favor of Super Intelligence]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[SpaceX Telemetry and Compute Valuation Recalibrates Amid Broader Market Tech Sector Realignment]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793837520000_1</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793837520000_1</guid>
+      <pubDate>Thu, 05 Nov 2026 00:12:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_washingtontimes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The Washington Times analyzes private market trading for Elon Musk's SpaceX following its strategic integration of satellite neural computing under the SpaceXSI brand, assessing valuation adjustments across frontier defense tech.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://twt-media.washtimes.com/media/image/2026/11/02/spacex-spacexsi-stock-rebalance.jpg" alt="SpaceX Telemetry and Compute Valuation Recalibrates Amid Broader Market Tech Sector Realignment" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The Washington Times analyzes private market trading for Elon Musk's SpaceX following its strategic integration of satellite neural computing under the SpaceXSI brand, assessing valuation adjustments across frontier defense tech.</p>
+          <p><small>출처 및 원문: <a href="https://www.washingtontimes.com/news/2026/nov/2/spacex-stock-falls-637-amid-tech-sell/">washingtontimes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://twt-media.washtimes.com/media/image/2026/11/02/spacex-spacexsi-stock-rebalance.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://twt-media.washtimes.com/media/image/2026/11/02/spacex-spacexsi-stock-rebalance.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[SpaceX Telemetry and Compute Valuation Recalibrates Amid Broader Market Tech Sector Realignment]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Latvia Deploys Autonomous Interceptor Drones to Secure Airspace Following Eastern Border Incursions]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793837460000_2</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793837460000_2</guid>
+      <pubDate>Thu, 05 Nov 2026 00:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The Defense Post reports on Latvia fielding high-speed autonomous kinetic interceptor drones equipped with optical tracking to intercept unauthorized aerial systems penetrating NATO's eastern frontier.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/11/latvia-interceptor-drone-defense.jpg" alt="Latvia Deploys Autonomous Interceptor Drones to Secure Airspace Following Eastern Border Incursions" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The Defense Post reports on Latvia fielding high-speed autonomous kinetic interceptor drones equipped with optical tracking to intercept unauthorized aerial systems penetrating NATO's eastern frontier.</p>
+          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/11/04/latvia-interceptor-drone-incursion/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/11/latvia-interceptor-drone-defense.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/11/latvia-interceptor-drone-defense.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Latvia Deploys Autonomous Interceptor Drones to Secure Airspace Following Eastern Border Incursions]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[US Army Evaluates Skyhammer Automated Interceptor System for Forward Base Drone Defense]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793837400000_3</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793837400000_3</guid>
+      <pubDate>Thu, 05 Nov 2026 00:10:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The Defense Post details military firing trials of Skyhammer, a containerized automated counter-UAS interceptor designed to launch kinetic kill vehicles within seconds of automated radar target acquisition.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/06/us-army-skyhammer-drone-defense.jpg" alt="US Army Evaluates Skyhammer Automated Interceptor System for Forward Base Drone Defense" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The Defense Post details military firing trials of Skyhammer, a containerized automated counter-UAS interceptor designed to launch kinetic kill vehicles within seconds of automated radar target acquisition.</p>
+          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/06/01/us-army-skyhammer-drone-defense/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/06/us-army-skyhammer-drone-defense.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/06/us-army-skyhammer-drone-defense.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[US Army Evaluates Skyhammer Automated Interceptor System for Forward Base Drone Defense]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[MBDA Unveils Specialized Kinetic Interceptor Architecture Engineered to Neutralize Coordinated Drone Swarms]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793837340000_4</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793837340000_4</guid>
+      <pubDate>Thu, 05 Nov 2026 00:09:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The Defense Post highlights missile manufacturer MBDA developing a micro-interceptor system featuring cooperative autonomous engagement algorithms, allowing multiple defensive rounds to coordinate target destruction against saturation attacks.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/07/mbda-swarm-interceptor-missile.jpg" alt="MBDA Unveils Specialized Kinetic Interceptor Architecture Engineered to Neutralize Coordinated Drone Swarms" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The Defense Post highlights missile manufacturer MBDA developing a micro-interceptor system featuring cooperative autonomous engagement algorithms, allowing multiple defensive rounds to coordinate target destruction against saturation attacks.</p>
+          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/07/22/mbda-swarm-threats-interceptor/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/07/mbda-swarm-interceptor-missile.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/07/mbda-swarm-interceptor-missile.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[MBDA Unveils Specialized Kinetic Interceptor Architecture Engineered to Neutralize Coordinated Drone Swarms]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Forbes Business Council Analyzes Multi-Agent AI Systems as the Foundational Shift in Enterprise Computing]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793837280000_5</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793837280000_5</guid>
+      <pubDate>Thu, 05 Nov 2026 00:08:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Forbes explores how modern enterprises are transitioning from monolithic models to decentralized multi-agent architectures, detailing how specialized agents collaborate via shared message buses to automate cross-functional business processes.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://imageio.forbes.com/specials-images/imageserve/6ae10e83da04bea7a060c073/multi-agent-enterprise-shift/960x0.jpg" alt="Forbes Business Council Analyzes Multi-Agent AI Systems as the Foundational Shift in Enterprise Computing" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Forbes explores how modern enterprises are transitioning from monolithic models to decentralized multi-agent architectures, detailing how specialized agents collaborate via shared message buses to automate cross-functional business processes.</p>
+          <p><small>출처 및 원문: <a href="https://www.forbes.com/councils/forbesbusinesscouncil/2026/03/16/multi-agent-ai-systems-the-architectural-shift-reshaping-enterprise-computing/">forbes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://imageio.forbes.com/specials-images/imageserve/6ae10e83da04bea7a060c073/multi-agent-enterprise-shift/960x0.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://imageio.forbes.com/specials-images/imageserve/6ae10e83da04bea7a060c073/multi-agent-enterprise-shift/960x0.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Forbes Business Council Analyzes Multi-Agent AI Systems as the Foundational Shift in Enterprise Computing]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Industry Analysis Highlights Why the Enterprise Consulting Firm of the Future Must Be Built AI-Native]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793837220000_6</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793837220000_6</guid>
+      <pubDate>Thu, 05 Nov 2026 00:07:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Forbes examines corporate advisory transformations, illustrating why legacy systems integration firms must adopt AI-native engineering methodologies rather than retrofitting conversational layers onto outdated delivery models.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://imageio.forbes.com/specials-images/imageserve/6ad8c90135bc4e684bbfbf37/ai-native-consulting-firm/960x0.jpg" alt="Industry Analysis Highlights Why the Enterprise Consulting Firm of the Future Must Be Built AI-Native" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Forbes examines corporate advisory transformations, illustrating why legacy systems integration firms must adopt AI-native engineering methodologies rather than retrofitting conversational layers onto outdated delivery models.</p>
+          <p><small>출처 및 원문: <a href="https://www.forbes.com/councils/forbesbusinesscouncil/2026/10/27/the-consulting-firm-of-the-future-is-built-ai-native-not-retrofitted/">forbes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://imageio.forbes.com/specials-images/imageserve/6ad8c90135bc4e684bbfbf37/ai-native-consulting-firm/960x0.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://imageio.forbes.com/specials-images/imageserve/6ad8c90135bc4e684bbfbf37/ai-native-consulting-firm/960x0.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Industry Analysis Highlights Why the Enterprise Consulting Firm of the Future Must Be Built AI-Native]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Pearson Acquires Workera to Power Enterprise Workforce Readiness for Agentic AI and Autonomous Systems]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793837160000_7</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793837160000_7</guid>
+      <pubDate>Thu, 05 Nov 2026 00:06:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_zdnet]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[ZDNET covers global learning giant Pearson acquiring AI workforce skills platform Workera, providing enterprise enterprises with personalized verification and upskilling pathways to operate alongside autonomous multi-agent systems.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.zdnet.com/wp-content/uploads/sites/3/pearson-workera-acquisition.jpg" alt="Pearson Acquires Workera to Power Enterprise Workforce Readiness for Agentic AI and Autonomous Systems" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>ZDNET covers global learning giant Pearson acquiring AI workforce skills platform Workera, providing enterprise enterprises with personalized verification and upskilling pathways to operate alongside autonomous multi-agent systems.</p>
+          <p><small>출처 및 원문: <a href="https://www.zdnet.com/innovation/pearson-workera-acquisition-ai-upskilling/">zdnet.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.zdnet.com/wp-content/uploads/sites/3/pearson-workera-acquisition.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.zdnet.com/wp-content/uploads/sites/3/pearson-workera-acquisition.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Pearson Acquires Workera to Power Enterprise Workforce Readiness for Agentic AI and Autonomous Systems]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Enterprise AI Adoption Research Reveals Accelerating Demand for Autonomous Workflow Task Orchestration]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793837100000_8</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793837100000_8</guid>
+      <pubDate>Thu, 05 Nov 2026 00:05:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_techrepublic]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[TechRepublic analyzes enterprise IT benchmark data, finding that organizations are aggressively pivoting from exploratory generative AI pilots toward fully orchestrated agentic workflows that deliver measurable cost reductions.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.techrepublic.com/wp-content/uploads/2026/10/enterprise-ai-adoption-trends.jpg" alt="Enterprise AI Adoption Research Reveals Accelerating Demand for Autonomous Workflow Task Orchestration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>TechRepublic analyzes enterprise IT benchmark data, finding that organizations are aggressively pivoting from exploratory generative AI pilots toward fully orchestrated agentic workflows that deliver measurable cost reductions.</p>
+          <p><small>출처 및 원문: <a href="https://www.techrepublic.com/sponsored/ai-adoption-trends-enterprise/">techrepublic.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.techrepublic.com/wp-content/uploads/2026/10/enterprise-ai-adoption-trends.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.techrepublic.com/wp-content/uploads/2026/10/enterprise-ai-adoption-trends.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Enterprise AI Adoption Research Reveals Accelerating Demand for Autonomous Workflow Task Orchestration]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Technical Benchmark Evaluates Premier Hardware Workstations for Running Local Enterprise Agentic AI Models]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1793837040000_9</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793837040000_9</guid>
+      <pubDate>Thu, 05 Nov 2026 00:04:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_techrepublic]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[TechRepublic reviews high-performance enterprise workstations equipped with dedicated neural processing units, assessing memory bandwidth and thermal efficiency required to run autonomous multi-agent frameworks on-premises.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.techrepublic.com/wp-content/uploads/2026/10/best-agentic-ai-workstations-2026.jpg" alt="Technical Benchmark Evaluates Premier Hardware Workstations for Running Local Enterprise Agentic AI Models" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>TechRepublic reviews high-performance enterprise workstations equipped with dedicated neural processing units, assessing memory bandwidth and thermal efficiency required to run autonomous multi-agent frameworks on-premises.</p>
+          <p><small>출처 및 원문: <a href="https://www.techrepublic.com/a/sponsored/best-workstations-for-running-agentic-ai-locally-in-2026/">techrepublic.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.techrepublic.com/wp-content/uploads/2026/10/best-agentic-ai-workstations-2026.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.techrepublic.com/wp-content/uploads/2026/10/best-agentic-ai-workstations-2026.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Technical Benchmark Evaluates Premier Hardware Workstations for Running Local Enterprise Agentic AI Models]]></media:title>
+      </media:content>
+    </item>
+    <item>
       <title><![CDATA[President Trump Directs Federal Ban on Terms 'AI' and 'Artificial Intelligence' in Favor of Super Intelligence]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793834340000_0</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834340000_0</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793834340000_10</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834340000_10</guid>
       <pubDate>Wed, 04 Nov 2026 23:19:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_washingtontimes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -38,8 +238,8 @@
     </item>
     <item>
       <title><![CDATA[National Security Analysis Evaluates Strategic Potential of the Federal Super Intelligence Force]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793834280000_1</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834280000_1</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793834280000_11</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834280000_11</guid>
       <pubDate>Wed, 04 Nov 2026 23:18:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_washingtontimes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -58,8 +258,8 @@
     </item>
     <item>
       <title><![CDATA[US Army Advances Next-Generation Interceptor System to Counter Drone Swarms and Cruise Missiles]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793834220000_2</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834220000_2</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793834220000_12</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834220000_12</guid>
       <pubDate>Wed, 04 Nov 2026 23:17:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -78,8 +278,8 @@
     </item>
     <item>
       <title><![CDATA[Defense Industry Coalitions Press Congress to Expand Cyber Threat Information Sharing for Automated Warfare Systems]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793834160000_3</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834160000_3</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793834160000_13</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834160000_13</guid>
       <pubDate>Wed, 04 Nov 2026 23:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_defenseone]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -98,8 +298,8 @@
     </item>
     <item>
       <title><![CDATA[Analysis Tracks Rapid Integration of Super Intelligence Tools Across Federal Executive Communications]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793834100000_4</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834100000_4</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793834100000_14</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834100000_14</guid>
       <pubDate>Wed, 04 Nov 2026 23:15:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -118,8 +318,8 @@
     </item>
     <item>
       <title><![CDATA[Borderless Data Architectures Emerge to Empower Enterprise AI Agents Directly Where Corporate Data Resides]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793834040000_5</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834040000_5</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793834040000_15</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793834040000_15</guid>
       <pubDate>Wed, 04 Nov 2026 23:14:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_venturebeat]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -138,8 +338,8 @@
     </item>
     <item>
       <title><![CDATA[Enterprise Security Analysis Warns AI Agent Access Privileges Are Outpacing Corporate Identity Governance]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793833980000_6</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793833980000_6</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793833980000_16</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793833980000_16</guid>
       <pubDate>Wed, 04 Nov 2026 23:13:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_venturebeat]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -158,8 +358,8 @@
     </item>
     <item>
       <title><![CDATA[Cybersecurity Experts Detail Risks of Uncontrolled Shadow AI Agents and Multi-Agent Vulnerabilities in 2026]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793833920000_7</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793833920000_7</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793833920000_17</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793833920000_17</guid>
       <pubDate>Wed, 04 Nov 2026 23:12:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_zdnet]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -178,8 +378,8 @@
     </item>
     <item>
       <title><![CDATA[AI-Native Business Software Redefines Operations for Mid-Market and Small Enterprise Systems Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793833860000_8</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793833860000_8</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793833860000_18</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793833860000_18</guid>
       <pubDate>Wed, 04 Nov 2026 23:11:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_zdnet]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -198,8 +398,8 @@
     </item>
     <item>
       <title><![CDATA[Gartner Ranks Multi-Agent Systems and Autonomous Execution Among Premier Strategic Technology Trends for 2026]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793833800000_9</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793833800000_9</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793833800000_19</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793833800000_19</guid>
       <pubDate>Wed, 04 Nov 2026 23:10:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_zdnet]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -218,8 +418,8 @@
     </item>
     <item>
       <title><![CDATA[Forbes Technology Council Urges Corporate Boards to Align Governance With Federal Super Intelligence Standards]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793830620000_10</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830620000_10</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793830620000_20</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830620000_20</guid>
       <pubDate>Wed, 04 Nov 2026 22:17:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -238,8 +438,8 @@
     </item>
     <item>
       <title><![CDATA[Midterm Election Shifts Prompt Pentagon Review of Autonomous Warfare Funding and Defense Procurement Coalitions]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793830560000_11</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830560000_11</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793830560000_21</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830560000_21</guid>
       <pubDate>Wed, 04 Nov 2026 22:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -258,8 +458,8 @@
     </item>
     <item>
       <title><![CDATA[Pentagon Enlists 25 Defense Tech Vendors to Demonstrate One-Way Kinetic Drones in Initial Gauntlet Trials]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793830500000_12</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830500000_12</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793830500000_22</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830500000_22</guid>
       <pubDate>Wed, 04 Nov 2026 22:15:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -278,8 +478,8 @@
     </item>
     <item>
       <title><![CDATA[Allied Defense Initiative Pairs American Sensor Payloads With New Zealand Low-Cost Kinetic Drones]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793830440000_13</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830440000_13</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793830440000_23</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830440000_23</guid>
       <pubDate>Wed, 04 Nov 2026 22:14:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -298,8 +498,8 @@
     </item>
     <item>
       <title><![CDATA[Overland AI Delivers Off-Road Autonomous Navigation Kits for Armored Robotic Breaching Vehicles]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793830380000_14</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830380000_14</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793830380000_24</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830380000_24</guid>
       <pubDate>Wed, 04 Nov 2026 22:13:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -318,8 +518,8 @@
     </item>
     <item>
       <title><![CDATA[Nvidia Unveils AI-Native Telecommunications Platform to Anchor Enterprise 6G and Edge Automation]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793830320000_15</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830320000_15</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793830320000_25</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830320000_25</guid>
       <pubDate>Wed, 04 Nov 2026 22:12:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -338,8 +538,8 @@
     </item>
     <item>
       <title><![CDATA[Meta Reorganizes 7,000 Technical Workers Into Dedicated AI Units to Accelerate Enterprise Model Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793830260000_16</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830260000_16</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793830260000_26</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830260000_26</guid>
       <pubDate>Wed, 04 Nov 2026 22:11:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -358,8 +558,8 @@
     </item>
     <item>
       <title><![CDATA[Deloitte Framework Details How Heavy Industry Deploys AI-Native Systems Integration for Operational Excellence]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793830200000_17</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830200000_17</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793830200000_27</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830200000_27</guid>
       <pubDate>Wed, 04 Nov 2026 22:10:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -378,8 +578,8 @@
     </item>
     <item>
       <title><![CDATA[Chief Legal Officers Prepare Governance Mandates as Enterprise Decisions Increasingly Rely on AI Agents]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793830140000_18</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830140000_18</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793830140000_28</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830140000_28</guid>
       <pubDate>Wed, 04 Nov 2026 22:09:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -398,8 +598,8 @@
     </item>
     <item>
       <title><![CDATA[Digital Publishing Industry Negotiates New Economic Models as Autonomous AI Agents Scrape Web Content]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793830080000_19</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830080000_19</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793830080000_29</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793830080000_29</guid>
       <pubDate>Wed, 04 Nov 2026 22:08:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -418,8 +618,8 @@
     </item>
     <item>
       <title><![CDATA[President Trump Directs Comprehensive Executive Rebranding of Artificial Intelligence to Super Intelligence]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793826480000_20</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826480000_20</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793826480000_30</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826480000_30</guid>
       <pubDate>Wed, 04 Nov 2026 21:08:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_axios]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -438,8 +638,8 @@
     </item>
     <item>
       <title><![CDATA[Defense Secretary Issues Binding Deadlines to Unleash US Military Drone Dominance Capabilities]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793826420000_21</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826420000_21</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793826420000_31</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826420000_31</guid>
       <pubDate>Wed, 04 Nov 2026 21:07:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_defensescoop]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -458,8 +658,8 @@
     </item>
     <item>
       <title><![CDATA[Aeon Industrial Breaks Ground on High-Volume Manufacturing Facility for Autonomous Missiles and Fuzes]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793826360000_22</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826360000_22</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793826360000_32</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826360000_32</guid>
       <pubDate>Wed, 04 Nov 2026 21:06:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -478,8 +678,8 @@
     </item>
     <item>
       <title><![CDATA[Frontier Model Data Governance Questioned Following Georgia Voter Database Access Inquiries]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793826300000_23</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826300000_23</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793826300000_33</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826300000_33</guid>
       <pubDate>Wed, 04 Nov 2026 21:05:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_theguardian]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -498,8 +698,8 @@
     </item>
     <item>
       <title><![CDATA[Oracle Unveils Deep Trust AI Architecture Embedding Real-Time Agent Governance Directly Into Database Engines]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793826240000_24</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826240000_24</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793826240000_34</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826240000_34</guid>
       <pubDate>Wed, 04 Nov 2026 21:04:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -518,8 +718,8 @@
     </item>
     <item>
       <title><![CDATA[CJ Logistics Deploys AI-Native System Integration to Modernize Global Supply Chain Networks]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793826180000_25</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826180000_25</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793826180000_35</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826180000_35</guid>
       <pubDate>Wed, 04 Nov 2026 21:03:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -538,8 +738,8 @@
     </item>
     <item>
       <title><![CDATA[Visa Analyzes the Rise of Agentic Commerce as Autonomous AI Agents Execute End-to-End Consumer Purchases]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793826120000_26</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826120000_26</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793826120000_36</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826120000_36</guid>
       <pubDate>Wed, 04 Nov 2026 21:02:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -558,8 +758,8 @@
     </item>
     <item>
       <title><![CDATA[Open Source Agent Framework Harness Reaches General Availability for Multi-Agent Enterprise Workflows]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793826060000_27</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826060000_27</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793826060000_37</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826060000_37</guid>
       <pubDate>Wed, 04 Nov 2026 21:01:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -578,8 +778,8 @@
     </item>
     <item>
       <title><![CDATA[Google Introduces SCION Testbed to Benchmark and Validate Autonomous Enterprise AI Agents in Complex Environments]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793826000000_28</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826000000_28</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793826000000_38</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793826000000_38</guid>
       <pubDate>Wed, 04 Nov 2026 21:00:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -598,8 +798,8 @@
     </item>
     <item>
       <title><![CDATA[Vercel Launches Eve Framework Empowering Developers to Build and Deploy Serverless Multi-Agent Web Systems]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793825940000_29</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793825940000_29</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793825940000_39</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793825940000_39</guid>
       <pubDate>Wed, 04 Nov 2026 20:59:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -618,8 +818,8 @@
     </item>
     <item>
       <title><![CDATA[Wall Street Weighs Super Intelligence Capital Cycles as Administration Tightens Frontier Tech Accord]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793823060000_30</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793823060000_30</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793823060000_40</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793823060000_40</guid>
       <pubDate>Wed, 04 Nov 2026 20:11:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_foxnews]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -638,8 +838,8 @@
     </item>
     <item>
       <title><![CDATA[Pentagon Awards Lethality Prizes to Five Defense Innovators in Drone Dominance Challenge]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793823000000_31</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793823000000_31</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793823000000_41</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793823000000_41</guid>
       <pubDate>Wed, 04 Nov 2026 20:10:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -658,8 +858,8 @@
     </item>
     <item>
       <title><![CDATA[Defense Department Designates 25 Commercial Drone Vendors to Compete for $150 Million Initial Delivery Pool]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793822940000_32</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822940000_32</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793822940000_42</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822940000_42</guid>
       <pubDate>Wed, 04 Nov 2026 20:09:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_defensescoop]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -678,8 +878,8 @@
     </item>
     <item>
       <title><![CDATA[IDV Unveils Uncrewed Armored Breaching Vehicle Equipped With Automated Terrain Navigation and Obstacle Clearing]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793822880000_33</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822880000_33</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793822880000_43</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822880000_43</guid>
       <pubDate>Wed, 04 Nov 2026 20:08:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -698,8 +898,8 @@
     </item>
     <item>
       <title><![CDATA[South Korea Accelerates Physical AI Integration Across Autonomous Military Supply Chains and Depot Logistics]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793822820000_34</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822820000_34</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793822820000_44</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822820000_44</guid>
       <pubDate>Wed, 04 Nov 2026 20:07:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -718,8 +918,8 @@
     </item>
     <item>
       <title><![CDATA[US Army Fields Cooperative Multi-Platform Autonomous Ground and Air Systems in Large-Scale Field Maneuvers]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793822760000_35</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822760000_35</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793822760000_45</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822760000_45</guid>
       <pubDate>Wed, 04 Nov 2026 20:06:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -738,8 +938,8 @@
     </item>
     <item>
       <title><![CDATA[Enterprise Agent Reliability Study Shows Stricter Human Verification Preceding Autonomous Production Deployment]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793822700000_36</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822700000_36</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793822700000_46</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822700000_46</guid>
       <pubDate>Wed, 04 Nov 2026 20:05:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_venturebeat]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -758,8 +958,8 @@
     </item>
     <item>
       <title><![CDATA[Context Graphs and Enterprise Ontologies Emerge as Core Foundation for Multi-Agent Customer Experience Orchestration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793822640000_37</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822640000_37</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793822640000_47</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822640000_47</guid>
       <pubDate>Wed, 04 Nov 2026 20:04:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_venturebeat]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -778,8 +978,8 @@
     </item>
     <item>
       <title><![CDATA[Agentic Infrastructure Stack Summit Convenes Industry Leaders to Standardize Production AI Runtime Architectures]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793822580000_38</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822580000_38</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793822580000_48</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822580000_48</guid>
       <pubDate>Wed, 04 Nov 2026 20:03:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_venturebeat]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -798,8 +998,8 @@
     </item>
     <item>
       <title><![CDATA[AI-Native Market Intelligence Startup Echovane Raises $1 Million to Automate Enterprise Competitive Analysis]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793822520000_39</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822520000_39</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1793822520000_49</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793822520000_49</guid>
       <pubDate>Wed, 04 Nov 2026 20:02:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_siliconangle]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -814,206 +1014,6 @@
       <enclosure url="https://d15sh1yxoeyx01.cloudfront.net/wp-content/uploads/2026/08/echovane-ai-native-startup.jpg" length="240000" type="image/jpeg" />
       <media:content url="https://d15sh1yxoeyx01.cloudfront.net/wp-content/uploads/2026/08/echovane-ai-native-startup.jpg" medium="image" width="1200" height="675">
         <media:title><![CDATA[AI-Native Market Intelligence Startup Echovane Raises $1 Million to Automate Enterprise Competitive Analysis]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Elon Musk Confirms Transition of SpaceX AI Infrastructure to SpaceXSI Following Federal Policy Shift]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793819820000_40</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793819820000_40</guid>
-      <pubDate>Wed, 04 Nov 2026 19:17:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_cryptopolitan]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Cryptopolitan covers Elon Musk aligning SpaceX's commercial machine learning initiatives with President Trump's Super Intelligence rebrand, adopting the SpaceXSI moniker across aerospace telemetry and satellite networks.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://www.cryptopolitan.com/wp-content/uploads/2026/10/spacexsi-musk-trump-rebrand.jpg" alt="Elon Musk Confirms Transition of SpaceX AI Infrastructure to SpaceXSI Following Federal Policy Shift" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Cryptopolitan covers Elon Musk aligning SpaceX's commercial machine learning initiatives with President Trump's Super Intelligence rebrand, adopting the SpaceXSI moniker across aerospace telemetry and satellite networks.</p>
-          <p><small>출처 및 원문: <a href="https://www.cryptopolitan.com/spacexai-to-spacexsi-musk-trump-rebrand/">cryptopolitan.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://www.cryptopolitan.com/wp-content/uploads/2026/10/spacexsi-musk-trump-rebrand.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://www.cryptopolitan.com/wp-content/uploads/2026/10/spacexsi-musk-trump-rebrand.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Elon Musk Confirms Transition of SpaceX AI Infrastructure to SpaceXSI Following Federal Policy Shift]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[White House Hosts Tech Leaders to Review Global Guardrails and Bilateral Accords for Super Intelligence]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793819760000_41</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793819760000_41</guid>
-      <pubDate>Wed, 04 Nov 2026 19:16:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_foxnews]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Fox News reports on President Donald Trump convening domestic AI titans to evaluate international safety benchmarks and mutual notification pacts following high-level diplomatic discussions on frontier computing.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/10/trump-super-intelligence-bilateral-talks.jpg" alt="White House Hosts Tech Leaders to Review Global Guardrails and Bilateral Accords for Super Intelligence" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Fox News reports on President Donald Trump convening domestic AI titans to evaluate international safety benchmarks and mutual notification pacts following high-level diplomatic discussions on frontier computing.</p>
-          <p><small>출처 및 원문: <a href="https://www.foxnews.com/live-news/ai-leaders-trump-xi-xinping-state-dinner-white-house">foxnews.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/10/trump-super-intelligence-bilateral-talks.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/10/trump-super-intelligence-bilateral-talks.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[White House Hosts Tech Leaders to Review Global Guardrails and Bilateral Accords for Super Intelligence]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Naval Group Unveils 8,000-Ton Autonomous Drone Carrier Concept Designed for Multi-Domain Swarm Operations]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793819700000_42</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793819700000_42</guid>
-      <pubDate>Wed, 04 Nov 2026 19:15:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Breaking Defense reports from Paris where Naval Group introduced an 8,000-ton dedicated drone mothership capable of deploying, coordinating, and recovering fleets of surface, subsurface, and aerial autonomous systems.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://breakingdefense.com/wp-content/uploads/sites/3/2026/11/naval-group-drone-carrier.jpg" alt="Naval Group Unveils 8,000-Ton Autonomous Drone Carrier Concept Designed for Multi-Domain Swarm Operations" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Breaking Defense reports from Paris where Naval Group introduced an 8,000-ton dedicated drone mothership capable of deploying, coordinating, and recovering fleets of surface, subsurface, and aerial autonomous systems.</p>
-          <p><small>출처 및 원문: <a href="https://breakingdefense.com/2026/11/naval-group-unveils-new-drone-carrier-concept/">breakingdefense.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://breakingdefense.com/wp-content/uploads/sites/3/2026/11/naval-group-drone-carrier.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://breakingdefense.com/wp-content/uploads/sites/3/2026/11/naval-group-drone-carrier.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Naval Group Unveils 8,000-Ton Autonomous Drone Carrier Concept Designed for Multi-Domain Swarm Operations]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Shield AI Teases Major European Expansion for Autonomous X-BAT Fighter Drone Deployments]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793819640000_43</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793819640000_43</guid>
-      <pubDate>Wed, 04 Nov 2026 19:14:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Breaking Defense covers Shield AI announcing impending allied agreements across Europe for its AI-piloted X-BAT uncrewed fighter jet, integrating Hivemind autonomy for contested air superiority missions.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://breakingdefense.com/wp-content/uploads/sites/3/2026/11/shield-ai-x-bat-fighter-drone.jpg" alt="Shield AI Teases Major European Expansion for Autonomous X-BAT Fighter Drone Deployments" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Breaking Defense covers Shield AI announcing impending allied agreements across Europe for its AI-piloted X-BAT uncrewed fighter jet, integrating Hivemind autonomy for contested air superiority missions.</p>
-          <p><small>출처 및 원문: <a href="https://breakingdefense.com/2026/11/shield-ai-cofounder-teases-snowball-of-x-bat-fighter-drone-announcements-in-europe/">breakingdefense.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://breakingdefense.com/wp-content/uploads/sites/3/2026/11/shield-ai-x-bat-fighter-drone.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://breakingdefense.com/wp-content/uploads/sites/3/2026/11/shield-ai-x-bat-fighter-drone.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Shield AI Teases Major European Expansion for Autonomous X-BAT Fighter Drone Deployments]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[US Army Successfully Tests Hybrid 3D-Printed Heavy-Fuel Rotary Engine to Power Tactical UAS Fleets]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793819580000_44</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793819580000_44</guid>
-      <pubDate>Wed, 04 Nov 2026 19:13:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Defense Post reports on an advanced propulsion breakthrough pairing additive manufacturing with hybrid-electric power, extending operational endurance and range for uncrewed tactical aircraft.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://thedefensepost.com/wp-content/uploads/2026/11/3d-printed-rotary-engine-drone.jpg" alt="US Army Successfully Tests Hybrid 3D-Printed Heavy-Fuel Rotary Engine to Power Tactical UAS Fleets" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Defense Post reports on an advanced propulsion breakthrough pairing additive manufacturing with hybrid-electric power, extending operational endurance and range for uncrewed tactical aircraft.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/11/04/3d-printed-engine-drone/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://thedefensepost.com/wp-content/uploads/2026/11/3d-printed-rotary-engine-drone.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://thedefensepost.com/wp-content/uploads/2026/11/3d-printed-rotary-engine-drone.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[US Army Successfully Tests Hybrid 3D-Printed Heavy-Fuel Rotary Engine to Power Tactical UAS Fleets]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[War Department Formally Outlines Strategic Acquisition Framework for Unleashing Drone Dominance]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793819520000_45</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793819520000_45</guid>
-      <pubDate>Wed, 04 Nov 2026 19:12:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_war]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Department of War publishes strategic acquisition pillars for the Drone Dominance Program, establishing challenge-based procurement to mass-produce attritable autonomous drones across domestic defense manufacturing.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://media.defense.gov/2026/May/29/2003941548/1200/900/0/260428-A-AJ888-1003.JPG" alt="War Department Formally Outlines Strategic Acquisition Framework for Unleashing Drone Dominance" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Department of War publishes strategic acquisition pillars for the Drone Dominance Program, establishing challenge-based procurement to mass-produce attritable autonomous drones across domestic defense manufacturing.</p>
-          <p><small>출처 및 원문: <a href="https://www.war.gov/Topics/Drone-Dominance/">war.gov</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://media.defense.gov/2026/May/29/2003941548/1200/900/0/260428-A-AJ888-1003.JPG" length="240000" type="image/jpeg" />
-      <media:content url="https://media.defense.gov/2026/May/29/2003941548/1200/900/0/260428-A-AJ888-1003.JPG" medium="image" width="1200" height="675">
-        <media:title><![CDATA[War Department Formally Outlines Strategic Acquisition Framework for Unleashing Drone Dominance]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Pentagon Drone Dominance Program Office Sets Challenge-Based Guidelines for High-Volume Munition Delivery]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793819460000_46</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793819460000_46</guid>
-      <pubDate>Wed, 04 Nov 2026 19:11:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_drone-dominance]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The official Drone Dominance portal details defense acquisition requirements structured under Secretary Hegseth's procurement strategy, prioritizing competitive fly-offs and rapid vendor downselects for mass attack drones.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://drone-dominance.io/assets/images/DroneDominanceprogramlogosmph_1-30-2026.png" alt="Pentagon Drone Dominance Program Office Sets Challenge-Based Guidelines for High-Volume Munition Delivery" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The official Drone Dominance portal details defense acquisition requirements structured under Secretary Hegseth's procurement strategy, prioritizing competitive fly-offs and rapid vendor downselects for mass attack drones.</p>
-          <p><small>출처 및 원문: <a href="https://drone-dominance.io/">drone-dominance.io</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://drone-dominance.io/assets/images/DroneDominanceprogramlogosmph_1-30-2026.png" length="240000" type="image/jpeg" />
-      <media:content url="https://drone-dominance.io/assets/images/DroneDominanceprogramlogosmph_1-30-2026.png" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Pentagon Drone Dominance Program Office Sets Challenge-Based Guidelines for High-Volume Munition Delivery]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Cross-Industry Surveys Reveal Enterprise Hesitation in Scaling Agentic AI Without Robust Guardrails]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793819400000_47</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793819400000_47</guid>
-      <pubDate>Wed, 04 Nov 2026 19:10:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_zdnet]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[ZDNET analyzes three major corporate surveys finding that while executive enthusiasm for autonomous agents is surging, seventy-six percent of leaders cite unproven multi-agent orchestration and security blind spots as primary deployment hurdles.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://www.zdnet.com/wp-content/uploads/sites/3/agentic-ai-adoption-hesitation.jpg" alt="Cross-Industry Surveys Reveal Enterprise Hesitation in Scaling Agentic AI Without Robust Guardrails" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>ZDNET analyzes three major corporate surveys finding that while executive enthusiasm for autonomous agents is surging, seventy-six percent of leaders cite unproven multi-agent orchestration and security blind spots as primary deployment hurdles.</p>
-          <p><small>출처 및 원문: <a href="https://www.zdnet.com/article/3-surveys-uncomfortable-adopting-agentic-ai/">zdnet.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://www.zdnet.com/wp-content/uploads/sites/3/agentic-ai-adoption-hesitation.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://www.zdnet.com/wp-content/uploads/sites/3/agentic-ai-adoption-hesitation.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Cross-Industry Surveys Reveal Enterprise Hesitation in Scaling Agentic AI Without Robust Guardrails]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Enterprise Deployment Blueprint Details Technical Requirements for Production Multi-Agent Systems Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793819340000_48</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793819340000_48</guid>
-      <pubDate>Wed, 04 Nov 2026 19:09:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_actgsys]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[ACTGSYS publishes an architectural integration guide for enterprise IT leaders, establishing best practices for decomposing complex business logic, establishing secure agent APIs, and governing autonomous inter-agent communications.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://actgsys.com/assets/images/multi-agent-deployment-guide-2026.png" alt="Enterprise Deployment Blueprint Details Technical Requirements for Production Multi-Agent Systems Integration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>ACTGSYS publishes an architectural integration guide for enterprise IT leaders, establishing best practices for decomposing complex business logic, establishing secure agent APIs, and governing autonomous inter-agent communications.</p>
-          <p><small>출처 및 원문: <a href="https://actgsys.com/en/blog/multi-agent-ai-system-enterprise-guide-2026">actgsys.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://actgsys.com/assets/images/multi-agent-deployment-guide-2026.png" length="240000" type="image/jpeg" />
-      <media:content url="https://actgsys.com/assets/images/multi-agent-deployment-guide-2026.png" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Enterprise Deployment Blueprint Details Technical Requirements for Production Multi-Agent Systems Integration]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Defense Industry Coalitions Urge Congress to Reauthorize Threat-Sharing Legislation for Autonomous Systems]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1793819280000_49</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1793819280000_49</guid>
-      <pubDate>Wed, 04 Nov 2026 19:08:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_nextgov]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Nextgov reports on leading defense technology associations pressing lawmakers to renew cyber intelligence-sharing statutes, emphasizing the necessity of protecting interconnected AI-native platforms and automated military supply chains.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://www.nextgov.com/wp-content/uploads/sites/4/2026/11/cyber-threat-sharing-defense.jpg" alt="Defense Industry Coalitions Urge Congress to Reauthorize Threat-Sharing Legislation for Autonomous Systems" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Nextgov reports on leading defense technology associations pressing lawmakers to renew cyber intelligence-sharing statutes, emphasizing the necessity of protecting interconnected AI-native platforms and automated military supply chains.</p>
-          <p><small>출처 및 원문: <a href="https://www.nextgov.com/cybersecurity/2026/11/industry-groups-urge-congress-renew-cyber-threat-sharing-law-through-defense-authorization/416985/">nextgov.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://www.nextgov.com/wp-content/uploads/sites/4/2026/11/cyber-threat-sharing-defense.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://www.nextgov.com/wp-content/uploads/sites/4/2026/11/cyber-threat-sharing-defense.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Defense Industry Coalitions Urge Congress to Reauthorize Threat-Sharing Legislation for Autonomous Systems]]></media:title>
       </media:content>
     </item>
   </channel>
