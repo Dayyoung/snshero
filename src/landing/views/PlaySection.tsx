@@ -534,8 +534,9 @@ export function getSlotSignature(sIdx: number): string {
   const slot = playRpgState.battleBoard[sIdx];
   if (!slot) {
     const isOpponentTurn = playRpgState.turn === 'opponent';
-    const isAiSuggested = !isOpponentTurn && playRpgState.aiSuggestedMove?.slotIdx === sIdx;
-    return `empty:${sIdx}:${isOpponentTurn ? 'opp' : 'user'}:${isAiSuggested ? 'ai' : 'none'}`;
+    const isPlayerAi = !isOpponentTurn && playRpgState.aiSuggestedMove?.slotIdx === sIdx;
+    const isOpponentAi = isOpponentTurn && playRpgState.aiOpponentSuggestedMove?.slotIdx === sIdx;
+    return `empty:${sIdx}:${isOpponentTurn ? 'opp' : 'user'}:${isPlayerAi ? 'player-ai' : isOpponentAi ? 'opp-ai' : 'none'}`;
   }
   const isJustPlaced = playRpgState.lastPlacedSlot === sIdx;
   const isFlipped = playRpgState.flippedSlots?.includes(sIdx);
@@ -550,45 +551,102 @@ export function renderSingleSlotContentHtml(sIdx: number): string {
   if (!slot) {
     const isOpponentTurn = playRpgState.turn === 'opponent';
     const isAiSuggested = !isOpponentTurn && playRpgState.aiSuggestedMove?.slotIdx === sIdx;
+    const isOpponentAi = isOpponentTurn && playRpgState.aiOpponentSuggestedMove?.slotIdx === sIdx;
     return `
       <button
         type="button"
         id="battle-slot-${sIdx}"
         ${isOpponentTurn ? 'disabled' : `data-action="play-battle-slot" data-slot="${sIdx}"`}
         class="relative w-full h-full aspect-[5/7] border-2 border-dashed ${
-          isOpponentTurn
+          isOpponentAi
+            ? 'border-red-500 bg-red-950/40 text-red-300 ring-2 ring-red-500/60 shadow-lg shadow-red-950/50 animate-pulse cursor-wait'
+            : isOpponentTurn
             ? 'border-stone-700/60 bg-stone-900/40 text-stone-600 cursor-wait'
             : isAiSuggested
             ? 'border-emerald-400 bg-[#064e3b]/30 text-emerald-300 ring-2 ring-emerald-400/40 cursor-pointer active:scale-98 animate-pulse'
             : 'border-amber-400/40 hover:border-amber-300 bg-[#0e1628]/60 hover:bg-[#131f38] text-amber-300 cursor-pointer active:scale-98'
         } rounded-xs flex flex-col items-center justify-between p-1.5 sm:p-2 transition-transform select-none shadow-sm"
-        aria-label="${tr(`슬롯 ${sIdx + 1} 배치`, `Place in Slot ${sIdx + 1}`, `スロット${sIdx + 1}に配置`)}"
+        aria-label="${
+          isOpponentAi
+            ? tr(`슬롯 ${sIdx + 1} 상대 AI 조준`, `Slot ${sIdx + 1} Opponent AI Target`, `スロット${sIdx + 1} 相手AI照準`)
+            : tr(`슬롯 ${sIdx + 1} 배치`, `Place in Slot ${sIdx + 1}`, `スロット${sIdx + 1}に配置`)
+        }"
       >
         <!-- Slot Header -->
-        <div class="w-full flex items-center justify-between text-[9px] sm:text-[10px] font-mono ${isOpponentTurn ? 'text-stone-600' : isAiSuggested ? 'text-emerald-300 font-bold' : 'text-stone-400/80'}">
+        <div class="w-full flex items-center justify-between text-[9px] sm:text-[10px] font-mono ${
+          isOpponentAi
+            ? 'text-red-300 font-bold'
+            : isOpponentTurn
+            ? 'text-stone-600'
+            : isAiSuggested
+            ? 'text-emerald-300 font-bold'
+            : 'text-stone-400/80'
+        }">
           <span>#${sIdx + 1}</span>
-          <span class="${isOpponentTurn ? 'text-stone-700' : isAiSuggested ? 'text-emerald-400' : 'text-amber-400/60'}">${isAiSuggested ? '🤖 AI' : '✦'}</span>
+          <span class="${
+            isOpponentAi
+              ? 'text-red-400 font-black'
+              : isOpponentTurn
+              ? 'text-stone-700'
+              : isAiSuggested
+              ? 'text-emerald-400 font-bold'
+              : 'text-amber-400/60'
+          }">${isOpponentAi ? '⚠️ 적 AI' : isAiSuggested ? '🤖 AI' : '✦'}</span>
         </div>
 
         <!-- Center Target / Seal Cue -->
         <div class="flex flex-col items-center justify-center gap-1 my-auto">
           <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border ${
-            isOpponentTurn
+            isOpponentAi
+              ? 'border-red-500 bg-red-900/90 text-red-200 shadow-md animate-bounce'
+              : isOpponentTurn
               ? 'border-stone-700 bg-black/40 text-stone-600'
               : isAiSuggested
               ? 'border-emerald-400 bg-emerald-950/80 text-emerald-300'
               : 'border-amber-400/40 bg-black/50 text-amber-400'
           } flex items-center justify-center text-xs sm:text-sm font-black">
-            ${isOpponentTurn ? '⏳' : isAiSuggested ? '🎯' : '+'}
+            ${isOpponentAi ? '🎯' : isOpponentTurn ? '⏳' : isAiSuggested ? '🎯' : '+'}
           </div>
-          <span class="text-[10px] sm:text-[11px] font-black tracking-wider ${isOpponentTurn ? 'text-stone-600' : isAiSuggested ? 'text-emerald-300' : 'text-amber-400'}">
-            ${isOpponentTurn ? tr('대기...', 'WAIT', '待機...') : isAiSuggested ? tr('[AI 추천]', '[AI BEST]', '[AI推奨]') : tr('[배치]', '[PLACE]', '[配置]')}
+          <span class="text-[10px] sm:text-[11px] font-black tracking-wider ${
+            isOpponentAi
+              ? 'text-red-400 font-bold'
+              : isOpponentTurn
+              ? 'text-stone-600'
+              : isAiSuggested
+              ? 'text-emerald-300'
+              : 'text-amber-400'
+          }">
+            ${
+              isOpponentAi
+                ? tr('[적 AI 조준]', '[ENEMY AI]', '[敵AI狙い]')
+                : isOpponentTurn
+                ? tr('대기...', 'WAIT', '待機...')
+                : isAiSuggested
+                ? tr('[AI 추천]', '[AI BEST]', '[AI推奨]')
+                : tr('[배치]', '[PLACE]', '[配置]')
+            }
           </span>
         </div>
 
         <!-- Footer Cue -->
-        <div class="text-[8px] sm:text-[9px] font-mono truncate ${isOpponentTurn ? 'text-stone-700' : isAiSuggested ? 'text-emerald-300/90 font-bold' : 'text-stone-400/60'}">
-          ${isOpponentTurn ? 'AI TURN' : isAiSuggested ? (playRpgState.aiSuggestedMove?.reason || 'BEST MOVE') : 'TAP HERE'}
+        <div class="text-[8px] sm:text-[9px] font-mono truncate ${
+          isOpponentAi
+            ? 'text-red-300/90 font-bold'
+            : isOpponentTurn
+            ? 'text-stone-700'
+            : isAiSuggested
+            ? 'text-emerald-300/90 font-bold'
+            : 'text-stone-400/60'
+        }">
+          ${
+            isOpponentAi
+              ? (playRpgState.aiOpponentSuggestedMove?.reason || 'TARGET')
+              : isOpponentTurn
+              ? 'AI TURN'
+              : isAiSuggested
+              ? (playRpgState.aiSuggestedMove?.reason || 'BEST MOVE')
+              : 'TAP HERE'
+          }
         </div>
       </button>
     `;

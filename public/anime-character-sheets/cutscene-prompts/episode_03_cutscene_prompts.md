@@ -4,7 +4,10 @@
 - **컷신 규격**: 1컷당 **6초 동영상 (`6-Second Video Cutscene`)** × 총 **32컷** (총 러닝타임 약 `3분 12초`)
 - **첨부 캐릭터 시트 기준**: **7등신 전신 컷아웃 (`public/anime-character-sheets/cutouts/XXX_Name.png`)**
 - **현재 회차 전체 스토리 요약 (Story Consistency Summary)**:
-  - **KR**: 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - **KR**: 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - **EN**: `Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.`
 - **필수 준수 규칙**:
   1. 모든 컷신 프롬프트에는 **현재 회차 전체 스토리 요약**이 포함되어 컷 간 스토리 일관성을 유지합니다.
@@ -20,7 +23,10 @@
 - **원문 소설 구간 (EN)**: Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. Colossal basalt monoliths, carved by ancient titans millenia ago, loomed through the vapors like primeval tombstones. Though it was high noon, icy mist rising from the bottomless abyss swallowed their horses' hooves before thickening into an impenetrable shroud that reached their shoulders. Across the dark volcanic rock faces, sinister spirals of dried blood trailed like claw marks.
 - **원문 소설 구간 (KR)**: 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 수천 년 전 고대 타이탄 거인족이 맨손으로 깎아 세웠다는 거대한 현무암 암벽들이 안개 너머로 거인의 묘비처럼 불길하게 솟아 있었다. 대낮이었음에도 불구하고 천 길 계곡 깊은 곳에서 기어오른 차가운 흑암 안개는 말들의 발목을 덮더니, 이내 사냥꾼들의 어깨 너머까지 짙은 장막처럼 차올랐다. 절벽의 검붉은 바위벽마다 마른 핏자국을 머금은 낯선 손자국들이 기괴한 나선형으로 찍혀 있었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -57,7 +63,10 @@
 - **원문 소설 구간 (EN)**: Eliana dismounted, uncorking a glass vial of azure reagent to sprinkle upon the stone. With a sharp hiss, silvery powder billowed into the air. "A forbidden strain of dark necromancy," Eliana warned, her voice trembling in the damp mountain chill. "It drains the living vital mana from travelers, petrifying their flesh into crystallized corpses."
 - **원문 소설 구간 (KR)**: 약제사 엘리아나가 말에서 내려 유리병에 든 푸른 감식액을 바위벽에 떨어뜨리자, 치익 하는 날카로운 파열음과 함께 은빛 가루가 허공으로 피어올랐다. “살아 있는 생명체에서 억지로 마나를 뽑아내어 시체처럼 결정을 굳히는 금지된 흑마술의 흔적이에요.” 엘리아나의 창백한 목소리가 서늘한 안개 속으로 흩어졌다. 일행의 말들이 콧김을 거칠게 뿜으며 뒷걸음질을 쳤다. 말발굽 아래에서 부서지는 자갈 소리가 천 길 낭떠러지 바닥으로 떨어지며 음산한 메아리를 남겼다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -94,7 +103,10 @@
 - **원문 소설 구간 (EN)**: Her grim diagnosis vanished into the swirling fog. The mounts snorted anxiously, backing toward the narrow trail. Loose shale clattered down into the void, echoing faintly against the rock walls below.
 - **원문 소설 구간 (KR)**: “조심해라, 모두 무기를 쥐어라. 이 안개는 단순한 기후의 조화가 아니다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -131,7 +143,10 @@
 - **원문 소설 구간 (EN)**: "Steady, everyone. Draw your steel," Gawain commanded softly, lifting his heavy iron staff. "This mist is born of malice, not mountain weather."
 - **원문 소설 구간 (KR)**: 맹인 추적자 가웨인의 서늘한 경고가 떨어지자마자, 바람결을 타고 피비린내 나는 기괴한 휘파람 소리가 절벽 허공을 맴돌았다. 도박사 카제가 손가락 사이로 번뜩이는 은화 세 닢을 허공으로 튕기며 낮게 읊조렸다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -168,7 +183,10 @@
 - **원문 소설 구간 (EN)**: Kaze flicked three silver coins into the air, listening to their metallic ring as they dropped into his palm. "The wind twists inward toward a single vortex," Kaze muttered. "I smell rotting blood instead of coin."
 - **원문 소설 구간 (KR)**: “바람의 흐름이 한 지점으로 뒤틀리고 있어. 돈 냄새 대신 썩은 시체 냄새가 진동하는군.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -205,7 +223,10 @@
 - **원문 소설 구간 (EN)**: Rondol gripped the wave-carved staff upon his back, shaking his head. "This is no river vapor rising from the lowlands. It is a barrier woven from the blood and malice of tormented souls."
 - **원문 소설 구간 (KR)**: 뱃사공 론돌 역시 등에 진 물결무늬 지팡이를 잡으며 고개를 저었다. “강 하류에서 거슬러 올라오는 수증기가 아니오. 이건 원한 맺힌 영혼들의 피 냄새가 섞인 마력의 장벽이오.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -242,7 +263,10 @@
 - **원문 소설 구간 (EN)**: Grimli planted his maul upon the flagstones, smoothing his braided beard. "Any devil stepping before my hammer will see his skull forged into an anvil."
 - **원문 소설 구간 (KR)**: 드워프 그림리가 쇠망치를 바닥에 쿵 내려놓으며 수염을 쓸어내렸다. “어떤 놈이든 내 망치 앞에 걸리면 대가리가 모루에 달군 쇳덩이 꼴이 날 게다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -279,7 +303,10 @@
 - **원문 소설 구간 (EN)**: Robinyard leaped lightly atop the parapet, gazing through the vapors with a wry grin. "Ease your shoulders, comrades. In tightrope dancing, freezing in fear is what sends you over the brink."
 - **원문 소설 구간 (KR)**: 곡예사 로비냐드는 가볍게 바위 난간 위로 뛰어올라 안개 너머를 살피며 쓴웃음을 지었다. “다들 긴장 풀어요. 줄타기에서 발이 얼어붙으면 낭떠러지로 떨어지는 법이니까요.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -316,7 +343,10 @@
 - **원문 소설 구간 (EN)**: That very night, within the ruined titan shrine perched atop the precipice, two ominous silhouettes emerged silently between the broken colonnades. They were Medusa Gorgo and the crystal-shaper Belphegor—banished apprentices of the wind sage Aeolus from the distant Wind Isle. Having stolen the dark codex of Nine Shadows, they sought to harvest wandering warriors to complete their forbidden techniques. Gorgo, her blind eyes shrouded in black silk, perceived the world through minute acoustic vibrations, while Belphegor was encased from head to heel in jagged obsidian armor that sprouted directly from his flesh.
 - **원문 소설 구간 (KR)**: 그날 밤, 절벽 정상에 자리 잡은 고대 타이탄의 폐신전 돌기둥 사이로 두 개의 불길한 그림자가 소리 없이 스며들었다. 한때 바람섬의 위대한 현자 에올루스의 문하에서 비전 마법을 전수받았던 파문당한 제자들, 메두사 고르고와 결정술사 벨페고르였다. 두 사람은 스승의 서재에서 절대적인 무공 비급인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 마공을 완성하려 광기를 번뜩이고 있었다. 고르고는 두 눈을 검은 비단으로 가린 채 미세한 음파의 떨림으로 사물을 감지했고, 벨페고르는 온몸의 피부를 뚫고 솟아난 검은 흑요석 결정 갑옷을 번뜩이고 있었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -353,7 +383,10 @@
 - **원문 소설 구간 (EN)**: Gawain struck the flagstones thrice with the heel of his iron staff.
 - **원문 소설 구간 (KR)**: 가웨인이 묵직한 쇠지팡이 끝으로 신전 바닥의 판석을 둔탁하게 세 번 두드렸다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -390,7 +423,10 @@
 - **원문 소설 구간 (EN)**: Clang. Clang. Clang.
 - **원문 소설 구간 (KR)**: 그러나 지하 바위틈을 타고 되돌아온 공명음은 일곱 개가 아닌 여덟 개였다. 지팡이를 쥔 가웨인의 핏줄 선 손등이 굳어졌다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -427,7 +463,10 @@
 - **원문 소설 구간 (EN)**: The reverberation returning through the granite bedrock yielded not seven footsteps, but eight. The veins upon Gawain's knuckles tautened like bowstrings. "Above us! Scatter!"
 - **원문 소설 구간 (KR)**: 탕. 탕. 탕. 그러나 지하 바위틈을 타고 되돌아온 공명음은 일곱 개가 아닌 여덟 개였다. 지팡이를 쥔 가웨인의 핏줄 선 손등이 굳어졌다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -464,7 +503,10 @@
 - **원문 소설 구간 (EN)**: A deafening roar split the night. Shattering the ceiling rafters, Belphegor slammed his obsidian fist into the floor, fracturing the flagstones into radial spiderwebs. Grimli surged forward, his heavy maul deflecting Belphegor's crushing blow at the cost of numbing both his arms, while Aila loosed three rapid quarrels into the swirling mist.
 - **원문 소설 구간 (KR)**: 그림리가 본능적으로 달려들어 육중한 쇠망치로 벨페고르의 팔꿈치를 받아쳐 궤도를 꺾었고, 에일라의 쇠뇌 시위가 연거푸 튕기며 안개를 가르고 세 발의 화살을 쏘아 보냈다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -501,7 +543,10 @@
 - **원문 소설 구간 (EN)**: Yet the blind Gorgo heard the friction of the feathers whistling through the air and arched her spine with inhuman grace to dodge each shaft. "Insolent insects marching willfully into their own tomb!"
 - **원문 소설 구간 (KR)**: 그러나 눈이 먼 메두사 고르고는 화살이 공기를 가르는 미세한 마찰열을 미리 감지하고 유연하게 허리를 꺾어 피했다. “어리석은 날파리들이 제 발로 무덤을 찾아왔구나.” 고르고의 가느다란 손톱 끝에서 발사된 칠흑의 마나 실가닥들이 허공을 수놓더니, 신전 벽면에 드리워진 로비냐드의 그림자를 바위에 단단히 꿰매 버렸다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -538,7 +583,10 @@
 - **원문 소설 구간 (EN)**: Black filaments of concentrated shadow mana erupted from Gorgo's talons, impaling Robinyard's shadow upon the stone wall behind him. With his shadow anchored, Robinyard's physical body locked in place as if bound in invisible iron chains.
 - **원문 소설 구간 (KR)**: 그림자가 묶이자 로비냐드의 육신 또한 보이지 않는 족쇄에 묶인 듯 제자리에 굳어 버렸다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -575,7 +623,10 @@
 - **원문 소설 구간 (EN)**: Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril. Kaze's throwing daggers were swept aside by Rondol's unruly water currents, and the gale from Grimli's hammer threw stone dust directly across Aila's line of sight.
 - **원문 소설 구간 (KR)**: 일곱 사람은 각자의 영역에서 백전노장의 기량을 지녔으나, 함께 목숨을 건 합을 맞춰 본 경험이 턱없이 부족했다. 카제가 던진 비검은 론돌이 휘두른 거친 물살에 휩쓸려 궤도를 잃었고, 그림리가 일으킨 맹렬한 망치바람은 에일라의 조준선에 모래먼지를 퍼부었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -612,7 +663,10 @@
 - **원문 소설 구간 (EN)**: "Fools! Your hearts shall nourish the completion of my obsidian carapace!" Belphegor bellowed, striking Grimli across the chest and sending the dwarf skidding across the stones, vomiting blood. To worsen their plight, Gorgo unleashed a cloud of purple venom that brought the hunters to their knees, gasping for breath.
 - **원문 소설 구간 (KR)**: “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!” 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 그림리가 피를 토하며 바닥을 굴렀다. 설상가상으로 고르고의 손끝에서 퍼져 나온 보랏빛 독안개가 폐신전 내부를 가득 채우자, 일곱 추적자들은 하나둘 무릎을 꺾으며 쓰러져 갔다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -649,7 +703,10 @@
 - **원문 소설 구간 (EN)**: "Hold your breath! The poison burns the lungs and corrodes mana!" Eliana shouted, casting purifying herbs into the wind, but the toxic haze thickened relentless.
 - **원문 소설 구간 (KR)**: “숨을 참아라! 이 독안개는 폐부를 태워 마나를 말려 버린다!” 엘리아나가 외치며 정화의 약초 가루를 뿌렸으나 역부족이었다. 절체절명의 순간, 가장 먼저 결단을 내린 이는 평소 말수가 가장 적었던 곡예사 로비냐드였다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -686,7 +743,10 @@
 - **원문 소설 구간 (EN)**: It was Robinyard, the quietest of the band, who seized the decisive moment. "Keep your filthy claws off my kin!"
 - **원문 소설 구간 (KR)**: “동료들을 건드리지 마라, 괴물 놈!” 로비냐드는 품속에서 예리한 비수를 꺼내 바닥돌을 후벼 파며 자신의 그림자를 꿰맨 흑마술 실을 억지로 찢어 냈다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -723,7 +783,10 @@
 - **원문 소설 구간 (EN)**: Drawing a serrated skinning knife, Robinyard sliced through his own flesh and gouged the enchanted flagstone beneath him, severing the necrotic threads that pinned his shadow. Though the agony of tearing his spiritual tether burned like molten lead, the acrobat launched himself through the air, wrapping both arms and legs around Belphegor's neck.
 - **원문 소설 구간 (KR)**: 그림자가 찢겨 나가며 살갗이 타들어 가는 극심한 영혼의 고통 속에서도, 로비냐드는 번개처럼 몸을 날려 벨페고르의 목덜미에 매달렸다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -758,9 +821,12 @@
 ## EP03-CUT21 (02:00–02:06 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Thwack!
-- **원문 소설 구간 (KR)**: 벨페고르의 날카로운 흑요석 결정 가시가 로비냐드의 복부를 무자비하게 꿰뚫었다. 그러나 피를 쏟아내면서도 로비냐드는 두 팔과 두 다리로 괴물의 관절을 부둥켜안은 채 놓지 않았다.
+- **원문 소설 구간 (KR)**: “지금이야... 에일라, 그림리... 이번에는 서로의 숨소리를 듣고 움직여라!”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -774,7 +840,7 @@
   - **소품 및 소지자**: 특수 소품 없음
   - `EN`: No special relic prop in this shot.
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
-  - 전지적 시점 배경 남자 나레이션 (6초 이내) 및 등장인물 전원 침묵 지침: 화면에 등장하는 모든 인물은 입을 굳게 다물고 아무 말도 해서는 안 되며(입 모양 움직임 절대 금지), 오직 배경에서만 중후한 남자 나레이션 음성으로 6초 이내에 다음 내용을 설명해야 함: "벨페고르의 날카로운 흑요석 결정 가시가 로비냐드의 복부를 무자비하게 꿰뚫었다." (영문 6s 나레이션: "Thwack.")
+  - 전지적 시점 배경 남자 나레이션 (6초 이내) 및 등장인물 전원 침묵 지침: 화면에 등장하는 모든 인물은 입을 굳게 다물고 아무 말도 해서는 안 되며(입 모양 움직임 절대 금지), 오직 배경에서만 중후한 남자 나레이션 음성으로 6초 이내에 다음 내용을 설명해야 함: "“지금이야." (영문 6s 나레이션: "Thwack.")
   - `EN`: OMNISCIENT MALE BACKGROUND NARRATION ONLY (<= 6 SECONDS) & ALL CHARACTERS SILENT: Every appearing character on screen MUST keep their mouth completely closed and MUST NOT speak a single word (zero lip movement). ONLY a deep, cinematic off-screen male narrator voiceover in the background speaks concisely within 6 seconds in English: "Thwack."
 - **6. 글자 포함 금지 지침 (Strict No-Text Rule)**:
   - 글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨.
@@ -797,7 +863,10 @@
 - **원문 소설 구간 (EN)**: Jagged crystal spikes erupted from Belphegor's shoulders, piercing clean through Robinyard's torso. Yet even as lifeblood poured from his lips, Robinyard locked his limbs in an unbreakable vise around the monster's joints. "Now... Aila, Grimli... listen to each other's breath!"
 - **원문 소설 구간 (KR)**: “지금이야... 에일라, 그림리... 이번에는 서로의 숨소리를 듣고 움직여라!”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -834,7 +903,10 @@
 - **원문 소설 구간 (EN)**: Robinyard's desperate cry tore through the mist.
 - **원문 소설 구간 (KR)**: 로비냐드의 마지막 피 끓는 절규가 울려 퍼졌다. 가웨인의 지팡이가 바닥을 한 번 강하게 내리쳤다. 그 맑은 울림을 나침반 삼아 에일라의 쇠뇌가 세 걸음 왼쪽의 허공으로 화살을 쏘았다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -871,7 +943,10 @@
 - **원문 소설 구간 (EN)**: Gawain's iron staff struck the stone with a clear, bell-like chime. Guided by that acoustic beacon, Aila fired three paces to the left. Kaze's deflection blade clipped the bolt mid-flight to bend its arc, Rondol's rushing tide doubled its velocity, and the projectile drove straight into the vulnerable joint beneath Belphegor's jaw. Roaring with renewed fury, Grimli brought his maul down in a crushing overhead blow that obliterated the crystal core. As Eliana splashed consecrated holy water into the fracture, Belphegor shrieked in agony and plummeted over the cliffside into the abyss.
 - **원문 소설 구간 (KR)**: 카제가 허공으로 던진 칼날이 화살 깃을 쳐서 궤적을 굴절시켰고, 론돌의 급류 룬이 가속을 더해 벨페고르의 관절 틈새를 뚫었다. 이어 일어선 그림리의 전력 망치질이 흑요석 흉갑의 핵을 산산조각 냈다. 그 파편 틈으로 엘리아나가 던진 성수가 스며들자, 벨페고르는 끔찍한 비명을 지르며 절벽 아래 천 길 낭떠러지로 추락했다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -908,7 +983,10 @@
 - **원문 소설 구간 (EN)**: Gorgo hissed in fury as her partner vanished into the fog. "Seven Pursuers... you shall repay this blood a thousandfold!" she snarled, dissolving into the swirling vapors.
 - **원문 소설 구간 (KR)**: 메두사 고르고는 파트너의 비참한 최후에 이를 갈며 독안개 속으로 모습을 감췄다. “일곱 추적자 놈들... 오늘의 피는 너희의 목숨으로 반드시 되갚아 주마!”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -945,7 +1023,10 @@
 - **원문 소설 구간 (EN)**: On the mist-soaked stones, Robinyard touched the faces of his weeping companions one last time. "Brothers and sisters... do not weep. Trading one rogue life to fell that abomination is a bargain well struck."
 - **원문 소설 구간 (KR)**: 안개가 걷힌 신전 바닥에서, 로비냐드는 피 묻은 손으로 동료들의 얼굴을 하나씩 어루만졌다. 그의 손끝에서 떨어진 핏방울이 차가운 판석 위에 붉은 꽃송이처럼 맺혔다. “형제들이여... 울지 마라. 내 목숨 하나로 괴물을 꺾었으니 남는 장사 아닌가.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -982,7 +1063,10 @@
 - **원문 소설 구간 (EN)**: Robinyard whispered, coughing faintly as the silver bell at his hip tinkled softly in the gale. "Go north... find the boy... keep the vow to Aleksandar..."
 - **원문 소설 구간 (KR)**: 로비냐드가 희미하게 웃으며 가쁜 기침을 뱉었다. 그의 허리춤에서 흔들리던 은빛 방울이 가냘프게 짤랑거렸다. “북쪽으로 가라... 아이를 찾아야 해... 알렉산다르의 맹세를...”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -1019,7 +1103,10 @@
 - **원문 소설 구간 (EN)**: "Robinyard! Stay awake! I can close the wound!" Eliana cried, but the brave acrobat smiled gently and closed his eyes forever beneath the freezing wind.
 - **원문 소설 구간 (KR)**: “로비냐드! 눈을 감지 마라! 내가 상처를 꿰맬 수 있다!” 엘리아나가 떨리는 손으로 약초를 짓이기며 비명을 질렀으나, 로비냐드는 조용히 미소를 머금은 채 차가운 절벽 바람 속에서 숨을 거두었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -1056,7 +1143,10 @@
 - **원문 소설 구간 (EN)**: With heavy hearts and tear-streaked faces, the six surviving masters interred their brother upon the rocky summit. Grimli bound Robinyard's silver bell firmly to the crown of his heavy warhammer with hardened steel wire.
 - **원문 소설 구간 (KR)**: 여섯 스승은 피눈물을 흘리며 동료의 유해를 바위 봉우리 위에 정성껏 묻었다. 그림리는 자신의 육중한 쇠망치 모서리에 로비냐드가 늘 지니고 다니던 은빛 방울을 단단한 쇠줄로 묶어 고정했다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -1093,7 +1183,10 @@
 - **원문 소설 구간 (EN)**: "Every time this bell chimes in battle, I shall know you are dancing beside us. Robinyard... we shall forge that boy into the realm's greatest shield."
 - **원문 소설 구간 (KR)**: “이 방울 소리가 울릴 때마다 네가 우리 곁에서 줄타기를 하고 있다고 믿겠다. 로비냐드... 네 몫까지 다해서 그 아이를 천하제일의 의로운 방패로 길러내겠다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -1130,7 +1223,10 @@
 - **원문 소설 구간 (EN)**: "We are six now, but Robinyard walks forever within our breath," Gawain said softly. "Forward, to the northern wastes!"
 - **원문 소설 구간 (KR)**: 그림리가 거친 손으로 돌무덤을 내리치며 피 섞인 맹세를 토해냈다. 가웨인이 지팡이를 짚으며 무거운 침묵을 깼다. “우리는 이제 일곱이 아니라 여섯이다. 그러나 로비냐드의 영혼은 영원히 우리 호흡 속에 살아 숨 쉴 것이다. 가자, 북쪽 황야로!”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
@@ -1167,7 +1263,10 @@
 - **원문 소설 구간 (EN)**: Only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **원문 소설 구간 (KR)**: 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다. 절벽 너머로 부는 북풍 속에서, 그들의 눈빛에는 슬픔을 넘어선 서릿발 같은 결의가 깃들어 있었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”. 이어 결말에서는 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다.
+  - 제3화 『안개 절벽의 피』(Blood on the Mist Cliff): 북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 중반부 벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 이어 결말에서는 ==========================
+소설 관련 카드게임 플레이를 원하시나요?
+아래 사이트에서 플레이 하세요!
+Https://SNSHero.
   - `EN`: Episode 03 ('Blood on the Mist Cliff'): Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. As the conflict escalates (Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril.), the episode culminates when only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
