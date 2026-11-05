@@ -906,7 +906,7 @@ def generate_episode_cutscenes(ep: int) -> Tuple[Dict[str, Any], str, str]:
             f"5) PROPS & PROP HOLDER SPECIFICATION: {prop_block_en} "
             f"6) {diag['dialoguePromptEn']} "
             f"7) {no_text_en} "
-            f"8) STYLE: Masterpiece 7-head-tall 2D fantasy anime cinema (ufotable & Makoto Shinkai quality), 16:9 widescreen, 24fps, smooth 6-second continuous camera motion."
+            f"8) STYLE: Masterpiece 7-head-tall 2D fantasy cinematic anime, high-budget hand-drawn cel-shaded animation, atmospheric volumetric lighting, fluid sakuga particle effects, 16:9 widescreen, 24fps, smooth 6-second continuous camera motion."
         )
 
         char_names_short = ", ".join(c["nameEn"] for c in chars) if chars else "none (environment shot)"

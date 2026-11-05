@@ -355,6 +355,22 @@ def attach_start_frame_cutscene(page, fpath: str) -> bool:
 
 
 VEO_SAFE_WORD_MAP = [
+    (r"\bDemon Slayer\b", "premium hand-drawn anime"),
+    (r"\bKimetsu no Yaiba\b", "legendary animation"),
+    (r"\bufotable\b", "cel-shaded dynamic anime"),
+    (r"\bMakoto Shinkai\b", "atmospheric cinematic"),
+    (r"\bShinkai\b", "cinematic"),
+    (r"\bStudio Ghibli\b", "hand-drawn anime"),
+    (r"\bGhibli\b", "hand-drawn anime"),
+    (r"\bHayao Miyazaki\b", "classic animation"),
+    (r"\bMiyazaki\b", "classic animation"),
+    (r"\bWit Studio\b", "dynamic action anime"),
+    (r"\bMAPPA\b", "high-octane anime"),
+    (r"\bKyoto Animation\b", "detailed character anime"),
+    (r"\bKyoAni\b", "detailed character anime"),
+    (r"\bDisney\b", "fantasy animation"),
+    (r"\bPixar\b", "3D animation"),
+    (r"\bMarvel\b", "superhero"),
     (r"\bblood-soaked\b", "snow-covered"),
     (r"\bbloodstained\b", "weather-worn"),
     (r"\bbleeding\b", "glowing"),
