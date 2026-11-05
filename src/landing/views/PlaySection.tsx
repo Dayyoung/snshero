@@ -527,6 +527,7 @@ export function renderBattleBoardGridHtml(): string {
     .map((slot, sIdx) => {
       if (!slot) {
         const isOpponentTurn = playRpgState.turn === 'opponent';
+        const isAiSuggested = !isOpponentTurn && playRpgState.aiSuggestedMove?.slotIdx === sIdx;
         return `
           <button
             type="button"
@@ -535,31 +536,37 @@ export function renderBattleBoardGridHtml(): string {
             class="relative w-full aspect-[5/7] border-2 border-dashed ${
               isOpponentTurn
                 ? 'border-stone-700/60 bg-stone-900/40 text-stone-600 cursor-wait'
+                : isAiSuggested
+                ? 'border-emerald-400 bg-[#064e3b]/30 text-emerald-300 ring-2 ring-emerald-400/40 cursor-pointer active:scale-98 animate-pulse'
                 : 'border-amber-400/40 hover:border-amber-300 bg-[#0e1628]/60 hover:bg-[#131f38] text-amber-300 cursor-pointer active:scale-98'
             } rounded-xs flex flex-col items-center justify-between p-1.5 sm:p-2 transition-transform select-none shadow-sm"
             aria-label="${tr(`슬롯 ${sIdx + 1} 배치`, `Place in Slot ${sIdx + 1}`, `スロット${sIdx + 1}に配置`)}"
           >
             <!-- Slot Header -->
-            <div class="w-full flex items-center justify-between text-[9px] sm:text-[10px] font-mono ${isOpponentTurn ? 'text-stone-600' : 'text-stone-400/80'}">
+            <div class="w-full flex items-center justify-between text-[9px] sm:text-[10px] font-mono ${isOpponentTurn ? 'text-stone-600' : isAiSuggested ? 'text-emerald-300 font-bold' : 'text-stone-400/80'}">
               <span>#${sIdx + 1}</span>
-              <span class="${isOpponentTurn ? 'text-stone-700' : 'text-amber-400/60'}">✦</span>
+              <span class="${isOpponentTurn ? 'text-stone-700' : isAiSuggested ? 'text-emerald-400' : 'text-amber-400/60'}">${isAiSuggested ? '🤖 AI' : '✦'}</span>
             </div>
 
             <!-- Center Target / Seal Cue -->
             <div class="flex flex-col items-center justify-center gap-1 my-auto">
               <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border ${
-                isOpponentTurn ? 'border-stone-700 bg-black/40 text-stone-600' : 'border-amber-400/40 bg-black/50 text-amber-400'
+                isOpponentTurn
+                  ? 'border-stone-700 bg-black/40 text-stone-600'
+                  : isAiSuggested
+                  ? 'border-emerald-400 bg-emerald-950/80 text-emerald-300'
+                  : 'border-amber-400/40 bg-black/50 text-amber-400'
               } flex items-center justify-center text-xs sm:text-sm font-black">
-                ${isOpponentTurn ? '⏳' : '+'}
+                ${isOpponentTurn ? '⏳' : isAiSuggested ? '🎯' : '+'}
               </div>
-              <span class="text-[10px] sm:text-[11px] font-black tracking-wider ${isOpponentTurn ? 'text-stone-600' : 'text-amber-400'}">
-                ${isOpponentTurn ? tr('대기...', 'WAIT', '待機...') : tr('[배치]', '[PLACE]', '[配置]')}
+              <span class="text-[10px] sm:text-[11px] font-black tracking-wider ${isOpponentTurn ? 'text-stone-600' : isAiSuggested ? 'text-emerald-300' : 'text-amber-400'}">
+                ${isOpponentTurn ? tr('대기...', 'WAIT', '待機...') : isAiSuggested ? tr('[AI 추천]', '[AI BEST]', '[AI推奨]') : tr('[배치]', '[PLACE]', '[配置]')}
               </span>
             </div>
 
             <!-- Footer Cue -->
-            <div class="text-[8px] sm:text-[9px] font-mono truncate ${isOpponentTurn ? 'text-stone-700' : 'text-stone-400/60'}">
-              ${isOpponentTurn ? 'AI TURN' : 'TAP HERE'}
+            <div class="text-[8px] sm:text-[9px] font-mono truncate ${isOpponentTurn ? 'text-stone-700' : isAiSuggested ? 'text-emerald-300/90 font-bold' : 'text-stone-400/60'}">
+              ${isOpponentTurn ? 'AI TURN' : isAiSuggested ? (playRpgState.aiSuggestedMove?.reason || 'BEST MOVE') : 'TAP HERE'}
             </div>
           </button>
         `;
@@ -645,6 +652,7 @@ export function renderBattleHandRowHtml(): string {
   return playRpgState.playerHand
     .map((cId, hIdx) => {
       const isSelected = playRpgState.selectedHandIndex === hIdx;
+      const isAiSuggested = playRpgState.aiSuggestedMove?.handIdx === hIdx;
       return `
         <button
           type="button"
@@ -652,13 +660,19 @@ export function renderBattleHandRowHtml(): string {
           data-hand-index="${hIdx}"
           class="relative flex-1 min-w-0 sm:min-w-[80px] md:min-w-[100px] max-w-[70px] sm:max-w-[110px] md:max-w-[125px] text-left p-0 bg-transparent border-0 cursor-pointer transition-transform ${
             isSelected
-              ? '-translate-y-2 ring-2 ring-amber-400 rounded-sm z-20'
+              ? isAiSuggested
+                ? '-translate-y-2.5 ring-2 ring-emerald-400 rounded-sm z-20'
+                : '-translate-y-2 ring-2 ring-amber-400 rounded-sm z-20'
+              : isAiSuggested
+              ? 'ring-1 ring-emerald-400/80 rounded-sm hover:-translate-y-1 opacity-100'
               : 'hover:-translate-y-1 opacity-95 hover:opacity-100'
           }"
         >
           ${
             isSelected
-              ? `<span class="absolute -top-3 left-1/2 -translate-x-1/2 z-40 px-1.5 py-0.2 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs whitespace-nowrap border border-stone-900 shadow-md">▼ SELECT</span>`
+              ? `<span class="absolute -top-3 left-1/2 -translate-x-1/2 z-40 px-1.5 py-0.2 ${isAiSuggested ? 'bg-emerald-400 text-stone-950 font-black' : 'bg-amber-400 text-stone-950 font-black'} text-[8px] sm:text-[9px] rounded-xs whitespace-nowrap border border-stone-900 shadow-md">${isAiSuggested ? '🤖 AI BEST' : '▼ SELECT'}</span>`
+              : isAiSuggested
+              ? `<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 z-40 px-1 py-0.2 bg-emerald-500 text-stone-950 text-[7px] sm:text-[8px] font-black rounded-xs whitespace-nowrap border border-stone-900 shadow-sm">AI PICK</span>`
               : ''
           }
           ${renderOriginalCardHtml(cId, {

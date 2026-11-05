@@ -78,6 +78,14 @@ export interface BattleSlotState {
   name: string;
 }
 
+export interface PlayerTacticalMove {
+  handIdx: number;
+  slotIdx: number;
+  score: number;
+  reason: string;
+  flipsCount: number;
+}
+
 export interface PlayRpgState {
   activeTab: PlayTabKey;
   subState: PlaySubState;
@@ -113,6 +121,7 @@ export interface PlayRpgState {
   opponentName: string;
   lastPlacedSlot: number | null;
   flippedSlots: number[];
+  aiSuggestedMove: PlayerTacticalMove | null;
 
   // Arcade Sub-state
   arcadeQuery: string;
@@ -156,6 +165,7 @@ export const playRpgState: PlayRpgState = {
   opponentName: '섀도우렐름 척후병',
   lastPlacedSlot: null,
   flippedSlots: [],
+  aiSuggestedMove: null,
 
   arcadeQuery: '',
   arcadeElement: 'all',
@@ -1024,6 +1034,12 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
       `${chapLabel} 登場人物 (${epDeck.leaderName}${secondName} 他)`
     );
   }
+
+  // Pre-calculate tactical AI recommendation for opening move
+  playRpgState.aiSuggestedMove = findBestPlayerTacticalMove();
+  if (playRpgState.aiSuggestedMove) {
+    playRpgState.selectedHandIndex = playRpgState.aiSuggestedMove.handIdx;
+  }
 }
 
 /**
@@ -1169,11 +1185,21 @@ export function playCardToSlot(
     }
   } else {
     playRpgState.turn = 'player';
-    playRpgState.selectedHandIndex = 0;
+    playRpgState.aiSuggestedMove = findBestPlayerTacticalMove();
+    if (playRpgState.aiSuggestedMove) {
+      playRpgState.selectedHandIndex = playRpgState.aiSuggestedMove.handIdx;
+    } else {
+      playRpgState.selectedHandIndex = 0;
+    }
+
+    const suggestText = playRpgState.aiSuggestedMove
+      ? ` 🤖 [AI 추천: ${playRpgState.aiSuggestedMove.slotIdx + 1}번 슬롯 (${playRpgState.aiSuggestedMove.reason})]`
+      : '';
+
     playRpgState.battleMessage = tr(
-      '내 턴: 출격할 카드를 선택한 후 3x3 전장의 빈 슬롯을 터치하세요.',
-      'Your turn: Select a card and touch an empty slot.',
-      'あなたのターン：カードを選択して空きスロットをタッチしてください。'
+      `내 턴: 출격할 카드를 선택한 후 3x3 전장의 빈 슬롯을 터치하세요.${suggestText}`,
+      `Your turn: Select a card and touch an empty slot.${suggestText}`,
+      `あなたのターン：カードを選択して空きスロットをタッチしてください。${suggestText}`
     );
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('hero_rpg_board_updated'));
@@ -1272,6 +1298,196 @@ function countPotentialFlips(
     if (n && n.owner !== placedOwner && right > n.stats[3]) flips++;
   }
   return flips;
+}
+
+/**
+ * Advanced Tactical AI Engine for Player's Auto-Play & Real-Time Hinting:
+ * Evaluates board state, opponent's placed cards, and opponent's remaining hand
+ * to calculate the highest expected-value placement (Max Flips, Vulnerability Defense, Positional Advantage).
+ */
+export function findBestPlayerTacticalMove(): PlayerTacticalMove | null {
+  if (playRpgState.playerHand.length === 0) return null;
+
+  // 1. Gather all empty slots on the 3x3 board
+  const emptySlots: number[] = [];
+  playRpgState.battleBoard.forEach((slot, idx) => {
+    if (slot === null) emptySlots.push(idx);
+  });
+  if (emptySlots.length === 0) return null;
+
+  // 2. Pre-analyze opponent's remaining hand stats to calculate defensive vulnerability
+  const opponentHandStats = playRpgState.opponentHand.map((cid) => getCardCombatStats(cid, 'opponent'));
+
+  let bestMove: PlayerTacticalMove = {
+    handIdx: 0,
+    slotIdx: emptySlots[0],
+    score: -Infinity,
+    reason: '',
+    flipsCount: 0,
+  };
+
+  // Positional helpers: Corners (0, 2, 6, 8), Center (4)
+  const isCorner = (slot: number) => slot === 0 || slot === 2 || slot === 6 || slot === 8;
+  const isCenter = (slot: number) => slot === 4;
+
+  for (let hIdx = 0; hIdx < playRpgState.playerHand.length; hIdx++) {
+    const cardId = playRpgState.playerHand[hIdx];
+    const stats = getCardCombatStats(cardId, 'player'); // [top, right, bottom, left]
+    const statSum = stats[0] + stats[1] + stats[2] + stats[3];
+
+    for (const slot of emptySlots) {
+      let score = 0;
+      let flipCount = 0;
+      let capturedStatsTotal = 0;
+      const reasonList: string[] = [];
+
+      // A. Offensive Flip Evaluation (Directly attack and flip opponent's placed cards)
+      // Top neighbor: slot - 3
+      if (slot >= 3) {
+        const topNeighbor = playRpgState.battleBoard[slot - 3];
+        if (topNeighbor && topNeighbor.owner === 'opponent') {
+          if (stats[0] > topNeighbor.stats[2]) {
+            flipCount++;
+            capturedStatsTotal += (topNeighbor.stats[0] + topNeighbor.stats[1] + topNeighbor.stats[2] + topNeighbor.stats[3]);
+          }
+        }
+      }
+      // Bottom neighbor: slot + 3
+      if (slot <= 5) {
+        const bottomNeighbor = playRpgState.battleBoard[slot + 3];
+        if (bottomNeighbor && bottomNeighbor.owner === 'opponent') {
+          if (stats[2] > bottomNeighbor.stats[0]) {
+            flipCount++;
+            capturedStatsTotal += (bottomNeighbor.stats[0] + bottomNeighbor.stats[1] + bottomNeighbor.stats[2] + bottomNeighbor.stats[3]);
+          }
+        }
+      }
+      // Left neighbor: slot - 1
+      if (slot % 3 !== 0) {
+        const leftNeighbor = playRpgState.battleBoard[slot - 1];
+        if (leftNeighbor && leftNeighbor.owner === 'opponent') {
+          if (stats[3] > leftNeighbor.stats[1]) {
+            flipCount++;
+            capturedStatsTotal += (leftNeighbor.stats[0] + leftNeighbor.stats[1] + leftNeighbor.stats[2] + leftNeighbor.stats[3]);
+          }
+        }
+      }
+      // Right neighbor: slot + 1
+      if (slot % 3 !== 2) {
+        const rightNeighbor = playRpgState.battleBoard[slot + 1];
+        if (rightNeighbor && rightNeighbor.owner === 'opponent') {
+          if (stats[1] > rightNeighbor.stats[3]) {
+            flipCount++;
+            capturedStatsTotal += (rightNeighbor.stats[0] + rightNeighbor.stats[1] + rightNeighbor.stats[2] + rightNeighbor.stats[3]);
+          }
+        }
+      }
+
+      // Flip score bonus (Heavy priority on capturing opponent cards)
+      if (flipCount > 0) {
+        score += flipCount * 15000;
+        score += capturedStatsTotal * 80;
+        if (flipCount >= 2) {
+          score += 30000; // Multi-flip combo
+          reasonList.push(`더블 역전(+${flipCount})`);
+        } else {
+          reasonList.push(`적 카드 역전(+1)`);
+        }
+      }
+
+      // B. Defensive Vulnerability Evaluation against Opponent's Remaining Deck
+      // Examine each side that borders an EMPTY slot (where opponent could place next)
+      // 1. Top border (slot - 3)
+      if (slot < 3) {
+        // Wall: 100% immune from attack
+        score += (10 - stats[0]) * 150; // Efficient placement of lower stat against wall
+      } else if (playRpgState.battleBoard[slot - 3] === null) {
+        // Exposed to slot - 3. Check opponent hand bottom stats vs my top stat
+        const threats = opponentHandStats.filter((oStats) => oStats[2] > stats[0]).length;
+        if (threats === 0) {
+          score += 4500; // Iron wall
+        } else {
+          score -= threats * 2200;
+        }
+      }
+
+      // 2. Bottom border (slot + 3)
+      if (slot > 5) {
+        // Wall: 100% immune
+        score += (10 - stats[2]) * 150;
+      } else if (playRpgState.battleBoard[slot + 3] === null) {
+        // Exposed to slot + 3. Check opponent hand top stats vs my bottom stat
+        const threats = opponentHandStats.filter((oStats) => oStats[0] > stats[2]).length;
+        if (threats === 0) {
+          score += 4500;
+        } else {
+          score -= threats * 2200;
+        }
+      }
+
+      // 3. Left border (slot - 1)
+      if (slot % 3 === 0) {
+        // Wall: 100% immune
+        score += (10 - stats[3]) * 150;
+      } else if (playRpgState.battleBoard[slot - 1] === null) {
+        // Exposed to slot - 1. Check opponent hand right stats vs my left stat
+        const threats = opponentHandStats.filter((oStats) => oStats[1] > stats[3]).length;
+        if (threats === 0) {
+          score += 4500;
+        } else {
+          score -= threats * 2200;
+        }
+      }
+
+      // 4. Right border (slot + 1)
+      if (slot % 3 === 2) {
+        // Wall: 100% immune
+        score += (10 - stats[1]) * 150;
+      } else if (playRpgState.battleBoard[slot + 1] === null) {
+        // Exposed to slot + 1. Check opponent hand left stats vs my right stat
+        const threats = opponentHandStats.filter((oStats) => oStats[3] > stats[1]).length;
+        if (threats === 0) {
+          score += 4500;
+        } else {
+          score -= threats * 2200;
+        }
+      }
+
+      // C. Positional Strategy
+      if (isCorner(slot)) {
+        score += 3500; // Corners are inherently safer
+        if (flipCount === 0) reasonList.push('코너 방어 진형');
+      } else if (isCenter(slot)) {
+        if (flipCount === 0) {
+          score -= 4000; // Do not waste center in early game without flips
+        } else {
+          score += 2000;
+          reasonList.push('전장 중앙 제어');
+        }
+      } else {
+        score += 1000; // Edge
+      }
+
+      // D. Card Conservation in Early Game
+      if (playRpgState.playerHand.length >= 4 && flipCount === 0) {
+        score -= statSum * 40;
+      } else {
+        score += statSum * 30;
+      }
+
+      if (score > bestMove.score) {
+        bestMove = {
+          handIdx: hIdx,
+          slotIdx: slot,
+          score,
+          reason: reasonList.join(' · ') || '최적 전술 수',
+          flipsCount: flipCount,
+        };
+      }
+    }
+  }
+
+  return bestMove;
 }
 
 /**
@@ -1715,11 +1931,25 @@ export function runAutoStep(respectSpeedAndImageGate: boolean = false): boolean 
     return true;
   } else if (playRpgState.subState === 'battle') {
     if (!playRpgState.battleWinner && playRpgState.turn === 'player') {
-      // Find empty slot
-      const emptyIdx = playRpgState.battleBoard.findIndex((s) => s === null);
-      if (emptyIdx !== -1 && playRpgState.playerHand.length > 0) {
-        playCardToSlot(0, emptyIdx, 'player');
+      // Tactical AI Engine: evaluates opponent's placed cards and opponent hand to counter-pick
+      const bestMove = findBestPlayerTacticalMove();
+      if (bestMove && playRpgState.playerHand.length > 0) {
+        const cardId = playRpgState.playerHand[bestMove.handIdx];
+        const cardName = getLocalizedCharacterName(cardId) || `카드 ${cardId}`;
+        playRpgState.battleMessage = tr(
+          `🤖 [전술 AI 출격] ${cardName} → ${bestMove.slotIdx + 1}번 슬롯 (${bestMove.reason})`,
+          `🤖 [Tactical AI] ${cardName} → Slot ${bestMove.slotIdx + 1} (${bestMove.reason})`,
+          `🤖 [戦術AI出撃] ${cardName} → スロット${bestMove.slotIdx + 1} (${bestMove.reason})`
+        );
+        playCardToSlot(bestMove.handIdx, bestMove.slotIdx, 'player');
         return true;
+      } else {
+        // Fallback if no specific move found
+        const emptyIdx = playRpgState.battleBoard.findIndex((s) => s === null);
+        if (emptyIdx !== -1 && playRpgState.playerHand.length > 0) {
+          playCardToSlot(0, emptyIdx, 'player');
+          return true;
+        }
       }
     } else if (playRpgState.battleWinner) {
       if (playRpgState.repeatHunting) {
