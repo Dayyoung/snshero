@@ -1281,18 +1281,10 @@ html, body {
   margin-bottom: 0 !important;
 }
 
-/* Eliminate Google Auto-Placed ads, anchor ads, and pushdown spacers that create large gaps or obstruct screen */
-.google-auto-placed,
+/* Eliminate Google Auto-Placed anchor banner bars and pushdown spacers that create large gaps or obstruct screen */
+.google-auto-placed:not([style*="fixed"]):not([style*="fullscreen"]),
 .adsbygoogle-noab-wrap,
 ins.adsbygoogle[data-anchor-status],
-div[id*="aswift"][style*="position: fixed"],
-div[id*="aswift"][style*="position:fixed"],
-div[id*="google_ads_iframe"][style*="position: fixed"],
-div[id*="google_ads_iframe"][style*="position:fixed"],
-div[aria-label*="Advertisement"][style*="position: fixed"],
-div[aria-label*="Advertisement"][style*="position:fixed"],
-div[aria-label*="광고"][style*="position: fixed"],
-div[aria-label*="광고"][style*="position:fixed"],
 iframe[name*="google_ads_top_frame"],
 iframe[name*="google_ads_bottom_frame"] {
   display: none !important;
@@ -1306,6 +1298,55 @@ iframe[name*="google_ads_bottom_frame"] {
   opacity: 0 !important;
   z-index: -9999 !important;
   overflow: hidden !important;
+}
+
+/* Ensure Google Vignette (interstitial) ad overlay & close buttons remain 100% interactive and closable */
+div[id*="aswift"][style*="position: fixed"],
+div[id*="aswift"][style*="position:fixed"],
+div[id*="google_ads_iframe"][style*="position: fixed"],
+div[id*="google_ads_iframe"][style*="position:fixed"],
+div[aria-label*="Advertisement"][style*="position: fixed"],
+div[aria-label*="Advertisement"][style*="position:fixed"],
+div[aria-label*="광고"][style*="position: fixed"],
+div[aria-label*="광고"][style*="position:fixed"] {
+  pointer-events: auto !important;
+  visibility: visible !important;
+}
+
+/* OpenCode Terminal-Flat Emergency Vignette Rescue Button */
+.snshero-vignette-rescue-btn {
+  position: fixed !important;
+  top: 14px !important;
+  right: 14px !important;
+  z-index: 2147483647 !important;
+  background-color: #201d1d !important;
+  color: #fdfcfc !important;
+  border: 1.5px solid #fdfcfc !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 10px 18px !important;
+  border-radius: 4px !important;
+  min-height: 44px !important;
+  min-width: 44px !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  text-decoration: none !important;
+  user-select: none !important;
+  touch-action: manipulation !important;
+  transition: transform 0.15s ease, background-color 0.15s ease !important;
+}
+.snshero-vignette-rescue-btn:hover {
+  background-color: #302c2c !important;
+  transform: scale(1.04) !important;
+}
+.snshero-vignette-rescue-btn:active {
+  background-color: #0f0000 !important;
+  transform: scale(0.97) !important;
 }
 
 /* Designated banner slot ads and iframes are 100% visible and unsuppressed */

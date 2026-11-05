@@ -113,6 +113,9 @@ import {
   pushAdSenseTags,
   initAdSenseContainmentObserver,
   syncAdSenseRatioLayout,
+  protectLinksFromVignette,
+  initGoogleVignetteRescue,
+  dismissGoogleVignette,
 } from './services/adsenseManager';
 import { cardNurtureStore } from './services/cardNurtureStore';
 import { playRpgState, runAutoStep, ensureGameStarted } from './services/playRpgEngine';
@@ -245,6 +248,7 @@ export function renderApp(): void {
   // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
   syncAdSenseRatioLayout(state.activeView);
   pushAdSenseTags(state.activeView);
+  protectLinksFromVignette();
 }
 
 /**
@@ -274,6 +278,7 @@ export function renderSectionContent(view: ViewKey): void {
     // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
     syncAdSenseRatioLayout(view);
     pushAdSenseTags(view);
+    protectLinksFromVignette();
 
     window.scrollTo({ top: 0, behavior: 'instant' });
   } else {
@@ -972,13 +977,18 @@ export function mountLanding(): void {
 
   // 2. Normalize initial URL to `#${initialView}` without wiping query parameters
   const currentHash = window.location.hash;
-  if (!currentHash || !currentHash.startsWith(`#${initialView}`)) {
+  if (!currentHash || !currentHash.startsWith(`#${initialView}`) || currentHash.includes('google_vignette')) {
     const targetHash = `#${initialView}`;
     try {
       window.history.replaceState({ view: initialView }, '', targetHash);
     } catch {
       window.location.hash = initialView;
     }
+  }
+
+  // Google Vignette rescue if loaded with aria-hidden or leftover overlay
+  if (document.body.getAttribute('aria-hidden') === 'true' || currentHash.includes('google_vignette')) {
+    dismissGoogleVignette(initialView);
   }
 
   // 3. Register Event Listeners (15-second idle auto-play permanently removed by user request)
@@ -1061,6 +1071,15 @@ export function mountLanding(): void {
   // 5. hashchange Listener (handles user manual hash edit or direct # links)
   window.addEventListener('hashchange', () => {
     if (isProgrammaticRouting) return;
+
+    // Google Vignette ad interception guard: prevent navigation reset on #google_vignette
+    if (window.location.hash.includes('google_vignette')) {
+      initGoogleVignetteRescue(state.activeView);
+      return;
+    } else {
+      dismissGoogleVignette(state.activeView);
+    }
+
     checkAndProcessPayAppSuccess();
     const parsedView = parseRoute();
     if (parsedView === 'book') {
@@ -1078,6 +1097,14 @@ export function mountLanding(): void {
   // 6. popstate Listener (handles browser Back / Forward buttons)
   window.addEventListener('popstate', (event: PopStateEvent) => {
     if (isProgrammaticRouting) return;
+
+    if (window.location.hash.includes('google_vignette')) {
+      initGoogleVignetteRescue(state.activeView);
+      return;
+    } else {
+      dismissGoogleVignette(state.activeView);
+    }
+
     const stateView = event.state?.view as ViewKey | undefined;
     const targetView = stateView && VALID_VIEWS.includes(stateView) ? stateView : parseRoute();
     if (targetView !== state.activeView) {

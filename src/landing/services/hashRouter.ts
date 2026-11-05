@@ -133,18 +133,29 @@ export const LEGACY_ROUTE_MAPPING: Record<LegacyRoute, HashRoute> = {
 };
 
 /**
- * Parses the current URL hash or legacy pathname into a valid ViewKey.
- * Defaults to 'home' if empty or unrecognized.
+ * Strips Google Vignette ad markers (#google_vignette) and cleans hash/pathname.
  */
-export function parseRoute(hashString?: string, pathnameString?: string): ViewKey {
-  const rawHash = (hashString !== undefined ? hashString : (typeof window !== 'undefined' ? window.location.hash : ''))
+export function sanitizeHashString(hashString: string): string {
+  return hashString
+    .replace(/#?google_vignette/gi, '')
     .replace(/^#\/?/, '')
     .split('?')[0]
     .replace(/\/$/, '')
+    .trim()
     .toLowerCase();
+}
 
-  if (rawHash && rawHash in HASH_VIEW_MAP) {
-    return HASH_VIEW_MAP[rawHash];
+/**
+ * Parses the current URL hash or legacy pathname into a valid ViewKey.
+ * Defaults to 'home' if empty or unrecognized.
+ * Correctly strips Google Vignette overlays (#google_vignette) to prevent unwanted redirects.
+ */
+export function parseRoute(hashString?: string, pathnameString?: string): ViewKey {
+  const inputHash = hashString !== undefined ? hashString : (typeof window !== 'undefined' ? window.location.hash : '');
+  const cleanHash = sanitizeHashString(inputHash);
+
+  if (cleanHash && cleanHash in HASH_VIEW_MAP) {
+    return HASH_VIEW_MAP[cleanHash];
   }
 
   const cleanPath = (pathnameString !== undefined ? pathnameString : (typeof window !== 'undefined' ? window.location.pathname : ''))

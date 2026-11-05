@@ -292,27 +292,199 @@ export function syncAdSenseRatioLayout(_activeView?: string): void {
 }
 
 /**
+ * Recursively tags all internal navigation links, buttons, and action items with
+ * `data-google-vignette="false"` (Google AdSense official standard attribute)
+ * to prevent Google Auto-Ads from disrupting internal client-side SPA routing.
+ */
+export function protectLinksFromVignette(root?: ParentNode): void {
+  if (typeof document === 'undefined') return;
+  const targetRoot = root || document;
+
+  try {
+    const candidates = targetRoot.querySelectorAll<HTMLElement>(
+      'a, button, [data-nav], [data-action], [role="button"], .brand-link, .nav-item-btn, .sidebar-item-btn'
+    );
+    candidates.forEach((el) => {
+      if (!el.hasAttribute('data-google-vignette')) {
+        el.setAttribute('data-google-vignette', 'false');
+      }
+    });
+  } catch {}
+}
+
+let rescueButtonEl: HTMLElement | null = null;
+let rescueKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
+let currentFallbackView: string = 'home';
+
+/**
+ * Checks whether Google Vignette full-screen ad overlay is currently engaged.
+ */
+export function isVignetteActive(): boolean {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return false;
+  return (
+    window.location.hash.includes('google_vignette') ||
+    document.body.getAttribute('aria-hidden') === 'true' ||
+    document.body.classList.contains('google-vignette-active')
+  );
+}
+
+/**
+ * Force-dismisses any engaged Google Vignette overlay, cleans URL hash,
+ * restores document.body accessibility, and safely unlocks user interactivity.
+ */
+export function dismissGoogleVignette(fallbackView?: string): void {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+  const targetView = fallbackView || currentFallbackView || 'home';
+
+  // 1. Restore body interactivity and accessibility
+  try {
+    document.body.removeAttribute('aria-hidden');
+    document.body.style.removeProperty('overflow');
+    document.body.style.removeProperty('pointer-events');
+    document.body.style.removeProperty('padding-top');
+    document.body.style.removeProperty('margin-top');
+    document.body.classList.remove('google-vignette-active');
+  } catch {}
+
+  // 2. Remove emergency rescue close button
+  if (rescueButtonEl && rescueButtonEl.parentNode) {
+    try {
+      rescueButtonEl.parentNode.removeChild(rescueButtonEl);
+    } catch {}
+    rescueButtonEl = null;
+  }
+
+  // 3. Remove ESC key listener
+  if (rescueKeydownHandler) {
+    window.removeEventListener('keydown', rescueKeydownHandler);
+    rescueKeydownHandler = null;
+  }
+
+  // 4. Sanitize URL hash to remove `#google_vignette`
+  try {
+    const currentHash = window.location.hash;
+    if (currentHash.includes('google_vignette')) {
+      const sanitized = currentHash.replace(/#?google_vignette/gi, '').replace(/^#\/?/, '').trim();
+      const resolvedHash = sanitized ? `#${sanitized}` : `#${targetView}`;
+      window.history.replaceState({ view: targetView }, '', resolvedHash);
+    }
+  } catch {}
+
+  // 5. Hide stuck fixed full-screen interstitial overlays
+  try {
+    const interstitialOverlays = document.querySelectorAll<HTMLElement>(
+      'body > div[id*="aswift_"][style*="position: fixed"], body > div[id*="aswift_"][style*="position:fixed"], .google-auto-placed[style*="fixed"]'
+    );
+    interstitialOverlays.forEach((overlay) => {
+      overlay.style.setProperty('display', 'none', 'important');
+      overlay.style.setProperty('pointer-events', 'none', 'important');
+    });
+  } catch {}
+}
+
+/**
+ * Initializes the Google Vignette Safety & Emergency Rescue subsystem.
+ * Mounts a 100% reliable 44px+ [✕ 닫기 (Close Ad)] button at the top-right corner
+ * (z-index: 2147483647), and binds Escape key + popstate listeners to ensure the
+ * user can NEVER be trapped on `#google_vignette`.
+ */
+export function initGoogleVignetteRescue(fallbackView?: string): void {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+  if (fallbackView) {
+    currentFallbackView = fallbackView;
+  }
+
+  // If rescue button already mounted, do nothing
+  if (rescueButtonEl && rescueButtonEl.isConnected) return;
+
+  // Mount terminal-flat emergency close button
+  rescueButtonEl = document.createElement('button');
+  rescueButtonEl.type = 'button';
+  rescueButtonEl.className = 'snshero-vignette-rescue-btn';
+  rescueButtonEl.setAttribute('aria-label', '전면 광고 닫고 게임으로 복귀');
+  rescueButtonEl.innerHTML = '<span>✕</span> <span>닫기 (Close)</span>';
+
+  const onRescueClick = (e: Event) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dismissGoogleVignette(fallbackView);
+  };
+
+  rescueButtonEl.addEventListener('click', onRescueClick);
+  rescueButtonEl.addEventListener('touchend', onRescueClick);
+
+  document.body.appendChild(rescueButtonEl);
+
+  // Register ESC key shortcut to close vignette instantly
+  if (!rescueKeydownHandler) {
+    rescueKeydownHandler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        dismissGoogleVignette(fallbackView);
+      }
+    };
+    window.addEventListener('keydown', rescueKeydownHandler);
+  }
+
+  // Also catch popstate/back button
+  const onPopState = () => {
+    dismissGoogleVignette(fallbackView);
+    window.removeEventListener('popstate', onPopState);
+  };
+  window.addEventListener('popstate', onPopState, { once: true });
+}
+
+/**
  * Initializes a DOM MutationObserver and window listeners to enforce strict
- * AdSense containment and aspect-ratio synchronization in real time.
+ * AdSense containment, aspect-ratio synchronization, link vignette protection,
+ * and vignette rescue handlers in real time.
  */
 export function initAdSenseContainmentObserver(): void {
   if (typeof window === 'undefined' || typeof document === 'undefined' || isObserverInitialized) return;
   isObserverInitialized = true;
 
   try {
-    const observer = new MutationObserver(() => {
+    const observer = new MutationObserver((mutations) => {
       cleanupUncontainedAds();
+      protectLinksFromVignette();
+
+      // Detect if Google Vignette hijacked body
+      if (
+        window.location.hash.includes('google_vignette') ||
+        document.body.getAttribute('aria-hidden') === 'true'
+      ) {
+        initGoogleVignetteRescue();
+      } else if (rescueButtonEl && !isVignetteActive()) {
+        dismissGoogleVignette();
+      }
     });
 
     observer.observe(document.body, {
       childList: true,
       subtree: true,
+      attributes: true,
+      attributeFilter: ['aria-hidden', 'style'],
     });
 
-    // Initial layout pass
+    // Initial pass
+    protectLinksFromVignette();
     syncAdSenseRatioLayout();
     cleanupUncontainedAds();
+
+    if (isVignetteActive()) {
+      initGoogleVignetteRescue();
+    }
   } catch {}
+
+  // Handle hash changes to detect or clear #google_vignette
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash.includes('google_vignette')) {
+      initGoogleVignetteRescue();
+    } else {
+      dismissGoogleVignette();
+    }
+  });
 
   // Handle viewport resize and orientation changes safely
   let resizeTimer: any = null;

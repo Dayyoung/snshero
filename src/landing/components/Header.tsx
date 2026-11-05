@@ -55,6 +55,7 @@ export function renderHeader(activeView: ViewKey): string {
         <button
           type="button"
           data-modal="${item.key}"
+          data-google-vignette="false"
           class="nav-item-btn px-3 py-2 text-xs font-semibold rounded-sm transition-colors min-h-[44px] flex items-center justify-center ${activeClass}"
           aria-label="${label}"
         >
@@ -67,6 +68,7 @@ export function renderHeader(activeView: ViewKey): string {
       <button
         type="button"
         data-nav="${item.key}"
+        data-google-vignette="false"
         class="nav-item-btn px-3 py-2 text-xs font-semibold rounded-sm transition-colors min-h-[44px] flex items-center justify-center ${activeClass}"
         aria-current="${isActive ? 'page' : 'false'}"
         aria-label="${label}"
@@ -92,6 +94,7 @@ export function renderHeader(activeView: ViewKey): string {
           <a
             href="#home"
             data-nav="home"
+            data-google-vignette="false"
             class="brand-link flex items-center gap-2 min-h-[44px] no-underline hover:opacity-90 transition-opacity"
             aria-label="${brandName}"
           >
@@ -128,6 +131,7 @@ export function renderHeader(activeView: ViewKey): string {
           <a
             href="#setting"
             data-nav="setting"
+            data-google-vignette="false"
             class="p-2 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer no-underline ${activeView === 'setting' ? 'bg-[#201d1d] text-[#fdfcfc]' : ''}"
             aria-label="${t('nav_setting')}"
             title="${t('setting_title')}"
@@ -142,6 +146,7 @@ export function renderHeader(activeView: ViewKey): string {
                 <button
                   type="button"
                   data-modal="login"
+                  data-google-vignette="false"
                   class="px-2.5 py-1.5 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] flex items-center gap-1.5 cursor-pointer"
                   aria-label="${tr('내 계정 정보', 'My Account Info', 'マイアカウント情報')}"
                 >
@@ -154,6 +159,7 @@ export function renderHeader(activeView: ViewKey): string {
               <button
                 type="button"
                 data-modal="login"
+                data-google-vignette="false"
                 class="px-3 py-2 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] flex items-center justify-center cursor-pointer"
                 aria-label="${t('btn_login')}"
               >
@@ -164,6 +170,7 @@ export function renderHeader(activeView: ViewKey): string {
           <a
             href="#play"
             data-nav="play"
+            data-google-vignette="false"
             class="px-3.5 sm:px-4 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:opacity-90 transition-opacity min-h-[44px] inline-flex items-center justify-center no-underline"
             aria-label="${t('btn_game_start')}"
           >

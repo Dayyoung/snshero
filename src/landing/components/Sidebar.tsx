@@ -68,6 +68,7 @@ export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {
           <button
             type="button"
             data-modal="${item.modalTarget}"
+            data-google-vignette="false"
             class="sidebar-item-btn w-full px-4 py-3 text-sm font-medium flex items-center justify-between border-b border-[rgba(15,0,0,0.06)] rounded-sm min-h-[44px] transition-colors ${activeClass}"
             aria-label="${label}"
           >
@@ -86,6 +87,7 @@ export function renderSidebar(isOpen: boolean, activeView: ViewKey): string {
         <button
           type="button"
           data-nav="${item.key}"
+          data-google-vignette="false"
           class="sidebar-item-btn w-full px-4 py-3 text-sm font-medium flex items-center justify-between border-b border-[rgba(15,0,0,0.06)] rounded-sm min-h-[44px] transition-colors ${activeClass}"
           aria-label="${label}"
         >
