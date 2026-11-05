@@ -2,6 +2,38 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-05 16:25 KST] [대사 출력 종료 후 0.1초 즉시 다음 대사 자동 진행 구현]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "지금 대사를 하고 공백이 있는 시간이 너무 길어. 대사가 끝나면 바로 0.1초후에 다음 대사를 진행할 수 있도록 해줘."
+  - **2. 원인 분석**:
+    - 기존 시스템에서 대사 타이핑이 끝난 후 `AUTO_STEP_INTERVAL_MS (2800ms)` 및 `elapsed < 1500` 최소 읽기 딜레이, `setInterval(700ms)` 폴링 주기 등이 중첩되어, 타이핑 완료 후 다음 대사 진행까지 약 2.8초~3.5초에 달하는 긴 공백(정적 대기)이 발생함.
+  - **3. 전면 개선 구현 내역**:
+    - **(1) 0.1초(100ms) 전용 자동 진행 스케줄러 구축 (`src/landing/services/playRpgEngine.ts`)**:
+      - `scheduleDialogueAutoAdvance()`: 대사 글자 출력이 완료(`curLen >= totalLen`)되거나 사용자가 탭하여 스킵한 순간, 정확히 100ms(0.1초) 뒤에 다음 대사/파트 진행 함수(`advanceDialoguePartOrLine()`)를 즉시 실행.
+      - `clearDialogueAutoAdvanceTimer()`: 사용자 수동 탭, 이전 대사 이동, 모달 닫기 시 타이머를 안전하게 정리하여 중복 전진 방지.
+      - `dialogueCompletedAt` 타임스탬프 필드를 `PlayRpgState`에 신설하여 대사 완료 시점을 1ms 오차 없이 추적.
+    - **(2) 불필요한 대사 대기 게이트 전면 제거 (`isDialogueReadyToAdvance`)**:
+      - 기존 1500ms 최소 읽기 시간 및 1800ms 이미지 대기 게이트를 제거하고, `dialogueCompletedAt` 기준 100ms(0.1초) 경과 시 즉시 `true` 반환.
+      - 대사 중단 방지 하드 워치독(2500ms)을 유지하여 어떤 예외 상황에서도 멈추지 않음.
+    - **(3) 대사 모드 전용 고속 오토 러너 분기 (`runAutoStep`)**:
+      - 대사 모드(`subState === 'dialogue'`)일 때는 일반 턴제 배틀용 2800ms 딜레이를 건너뛰고, 오직 0.1초 게이트만 통과하면 바로 전진하도록 분기 최적화.
+    - **(4) 100ms 주기 고반응성 이벤트 루프 (`src/landing/index.ts`)**:
+      - `snshero_play_rpg_updated` 커스텀 이벤트 리스너를 연동하여 대사 전진 시 0ms 지연으로 화면 리렌더링 및 다음 대사 타이핑 기동.
+      - 오토 러너 인터벌을 700ms에서 100ms로 단축.
+  - **4. 빌드 및 검증**:
+    - `npm run build && node scripts/post-build.js`: 0 error 정상 통과.
+    - `curl -I http://localhost:3000/card-play`: HTTP 200 OK 응답 확인.
+    - 로컬 Git 커밋 완료 (`0c702b40c`).
+    - 연동 구글 폼 완료 보고서 제출 완료 (`[개발] 대사 출력 종료 후 0.1초 즉시 다음 대사 자동 진행 구현 -> 작업완료`).
+- **검증 결과**:
+  - 타이핑 출력이 끝난 직후 0.1초(100ms) 만에 다음 파트 또는 다음 대사로 지체 없이 전진.
+  - 긴 공백 없이 동물의 숲 효과음과 대사가 물 흐르듯 경쾌하게 이어짐.
+  - 프로덕션 번들 빌드: 0 error 정상 완료
+  - 로컬 Git 커밋: `0c702b40c`
+  - 구글 폼 완료 보고서 제출: 완료
+
 ## [2026-11-05 16:14 KST] [대사창 resolveActiveDialogueSpeaker 누락 정의 및 ReferenceError 완벽 해결]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
