@@ -188,22 +188,22 @@ class AudioManager {
     if (typeof localStorage === 'undefined') {
       return {
         bgmEnabled: true,
-        bgmVolume: 50,
+        bgmVolume: 20,
         bgmTrack: 'title',
         sfxEnabled: true,
-        sfxVolume: 70,
+        sfxVolume: 90,
         hapticEnabled: true,
       };
     }
 
     const bgmEnabled = localStorage.getItem('hero_bgm_enabled') !== 'false';
     const bgmVolStr = localStorage.getItem('hero_bgm_volume');
-    const bgmVolume = bgmVolStr !== null ? Math.max(0, Math.min(100, parseInt(bgmVolStr, 10) || 50)) : 50;
+    const bgmVolume = bgmVolStr !== null ? Math.max(0, Math.min(100, parseInt(bgmVolStr, 10) || 20)) : 20;
     const bgmTrack = localStorage.getItem('hero_bgm_track') || 'title';
 
     const sfxEnabled = localStorage.getItem('hero_sfx_enabled') !== 'false';
     const sfxVolStr = localStorage.getItem('hero_sfx_volume');
-    const sfxVolume = sfxVolStr !== null ? Math.max(0, Math.min(100, parseInt(sfxVolStr, 10) || 70)) : 70;
+    const sfxVolume = sfxVolStr !== null ? Math.max(0, Math.min(100, parseInt(sfxVolStr, 10) || 90)) : 90;
 
     const hapticEnabled = localStorage.getItem('hero_haptic_enabled') !== 'false';
 
@@ -288,7 +288,8 @@ class AudioManager {
           this.bgmAudioEl.src = src;
         }
       }
-      this.bgmAudioEl.volume = Math.max(0, Math.min(1, volumePercent / 100));
+      // BGM volume 50% reduced to whisper-quiet ambient level
+      this.bgmAudioEl.volume = Math.max(0, Math.min(1, (volumePercent / 100) * 0.25));
       const playPromise = this.bgmAudioEl.play();
       if (playPromise !== undefined) {
         playPromise.catch((err) => {
@@ -335,7 +336,8 @@ class AudioManager {
 
     if (this.bgmAudioEl) {
       try {
-        this.bgmAudioEl.volume = clamped / 100;
+        // BGM volume 50% reduced to whisper-quiet ambient level
+        this.bgmAudioEl.volume = Math.max(0, Math.min(1, (clamped / 100) * 0.25));
       } catch {}
     }
 
@@ -368,7 +370,8 @@ class AudioManager {
 
     this.withActiveAudioContext((ctx) => {
       let step = 0;
-      const baseVolume = (volumePercent / 100) * 0.08;
+      // BGM volume reduced to whisper-quiet ambient level
+      const baseVolume = (volumePercent / 100) * 0.025;
 
       // Track 1: 'title' Synth Fallback Rhythm (Energetic Chords)
       const titleMelody = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 293.66, 349.23];
@@ -461,7 +464,8 @@ class AudioManager {
 
     this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const vol = (settings.sfxVolume / 100) * 0.35;
+      // Amplified crisp SFX volume
+      const vol = (settings.sfxVolume / 100) * 0.70;
       const frequencies = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
 
       frequencies.forEach((freq, idx) => {
@@ -498,7 +502,8 @@ class AudioManager {
 
     this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const vol = (settings.sfxVolume / 100) * 0.16;
+      // Amplified crisp SFX volume
+      const vol = (settings.sfxVolume / 100) * 0.35;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
@@ -526,7 +531,8 @@ class AudioManager {
 
     this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const vol = (settings.sfxVolume / 100) * 0.22;
+      // Amplified crisp SFX volume
+      const vol = (settings.sfxVolume / 100) * 0.50;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
@@ -554,7 +560,8 @@ class AudioManager {
 
     this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const vol = (settings.sfxVolume / 100) * 0.28;
+      // Amplified crisp SFX volume
+      const vol = (settings.sfxVolume / 100) * 0.60;
       const notes = [440, 554.37, 659.25, 880];
 
       notes.forEach((freq, idx) => {
@@ -588,7 +595,8 @@ class AudioManager {
 
     this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const vol = (settings.sfxVolume / 100) * 0.32;
+      // Amplified crisp SFX volume
+      const vol = (settings.sfxVolume / 100) * 0.75;
 
       // Layer 1: Solid low thump (Card body landing)
       const lowOsc = ctx.createOscillator();
@@ -612,7 +620,7 @@ class AudioManager {
       snapOsc.frequency.setValueAtTime(950, now);
       snapOsc.frequency.exponentialRampToValueAtTime(220, now + 0.035);
 
-      snapGain.gain.setValueAtTime(vol * 0.45, now);
+      snapGain.gain.setValueAtTime(vol * 0.55, now);
       snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
 
       snapOsc.connect(snapGain);
@@ -636,7 +644,8 @@ class AudioManager {
 
     this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const vol = (settings.sfxVolume / 100) * 0.28;
+      // Amplified crisp SFX volume
+      const vol = (settings.sfxVolume / 100) * 0.70;
 
       // Layer 1: Air whoosh / flutter
       const sweepOsc = ctx.createOscillator();
@@ -645,7 +654,7 @@ class AudioManager {
       sweepOsc.frequency.setValueAtTime(220, now);
       sweepOsc.frequency.exponentialRampToValueAtTime(780, now + 0.08);
 
-      sweepGain.gain.setValueAtTime(vol * 0.6, now);
+      sweepGain.gain.setValueAtTime(vol * 0.65, now);
       sweepGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
 
       sweepOsc.connect(sweepGain);
@@ -661,7 +670,7 @@ class AudioManager {
       clickOsc.frequency.exponentialRampToValueAtTime(1100, now + 0.06);
 
       clickGain.gain.setValueAtTime(0.001, now);
-      clickGain.gain.setValueAtTime(vol * 0.8, now + 0.02);
+      clickGain.gain.setValueAtTime(vol * 0.85, now + 0.02);
       clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
 
       clickOsc.connect(clickGain);

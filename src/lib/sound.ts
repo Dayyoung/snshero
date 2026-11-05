@@ -79,11 +79,11 @@ export const playSfx = (type: keyof typeof SFX_URLS | string) => {
     const synthSuccess = playSynthSfx(type);
     if (synthSuccess) return;
 
-    // 2. Secondary fallback: HTMLAudioElement
+    // 2. Secondary fallback: HTMLAudioElement (Amplified volume)
     const url = SFX_URLS[type] || type;
     const audio = new Audio(url);
     (audio as any).playsInline = true;
-    audio.volume = 0.45;
+    audio.volume = 0.85;
     activeAudioList.push(audio);
     audio.onended = () => {
       const idx = activeAudioList.indexOf(audio);
@@ -112,7 +112,7 @@ const playSynthSfx = (type: string): boolean => {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(1400, now);
       osc.frequency.exponentialRampToValueAtTime(450, now + 0.04);
-      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.setValueAtTime(0.40, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
       osc.connect(gain);
       gain.connect(c.destination);
@@ -124,7 +124,7 @@ const playSynthSfx = (type: string): boolean => {
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(260, now);
       osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
-      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.setValueAtTime(0.55, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
       osc.connect(gain);
       gain.connect(c.destination);
@@ -138,7 +138,7 @@ const playSynthSfx = (type: string): boolean => {
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, start);
         gain.gain.setValueAtTime(0.001, start);
-        gain.gain.linearRampToValueAtTime(0.28, start + 0.02);
+        gain.gain.linearRampToValueAtTime(0.60, start + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
         osc.connect(gain);
         gain.connect(c.destination);
@@ -153,7 +153,7 @@ const playSynthSfx = (type: string): boolean => {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, start);
         gain.gain.setValueAtTime(0.001, start);
-        gain.gain.linearRampToValueAtTime(0.3, start + 0.03);
+        gain.gain.linearRampToValueAtTime(0.65, start + 0.03);
         gain.gain.exponentialRampToValueAtTime(0.001, start + 0.4);
         osc.connect(gain);
         gain.connect(c.destination);
@@ -166,7 +166,7 @@ const playSynthSfx = (type: string): boolean => {
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(180, now);
       osc.frequency.exponentialRampToValueAtTime(45, now + 0.08);
-      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.setValueAtTime(0.65, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
       osc.connect(gain);
       gain.connect(c.destination);
@@ -178,7 +178,7 @@ const playSynthSfx = (type: string): boolean => {
       osc.type = 'sawtooth';
       osc.frequency.setValueAtTime(130, now);
       osc.frequency.setValueAtTime(100, now + 0.08);
-      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.setValueAtTime(0.50, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
       osc.connect(gain);
       gain.connect(c.destination);

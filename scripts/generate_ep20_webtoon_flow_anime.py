@@ -244,6 +244,25 @@ def build_episode_scenes_from_manifest(ep: int, manifest: Dict) -> List[Dict]:
 
 def build_veo_prompt(ep: int, scene: Dict) -> str:
     idx = scene["index"]
+    if (ep, idx) == (24, 4):
+        return (
+            "[EP24-S04] 2D dark-fantasy anime cutscene animation. "
+            "Animate the attached start frame smoothly over 6 seconds: "
+            "Smooth cinematic 2D anime camera movement and glowing emerald magic aura around the mage by the ancient stone gate. "
+            "All characters on screen keep their mouths completely closed. "
+            'Off-screen, a gentle, soft-spoken male narrator voice speaks in English: "She placed her glowing staff against the ancient gate, feeling the flow of mana." '
+            "Strict no-text rule: do not render any text, subtitles, or watermarks."
+        )
+    if (ep, idx) == (25, 12):
+        return (
+            "[EP25-S12] 2D dark-fantasy anime cutscene animation. "
+            "Animate the attached start frame smoothly over 6 seconds: "
+            "Smooth cinematic 2D anime camera movement and atmospheric purple magic particles in the grand hall. "
+            "All characters on screen keep their mouths completely closed. "
+            'Off-screen, a gentle, soft-spoken male narrator voice speaks in English: "Draped in crimson ceremonial robes and holding his ornate staff, Lucian stepped forward." '
+            "Strict no-text rule: do not render any text, subtitles, or watermarks."
+        )
+
     vtype = scene["voice_type"]
     speaker = scene["speaker"]
     motion = scene["motion"]
@@ -430,7 +449,7 @@ def delete_failed_tiles() -> int:
 def get_failed_tiles_count() -> int:
     raw = run_flow_js("""
     (() => {
-        const failed = Array.from(document.querySelectorAll('flow-video-tile')).filter(el => (el.innerText || '').includes('실패') || (el.innerText || '').includes('비정상적인 활동'));
+        const failed = Array.from(document.querySelectorAll('flow-video-tile')).slice(0, 2).filter(el => (el.innerText || '').includes('실패') || (el.innerText || '').includes('비정상적인 활동'));
         return failed.length.toString();
     })()
     """)
@@ -836,9 +855,8 @@ def resolve_and_download_video_by_thumb(
         else ""
     )
 
-    run_flow_js(f"""
-    (async () => {{
-        window.__dlMenuStatus = "RUNNING";
+    step1 = run_flow_js(f"""
+    (() => {{
         {scroll_line}
         const vts = Array.from(document.querySelectorAll('flow-video-tile'));
         const vt = vts.find(v => {{
@@ -848,41 +866,34 @@ def resolve_and_download_video_by_thumb(
             if (vid && vid.src && vid.src.startsWith("{escaped_thumb}")) return true;
             return false;
         }});
-        if (!vt) {{
-            window.__dlMenuStatus = "NO_TILE";
-            return;
-        }}
+        if (!vt) return "NO_TILE";
         const moreBtn = vt.querySelector('button[aria-label="옵션 더보기"]');
-        if (!moreBtn) {{
-            window.__dlMenuStatus = "NO_MORE_BTN";
-            return;
-        }}
+        if (!moreBtn) return "NO_MORE_BTN";
         moreBtn.click();
-        await new Promise(r => setTimeout(r, 280));
-        const items1 = Array.from(document.querySelectorAll('[role="menuitem"], .mat-mdc-menu-item'));
-        const dlBtn = items1.find(el => (el.innerText || '').includes('다운로드'));
-        if (!dlBtn) {{
-            window.__dlMenuStatus = "NO_DL_ITEM";
-            return;
-        }}
-        dlBtn.click();
-        await new Promise(r => setTimeout(r, 280));
-        const items2 = Array.from(document.querySelectorAll('[role="menuitem"], .mat-mdc-menu-item'));
-        const origBtn = items2.find(el => (el.innerText || '').includes('720p'));
-        if (origBtn) {{
-            origBtn.click();
-            window.__dlMenuStatus = "CLICKED_720P";
-        }} else {{
-            window.__dlMenuStatus = "CLICKED_DL_DIRECT";
-        }}
+        return "CLICKED_MORE";
     }})()
     """)
-
-    for _ in range(10):
-        time.sleep(0.2)
-        st = run_flow_js("window.__dlMenuStatus || ''")
-        if st and st != "RUNNING":
-            break
+    if step1 == "CLICKED_MORE":
+        time.sleep(0.35)
+        step2 = run_flow_js("""
+        (() => {
+            const items1 = Array.from(document.querySelectorAll('[role="menuitem"], .mat-mdc-menu-item'));
+            const dlBtn = items1.find(el => (el.innerText || '').includes('다운로드'));
+            if (!dlBtn) return "NO_DL_ITEM";
+            dlBtn.click();
+            return "CLICKED_DL";
+        })()
+        """)
+        if step2 == "CLICKED_DL":
+            time.sleep(0.35)
+            run_flow_js("""
+            (() => {
+                const items2 = Array.from(document.querySelectorAll('[role="menuitem"], .mat-mdc-menu-item'));
+                const origBtn = items2.find(el => (el.innerText || '').includes('720p'));
+                if (origBtn) origBtn.click();
+                return origBtn ? "CLICKED_720P" : "CLICKED_DL_DIRECT";
+            })()
+            """)
 
     # Poll ~/Downloads for up to 25s for the newly completed .mp4
     t0 = time.time()
@@ -987,7 +998,7 @@ def harvest_existing_clips_from_flow_grid(
         for sc in scenes
         if not (clips_dir / f"EP{ep:02d}-S{sc['index']:02d}.mp4").exists()
     }
-    if not missing_indices:
+    if not missing_indices or len(missing_indices) <= 2:
         return
 
     ensure_on_project_grid_and_veo_settings()
@@ -1233,22 +1244,34 @@ def process_episode(ep: int, manifest: Dict) -> bool:
             start_t = time.time()
             new_thumb: Optional[str] = None
             empty_pend_streak = 0
+            stuck_99_streak = 0
 
             for poll_idx in range(75):
                 time.sleep(3.0)
                 if poll_idx % 3 == 1:
                     human_idle_jitter()
-                if get_failed_tiles_count() > 0:
-                    print(f"  🛑 [{code}] Failed tile ('비정상적인 활동') detected during poll — resetting tokens!", flush=True)
-                    reset_recaptcha_and_botguard_tokens(reason="failed tile during poll")
-                    break
                 pend = get_pending_tiles_info()
                 curr_thumbs = get_video_tile_thumbnails()
                 diff = [t for t in curr_thumbs if t not in before_thumbs]
-                if diff and len(pend) == 0:
+                if diff and (len(pend) == 0 or not any(code in p for p in pend)):
                     new_thumb = diff[0]
                     print(f"  🎉 [{code}] Generation finished in {time.time() - start_t:.1f}s!", flush=True)
                     break
+                if len(pend) == 0 and get_failed_tiles_count() > 0:
+                    print(f"  🛑 [{code}] Failed tile ('비정상적인 활동') detected during poll — resetting tokens!", flush=True)
+                    reset_recaptcha_and_botguard_tokens(reason="failed tile during poll")
+                    break
+                if any("99%" in p for p in pend):
+                    stuck_99_streak += 1
+                    if stuck_99_streak == 10:
+                        print(f"  🔄 [{code}] Pending tile at 99% for 30s — refreshing Flow grid...", flush=True)
+                        run_flow_js("location.reload()")
+                        time.sleep(4.5)
+                        ensure_on_project_grid_and_veo_settings()
+                        human_move_and_click("Array.from(document.querySelectorAll('mat-nav-list a, mat-nav-list button, flow-project-nav-list *')).find(el => (el.innerText || '').trim() === '동영상')")
+                        time.sleep(1.5)
+                else:
+                    stuck_99_streak = 0
                 if len(pend) == 0 and not diff:
                     empty_pend_streak += 1
                     if empty_pend_streak >= 5:

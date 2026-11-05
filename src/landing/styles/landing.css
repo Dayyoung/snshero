@@ -350,8 +350,24 @@ div[aria-label*="광고"][style*="position: fixed"],
   margin: 0 auto !important;
 }
 
-/* 1536px 미만 뷰포트(일반 노트북/태블릿/모바일)에서는 데스크톱 양 날개 광고 완전 숨김 (본문 가림 0%) */
-@media (max-width: 1535px) {
+/* ==========================================================================
+   화면 비율 기준 구글 배너 반응형 규칙 (Aspect-Ratio Responsive Rules)
+   - 화면비율 너비 > 높이 (Landscape): 좌우 구글 배너 표시, 상단 배너 숨김
+   - 화면비율 너비 <= 높이 (Portrait): 상단 구글 배너 표시, 좌우 배너 숨김
+   ========================================================================== */
+@media (orientation: landscape) {
+  #adsense-mobile-top {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+}
+
+@media (orientation: portrait) {
   #adsense-desktop-left,
   #adsense-desktop-right {
     display: none !important;
@@ -359,6 +375,8 @@ div[aria-label*="광고"][style*="position: fixed"],
     width: 0 !important;
     height: 0 !important;
     overflow: hidden !important;
+    padding: 0 !important;
+    border: none !important;
   }
 }
 
@@ -420,4 +438,62 @@ ins.adsbygoogle[data-anchor-status],
   top: -9999px !important;
   left: -9999px !important;
   z-index: -9999 !important;
+}
+
+/* ==========================================================================
+   Tactical 3D Card Flip FX (실제 앞뒤로 뒤집어지는 3D 회전 애니메이션)
+   ========================================================================== */
+@keyframes card-flip-3d {
+  0% {
+    transform: perspective(700px) rotateY(0deg) scale(1);
+  }
+  35% {
+    transform: perspective(700px) rotateY(90deg) scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  }
+  65% {
+    transform: perspective(700px) rotateY(270deg) scale(1.06);
+  }
+  100% {
+    transform: perspective(700px) rotateY(360deg) scale(1);
+  }
+}
+
+.animate-card-flip {
+  animation: card-flip-3d 0.65s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+  z-index: 40 !important;
+}
+
+/* 카드 배치 시 경쾌한 팝 애니메이션 */
+@keyframes card-place-pop {
+  0% {
+    transform: scale(0.88);
+    opacity: 0.8;
+  }
+  60% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-card-place {
+  animation: card-place-pop 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+  z-index: 30 !important;
+}
+
+/* 카드 재렌더링 시 깜박임(Flicker) 원천 차단 */
+.battle-board-slot,
+.group\/slot-card,
+.group\/orig-card {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
 }

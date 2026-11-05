@@ -167,7 +167,7 @@ export function renderOriginalCardHtml(cardId: number, options: OriginalCardRend
       data-rarity="${rarity}"
       class="group/orig-card relative flex flex-col justify-between font-mono select-none rounded-sm ${customClass} ${
         isSelected ? 'ring-2 ring-black scale-[1.02]' : ''
-      } ${isOwned ? '' : 'opacity-85'} transition-all cursor-pointer overflow-hidden ${cardPadClass}"
+      } ${isOwned ? '' : 'opacity-85'} transition-transform duration-150 cursor-pointer overflow-hidden ${cardPadClass}"
       style="
         background: ${rarityTheme.cardBg};
         border: none;
@@ -345,13 +345,13 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
 
   const isPlayer = owner === 'player';
   const ownerRingClass = isPlayer
-    ? 'ring-2 ring-blue-500 shadow-[0_0_14px_rgba(59,130,246,0.55)]'
-    : 'ring-2 ring-red-500 shadow-[0_0_14px_rgba(239,68,68,0.55)]';
+    ? 'ring-2 ring-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.5)]'
+    : 'ring-2 ring-red-500 shadow-[0_0_12px_rgba(239,68,68,0.5)]';
 
   const animClass = isFlipped
-    ? 'animate-card-flip ring-4 ring-cyan-400 shadow-[0_0_24px_rgba(34,211,238,1)]'
+    ? 'animate-card-flip ring-2 ring-white/70 shadow-[0_4px_16px_rgba(0,0,0,0.5)]'
     : isJustPlaced
-    ? 'animate-card-place ring-2 ring-amber-400 shadow-[0_0_18px_rgba(251,191,36,0.9)]'
+    ? 'animate-card-place ring-1 ring-amber-400'
     : '';
 
   const statCircleClass = 'h-4 w-4 sm:h-5 sm:w-5 text-[8px] sm:text-[10px] border sm:border-2 font-black';
@@ -360,7 +360,7 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
     <div
       data-rarity="${rarity}"
       data-owner="${owner}"
-      class="group/slot-card relative flex flex-col justify-between font-mono select-none rounded-xs w-full aspect-[5/7] p-1 sm:p-1.5 overflow-hidden transition-all ${ownerRingClass} ${animClass} ${className || ''}"
+      class="group/slot-card relative flex flex-col justify-between font-mono select-none rounded-xs w-full aspect-[5/7] p-1 sm:p-1.5 overflow-hidden ${ownerRingClass} ${animClass} ${className || ''}"
       style="
         background: ${rarityTheme.cardBg};
         border: none;
@@ -392,18 +392,18 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
       ></div>
 
 
-      <!-- Central Flip! Flash Impact Overlay -->
+      <!-- Simple Clean FLIP Badge Overlay -->
       ${
         isFlipped
           ? `
             <div class="absolute inset-0 z-50 flex items-center justify-center pointer-events-none select-none">
-              <div class="px-2 py-0.5 bg-cyan-400 text-stone-950 border-2 border-white text-[10px] sm:text-xs font-black rounded-xs shadow-[0_0_20px_rgba(34,211,238,1)] animate-bounce tracking-wider uppercase rotate-[-6deg] whitespace-nowrap">
-                ⚡ Flip!
-              </div>
+              <span class="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] border border-white/70 text-[10px] sm:text-xs font-mono font-black tracking-widest uppercase shadow-md rounded-xs">
+                FLIP
+              </span>
             </div>
           `
           : isJustPlaced
-          ? `<span class="absolute top-0.5 left-1/2 -translate-x-1/2 z-40 px-1 py-0.2 bg-amber-400 text-stone-950 text-[7px] sm:text-[8px] font-black rounded-xs shadow-sm whitespace-nowrap border border-stone-900">PLACE</span>`
+          ? `<span class="absolute top-0.5 left-1/2 -translate-x-1/2 z-40 px-1 py-0.2 bg-[#201d1d] text-amber-300 text-[7px] sm:text-[8px] font-mono font-bold rounded-xs shadow-xs whitespace-nowrap border border-amber-400/60">PLACE</span>`
           : ''
       }
 
@@ -472,10 +472,11 @@ export function renderBattleBoardCardHtml(options: BattleBoardSlotCardOptions): 
         "
       >
         <img
-          src="${asset.bustPngUrl}?v=20261103v4"
+          src="${asset.bustPngUrl}"
           alt="${asset.nameKo}"
           class="max-w-full max-h-full object-contain filter drop-shadow-none"
           loading="eager"
+          decoding="async"
           onerror="this.src='${asset.seatUrl}'; this.onerror=null;"
         />
       </div>

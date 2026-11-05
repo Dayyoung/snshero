@@ -1,0 +1,459 @@
+1
+00:00:00,100 --> 00:00:05,870
+Episode 21: Betrayal Aboard the Burning Ship
+
+2
+00:00:06,070 --> 00:00:08,971
+When the armada of hundreds of flower boats led by the flagship 'Breeze Wing'
+crossed the treacherous ocean swells to reach the southwestern coast of the mainland.
+
+3
+00:00:09,071 --> 00:00:11,840
+What welcomed the companions was not fluttering banners of celebration, but the
+suffocating stench of burning pitch and towering pillars of blackened smoke.
+
+4
+00:00:12,040 --> 00:00:14,981
+The timber wharves of Seven Bridges Haven, once a tranquil maritime
+sanctuary connecting the northern tundra with the eastern seas.
+
+5
+00:00:15,081 --> 00:00:17,810
+Had been reduced to smoldering ash, while receding tides dragged
+fractured spars and scorched decking across the mudflats.
+
+6
+00:00:18,010 --> 00:00:20,459
+In this desolate graveyard where
+not even a solitary gull cried,
+
+7
+00:00:20,559 --> 00:00:23,780
+only the bitter reek of scorched cedar bore
+testimony to the scale of the atrocity.
+
+8
+00:00:23,980 --> 00:00:26,760
+Rusted harbor chains lay snapped amidst
+the tidal mud, and the timber warehouses
+
+9
+00:00:26,860 --> 00:00:29,750
+along the shoreline stood as skeletal frames
+vomiting black soot into the gray sky.
+
+10
+00:00:29,950 --> 00:00:32,936
+Gripping the helm, Rondol
+surveyed the ruined piers,
+
+11
+00:00:33,036 --> 00:00:35,720
+his broad fists trembling
+with suppressed rage.
+
+12
+00:00:35,920 --> 00:00:38,755
+[Rondol] "Merciless curs... To trap the fleeing populace, they incinerated
+civilian transports and fishing cutters without distinction. A decade ago,
+
+13
+00:00:38,855 --> 00:00:41,690
+this haven bustled with grain barges and silk merchants from every corner
+of the world, yet the madness of those blinded by power knows no boundary."
+
+14
+00:00:41,890 --> 00:00:44,806
+Bracing his unadorned iron shield, Kadan
+leaped first onto the wet mudflats,
+
+15
+00:00:44,906 --> 00:00:47,660
+his leather boots crunching through
+crushed seashells and charcoal dust.
+
+16
+00:00:47,860 --> 00:00:50,911
+[Kadan] "Lucian's imperial vanguard has fortified the
+coastline and initiated a brutal scorched-earth campaign.
+
+17
+00:00:51,011 --> 00:00:53,630
+The fires were set less than half a sunrise ago.
+We must search for survivors amidst the ruins."
+
+18
+00:00:53,830 --> 00:00:56,954
+Raising her Jade Staff to
+gather the coastal winds,
+
+19
+00:00:57,054 --> 00:00:59,600
+Cilia knit her brow in deep concentration.
+
+20
+00:00:59,800 --> 00:01:02,348
+[Celia] "Beneath the western sea cliffs
+near the salt cellar, I sense the faint,
+
+21
+00:01:02,448 --> 00:01:05,570
+labored breathing of living souls. But lethal mana
+snares are woven densely across the approach."
+
+22
+00:01:05,770 --> 00:01:08,767
+Weaving through heaps of sodden ash and charred timber ribs, the
+companions advanced cautiously toward the western cliff face.
+
+23
+00:01:08,867 --> 00:01:11,540
+There lay the canted keel of a massive, burned hospital
+barge, dark bloodstains smeared along the fractured hull.
+
+24
+00:01:11,740 --> 00:01:14,490
+Medicine chests and linen bandages lay trampled into the muck, and
+upon a broken tea bowl rested the faint, weathered cross-crest of the
+
+25
+00:01:14,590 --> 00:01:17,510
+Arcane Holy Knights. It had been a sanctuary of mercy established decades
+ago by Master Aleksandar and Uncle Balian to relieve northern famines.
+
+26
+00:01:17,710 --> 00:01:21,007
+Smoothing the scarlet ribbon
+bound to his silver dagger,
+
+27
+00:01:21,107 --> 00:01:23,480
+Kadan spoke in a hushed, reverent murmur.
+
+28
+00:01:23,680 --> 00:01:26,619
+[Kadan] "This was the charitable clinic
+established by Uncle Balian and the Holy Knights.
+
+29
+00:01:26,719 --> 00:01:29,450
+A haven that healed impoverished fishermen
+and orphans... incinerated into cinder."
+
+30
+00:01:29,650 --> 00:01:32,593
+Just then, a weathered trapdoor at the base of the granite
+cliff creaked open, and a white-haired elder brandishing
+
+31
+00:01:32,693 --> 00:01:35,420
+a broken stone pestle peeked out with trembling wariness.
+It was Ordo, the elderly apothecary of the haven.
+
+32
+00:01:35,620 --> 00:01:39,040
+Beholding the sacred cross-crest
+upon Kadan's iron shield,
+
+33
+00:01:39,140 --> 00:01:41,390
+Ordo broke into racking sobs of relief.
+
+34
+00:01:41,590 --> 00:01:44,425
+[Harbor Elder] "Praise be to the heavens! The sacred shield of the Holy
+Knights has returned! Lucian's Crimson Wolf vanguard put the harbor to
+
+35
+00:01:44,525 --> 00:01:47,360
+the torch and dragged our able-bodied youths to the labor mines, but I
+managed to conceal twenty orphaned children beneath these salt vaults!"
+
+36
+00:01:47,560 --> 00:01:50,104
+[Ignis] Stepping forward, Ignis took the old man's
+trembling hands, bowing his head in solemn remorse.
+
+37
+00:01:50,204 --> 00:01:53,330
+"Forgive our tardy arrival, elder. For the atrocities committed
+by the imperial host, I offer my life in earnest atonement."
+
+38
+00:01:53,530 --> 00:01:56,112
+[Celia] Cilia lifted a broken ceramic herb
+jar, tears glittering upon her lashes.
+
+39
+00:01:56,212 --> 00:01:59,300
+"To set fire to a sanctuary dedicated solely to
+mercy and healing is an unforgivable sacrilege."
+
+40
+00:01:59,500 --> 00:02:02,297
+Descending into the salt cellar, the
+companions beheld twenty orphaned refugee
+
+41
+00:02:02,397 --> 00:02:05,270
+children and wounded fishermen huddled
+together amidst sacks of coarse sea salt.
+
+42
+00:02:05,470 --> 00:02:08,191
+Caked in grime and starving after days without
+rations, the children shivered, while injured mariners
+
+43
+00:02:08,291 --> 00:02:11,240
+clutched gangrenous limbs in silent agony. The damp
+subterranean chill froze the little ones' bare feet blue.
+
+44
+00:02:11,440 --> 00:02:13,728
+Without a second thought, Cilia
+knelt upon the damp stone,
+
+45
+00:02:13,828 --> 00:02:17,210
+extracting soothing restorative powders from
+her satchel to dress their lacerations.
+
+46
+00:02:17,410 --> 00:02:20,245
+[Celia] "Do not fear. You are
+safe now. This is the soothing
+
+47
+00:02:20,345 --> 00:02:23,180
+balm of mountain herbs brought
+from Whispering Wind Island."
+
+48
+00:02:23,380 --> 00:02:26,322
+As gentle teal mana radiated from
+Cilia's staff, stroking the children's
+
+49
+00:02:26,422 --> 00:02:29,150
+fevered brows, their rasping breath
+smoothed into peaceful cadence.
+
+50
+00:02:29,350 --> 00:02:32,687
+Kadan drew loaves of barley bread
+and dried venison from his pack,
+
+51
+00:02:32,787 --> 00:02:35,120
+placing them into the
+children's fragile hands.
+
+52
+00:02:35,320 --> 00:02:37,866
+[Kadan] "Eat slowly and take
+heart. Beyond these shores,
+
+53
+00:02:37,966 --> 00:02:41,090
+hundreds of festive flower boats
+are waiting to bear you to safety."
+
+54
+00:02:41,290 --> 00:02:43,920
+[Refugee Child] A small girl touched Kadan's
+battered iron shield with her tiny fingers,
+
+55
+00:02:44,020 --> 00:02:47,060
+weeping softly. "Mister knight... The men in armor
+set fire to our home... Where has my mother gone?"
+
+56
+00:02:47,260 --> 00:02:49,950
+Caressing the girl's hair
+with tender gentleness,
+
+57
+00:02:50,050 --> 00:02:53,030
+Kadan mastered the blazing
+fury surging in his breast.
+
+58
+00:02:53,230 --> 00:02:56,157
+[Kadan] "I will find your mother,
+little one. And those who crushed
+
+59
+00:02:56,257 --> 00:02:59,000
+your hearth shall answer for
+every drop of sorrow they caused."
+
+60
+00:02:59,200 --> 00:03:02,243
+[Ignis] Offering his canteen of honeyed water to the injured
+elders, Ignis spoke with earnest depth. "Moisten your throats.
+
+61
+00:03:02,343 --> 00:03:04,970
+I swear upon my life to hold this battle line so the
+hunting hounds of the court can never harm you again."
+
+62
+00:03:05,170 --> 00:03:08,169
+In that tender moment, the sharp crunch of armored boots
+and the rhythmic creak of cocked crossbows echoed outside.
+
+63
+00:03:08,269 --> 00:03:10,940
+Thirty elite inquisitors of Lucian's guard, alerted
+by the smoke, had cordoned off the cellar entrance.
+
+64
+00:03:11,140 --> 00:03:13,960
+[Inquisitor Captain] Kicking down the outer door,
+the inquisition commander sneered in cruel triumph.
+
+65
+00:03:14,060 --> 00:03:16,910
+"So the vermin survived beneath the stones! Exterminate
+the traitors and feed their bones to the sea!"
+
+66
+00:03:17,110 --> 00:03:19,856
+Without hesitation, Kadan charged through
+the threshold, raising his iron shield.
+
+67
+00:03:19,956 --> 00:03:22,880
+A volley of poisoned bolts shattered against
+the curved surface with deafening clangs.
+
+68
+00:03:23,080 --> 00:03:25,594
+[Kadan] "Not a single foot shall approach these children!"
+Channeling star-breathing, Kadan spun his shield,
+
+69
+00:03:25,694 --> 00:03:28,850
+snapping spearheads and shattering the vanguard's formation. Ignis
+charged beside him, his iron weapon wreathed in roaring white fire.
+
+70
+00:03:29,050 --> 00:03:31,158
+The sanctified heat incinerated
+the assassins' plate armor,
+
+71
+00:03:31,258 --> 00:03:34,820
+driving them headlong into the muck, while Cilia's
+blinding sandstorm stripped away their vision.
+
+72
+00:03:35,020 --> 00:03:37,855
+Sprawling in the mud, the
+inquisition commander hurled
+
+73
+00:03:37,955 --> 00:03:40,790
+away his shattered helmet,
+shrieking in venomous rage.
+
+74
+00:03:40,990 --> 00:03:43,872
+[Inquisitor Captain] "Ignis! Have you truly
+renounced the grace of the throne to become a lackey
+
+75
+00:03:43,972 --> 00:03:46,760
+for northern rebels! Minister Lucian has placed
+the empire's greatest bounty upon your head!"
+
+76
+00:03:46,960 --> 00:03:49,774
+[Ignis] Planting his weapon into the earth, Ignis glared down with frigid
+disdain. "Lucian's 'grace' is merely a sandcastle built on the blood
+
+77
+00:03:49,874 --> 00:03:52,730
+of the innocent. Return and tell him: the shield of the Holy Knights and
+the flame of redemption will soon arrive to shatter his gilded throne!"
+
+78
+00:03:52,930 --> 00:03:58,700
+With the threat vanquished, tranquil
+surf returned to the shore.
+
+79
+00:03:58,900 --> 00:04:01,628
+Kadan and Ignis escorted the refugees
+safely onto the flower boats,
+
+80
+00:04:01,728 --> 00:04:04,670
+where Rondol's crew served steaming
+carp soup to the shivering children.
+
+81
+00:04:04,870 --> 00:04:07,846
+Beyond the western horizon, the rose-gold dusk cast
+long, dramatic shadows across the ruined harbor.
+
+82
+00:04:07,946 --> 00:04:10,640
+From the decks of the flower boats drifted the
+tender, solemn melodies of seafarers' hymns.
+
+83
+00:04:10,840 --> 00:04:13,249
+[Celia] Touching the scorched stone of the
+lighthouse, Cilia spoke with solemn resolve.
+
+84
+00:04:13,349 --> 00:04:16,610
+"The entire continent groans beneath Lucian's reign of
+terror. The road ahead will test every fiber of our spirits."
+
+85
+00:04:16,810 --> 00:04:19,555
+[Ignis] Ignis clenched his fists with unyielding conviction.
+"They burned timber and stone, but they could never
+
+86
+00:04:19,655 --> 00:04:22,580
+incinerate the hope of the people. At every crossroads toward
+the capital, we will deliver the suffering from despair."
+
+87
+00:04:22,780 --> 00:04:25,984
+Gazing toward the distant
+western mountain passes,
+
+88
+00:04:26,084 --> 00:04:28,550
+Kadan tightened his grip on his dagger.
+
+89
+00:04:28,750 --> 00:04:31,627
+[Kadan] "This is the realm Master Aleksandar and Uncle
+Balian bled to protect. Even in the ashes of despair,
+
+90
+00:04:31,727 --> 00:04:34,520
+we have defended the warmth of living souls. Now we
+raise our shields and walk that road until the dawn."
+
+91
+00:04:34,720 --> 00:04:37,555
+Under the dying light of dusk, the three youths sealed their
+unbreakable oath, taking their first bold strides into the heart
+
+92
+00:04:37,655 --> 00:04:40,490
+of the troubled continent. Beyond the cold night fog, the rugged
+peaks of Mount Dragonhorn silently watched over their march.
+
+93
+00:04:40,690 --> 00:04:46,460
+Play the card battle game inspired by this webtoon
+right now at SNSHero.com!

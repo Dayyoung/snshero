@@ -51,6 +51,7 @@ export interface MallGoodsProduct {
   priceKrw: number;
   imageUrl: string;
   bustUrl: string;
+  bustJpgUrl: string;
   cutoutUrl: string;
   desc: string;
   spec: string;
@@ -178,6 +179,7 @@ function buildCharacterSheetProducts(): MallGoodsProduct[] {
     const sheetCleanPath = asset.sheetUrl.split('?')[0];
     const sheetUrlWithVer = `${sheetCleanPath}?v=${SHEET_CACHE_VER}`;
     const bustUrlWithVer = `${asset.bustPngUrl}?v=${SHEET_CACHE_VER}`;
+    const bustJpgUrlWithVer = `${asset.bustJpgUrl}?v=${SHEET_CACHE_VER}`;
 
     list.push({
       id: `sheet_${pad3}`,
@@ -193,6 +195,7 @@ function buildCharacterSheetProducts(): MallGoodsProduct[] {
       priceKrw: 14000,
       imageUrl: sheetUrlWithVer,
       bustUrl: bustUrlWithVer,
+      bustJpgUrl: bustJpgUrlWithVer,
       cutoutUrl: asset.cutoutUrl,
       desc: `원작 소설 『카단의 여정』 공식 애니메이션 캐릭터 설정화 시트 (NO.${pad3} ${asset.nameKo}). 수정된 상반신 표정·헤어 디테일(Panel 02)과 7등신 전신 원화(Panel 01), 3등신 SD 원형(Panel 03), 작화 지침서 및 컬러칩(Panel 04)이 수록되어 있으며 구매 즉시 상업적·2차 창작 IP 라이센스가 영구 해제됩니다.`,
       spec: '1600×1000 HD 캐릭터시트(JPG) + 수정된 상반신(PNG) + 7등신 투명 원화(PNG) | 상업적·2차 창작 라이센스 영구 해제',
@@ -249,9 +252,12 @@ interface MallCheckoutState {
   selectedCryptoCoinId: string | null;
   selectedCryptoChain: string | null;
   cryptoSearchQuery: string;
+  currentPage: number;
   completedOrder: GoodsOrderRecord | null;
   feedbackMsg: string | null;
 }
+
+export const MALL_ITEMS_PER_PAGE = 10;
 
 const VALID_TABS: MallGoodsCategory[] = [
   'ALL',
@@ -297,6 +303,7 @@ const mallState: MallCheckoutState = {
   selectedCryptoCoinId: null,
   selectedCryptoChain: null,
   cryptoSearchQuery: '',
+  currentPage: 1,
   completedOrder: null,
   feedbackMsg: null,
 };
@@ -304,11 +311,20 @@ const mallState: MallCheckoutState = {
 export function setMallCurrentTab(tab: MallGoodsCategory): void {
   const normalized = VALID_TABS.includes(tab) ? tab : 'ALL';
   mallState.currentTab = normalized;
+  mallState.currentPage = 1;
   try {
     localStorage.setItem('hero_mall_active_tab', normalized);
   } catch {
     // ignore
   }
+}
+
+export function setMallPage(page: number): void {
+  mallState.currentPage = Math.max(1, Math.floor(page));
+}
+
+export function getMallCurrentPage(): number {
+  return mallState.currentPage;
 }
 
 // Legacy compatibility exports kept as safe no-ops for index.ts
@@ -752,7 +768,8 @@ function renderMallCheckoutModal(): string {
                 download="${product.code.replace('.', '_')}_${product.id}_CharacterSheet_1600x1000.jpg"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="min-h-[44px] px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-sm flex items-center justify-center"
+                class="min-h-[44px] px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-sm flex items-center justify-center gap-1 transition"
+                title="${tr('1600×1000 HD 공식 캐릭터시트 원본 다운로드', 'Download Master Sheet JPG', '原本シートJPGをダウンロード')}"
               >
                 ⬇ ${tr('시트 원본 (JPG)', 'Sheet (JPG)', 'シート (JPG)')}
               </a>
@@ -761,7 +778,8 @@ function renderMallCheckoutModal(): string {
                 download="${product.code.replace('.', '_')}_Updated_Bust.png"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="min-h-[44px] px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/25 text-[#fdfcfc] text-xs font-bold rounded-sm flex items-center justify-center"
+                class="min-h-[44px] px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-sm flex items-center justify-center gap-1 transition"
+                title="${tr('투명 배경 상반신 포트레이트 PNG 다운로드', 'Download Transparent Bust PNG', '透過上半身PNGをダウンロード')}"
               >
                 ⬇ ${tr('상반신 (PNG)', 'Bust (PNG)', '上半身 (PNG)')}
               </a>
@@ -770,12 +788,17 @@ function renderMallCheckoutModal(): string {
                 download="${product.code.replace('.', '_')}_7Head_Cutout.png"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="min-h-[44px] px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/25 text-[#fdfcfc] text-xs font-bold rounded-sm flex items-center justify-center"
+                class="min-h-[44px] px-3.5 py-2 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold rounded-sm flex items-center justify-center gap-1 transition"
+                title="${tr('투명 배경 7등신 전신 원화 PNG 다운로드', 'Download 7-Head Transparent Cutout PNG', '透過7頭身全身原画PNGをダウンロード')}"
               >
                 ⬇ ${tr('7등신 원화 (PNG)', 'Cutout (PNG)', '全身原画 (PNG)')}
               </a>
             `
-                : ''
+                : `
+              <div class="hidden sm:inline-flex items-center px-2 py-1 bg-white/5 border border-white/10 text-[11px] text-stone-300 rounded-sm">
+                🔒 ${tr('구매자 전용: 투명 PNG 원화 다운로드 활성화', 'PNG Download unlocks on purchase', '購入者限定: 透過PNG原画ダウンロード解禁')}
+              </div>
+            `
             }
             <button
               type="button"
@@ -1203,6 +1226,15 @@ export function renderMallView(): string {
     return p.category === activeTab;
   });
 
+  const totalItems = filteredProducts.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / MALL_ITEMS_PER_PAGE));
+  const currentPage = Math.min(Math.max(1, mallState.currentPage), totalPages);
+  mallState.currentPage = currentPage;
+
+  const startIndex = (currentPage - 1) * MALL_ITEMS_PER_PAGE;
+  const endIndex = Math.min(totalItems, startIndex + MALL_ITEMS_PER_PAGE);
+  const pageProducts = filteredProducts.slice(startIndex, endIndex);
+
   const factionTabs: { id: MallGoodsCategory; label: string; count: number }[] = [
     { id: 'ALL', label: tr('전체 캐릭터시트 (110)', 'ALL SHEETS (110)', '全キャラクターシート (110)'), count: 110 },
     { id: 'UNLOCKED', label: tr(`라이센스 보유 (${unlockedIds.length})`, `UNLOCKED (${unlockedIds.length})`, `解除済 (${unlockedIds.length})`), count: unlockedIds.length },
@@ -1219,8 +1251,85 @@ export function renderMallView(): string {
     { id: 'DRAGON', label: tr('드래곤 (Dragon · 101~110)', 'Dragon (101-110)', 'ドラゴン (101-110)'), count: 10 },
   ];
 
+  // Pagination controls generator
+  const renderPaginationControls = (): string => {
+    if (totalPages <= 1) return '';
+
+    const pages = [];
+    for (let p = 1; p <= totalPages; p++) {
+      pages.push(p);
+    }
+
+    return `
+      <nav aria-label="Mall Pagination" class="p-3 bg-[#fdfcfc] border border-[#201d1d] flex flex-wrap items-center justify-between gap-3 font-mono">
+        <div class="text-xs text-[#646262]">
+          ${tr(
+            `전체 <strong>${totalItems}</strong>종 중 <strong>${startIndex + 1}~${endIndex}</strong>번째 표시`,
+            `Showing <strong>${startIndex + 1}–${endIndex}</strong> of <strong>${totalItems}</strong> sheets`,
+            `全 <strong>${totalItems}</strong>種中 <strong>${startIndex + 1}〜${endIndex}</strong>番目を表示`
+          )}
+          <span class="ml-1 text-[11px] px-1.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] font-bold rounded-xs">
+            ${currentPage} / ${totalPages} P
+          </span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button
+            type="button"
+            data-action="change-mall-page"
+            data-page="${currentPage - 1}"
+            ${currentPage <= 1 ? 'disabled' : ''}
+            class="min-h-[40px] px-3 py-1.5 text-xs font-bold font-mono border rounded-sm transition ${
+              currentPage <= 1
+                ? 'opacity-40 bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
+                : 'bg-white hover:bg-stone-50 text-[#201d1d] border-[#201d1d] cursor-pointer'
+            }"
+          >
+            ← ${tr('이전', 'Prev', '前へ')}
+          </button>
+
+          <div class="flex items-center gap-1 overflow-x-auto max-w-full py-0.5">
+            ${pages
+              .map((pNum) => {
+                const isCurrent = pNum === currentPage;
+                return `
+                  <button
+                    type="button"
+                    data-action="change-mall-page"
+                    data-page="${pNum}"
+                    class="min-w-[40px] min-h-[40px] px-2.5 py-1 text-xs font-bold font-mono border rounded-sm transition cursor-pointer ${
+                      isCurrent
+                        ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] shadow-xs'
+                        : 'bg-white hover:bg-stone-50 text-[#201d1d] border-[#646262]/30 hover:border-[#201d1d]'
+                    }"
+                  >
+                    ${pNum}
+                  </button>
+                `;
+              })
+              .join('')}
+          </div>
+
+          <button
+            type="button"
+            data-action="change-mall-page"
+            data-page="${currentPage + 1}"
+            ${currentPage >= totalPages ? 'disabled' : ''}
+            class="min-h-[40px] px-3 py-1.5 text-xs font-bold font-mono border rounded-sm transition ${
+              currentPage >= totalPages
+                ? 'opacity-40 bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
+                : 'bg-white hover:bg-stone-50 text-[#201d1d] border-[#201d1d] cursor-pointer'
+            }"
+          >
+            ${tr('다음', 'Next', '次へ')} →
+          </button>
+        </div>
+      </nav>
+    `;
+  };
+
   const cardsHtml =
-    filteredProducts.length === 0
+    totalItems === 0
       ? `
       <div class="col-span-full p-10 border border-[#646262]/30 bg-white text-center space-y-3 font-mono">
         <div class="text-sm font-bold text-[#201d1d]">${tr('아직 라이센스 해제된 캐릭터시트가 없습니다.', 'No unlocked character sheets yet.', 'まだライセンス解除されたキャラクターシートがありません。')}</div>
@@ -1235,7 +1344,7 @@ export function renderMallView(): string {
         </button>
       </div>
     `
-      : filteredProducts
+      : pageProducts
           .map((p) => {
             const loc = getLocalizedMallProduct(p);
             const unlocked = unlockedIds.includes(p.cardId);
@@ -1259,7 +1368,7 @@ export function renderMallView(): string {
               </span>
             </div>
 
-            <!-- 1600x1000 Studio Sheet Preview Image (clickable) -->
+            <!-- 1600x1000 Studio Sheet Preview Image (JPG for fast bandwidth-saving loading) -->
             <div
               data-action="open-mall-detail"
               data-product-id="${p.id}"
@@ -1269,10 +1378,11 @@ export function renderMallView(): string {
                 src="${p.imageUrl}"
                 alt="${loc.name}"
                 loading="lazy"
+                decoding="async"
                 class="w-full h-full object-contain bg-white group-hover:scale-[1.02] transition-transform duration-200"
               />
               <div class="absolute bottom-1.5 right-1.5 px-2 py-0.5 bg-[#201d1d]/90 text-[#fdfcfc] text-[10px] font-mono font-bold rounded-sm">
-                1600×1000 HD · 상반신 리마스터
+                1600×1000 HD · JPG 미리보기
               </div>
             </div>
 
@@ -1286,7 +1396,7 @@ export function renderMallView(): string {
               </p>
               <div class="p-2 bg-[#f8f7f7] border border-[#646262]/25 text-[10px] text-[#201d1d] font-mono">
                 <strong class="text-amber-900">📜 ${tr('판매 조건', 'Condition', '販売条件')}:</strong> ${tr(
-                  '상업적·2차 창작 IP 라이센스 영구 해제 + 1600×1000 원본 시트 & 상반신/전신 PNG 다운로드',
+                  '상업적·2차 창작 IP 라이센스 영구 해제 + 1600×1000 원본 시트 & 투명 원화(PNG) 다운로드',
                   'Perpetual Commercial/Derivative IP License Unlock + 1600×1000 HD Sheet & Cutout PNG',
                   '商用・二次創作IPライセンス永久解除＋1600×1000原本シート＆透過PNG提供'
                 )}
@@ -1295,27 +1405,47 @@ export function renderMallView(): string {
           </div>
 
           <!-- Footer Price & Action CTA -->
-          <div class="px-3.5 pb-3.5 pt-2 border-t border-[#646262]/15 flex items-center justify-between gap-2 font-mono">
+          <div class="px-3.5 pb-3.5 pt-2 border-t border-[#646262]/15 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 font-mono">
             <div>
               <div class="text-[10px] text-[#646262]">${tr('라이센스 해제 가격', 'License Unlock Price', 'ライセンス解除価格')}</div>
               <div class="text-sm sm:text-base font-bold text-[#201d1d]">$10.00 <span class="text-[11px] font-normal text-[#646262]">(14,000원)</span></div>
             </div>
-            <button
-              type="button"
-              data-action="open-mall-detail"
-              data-product-id="${p.id}"
-              class="min-h-[44px] px-3.5 py-2 ${
-                unlocked
-                  ? 'bg-emerald-700 hover:bg-emerald-800 text-white'
-                  : 'bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc]'
-              } text-xs font-bold font-mono rounded-sm transition cursor-pointer shrink-0"
-            >
+
+            <div class="flex items-center gap-1.5 shrink-0">
               ${
                 unlocked
-                  ? tr('⬇ 원본 시트 다운로드', '⬇ Download Sheet', '⬇ 原本ダウンロード')
-                  : tr('라이센스 해제 구매 ($10)', 'Unlock License ($10)', 'ライセンス解除 ($10)')
+                  ? `
+                <a
+                  href="${p.cutoutUrl}"
+                  download="${p.code.replace('.', '_')}_7Head_Cutout.png"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="min-h-[44px] px-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold font-mono rounded-sm flex items-center justify-center gap-1 transition"
+                  title="${tr('투명 배경 7등신 전신 원화 PNG 다운로드', 'Download 7-Head Transparent Cutout PNG', '透過7頭身全身原画PNGをダウンロード')}"
+                >
+                  <span>⬇ PNG</span>
+                </a>
+                <button
+                  type="button"
+                  data-action="open-mall-detail"
+                  data-product-id="${p.id}"
+                  class="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] text-xs font-bold font-mono rounded-sm transition cursor-pointer"
+                >
+                  ${tr('시트(JPG) 및 상세', 'Sheet & Details', 'シート(JPG)・詳細')}
+                </button>
+              `
+                  : `
+                <button
+                  type="button"
+                  data-action="open-mall-detail"
+                  data-product-id="${p.id}"
+                  class="min-h-[44px] px-3.5 py-2 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] text-xs font-bold font-mono rounded-sm transition cursor-pointer"
+                >
+                  ${tr('라이센스 해제 구매 ($10)', 'Unlock License ($10)', 'ライセンス解除 ($10)')}
+                </button>
+              `
               }
-            </button>
+            </div>
           </div>
         </article>
       `;
@@ -1341,9 +1471,9 @@ export function renderMallView(): string {
             </h2>
             <p class="text-xs text-[#646262] leading-relaxed">
               ${tr(
-                '수정된 상반신 표정·헤어 디테일(Panel 02)이 전면 적용된 110종 공식 애니메이션 캐릭터시트(NO.001~NO.110)입니다. 기존 실물 굿즈를 대체하여 개당 $10.00(14,000원)에 상업적·2차 창작 라이센스 영구 해제 조건으로 판매하며, 구매 즉시 1600×1000 HD 캐릭터시트와 투명 원화(PNG) 다운로드를 제공합니다.',
-                'All 110 Official Studio Character Sheets (NO.001–NO.110) updated with remastered upper-body bust portraits in Panel 02. Sold at $10.00 USD each under a perpetual commercial & derivative IP License Unlock condition with instant high-res downloads.',
-                '修正済み上半身ディテール（Panel 02）が全面適用された全110種公式キャラクターシート（NO.001〜NO.110）。1点$10.00にて商用・二次創作IPライセンス永久解除条件で販売し、購入即時1600×1000 HDシートと透過原画のダウンロードを提供します。'
+                '수정된 상반신 표정·헤어 디테일(Panel 02)이 전면 적용된 110종 공식 애니메이션 캐릭터시트(NO.001~NO.110)입니다. 트래픽 절감을 위해 1페이지당 10개씩 JPG 미리보기로 초고속 렌더링되며, 라이센스를 구매한 사용자에게만 상업적 IP 라이센스 증서와 고해상도 투명 원화(PNG) 다운로드가 즉시 활성화됩니다.',
+                'Official Studio Character Sheets (NO.001–NO.110) updated with remastered upper-body bust portraits. Rendered 10 per page in lightweight JPG previews to save bandwidth; high-res transparent PNGs and commercial IP licenses unlock immediately upon purchase.',
+                '修正済み上半身ディテール（Panel 02）が全面適用された全110種公式キャラクターシート（NO.001〜NO.110）。通信量削減のため1ページ10点ずつ軽量JPGプレビューで高速表示され、購入者限定で高解像度透過PNG原本と商用ライセンスが解禁されます。'
               )}
             </p>
           </div>
@@ -1386,10 +1516,16 @@ export function renderMallView(): string {
         </div>
       </div>
 
-      <!-- 110 Character Sheets Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Pagination Controls (Top) -->
+      ${renderPaginationControls()}
+
+      <!-- 10 Character Sheets Per Page Grid -->
+      <div id="mall-products-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
         ${cardsHtml}
       </div>
+
+      <!-- Pagination Controls (Bottom) -->
+      ${renderPaginationControls()}
 
       ${renderMallCheckoutModal()}
     </section>

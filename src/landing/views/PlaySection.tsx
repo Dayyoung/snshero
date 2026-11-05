@@ -381,6 +381,7 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
       const handIdxAttr = target?.getAttribute('data-hand-index');
       if (handIdxAttr !== null && handIdxAttr !== undefined) {
         playRpgState.selectedHandIndex = parseInt(handIdxAttr, 10);
+        syncBattleDomInPlace();
       }
       break;
     }
@@ -389,6 +390,7 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
       if (slotAttr !== null && slotAttr !== undefined) {
         const slotIdx = parseInt(slotAttr, 10);
         playCardToSlot(playRpgState.selectedHandIndex, slotIdx, 'player');
+        syncBattleDomInPlace();
       }
       break;
     }
@@ -485,6 +487,230 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
     default:
       break;
   }
+}
+
+// ============================================================================
+// 2.5 3x3 Battle Modular In-Place DOM Synchronizer (Anti-Flicker Architecture)
+// ============================================================================
+
+/**
+ * Render Battle Top Status Bar (Turn Indicator, Cadence Message, Hand Counts)
+ */
+export function renderBattleStatusBarHtml(): string {
+  const isPlayerTurn = playRpgState.turn === 'player';
+  return `
+    <div class="flex items-center gap-2 min-w-0">
+      <span class="px-2 py-0.5 text-[10px] sm:text-[11px] font-black rounded-xs shrink-0 ${
+        isPlayerTurn
+          ? 'bg-sky-500 text-slate-950 animate-pulse'
+          : 'bg-rose-500 text-white animate-pulse'
+      }">
+        ${isPlayerTurn ? tr('▶ 내 턴 (P1)', '▶ YOUR TURN (P1)', '▶ 自ターン (P1)') : tr('⏳ 상대 턴 (AI)', "⏳ OPPONENT'S TURN", '⏳ 相手ターン (AI)')}
+      </span>
+      <span class="text-[11px] sm:text-xs text-stone-300 truncate">
+        ${playRpgState.battleMessage || tr('카드를 선택한 후 빈 슬롯을 터치하세요.', 'Select a card and touch an empty slot.', 'カードを選択して空きスロットをタッチしてください。')}
+      </span>
+    </div>
+    <div class="text-[11px] sm:text-xs font-bold text-amber-400 shrink-0">
+      P1(${playRpgState.playerHand.length}) : AI(${playRpgState.opponentHand.length})
+    </div>
+  `;
+}
+
+/**
+ * Render 3x3 Battle Board 9-Slot Grid
+ * - Keeps fixed aspect-[5/7] slots to prevent any layout shifts
+ * - Renders FLIP badge and 3D card rotation on flipped cards
+ */
+export function renderBattleBoardGridHtml(): string {
+  return playRpgState.battleBoard
+    .map((slot, sIdx) => {
+      if (!slot) {
+        const isOpponentTurn = playRpgState.turn === 'opponent';
+        return `
+          <button
+            type="button"
+            id="battle-slot-${sIdx}"
+            ${isOpponentTurn ? 'disabled' : `data-action="play-battle-slot" data-slot="${sIdx}"`}
+            class="relative w-full aspect-[5/7] border-2 border-dashed ${
+              isOpponentTurn
+                ? 'border-stone-700/60 bg-stone-900/40 text-stone-600 cursor-wait'
+                : 'border-amber-400/40 hover:border-amber-300 bg-[#0e1628]/60 hover:bg-[#131f38] text-amber-300 cursor-pointer active:scale-98'
+            } rounded-xs flex flex-col items-center justify-between p-1.5 sm:p-2 transition-transform select-none shadow-sm"
+            aria-label="${tr(`슬롯 ${sIdx + 1} 배치`, `Place in Slot ${sIdx + 1}`, `スロット${sIdx + 1}に配置`)}"
+          >
+            <!-- Slot Header -->
+            <div class="w-full flex items-center justify-between text-[9px] sm:text-[10px] font-mono ${isOpponentTurn ? 'text-stone-600' : 'text-stone-400/80'}">
+              <span>#${sIdx + 1}</span>
+              <span class="${isOpponentTurn ? 'text-stone-700' : 'text-amber-400/60'}">✦</span>
+            </div>
+
+            <!-- Center Target / Seal Cue -->
+            <div class="flex flex-col items-center justify-center gap-1 my-auto">
+              <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border ${
+                isOpponentTurn ? 'border-stone-700 bg-black/40 text-stone-600' : 'border-amber-400/40 bg-black/50 text-amber-400'
+              } flex items-center justify-center text-xs sm:text-sm font-black">
+                ${isOpponentTurn ? '⏳' : '+'}
+              </div>
+              <span class="text-[10px] sm:text-[11px] font-black tracking-wider ${isOpponentTurn ? 'text-stone-600' : 'text-amber-400'}">
+                ${isOpponentTurn ? tr('대기...', 'WAIT', '待機...') : tr('[배치]', '[PLACE]', '[配置]')}
+              </span>
+            </div>
+
+            <!-- Footer Cue -->
+            <div class="text-[8px] sm:text-[9px] font-mono truncate ${isOpponentTurn ? 'text-stone-700' : 'text-stone-400/60'}">
+              ${isOpponentTurn ? 'AI TURN' : 'TAP HERE'}
+            </div>
+          </button>
+        `;
+      }
+
+      return `
+        <div id="battle-slot-${sIdx}" class="w-full aspect-[5/7]">
+          ${renderBattleBoardCardHtml({
+            cardId: slot.cardId,
+            stats: slot.stats,
+            owner: slot.owner,
+            isJustPlaced: playRpgState.lastPlacedSlot === sIdx,
+            isFlipped: playRpgState.flippedSlots?.includes(sIdx),
+          })}
+        </div>
+      `;
+    })
+    .join('');
+}
+
+/**
+ * Render Battle Result Controls (Victory / Defeat Buttons)
+ */
+export function renderBattleResultControlsHtml(): string {
+  if (!playRpgState.battleWinner) return '';
+  const currentChapter = playRpgState.currentChapter;
+  const isPlayerWon = playRpgState.battleWinner === 'player';
+
+  return `
+    <div class="w-full bg-[#0a1020] border border-white/15 p-3 rounded-none shadow-xl flex flex-col items-center gap-2.5">
+      <div class="text-xs sm:text-sm font-black text-center ${
+        isPlayerWon ? 'text-emerald-400' : 'text-rose-400'
+      }">
+        ${
+          isPlayerWon
+            ? tr('🎉 전투 승리! 50 EXP 획득 완료.', '🎉 Victory! +50 EXP awarded.', '🎉 バトル勝利！50 EXPを獲得しました。')
+            : tr(
+                '⚠️ 승리하지 못하면 다음 회차로 진행할 수 없습니다. 카드를 업그레이드(#card)하거나 재도전하세요!',
+                '⚠️ You must win to advance to the next episode. Upgrade your cards (#card) or retry!',
+                '⚠️ 勝利しないと次話へ進めません。カードを強化（#card）するか再挑戦してください！'
+              )
+        }
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        <button
+          type="button"
+          data-action="play-repeat-hunting"
+          class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-sm min-h-[44px] cursor-pointer active:translate-y-px"
+        >
+          ${isPlayerWon ? tr('🔁 반복 사냥 재전투', '🔁 Repeat Battle', '🔁 反復狩り再戦') : tr('⚔️ 현재 회차 재도전', '⚔️ Retry Episode', '⚔️ 現在のエピソードに再挑戦')}
+        </button>
+        ${
+          isPlayerWon
+            ? `
+              <button
+                type="button"
+                data-action="play-next-chapter"
+                class="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs sm:text-sm font-black rounded-sm min-h-[44px] cursor-pointer active:translate-y-px shadow-lg"
+              >
+                ${currentChapter >= 40 ? tr('👑 40화 완주 · 환생하기 ▶', '👑 Episode 40 Clear · Reincarnate ▶', '👑 全40話完走・転生する ▶') : tr('다음 챕터로 전진 ▶', 'Next Chapter ▶', '次のチャプターへ ▶')}
+              </button>
+            `
+            : `
+              <button
+                type="button"
+                data-nav="card"
+                class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer active:translate-y-px"
+              >
+                ⬆️ ${tr('카드 업그레이드 (#card)', 'Upgrade Cards (#card)', 'カード強化 (#card)')}
+              </button>
+            `
+        }
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Render Player Hand Cards Row at Bottom of Battle Modal
+ */
+export function renderBattleHandRowHtml(): string {
+  return playRpgState.playerHand
+    .map((cId, hIdx) => {
+      const isSelected = playRpgState.selectedHandIndex === hIdx;
+      return `
+        <button
+          type="button"
+          data-action="play-battle-card"
+          data-hand-index="${hIdx}"
+          class="relative flex-1 min-w-0 sm:min-w-[80px] md:min-w-[100px] max-w-[70px] sm:max-w-[110px] md:max-w-[125px] text-left p-0 bg-transparent border-0 cursor-pointer transition-transform ${
+            isSelected
+              ? '-translate-y-2 ring-2 ring-amber-400 rounded-sm z-20'
+              : 'hover:-translate-y-1 opacity-95 hover:opacity-100'
+          }"
+        >
+          ${
+            isSelected
+              ? `<span class="absolute -top-3 left-1/2 -translate-x-1/2 z-40 px-1.5 py-0.2 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs whitespace-nowrap border border-stone-900 shadow-md">▼ SELECT</span>`
+              : ''
+          }
+          ${renderOriginalCardHtml(cId, {
+            isSelected,
+            isOwned: true,
+            showRedDot: false,
+            size: 'responsive',
+            visualTier: 'bust',
+            className: 'w-full min-w-0 sm:min-w-[80px] md:min-w-[100px] aspect-[5/7] max-h-[110px] sm:max-h-[160px] md:max-h-[185px]',
+          })}
+        </button>
+      `;
+    })
+    .join('');
+}
+
+/**
+ * In-Place DOM Synchronizer for 3x3 Card Battle (Anti-Flicker)
+ * Updates only the battle sub-elements (#battle-status-bar, #battle-board-grid,
+ * #battle-result-container, #battle-hand-row) directly in the existing DOM.
+ * Eliminates full mainSlot.innerHTML destruction and repaints, preventing screen/card blinking.
+ * Returns true if the battle DOM was located and updated in-place; false if not currently in battle.
+ */
+export function syncBattleDomInPlace(): boolean {
+  if (typeof document === 'undefined') return false;
+  const boardEl = document.getElementById('battle-board-grid');
+  if (!boardEl) return false;
+
+  const statusBarEl = document.getElementById('battle-status-bar');
+  if (statusBarEl) {
+    statusBarEl.innerHTML = renderBattleStatusBarHtml();
+  }
+
+  const resultEl = document.getElementById('battle-result-container');
+  if (resultEl) {
+    resultEl.innerHTML = renderBattleResultControlsHtml();
+  }
+
+  const handEl = document.getElementById('battle-hand-row');
+  if (handEl) {
+    handEl.innerHTML = renderBattleHandRowHtml();
+  }
+
+  const handCountEl = document.getElementById('battle-hand-count');
+  if (handCountEl) {
+    handCountEl.textContent = `(${playRpgState.playerHand.length})`;
+  }
+
+  // Update board grid slots
+  boardEl.innerHTML = renderBattleBoardGridHtml();
+
+  return true;
 }
 
 // ============================================================================
@@ -960,10 +1186,6 @@ function renderAdventureView(): string {
                   )}
                 </span>
               </div>
-                    '[タイル上東西南北ボタン・矢印キー・W/A/S/D・タイル直接タップで移動]'
-                  )}
-                </span>
-              </div>
             </section>
           `
           : ''
@@ -1250,176 +1472,34 @@ function renderAdventureView(): string {
                 </button>
               </header>
 
-              <!-- 2. 중앙 메인: 턴 안내 바 + 3x3 전장 보드 필드 + 전투 승패 결과 -->
+              <!-- 2. 중앙 메인: 턴 안내 바 + 3x3 전장 보드 필드 + 전투 승패 결과 (고유 ID 컨테이너로 깜박임 없는 국소 갱신 지원) -->
               <main class="relative z-10 flex-1 w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-3 py-1 sm:py-3 overflow-y-auto space-y-2 sm:space-y-3">
                 <!-- 실시간 턴 안내 및 캐던스 바 -->
-                <div class="w-full flex items-center justify-between px-3 py-1.5 bg-[#0e1628] border border-white/10 text-xs rounded-none font-mono select-none">
-                  <div class="flex items-center gap-2 min-w-0">
-                    <span class="px-2 py-0.5 text-[10px] sm:text-[11px] font-black rounded-xs shrink-0 ${
-                      playRpgState.turn === 'player'
-                        ? 'bg-sky-500 text-slate-950 animate-pulse'
-                        : 'bg-rose-500 text-white animate-pulse'
-                    }">
-                      ${playRpgState.turn === 'player' ? tr('▶ 내 턴 (P1)', '▶ YOUR TURN (P1)', '▶ 自ターン (P1)') : tr('⏳ 상대 턴 (AI)', "⏳ OPPONENT'S TURN", '⏳ 相手ターン (AI)')}
-                    </span>
-                    <span class="text-[11px] sm:text-xs text-stone-300 truncate">
-                      ${playRpgState.battleMessage || tr('카드를 선택한 후 빈 슬롯을 터치하세요.', 'Select a card and touch an empty slot.', 'カードを選択して空きスロットをタッチしてください。')}
-                    </span>
-                  </div>
-                  <div class="text-[11px] sm:text-xs font-bold text-amber-400 shrink-0">
-                    P1(${playRpgState.playerHand.length}) : AI(${playRpgState.opponentHand.length})
-                  </div>
+                <div id="battle-status-bar" class="w-full flex items-center justify-between px-3 py-1.5 bg-[#0e1628] border border-white/10 text-xs rounded-none font-mono select-none">
+                  ${renderBattleStatusBarHtml()}
                 </div>
 
                 <!-- 3x3 Battle Field Board (고정 aspect-[5/7] 슬롯으로 카드 배치 전후 높이 100% 동일 유지) -->
-                <div class="grid grid-cols-3 gap-1.5 sm:gap-2.5 w-full max-w-[285px] sm:max-w-[360px] md:max-w-[400px] mx-auto select-none p-1.5 sm:p-2.5 bg-[#0c1220] border-2 border-amber-400/60 shadow-2xl rounded-none">
-                  ${playRpgState.battleBoard
-                    .map((slot, sIdx) => {
-                      if (!slot) {
-                        const isOpponentTurn = playRpgState.turn === 'opponent';
-                        return `
-                          <button
-                            type="button"
-                            ${isOpponentTurn ? 'disabled' : `data-action="play-battle-slot" data-slot="${sIdx}"`}
-                            class="relative w-full aspect-[5/7] border-2 border-dashed ${
-                              isOpponentTurn
-                                ? 'border-stone-700/60 bg-stone-900/40 text-stone-600 cursor-wait'
-                                : 'border-amber-400/40 hover:border-amber-300 bg-[#0e1628]/60 hover:bg-[#131f38] text-amber-300 cursor-pointer active:scale-98'
-                            } rounded-xs flex flex-col items-center justify-between p-1.5 sm:p-2 transition-all select-none shadow-sm"
-                            aria-label="${tr(`슬롯 ${sIdx + 1} 배치`, `Place in Slot ${sIdx + 1}`, `スロット${sIdx + 1}に配置`)}"
-                          >
-                            <!-- Slot Header -->
-                            <div class="w-full flex items-center justify-between text-[9px] sm:text-[10px] font-mono ${isOpponentTurn ? 'text-stone-600' : 'text-stone-400/80'}">
-                              <span>#${sIdx + 1}</span>
-                              <span class="${isOpponentTurn ? 'text-stone-700' : 'text-amber-400/60'}">✦</span>
-                            </div>
-
-                            <!-- Center Target / Seal Cue -->
-                            <div class="flex flex-col items-center justify-center gap-1 my-auto">
-                              <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border ${
-                                isOpponentTurn ? 'border-stone-700 bg-black/40 text-stone-600' : 'border-amber-400/40 bg-black/50 text-amber-400'
-                              } flex items-center justify-center text-xs sm:text-sm font-black">
-                                ${isOpponentTurn ? '⏳' : '+'}
-                              </div>
-                              <span class="text-[10px] sm:text-[11px] font-black tracking-wider ${isOpponentTurn ? 'text-stone-600' : 'text-amber-400'}">
-                                ${isOpponentTurn ? tr('대기...', 'WAIT', '待機...') : tr('[배치]', '[PLACE]', '[配置]')}
-                              </span>
-                            </div>
-
-                            <!-- Footer Cue -->
-                            <div class="text-[8px] sm:text-[9px] font-mono truncate ${isOpponentTurn ? 'text-stone-700' : 'text-stone-400/60'}">
-                              ${isOpponentTurn ? 'AI TURN' : 'TAP HERE'}
-                            </div>
-                          </button>
-                        `;
-                      }
-
-                      return renderBattleBoardCardHtml({
-                        cardId: slot.cardId,
-                        stats: slot.stats,
-                        owner: slot.owner,
-                        isJustPlaced: playRpgState.lastPlacedSlot === sIdx,
-                        isFlipped: playRpgState.flippedSlots?.includes(sIdx),
-                      });
-                    })
-                    .join('')}
+                <div id="battle-board-grid" class="grid grid-cols-3 gap-1.5 sm:gap-2.5 w-full max-w-[285px] sm:max-w-[360px] md:max-w-[400px] mx-auto select-none p-1.5 sm:p-2.5 bg-[#0c1220] border-2 border-amber-400/60 shadow-2xl rounded-none">
+                  ${renderBattleBoardGridHtml()}
                 </div>
 
                 <!-- Battle Result Controls (Victory Required to Advance Chapter) -->
-                ${
-                  playRpgState.battleWinner
-                    ? `
-                      <div class="w-full bg-[#0a1020] border border-white/15 p-3 rounded-none shadow-xl flex flex-col items-center gap-2.5">
-                        <div class="text-xs sm:text-sm font-black text-center ${
-                          playRpgState.battleWinner === 'player' ? 'text-emerald-400' : 'text-rose-400'
-                        }">
-                          ${
-                            playRpgState.battleWinner === 'player'
-                              ? tr('🎉 전투 승리! 50 EXP 획득 완료.', '🎉 Victory! +50 EXP awarded.', '🎉 バトル勝利！50 EXPを獲得しました。')
-                              : tr(
-                                  '⚠️ 승리하지 못하면 다음 회차로 진행할 수 없습니다. 카드를 업그레이드(#card)하거나 재도전하세요!',
-                                  '⚠️ You must win to advance to the next episode. Upgrade your cards (#card) or retry!',
-                                  '⚠️ 勝利しないと次話へ進めません。カードを強化（#card）するか再挑戦してください！'
-                                )
-                          }
-                        </div>
-
-                        <div class="flex flex-wrap items-center justify-center gap-2">
-                          <button
-                            type="button"
-                            data-action="play-repeat-hunting"
-                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-sm min-h-[44px] cursor-pointer active:translate-y-px"
-                          >
-                            ${playRpgState.battleWinner === 'player' ? tr('🔁 반복 사냥 재전투', '🔁 Repeat Battle', '🔁 反復狩り再戦') : tr('⚔️ 현재 회차 재도전', '⚔️ Retry Episode', '⚔️ 現在のエピソードに再挑戦')}
-                          </button>
-                          ${
-                            playRpgState.battleWinner === 'player'
-                              ? `
-                                <button
-                                  type="button"
-                                  data-action="play-next-chapter"
-                                  class="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs sm:text-sm font-black rounded-sm min-h-[44px] cursor-pointer active:translate-y-px shadow-lg"
-                                >
-                                  ${currentChapter >= 40 ? tr('👑 40화 완주 · 환생하기 ▶', '👑 Episode 40 Clear · Reincarnate ▶', '👑 全40話完走・転生する ▶') : tr('다음 챕터로 전진 ▶', 'Next Chapter ▶', '次のチャプターへ ▶')}
-                                </button>
-                              `
-                              : `
-                                <button
-                                  type="button"
-                                  data-nav="card"
-                                  class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer active:translate-y-px"
-                                >
-                                  ⬆️ ${tr('카드 업그레이드 (#card)', 'Upgrade Cards (#card)', 'カード強化 (#card)')}
-                                </button>
-                              `
-                          }
-                        </div>
-                      </div>
-                    `
-                    : ''
-                }
+                <div id="battle-result-container" class="w-full">
+                  ${renderBattleResultControlsHtml()}
+                </div>
               </main>
 
               <!-- 3. 하단 바: Player Active Hand Cards (한 손 조작 최적화) -->
               <footer class="relative w-full shrink-0 border-t border-white/10 bg-[#090f1e]/90 backdrop-blur-md px-3 py-2 sm:py-3 z-20">
                 <div class="w-full max-w-2xl mx-auto flex flex-col items-center">
                   <div class="w-full flex items-center justify-between pb-1 text-[10px] sm:text-[11px] text-stone-400 font-mono">
-                    <span>${tr('내 핸드 카드', 'My Hand Cards', '手札カード')} (${playRpgState.playerHand.length})</span>
+                    <span>${tr('내 핸드 카드', 'My Hand Cards', '手札カード')} <span id="battle-hand-count">(${playRpgState.playerHand.length})</span></span>
                     <span class="text-amber-400 font-bold">${tr('카드를 터치하여 선택 후 보드에 배치', 'Tap card to select, then tap slot', 'カードを選択してスロットへ配置')}</span>
                   </div>
-                  <!-- 카드 덱 행 -->
-                  <div class="flex flex-nowrap items-stretch justify-center gap-1 sm:gap-2.5 w-full pt-1">
-                    ${playRpgState.playerHand
-                      .map((cId, hIdx) => {
-                        const isSelected = playRpgState.selectedHandIndex === hIdx;
-                        return `
-                          <button
-                            type="button"
-                            data-action="play-battle-card"
-                            data-hand-index="${hIdx}"
-                            class="relative flex-1 min-w-0 sm:min-w-[80px] md:min-w-[100px] max-w-[70px] sm:max-w-[110px] md:max-w-[125px] text-left p-0 bg-transparent border-0 cursor-pointer transition-transform ${
-                              isSelected
-                                ? '-translate-y-2 ring-2 ring-amber-400 rounded-sm z-20'
-                                : 'hover:-translate-y-1 opacity-95 hover:opacity-100'
-                            }"
-                          >
-                            ${
-                              isSelected
-                                ? `<span class="absolute -top-3 left-1/2 -translate-x-1/2 z-40 px-1.5 py-0.2 bg-amber-400 text-stone-950 text-[8px] sm:text-[9px] font-black rounded-xs whitespace-nowrap border border-stone-900 shadow-md">▼ SELECT</span>`
-                                : ''
-                            }
-                            ${renderOriginalCardHtml(cId, {
-                              isSelected,
-                              isOwned: true,
-                              showRedDot: false,
-                              size: 'responsive',
-                              visualTier: 'bust',
-                              className: 'w-full min-w-0 sm:min-w-[80px] md:min-w-[100px] aspect-[5/7] max-h-[110px] sm:max-h-[160px] md:max-h-[185px]',
-                            })}
-                          </button>
-                        `;
-                      })
-                      .join('')}
+                  <!-- 카드 덱 행 (고유 ID 컨테이너로 깜박임 없는 국소 갱신) -->
+                  <div id="battle-hand-row" class="flex flex-nowrap items-stretch justify-center gap-1 sm:gap-2.5 w-full pt-1">
+                    ${renderBattleHandRowHtml()}
                   </div>
                 </div>
               </footer>
@@ -2029,9 +2109,9 @@ function renderWebtoonView(): string {
 
 /**
  * Render Floating AUTO PLAY Action Button at Bottom-Right (z-[70])
- * - Spins continuously (animate-spin) when auto-play is running
- * - Click toggles auto-play ON/OFF on the current view (map, dialogue, battle)
- * - Restores idle pause on stop, and resumes on next toggle
+ * - Raised upward (bottom-24 sm:bottom-28) so it never covers bottom navigation or action buttons
+ * - Modern OpenCode Terminal-Flat design: single flat pill, 1px hairline border, 44px+ touch target
+ * - Clean status dot, modern vector icon, integrated [ON]/[OFF] state badge (zero visual clutter)
  */
 export function renderAutoPlayFloatingButton(): string {
   const isAuto = playRpgState.autoMode;
@@ -2039,81 +2119,62 @@ export function renderAutoPlayFloatingButton(): string {
   return `
     <aside
       id="play-floating-auto-dock"
-      class="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[70] select-none pointer-events-auto font-mono"
-      aria-label="${tr('자동플레이 컨트롤러', 'Auto Play Controller', '自動プレイコントローラー')}"
+      class="fixed bottom-24 right-4 sm:bottom-28 sm:right-6 z-[70] select-none pointer-events-auto font-mono"
+      aria-label="${tr('자동 진행 컨트롤러', 'Auto-Play Controller', '自動進行コントローラー')}"
     >
       <button
         type="button"
         data-action="play-toggle-auto"
-        class="group relative flex flex-col items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 transition-all cursor-pointer select-none active:scale-95 shadow-2xl ${
+        class="group flex items-center gap-2 px-3.5 py-2.5 sm:px-4 sm:py-2.5 rounded-sm border transition-all cursor-pointer select-none active:scale-95 shadow-md min-h-[44px] ${
           isAuto
-            ? 'bg-amber-400 text-stone-950 border-amber-300 shadow-[0_0_24px_rgba(251,191,36,0.9)] ring-2 ring-amber-300 scale-105'
-            : 'bg-[#201d1d] text-[#fdfcfc] border-white/20 hover:border-amber-400 hover:scale-105'
+            ? 'bg-[#201d1d] text-[#fdfcfc] border-amber-400 hover:border-amber-300'
+            : 'bg-[#fdfcfc] text-[#201d1d] hover:bg-[#edeaea] border-stone-300'
         }"
-        aria-label="${isAuto ? tr('자동플레이 중지', 'Stop Auto Play', '自動プレイ停止') : tr('자동플레이 시작', 'Start Auto Play', '自動プレイ開始')}"
-        title="${isAuto ? tr('자동플레이 중지 (클릭 시 멈춤)', 'Stop Auto Play', 'クリックで停止') : tr('자동플레이 시작 (클릭 시 재생)', 'Start Auto Play', 'クリックで再生')}"
+        aria-label="${isAuto ? tr('자동 진행 중지', 'Stop Auto-Play', '自動進行停止') : tr('자동 진행 시작', 'Start Auto-Play', '自動進行開始')}"
+        title="${isAuto ? tr('자동 진행 중지 (클릭 시 멈춤)', 'Stop Auto-Play (Click to pause)', '自動進行停止 (クリックで一時停止)') : tr('자동 진행 시작 (클릭 시 자동 모험)', 'Start Auto-Play (Click to run)', '自動進行開始 (クリックで自動冒険)')}"
       >
-        <!-- Outer Spinning Dash Ring (활성화 시 빙빙 돌아가는 외곽 대시 링) -->
-        <div
-          class="pointer-events-none absolute inset-[-3px] rounded-full border-2 border-dashed ${
-            isAuto
-              ? 'border-stone-950 animate-spin opacity-100'
-              : 'border-white/20 opacity-40 group-hover:border-amber-400/50'
-          }"
-          style="animation-duration: 2.5s;"
-        ></div>
+        <!-- Status Indicator Dot -->
+        <span class="w-2 h-2 rounded-full shrink-0 ${
+          isAuto ? 'bg-emerald-400 animate-pulse' : 'bg-stone-400'
+        }"></span>
 
-        <!-- Center Spinning Icon (활성화 시 빙빙 돌아가는 중심 회전 룬) -->
-        <div
-          class="pointer-events-none flex items-center justify-center transition-transform ${
-            isAuto ? 'animate-spin' : ''
-          }"
-          style="animation-duration: 1.8s;"
+        <!-- Modern Vector Icon (Spinning loop when active, clean play triangle when idle) -->
+        <svg
+          viewBox="0 0 24 24"
+          class="w-4 h-4 shrink-0 transition-transform ${isAuto ? 'text-amber-400 animate-spin' : 'text-stone-600 group-hover:text-[#201d1d]'}"
+          style="${isAuto ? 'animation-duration: 3s;' : ''}"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
         >
-          <svg
-            viewBox="0 0 24 24"
-            class="w-6 h-6 sm:w-7 sm:h-7 ${isAuto ? 'text-stone-950' : 'text-amber-400'}"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            ${
-              isAuto
-                ? `
-                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                  <path d="M3 3v5h5" />
-                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-                  <path d="M16 21h5v-5" />
-                  <polygon points="13 2 9 13 12 13 11 22 15 11 12 11" fill="currentColor" stroke="none" />
-                `
-                : `
-                  <circle cx="12" cy="12" r="10" stroke-dasharray="4 2" />
-                  <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" />
-                `
-            }
-          </svg>
+          ${
+            isAuto
+              ? `
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                <path d="M16 21h5v-5" />
+              `
+              : `
+                <polygon points="6 4 20 12 6 20 6 4" fill="currentColor" stroke="none" />
+              `
+          }
+        </svg>
+
+        <!-- Label & State Badge -->
+        <div class="flex items-center gap-1.5 text-xs font-bold leading-none tracking-tight">
+          <span class="font-mono tracking-tight font-black">AUTO PLAY</span>
+          <span class="px-1.5 py-0.5 text-[10px] font-mono font-black rounded-xs ${
+            isAuto
+              ? 'bg-amber-400 text-stone-950'
+              : 'bg-stone-200 text-stone-600'
+          }">
+            ${isAuto ? 'ON' : 'OFF'}
+          </span>
         </div>
-
-        <!-- Floating Badge Label (AUTO PLAY) -->
-        <span class="text-[7.5px] sm:text-[8.5px] font-black uppercase tracking-tight leading-none mt-0.5 pointer-events-none font-mono ${
-          isAuto ? 'text-stone-950 font-black' : 'text-white'
-        }">
-          AUTO
-        </span>
       </button>
-
-      <!-- Sub Status Pill below button -->
-      <div class="mt-1 text-center pointer-events-none">
-        <span class="inline-block px-1.5 py-0.5 text-[7.5px] sm:text-[8.5px] font-black rounded-xs shadow-md border ${
-          isAuto
-            ? 'bg-amber-400 text-stone-950 border-stone-900 animate-pulse'
-            : 'bg-[#201d1d] text-stone-300 border-white/20'
-        }">
-          ${isAuto ? '● RUNNING' : '▶ AUTO PLAY'}
-        </span>
-      </div>
     </aside>
   `;
 }

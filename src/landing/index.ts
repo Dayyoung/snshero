@@ -25,7 +25,7 @@ import {
   getInspectedDeckCardId,
   setDeckOptimizeNotice,
 } from './views/MyDeckSection';
-import { renderPlaySection, handlePlayAction, stopPlayTts } from './views/PlaySection';
+import { renderPlaySection, handlePlayAction, stopPlayTts, syncBattleDomInPlace } from './views/PlaySection';
 import {
   renderCardSection,
   setSelectedCardId,
@@ -98,6 +98,7 @@ import {
   verifyMallCryptoDeposit,
   openMallOrdersList,
   setMallCurrentTab,
+  setMallPage,
   toggleMugCardPicker,
   setSelectedMugCardId,
   toggleTshirtCardPicker,
@@ -111,6 +112,7 @@ import {
   renderMobileTopBanner,
   pushAdSenseTags,
   initAdSenseContainmentObserver,
+  syncAdSenseRatioLayout,
 } from './services/adsenseManager';
 import { cardNurtureStore } from './services/cardNurtureStore';
 import { playRpgState, runAutoStep, ensureGameStarted } from './services/playRpgEngine';
@@ -161,11 +163,41 @@ function renderActiveViewContent(view: ViewKey): string {
 
 /**
  * Renders the entire application DOM tree.
+ * Preserves existing Google AdSense banner containers in-place on re-renders
+ * to prevent DOM destruction that triggers 'Error: no_div'.
  */
 export function renderApp(): void {
   const root = document.getElementById('landing-root') || document.getElementById('root');
   if (!root) return;
 
+  const mainSlot = document.getElementById('landing-main-slot');
+  const headerSlot = document.getElementById('landing-header-slot');
+  const sidebarSlot = document.getElementById('landing-sidebar-slot');
+  const modalsSlot = document.getElementById('landing-modals-slot');
+  const autoBannerSlot = document.getElementById('landing-auto-growth-banner-slot');
+  const footerSlot = document.getElementById('landing-footer-slot');
+  const leftGutter = document.getElementById('adsense-desktop-left');
+  const rightGutter = document.getElementById('adsense-desktop-right');
+  const mobileTop = document.getElementById('adsense-mobile-top');
+
+  // In-place slot update if DOM shell already exists (avoids destroying AdSense iframes)
+  if (mainSlot && headerSlot && sidebarSlot && modalsSlot && autoBannerSlot && footerSlot) {
+    autoBannerSlot.innerHTML = renderAutoGrowthBannerHtml();
+    headerSlot.innerHTML = renderHeader(state.activeView);
+    sidebarSlot.innerHTML = renderSidebar(state.isSidebarOpen, state.activeView);
+    modalsSlot.innerHTML = renderModals(state.activeModal);
+    mainSlot.innerHTML = renderActiveViewContent(state.activeView);
+    footerSlot.innerHTML = renderFooter();
+
+    // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
+    syncAdSenseRatioLayout(state.activeView);
+    if (state.activeView !== 'play') {
+      pushAdSenseTags(state.activeView);
+    }
+    return;
+  }
+
+  // Initial full mount pass
   root.innerHTML = `
     <div class="w-full min-h-screen overflow-x-hidden flex flex-col bg-[#fdfcfc] text-[#201d1d] font-mono select-none">
       <!-- Autonomous Growth & Retry Loop Top Banner -->
@@ -212,7 +244,11 @@ export function renderApp(): void {
     </div>
   `;
 
-  pushAdSenseTags();
+  // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
+  syncAdSenseRatioLayout(state.activeView);
+  if (state.activeView !== 'play') {
+    pushAdSenseTags(state.activeView);
+  }
 }
 
 /**
@@ -248,7 +284,11 @@ export function renderSectionContent(view: ViewKey): void {
       if (leftGutter) leftGutter.style.display = '';
       if (rightGutter) rightGutter.style.display = '';
       if (mobileTop) mobileTop.style.display = '';
-      pushAdSenseTags();
+      // Strict Aspect Ratio AdSense Management (Width > Height: Side Gutters; Width <= Height: Top Banner)
+  syncAdSenseRatioLayout(state.activeView);
+  if (state.activeView !== 'play') {
+    pushAdSenseTags(state.activeView);
+  }
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
   } else {
@@ -614,6 +654,19 @@ export function handleEventDelegation(event: Event): void {
       setMallCurrentTab(tab);
       renderApp();
     }
+  } else if (action === 'change-mall-page') {
+    const pageAttr = target.getAttribute('data-page') || target.closest('button')?.getAttribute('data-page');
+    if (pageAttr) {
+      const pageNum = parseInt(pageAttr, 10);
+      if (!isNaN(pageNum)) {
+        setMallPage(pageNum);
+        renderApp();
+        const gridEl = document.getElementById('mall-products-grid') || document.getElementById('mall');
+        if (gridEl) {
+          gridEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }
   } else if (action === 'open-mall-detail') {
     const productId = target.getAttribute('data-product-id');
     if (productId) {
@@ -711,8 +764,7 @@ export function handleEventDelegation(event: Event): void {
     backMallToPayment();
     renderApp();
   } else if (action === 'copy-mall-crypto-address') {
-    const addr = target.getAttribute('data-address') || '';
-    copyMallCryptoAddress(addr);
+    copyMallCryptoAddress();
     renderApp();
   } else if (action === 'verify-mall-crypto-deposit') {
     verifyMallCryptoDeposit();
@@ -727,6 +779,12 @@ export function handleEventDelegation(event: Event): void {
       return;
     }
     handlePlayAction(action, target);
+    // Anti-Flicker: in-place DOM sync for card selection and slot placement
+    if (action === 'play-battle-card' || action === 'play-battle-slot') {
+      if (syncBattleDomInPlace()) {
+        return;
+      }
+    }
     renderApp();
   }
   // ── Book (웹소설) & Webtoon (웹툰) Actions ────────────────────────────────
@@ -1086,6 +1144,9 @@ export function mountLanding(): void {
     });
     window.addEventListener('hero_rpg_board_updated', () => {
       if (state.activeView === 'play') {
+        if (syncBattleDomInPlace()) {
+          return;
+        }
         renderApp();
       }
     });

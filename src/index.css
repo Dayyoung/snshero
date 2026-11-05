@@ -1327,3 +1327,34 @@ iframe[name*="google_ads_bottom_frame"],
   min-height: 50px !important;
   max-height: 50px !important;
 }
+
+/* ==========================================================================
+   화면 비율 기준 구글 배너 반응형 규칙 (Aspect-Ratio Responsive Rules)
+   - 화면비율 너비 > 높이 (Landscape): 좌우 구글 배너 표시, 상단 배너 숨김
+   - 화면비율 너비 <= 높이 (Portrait): 상단 구글 배너 표시, 좌우 배너 숨김
+   ========================================================================== */
+@media (orientation: landscape) {
+  #adsense-mobile-top,
+  .adsense-compact-top {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+}
+
+@media (orientation: portrait) {
+  #adsense-desktop-left,
+  #adsense-desktop-right {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+}

@@ -838,5 +838,19 @@
     "video_url": "https://flow.google.com/asb/ANqvLOZaMQ9ple3ZAovgUiNpX758av179AGBF-kECWe0lBmwc3VrOHpcF7YFJY8G1snl0Dfdnl95RdZ2VN8JBVZCu1Ani32WsT9eHPen8V316G7Z69OZmkODUqcTdJUXz_5orDYv_TPr3PYu1BrodnAFyrs8UqS96b5GP9cdY4fqwQ=mm,22,15",
     "completed": true,
     "timestamp": "2026-11-05T07:29:05+0900"
+  },
+  "EP26-S43": {
+    "episode": 26,
+    "index": 43,
+    "code": "EP26-S43",
+    "voice_type": "narrator",
+    "speaker": "Narrator",
+    "line_en": "Behind him stands the true archduke of the abyss, Belphegor...",
+    "clip_path": "public/anime-character-sheets/videos/ep26_landscape/clips/EP26-S43.mp4",
+    "size_bytes": 2899233,
+    "first_frame_mae": 4.45,
+    "video_url": "https://flow.google.com/asb/ANqvLObe_dliTELYTB3eu2TnASlKiVUJ57QMk68VR3-ZmR89Wqno452IriCX3o9uVQkD56GVE0_mQTdavwjgIK5P1bjfR8dNHVGzVMLryRfUCSVKQThOS6TNmj5koBhMvYJpvxum-K5v5cHi1s7TqQO06LubhzGGId-7s7fR_ZVo-Q=mm,22,15",
+    "completed": true,
+    "timestamp": "2026-11-05T08:03:36+0900"
   }
 }

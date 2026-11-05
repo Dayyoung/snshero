@@ -730,5 +730,35 @@
     "video_url": "https://flow.google.com/asb/ANqvLOaC8QKotx6zeeYKVWOV2g15LMG3yjbw2LY6OFrqGFN_3tA6KraLliwP4VQxN5nRo6T6xDEsV1ahT-BDO7GkfWjD3jr-sIf3umNhqsgxaKxstBjBvHnwkRcFmlRB72CbGaaoKcAbal9yKK4IUcnGgIKsVds-kWdGbIpk8XTbdg=mm,22,15",
     "completed": true,
     "timestamp": "2026-11-05T05:44:03+0900"
+  },
+  "EP25-S31": {
+    "episode": 25,
+    "index": 31,
+    "code": "EP25-S31",
+    "voice_type": "female",
+    "speaker": "Sylvia",
+    "line_en": "Princess Cilia...",
+    "prompt": "[EP25-S31] 2D dark-fantasy anime cutscene animation. Animate the attached start frame smoothly over 6 seconds: Cinematic 2D anime motion in the fantasy realm as Sylvia speaks expressively with natural lip motion, flowing hair and garments, and atmospheric lighting. The female character (Sylvia) speaks in English with a young female voice within 6 seconds: \"Princess Cilia...\" Other characters keep their mouths closed. Strict no-text rule: do not render any text, subtitles, or watermarks.",
+    "clip_path": "public/anime-character-sheets/videos/ep25_landscape/clips/EP25-S31.mp4",
+    "size_bytes": 2256183,
+    "first_frame_mae": 4.98,
+    "video_url": "https://flow.google.com/asb/ANqvLOYrUv7fMn4vjkMOKinMlBObidPf8NJaBWwv-ejlTv_fCOKkO-Hhe-TG6t3KcAKnz3ophVs-wSxsABsl_DAWHr0dzLch-H6N2FAcCs9QcrYxzfjQB9tGvEOUL2ZUAlaApTtpWj94uED-4vQxpNN1J3UurnyaX9UwJCDepeS9=mm,22,15",
+    "completed": true,
+    "timestamp": "2026-11-05T08:32:06+0900"
+  },
+  "EP25-S12": {
+    "episode": 25,
+    "index": 12,
+    "code": "EP25-S12",
+    "voice_type": "narrator",
+    "speaker": "Narrator",
+    "line_en": "Draped in opulent scarlet clerical vestments and bearing the archiepiscopal staff, Minister Lucian strode.",
+    "prompt": "[EP25-S12] 2D dark-fantasy anime cutscene animation. Animate the attached start frame smoothly over 6 seconds: Smooth cinematic 2D anime camera movement and atmospheric purple magic particles in the grand hall. All characters on screen keep their mouths completely closed. Off-screen, a gentle, soft-spoken male narrator voice speaks in English: \"Draped in crimson ceremonial robes and holding his ornate staff, Lucian stepped forward.\" Strict no-text rule: do not render any text, subtitles, or watermarks.",
+    "clip_path": "public/anime-character-sheets/videos/ep25_landscape/clips/EP25-S12.mp4",
+    "size_bytes": 2376406,
+    "first_frame_mae": 6.34,
+    "video_url": "https://flow.google.com/asb/ANqvLOZtdK4Z5myLc5jlMn0KU5jY1OOThRF8mL6_FWAM2_q7pYanZaEGgVoYNdTRlHZzhAP8Ib-93iaUdd1cXKUaarVk6RuiAyDYpVfU7UMdGiIz0osAwtsneUF8IymsKYN14vOUhibG240GZcxM-8Xlu2nz58LojkY-oIFimj3lFg=mm,22,15",
+    "completed": true,
+    "timestamp": "2026-11-05T08:45:04+0900"
   }
 }

@@ -35,9 +35,19 @@ export function isAdRemoved(): boolean {
 }
 
 /**
- * Calculates active ad placements for a given viewport width.
+ * Checks whether current viewport aspect ratio is Landscape (Width > Height).
  */
-export function getAdPlacements(viewportWidth?: number): AdSensePlacementResult {
+export function isLandscapeRatio(): boolean {
+  if (typeof window === 'undefined') return true;
+  return window.innerWidth > window.innerHeight;
+}
+
+/**
+ * Calculates active ad placements strictly based on aspect ratio:
+ * - Width > Height (Landscape): Desktop Left & Right side gutters active.
+ * - Width <= Height (Portrait): Mobile Top banner active.
+ */
+export function getAdPlacements(): AdSensePlacementResult {
   if (isAdRemoved()) {
     return {
       desktopLeft: false,
@@ -47,34 +57,67 @@ export function getAdPlacements(viewportWidth?: number): AdSensePlacementResult 
     };
   }
 
-  const width =
-    viewportWidth !== undefined
-      ? viewportWidth
-      : typeof window !== 'undefined'
-      ? window.innerWidth
-      : 1024;
-
-  if (width >= ADSENSE_CONFIG.wideBreakpointPx) {
-    return {
-      desktopLeft: true,
-      desktopRight: true,
-      mobileTop: false,
-      suppressedByVip: false,
-    };
-  }
-
+  const isLandscape = isLandscapeRatio();
   return {
-    desktopLeft: false,
-    desktopRight: false,
-    mobileTop: true,
+    desktopLeft: isLandscape,
+    desktopRight: isLandscape,
+    mobileTop: !isLandscape,
     suppressedByVip: false,
   };
 }
 
 /**
+ * Injects clean, correctly-dimensioned <ins class="adsbygoogle"> tag into wrapper if absent.
+ */
+function ensureInsTagInContainer(container: HTMLElement, format: 'vertical' | 'horizontal'): HTMLElement | null {
+  const wrapper = container.querySelector<HTMLElement>('.adsense-slot-wrapper');
+  if (!wrapper) return null;
+
+  let ins = wrapper.querySelector<HTMLElement>('ins.adsbygoogle');
+  if (ins) return ins;
+
+  ins = document.createElement('ins');
+  ins.className = 'adsbygoogle';
+  ins.setAttribute('data-ad-client', ADSENSE_CONFIG.client);
+
+  if (format === 'vertical') {
+    ins.style.cssText = 'display:block; width:160px; height:600px; max-width:160px; max-height:600px; margin:0 auto; overflow:hidden;';
+    ins.setAttribute('data-ad-format', 'vertical');
+    ins.setAttribute('data-full-width-responsive', 'false');
+  } else {
+    ins.style.cssText = 'display:block; width:100%; min-width:280px; max-width:468px; height:50px; min-height:50px; margin:0 auto;';
+    ins.setAttribute('data-ad-format', 'horizontal');
+    ins.setAttribute('data-full-width-responsive', 'true');
+  }
+
+  wrapper.appendChild(ins);
+  return ins;
+}
+
+/**
+ * Safely removes uninitialized <ins> tag from a hidden container.
+ * Crucial Safeguard: AdSense throws 'Error: no_div' when adsbygoogle.push({})
+ * encounters a hidden (<ins> inside display:none) element in the DOM tree.
+ * Removing uninitialized tags from hidden containers permanently eliminates this error.
+ */
+function cleanupUnloadedInsTag(container: HTMLElement): void {
+  const ins = container.querySelector<HTMLElement>('ins.adsbygoogle');
+  if (!ins) return;
+
+  const status = ins.getAttribute('data-adsbygoogle-status');
+  const hasIframe = ins.querySelector('iframe') !== null || ins.children.length > 0;
+
+  // Only remove unpopulated placeholder tags; never destroy loaded ad iframes
+  if (!hasIframe && status !== 'done') {
+    try {
+      ins.remove();
+    } catch {}
+  }
+}
+
+/**
  * Renders Desktop Left Side Gutter Ad Unit (<aside id="adsense-desktop-left">)
- * Restricted to ultra-wide desktop viewports (>= 1536px 2xl) to prevent encroaching on main content.
- * Completely hidden on game viewports ('play') to guarantee zero game/touch obstruction.
+ * Dynamically displayed when Width > Height (Landscape).
  */
 export function renderDesktopLeftGutter(activeView?: string): string {
   if (isAdRemoved() || activeView === 'play') return '';
@@ -82,7 +125,8 @@ export function renderDesktopLeftGutter(activeView?: string): string {
   return `
     <aside
       id="adsense-desktop-left"
-      class="adsense-gutter adsense-desktop-left hidden 2xl:flex flex-col items-center justify-start py-6 px-2 w-[160px] shrink-0 text-center select-none"
+      class="adsense-gutter adsense-desktop-left flex flex-col items-center justify-start py-6 px-2 w-[160px] shrink-0 text-center select-none"
+      style="display: none;"
       aria-label="Google AdSense Left Wing"
     >
       <div class="w-full border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-2 rounded-none">
@@ -90,13 +134,7 @@ export function renderDesktopLeftGutter(activeView?: string): string {
           <span>[AD]</span>
           <span>Google Ads</span>
         </div>
-        <ins
-          class="adsbygoogle"
-          style="display:block; width:160px; height:600px; max-width:160px; max-height:600px; margin:0 auto; overflow:hidden;"
-          data-ad-client="${ADSENSE_CONFIG.client}"
-          data-ad-format="rectangle"
-          data-full-width-responsive="false"
-        ></ins>
+        <div class="adsense-slot-wrapper w-full flex items-center justify-center min-h-[600px] overflow-hidden"></div>
       </div>
     </aside>
   `;
@@ -104,8 +142,7 @@ export function renderDesktopLeftGutter(activeView?: string): string {
 
 /**
  * Renders Desktop Right Side Gutter Ad Unit (<aside id="adsense-desktop-right">)
- * Restricted to ultra-wide desktop viewports (>= 1536px 2xl) to prevent encroaching on main content.
- * Completely hidden on game viewports ('play') to guarantee zero game/touch obstruction.
+ * Dynamically displayed when Width > Height (Landscape).
  */
 export function renderDesktopRightGutter(activeView?: string): string {
   if (isAdRemoved() || activeView === 'play') return '';
@@ -113,7 +150,8 @@ export function renderDesktopRightGutter(activeView?: string): string {
   return `
     <aside
       id="adsense-desktop-right"
-      class="adsense-gutter adsense-desktop-right hidden 2xl:flex flex-col items-center justify-start py-6 px-2 w-[160px] shrink-0 text-center select-none"
+      class="adsense-gutter adsense-desktop-right flex flex-col items-center justify-start py-6 px-2 w-[160px] shrink-0 text-center select-none"
+      style="display: none;"
       aria-label="Google AdSense Right Wing"
     >
       <div class="w-full border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-2 rounded-none">
@@ -121,13 +159,7 @@ export function renderDesktopRightGutter(activeView?: string): string {
           <span>[AD]</span>
           <span>Google Ads</span>
         </div>
-        <ins
-          class="adsbygoogle"
-          style="display:block; width:160px; height:600px; max-width:160px; max-height:600px; margin:0 auto; overflow:hidden;"
-          data-ad-client="${ADSENSE_CONFIG.client}"
-          data-ad-format="rectangle"
-          data-full-width-responsive="false"
-        ></ins>
+        <div class="adsense-slot-wrapper w-full flex items-center justify-center min-h-[600px] overflow-hidden"></div>
       </div>
     </aside>
   `;
@@ -135,8 +167,7 @@ export function renderDesktopRightGutter(activeView?: string): string {
 
 /**
  * Renders Mobile/Tablet Top Banner Ad Unit (<div id="adsense-mobile-top">)
- * Compact slim banner format (50px mobile, 60px tablet) to prevent blocking screen content.
- * Completely hidden on game viewports ('play') to preserve full screen gameplay.
+ * Dynamically displayed when Width <= Height (Portrait).
  */
 export function renderMobileTopBanner(activeView?: string): string {
   if (isAdRemoved() || activeView === 'play') return '';
@@ -144,7 +175,8 @@ export function renderMobileTopBanner(activeView?: string): string {
   return `
     <div
       id="adsense-mobile-top"
-      class="adsense-banner-top w-full block lg:hidden bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] text-center px-2 py-0.5 select-none overflow-hidden"
+      class="adsense-banner-top w-full bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] text-center px-2 py-0.5 select-none overflow-hidden"
+      style="display: none;"
       aria-label="Google AdSense Mobile Banner"
     >
       <div class="adsense-banner-inner max-w-sm sm:max-w-md mx-auto overflow-hidden">
@@ -152,60 +184,29 @@ export function renderMobileTopBanner(activeView?: string): string {
           <span>[AD] Google Ads</span>
           <span class="text-[7px] text-stone-300">Sponsored</span>
         </div>
-        <div class="w-full h-[50px] sm:h-[60px] max-h-[50px] sm:max-h-[60px] flex items-center justify-center overflow-hidden">
-          <ins
-            class="adsbygoogle"
-            style="display:inline-block; width:100%; max-width:468px; height:50px; max-height:50px; min-height:50px; overflow:hidden;"
-            data-ad-client="${ADSENSE_CONFIG.client}"
-            data-ad-format="horizontal"
-            data-full-width-responsive="true"
-          ></ins>
-        </div>
+        <div class="adsense-slot-wrapper w-full min-h-[50px] flex items-center justify-center overflow-hidden"></div>
       </div>
     </div>
   `;
 }
 
 /**
- * Removes any auto-placed ads, floating overlays, anchors, or screen-blocking vignettes
- * inserted by Google Auto-Ads outside designated containers.
+ * Removes any floating screen-blocking vignettes or anchor overlays outside designated containers.
+ * Strictly preserves legitimate inline AdSense banner frames and hosts (prevents 'Error: no_div').
  */
 export function cleanupUncontainedAds(): void {
   if (typeof document === 'undefined') return;
 
   try {
-    const uncontainedSelectors = [
-      '.google-auto-placed',
-      '.adsbygoogle-noab-wrap',
-      'ins.adsbygoogle[data-anchor-status]',
+    const intrusiveSelectors = [
       'iframe[name*="google_ads_top_frame"]',
       'iframe[name*="google_ads_bottom_frame"]',
-      'div[id*="aswift"][style*="position: fixed"]',
-      'div[id*="google_ads_iframe"][style*="position: fixed"]',
-      '#aswift_0_host',
-      '#aswift_1_host',
-      '#aswift_2_host',
-      '#aswift_3_host',
-      '#aswift_4_host',
-      '#aswift_5_host',
-      '#landing-main-slot .google-auto-placed',
-      '#landing-main-slot ins.adsbygoogle',
-      '#landing-modals-slot ins.adsbygoogle',
+      'ins.adsbygoogle[data-anchor-status]',
+      '.adsbygoogle-noab-wrap',
     ];
 
-    document.querySelectorAll(uncontainedSelectors.join(',')).forEach((el) => {
-      // Remove any fixed/sticky overlay unconditionally across entire page
-      const htmlEl = el as HTMLElement;
-      if (htmlEl.style && (htmlEl.style.position === 'fixed' || htmlEl.style.position === 'sticky')) {
-        try {
-          htmlEl.remove();
-        } catch {
-          htmlEl.style.display = 'none';
-        }
-        return;
-      }
-
-      // Protect legitimate static ads inside designated containers
+    document.querySelectorAll(intrusiveSelectors.join(',')).forEach((el) => {
+      // Never delete anything inside designated static banner containers
       if (el.closest('#adsense-desktop-left, #adsense-desktop-right, #adsense-mobile-top, .adsense-container')) {
         return;
       }
@@ -227,7 +228,72 @@ export function cleanupUncontainedAds(): void {
 let isObserverInitialized = false;
 
 /**
- * Initializes a DOM MutationObserver to enforce strict AdSense containment in real time.
+ * Synchronizes ad container display styles strictly based on aspect ratio:
+ * - Width > Height (Landscape): Left & Right gutters visible (display: flex), Top banner hidden (display: none).
+ * - Width <= Height (Portrait): Top banner visible (display: block), Left & Right gutters hidden (display: none).
+ * - Play route or VIP ad-free: All hidden (display: none).
+ */
+export function syncAdSenseRatioLayout(activeView?: string): void {
+  if (typeof document === 'undefined') return;
+
+  const leftGutter = document.getElementById('adsense-desktop-left');
+  const rightGutter = document.getElementById('adsense-desktop-right');
+  const mobileTop = document.getElementById('adsense-mobile-top');
+
+  // 1. VIP ad-removal or #play gaming route: suppress all ads 100%
+  if (isAdRemoved() || activeView === 'play') {
+    if (leftGutter) {
+      leftGutter.style.setProperty('display', 'none', 'important');
+      cleanupUnloadedInsTag(leftGutter);
+    }
+    if (rightGutter) {
+      rightGutter.style.setProperty('display', 'none', 'important');
+      cleanupUnloadedInsTag(rightGutter);
+    }
+    if (mobileTop) {
+      mobileTop.style.setProperty('display', 'none', 'important');
+      cleanupUnloadedInsTag(mobileTop);
+    }
+    return;
+  }
+
+  // 2. Aspect Ratio Check: Width > Height (Landscape) vs Width <= Height (Portrait)
+  const isLandscape = isLandscapeRatio();
+
+  if (isLandscape) {
+    // 화면비율 너비 > 높이: 좌우 배너 표시, 상단 배너 숨김
+    if (mobileTop) {
+      mobileTop.style.setProperty('display', 'none', 'important');
+      cleanupUnloadedInsTag(mobileTop);
+    }
+    if (leftGutter) {
+      leftGutter.style.setProperty('display', 'flex', 'important');
+      ensureInsTagInContainer(leftGutter, 'vertical');
+    }
+    if (rightGutter) {
+      rightGutter.style.setProperty('display', 'flex', 'important');
+      ensureInsTagInContainer(rightGutter, 'vertical');
+    }
+  } else {
+    // 화면비율 너비 <= 높이: 상단 배너 표시, 좌우 배너 숨김
+    if (leftGutter) {
+      leftGutter.style.setProperty('display', 'none', 'important');
+      cleanupUnloadedInsTag(leftGutter);
+    }
+    if (rightGutter) {
+      rightGutter.style.setProperty('display', 'none', 'important');
+      cleanupUnloadedInsTag(rightGutter);
+    }
+    if (mobileTop) {
+      mobileTop.style.setProperty('display', 'block', 'important');
+      ensureInsTagInContainer(mobileTop, 'horizontal');
+    }
+  }
+}
+
+/**
+ * Initializes a DOM MutationObserver and window listeners to enforce strict
+ * AdSense containment and aspect-ratio synchronization in real time.
  */
 export function initAdSenseContainmentObserver(): void {
   if (typeof window === 'undefined' || typeof document === 'undefined' || isObserverInitialized) return;
@@ -243,23 +309,28 @@ export function initAdSenseContainmentObserver(): void {
       subtree: true,
     });
 
-    // Initial pass
+    // Initial layout pass
+    syncAdSenseRatioLayout();
     cleanupUncontainedAds();
   } catch {}
 
-  // Handle viewport resize safely to trigger pushes for newly revealed slots
+  // Handle viewport resize and orientation changes safely
   let resizeTimer: any = null;
-  window.addEventListener('resize', () => {
+  const onOrientationOrResize = () => {
+    syncAdSenseRatioLayout();
     if (resizeTimer) clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       pushAdSenseTags();
-    }, 200);
-  });
+    }, 150);
+  };
+
+  window.addEventListener('resize', onOrientationOrResize);
+  window.addEventListener('orientationchange', onOrientationOrResize);
 }
 
 /**
  * Checks whether an ins.adsbygoogle element is truly visible and has non-zero dimensions in layout.
- * Prevents "No slot size for availableWidth=0" TagError.
+ * Prevents "No slot size for availableWidth=0" TagError and 'Error: no_div'.
  */
 function isAdSlotVisible(ins: HTMLElement): boolean {
   if (!ins || !ins.isConnected) return false;
@@ -283,35 +354,44 @@ function isAdSlotVisible(ins: HTMLElement): boolean {
 /**
  * Safe initializer to push adsbygoogle instances ONLY on truly visible designated containers.
  * Guaranteed:
+ *   - Zero "Error: no_div"
  *   - Zero "availableWidth=0" TagError
- *   - Zero "Only one enable_page_level_ads" error
  *   - Zero duplicate pushes on already populated slots
+ *   - Strict aspect-ratio compliance (Width > Height: Left & Right; Width <= Height: Top)
  */
-export function pushAdSenseTags(): void {
-  if (isAdRemoved()) return;
+export function pushAdSenseTags(activeView?: string): void {
+  if (isAdRemoved() || activeView === 'play') return;
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+  // Sync ratio layout immediately so active containers are mounted and sized
+  syncAdSenseRatioLayout(activeView);
 
   // Defer slightly so browser paints and layout calculates accurate widths
   setTimeout(() => {
     try {
       cleanupUncontainedAds();
+      syncAdSenseRatioLayout(activeView);
 
-      // Find ins elements within designated containers that haven't been pushed yet
-      const candidateSlots = Array.from(
-        document.querySelectorAll<HTMLElement>(
-          '#adsense-desktop-left ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
-          '#adsense-desktop-right ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
-          '#adsense-mobile-top ins.adsbygoogle:not([data-adsbygoogle-status]), ' +
-          '.adsense-container ins.adsbygoogle:not([data-adsbygoogle-status])'
-        )
-      );
+      const isLandscape = isLandscapeRatio();
 
+      // Only query active containers for current aspect ratio
+      const activeSelector = isLandscape
+        ? '#adsense-desktop-left ins.adsbygoogle, #adsense-desktop-right ins.adsbygoogle'
+        : '#adsense-mobile-top ins.adsbygoogle';
+
+      const candidateSlots = Array.from(document.querySelectorAll<HTMLElement>(activeSelector));
       if (candidateSlots.length === 0) return;
 
       const win = window as any;
       win.adsbygoogle = win.adsbygoogle || [];
 
       candidateSlots.forEach((slotEl) => {
+        // Skip if already processed, pending, or has child frames
+        const status = slotEl.getAttribute('data-adsbygoogle-status');
+        if (status === 'done' || status === 'pending' || slotEl.children.length > 0) {
+          return;
+        }
+
         // Strict guard: DO NOT push if element is hidden or has 0 width!
         if (!isAdSlotVisible(slotEl)) {
           return;
@@ -323,12 +403,13 @@ export function pushAdSenseTags(): void {
         try {
           win.adsbygoogle.push({});
         } catch (err) {
-          // If push fails, release status so it can retry later
+          // If push fails, safely catch and release status
+          console.warn('[AdSense] Push safely captured:', err);
           slotEl.removeAttribute('data-adsbygoogle-status');
         }
       });
     } catch (e) {
       // Top-level safe catch
     }
-  }, 80);
+  }, 100);
 }

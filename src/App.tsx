@@ -3428,7 +3428,8 @@ function AppContent() {
     } catch (_) {}
     const saved = localStorage.getItem('hero_bgm_volume');
     const parsed = saved ? parseFloat(saved) : NaN;
-    return isNaN(parsed) ? 0.15 : parsed;
+    // BGM default 50% reduced to whisper-quiet ambient level
+    return isNaN(parsed) ? 0.06 : parsed;
   });
 
   const [sfxVolume, setSfxVolume] = useState(() => {
@@ -3441,7 +3442,8 @@ function AppContent() {
     } catch (_) {}
     const saved = localStorage.getItem('hero_sfx_volume');
     const parsed = saved ? parseFloat(saved) : NaN;
-    return isNaN(parsed) ? 0.4 : parsed;
+    // Amplified SFX default volume
+    return isNaN(parsed) ? 0.85 : parsed;
   });
 
   const [bgmTrackId, setBgmTrackId] = useState(() => {
@@ -3470,7 +3472,7 @@ function AppContent() {
 
   useEffect(() => {
     if (bgmAudio) {
-      bgmAudio.volume = bgmVolume;
+      bgmAudio.volume = bgmVolume * 0.4;
       bgmAudio.muted = !bgmEnabled || bgmVolume === 0 || isCommunityView;
       if (isCommunityView) {
         bgmAudio.pause();
@@ -3486,10 +3488,10 @@ function AppContent() {
     if (track && bgmAudio) {
       const isPlaying = bgmEnabled && audioStarted && !bgmAudio.paused && !isCommunityView;
       bgmAudio.src = track.url;
-      bgmAudio.volume = bgmVolume;
+      bgmAudio.volume = bgmVolume * 0.4;
       bgmAudio.muted = !bgmEnabled || bgmVolume === 0 || isCommunityView;
       bgmAudio.load();
-      bgmAudio.volume = bgmVolume;
+      bgmAudio.volume = bgmVolume * 0.4;
       bgmAudio.muted = !bgmEnabled || bgmVolume === 0 || isCommunityView;
       if (isPlaying) {
         bgmAudio.play().catch(e => console.warn("Audio play blocked", e));
@@ -3511,7 +3513,8 @@ function AppContent() {
     try {
       const audio = new Audio();
       audio.src = url;
-      audio.volume = sfxVolume;
+      // Amplified SFX output
+      audio.volume = Math.min(1, sfxVolume * 1.15);
       
       // Attempt to play and handle promise
       const playPromise = audio.play();
@@ -5013,7 +5016,7 @@ function AppContent() {
 
   useEffect(() => {
     if (bgmEnabled && audioStarted && !isCommunityView) {
-      bgmAudio.volume = bgmVolume;
+      bgmAudio.volume = bgmVolume * 0.4;
       bgmAudio.muted = bgmVolume === 0;
       bgmAudio.play().catch(() => {});
     } else {

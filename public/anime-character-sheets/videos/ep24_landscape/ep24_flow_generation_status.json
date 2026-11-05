@@ -723,5 +723,20 @@
     "video_url": "https://flow.google.com/asb/ANqvLOb_VwSvWj2O02ejiFuxU6tyl1NDuQjlEgiLteeOmhqmf9_aRXbwJgJhbMgh2aLFutOO1UNS78I_Vhp5kEGc3fsMydlut0Y2J0Ti6m5YrGuo4uk5iW6UJs25-a_qNeS0Ol0FM_SNEji4Xg5Xr2Wx6Uq-KrXZeYKICuBwpzxQNw=mm,22,15",
     "completed": true,
     "timestamp": "2026-11-05T05:23:33+0900"
+  },
+  "EP24-S04": {
+    "episode": 24,
+    "index": 4,
+    "code": "EP24-S04",
+    "voice_type": "narrator",
+    "speaker": "Narrator",
+    "line_en": "Cilia rested her staff against the door, sensing the intricate mana conduits.",
+    "prompt": "[EP24-S04] 2D dark-fantasy anime cutscene animation. Animate the attached start frame smoothly over 6 seconds: Smooth cinematic 2D anime camera movement and glowing emerald magic aura around the mage by the ancient stone gate. All characters on screen keep their mouths completely closed. Off-screen, a gentle, soft-spoken male narrator voice speaks in English: \"She placed her glowing staff against the ancient gate, feeling the flow of mana.\" Strict no-text rule: do not render any text, subtitles, or watermarks.",
+    "clip_path": "public/anime-character-sheets/videos/ep24_landscape/clips/EP24-S04.mp4",
+    "size_bytes": 3602625,
+    "first_frame_mae": 5.92,
+    "video_url": "https://flow.google.com/asb/ANqvLOY0mk7EdmzAWu2r8cR5ATB51izCNew3bmD7sG5MHPZ2PWLtCILV-f9Z8_1B38Dff7ng9SNkp_ArNxZM6Z6aO4jUWTOBoKffUdB3WV9_SOMgM9SoeKissTuuM159cmNYpfIUEt6vjQKZJDgySCXnHjwk5U8lBG_ioCjCeWYz2Q=mm,22,15",
+    "completed": true,
+    "timestamp": "2026-11-05T08:42:06+0900"
   }
 }
