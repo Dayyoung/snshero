@@ -262,6 +262,144 @@ SPEAKER_KO_TO_CHAR_KEY = {
     "원로원 의장": "Senate Chancellor",
 }
 
+PROP_SHEET_LOCKS = [
+    (
+        "PROP-001",
+        ["은빛 단검", "단검", "silver dagger", "companion blade", "twin silver daggers"],
+        "[FIXED PROP SHEET LOCK - PROP-001 (은빛 단검 / Silver Dagger)]: ornate slender silver runic dagger with star-engraved crossguard, glowing cyan-blue astral runes along the blade, and dark northern leather grip",
+    ),
+    (
+        "PROP-002",
+        ["드래곤 브레이커", "눈꽃 방패", "방패", "dragon breaker", "snow-crystal shield", "shield"],
+        "[FIXED PROP SHEET LOCK - PROP-002 (드래곤 브레이커 방패 / Dragon Breaker Shield)]: heavy dark-iron northern round shield emblazoned with a glowing white-cyan snow-crystal crest and runic rim",
+    ),
+    (
+        "PROP-003",
+        ["무쇠 방패", "철방패", "iron shield", "weathered shield"],
+        "[FIXED PROP SHEET LOCK - PROP-003 (북방 무쇠 방패 / Weathered Iron Shield)]: battle-scarred heavy northern iron shield with riveted bronze rim",
+    ),
+    (
+        "PROP-004",
+        ["구영서", "나인섀도우", "코덱스", "고서", "nine shadows", "codex", "grimoire"],
+        "[FIXED PROP SHEET LOCK - PROP-004 (나인섀도우 코덱스 / Nine Shadows Codex)]: forbidden black-leather grimoire bound in dark iron chains, emitting eerie violet-black shadow runes",
+    ),
+    (
+        "PROP-005",
+        ["녹옥 지팡이", "지팡이", "jade staff", "emerald staff"],
+        "[FIXED PROP SHEET LOCK - PROP-005 (녹옥 지팡이 / Jade Staff)]: luminous translucent emerald-jade priestess staff crowned with a carved wind-dragon finial and swirling turquoise wind-breathing aura",
+    ),
+    (
+        "PROP-006",
+        ["백유리 불씨", "순백 화염", "white glass ember", "white flame"],
+        "[FIXED PROP SHEET LOCK - PROP-006 (백유리 불씨 / White Glass Ember)]: sacred crystal reliquary lantern housing an undying pure-white celestial flame",
+    ),
+    (
+        "PROP-007",
+        ["설강화", "하얀 꽃", "밀알", "씨앗", "snowdrop", "wheat seeds", "golden seeds"],
+        "[FIXED PROP SHEET LOCK - PROP-007 (설강화 & 황금 씨앗 / Snowdrop & Golden Seeds)]: glowing frost-white snowdrop blossoms and radiant golden wheat seeds shining against dark frozen snow",
+    ),
+    (
+        "PROP-008",
+        ["달빛 약초", "월광초", "약초", "해독제", "moonlit herb", "medicinal herb", "elixir"],
+        "[FIXED PROP SHEET LOCK - PROP-008 (월광초 / Moonlit Herb)]: mystical silver-blue glowing moonlit medicinal herb and luminous glass potion vials",
+    ),
+    (
+        "PROP-009",
+        ["비단 봉인", "삼색 명주", "silk seal", "three seals"],
+        "[FIXED PROP SHEET LOCK - PROP-009 (삼색 비단 봉인 / Three Silk Seals)]: three ornate royal silk scroll seals stamped with glowing gold-and-crimson arcane crests",
+    ),
+    (
+        "PROP-010",
+        ["십자 성흔", "성도", "지도", "흉터", "cross-shaped scar", "star map"],
+        "[FIXED PROP SHEET LOCK - PROP-010 (십자 성흔의 지도 / Map of the Cross-Shaped Scar)]: ancient weathered parchment star-map glowing with intersecting cyan ley-line constellations",
+    ),
+    (
+        "PROP-011",
+        ["심연의 핵", "암흑 구체", "abyssal core", "dark orb"],
+        "[FIXED PROP SHEET LOCK - PROP-011 (심연의 핵 / Abyssal Core)]: forbidden levitating black-violet dark-magic sphere crackling with crimson-purple abyssal lightning",
+    ),
+    (
+        "PROP-012",
+        ["왕좌의 인장", "옥새", "성기사단 인장", "흉갑 문장", "throne seal", "holy knights seal", "insignia"],
+        "[FIXED PROP SHEET LOCK - PROP-012 (황실/성기사단 인장 / Throne & Holy Knights Seal)]: cracked golden Holy Knights crest insignia and crimson blood-jade imperial seal",
+    ),
+    (
+        "PROP-013",
+        ["삼중 봉인패", "비취 열쇠", "tripartite seal", "jade key"],
+        "[FIXED PROP SHEET LOCK - PROP-013 (삼중 봉인패 & 비취 열쇠 / Tripartite Seal & Jade Key)]: interlocking three-part carved jade amulet key glowing with cyan runes",
+    ),
+    (
+        "PROP-014",
+        ["흑요석 대검", "마검", "쌍검", "obsidian greatsword", "twin swords", "arcane swords"],
+        "[FIXED PROP SHEET LOCK - PROP-014 (흑요석 대검 & 아케인 쌍검 / Obsidian Greatsword & Twin Arcane Blades)]: jagged black-obsidian greatsword wreathed in crimson-violet shadow flames / masterwork twin starlight-cyan longswords",
+    ),
+    (
+        "PROP-015",
+        ["사문의 독병", "사독", "독병", "독침", "serpent venom", "poison vial"],
+        "[FIXED PROP SHEET LOCK - PROP-015 (사문의 독병 / Vial of Four Gates Serpent Venom)]: serpent-coiled dark glass vial filled with glowing toxic purple-green venom",
+    ),
+    (
+        "PROP-016",
+        ["성진호흡", "천문 두루마리", "비전서", "star-breathing", "astral scroll"],
+        "[FIXED PROP SHEET LOCK - PROP-016 (성진호흡 천문 두루마리 / Star-Breathing Astral Scroll)]: ancient dark-indigo scroll unrolled with glowing cyan star-breathing diagrams",
+    ),
+    (
+        "PROP-017",
+        ["복사꽃 초대장", "옥피리", "비취 피리", "jade flute", "wind isle invitation"],
+        "[FIXED PROP SHEET LOCK - PROP-017 (비취 옥피리 & 복사꽃 초대장 / Jade Flute & Wind Isle Invitation)]: translucent green jade transverse flute trailing glowing pink peach-blossom petals",
+    ),
+    (
+        "PROP-018",
+        ["붉은 갈기", "적갈기", "안장", "고삐", "군마", "crimson mane", "warhorse", "reins"],
+        "[FIXED PROP SHEET LOCK - PROP-018 (적갈기 명마 마구 / Crimson Mane Warhorse Tack)]: silver-inlaid northern leather saddle and reins on a fiery crimson-maned warhorse",
+    ),
+    (
+        "PROP-019",
+        ["청동 대종", "취선루", "취종루", "종탑", "bronze bell", "great-bell"],
+        "[FIXED PROP SHEET LOCK - PROP-019 (취선루 청동 대종 / Bronze Great-Bell)]: colossal weathered green-patina bronze temple bell engraved with ancient wind runes",
+    ),
+    (
+        "PROP-020",
+        ["소금 결정 창", "아케인 창", "봉인 사슬", "창", "arcane spear", "salt-crystal spear", "arcane chains"],
+        "[FIXED PROP SHEET LOCK - PROP-020 (아케인 창 & 봉인 사슬 / Salt-Crystal Arcane Spear & Chains)]: gleaming crystalline-tipped arcane spear and heavy adamantium chains crackling with electric cyan lightning",
+    ),
+]
+
+EPISODE_PRIMARY_LOCATION_LOCK = {
+    1: "[FIXED LOCATION SHEET LOCK - LOC-001 (엘윈 마을 / Elwin Village)]: snow-buried northern frontier village of rough-hewn timber cabins, stone hearths, suspension bridge over an icy gorge, and howling nocturnal blizzard",
+    2: "[FIXED LOCATION SHEET LOCK - LOC-001 / LOC-002 (엘윈 마을 & 취선루 종탑 / Elwin Village & Drunken Bell Tower)]: weathered northern timber village and towering multi-tier wooden inn with a colossal bronze great-bell under stormy twilight skies",
+    3: "[FIXED LOCATION SHEET LOCK - LOC-003 (미스트폴 절벽 / Mistfall Cliff)]: treacherous jagged black-stone canyon precipice shrouded in swirling turquoise-and-violet mist above roaring rapids",
+    4: "[FIXED LOCATION SHEET LOCK - LOC-004 (황무지 대평원 / Great Plains of the Wildlands)]: windswept dark-fantasy northern steppe with jagged rock formations, nomad campfires, and dramatic stormy twilight clouds",
+    5: "[FIXED LOCATION SHEET LOCK - LOC-003 (미스트폴 절벽 협곡 / Mistfall Cliff Gorge)]: sheer mist-choked cliffside battlefield and stone ruins under heavy dark-fantasy shadows",
+    6: "[FIXED LOCATION SHEET LOCK - LOC-004 (황무지 대평원 / Great Plains of the Wildlands)]: vast scorched frontier plains and fortified encampment under moody ember-lit skies",
+    7: "[FIXED LOCATION SHEET LOCK - LOC-005 (천마 계곡 / Pegasus Valley)]: towering red-rock canyon sanctuary with cascading waterfalls and wind-carved stone pillars",
+    8: "[FIXED LOCATION SHEET LOCK - LOC-005 (천마 계곡 / Pegasus Valley)]: crimson-grass valley floor surrounded by sheer canyon walls and glowing wind currents",
+    9: "[FIXED LOCATION SHEET LOCK - LOC-008 (제7 지하 노역소 / Seventh Subterranean Labor Camp)]: cavernous underground obsidian mine lit by eerie blue mana crystals, iron chains, and molten forge braziers",
+    10: "[FIXED LOCATION SHEET LOCK - LOC-001 (폐허가 된 엘윈 마을 / Ruins of Elwin Village)]: snow-blanketed charred timber ruins of Elwin Village beneath aurora-lit midnight skies",
+    11: "[FIXED LOCATION SHEET LOCK - LOC-008 (제7 지하 노역소 심층 / Deep Subterranean Labor Camp)]: deep subterranean stone dungeon and iron-railed mine shafts with dramatic chiaroscuro torchlight",
+    12: "[FIXED LOCATION SHEET LOCK - LOC-008 (제7 지하 노역소 탈출로 / Subterranean Cavern Escape)]: collapsing underground mana-mine cavern with roaring subterranean magma and falling rock pillars",
+    13: "[FIXED LOCATION SHEET LOCK - LOC-010 (속삭이는 바람의 섬 / Whispering Wind Island)]: mystical floating-cliff island sanctuary with glowing pink peach-blossom trees, jade pavilions, and turquoise wind currents",
+    14: "[FIXED LOCATION SHEET LOCK - LOC-009 (구름귀환장 안개 호수 / Cloud Return Manor Mist Lake)]: moonlit mist-shrouded lake with traditional dark-timber waterside pavilions and glowing lotus lanterns",
+    15: "[FIXED LOCATION SHEET LOCK - LOC-009 (구름귀환장 정원 / Cloud Return Manor Courtyard)]: atmospheric stone courtyard beside the misty lake under nocturnal lantern light",
+    16: "[FIXED LOCATION SHEET LOCK - LOC-009 (구름귀환장 연못 / Cloud Return Manor Mist Lake)]: deep misty waterside sanctuary with dramatic ink-wash reflections and dark-fantasy lighting",
+    17: "[FIXED LOCATION SHEET LOCK - LOC-010 (속삭이는 바람의 섬 신전 / Whispering Wind Island Shrine)]: ancient wind-carved jade shrine surrounded by swirling petals and dark stormy seas",
+    18: "[FIXED LOCATION SHEET LOCK - LOC-011 (흑사당 옥결계 첨탑 / Black Temple Jade Barrier Spire)]: towering black-obsidian temple spire encircled by a glowing emerald-jade arcane barrier",
+    19: "[FIXED LOCATION SHEET LOCK - LOC-012 (천공 제단 / Sky Altar)]: ancient stone celestial altar suspended above swirling storm clouds beneath a blazing starfield",
+    20: "[FIXED LOCATION SHEET LOCK - LOC-010 (속삭이는 바람의 섬 / Whispering Wind Island)]: sacred wind-isle cliffside and jade sanctuary under dramatic dark-fantasy twilight",
+}
+
+
+def extract_scene_props_lock(narration_ko: str, narration_en: str) -> str:
+    combined = f"{narration_ko} {narration_en}".lower()
+    matched_props = []
+    for code, kws, desc in PROP_SHEET_LOCKS:
+        if any(kw in combined for kw in kws):
+            matched_props.append(desc)
+    if not matched_props:
+        return ""
+    return "Featured Canonical Props (STRICT PROP SHEET CONSISTENCY):\n" + "\n".join(matched_props[:2]) + "\n\n"
+
+
 FLASHBACK_ONLY_CHARS = {"Aleksandar", "Balian", "Sylphid", "Elwin"}
 
 PERSON_KEYWORDS_KO = [
@@ -371,6 +509,9 @@ def build_scene_prompt(ep_num: int, img: dict) -> dict:
             "intense expressive anime eyes, and 100% consistent model-sheet facial/hair/costume proportions."
         )
 
+    prop_section = extract_scene_props_lock(narration_ko, narration_en)
+    loc_lock = EPISODE_PRIMARY_LOCATION_LOCK.get(ep_num, "")
+
     if True:
         prompt = (
             f"Generate a dramatic, dark-fantasy 16:9 cinematic anime webtoon illustration (1280x720) for Episode {ep_num} Scene {idx} of SNSHero "
@@ -384,7 +525,8 @@ def build_scene_prompt(ep_num: int, img: dict) -> dict:
             f"{aesthetic_chars}\n\n"
             f"Scene Narrative & Action:\n"
             f"{narration_ko}\n({narration_en})\n\n"
-            f"{char_section}"
+            f"{char_section}\n"
+            f"{prop_section}"
         )
     else:
         prompt = (
@@ -398,7 +540,11 @@ def build_scene_prompt(ep_num: int, img: dict) -> dict:
             f"{char_section}"
         )
 
-    if bg:
+    if loc_lock and bg:
+        prompt += f"Environment & Setting: {loc_lock} | {bg} (rendered with deep Demon Slayer ufotable atmospheric shadows and dramatic lighting)\n"
+    elif loc_lock:
+        prompt += f"Environment & Setting: {loc_lock} (rendered with deep Demon Slayer ufotable atmospheric shadows and dramatic lighting)\n"
+    elif bg:
         prompt += f"Environment & Setting: {bg} (rendered with deep Demon Slayer ufotable atmospheric shadows and dramatic lighting)\n"
 
     if has_speech:

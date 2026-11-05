@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-06 07:35 KST] [웹툰 컷신 20~40화 3대 규칙(캐릭터/소품/귀멸의칼날 화풍·배경) 100% 고정 잠금 점검 및 EP02~EP04 신규 7컷 생성·변환 반영]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "새로 생성되는 이미지컷들의 케릭터 일관성/소품/그림화풍이 20화~40화까지 규칙을 잘 따르는거지? 점검하고 애니메이션 계속 생성"
+  - **2. 20~40화 규칙 준수 전수 점검 및 프롬프트 생성기(`scripts/generate_all_webtoon_prompts.py`) 3중 락(Triple Lock) 강화**:
+    - **(1) 캐릭터 일관성 (`[FIXED MODEL SHEET LOCK]`)**:
+      - 카단(Kadan: 이마 흉터 0% 완전 제거, 뾰족한 밤갈색 머리, 붉은 머플러, 눈꽃 룬 원형 방패, 쌍수 청록 성광 브로드소드), 엘윈, 알렉산드르, 펜리르, 에르큘, 루시안, 그림리, 가웨인, 아일라, 카제, 엘리아나, 론돌, 로빈야드, 메두사 고르고, 벨페고르 등 주요 등장인물 시트 디자인 100% 고정.
+    - **(2) 소품 일관성 (`[FIXED PROP SHEET LOCK]`)**:
+      - `PROP-001`(Silver Dagger) ~ `PROP-020`(Salt-Crystal Arcane Spear & Chains) 총 20종 공식 소품 시트 정의를 `PROP_SHEET_LOCKS` 및 `extract_scene_props_lock()`으로 자동 매칭하여 모든 컷 프롬프트에 명시적 고정.
+    - **(3) 그림 화풍 및 배경 장소 (`Demon Slayer: Kimetsu no Yaiba / ufotable Dark-Fantasy Aesthetic` + `[FIXED LOCATION SHEET LOCK]`)**:
+      - 굵은 흑먹선(sumi-e ink brush outlines), 깊은 키아로스쿠로 명암, 야간/황혼/폭풍우 톤, 우키요에 호흡 검기 연출 및 에피소드별 공식 배경 시트(`LOC-001` ~ `LOC-020`) 고정.
+      - 전 40개 에피소드(총 2,089개 컷) 프롬프트 JSON(`scripts/prompts/ep_01..40/prompts.json`) 및 배치 텍스트(`scripts/batches/ep_01..40/*.txt`) 재생성 완료.
+  - **3. 신규 웹툰/애니메이션 컷 생성 및 무보정 WebP 변환 (`scripts/universal_webtoon_processor.py --force`)**:
+    - 서브에이전트 병렬 호출을 통해 신규 7컷 즉시 추가 생성 및 `public/images/webtoon/`, `dist/images/webtoon/` 반영 완료:
+      - `EP02`: `ep02_scene_26`, `ep02_scene_27`, `ep02_scene_28` (45 / 49컷 완료, 91.8%)
+      - `EP03`: `ep03_scene_26`, `ep03_scene_40`, `ep03_scene_41` (34 / 54컷 완료, 63.0%)
+      - `EP04`: `ep04_scene_00` (11 / 48컷 완료, 22.9%)
+- **검증 결과**:
+  - 생성된 신규 이미지(`ep04_scene_00`, `ep02_scene_27` 등) 시각 검수 결과 `ufotable` 귀멸의 칼날 다크 판타지 화풍, 캐릭터 외형/무장, 소품, 배경 시트 일관성 확인 완료.
+  - 로컬 Git 커밋 및 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-11-06 07:26 KST] [대사 출력 종료 후 다음 대사 진행 대기 딜레이를 1.0초로 변경]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
