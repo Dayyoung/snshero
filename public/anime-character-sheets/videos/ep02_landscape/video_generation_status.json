@@ -310,5 +310,31 @@
     "videoUrl": "https://flow.google.com/asb/ANqvLObTilNFQh6jwjF9A-fYhktnEUdONyJXlf4oGU9ljeKN7A9rqCn5lTXigR3pNtUumC_SlxGDOfyfq6MCs4a5L2G4Qek5kxWQHpI8j_bhNAH_hEQnDzKBJA25b9K7YqZp-m0uC_THhur3t7YZg_V-f_-X8Ke-GvnE3bkJ3BPZ=mm,22,15",
     "downloaded": true,
     "timestamp": "2026-11-05T16:16:35+0900"
+  },
+  "EP02-CUT10": {
+    "cutNumber": 10,
+    "cutCode": "EP02-CUT10",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "Veo 3.1 - Lite (ufotable cutscene start frame)",
+    "durationSeconds": 6,
+    "clipPath": "public/anime-character-sheets/videos/ep02_landscape/clips/EP02-CUT10.mp4",
+    "clipSizeBytes": 4771098,
+    "videoUrl": "https://flow.google.com/asb/ANqvLOZc17pd3PoEmkVWPvgDUD6IgggqJYDSD7htsuVYC9qYiVHw-drdAV0XwwhlsPBk6-STdzSXYX2x-rLHme0qijMvC_vso0_eSu0zuQc_2aSXyGwI9w47a4u_luhwlIiw5Lyz9FCtbbCLa3CbAycWSDXjGAJhDvmhYqOMHyHO6Q=mm,22,15",
+    "downloaded": true,
+    "timestamp": "2026-11-05T16:28:57+0900"
+  },
+  "EP02-CUT11": {
+    "cutNumber": 11,
+    "cutCode": "EP02-CUT11",
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "model": "Veo 3.1 - Lite (ufotable cutscene start frame)",
+    "durationSeconds": 6,
+    "clipPath": "public/anime-character-sheets/videos/ep02_landscape/clips/EP02-CUT11.mp4",
+    "clipSizeBytes": 5643001,
+    "videoUrl": "https://flow.google.com/asb/ANqvLOajUChUL_IhmQZlr1ph8hfqdrVw80I2NCtSLdH9Hakkut4d-YnTArEg3eV2lpqiEERhyEasmnYWqCoFOJVAdP9FzNe8dRhxT5CusAtq8BZ1-KJW_qNtUX3rncEle-VRh2IpQRUVdcasyJrKyGk1V9QEjUM5RyUR7uyfKi3N=mm,22,15",
+    "downloaded": true,
+    "timestamp": "2026-11-05T16:35:38+0900"
   }
 }

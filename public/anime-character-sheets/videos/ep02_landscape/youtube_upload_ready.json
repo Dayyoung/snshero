@@ -1,0 +1,26 @@
+{
+  "episodeNumber": 2,
+  "titleKo": "SNSHero 애니메이션 2화 - 일곱 추적자의 맹세 [고화질 ufotable 화풍]",
+  "titleEn": "SNSHero Anime EP02 - Oath of the Seven Pursuers [Official 4K ufotable Style]",
+  "descriptionKo": "SNSHero 원작 웹소설 공식 애니메이션 에피소드 2화 《일곱 추적자의 맹세》.\n\n눈보라 치는 주정뱅이 종루에서 성기사 헤르쿨과 일곱 추적자(가웨인, 카제, 론돌, 로빈야드, 엘리아나, 아일라, 그림리)가 결의를 다지는 26개 컷 풀 시퀀스입니다.\n\n- 원작: SNSHero 혁명 전기\n- 작화/연출: ufotable 화풍 7등신 캐릭터 시트 기반 2D 애니메이션\n- 화질: 720p / 16:9 비율\n- 자막: 한국어/영어 외장 자막 지원 (.srt/.vtt)\n",
+  "descriptionEn": "SNSHero Official Anime Adaptation Episode 2: Oath of the Seven Pursuers.\n\nAt the blizzard-shrouded Drunken Bell Tower, holy knight Hercul and the seven pursuers (Gawain, Kaze, Rondol, Robinyard, Eliana, Aila, Grimli) unite in a solemn pact. Complete 26-cut anime sequence.\n\n- Original Story: SNSHero Revolution\n- Art & Direction: 7-head ufotable style animated cutscenes\n- Format: 720p / 16:9 Landscape\n- Subtitles: External Korean and English subtitles (.srt/.vtt) supported\n",
+  "tags": [
+    "SNSHero",
+    "애니메이션",
+    "웹소설",
+    "ufotable",
+    "판타지",
+    "Anime",
+    "Veo3",
+    "WebNovel"
+  ],
+  "videoPath": "public/anime-character-sheets/videos/ep02_landscape/SNSHero_Anime_EP02_Oath_of_the_Seven_Pursuers_16x9.mp4",
+  "desktopPath": "/Users/dayyoung/Desktop/내문서/movie/SNSHero_Anime_EP02_Oath_of_the_Seven_Pursuers_16x9.mp4",
+  "subtitles": {
+    "ko_srt": "public/anime-character-sheets/videos/ep02_landscape/SNSHero_Anime_EP02_Oath_of_the_Seven_Pursuers_16x9.ko.srt",
+    "en_srt": "public/anime-character-sheets/videos/ep02_landscape/SNSHero_Anime_EP02_Oath_of_the_Seven_Pursuers_16x9.en.srt"
+  },
+  "totalCuts": 26,
+  "totalDurationSeconds": 156,
+  "status": "READY_FOR_UPLOAD"
+}
