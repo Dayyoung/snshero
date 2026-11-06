@@ -670,8 +670,8 @@ let locationBannerDismissTimer: any = null;
 
 /**
  * Resolve and update the active dialogue location for the current novel line.
- * Automatically triggers the Scene Intro Overview when a new scene or location is encountered,
- * fulfilling: "대사 시작전에 해당 인물들 상반신을 표시하기 전에 전체장면을 한번 소개해달라고. 그리고 대사 중에도 장소가 바뀌면 해당 장소를 표시하고 한번소개."
+ * Per user instruction: "장소변경이 너무 자주 변경된다. 에피소드 시작 시에만 장소 소개를 하도록해."
+ * Only syncs background/location metadata quietly without interrupting the dialogue phase.
  */
 export function updateActiveDialogueLocation(currentLine?: KadanRpgNovelScriptLine): LocationMeta {
   const currentChapter = playRpgState.currentChapter;
@@ -680,23 +680,14 @@ export function updateActiveDialogueLocation(currentLine?: KadanRpgNovelScriptLi
 
   const activeLoc = resolveLocationForLine(currentChapter, currentLine, prevLoc);
 
-  // If location has changed or was not yet introduced for this scene/chapter
-  if (playRpgState.lastIntroducedLocationId !== activeLoc.id) {
-    playRpgState.dialoguePhase = 'scene_intro';
-    playRpgState.sceneIntroStartedAt = Date.now();
+  // Quietly update background and metadata if changed, without interrupting dialogue phase
+  if (playRpgState.currentLocationId !== activeLoc.id) {
     playRpgState.currentLocationId = activeLoc.id;
     playRpgState.currentLocationName = activeLoc.nameKo;
     playRpgState.currentLocationNameEn = activeLoc.nameEn;
     playRpgState.currentLocationDesc = activeLoc.descriptionKo;
     playRpgState.currentLocationBgUrl = activeLoc.bgJpgUrl;
-    playRpgState.showLocationBanner = true;
-    playRpgState.locationBannerTimestamp = Date.now();
-    playRpgState.lastIntroducedLocationId = activeLoc.id;
-
     preloadLocationBackground(activeLoc.bgJpgUrl);
-    try {
-      audioManager.playTestChime();
-    } catch {}
   }
 
   return activeLoc;
@@ -1295,15 +1286,20 @@ export function triggerDialogue(event: KadanRpgEvent): void {
   playRpgState.lastAutoStepAt = Date.now();
   playRpgState.dialogueLineStartedAt = Date.now();
 
-  // Start with full Scene Intro Overview before showing character busts
-  playRpgState.lastIntroducedLocationId = null;
+  // Start with full Scene Intro Overview before showing character busts (Only once at episode start)
+  const currentChapter = playRpgState.currentChapter;
+  const epBg = getEpisodeBackground(currentChapter);
+  playRpgState.currentLocationId = epBg.id;
+  playRpgState.currentLocationName = epBg.nameKo;
+  playRpgState.currentLocationNameEn = epBg.nameEn;
+  playRpgState.currentLocationDesc = epBg.descriptionKo;
+  playRpgState.currentLocationBgUrl = epBg.bgJpgUrl;
+  playRpgState.lastIntroducedLocationId = epBg.id;
+  playRpgState.showLocationBanner = false;
+
   playRpgState.dialoguePhase = 'scene_intro';
   playRpgState.sceneIntroStartedAt = Date.now();
-
-  const lines = getCurrentDialogueLines();
-  if (lines.length > 0) {
-    updateActiveDialogueLocation(lines[0]);
-  }
+  preloadLocationBackground(epBg.bgJpgUrl);
 
   preloadDialogueChapterImages();
   notifyPlayStateUpdated();
@@ -1387,24 +1383,16 @@ export function advanceDialogue(): { completed: boolean; readyForBattle: boolean
     playRpgState.lastAutoStepAt = Date.now();
     playRpgState.dialogueLineStartedAt = Date.now();
 
-    // Check if new line transitions to a new location/scene
+    // Check if new line transitions to a new location/scene quietly
     const nextLine = lines[playRpgState.currentDialogueLineIdx];
     updateActiveDialogueLocation(nextLine);
 
     preloadDialogueChapterImages();
 
-    // If location changed, dialoguePhase becomes 'scene_intro'.
-    // If location did NOT change, stay in 'talk' and kick off typewriter typing.
-    if (playRpgState.dialoguePhase === 'talk') {
-      const { currentPart } = getCurrentDialogueParts();
-      startDialogueTyping(currentPart);
-    } else if (playRpgState.autoMode) {
-      setTimeout(() => {
-        if (playRpgState.subState === 'dialogue' && playRpgState.dialoguePhase === 'scene_intro') {
-          startDialogueTalkPhase();
-        }
-      }, 2000);
-    }
+    // 에피소드 진행 중에는 항상 대화 모드(talk)를 유지하여 장소 변경으로 대화가 중단되지 않고 즉시 타이핑 진행
+    playRpgState.dialoguePhase = 'talk';
+    const { currentPart } = getCurrentDialogueParts();
+    startDialogueTyping(currentPart);
 
     notifyPlayStateUpdated();
     return { completed: false, readyForBattle: false };

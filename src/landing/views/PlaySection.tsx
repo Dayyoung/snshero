@@ -1560,48 +1560,12 @@ function renderAdventureView(): string {
                     </div>
                   </header>
 
-                  <!-- 1.5. 장소 소개 배너 (장면 소개 모드가 아닌 일반 대화 중 상단 참고용) -->
-                  ${
-                    !isSceneIntro && playRpgState.showLocationBanner
-                      ? `
-                        <aside
-                          id="dialogue-location-intro-banner"
-                          data-action="play-dialogue-dismiss-location"
-                          class="relative z-30 mx-auto w-full max-w-xl px-4 py-2 bg-[#171313]/95 border-b sm:border sm:rounded-sm border-amber-400/70 shadow-[0_8px_30px_rgba(0,0,0,0.9)] flex items-center justify-between gap-3 animate-fade-in backdrop-blur-md cursor-pointer transition-all"
-                          role="status"
-                          aria-live="polite"
-                          title="${tr('장소 소개 닫기 (탭하면 닫힙니다)', 'Dismiss Location Banner (tap to close)', '場所紹介を閉じる')}"
-                        >
-                          <div class="flex items-center gap-2 truncate">
-                            <span class="text-base sm:text-lg">📍</span>
-                            <div class="truncate">
-                              <span class="text-xs sm:text-sm font-black text-amber-300 tracking-wide mr-2">
-                                ${activeLocationName}
-                              </span>
-                              <span class="text-[11px] text-stone-300 truncate font-medium">
-                                ${playRpgState.currentLocationDesc}
-                              </span>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            data-action="play-dialogue-dismiss-location"
-                            class="text-xs text-stone-400 hover:text-stone-200 px-2 py-0.5 rounded bg-stone-800/80 border border-stone-600 shrink-0"
-                            aria-label="${tr('닫기', 'Close', '閉じる')}"
-                          >
-                            ✕
-                          </button>
-                        </aside>
-                      `
-                      : ''
-                  }
-
-                  <!-- 2. 중앙 메인: [전체 장면/장소 소개 모드] vs [7등신 컷아웃 상반신 노출 대화 모드] -->
+                  <!-- 2. 중앙 메인: [에피소드 시작 시 장소 소개 모드] vs [7등신 컷아웃 상반신 노출 대화 모드] -->
                   <main class="relative z-10 flex-1 w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-4 py-2 sm:py-4 overflow-y-auto space-y-3 sm:space-y-4">
                     ${
                       isSceneIntro
                         ? `
-                          <!-- [A] 전체 장면/장소 소개 화면: 인물 상반신 표시 전 전체 장소와 무대를 웅장하게 먼저 소개 -->
+                          <!-- [A] 전체 장면/장소 소개 화면: 에피소드 시작 시에만 1회 전체 장소와 무대를 웅장하게 소개 -->
                           <div
                             class="w-full max-w-xl mx-auto bg-[#141111]/95 backdrop-blur-lg border-2 border-amber-400/80 p-5 sm:p-7 rounded-none shadow-2xl relative cursor-pointer select-none text-center animate-fade-in"
                             data-action="play-dialogue-start-talk"
@@ -1613,7 +1577,7 @@ function renderAdventureView(): string {
                             <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-400 text-stone-950 font-black text-xs rounded-sm tracking-wider uppercase mb-3">
                               <span>🎬 ${tr('장면 소개', 'SCENE INTRO', 'シーン紹介')}</span>
                               <span>·</span>
-                              <span>${tr('장면', 'SCENE', 'シーン')} ${line.sceneNumber || (playRpgState.currentDialogueLineIdx + 1)} / ${line.totalScenes || lines.length}</span>
+                              <span>${chapterLabel}</span>
                             </div>
 
                             <!-- 📍 장소 타이틀 -->
@@ -1627,14 +1591,14 @@ function renderAdventureView(): string {
                               </p>
                             </div>
 
-                            <!-- 현재 씬의 정황 / 소설 묘사 -->
+                            <!-- 현재 에피소드의 무대 정황 / 소설 묘사 -->
                             <div class="my-4 px-4 py-3 bg-stone-900/80 border border-white/10 rounded-sm text-left">
                               <div class="text-[11px] text-amber-400 font-bold mb-1 flex items-center gap-1">
                                 <span>📖</span>
                                 <span>${tr('소설 속 무대 상황', 'Novel Scene Context', '物語の舞台状況')}</span>
                               </div>
                               <p class="text-xs sm:text-sm text-stone-300 leading-relaxed m-0 line-clamp-3 break-keep italic">
-                                ${isKo ? (line.text || '눈보라가 몰아치는 거친 대지에서 새로운 운명이 교차한다.') : (line.textEn || 'A new destiny crosses upon the storm-swept land.')}
+                                ${isKo ? (line.text || '새로운 운명이 교차하는 무대에서 이야기가 시작된다.') : (line.textEn || 'The story unfolds upon the fated stage.')}
                               </p>
                             </div>
 
@@ -1654,34 +1618,23 @@ function renderAdventureView(): string {
                           </div>
                         `
                         : `
-                          <!-- [B] 인물 대화 화면: 7등신 전체 이미지(cutoutUrl)를 사용하되 상반신 절반만 시원하게 노출하여 손발 잘림 0% 해결 -->
+                          <!-- [B] 인물 대화 화면: 7등신 전체 이미지(cutoutUrl) 상반신 절반 노출 (나레이션 책모양 화면 완전 제거) -->
                           <div class="flex flex-col items-center shrink-0">
-                            <!-- 7등신 전신 컷아웃을 컨테이너에서 상반신 절반(h-[180%], object-top)만 보여주어 손발 잘림 원천 방지 -->
+                            <!-- 7등신 전신 컷아웃을 상반신 절반(h-[180%], object-top)만 보여주어 손발 잘림 원천 방지 및 책모양 화면 완전 배제 -->
                             <div class="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 flex items-start justify-center overflow-hidden pointer-events-none select-none">
-                              ${
-                                isNarration
-                                  ? `
-                                    <div class="w-full h-full flex flex-col items-center justify-center text-amber-300/80">
-                                      <span class="text-6xl sm:text-7xl mb-2 opacity-80">📖</span>
-                                      <span class="text-xs text-stone-400 font-bold tracking-wider">${tr('상황 서사 / 해설', 'Narration / Context', '状況解説')}</span>
-                                    </div>
-                                  `
-                                  : `
-                                    <img
-                                      id="dialogue-speaker-cutout-img"
-                                      src="${activeSpeakerAsset.cutoutUrl}"
-                                      alt="${activeSpeaker.name}"
-                                      loading="eager"
-                                      class="w-auto h-[180%] sm:h-[190%] max-w-none object-cover object-top filter drop-shadow-[0_16px_28px_rgba(0,0,0,0.95)] drop-shadow-[0_6px_12px_rgba(0,0,0,0.7)] transform transition-transform duration-300"
-                                      onerror="this.src='${activeSpeakerAsset.bustPngUrl}'; this.onerror=null;"
-                                    />
-                                  `
-                              }
+                              <img
+                                id="dialogue-speaker-cutout-img"
+                                src="${activeSpeakerAsset.cutoutUrl}"
+                                alt="${activeSpeaker.name}"
+                                loading="eager"
+                                class="w-auto h-[180%] sm:h-[190%] max-w-none object-cover object-top filter drop-shadow-[0_16px_28px_rgba(0,0,0,0.95)] drop-shadow-[0_6px_12px_rgba(0,0,0,0.7)] transform transition-transform duration-300"
+                                onerror="this.src='${activeSpeakerAsset.bustPngUrl}'; this.onerror=null;"
+                              />
                             </div>
                             <!-- 화자 이름 배지 -->
                             <div class="mt-2 flex items-center gap-2">
-                              <div class="px-3.5 py-1 ${isNarration ? 'bg-stone-800 text-amber-300 border border-amber-400/40' : 'bg-amber-400 text-stone-950'} font-black text-xs sm:text-sm rounded-sm tracking-wide shadow-md">
-                                <span id="dialogue-modal-speaker">${isNarration ? (isKo ? '📖 상황' : '📖 Narration') : activeSpeaker.name}</span>
+                              <div class="px-3.5 py-1 bg-amber-400 text-stone-950 font-black text-xs sm:text-sm rounded-sm tracking-wide shadow-md">
+                                <span id="dialogue-modal-speaker">${activeSpeaker.name}</span>
                               </div>
                             </div>
                           </div>
