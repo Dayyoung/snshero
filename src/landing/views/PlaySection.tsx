@@ -73,6 +73,7 @@ import {
   prevDialoguePartOrLine,
   startDialogueTyping,
   skipDialogueTyping,
+  dismissLocationBanner,
   resolveDialogueSpeakers,
   resolveActiveDialogueSpeaker,
   ensureGameStarted,
@@ -366,6 +367,9 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
       break;
     case 'play-dialogue-close':
       closeDialogueAndStopPlay();
+      break;
+    case 'play-dialogue-dismiss-location':
+      dismissLocationBanner();
       break;
     case 'play-reincarnate-now':
       completeReincarnation();
@@ -1488,7 +1492,9 @@ function renderAdventureView(): string {
               // Canonical single fixed location background for this episode
               const currentChapter = playRpgState.currentChapter;
               const bgLoc = getEpisodeBackground(currentChapter);
-              preloadLocationBackground(bgLoc.bgJpgUrl);
+              const activeLocationName = isKo ? (playRpgState.currentLocationName || bgLoc.nameKo) : (playRpgState.currentLocationNameEn || bgLoc.nameEn);
+              const activeBgUrl = playRpgState.currentLocationBgUrl || bgLoc.bgJpgUrl;
+              preloadLocationBackground(activeBgUrl);
 
               return `
                 <div
@@ -1501,8 +1507,8 @@ function renderAdventureView(): string {
                   <!-- 0. 장소 배경 아트 레이어 & 다크 비네팅 오버레이 -->
                   <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
                     <img
-                      src="${bgLoc.bgJpgUrl}"
-                      alt="${bgLoc.nameKo}"
+                      src="${activeBgUrl}"
+                      alt="${activeLocationName}"
                       class="w-full h-full object-cover object-center filter brightness-[0.72] contrast-[1.08] scale-105 transition-all duration-700 ease-out"
                     />
                     <!-- 부드러운 상하 비네팅 및 다크 그라데이션 오버레이로 텍스트/UI 가독성 극대화 -->
@@ -1522,7 +1528,7 @@ function renderAdventureView(): string {
                       </span>
                       <!-- 현재 캐노니컬 장소 배지 -->
                       <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 bg-stone-900/80 border border-amber-400/40 text-amber-200 text-[11px] rounded-sm truncate">
-                        📍 ${isKo ? bgLoc.nameKo : bgLoc.nameEn}
+                        📍 ${activeLocationName}
                       </span>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
@@ -1545,6 +1551,52 @@ function renderAdventureView(): string {
                     </div>
                   </header>
 
+                  <!-- 1.5. 장소 소개 배너 (장면/장소가 바뀔 때마다 다시 소개되는 영화 오프닝 스타일 배너) -->
+                  ${
+                    playRpgState.showLocationBanner
+                      ? `
+                        <aside
+                          id="dialogue-location-intro-banner"
+                          data-action="play-dialogue-dismiss-location"
+                          class="relative z-30 mx-auto w-full max-w-xl px-4 py-2.5 bg-[#171313]/95 border-b-2 sm:border-2 sm:rounded-sm border-amber-400/90 shadow-[0_8px_30px_rgba(0,0,0,0.9)] flex items-center justify-between gap-3 animate-fade-in backdrop-blur-md cursor-pointer transition-all"
+                          role="status"
+                          aria-live="polite"
+                          title="${tr('장소 소개 닫기 (탭하면 닫힙니다)', 'Dismiss Location Banner (tap to close)', '場所紹介を閉じる')}"
+                        >
+                          <div class="flex items-center gap-2.5 truncate">
+                            <span class="text-xl sm:text-2xl animate-bounce">📍</span>
+                            <div class="truncate">
+                              <div class="flex items-center gap-2">
+                                <span class="text-xs sm:text-sm font-black text-amber-300 tracking-wide">
+                                  ${activeLocationName}
+                                </span>
+                                <span class="px-1.5 py-0.5 bg-amber-400 text-stone-950 font-black text-[10px] rounded-sm uppercase tracking-wider">
+                                  ${tr('현재 장소', 'Location', '現在地')}
+                                </span>
+                              </div>
+                              <p class="text-[11px] sm:text-xs text-stone-300 truncate m-0 font-medium pt-0.5">
+                                ${playRpgState.currentLocationDesc}
+                              </p>
+                            </div>
+                          </div>
+                          <div class="shrink-0 flex items-center gap-2">
+                            <span class="text-[10px] text-amber-400 font-bold hidden sm:inline-block">
+                              [${tr('장면', 'Scene', 'シーン')} ${line.sceneNumber || 1}/${line.totalScenes || lines.length}]
+                            </span>
+                            <button
+                              type="button"
+                              data-action="play-dialogue-dismiss-location"
+                              class="text-xs text-stone-400 hover:text-stone-200 px-2 py-1 rounded bg-stone-800/80 border border-stone-600"
+                              aria-label="${tr('닫기', 'Close', '閉じる')}"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </aside>
+                      `
+                      : ''
+                  }
+
                   <!-- 2. 중앙 메인: 배경 위에 자연스럽게 서 있는 캐릭터 (경계 박스 완전 제거) + 화자 이름 + 정돈된 대사 박스 -->
                   <main class="relative z-10 flex-1 w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-4 py-2 sm:py-4 overflow-y-auto space-y-3 sm:space-y-4">
                     
@@ -1566,7 +1618,7 @@ function renderAdventureView(): string {
                           <span id="dialogue-modal-speaker">${isNarration ? (isKo ? '📖 상황' : '📖 Narration') : activeSpeaker.name}</span>
                         </div>
                         <span class="sm:hidden px-2 py-0.5 bg-stone-900/85 border border-amber-400/40 text-amber-200 text-[10px] font-bold rounded-sm">
-                          📍 ${isKo ? bgLoc.nameKo : bgLoc.nameEn}
+                          📍 ${activeLocationName}
                         </span>
                       </div>
                     </div>
@@ -1579,6 +1631,17 @@ function renderAdventureView(): string {
                       tabindex="0"
                       aria-label="${tr('대사 계속 읽기 (탭하면 즉시 출력 및 다음 진행)', 'Continue dialogue (tap to skip typing or advance)', '会話を続ける（タップで早送り・次へ）')}"
                     >
+                      <!-- 대사 박스 헤더: 현재 장소 & 장면 번호 상시 명시 -->
+                      <div class="flex items-center justify-between pb-1.5 mb-2 border-b border-white/10 text-[11px] font-bold">
+                        <div class="flex items-center gap-1.5 text-amber-300">
+                          <span class="text-xs">📍</span>
+                          <span class="tracking-wide">${activeLocationName}</span>
+                        </div>
+                        <div class="text-[10px] text-stone-400 font-medium">
+                          ${tr('장면', 'Scene', 'シーン')} ${line.sceneNumber || (playRpgState.currentDialogueLineIdx + 1)} / ${line.totalScenes || lines.length}
+                        </div>
+                      </div>
+
                       <!-- 파트 분할 인디케이터 배지 (대사가 길어 2번에 걸쳐 보여줄 때) -->
                       ${
                         totalParts > 1

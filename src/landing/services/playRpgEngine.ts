@@ -39,7 +39,14 @@ import {
   THIEF_DECK_PRESET,
 } from '../../lib/rpg/kadanRpgAmbush';
 import { audioManager } from './audioManager';
-import { preloadNearbyChapterBackgrounds } from './locationBgManager';
+import {
+  preloadNearbyChapterBackgrounds,
+  resolveLocationForLine,
+  getEpisodeBackground,
+  preloadLocationBackground,
+  CANONICAL_LOCATIONS,
+  LocationMeta,
+} from './locationBgManager';
 
 // Attach awardBattleVictoryExp and getCard to cardNurtureStore if not already present
 if (typeof (cardNurtureStore as any).getCard !== 'function') {
@@ -115,6 +122,16 @@ export interface PlayRpgState {
   lastAutoStepAt: number;
   dialogueLineStartedAt: number;
 
+  // Scene & Location State (소설 장면 및 장소 소개 연동)
+  currentLocationId: string;
+  currentLocationName: string;
+  currentLocationNameEn: string;
+  currentLocationDesc: string;
+  currentLocationBgUrl: string;
+  showLocationBanner: boolean;
+  locationBannerTimestamp: number;
+  lastIntroducedLocationId: string | null;
+
   // Battle Sub-state
   battleBoard: (BattleSlotState | null)[]; // 9 slots
   playerHand: number[];                   // 5 card IDs
@@ -170,6 +187,15 @@ export const playRpgState: PlayRpgState = {
   activeBuff: null,
   lastAutoStepAt: 0,
   dialogueLineStartedAt: 0,
+
+  currentLocationId: 'LOC-001',
+  currentLocationName: '엘윈 마을',
+  currentLocationNameEn: 'Elwin Village',
+  currentLocationDesc: '설원 속 작은 변경 마을이자 카단과 알리시아의 고향',
+  currentLocationBgUrl: '/anime-character-sheets/locations/art/LOC_001_Elwin_Village.jpg?v=20261105u2',
+  showLocationBanner: true,
+  locationBannerTimestamp: 0,
+  lastIntroducedLocationId: null,
 
   battleBoard: Array(9).fill(null),
   playerHand: [1, 2, 3, 4, 5],
@@ -634,8 +660,71 @@ export function splitDialogueIntoParts(fullText: string, maxPartLen: number = 55
   return [res1, res2];
 }
 
+let locationBannerDismissTimer: any = null;
+
 /**
- * Returns dialogue parts for the current active line
+ * Resolve and update the active dialogue location for the current novel line.
+ * Automatically triggers the Location Intro Banner when a new scene or location is encountered.
+ */
+export function updateActiveDialogueLocation(currentLine?: KadanRpgNovelScriptLine): LocationMeta {
+  const currentChapter = playRpgState.currentChapter;
+  const prevLocId = playRpgState.currentLocationId || 'LOC-001';
+  const prevLoc = CANONICAL_LOCATIONS[prevLocId] || getEpisodeBackground(currentChapter);
+
+  const activeLoc = resolveLocationForLine(currentChapter, currentLine, prevLoc);
+
+  // If location has changed or was not yet introduced for this scene/chapter
+  if (playRpgState.lastIntroducedLocationId !== activeLoc.id) {
+    playRpgState.currentLocationId = activeLoc.id;
+    playRpgState.currentLocationName = activeLoc.nameKo;
+    playRpgState.currentLocationNameEn = activeLoc.nameEn;
+    playRpgState.currentLocationDesc = activeLoc.descriptionKo;
+    playRpgState.currentLocationBgUrl = activeLoc.bgJpgUrl;
+    playRpgState.showLocationBanner = true;
+    playRpgState.locationBannerTimestamp = Date.now();
+    playRpgState.lastIntroducedLocationId = activeLoc.id;
+
+    preloadLocationBackground(activeLoc.bgJpgUrl);
+
+    // Auto dismiss banner after 3.5 seconds
+    if (locationBannerDismissTimer) {
+      clearTimeout(locationBannerDismissTimer);
+    }
+    locationBannerDismissTimer = setTimeout(() => {
+      locationBannerDismissTimer = null;
+      playRpgState.showLocationBanner = false;
+      if (typeof document !== 'undefined') {
+        const bannerEl = document.getElementById('dialogue-location-intro-banner');
+        if (bannerEl) {
+          bannerEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          bannerEl.style.opacity = '0';
+          bannerEl.style.transform = 'translateY(-8px)';
+          setTimeout(() => {
+            if (bannerEl.parentElement) {
+              bannerEl.parentElement.removeChild(bannerEl);
+            }
+          }, 400);
+        }
+      }
+    }, 3500);
+  }
+
+  return activeLoc;
+}
+
+export function dismissLocationBanner(): void {
+  if (locationBannerDismissTimer) {
+    clearTimeout(locationBannerDismissTimer);
+    locationBannerDismissTimer = null;
+  }
+  playRpgState.showLocationBanner = false;
+  notifyPlayStateUpdated();
+}
+
+/**
+ * Returns dialogue parts for the current active line.
+ * Prepend location name to the dialogue per user request:
+ * "소설에서 장면이나 장소가 바뀔때마다 해당 장소를 표시해 주고 대사에는 '웰윈 마을' 이렇게 장소를 표시해주고 대사 시작."
  */
 export function getCurrentDialogueParts(): { parts: string[]; currentPart: string; isNarration: boolean } {
   const lines = getCurrentDialogueLines();
@@ -644,9 +733,23 @@ export function getCurrentDialogueParts(): { parts: string[]; currentPart: strin
     return { parts: ['“서약은 얼어붙지 않는다.”'], currentPart: '“서약은 얼어붙지 않는다.”', isNarration: false };
   }
 
+  // Active location resolution for current line
+  const activeLoc = updateActiveDialogueLocation(currentLine);
+
   const activeSpeaker = resolveActiveDialogueSpeaker(currentLine);
   const dialogueData = extractDialogueText(currentLine, activeSpeaker.name);
-  const parts = splitDialogueIntoParts(dialogueData.text);
+
+  // Prepend Location Header to the dialogue: "[ 📍 엘윈 마을 ] "
+  const isKo = isKoreanLanguage();
+  const locName = isKo ? activeLoc.nameKo : activeLoc.nameEn;
+  const locTag = `[ 📍 ${locName} ] `;
+
+  let fullTextWithLoc = dialogueData.text;
+  if (!fullTextWithLoc.startsWith('[ 📍') && !fullTextWithLoc.startsWith('📍')) {
+    fullTextWithLoc = `${locTag}${fullTextWithLoc}`;
+  }
+
+  const parts = splitDialogueIntoParts(fullTextWithLoc);
   const clampedIdx = Math.max(0, Math.min(parts.length - 1, playRpgState.currentDialoguePartIdx));
   return {
     parts,
@@ -1187,6 +1290,14 @@ export function triggerDialogue(event: KadanRpgEvent): void {
   playRpgState.activeAmbush = null;
   playRpgState.lastAutoStepAt = Date.now();
   playRpgState.dialogueLineStartedAt = Date.now();
+
+  // Reset lastIntroducedLocationId so the episode opening location banner triggers cleanly
+  playRpgState.lastIntroducedLocationId = null;
+  const lines = getCurrentDialogueLines();
+  if (lines.length > 0) {
+    updateActiveDialogueLocation(lines[0]);
+  }
+
   preloadDialogueChapterImages();
   setTimeout(() => {
     const { currentPart } = getCurrentDialogueParts();
@@ -1262,6 +1373,11 @@ export function advanceDialogue(): { completed: boolean; readyForBattle: boolean
     playRpgState.choiceTimerSec = playRpgState.autoMode ? 3.0 : 5.0;
     playRpgState.lastAutoStepAt = Date.now();
     playRpgState.dialogueLineStartedAt = Date.now();
+
+    // Check if new line transitions to a new location/scene
+    const nextLine = lines[playRpgState.currentDialogueLineIdx];
+    updateActiveDialogueLocation(nextLine);
+
     preloadDialogueChapterImages();
     return { completed: false, readyForBattle: false };
   }

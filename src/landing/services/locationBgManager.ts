@@ -267,9 +267,7 @@ export const CHAPTER_PRIMARY_LOCATIONS: Record<number, string> = {
 };
 
 /**
- * 에피소드(챕터 1~40) 기준 단일 고정 캐노니컬 배경 장소 반환
- * 에피소드 진행 중 대화나 카드플레이에서 배경이 전환되어 시야가 산만해지는 것을 방지하고,
- * 각 에피소드 당 단 1개의 고유한 대표 배경 아트를 일관되게 유지합니다.
+ * 에피소드(챕터 1~40) 기준 기본 캐노니컬 배경 장소 반환
  */
 export function getEpisodeBackground(chapter: number): LocationMeta {
   const safeChapter = Math.max(1, Math.min(40, chapter || 1));
@@ -278,10 +276,53 @@ export function getEpisodeBackground(chapter: number): LocationMeta {
 }
 
 /**
- * 대사 화면 배경 헬퍼 (에피소드당 1개 고정 배경 반환 보장)
+ * 라인별 정밀 장소 판별 엔진
+ * 1. 라인의 text, sceneTitleKo, sceneExplanationKo를 분석하여 20대 장소 키워드와 매칭.
+ * 2. 특정 장소 키워드가 매칭되면 해당 장소 반환.
+ * 3. 매칭되지 않으면 fallbackLocation 또는 챕터 대표 장소 반환.
  */
-export function getDialogueBackground(chapter: number, _dialogueText?: string): LocationMeta {
-  return getEpisodeBackground(chapter);
+export function resolveLocationForLine(
+  chapter: number,
+  line?: { text?: string; textEn?: string; sceneTitleKo?: string; sceneExplanationKo?: string },
+  fallbackLocation?: LocationMeta
+): LocationMeta {
+  if (!line) {
+    return fallbackLocation || getEpisodeBackground(chapter);
+  }
+
+  const combinedText = `${line.sceneTitleKo || ''} ${line.sceneExplanationKo || ''} ${line.text || ''}`.toLowerCase();
+
+  // 1. 장소 공식 명칭 직접 언급 검사 (가장 높은 신뢰도)
+  for (const loc of Object.values(CANONICAL_LOCATIONS)) {
+    // 특수 장소명(예: '엘윈', '취종루', '미스트폴', '홍유리궁', '노역소', '귀운장' 등)
+    const baseName = loc.nameKo.split(' ')[0];
+    if (combinedText.includes(loc.nameKo.toLowerCase()) || (baseName.length >= 2 && combinedText.includes(baseName.toLowerCase()))) {
+      return loc;
+    }
+  }
+
+  // 2. 키워드 기반 매칭 (신뢰도 가중치)
+  for (const loc of Object.values(CANONICAL_LOCATIONS)) {
+    for (const kw of loc.keywords) {
+      if (kw.length >= 2 && combinedText.includes(kw.toLowerCase())) {
+        return loc;
+      }
+    }
+  }
+
+  // 3. 별도 장소 언급이 없으면 fallbackLocation 또는 챕터 기본 장소 유지
+  return fallbackLocation || getEpisodeBackground(chapter);
+}
+
+/**
+ * 대사 화면 배경 헬퍼 (대사 라인의 장소 우선 적용)
+ */
+export function getDialogueBackground(
+  chapter: number,
+  line?: { text?: string; textEn?: string; sceneTitleKo?: string; sceneExplanationKo?: string },
+  fallbackLocation?: LocationMeta
+): LocationMeta {
+  return resolveLocationForLine(chapter, line, fallbackLocation);
 }
 
 /**
