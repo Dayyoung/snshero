@@ -363,6 +363,9 @@ export function ensureGameStarted(): void {
     localStorage.setItem('hero_kadan_rpg_auto_mode', 'true');
   } catch {}
 
+  // Sync scene-specific BGM to current subState (map / dialogue / battle)
+  audioManager.syncSceneBgm(playRpgState.subState);
+
   const chEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === playRpgState.currentChapter) || KADAN_RPG_EVENTS[0];
 
   if (playRpgState.subState === 'map') {
@@ -1175,6 +1178,7 @@ export function isDialogueReadyToAdvance(): boolean {
 export function triggerDialogue(event: KadanRpgEvent): void {
   clearDialogueAutoAdvanceTimer();
   playRpgState.subState = 'dialogue';
+  audioManager.playSceneBgm('dialogue');
   playRpgState.currentDialogueLineIdx = 0;
   playRpgState.currentDialoguePartIdx = 0;
   playRpgState.dialogueTypingComplete = false;
@@ -1205,6 +1209,7 @@ export function closeDialogueAndStopPlay(): void {
   }
   playRpgState.autoMode = false;
   playRpgState.subState = 'map';
+  audioManager.playSceneBgm('map');
   playRpgState.activeAmbush = null;
   try {
     if (typeof localStorage !== 'undefined') {
@@ -1502,6 +1507,7 @@ function setupBattleStateInternal(
  */
 export function initBattle(customOpponentCards?: number[], customOpponentName?: string): void {
   playRpgState.subState = 'battle';
+  audioManager.playSceneBgm('battle');
 
   // Gather hands to preload
   const activeDeck = (cardNurtureStore as any).getDeckCardIds
@@ -2413,6 +2419,7 @@ export function completeReincarnation(): void {
     triggerDialogue(ch1Event);
   } else {
     playRpgState.subState = 'map';
+    audioManager.playSceneBgm('map');
     const region = getCurrentRegion();
     playRpgState.heroTile = { ...region.startTile };
   }
@@ -2449,6 +2456,7 @@ export function advanceNextChapter(): void {
   } catch {}
 
   playRpgState.subState = 'map';
+  audioManager.playSceneBgm('map');
   playRpgState.ambushTriggeredInChapter = false;
   playRpgState.activeAmbush = null;
   syncRegionAndTargets();
@@ -2469,6 +2477,7 @@ export function selectChapter(targetChapter: number): void {
   } catch {}
 
   playRpgState.subState = 'map';
+  audioManager.playSceneBgm('map');
   playRpgState.ambushTriggeredInChapter = false;
   playRpgState.activeAmbush = null;
   playRpgState.battleWinner = null;

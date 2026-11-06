@@ -36,10 +36,10 @@ export const OFFICIAL_LANGUAGES = [
 ] as const;
 
 export const BGM_TRACK_OPTIONS = [
-  { id: 'title', labelKey: 'bgm_track_title', defaultLabel: '타이틀 테마 (Hero Awakening)' },
+  { id: 'title', labelKey: 'bgm_track_title', defaultLabel: '일반 탐험 테마 (모험의 서막 / 평화로운 필드)' },
+  { id: 'peace', labelKey: 'bgm_track_peace', defaultLabel: '대사 서정 테마 (별빛 속삭임 / 비주얼 노벨)' },
+  { id: 'battle', labelKey: 'bgm_track_battle', defaultLabel: '전투 결전 테마 (운명의 전장 / 전술 카드 배틀)' },
   { id: 'lobby', labelKey: 'bgm_track_lobby', defaultLabel: '영지 로비 (Sanctuary of Kadan)' },
-  { id: 'battle', labelKey: 'bgm_track_battle', defaultLabel: '투기장 결투 (Colosseum Battle)' },
-  { id: 'peace', labelKey: 'bgm_track_peace', defaultLabel: '바람 속삭임 (Whispering Wind)' },
 ] as const;
 
 // ── Backup / Export Logic ────────────────────────────────────────────────────

@@ -327,6 +327,9 @@ export function navigateTo(targetView: ViewKey, options?: RouteOptions): void {
   // Auto-start Kadan Journey runner when navigating to #play view
   if (resolvedView === 'play') {
     ensureGameStarted();
+  } else {
+    // Other landing views (home, novel, shop, etc.): switch to peaceful adventure map BGM
+    audioManager.playSceneBgm('map');
   }
 
   state.activeView = resolvedView;
@@ -1189,7 +1192,11 @@ export function mountLanding(): void {
   try {
     const audioSettings = audioManager.getSettings();
     if (audioSettings.bgmEnabled) {
-      audioManager.playBgm();
+      if (state.activeView === 'play') {
+        audioManager.syncSceneBgm(playRpgState.subState);
+      } else {
+        audioManager.playSceneBgm('map');
+      }
     }
   } catch {}
 
