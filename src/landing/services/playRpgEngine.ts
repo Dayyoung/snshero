@@ -93,6 +93,8 @@ export interface PlayerTacticalMove {
   flipsCount: number;
 }
 
+export type DialoguePhase = 'scene_intro' | 'talk';
+
 export interface PlayRpgState {
   activeTab: PlayTabKey;
   subState: PlaySubState;
@@ -111,6 +113,8 @@ export interface PlayRpgState {
   repeatHunting: boolean;
 
   // Dialogue Sub-state
+  dialoguePhase: DialoguePhase;       // 'scene_intro': 인물 등장 전 전체 장면/장소 소개, 'talk': 인물 7등신 상반신 대화
+  sceneIntroStartedAt: number;        // 장면 소개 진입 시각
   currentDialogueLineIdx: number;
   currentDialoguePartIdx: number;     // 0: 첫 번째 파트, 1: 두 번째 파트 (대사 분할 시)
   dialogueTypingComplete: boolean;    // 현재 파트 글자 출력 완료 여부
@@ -177,6 +181,8 @@ export const playRpgState: PlayRpgState = {
   autoMode: false,
   repeatHunting: false,
 
+  dialoguePhase: 'scene_intro',
+  sceneIntroStartedAt: 0,
   currentDialogueLineIdx: 0,
   currentDialoguePartIdx: 0,
   dialogueTypingComplete: false,
@@ -664,7 +670,8 @@ let locationBannerDismissTimer: any = null;
 
 /**
  * Resolve and update the active dialogue location for the current novel line.
- * Automatically triggers the Location Intro Banner when a new scene or location is encountered.
+ * Automatically triggers the Scene Intro Overview when a new scene or location is encountered,
+ * fulfilling: "대사 시작전에 해당 인물들 상반신을 표시하기 전에 전체장면을 한번 소개해달라고. 그리고 대사 중에도 장소가 바뀌면 해당 장소를 표시하고 한번소개."
  */
 export function updateActiveDialogueLocation(currentLine?: KadanRpgNovelScriptLine): LocationMeta {
   const currentChapter = playRpgState.currentChapter;
@@ -675,6 +682,8 @@ export function updateActiveDialogueLocation(currentLine?: KadanRpgNovelScriptLi
 
   // If location has changed or was not yet introduced for this scene/chapter
   if (playRpgState.lastIntroducedLocationId !== activeLoc.id) {
+    playRpgState.dialoguePhase = 'scene_intro';
+    playRpgState.sceneIntroStartedAt = Date.now();
     playRpgState.currentLocationId = activeLoc.id;
     playRpgState.currentLocationName = activeLoc.nameKo;
     playRpgState.currentLocationNameEn = activeLoc.nameEn;
@@ -685,46 +694,33 @@ export function updateActiveDialogueLocation(currentLine?: KadanRpgNovelScriptLi
     playRpgState.lastIntroducedLocationId = activeLoc.id;
 
     preloadLocationBackground(activeLoc.bgJpgUrl);
-
-    // Auto dismiss banner after 3.5 seconds
-    if (locationBannerDismissTimer) {
-      clearTimeout(locationBannerDismissTimer);
-    }
-    locationBannerDismissTimer = setTimeout(() => {
-      locationBannerDismissTimer = null;
-      playRpgState.showLocationBanner = false;
-      if (typeof document !== 'undefined') {
-        const bannerEl = document.getElementById('dialogue-location-intro-banner');
-        if (bannerEl) {
-          bannerEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-          bannerEl.style.opacity = '0';
-          bannerEl.style.transform = 'translateY(-8px)';
-          setTimeout(() => {
-            if (bannerEl.parentElement) {
-              bannerEl.parentElement.removeChild(bannerEl);
-            }
-          }, 400);
-        }
-      }
-    }, 3500);
+    try {
+      audioManager.playTestChime();
+    } catch {}
   }
 
   return activeLoc;
 }
 
+/**
+ * Switch from Scene Overview phase to active Character Talking phase
+ */
+export function startDialogueTalkPhase(): void {
+  playRpgState.dialoguePhase = 'talk';
+  playRpgState.dialogueLineStartedAt = Date.now();
+  const { currentPart } = getCurrentDialogueParts();
+  startDialogueTyping(currentPart);
+  notifyPlayStateUpdated();
+}
+
 export function dismissLocationBanner(): void {
-  if (locationBannerDismissTimer) {
-    clearTimeout(locationBannerDismissTimer);
-    locationBannerDismissTimer = null;
-  }
   playRpgState.showLocationBanner = false;
   notifyPlayStateUpdated();
 }
 
 /**
- * Returns dialogue parts for the current active line.
- * Prepend location name to the dialogue per user request:
- * "소설에서 장면이나 장소가 바뀔때마다 해당 장소를 표시해 주고 대사에는 '웰윈 마을' 이렇게 장소를 표시해주고 대사 시작."
+ * Returns clean dialogue parts for the current active line.
+ * Pure dialogue/narration text without repetitive location prefix tags.
  */
 export function getCurrentDialogueParts(): { parts: string[]; currentPart: string; isNarration: boolean } {
   const lines = getCurrentDialogueLines();
@@ -734,22 +730,13 @@ export function getCurrentDialogueParts(): { parts: string[]; currentPart: strin
   }
 
   // Active location resolution for current line
-  const activeLoc = updateActiveDialogueLocation(currentLine);
+  updateActiveDialogueLocation(currentLine);
 
   const activeSpeaker = resolveActiveDialogueSpeaker(currentLine);
   const dialogueData = extractDialogueText(currentLine, activeSpeaker.name);
 
-  // Prepend Location Header to the dialogue: "[ 📍 엘윈 마을 ] "
-  const isKo = isKoreanLanguage();
-  const locName = isKo ? activeLoc.nameKo : activeLoc.nameEn;
-  const locTag = `[ 📍 ${locName} ] `;
-
-  let fullTextWithLoc = dialogueData.text;
-  if (!fullTextWithLoc.startsWith('[ 📍') && !fullTextWithLoc.startsWith('📍')) {
-    fullTextWithLoc = `${locTag}${fullTextWithLoc}`;
-  }
-
-  const parts = splitDialogueIntoParts(fullTextWithLoc);
+  // Pure, clean dialogue text without repetitive prefix tags
+  const parts = splitDialogueIntoParts(dialogueData.text);
   const clampedIdx = Math.max(0, Math.min(parts.length - 1, playRpgState.currentDialoguePartIdx));
   return {
     parts,
@@ -901,6 +888,14 @@ export function skipDialogueTyping(fullText: string): void {
  */
 export function advanceDialoguePartOrLine(): { completed: boolean; readyForBattle: boolean } {
   clearDialogueAutoAdvanceTimer();
+
+  // 0. If in Scene Intro phase: transition to Talk phase immediately on tap/click
+  if (playRpgState.dialoguePhase === 'scene_intro') {
+    startDialogueTalkPhase();
+    audioManager.playClickTick();
+    return { completed: false, readyForBattle: false };
+  }
+
   const { parts, currentPart } = getCurrentDialogueParts();
 
   // 1. If currently typing: skip typing to show full text immediately
@@ -1254,6 +1249,15 @@ export function isDialogueReadyToAdvance(): boolean {
     return true;
   }
 
+  // If in Scene Intro Showcase phase, transition to talk phase after intro duration
+  if (playRpgState.dialoguePhase === 'scene_intro') {
+    const introElapsed = Date.now() - (playRpgState.sceneIntroStartedAt || 0);
+    if (introElapsed >= 2000) {
+      startDialogueTalkPhase();
+    }
+    return false;
+  }
+
   // 1. Hard Safety Watchdog: If 4000ms have elapsed on this dialogue line, NEVER hang!
   const now = Date.now();
   const elapsed = now - (playRpgState.dialogueLineStartedAt || now);
@@ -1291,18 +1295,27 @@ export function triggerDialogue(event: KadanRpgEvent): void {
   playRpgState.lastAutoStepAt = Date.now();
   playRpgState.dialogueLineStartedAt = Date.now();
 
-  // Reset lastIntroducedLocationId so the episode opening location banner triggers cleanly
+  // Start with full Scene Intro Overview before showing character busts
   playRpgState.lastIntroducedLocationId = null;
+  playRpgState.dialoguePhase = 'scene_intro';
+  playRpgState.sceneIntroStartedAt = Date.now();
+
   const lines = getCurrentDialogueLines();
   if (lines.length > 0) {
     updateActiveDialogueLocation(lines[0]);
   }
 
   preloadDialogueChapterImages();
-  setTimeout(() => {
-    const { currentPart } = getCurrentDialogueParts();
-    startDialogueTyping(currentPart);
-  }, 60);
+  notifyPlayStateUpdated();
+
+  // If in autoMode, start talking after 2.0s scene intro
+  if (playRpgState.autoMode) {
+    setTimeout(() => {
+      if (playRpgState.subState === 'dialogue' && playRpgState.dialoguePhase === 'scene_intro') {
+        startDialogueTalkPhase();
+      }
+    }, 2000);
+  }
 }
 
 /**
@@ -1379,6 +1392,21 @@ export function advanceDialogue(): { completed: boolean; readyForBattle: boolean
     updateActiveDialogueLocation(nextLine);
 
     preloadDialogueChapterImages();
+
+    // If location changed, dialoguePhase becomes 'scene_intro'.
+    // If location did NOT change, stay in 'talk' and kick off typewriter typing.
+    if (playRpgState.dialoguePhase === 'talk') {
+      const { currentPart } = getCurrentDialogueParts();
+      startDialogueTyping(currentPart);
+    } else if (playRpgState.autoMode) {
+      setTimeout(() => {
+        if (playRpgState.subState === 'dialogue' && playRpgState.dialoguePhase === 'scene_intro') {
+          startDialogueTalkPhase();
+        }
+      }, 2000);
+    }
+
+    notifyPlayStateUpdated();
     return { completed: false, readyForBattle: false };
   }
 
