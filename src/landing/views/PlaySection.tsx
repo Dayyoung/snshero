@@ -2515,10 +2515,10 @@ function renderWebtoonView(): string {
 // ============================================================================
 
 /**
- * Render Floating AUTO PLAY Action Button at Bottom-Right (z-[70])
- * - Raised upward (bottom-24 sm:bottom-28) so it never covers bottom navigation or action buttons
- * - Modern OpenCode Terminal-Flat design: single flat pill, 1px hairline border, 44px+ touch target
- * - Clean status dot, modern vector icon, integrated [ON]/[OFF] state badge (zero visual clutter)
+ * Render Floating AUTO PLAY Action Button at Right-Center (z-[70])
+ * - Vertically centered (top-1/2 -translate-y-1/2) so it never covers the bottom dialogue box or controls
+ * - Circular button (rounded-full, 48x48 ~ 56x56px) for clean one-hand thumb reach without obstructing text
+ * - Clean status dot, modern vector icon, compact AUTO state label
  */
 export function renderAutoPlayFloatingButton(): string {
   const isAuto = playRpgState.autoMode;
@@ -2526,33 +2526,33 @@ export function renderAutoPlayFloatingButton(): string {
   return `
     <aside
       id="play-floating-auto-dock"
-      class="fixed bottom-24 right-4 sm:bottom-28 sm:right-6 z-[70] select-none pointer-events-auto font-mono"
+      class="fixed top-1/2 -translate-y-1/2 right-3 sm:right-5 z-[70] select-none pointer-events-auto font-mono"
       aria-label="${tr('자동 진행 컨트롤러', 'Auto-Play Controller', '自動進行コントローラー')}"
     >
       <button
         type="button"
         data-action="play-toggle-auto"
-        class="group flex items-center gap-2 px-3.5 py-2.5 sm:px-4 sm:py-2.5 rounded-sm border transition-all cursor-pointer select-none active:scale-95 shadow-md min-h-[44px] ${
+        class="group relative flex flex-col items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 transition-all cursor-pointer select-none active:scale-95 shadow-lg ${
           isAuto
-            ? 'bg-[#201d1d] text-[#fdfcfc] border-amber-400 hover:border-amber-300'
-            : 'bg-[#fdfcfc] text-[#201d1d] hover:bg-[#edeaea] border-stone-300'
+            ? 'bg-[#201d1d]/95 text-[#fdfcfc] border-amber-400 hover:border-amber-300 shadow-amber-400/20'
+            : 'bg-[#fdfcfc]/95 text-[#201d1d] hover:bg-[#edeaea] border-stone-400'
         }"
         aria-label="${isAuto ? tr('자동 진행 중지', 'Stop Auto-Play', '自動進行停止') : tr('자동 진행 시작', 'Start Auto-Play', '自動進行開始')}"
         title="${isAuto ? tr('자동 진행 중지 (클릭 시 멈춤)', 'Stop Auto-Play (Click to pause)', '自動進行停止 (クリックで一時停止)') : tr('자동 진행 시작 (클릭 시 자동 모험)', 'Start Auto-Play (Click to run)', '自動進行開始 (クリックで自動冒険)')}"
       >
         <!-- Status Indicator Dot -->
-        <span class="w-2 h-2 rounded-full shrink-0 ${
+        <span class="absolute top-0.5 right-0.5 w-2.5 h-2.5 rounded-full border border-[#201d1d] ${
           isAuto ? 'bg-emerald-400 animate-pulse' : 'bg-stone-400'
         }"></span>
 
         <!-- Modern Vector Icon (Spinning loop when active, clean play triangle when idle) -->
         <svg
           viewBox="0 0 24 24"
-          class="w-4 h-4 shrink-0 transition-transform ${isAuto ? 'text-amber-400 animate-spin' : 'text-stone-600 group-hover:text-[#201d1d]'}"
+          class="w-4 h-4 sm:w-5 sm:h-5 shrink-0 transition-transform ${isAuto ? 'text-amber-400 animate-spin' : 'text-stone-700 group-hover:text-[#201d1d]'}"
           style="${isAuto ? 'animation-duration: 3s;' : ''}"
           fill="none"
           stroke="currentColor"
-          stroke-width="2"
+          stroke-width="2.2"
           stroke-linecap="round"
           stroke-linejoin="round"
         >
@@ -2565,22 +2565,17 @@ export function renderAutoPlayFloatingButton(): string {
                 <path d="M16 21h5v-5" />
               `
               : `
-                <polygon points="6 4 20 12 6 20 6 4" fill="currentColor" stroke="none" />
+                <polygon points="7 4 20 12 7 20 7 4" fill="currentColor" stroke="none" />
               `
           }
         </svg>
 
-        <!-- Label & State Badge -->
-        <div class="flex items-center gap-1.5 text-xs font-bold leading-none tracking-tight">
-          <span class="font-mono tracking-tight font-black">AUTO PLAY</span>
-          <span class="px-1.5 py-0.5 text-[10px] font-mono font-black rounded-xs ${
-            isAuto
-              ? 'bg-amber-400 text-stone-950'
-              : 'bg-stone-200 text-stone-600'
-          }">
-            ${isAuto ? 'ON' : 'OFF'}
-          </span>
-        </div>
+        <!-- Compact Circular Label -->
+        <span class="mt-0.5 text-[8px] sm:text-[9px] font-mono font-black leading-none tracking-tighter ${
+          isAuto ? 'text-amber-300' : 'text-stone-600'
+        }">
+          ${isAuto ? 'AUTO' : 'OFF'}
+        </span>
       </button>
     </aside>
   `;
@@ -2598,7 +2593,7 @@ export function renderPlaySection(): string {
         ${renderAdventureView()}
       </div>
 
-      <!-- Floating AUTO PLAY Action Button (Fixed Bottom-Right) -->
+      <!-- Floating AUTO PLAY Action Button (Fixed Right-Center Circular) -->
       ${renderAutoPlayFloatingButton()}
     </div>
   `;
