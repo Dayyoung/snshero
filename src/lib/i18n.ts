@@ -2343,7 +2343,7 @@ const kadanRpgTranslations: Record<'ko' | 'en', Record<string, string>> = {
     kadan_rpg_opp_ch03: '안개 절벽 흑요석 교단',
     kadan_rpg_opp_ch04: '설원 평원 복병대',
     kadan_rpg_opp_ch05: '폭우의 그림자 환영',
-    kadan_rpg_opp_ch06: '성진 동굴 시련 수호자',
+    kadan_rpg_opp_ch06: '별빛 동굴 시련 수호자',
     kadan_rpg_opp_ch07: '반역자 족장과 부역자들',
     kadan_rpg_opp_ch08: '적갈기 마적단',
     kadan_rpg_opp_ch09: '제국 국경 순찰대',

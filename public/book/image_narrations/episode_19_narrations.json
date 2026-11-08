@@ -359,7 +359,7 @@
       "imageFile": "episode_19/scene_12.webp",
       "sourceImageFile": "episode_19/scene_12.webp",
       "narrationEn": "Ignis gripped Kadan's shoulder with solemn urgency. \"Stay sharp, Kadan. King Aeolus's storm blade is a divine relic of the winds, capable of cleaving imperial knights in twain with a single stroke.\"",
-      "narrationKo": "이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 일국의 신기(神器)다.”",
+      "narrationKo": "이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 왕국의 전설적인 성물이다.”",
       "sourceSentenceStart": 12,
       "sourceSentenceEnd": 12,
       "alignmentScore": 1.0,
@@ -367,7 +367,7 @@
         {
           "speakerKo": "이그니스",
           "speakerEn": "Ignis",
-          "textKo": "이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 일국의 신기(神器)다.”",
+          "textKo": "이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 왕국의 전설적인 성물이다.”",
           "textEn": "Ignis gripped Kadan's shoulder with solemn urgency. \"Stay sharp, Kadan. King Aeolus's storm blade is a divine relic of the winds, capable of cleaving imperial knights in twain with a single stroke.\"",
           "bubbleType": "speech",
           "position": "top-left",

@@ -50,7 +50,7 @@ FEMALE_SPEAKERS = {
     "실피드", "Sylphid",
     "아라크네", "Arachne",
     "엘리아나", "Eliana",
-    "환마 릴리스", "Succubus Lilith", "Lilith",
+    "몽마 릴리스", "Succubus Lilith", "Lilith",
     "에일라", "Aila",
     "이셀라", "Ysela",
     "티타니아", "Titania",

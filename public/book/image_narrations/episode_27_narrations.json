@@ -219,7 +219,7 @@
       "imageFile": "episode_27/scene_08.webp",
       "sourceImageFile": "episode_27/scene_08.webp",
       "narrationEn": "Sipping the warm tea, Kadan replied in a quiet, measured cadence.",
-      "narrationKo": "내궁 테라스 아래로는 수백 년 된 주목(朱木)들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.",
+      "narrationKo": "내궁 테라스 아래로는 수백 년 된 붉은 고목들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.",
       "sourceSentenceStart": 8,
       "sourceSentenceEnd": 8,
       "alignmentScore": 1.0,
@@ -227,7 +227,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "내궁 테라스 아래로는 수백 년 된 주목(朱木)들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.",
+          "textKo": "내궁 테라스 아래로는 수백 년 된 붉은 고목들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.",
           "textEn": "Sipping the warm tea, Kadan replied in a quiet, measured cadence.",
           "bubbleType": "thought",
           "position": "bottom-right",

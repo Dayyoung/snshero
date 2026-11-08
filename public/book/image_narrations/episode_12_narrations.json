@@ -260,7 +260,7 @@
       "imageFile": "episode_12/scene_09.webp",
       "sourceImageFile": "episode_12/scene_09.webp",
       "narrationEn": "\"Bear it just a little longer, Balian. The medicine Kadan secured will soon extinguish the fever in your blood. You must live... to hold our boy, our Ignis, in your arms once more.\"",
-      "narrationKo": "“발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”",
+      "narrationKo": "“발리안, 조금만 더 기운을 내요. 카단이 가져온 치유의 비약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”",
       "sourceSentenceStart": 9,
       "sourceSentenceEnd": 9,
       "alignmentScore": 1.0,
@@ -268,7 +268,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "“발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”",
+          "textKo": "“발리안, 조금만 더 기운을 내요. 카단이 가져온 치유의 비약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”",
           "textEn": "\"Bear it just a little longer, Balian. The medicine Kadan secured will soon extinguish the fever in your blood. You must live... to hold our boy, our Ignis, in your arms once more.\"",
           "bubbleType": "thought",
           "position": "top-right",

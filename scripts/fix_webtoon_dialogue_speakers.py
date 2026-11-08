@@ -45,8 +45,8 @@ SPEAKERS_MAP = {
     '어린아이': ('피난민 아이', 'Refugee Child', 41),
     '피난민 아이': ('피난민 아이', 'Refugee Child', 41),
     '어부': ('어부', 'Fisherman', 48),
-    '성진 은자': ('성진 은자', 'Star Hermit', 66),
-    '노인': ('성진 은자', 'Star Hermit', 66),
+    '별빛의 현자': ('별빛의 현자', 'Star Hermit', 66),
+    '노인': ('별빛의 현자', 'Star Hermit', 66),
     '그림리': ('그림리', 'Grimli', 74),
     '론돌': ('론돌', 'Rondol', 50),
     '티타니아': ('티타니아', 'Titania', 64),
@@ -145,7 +145,7 @@ def resolve_dialogue_speaker(text_ko: str, book_text: str, current_sp: str):
         elif '네 아비 알렉산다르는' in q:
             new_sp = ('그림리', 'Grimli', 74)
         elif '산이 너를 밀어내는 것이다' in q or '천지 만물의 호흡에 귀를 기울이지 않고' in q:
-            new_sp = ('성진 은자', 'Star Hermit', 66)
+            new_sp = ('별빛의 현자', 'Star Hermit', 66)
         elif '별을 세느라 등 뒤에 선 동료의' in q or '에올루스 경에게서 배운' in q or '외동딸 실리아가 있다고 들었다' in q:
             new_sp = ('론돌', 'Rondol', 50)
         elif '가식 부리지 마라, 애송이!' in q:

@@ -5145,25 +5145,33 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         
         const cardInfo = CARD_DATABASE[selectedIdx];
         
-        // --- REALISTIC POWER SCALING (환생 시 스탯 & 파워 강화) ---
-        const statBonus = Math.min(5, Math.floor(rebirthLevel * 1.0));
+        // --- REALISTIC POWER SCALING (유저 카드덱 파워 + 환생 레벨 기반 동적 스탯 & 파워 조정) ---
+        const playerStatSum = playerDeck.length > 0
+            ? playerDeck.reduce((acc, c) => acc + (c.stats ? c.stats[0] + c.stats[1] + c.stats[2] + c.stats[3] : 16), 0)
+            : 80;
+        const playerAvgCardStatSum = Math.max(12, playerStatSum / Math.max(1, playerDeck.length));
+        const rawCardSum = Math.max(4, cardInfo.stats[0] + cardInfo.stats[1] + cardInfo.stats[2] + cardInfo.stats[3]);
+        // Scale opponent card stats to match or slightly challenge player's deck power (+15% spike on 25% of matches to encourage card upgrades)
+        const challengeRatio = (rebirthLevel > 0 ? 1.02 + Math.min(0.18, rebirthLevel * 0.03) : 0.96) * (i === 0 ? 1.08 : 1.0);
+        const targetCardStatSum = Math.max(rawCardSum + rebirthLevel * 2, Math.round(playerAvgCardStatSum * challengeRatio));
+        const statScale = targetCardStatSum / rawCardSum;
         const aiCard: CardData = {
             id: `ai-card-${i}-${Date.now()}-${selectedIdx}`,
             imageIndex: selectedIdx,
             title: cardInfo.title,
             title_dis: cardInfo.title_dis,
             title_en: cardInfo.title_en,
-            power: Math.round((cardInfo.power || 10) * rebirthPowerFactor),
+            power: Math.max(Math.round(targetPerCard), Math.round((cardInfo.power || 10) * rebirthPowerFactor)),
             rarity: cardInfo.rarity || 'bronze',
             owner: 'ai',
-            stats: cardInfo.stats.map(s => Math.min(10, s + statBonus)) as [number, number, number, number],
+            stats: cardInfo.stats.map(s => Math.max(1, Math.round(s * statScale))) as [number, number, number, number],
             ability: cardInfo.ability,
             element: cardInfo.element,
             skills: INITIAL_SKILLS.map(s => ({ ...s, level: Math.min(10, Math.floor(rebirthLevel * 1.2)) })),
             equipment: {},
             bonusPower: 0,
             exp: 0,
-            level: Math.min(10, 1 + rebirthLevel)
+            level: Math.min(100, 1 + rebirthLevel * 3)
         };
 
         // 1. Apply Skills first (Simulation of level up)
@@ -5339,23 +5347,33 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     setCheckingIdx(-1);
     setIsEvaluating(false);
 
-    // 환생 레벨(rebirthLevel)에 따른 점진적 난이도 강화 (스탯, 파워, 레벨, 스킬)
+    // 유저 덱 파워 계산 및 환생 레벨(rebirthLevel)에 따른 점진적 난이도 강화
     const currentRebirth = rebirthLevel;
-    const scaledLevel = Math.min(10, 1 + currentRebirth);
-    const statBonus = Math.min(6, Math.floor(currentRebirth * 1.2));
+    const playerStatSum = playerDeck.length > 0
+      ? playerDeck.reduce((acc, c) => acc + (c.stats ? c.stats[0] + c.stats[1] + c.stats[2] + c.stats[3] : 16), 0)
+      : 80;
+    const playerAvgCardStatSum = Math.max(12, playerStatSum / Math.max(1, playerDeck.length));
+    const rawCardSum = Math.max(4, dbCard.stats[0] + dbCard.stats[1] + dbCard.stats[2] + dbCard.stats[3]);
+    const isUpgradeCheck = targetCardIndex % 4 === 0 || currentRebirth > 0;
+    const challengeFactor = isUpgradeCheck
+      ? 1.05 + Math.min(0.18, currentRebirth * 0.03)
+      : 0.96 + Math.min(0.10, currentRebirth * 0.02);
+    const targetCardStatSum = Math.max(rawCardSum + currentRebirth * 3, Math.round(playerAvgCardStatSum * challengeFactor));
+    const statScale = targetCardStatSum / rawCardSum;
+    const scaledLevel = Math.min(100, 1 + currentRebirth * 3);
     const powerMultiplier = 1 + (currentRebirth * 0.25);
-    const scaledPower = Math.round((dbCard.power || 10) * powerMultiplier);
+    const scaledPower = Math.max(targetCardStatSum, Math.round((dbCard.power || 10) * powerMultiplier));
     const scaledRarity: CardRarity = currentRebirth >= 3 
       ? 'legendary' 
       : (currentRebirth >= 2 ? 'diamond' : (currentRebirth >= 1 ? 'platinum' : (dbCard.rarity as CardRarity || 'bronze')));
 
-    // 상대 덱: 해당 카드 5개로 설정 (환생 시 레벨, 파워, 스탯, 등급 점진 강화)
+    // 상대 덱: 유저 덱 파워 및 환생 단계에 맞춰 동적 조정
     const missionAiDeck: CardData[] = Array(5).fill(null).map((_, i) => ({
       id: `mission-opp-${dbCard.id}-${Date.now()}-${i}`,
       title: dbCard.title,
       title_dis: dbCard.title_dis,
       title_en: dbCard.title_en,
-      stats: dbCard.stats.map(s => Math.min(10, s + statBonus)) as [number, number, number, number],
+      stats: dbCard.stats.map(s => Math.max(1, Math.round(s * statScale))) as [number, number, number, number],
       rarity: scaledRarity,
       owner: 'ai' as const,
       level: scaledLevel,

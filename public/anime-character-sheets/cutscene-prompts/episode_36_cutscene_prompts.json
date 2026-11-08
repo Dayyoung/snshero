@@ -17,7 +17,7 @@
         1
       ],
       "novelTextEn": "Having fought their way through the suffocating illusions of the misty corridors, Kadan and Princess Cilia at last set foot within the highest sanctum of the Black Citadel—the Starlight Archives, where the empire's darkest arcana had lain interred for centuries. The vaulted ceiling of the circular obsidian gallery opened directly to the heavens, where the frigid constellations of the northern sky poured down their pale luminescence upon a colossal granite altar. Chiseled into the altar's stone in deep relief was the Continental Star Chart, tracing every ancient leyline, ridge, and river across the breadth of the realm.",
-      "novelTextKo": "환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다. 흑요석 벽면으로 둘러싸인 거대한 원형 회랑의 천장은 뚫려 있어 차가운 밤하늘의 북두칠성이 서늘하게 쏟아져 내리고 있었고, 회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 성도(星圖)’가 자리 잡고 있었다. 스승들을 잃은 슬픔의 무게가 두 사람의 어깨를 짓누르고 있었지만, 카단의 발걸음은 조금도 흐트러짐이 없었다.",
+      "novelTextKo": "환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다. 흑요석 벽면으로 둘러싸인 거대한 원형 회랑의 천장은 뚫려 있어 차가운 밤하늘의 북두칠성이 서늘하게 쏟아져 내리고 있었고, 회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 별자리 지도’가 자리 잡고 있었다. 스승들을 잃은 슬픔의 무게가 두 사람의 어깨를 짓누르고 있었지만, 카단의 발걸음은 조금도 흐트러짐이 없었다.",
       "episodeSummaryEn": "Episode 36 ('Map of the Cross-Shaped Scar'): Having fought their way through the suffocating illusions of the misty corridors, Kadan and Princess Cilia at last set foot within the highest sanctum of the Black Citadel—the Starlight Archives, where the empire's darkest arcana had lain interred for centuries. As the conflict escalates (Clenching his fist, Kadan looked upon the light.), the episode culminates when kadan drove his shield into the portal's center, shattering the massive stone gates in a roar of splintering granite.",
       "episodeSummaryKo": "제36화 『십자 흉터의 지도』(Map of the Cross-Shaped Scar): 환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다. 중반부 “알렉산다르 스승님과 발리안 숙부님, 그리고 이그니스가 우리와 함께하고 있다. 이어 결말에서는 실리아가 속삭였다.",
       "location": {
@@ -27,7 +27,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -85,7 +85,7 @@
       "noTextRuleKo": "글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨.",
       "unifiedVideoPromptEn": "[6-SECOND ANIME CUTSCENE VIDEO PROMPT | EP36-CUT01 (00:00–00:06)] 1) EPISODE STORY CONTEXT: Episode 36 ('Map of the Cross-Shaped Scar'): Having fought their way through the suffocating illusions of the misty corridors, Kadan and Princess Cilia at last set foot within the highest sanctum of the Black Citadel—the Starlight Archives, where the empire's darkest arcana had lain interred for centuries. As the conflict escalates (Clenching his fist, Kadan looked upon the light.), the episode culminates when kadan drove his shield into the portal's center, shattering the massive stone gates in a roar of splintering granite. 2) CURRENT CUTSCENE ACTION (6s): Having fought their way through the suffocating illusions of the misty corridors, Kadan and Princess Cilia at last set foot within the highest sanctum of the Black Citadel—the Starlight Archives, where the empire's darkest arcana had lain interred for centuries. The vaulted ceiling of the circular obsidian gallery opened directly to the heavens, where the frigid constellations of the northern sky poured down their pale luminescence upon a colossal granite altar. Chiseled into the altar's stone in deep relief was the Continental Star Chart, tracing every ancient leyline, ridge, and river across the breadth of the realm. 3) BACKGROUND LOCATION SHEET & PROMPT: [LOC-019 Black Citadel & Starlight Archive | Location Image: /anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg | Sheet: /anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg] Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table. 4) APPEARING CHARACTERS (7-HEAD-TALL CUTOUTS): Kadan (7-Head-Tall Cutout Reference: /anime-character-sheets/cutouts/041_Kadan.png) — 7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger 5) PROPS & PROP HOLDER SPECIFICATION: [CHAR-EQUIP Kadan's Signature Gear (Prop Reference: /anime-character-sheets/cutouts/041_Kadan.png)]: Kadan (7-head-tall cutout: /anime-character-sheets/cutouts/041_Kadan.png) carries their signature equipment (7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger) 6) OMNISCIENT MALE BACKGROUND NARRATION ONLY (<= 6 SECONDS) & ALL CHARACTERS SILENT: Every appearing character on screen MUST keep their mouth completely closed and MUST NOT speak a single word (zero lip movement). ONLY a deep, cinematic off-screen male narrator voiceover in the background speaks concisely within 6 seconds in English: \"Having fought their way through the suffocating illusions of the misty corridors, Kadan and.\" 7) STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, signage, or UI overlays anywhere in the 6-second video. 8) STYLE: Masterpiece 7-head-tall 2D fantasy anime cinema (premium cinematic hand-drawn anime quality), 16:9 widescreen, 24fps, smooth 6-second continuous camera motion.",
       "cutsceneAnimationPromptEn": "[VEO 3.1 LITE 6-SECOND CUTSCENE ANIMATION PROMPT | EP36-CUT01 (00:00–00:06)] 1) ANIMATE ATTACHED CUTSCENE IMAGE: Bring this exact generated 2D anime cutscene image to life over 6 seconds while strictly preserving its character designs, faces, outfits, props, and background composition (Black Citadel & Starlight Archive). 2) 6-SECOND ANIME MOTION & VISUAL EFFECTS: Apply smooth 24fps 2D anime sakuga animation effects matching the scene — Having fought their way through the suffocating illusions of the misty corridors, Kadan and Princess Cilia at last set foot within the highest sanctum of the Black Citadel—the Starlight Archives, where the empire's darkest arcana had lain interred for centuries. The vaulted ceiling of the circular obsidian gallery opened directly to the heavens, where the frigid constellations of the northern sky poured down their pale luminescence upon a colossal granite altar. Chiseled into the altar's stone in deep relief was the Continental Star Chart, tracing every ancient leyline, ridge, and river across the breadth of the realm. (Characters in motion: Kadan; Props: Kadan's Signature Gear (Kadan (7-head-tall cutout: /anime-character-sheets/cutouts/041_Kadan.png) carries their signature equipment (7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger)); subtle cinematic camera movement, dynamic wind/snow/flame/arcane particles, natural hair and cloak physics). 3) AUDIO / VOICE / NARRATION RULE (6s): OMNISCIENT MALE BACKGROUND NARRATION ONLY (<= 6 SECONDS) & ALL CHARACTERS SILENT: Every appearing character on screen MUST keep their mouth completely closed and MUST NOT speak a single word (zero lip movement). ONLY a deep, cinematic off-screen male narrator voiceover in the background speaks concisely within 6 seconds in English: \"Having fought their way through the suffocating illusions of the misty corridors, Kadan and.\" 4) STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, signage, or UI overlays anywhere in the 6-second video.",
-      "cutsceneAnimationPromptKo": "[Veo 3.1 Lite 6초 컷신 애니메이션 효과 프롬프트 | EP36-CUT01 (00:00–00:06)] 1) 첨부된 생성 컷신 이미지 기준 애니메이션화: 첨부된 나노바나나 2.1 컷신 이미지의 캐릭터 외형·복장·소품·배경 구도(검은 성채 & 별빛의 기록실)를 그대로 유지하면서 자연스러운 6초 2D 애니메이션 움직임과 이펙트(카메라 워킹, 바람/눈보라/불꽃/마력 파티클, 망토와 머리카락 날림, 인물 동작)를 부여함 — 환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다. 흑요석 벽면으로 둘러싸인 거대한 원형 회랑의 천장은 뚫려 있어 차가운 밤하늘의 북두칠성이 서늘하게 쏟아져 내리고 있었고, 회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 성도(星圖)’가 자리 잡고 있었다. 스승들을 잃은 슬픔의 무게가 두 사람의 어깨를 짓누르고 있었지만, 카단의 발걸음은 조금도 흐트러짐이 없었다. 2) 대사 / 침묵 / 전지적 남자 나레이션 지침 (6초): 전지적 시점 배경 남자 나레이션 (6초 이내) 및 등장인물 전원 침묵 지침: 화면에 등장하는 모든 인물은 입을 굳게 다물고 아무 말도 해서는 안 되며(입 모양 움직임 절대 금지), 오직 배경에서만 중후한 남자 나레이션 음성으로 6초 이내에 다음 내용을 설명해야 함: \"환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다.\" (영문 6s 나레이션: \"Having fought their way through the suffocating illusions of the misty corridors, Kadan and.\") 3) 글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨."
+      "cutsceneAnimationPromptKo": "[Veo 3.1 Lite 6초 컷신 애니메이션 효과 프롬프트 | EP36-CUT01 (00:00–00:06)] 1) 첨부된 생성 컷신 이미지 기준 애니메이션화: 첨부된 나노바나나 2.1 컷신 이미지의 캐릭터 외형·복장·소품·배경 구도(검은 성채 & 별빛의 기록실)를 그대로 유지하면서 자연스러운 6초 2D 애니메이션 움직임과 이펙트(카메라 워킹, 바람/눈보라/불꽃/마력 파티클, 망토와 머리카락 날림, 인물 동작)를 부여함 — 환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다. 흑요석 벽면으로 둘러싸인 거대한 원형 회랑의 천장은 뚫려 있어 차가운 밤하늘의 북두칠성이 서늘하게 쏟아져 내리고 있었고, 회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 별자리 지도’가 자리 잡고 있었다. 스승들을 잃은 슬픔의 무게가 두 사람의 어깨를 짓누르고 있었지만, 카단의 발걸음은 조금도 흐트러짐이 없었다. 2) 대사 / 침묵 / 전지적 남자 나레이션 지침 (6초): 전지적 시점 배경 남자 나레이션 (6초 이내) 및 등장인물 전원 침묵 지침: 화면에 등장하는 모든 인물은 입을 굳게 다물고 아무 말도 해서는 안 되며(입 모양 움직임 절대 금지), 오직 배경에서만 중후한 남자 나레이션 음성으로 6초 이내에 다음 내용을 설명해야 함: \"환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다.\" (영문 6s 나레이션: \"Having fought their way through the suffocating illusions of the misty corridors, Kadan and.\") 3) 글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨."
     },
     {
       "cutNumber": 2,
@@ -96,7 +96,7 @@
         2
       ],
       "novelTextEn": "Though the crushing grief of having lost the Six Masters pressed heavily against their shoulders, neither companion faltered in their stride. The rough calluses on Kadan's forearm gripping the Dragon Breaker shield and the crimson cord binding the Silver Dagger whispered of solemn vows sworn in blood, steadying his resolve against the biting night gale.",
-      "novelTextKo": "드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다. 실리아가 녹옥 지팡이를 들고 대륙 성도 앞으로 다가갔다. “이 성도는 단순한 지도가 아니에요. 대륙 전역에 흐르는 고대 마나의 맥동과 봉인된 룬의 위치가 실시간으로 빛나고 있어요. 하지만 지도의 중심부마다 검붉은 독기가 핏줄처럼 얽혀 있네요.”",
+      "novelTextKo": "드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다. 실리아가 녹옥 지팡이를 들고 대륙 별자리 지도 앞으로 다가갔다. “이 성도는 단순한 지도가 아니에요. 대륙 전역에 흐르는 고대 마나의 맥동과 봉인된 룬의 위치가 실시간으로 빛나고 있어요. 하지만 지도의 중심부마다 검붉은 독기가 핏줄처럼 얽혀 있네요.”",
       "episodeSummaryEn": "Episode 36 ('Map of the Cross-Shaped Scar'): Having fought their way through the suffocating illusions of the misty corridors, Kadan and Princess Cilia at last set foot within the highest sanctum of the Black Citadel—the Starlight Archives, where the empire's darkest arcana had lain interred for centuries. As the conflict escalates (Clenching his fist, Kadan looked upon the light.), the episode culminates when kadan drove his shield into the portal's center, shattering the massive stone gates in a roar of splintering granite.",
       "episodeSummaryKo": "제36화 『십자 흉터의 지도』(Map of the Cross-Shaped Scar): 환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다. 중반부 “알렉산다르 스승님과 발리안 숙부님, 그리고 이그니스가 우리와 함께하고 있다. 이어 결말에서는 실리아가 속삭였다.",
       "location": {
@@ -106,7 +106,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -174,7 +174,7 @@
       "noTextRuleKo": "글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨.",
       "unifiedVideoPromptEn": "[6-SECOND ANIME CUTSCENE VIDEO PROMPT | EP36-CUT02 (00:06–00:12)] 1) EPISODE STORY CONTEXT: Episode 36 ('Map of the Cross-Shaped Scar'): Having fought their way through the suffocating illusions of the misty corridors, Kadan and Princess Cilia at last set foot within the highest sanctum of the Black Citadel—the Starlight Archives, where the empire's darkest arcana had lain interred for centuries. As the conflict escalates (Clenching his fist, Kadan looked upon the light.), the episode culminates when kadan drove his shield into the portal's center, shattering the massive stone gates in a roar of splintering granite. 2) CURRENT CUTSCENE ACTION (6s): Though the crushing grief of having lost the Six Masters pressed heavily against their shoulders, neither companion faltered in their stride. The rough calluses on Kadan's forearm gripping the Dragon Breaker shield and the crimson cord binding the Silver Dagger whispered of solemn vows sworn in blood, steadying his resolve against the biting night gale. 3) BACKGROUND LOCATION SHEET & PROMPT: [LOC-019 Black Citadel & Starlight Archive | Location Image: /anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg | Sheet: /anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg] Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table. 4) APPEARING CHARACTERS (7-HEAD-TALL CUTOUTS): Kadan (7-Head-Tall Cutout Reference: /anime-character-sheets/cutouts/041_Kadan.png) — 7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger 5) PROPS & PROP HOLDER SPECIFICATION: [PROP-001 Silver Dagger (Prop Reference: /anime-character-sheets/props/art/PROP_001_Silver_Dagger.jpg)]: Kadan holds and wields the Silver Dagger (PROP-001) ; [PROP-002 Dragon Breaker Shield (Prop Reference: /anime-character-sheets/props/art/PROP_002_Dragon_Breaker_Shield.jpg)]: Kadan holds/carries Dragon Breaker Shield (PROP-002) 6) OMNISCIENT MALE BACKGROUND NARRATION ONLY (<= 6 SECONDS) & ALL CHARACTERS SILENT: Every appearing character on screen MUST keep their mouth completely closed and MUST NOT speak a single word (zero lip movement). ONLY a deep, cinematic off-screen male narrator voiceover in the background speaks concisely within 6 seconds in English: \"Though the crushing grief of having lost the Six Masters pressed heavily against their.\" 7) STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, signage, or UI overlays anywhere in the 6-second video. 8) STYLE: Masterpiece 7-head-tall 2D fantasy anime cinema (premium cinematic hand-drawn anime quality), 16:9 widescreen, 24fps, smooth 6-second continuous camera motion.",
       "cutsceneAnimationPromptEn": "[VEO 3.1 LITE 6-SECOND CUTSCENE ANIMATION PROMPT | EP36-CUT02 (00:06–00:12)] 1) ANIMATE ATTACHED CUTSCENE IMAGE: Bring this exact generated 2D anime cutscene image to life over 6 seconds while strictly preserving its character designs, faces, outfits, props, and background composition (Black Citadel & Starlight Archive). 2) 6-SECOND ANIME MOTION & VISUAL EFFECTS: Apply smooth 24fps 2D anime sakuga animation effects matching the scene — Though the crushing grief of having lost the Six Masters pressed heavily against their shoulders, neither companion faltered in their stride. The rough calluses on Kadan's forearm gripping the Dragon Breaker shield and the crimson cord binding the Silver Dagger whispered of solemn vows sworn in blood, steadying his resolve against the biting night gale. (Characters in motion: Kadan; Props: Silver Dagger (Kadan holds and wields the Silver Dagger (PROP-001)), Dragon Breaker Shield (Kadan holds/carries Dragon Breaker Shield (PROP-002)); subtle cinematic camera movement, dynamic wind/snow/flame/arcane particles, natural hair and cloak physics). 3) AUDIO / VOICE / NARRATION RULE (6s): OMNISCIENT MALE BACKGROUND NARRATION ONLY (<= 6 SECONDS) & ALL CHARACTERS SILENT: Every appearing character on screen MUST keep their mouth completely closed and MUST NOT speak a single word (zero lip movement). ONLY a deep, cinematic off-screen male narrator voiceover in the background speaks concisely within 6 seconds in English: \"Though the crushing grief of having lost the Six Masters pressed heavily against their.\" 4) STRICT NO-TEXT RULE: Do NOT render any text, subtitles, captions, speech bubbles, letters, numbers, watermarks, signage, or UI overlays anywhere in the 6-second video.",
-      "cutsceneAnimationPromptKo": "[Veo 3.1 Lite 6초 컷신 애니메이션 효과 프롬프트 | EP36-CUT02 (00:06–00:12)] 1) 첨부된 생성 컷신 이미지 기준 애니메이션화: 첨부된 나노바나나 2.1 컷신 이미지의 캐릭터 외형·복장·소품·배경 구도(검은 성채 & 별빛의 기록실)를 그대로 유지하면서 자연스러운 6초 2D 애니메이션 움직임과 이펙트(카메라 워킹, 바람/눈보라/불꽃/마력 파티클, 망토와 머리카락 날림, 인물 동작)를 부여함 — 드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다. 실리아가 녹옥 지팡이를 들고 대륙 성도 앞으로 다가갔다. “이 성도는 단순한 지도가 아니에요. 대륙 전역에 흐르는 고대 마나의 맥동과 봉인된 룬의 위치가 실시간으로 빛나고 있어요. 하지만 지도의 중심부마다 검붉은 독기가 핏줄처럼 얽혀 있네요.” 2) 대사 / 침묵 / 전지적 남자 나레이션 지침 (6초): 전지적 시점 배경 남자 나레이션 (6초 이내) 및 등장인물 전원 침묵 지침: 화면에 등장하는 모든 인물은 입을 굳게 다물고 아무 말도 해서는 안 되며(입 모양 움직임 절대 금지), 오직 배경에서만 중후한 남자 나레이션 음성으로 6초 이내에 다음 내용을 설명해야 함: \"드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다.\" (영문 6s 나레이션: \"Though the crushing grief of having lost the Six Masters pressed heavily against their.\") 3) 글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨."
+      "cutsceneAnimationPromptKo": "[Veo 3.1 Lite 6초 컷신 애니메이션 효과 프롬프트 | EP36-CUT02 (00:06–00:12)] 1) 첨부된 생성 컷신 이미지 기준 애니메이션화: 첨부된 나노바나나 2.1 컷신 이미지의 캐릭터 외형·복장·소품·배경 구도(검은 성채 & 별빛의 기록실)를 그대로 유지하면서 자연스러운 6초 2D 애니메이션 움직임과 이펙트(카메라 워킹, 바람/눈보라/불꽃/마력 파티클, 망토와 머리카락 날림, 인물 동작)를 부여함 — 드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다. 실리아가 녹옥 지팡이를 들고 대륙 별자리 지도 앞으로 다가갔다. “이 성도는 단순한 지도가 아니에요. 대륙 전역에 흐르는 고대 마나의 맥동과 봉인된 룬의 위치가 실시간으로 빛나고 있어요. 하지만 지도의 중심부마다 검붉은 독기가 핏줄처럼 얽혀 있네요.” 2) 대사 / 침묵 / 전지적 남자 나레이션 지침 (6초): 전지적 시점 배경 남자 나레이션 (6초 이내) 및 등장인물 전원 침묵 지침: 화면에 등장하는 모든 인물은 입을 굳게 다물고 아무 말도 해서는 안 되며(입 모양 움직임 절대 금지), 오직 배경에서만 중후한 남자 나레이션 음성으로 6초 이내에 다음 내용을 설명해야 함: \"드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다.\" (영문 6s 나레이션: \"Though the crushing grief of having lost the Six Masters pressed heavily against their.\") 3) 글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨."
     },
     {
       "cutNumber": 3,
@@ -195,7 +195,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -275,7 +275,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -365,7 +365,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -484,7 +484,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -563,7 +563,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -662,7 +662,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -761,7 +761,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -860,7 +860,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -940,7 +940,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -1020,7 +1020,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -1099,7 +1099,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -1219,7 +1219,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -1319,7 +1319,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -1419,7 +1419,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -1558,7 +1558,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -1637,7 +1637,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -1757,7 +1757,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -1856,7 +1856,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -1955,7 +1955,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -2035,7 +2035,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -2115,7 +2115,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {
@@ -2194,7 +2194,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg",
         "descriptionEn": "Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.",
-        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
+        "descriptionKo": "검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도"
       },
       "characters": [
         {

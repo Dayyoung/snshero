@@ -180,25 +180,69 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   rescuePenaltyReduction = parseInt(localStorage.getItem('hero_story_deadlock_rescue_count') || '0', 10) || 0;
  } catch {}
 
- const diffBonus = activeEncounter.difficulty === 'boss' ? 2 : activeEncounter.difficulty === 'hard' ? 1 : activeEncounter.difficulty === 'normal' ? 0 : -1;
- const rebirthBonus = Math.max(0, Math.floor(progress.rebirthLevel));
- const totalBonus = Math.max(-2, diffBonus + Math.min(3, rebirthBonus) - rescuePenaltyReduction);
+ const validPlayerCards = currentDeck.filter((c): c is CardData => Boolean(c));
+ const playerDeckStatSum = validPlayerCards.length > 0
+  ? validPlayerCards.reduce((sum, c) => {
+     const s = Array.isArray(c.stats) && c.stats.length === 4 ? c.stats : [3, 3, 3, 3];
+     return sum + (Number(s[0]) || 2) + (Number(s[1]) || 2) + (Number(s[2]) || 2) + (Number(s[3]) || 2);
+    }, 0)
+  : 80;
 
- const boostStat = (val: number) => Math.max(1, Math.min(10, val + totalBonus));
+ const ch = battleEvent.chapterNumber || 1;
+ const reb = Math.max(0, Math.floor(progress.rebirthLevel || 0));
+ const isCheckpoint = [5, 8, 10, 15, 16, 20, 24, 25, 30, 32, 35, 38, 39, 40].includes(ch) || (reb > 0 && (ch === 1 || ch % 4 === 0));
+ const benchmarkStatSum = 78 + Math.round((ch - 1) * 1.15) + reb * 28;
+ const refStatSum = Math.max(playerDeckStatSum, benchmarkStatSum);
+ const powerRatio = isCheckpoint
+  ? (reb === 0 ? 1.05 + (ch / 40) * 0.07 : 1.10 + Math.min(0.16, reb * 0.025) + (ch / 40) * 0.04)
+  : (reb === 0 ? 0.90 + (ch / 40) * 0.08 : 0.98 + Math.min(0.10, reb * 0.02) + (ch / 40) * 0.03);
+
+ const targetOppStatSum = Math.max(45, Math.round(refStatSum * powerRatio) - rescuePenaltyReduction * 12);
+ const rawOppDeckSum = Math.max(
+  20,
+  activeEncounter.opponentCardIds.reduce((sum, cid) => {
+   const b = CARD_DATABASE[cid];
+   return sum + ((b?.top || 3) + (b?.right || 3) + (b?.bottom || 3) + (b?.left || 3));
+  }, 0)
+ );
 
  const oppCards: CardData[] = activeEncounter.opponentCardIds.map((cardId, idx) => {
  const base = CARD_DATABASE[cardId];
  if (!base) return INITIAL_CARDS[0];
 
- const scaledLevel = Math.min(10, base.level + Math.max(0, progress.rebirthLevel) + (activeEncounter.difficulty === 'boss' ? 1 : 0));
- const scaledPower = (base.power || 100) + totalBonus * 30 + Math.floor(battleEvent.chapterNumber * 3);
+ const rawCardSum = Math.max(4, (base.top || 3) + (base.right || 3) + (base.bottom || 3) + (base.left || 3));
+ const targetCardSum = Math.max(6, Math.round((targetOppStatSum / rawOppDeckSum) * rawCardSum));
+ const scale = targetCardSum / rawCardSum;
+
+ const scaledStats: [number, number, number, number] = [
+  Math.max(1, Math.round((base.top || 3) * scale)),
+  Math.max(1, Math.round((base.right || 3) * scale)),
+  Math.max(1, Math.round((base.bottom || 3) * scale)),
+  Math.max(1, Math.round((base.left || 3) * scale)),
+ ];
+ let diff = targetCardSum - (scaledStats[0] + scaledStats[1] + scaledStats[2] + scaledStats[3]);
+ let step = 0;
+ while (diff !== 0 && step < 16) {
+  const dirIdx = (cardId + step) % 4;
+  if (diff > 0) {
+   scaledStats[dirIdx] += 1;
+   diff -= 1;
+  } else if (scaledStats[dirIdx] > 1) {
+   scaledStats[dirIdx] -= 1;
+   diff += 1;
+  }
+  step++;
+ }
+
+ const scaledLevel = Math.min(100, base.level + reb * 3 + (isCheckpoint ? 2 : 0));
+ const scaledPower = scaledStats[0] + scaledStats[1] + scaledStats[2] + scaledStats[3];
 
  const card: CardData = {
  id: `kadan-card-${cardId}-${idx}-${Math.random().toString(36).substring(2, 6)}`,
  title: base.title,
  title_en: base.title_en,
  title_dis: base.title,
- stats: [boostStat(base.top), boostStat(base.right), boostStat(base.bottom), boostStat(base.left)],
+ stats: scaledStats,
  element: (base.element || 'neutral') as CardElement,
  rarity: (scaledLevel >= 6 || progress.rebirthLevel >= 2 ? 'UR' : scaledLevel >= 4 ? 'SSR' : scaledLevel >= 3 ? 'SR' : scaledLevel >= 2 ? 'R' : 'N'),
  power: scaledPower,
@@ -221,7 +265,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  deck: oppCards,
  totalPower: oppCards.reduce((acc, c) => acc + (c.power || 0), 0),
  };
- }, [activeEncounter, battleEvent, language, progress.rebirthLevel]);
+ }, [activeEncounter, battleEvent, currentDeck, language, progress.rebirthLevel]);
 
  const isCurrentlyInBattle = Boolean((activeEncounter && battleEvent && rpgOpponent) || ambushBattle);
 

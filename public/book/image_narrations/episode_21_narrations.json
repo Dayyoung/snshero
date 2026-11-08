@@ -312,7 +312,7 @@
       "imageFile": "episode_21/scene_11.webp",
       "sourceImageFile": "episode_21/scene_11.webp",
       "narrationEn": "Weaving through heaps of sodden ash and charred timber ribs, the companions advanced cautiously toward the western cliff face. There lay the canted keel of a massive, burned hospital barge, dark bloodstains smeared along the fractured hull.",
-      "narrationKo": "일행은 잿더미와 부러진 선박 잔해를 피해 조심스럽게 서쪽 해안 암벽으로 향했다. 그곳에는 불타 무너진 대형 병원선의 목재 용골(龍骨)이 비스듬히 누워 있었고, 선체 틈새로 검은 핏자국이 어지럽게 번져 있었다.",
+      "narrationKo": "일행은 잿더미와 부러진 선박 잔해를 피해 조심스럽게 서쪽 해안 암벽으로 향했다. 그곳에는 불타 무너진 대형 병원선의 선체의 거대한 중심 뼈대가 비스듬히 누워 있었고, 선체 틈새로 검은 핏자국이 어지럽게 번져 있었다.",
       "sourceSentenceStart": 11,
       "sourceSentenceEnd": 11,
       "alignmentScore": 1.0,
@@ -320,7 +320,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "일행은 잿더미와 부러진 선박 잔해를 피해 조심스럽게 서쪽 해안 암벽으로 향했다. 그곳에는 불타 무너진 대형 병원선의 목재 용골(龍骨)이 비스듬히 누워 있었고, 선체 틈새로 검은 핏자국이 어지럽게 번져 있었다.",
+          "textKo": "일행은 잿더미와 부러진 선박 잔해를 피해 조심스럽게 서쪽 해안 암벽으로 향했다. 그곳에는 불타 무너진 대형 병원선의 선체의 거대한 중심 뼈대가 비스듬히 누워 있었고, 선체 틈새로 검은 핏자국이 어지럽게 번져 있었다.",
           "textEn": "Weaving through heaps of sodden ash and charred timber ribs, the companions advanced cautiously toward the western cliff face. There lay the canted keel of a massive, burned hospital barge, dark bloodstains smeared along the fractured hull.",
           "bubbleType": "thought",
           "position": "top-left",

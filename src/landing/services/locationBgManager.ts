@@ -181,7 +181,7 @@ export const CANONICAL_LOCATIONS: Record<string, LocationMeta> = {
   'LOC-017': {
     id: 'LOC-017',
     code: 'LOC_017_Citadel_of_the_Four_Gates',
-    nameKo: '사문 성채 (4대 관문 요새)',
+    nameKo: '네 수문 성채 (4대 관문 요새)',
     nameEn: 'Citadel of the Four Gates',
     nameJa: '四門の城砦',
     descriptionKo: '수천의 군세를 막아서는 난공불락의 거대한 철벽 요새',

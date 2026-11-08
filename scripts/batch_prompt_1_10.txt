@@ -151,7 +151,7 @@ Atmosphere: Deep cinematic lighting, atmospheric particles, rich perspective.
 
 Featured Characters:
 - Elwin (엘윈): 카단의 어머니 · 남편의 희생 끝에 북방 설원에서 홀로 카단을 길러낸 강인하고 아름다운 여전사. Distinctive appearance: 왕실 기품을 담은 황금빛 발키리 크라운 브레이드 & 사이드 링렛 헤어, 글래머러스한 볼륨감과 잘록한 허리가 돋보이는 실버·블루 흉갑 코르셋 & 하이슬릿 배틀 스커트. Signature gear: 푸른 서리 룬이 각인된 아케 성기사단 쌍검.
-- Ysela (이셀라): 이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 성광(星光)의 용무녀 여왕. Distinctive appearance: 황금 용각(Dragon Horns)과 별빛 비녀가 어우러진 사파이어 블루 셀레스티얼 업스타일 헤어, 애절하면서도 기품 있는 큰 금안 + 글래머러스한 로열 블루·골드 용비늘 슬릿 드레스. Signature gear: 등 뒤에 펼쳐진 밤하늘 별자리 사파이어·황금 드래곤 날개.
+- Ysela (이셀라): 이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 별빛의 용무녀 여왕. Distinctive appearance: 황금 용각(Dragon Horns)과 별빛 비녀가 어우러진 사파이어 블루 셀레스티얼 업스타일 헤어, 애절하면서도 기품 있는 큰 금안 + 글래머러스한 로열 블루·골드 용비늘 슬릿 드레스. Signature gear: 등 뒤에 펼쳐진 밤하늘 별자리 사파이어·황금 드래곤 날개.
 
 Scene Context & Dramatic Moment:
 The impending birth of their firstborns from their heavily pregnant wives, Elwin and Ysela, was the solitary lantern that kept the bitter defeat of their homeland bearable.

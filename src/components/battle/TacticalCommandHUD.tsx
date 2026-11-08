@@ -197,7 +197,7 @@ const I18N_TACTICAL: Record<string, Record<string, string>> = {
  hud_title: '戦術指揮コンソール // TACTICAL OVERRIDE',
  ap_label: '戦術 AP',
  ap_recharge_hint: 'ミニゲームでAP回復 (+20)',
- assault_name: '突격 // ASSAULT',
+ assault_name: '突撃 // ASSAULT',
  assault_cost: '30 AP',
  assault_desc: '攻撃力 +35% · 速度 +20% (5秒)',
  counter_name: '迎撃 // COUNTER',

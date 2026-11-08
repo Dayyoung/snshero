@@ -829,7 +829,7 @@
       "imageFile": "episode_17/scene_28.webp",
       "sourceImageFile": "episode_17/scene_28.webp",
       "narrationEn": "At twilight, as blood-red dusk stained the rolling swells, danger struck without warning. Slicing through the ocean fog, three black-hulled imperial attack galleys surged forward, flanking Breeze Wing from port and starboard.",
-      "narrationKo": "해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 해무(海霧) 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.",
+      "narrationKo": "해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 바다 안개 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.",
       "sourceSentenceStart": 28,
       "sourceSentenceEnd": 28,
       "alignmentScore": 1.0,
@@ -837,7 +837,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 해무(海霧) 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.",
+          "textKo": "해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 바다 안개 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.",
           "textEn": "At twilight, as blood-red dusk stained the rolling swells, danger struck without warning. Slicing through the ocean fog, three black-hulled imperial attack galleys surged forward, flanking Breeze Wing from port and starboard.",
           "bubbleType": "thought",
           "position": "top-right",

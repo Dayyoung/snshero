@@ -24,7 +24,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -61,7 +61,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.070 에일라 (Aila) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/070_Aila.png)
@@ -98,7 +98,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.070 에일라 (Aila) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/070_Aila.png)
@@ -135,7 +135,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.063 엘리아나 (Eliana) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/063_Eliana.png)
@@ -172,7 +172,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png)
@@ -209,7 +209,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.050 알렉산다르 (Aleksandar) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/050_Aleksandar.png), [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png)
@@ -246,7 +246,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png)
@@ -283,7 +283,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png), [`NO.045 가웨인 (Gawain) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/045_Gawain.png), [`NO.070 에일라 (Aila) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/070_Aila.png)
@@ -320,7 +320,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -357,7 +357,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.025 라자르(에올루스) (Lazar (Aeolus)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/025_Aeolus.png), [`NO.045 가웨인 (Gawain) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/045_Gawain.png)
@@ -394,7 +394,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -431,7 +431,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.074 그림리 (Grimli) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/074_Grimli.png)
@@ -468,7 +468,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.074 그림리 (Grimli) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/074_Grimli.png)
@@ -505,7 +505,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -542,7 +542,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: 등장인물 없음 (배경 단독 컷)
@@ -573,13 +573,13 @@
 ## EP05-CUT16 (01:30–01:36 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: The silver blade slammed violently into Gorgo's conjured chain. White sparks erupted through the cavern, the razor tip cutting through her silk cuff and biting deep into her wrist meridians. "Insolent whelp! You anticipate an unseen strike?"
-- **원문 소설 구간 (KR)**: 백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 혈도를 강하게 쳐냈다. “크아악! 이 어린송사리 놈이... 보이지도 않는 칼길을 미리 읽었단 말인가!”
+- **원문 소설 구간 (KR)**: 백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 회로를 강하게 쳐냈다. “크아악! 이 어린송사리 놈이... 보이지도 않는 칼길을 미리 읽었단 말인가!”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제5화 『폭우 속의 유령』(Phantom in the Downpour): 황야의 짧은 여름이 차갑게 식어 가고, 대지를 집어삼킬 듯한 흉포한 폭우가 와일드랜드의 북방 고원 지대를 무섭게 강타했다. 중반부 “크아악! 이 어린송사리 놈이. 이어 결말에서는 카단은 동굴 입구 너머로 먹구름이 걷히며 드러난 새벽하늘의 샛별을 올려다보았다.
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png)
@@ -616,7 +616,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png), [`NO.048 로비냐드 (Robinyard) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/048_Robinyard.png), [`NO.074 그림리 (Grimli) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/074_Grimli.png)
@@ -653,7 +653,7 @@
   - `EN`: Episode 05 ('Phantom in the Downpour'): The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. As the conflict escalates (Gorgo gasped, recoiling as her balance broke.), the episode culminates when kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png), [`NO.044 카제 (Kaze) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/044_Kaze.png), [`NO.046 론돌 (Rondol) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/046_Rondol.png), [`NO.070 에일라 (Aila) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/070_Aila.png)

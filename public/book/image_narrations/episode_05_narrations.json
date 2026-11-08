@@ -893,7 +893,7 @@
       "imageFile": "episode_05/scene_30.webp",
       "sourceImageFile": "episode_05/scene_30.webp",
       "narrationEn": "The silver blade slammed violently into Gorgo's conjured chain. White sparks erupted through the cavern, the razor tip cutting through her silk cuff and biting deep into her wrist meridians.",
-      "narrationKo": "백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 혈도를 강하게 쳐냈다.",
+      "narrationKo": "백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 회로를 강하게 쳐냈다.",
       "sourceSentenceStart": 30,
       "sourceSentenceEnd": 30,
       "alignmentScore": 1.0,
@@ -901,7 +901,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 혈도를 강하게 쳐냈다.",
+          "textKo": "백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 회로를 강하게 쳐냈다.",
           "textEn": "The silver blade slammed violently into Gorgo's conjured chain. White sparks erupted through the cavern, the razor tip cutting through her silk cuff and biting deep into her wrist meridians.",
           "bubbleType": "thought",
           "position": "bottom-right",

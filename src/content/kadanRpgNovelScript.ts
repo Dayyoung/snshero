@@ -8,7 +8,7 @@
 
 export interface KadanRpgDialogueChoice {
   id: string;
-  attitude: '[결의/돌파]' | '[신중/통찰]' | '[성진호흡/공명]';
+  attitude: '[결의/돌파]' | '[신중/통찰]' | '[별빛 마나/공명]';
   attitudeEn: string;
   labelKo: string;
   labelEn: string;
@@ -760,7 +760,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제1화 · 운명의 분기점] 알렉산다르의 결의",
       "sceneTitleEn": "[EP.01 · Fate Crossroads] Aleksandar's Resolve",
-      "sceneExplanationKo": "• 등장인물 및 상황: 알렉산다르 · 엘윈 · 발리안\n• 선택 가이드: 소설 제1화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 알렉산다르 · 엘윈 · 발리안\n• 선택 가이드: 소설 제1화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Aleksandar · Elwin · Balian\n• Decision Guide: This is the climax crossroads of Episode 1. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -868,7 +868,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch01_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "눈보라 속에 깃든 서약을 기억하자. 단검의 룬에 숨결을 맞춘다.",
           "labelEn": "Remember the oath etched in the blizzard. Synchronize breath with the dagger's runes.",
@@ -879,7 +879,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+25 SNS 획득",
           "bonusDescEn": "+25 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "눈보라 속에 깃든 서약을 기억하자. 단검의 룬에 숨결을 맞춘다.",
           "textEn": "Remember the oath etched in the blizzard. Synchronize breath with the dagger's runes.",
@@ -1322,11 +1322,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 49,
       "name": "헤르쿨",
       "nameEn": "Hercul",
-      "text": "해무가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다.\n\n어시장 안쪽, 생선 비린내와 썩은 그물 냄새가 진동하는 낡은 창고 골목을 은밀히 수색하던 헤르쿨은, 뜻밖에도 살기를 뿜어내는 기이한 일곱 사람의 무리와 정면으로 충돌했다.\n\n무리의 앞머리에는 거대한 쇠망치를 어깨에 멘 드워프 대장장이 그림리가 성큼 걸어 나와 버티고 섰고, 그 뒤로 붉은 머리를 길게 땋아 올린 명사수 에일라가 쇠뇌의 장전을 마친 채 서늘한 눈을 가늘게 뜨고 있었다.\n\n약초 주머니를 주렁주렁 매단 노련한 약제사 엘리아나, 쇠지팡이로 바닥의 미세한 진동을 읽는 맹인 추적자 가웨인, 번뜩이는 은화를 손가락 사이로 현란하게 굴리는 도박사 카제,\n\n강나루의 물길을 부리는 뱃사공 론돌, 그리고 지붕 처마 위에서 고양이처럼 날렵하게 균형을 잡는 유랑 곡예사 로비냐드까지. 종족도, 출신도, 무기도 제각각인 변방의 이단아들이었다.",
+      "text": "바다 안개가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다.\n\n어시장 안쪽, 생선 비린내와 썩은 그물 냄새가 진동하는 낡은 창고 골목을 은밀히 수색하던 헤르쿨은, 뜻밖에도 살기를 뿜어내는 기이한 일곱 사람의 무리와 정면으로 충돌했다.\n\n무리의 앞머리에는 거대한 쇠망치를 어깨에 멘 드워프 대장장이 그림리가 성큼 걸어 나와 버티고 섰고, 그 뒤로 붉은 머리를 길게 땋아 올린 명사수 에일라가 쇠뇌의 장전을 마친 채 서늘한 눈을 가늘게 뜨고 있었다.\n\n약초 주머니를 주렁주렁 매단 노련한 약제사 엘리아나, 쇠지팡이로 바닥의 미세한 진동을 읽는 맹인 추적자 가웨인, 번뜩이는 은화를 손가락 사이로 현란하게 굴리는 도박사 카제,\n\n강나루의 물길을 부리는 뱃사공 론돌, 그리고 지붕 처마 위에서 고양이처럼 날렵하게 균형을 잡는 유랑 곡예사 로비냐드까지. 종족도, 출신도, 무기도 제각각인 변방의 이단아들이었다.",
       "textEn": "The bustling port metropolis where sea fog mingled with the shouts of merchants and desperate refugees.\n\nSweeping through the narrow labyrinth of the fishmongers' quarter, Hercul found himself confronted by seven formidable figures bristling with lethal intent.\n\nAt their forefront loomed Grimli, a broad-shouldered dwarven blacksmith resting a colossal maul across his scarred pauldrons. Flanking him was Aila the Demon Hunter, her scarlet braids drawn back as she leveled a cocked heavy crossbow with narrowed eyes.\n\nBeside them stood Eliana, an apothecary hung with leather herb-pouches, Gawain, a blind tracker tracing subterranean reverberations with an iron staff, Kaze.\n\nA flamboyant gambler flicking silver shillings between his knuckles, Rondol, a canal boatman who commanded water currents with runic paddles, and Robinyard, an agile acrobat balancing effortlessly along the eaves.",
       "sceneNumber": 2,
       "totalScenes": 10,
-      "sceneTitleKo": "[제2화 · 장면 2/10] 해무가 낮게 깔린 부둣가 시장통은 각지에서 몰려든…",
+      "sceneTitleKo": "[제2화 · 장면 2/10] 바다 안개가 낮게 깔린 부둣가 시장통은 각지에서 몰려든…",
       "sceneTitleEn": "[EP.02 · Scene 2/10] Oath of the Seven Pursuers (Hercul · Gawain · Rondol · Grimli)",
       "sceneExplanationKo": "• 등장인물 및 관계: 헤르쿨(아케 성기사단의 생존 성기사) / 가웨인(일곱 추적자의 수장) / 론돌(일곱 추적자의 중갑 방패 기사)\n• 장면 이해 포인트: 이 장면에서는 [헤르쿨 · 가웨인 · 론돌 · 그림리]을(를) 중심으로 사건의 배경과 긴박한 정황이 입체적으로 묘사되며, 인물들이 처한 운명적 위기와 행동의 이유가 상세히 설명됩니다.",
       "sceneExplanationEn": "• Characters & Roles: Hercul (Surviving Paladin of the Holy Order) / Gawain (Leader of the Seven Pursuers) / Rondol (Heavy shield knight of the Seven Pursuers)\n• Story Comprehension Guide: This scene depicts [Hercul · Gawain · Rondol · Grimli] within the unfolding crisis of Episode 2, explaining the setting, motivations, and dramatic stakes in full detail.",
@@ -1374,7 +1374,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -1393,11 +1393,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 7,
           "imageUrl": "/images/webtoon/episode_02/scene_07.webp",
-          "narrationKo": "해무가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다.",
+          "narrationKo": "바다 안개가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다.",
           "narrationEn": "The bustling port metropolis where sea fog mingled with the shouts of merchants and desperate refugees.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "해무가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다.",
+          "dialogueKo": "바다 안개가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다.",
           "dialogueEn": "The bustling port metropolis where sea fog mingled with the shouts of merchants and desperate refugees."
         },
         {
@@ -1695,7 +1695,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -1918,7 +1918,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제2화 · 운명의 분기점] 추적자들의 결단",
       "sceneTitleEn": "[EP.02 · Fate Crossroads] Pursuers' Decision",
-      "sceneExplanationKo": "• 등장인물 및 상황: 헤르쿨 · 알렉산다르 · 엘윈\n• 선택 가이드: 소설 제2화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 헤르쿨 · 알렉산다르 · 엘윈\n• 선택 가이드: 소설 제2화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Hercul · Aleksandar · Elwin\n• Decision Guide: This is the climax crossroads of Episode 2. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -2035,7 +2035,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch02_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "의인들의 심장 고동은 거짓을 말하지 않는다.",
           "labelEn": "The heartbeats of righteous warriors never utter falsehood.",
@@ -2046,7 +2046,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+25 SNS 획득",
           "bonusDescEn": "+25 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "의인들의 심장 고동은 거짓을 말하지 않는다.",
           "textEn": "The heartbeats of righteous warriors never utter falsehood.",
@@ -2109,7 +2109,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -2522,7 +2522,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -2731,11 +2731,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 45,
       "name": "가웨인",
       "nameEn": "Gawain",
-      "text": "두 사람은 스승의 서재에서 절대적인 무공 비급인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 마공을 완성하려 광기를 번뜩이고 있었다.\n\n고르고는 두 눈을 검은 비단으로 가린 채 미세한 음파의 떨림으로 사물을 감지했고, 벨페고르는 온몸의 피부를 뚫고 솟아난 검은 흑요석 결정 갑옷을 번뜩이고 있었다.\n\n가웨인이 묵직한 쇠지팡이 끝으로 신전 바닥의 판석을 둔탁하게 세 번 두드렸다.\n\n탕. 탕. 탕. 그러나 지하 바위틈을 타고 되돌아온 공명음은 일곱 개가 아닌 여덟 개였다. 지팡이를 쥔 가웨인의 핏줄 선 손등이 굳어졌다.\n\n“천장이다! 흩어져라!” 가웨인의 일갈과 동시에 거대한 폭음이 터졌다. 천장의 대들보를 부수며 낙하한 벨페고르가 흑요석 주먹으로 신전 바닥을 내리찍었다. 돌바닥이 거미줄처럼 갈라지며 파편이 사방으로 튀었다.\n\n그림리가 본능적으로 달려들어 육중한 쇠망치로 벨페고르의 팔꿈치를 받아쳐 궤도를 꺾었고, 에일라의 쇠뇌 시위가 연거푸 튕기며 안개를 가르고 세 발의 화살을 쏘아 보냈다.",
+      "text": "두 사람은 스승의 서재에서 절대적인 고대 마법 비전서인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 흑마법을 완성하려 광기를 번뜩이고 있었다.\n\n고르고는 두 눈을 검은 비단으로 가린 채 미세한 음파의 떨림으로 사물을 감지했고, 벨페고르는 온몸의 피부를 뚫고 솟아난 검은 흑요석 결정 갑옷을 번뜩이고 있었다.\n\n가웨인이 묵직한 쇠지팡이 끝으로 신전 바닥의 판석을 둔탁하게 세 번 두드렸다.\n\n탕. 탕. 탕. 그러나 지하 바위틈을 타고 되돌아온 공명음은 일곱 개가 아닌 여덟 개였다. 지팡이를 쥔 가웨인의 핏줄 선 손등이 굳어졌다.\n\n“천장이다! 흩어져라!” 가웨인의 일갈과 동시에 거대한 폭음이 터졌다. 천장의 대들보를 부수며 낙하한 벨페고르가 흑요석 주먹으로 신전 바닥을 내리찍었다. 돌바닥이 거미줄처럼 갈라지며 파편이 사방으로 튀었다.\n\n그림리가 본능적으로 달려들어 육중한 쇠망치로 벨페고르의 팔꿈치를 받아쳐 궤도를 꺾었고, 에일라의 쇠뇌 시위가 연거푸 튕기며 안개를 가르고 세 발의 화살을 쏘아 보냈다.",
       "textEn": "Having stolen the dark codex of Nine Shadows, they sought to harvest wandering warriors to complete their forbidden techniques.\n\nGorgo, her blind eyes shrouded in black silk, perceived the world through minute acoustic vibrations. While Belphegor was encased from head to heel in jagged obsidian armor that sprouted directly from his flesh.\n\nGawain struck the flagstones thrice with the heel of his iron staff. Clang. Clang. Clang.\n\nThe reverberation returning through the granite bedrock yielded not seven footsteps, but eight. The veins upon Gawain's knuckles tautened like bowstrings.\n\n\"Above us! Scatter!\" A deafening roar split the night. Shattering the ceiling rafters, Belphegor slammed his obsidian fist into the floor, fracturing the flagstones into radial spiderwebs.\n\nGrimli surged forward, his heavy maul deflecting Belphegor's crushing blow at the cost of numbing both his arms, while Aila loosed three rapid quarrels into the swirling mist.",
       "sceneNumber": 4,
       "totalScenes": 10,
-      "sceneTitleKo": "[제3화 · 장면 4/10] 두 사람은 스승의 서재에서 절대적인 무공 비급인…",
+      "sceneTitleKo": "[제3화 · 장면 4/10] 두 사람은 스승의 서재에서 절대적인 고대 마법 비전서인…",
       "sceneTitleEn": "[EP.03 · Scene 4/10] Blood on the Mist Cliff (Gawain · Grimli · Aila · Belphegor)",
       "sceneExplanationKo": "• 등장인물 및 관계: 가웨인(일곱 추적자의 수장) / 그림리(일곱 추적자의 드워프 격투가) / 에일라(일곱 추적자의 엘프 마도사)\n• 장면 이해 포인트: 이 장면에서는 [가웨인 · 그림리 · 에일라 · 벨페고르]이(가) 함께 등장하여 “천장이다! 흩어져라!” 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Gawain (Leader of the Seven Pursuers) / Grimli (Dwarf brawler of the Seven Pursuers) / Aila (Elf shadow mage of the Seven Pursuers)\n• Story Comprehension Guide: In this scene, [Gawain · Grimli · Aila · Belphegor] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 3 forward.",
@@ -2802,11 +2802,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 19,
           "imageUrl": "/images/webtoon/episode_03/scene_19.webp",
-          "narrationKo": "두 사람은 스승의 서재에서 절대적인 무공 비급인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 마공을 완성하려 광기를 번뜩이고 있었다.",
+          "narrationKo": "두 사람은 스승의 서재에서 절대적인 고대 마법 비전서인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 흑마법을 완성하려 광기를 번뜩이고 있었다.",
           "narrationEn": "Having stolen the dark codex of Nine Shadows, they sought to harvest wandering warriors to complete their forbidden techniques.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "두 사람은 스승의 서재에서 절대적인 무공 비급인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 마공을 완성하려 광기를 번뜩이고 있었다.",
+          "dialogueKo": "두 사람은 스승의 서재에서 절대적인 고대 마법 비전서인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 흑마법을 완성하려 광기를 번뜩이고 있었다.",
           "dialogueEn": "Having stolen the dark codex of Nine Shadows, they sought to harvest wandering warriors to complete their forbidden techniques."
         },
         {
@@ -2909,7 +2909,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -3123,7 +3123,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제3화 · 운명의 분기점] 절벽 위의 혈투",
       "sceneTitleEn": "[EP.03 · Fate Crossroads] Clifftop Bloodshed",
-      "sceneExplanationKo": "• 등장인물 및 상황: 가웨인 · 그림리 · 로비냐드\n• 선택 가이드: 소설 제3화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 가웨인 · 그림리 · 로비냐드\n• 선택 가이드: 소설 제3화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Gawain · Grimli · Robinyard\n• Decision Guide: This is the climax crossroads of Episode 3. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -3240,7 +3240,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch03_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "로비냐드의 희생을 헛되이 하지 않겠다. 안개 속 기운을 감지한다.",
           "labelEn": "Robinyard's sacrifice shall not be in vain. Sift the air through Arcane Breath.",
@@ -3251,7 +3251,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+25 SNS 획득",
           "bonusDescEn": "+25 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "로비냐드의 희생을 헛되이 하지 않겠다. 안개 속 기운을 감지한다.",
           "textEn": "Robinyard's sacrifice shall not be in vain. Sift the air through Arcane Breath.",
@@ -3314,7 +3314,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -4218,7 +4218,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제4화 · 운명의 분기점] 얼어붙은 강의 선택",
       "sceneTitleEn": "[EP.04 · Fate Crossroads] Choice on the Frozen River",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 길가메시 · 펜릴\n• 선택 가이드: 소설 제4화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 길가메시 · 펜릴\n• 선택 가이드: 소설 제4화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Gilgamesh · Fenrir\n• Decision Guide: This is the climax crossroads of Episode 4. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -4308,7 +4308,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch04_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "북풍의 맥박을 느끼며 설원 늑대처럼 달린다.",
           "labelEn": "Feel the pulse of the north wind and run with the tundra wolves.",
@@ -4319,7 +4319,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+20 SNS 획득",
           "bonusDescEn": "+20 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "북풍의 맥박을 느끼며 설원 늑대처럼 달린다.",
           "textEn": "Feel the pulse of the north wind and run with the tundra wolves.",
@@ -4391,7 +4391,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -4650,7 +4650,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -5273,7 +5273,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 74,
       "name": "그림리",
       "nameEn": "Grimli",
-      "text": "백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 혈도를 강하게 쳐냈다.\n\n“크아악! 이 어린송사리 놈이... 보이지도 않는 칼길을 미리 읽었단 말인가!”\n\n고르고가 경악하며 균형을 잃고 비틀거렸다. 스승들은 그 천금 같은 빈틈을 결코 놓치지 않았다. 그림리가 맹수처럼 포효하며 도약하여 쇠망치로 동굴 뒤편의 퇴로를 내리찍었다. 망치에 달린 은빛 방울이 맹렬하게 딸랑거렸다.\n\n“로비냐드의 원수를 갚을 날이 왔다, 이 마녀 녀석!” 그림리의 포효와 함께 뱃사공 론돌이 지하수를 소용돌이치듯 끌어올려 고르고를 감싼 암흑 연막을 단숨에 씻어냈다.\n\n에일라의 독화살 세 발이 고르고의 어깨와 허벅지를 꿰뚫었고, 도박사 카제가 손가락 사이로 튕긴 비검 두 자루가 고르고의 마나 회로를 봉쇄했다.",
+      "text": "백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 회로를 강하게 쳐냈다.\n\n“크아악! 이 어린송사리 놈이... 보이지도 않는 칼길을 미리 읽었단 말인가!”\n\n고르고가 경악하며 균형을 잃고 비틀거렸다. 스승들은 그 천금 같은 빈틈을 결코 놓치지 않았다. 그림리가 맹수처럼 포효하며 도약하여 쇠망치로 동굴 뒤편의 퇴로를 내리찍었다. 망치에 달린 은빛 방울이 맹렬하게 딸랑거렸다.\n\n“로비냐드의 원수를 갚을 날이 왔다, 이 마녀 녀석!” 그림리의 포효와 함께 뱃사공 론돌이 지하수를 소용돌이치듯 끌어올려 고르고를 감싼 암흑 연막을 단숨에 씻어냈다.\n\n에일라의 독화살 세 발이 고르고의 어깨와 허벅지를 꿰뚫었고, 도박사 카제가 손가락 사이로 튕긴 비검 두 자루가 고르고의 마나 회로를 봉쇄했다.",
       "textEn": "The silver blade slammed violently into Gorgo's conjured chain. White sparks erupted through the cavern, the razor tip cutting through her silk cuff and biting deep into her wrist meridians.\n\n\"Insolent whelp! You anticipate an unseen strike?\" Gorgo gasped, recoiling as her balance broke.\n\nThe masters seized the opening ruthlessly. Grimli brought down his great hammer, collapsing the rear rock arch and sealing her escape route. The silver bell upon his hammer chimed like an enraged beast.\n\n\"Robinyard's vengeance is at hand, foul witch!\" Rondol swept subterranean water upward in a surging wave, stripping away Gorgo's toxic mist.\n\nThree barbed quarrels from Aila's crossbow punched through Gorgo's shoulder and thigh, while Kaze's paired daggers severed her primary mana meridians.",
       "sceneNumber": 6,
       "totalScenes": 10,
@@ -5307,7 +5307,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -5344,11 +5344,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 30,
           "imageUrl": "/images/webtoon/episode_05/scene_30.webp",
-          "narrationKo": "백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 혈도를 강하게 쳐냈다.",
+          "narrationKo": "백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 회로를 강하게 쳐냈다.",
           "narrationEn": "The silver blade slammed violently into Gorgo's conjured chain. White sparks erupted through the cavern, the razor tip cutting through her silk cuff and biting deep into her wrist meridians.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 혈도를 강하게 쳐냈다.",
+          "dialogueKo": "백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 회로를 강하게 쳐냈다.",
           "dialogueEn": "The silver blade slammed violently into Gorgo's conjured chain. White sparks erupted through the cavern, the razor tip cutting through her silk cuff and biting deep into her wrist meridians."
         },
         {
@@ -5404,7 +5404,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제5화 · 운명의 분기점] 진흙탕 속의 반격",
       "sceneTitleEn": "[EP.05 · Fate Crossroads] Riposte in the Mire",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 론돌 · 그림리\n• 선택 가이드: 소설 제5화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 론돌 · 그림리\n• 선택 가이드: 소설 제5화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Rondol · Grimli\n• Decision Guide: This is the climax crossroads of Episode 5. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -5441,7 +5441,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -5521,7 +5521,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch05_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "폭우의 리듬과 호흡을 일치시켜 살기를 흘려보낸다.",
           "labelEn": "Synchronize breath with the thunderous rain to dissolve bloodlust.",
@@ -5532,7 +5532,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+20 SNS 획득",
           "bonusDescEn": "+20 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "폭우의 리듬과 호흡을 일치시켜 살기를 흘려보낸다.",
           "textEn": "Synchronize breath with the thunderous rain to dissolve bloodlust.",
@@ -5568,7 +5568,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -5712,7 +5712,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -5838,7 +5838,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -5922,7 +5922,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "제 6화: # 눈히어로.com - 카단의 여정 6화 - 별을 호흡하는 법 · 카단",
       "nameEn": "Episode 6: The Art of Breathing Stars · Kadan",
-      "text": "여섯 스승의 가르침은 소년 카단을 매일 서로 다른 극단적인 방향으로 끌어당겼다.\n\n혹한의 와일드랜드 고원 지대를 가로지르는 삭풍 속에서 드워프 대장장이 그림리는 바위처럼 땅에 뿌리를 박고 물러서지 않는 묵직한 하체를 단련하라 호통쳤다.\n\n그의 무쇠 모루 위에서 벌겋게 달아오른 쇳덩이가 튈 때마다 불꽃이 카단의 뺨을 스쳤고, 그림리의 거친 고함이 눈보라를 찢었다.\n\n“도끼와 망치는 잔꾀를 부리지 않아! 쇠를 달군 만큼 단단해지고 부딪친 만큼 불꽃이 튀는 법이다! 발바닥으로 대지를 짓이기고 한 치도 물러서지 마라!”\n\n반면 도박사 카제는 바람의 눈을 속이고 칼끝이 닿기 직전에 몸을 비틀어 달아나는 잔기술을 연마하라 재촉했다.\n\n손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 보법을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.",
+      "text": "여섯 스승의 가르침은 소년 카단을 매일 서로 다른 극단적인 방향으로 끌어당겼다.\n\n혹한의 와일드랜드 고원 지대를 가로지르는 삭풍 속에서 드워프 대장장이 그림리는 바위처럼 땅에 뿌리를 박고 물러서지 않는 묵직한 하체를 단련하라 호통쳤다.\n\n그의 무쇠 모루 위에서 벌겋게 달아오른 쇳덩이가 튈 때마다 불꽃이 카단의 뺨을 스쳤고, 그림리의 거친 고함이 눈보라를 찢었다.\n\n“도끼와 망치는 잔꾀를 부리지 않아! 쇠를 달군 만큼 단단해지고 부딪친 만큼 불꽃이 튀는 법이다! 발바닥으로 대지를 짓이기고 한 치도 물러서지 마라!”\n\n반면 도박사 카제는 바람의 눈을 속이고 칼끝이 닿기 직전에 몸을 비틀어 달아나는 잔기술을 연마하라 재촉했다.\n\n손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 날렵한 스텝을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.",
       "textEn": "The divergent teachings of the six masters pulled young Kadan in conflicting directions every single day.\n\nOn the frozen plateau of the Wildlands, Grimli the dwarven smith roared at him to root his boots like an immoveable granite boulder.\n\nWhile Kaze the gambler urged him to deceive the eye and twist away before a blade could make contact.\n\nAila the Demon Hunter commanded him to halt his breath entirely before drawing the string to erase his heartbeat.\n\nYet Rondol the boatman insisted that breath must flow incessantly like ocean swells lest his stamina wither.\n\nEliana counseled him to discern poisonous spores, and Gawain the blind tracker told him to seal his ears and trust only the tremors beneath his boots.",
       "sceneNumber": 1,
       "totalScenes": 10,
@@ -5974,7 +5974,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -6043,11 +6043,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 6,
           "imageUrl": "/images/webtoon/episode_06/scene_06.webp",
-          "narrationKo": "손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 보법을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.",
+          "narrationKo": "손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 날렵한 스텝을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.",
           "narrationEn": "Eliana counseled him to discern poisonous spores, and Gawain the blind tracker told him to seal his ears and trust only the tremors beneath his boots.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 보법을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.",
+          "dialogueKo": "손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 날렵한 스텝을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.",
           "dialogueEn": "Eliana counseled him to discern poisonous spores, and Gawain the blind tracker told him to seal his ears and trust only the tremors beneath his boots."
         }
       ]
@@ -6100,7 +6100,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -6183,7 +6183,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "약제사 엘리아나는 살갗을 스치는 미세한 마나의 독기를 혀끝으로 맛보듯 감지하라 일렀고, 맹인 추적자 가웨인은 귀를 닫고 발바닥을 울리는 지맥의 떨림만을 믿으라 경고했다.\n\n카단은 스승들의 가르침 중 어느 하나도 소홀히 여기지 않으려 피나는 노력을 거듭했다. 동이 트기 전부터 시작된 훈련은 밤하늘에 별이 질 때까지 이어졌다.\n\n그러나 실전 대련에 들어서면 여섯 갈래의 무공 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 보법이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.\n\n열다섯 살이 되던 해 겨울, 카단은 가장 기초적인 삼단 방패막기 동작조차 매끄럽게 연결하지 못한 채 차가운 눈밭 위로 보기 흉하게 굴러떨어졌다.\n\n“손목에 힘이 너무 들어가 있어! 방패는 쇳덩이가 아니라 살아 숨 쉬는 가죽이어야 한단 말이다! 네 아비 알렉산다르는 두 자루 칼을 쥘 때 날아가는 독수리의 깃털처럼 가볍게 쥐었단 말이다!”\n\n그림리가 거칠게 침을 뱉으며 눈보라 속으로 돌아서자, 카단은 얼어붙은 눈밭에 엎드린 채 홀로 뜨거운 눈물을 삼켰다.",
+      "text": "약제사 엘리아나는 살갗을 스치는 미세한 마나의 독기를 혀끝으로 맛보듯 감지하라 일렀고, 맹인 추적자 가웨인은 귀를 닫고 발바닥을 울리는 지맥의 떨림만을 믿으라 경고했다.\n\n카단은 스승들의 가르침 중 어느 하나도 소홀히 여기지 않으려 피나는 노력을 거듭했다. 동이 트기 전부터 시작된 훈련은 밤하늘에 별이 질 때까지 이어졌다.\n\n그러나 실전 대련에 들어서면 여섯 갈래의 전투 기술과 마나 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 날렵한 스텝이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.\n\n열다섯 살이 되던 해 겨울, 카단은 가장 기초적인 삼단 방패막기 동작조차 매끄럽게 연결하지 못한 채 차가운 눈밭 위로 보기 흉하게 굴러떨어졌다.\n\n“손목에 힘이 너무 들어가 있어! 방패는 쇳덩이가 아니라 살아 숨 쉬는 가죽이어야 한단 말이다! 네 아비 알렉산다르는 두 자루 칼을 쥘 때 날아가는 독수리의 깃털처럼 가볍게 쥐었단 말이다!”\n\n그림리가 거칠게 침을 뱉으며 눈보라 속으로 돌아서자, 카단은 얼어붙은 눈밭에 엎드린 채 홀로 뜨거운 눈물을 삼켰다.",
       "textEn": "Aila whispered with glacial precision. \"Only unbroken stillness pierces the shadows.\" \"Nay, stillness breeds stagnant blood!\" Rondol argued, striking his wave-carved staff upon the drift. \"Ride the surges as an oarsman rides the breakers!\"\n\nKadan strove desperately to master each doctrine, yet in practice, the disparate disciplines collided, reducing his swordcraft to clumsy chaos.\n\nEven upon turning fifteen, the youth could not execute a basic three-step shield parry without tumbling into the snow.\n\n\"Your wrist is clenched like an iron bar!\n\nYour father Aleksandar held his twin blades as light as eagle down!\"\n\nWhen Grimli cursed and stalked away into the swirling snow one winter night, Kadan swallowed his bitter tears alone.",
       "sceneNumber": 3,
       "totalScenes": 10,
@@ -6244,7 +6244,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -6274,11 +6274,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 15,
           "imageUrl": "/images/webtoon/episode_06/scene_15.webp",
-          "narrationKo": "그러나 실전 대련에 들어서면 여섯 갈래의 무공 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 보법이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.",
+          "narrationKo": "그러나 실전 대련에 들어서면 여섯 갈래의 전투 기술과 마나 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 날렵한 스텝이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.",
           "narrationEn": "Even upon turning fifteen, the youth could not execute a basic three-step shield parry without tumbling into the snow.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "그러나 실전 대련에 들어서면 여섯 갈래의 무공 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 보법이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.",
+          "dialogueKo": "그러나 실전 대련에 들어서면 여섯 갈래의 전투 기술과 마나 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 날렵한 스텝이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.",
           "dialogueEn": "Even upon turning fifteen, the youth could not execute a basic three-step shield parry without tumbling into the snow."
         },
         {
@@ -6423,7 +6423,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제6화 · 장면 5/10] 날개 없는 인간이라면 결코 기어오를 엄두를 내지 못할…",
       "sceneTitleEn": "[EP.06 · Scene 5/10] The Art of Breathing Stars (Kadan · Malfuon)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 말퓨온(별빛 은자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 말퓨온]이(가) 함께 등장하여 “너는 오직 팔다리의 근육과 뼈의 힘으로만 절벽을 오르려 하는구나, 아이야.… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 말퓨온(별빛의 현자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 말퓨온]이(가) 함께 등장하여 “너는 오직 팔다리의 근육과 뼈의 힘으로만 절벽을 오르려 하는구나, 아이야.… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Malfuon (Starlight Hermit Archmage)\n• Story Comprehension Guide: In this scene, [Kadan · Malfuon] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 6 forward.",
       "dialogueQuoteKo": "“너는 오직 팔다리의 근육과 뼈의 힘으로만 절벽을 오르려 하는구나, 아이야. 그러니 산이 너를 밀어내는 것이다.” “산이... 사람을 거부할 수도 있는 겁니까?”",
       "dialogueQuoteEn": "“You climb with brute muscle alone, child. That is why the mountain rejects you.” “Can a cliff... truly reject a man?”",
@@ -6442,7 +6442,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": false
@@ -6474,7 +6474,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_06/scene_27.webp",
           "narrationKo": "“너는 오직 팔다리의 근육과 뼈의 힘으로만 절벽을 오르려 하는구나, 아이야. 그러니 산이 너를 밀어내는 것이다.”",
           "narrationEn": "\"You climb with brute muscle alone, child. That is why the mountain rejects you.\"",
-          "speakerKo": "성진 은자",
+          "speakerKo": "별빛의 현자",
           "speakerEn": "Kadan",
           "dialogueKo": "“너는 오직 팔다리의 근육과 뼈의 힘으로만 절벽을 오르려 하는구나, 아이야. 그러니 산이 너를 밀어내는 것이다.”",
           "dialogueEn": "\"You climb with brute muscle alone, child. That is why the mountain rejects you.\""
@@ -6512,7 +6512,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제6화 · 장면 6/10] 말퓨온은 지팡이를 짚은 채 맨발로 가파른 수직 빙벽을…",
       "sceneTitleEn": "[EP.06 · Scene 6/10] The Art of Breathing Stars (Malfuon · Kadan)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 말퓨온(별빛 은자 대마법사) / 카단(주인공)\n• 장면 이해 포인트: 이 장면에서는 [말퓨온 · 카단]이(가) 함께 등장하여 “천지 만물의 호흡에 귀를 기울이지 않고 제 고집으로만 부딪치는데, 산인들 … 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 말퓨온(별빛의 현자 대마법사) / 카단(주인공)\n• 장면 이해 포인트: 이 장면에서는 [말퓨온 · 카단]이(가) 함께 등장하여 “천지 만물의 호흡에 귀를 기울이지 않고 제 고집으로만 부딪치는데, 산인들 … 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Malfuon (Starlight Hermit Archmage) / Kadan (Protagonist)\n• Story Comprehension Guide: In this scene, [Malfuon · Kadan] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 6 forward.",
       "dialogueQuoteKo": "“천지 만물의 호흡에 귀를 기울이지 않고 제 고집으로만 부딪치는데, 산인들 어찌 너의 무례한 발길을 너그럽게 받아주겠느냐? 네 손에 쥔 칼과 방패도 이와 조금도 다르지 않다.” “사흘 뒤 보름달이 뜰 때, 저 봉우리 가장 높은 정상 바위로 오너라. 스승들에게는 아무 말도 하지 말고 홀로 오너라.”",
       "dialogueQuoteEn": "“Without touching the rock with his hands, Malfurion walked lightly up the sheer vertical wall.\n\nWherever his bare boots stepped, vibrant green moss bloomed from the ice, anchoring his tread upon the slick glaze.\n\nGently gathering the starving chicks into his cowl and feeding them dried venison, the hermit descended and fixed Kadan with an unblinking gaze.”",
@@ -6522,7 +6522,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": true
@@ -6543,7 +6543,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "imageUrl": "/images/webtoon/episode_06/scene_30.webp",
           "narrationKo": "“천지 만물의 호흡에 귀를 기울이지 않고 제 고집으로만 부딪치는데, 산인들 어찌 너의 무례한 발길을 너그럽게 받아주겠느냐? 네 손에 쥔 칼과 방패도 이와 조금도 다르지 않다.”",
           "narrationEn": "The same is true of the steel in your hand.\" Without touching the rock with his hands, Malfurion walked lightly up the sheer vertical wall.",
-          "speakerKo": "성진 은자",
+          "speakerKo": "별빛의 현자",
           "speakerEn": "Kadan",
           "dialogueKo": "“천지 만물의 호흡에 귀를 기울이지 않고 제 고집으로만 부딪치는데, 산인들 어찌 너의 무례한 발길을 너그럽게 받아주겠느냐? 네 손에 쥔 칼과 방패도 이와 조금도 다르지 않다.”",
           "dialogueEn": "The same is true of the steel in your hand.\" Without touching the rock with his hands, Malfurion walked lightly up the sheer vertical wall."
@@ -6603,15 +6603,15 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
     {
       "speaker": "choice",
       "cardId": 41,
-      "name": "성진호흡법 전수",
+      "name": "별빛의 호흡법 전수",
       "nameEn": "Passing of Star Breathing",
-      "text": "빙벽 절벽 끝, 칼바람이 살을 에는 곳에서 말푸온이 카단의 가슴에 손을 얹고 성진의 맥박을 일깨운다.",
+      "text": "빙벽 절벽 끝, 칼바람이 살을 에는 곳에서 말푸온이 카단의 가슴에 손을 얹고 별빛의 맥박을 일깨운다.",
       "textEn": "At the brink of the frozen abyss, Malfuon placed his hand over Kadan's heart to awaken stellar cadence.",
       "sceneNumber": 7,
       "totalScenes": 10,
-      "sceneTitleKo": "[제6화 · 운명의 분기점] 성진호흡법 전수",
+      "sceneTitleKo": "[제6화 · 운명의 분기점] 별빛의 호흡법 전수",
       "sceneTitleEn": "[EP.06 · Fate Crossroads] Passing of Star Breathing",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 말퓨온\n• 선택 가이드: 소설 제6화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 말퓨온\n• 선택 가이드: 소설 제6화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Malfuon\n• Decision Guide: This is the climax crossroads of Episode 6. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -6630,7 +6630,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": false
@@ -6670,7 +6670,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "attitudeEn": "[Insight]",
           "labelKo": "스승들의 가르침은 대립이 아니라 계절의 순환이었다.",
           "labelEn": "The masters' teachings were not in conflict, but a cycle of seasons.",
-          "followUpTextKo": "“여섯 가지 초식이 봄과 겨울처럼 맞물리며 온전한 원을 그리기 시작했다.”",
+          "followUpTextKo": "“여섯 가지 전투 기술이 봄과 겨울처럼 맞물리며 온전한 원을 그리기 시작했다.”",
           "followUpTextEn": "“Six combat doctrines meshed like spring and winter, completing an unbroken circle.”",
           "bonusType": "sns",
           "bonusValue": 25,
@@ -6687,33 +6687,33 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
             "buffName": "+25 SNS 획득",
             "buffNameEn": "+25 SNS Points"
           },
-          "followUpLine": "“여섯 가지 초식이 봄과 겨울처럼 맞물리며 온전한 원을 그리기 시작했다.”",
+          "followUpLine": "“여섯 가지 전투 기술이 봄과 겨울처럼 맞물리며 온전한 원을 그리기 시작했다.”",
           "followUpLineEn": "“Six combat doctrines meshed like spring and winter, completing an unbroken circle.”"
         },
         {
           "id": "ch06_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "밤하늘의 샛별을 들이쉬고, 대지로 눈송이를 돌려보낸다.",
           "labelEn": "Inhale the morning star from heaven; exhale snowflakes back to earth.",
-          "followUpTextKo": "“가슴속 깊은 곳에서 아케인 성진호흡의 백색 파문이 찬란하게 각성했다.”",
+          "followUpTextKo": "“가슴속 깊은 곳에서 아케인 별빛의 호흡의 백색 파문이 찬란하게 각성했다.”",
           "followUpTextEn": "“A brilliant white wave of Arcane Star Breathing awakened deep within Kadan's core.”",
           "bonusType": "buff",
           "bonusValue": 20,
-          "bonusDescKo": "[성진 공명] 마나 공격력 +20%",
+          "bonusDescKo": "[별빛 공명] 마나 공격력 +20%",
           "bonusDescEn": "[Astral Resonance] +20% Mana ATK",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "밤하늘의 샛별을 들이쉬고, 대지로 눈송이를 돌려보낸다.",
           "textEn": "Inhale the morning star from heaven; exhale snowflakes back to earth.",
           "reward": {
             "snsCoins": 50,
             "buff": "mana_surge",
-            "buffName": "[성진 공명] 마나 공격력 +20%",
+            "buffName": "[별빛 공명] 마나 공격력 +20%",
             "buffNameEn": "[Astral Resonance] +20% Mana ATK"
           },
-          "followUpLine": "“가슴속 깊은 곳에서 아케인 성진호흡의 백색 파문이 찬란하게 각성했다.”",
+          "followUpLine": "“가슴속 깊은 곳에서 아케인 별빛의 호흡의 백색 파문이 찬란하게 각성했다.”",
           "followUpLineEn": "“A brilliant white wave of Arcane Star Breathing awakened deep within Kadan's core.”"
         }
       ]
@@ -6723,7 +6723,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "“앉아라, 카단. 눈을 감고, 숨을 들이쉴 때마다 밤하늘의 샛별 하나를 가슴속에 모아들이고, 숨을 내쉴 때마다 발밑의 대지로 눈송이 하나를 돌려보내라.”\n\n노인은 마나란 혈관을 억지로 쥐어짜내는 파괴적인 완력이 아니라, 인간의 맥박을 대륙의 고동과 조화롭게 맞추어 나가는 거대한 선율이라고 설명했다.\n\n“남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 무공을 쌓아가고 있다.”\n\n“그러나 메마른 장작을 태우는 불길은 결국 잿더미만을 남길 뿐이지. 네가 익혀야 할 힘은 결코 꺼지지 않는 별들의 숨결이다.”\n\n소년은 스승들의 상반된 가르침이 서로 대립하는 것이 아니라, 대륙의 계절처럼 하나의 순환이라는 사실을 비로소 깨달았다.\n\n그림리의 바위 같은 묵직함은 들이쉬는 숨의 중심이었고, 카제의 날렵한 비검은 내쉬는 숨의 끝자락이었으며, 론돌의 파도와 에일라의 고요함은 그 사이를 잇는 잔잔한 여울이었다.",
+      "text": "“앉아라, 카단. 눈을 감고, 숨을 들이쉴 때마다 밤하늘의 샛별 하나를 가슴속에 모아들이고, 숨을 내쉴 때마다 발밑의 대지로 눈송이 하나를 돌려보내라.”\n\n노인은 마나란 혈관을 억지로 쥐어짜내는 파괴적인 완력이 아니라, 인간의 맥박을 대륙의 고동과 조화롭게 맞추어 나가는 거대한 선율이라고 설명했다.\n\n“남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 마법 검술을 쌓아가고 있다.”\n\n“그러나 메마른 장작을 태우는 불길은 결국 잿더미만을 남길 뿐이지. 네가 익혀야 할 힘은 결코 꺼지지 않는 별들의 숨결이다.”\n\n소년은 스승들의 상반된 가르침이 서로 대립하는 것이 아니라, 대륙의 계절처럼 하나의 순환이라는 사실을 비로소 깨달았다.\n\n그림리의 바위 같은 묵직함은 들이쉬는 숨의 중심이었고, 카제의 날렵한 비검은 내쉬는 숨의 끝자락이었으며, 론돌의 파도와 에일라의 고요함은 그 사이를 잇는 잔잔한 여울이었다.",
       "textEn": "\"Sit, Kadan. Close your eyes. With each inhalation, gather a solitary star into your heart. With each exhalation, return a snowflake to the loam.\"\n\nMalfurion explained that mana was not an internal fuel to be squeezed from strained sinews, but an acoustic cadence harmonizing the body with the pulse of the continent.\n\n\"In the southern Red Glass Court, Balian's son Ignis was born blessed with fierce white flame, amassing destructive arts with every sunrise.\n\nYet raw fire leaves only ash when the fuel burns out. What you must cultivate is the unquenchable breath of the stars.\"\n\nKadan finally understood: Grimli's boulder-like weight, Kaze's lightning feints, and Aila's quiet stillness were not contradictory doctrines, but different tempos of the celestial sphere.\n\nMalfurion offered no flattery.",
       "sceneNumber": 8,
       "totalScenes": 10,
@@ -6731,7 +6731,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "sceneTitleEn": "[EP.06 · Scene 8/10] The Art of Breathing Stars (Kadan · Ignis · Balian · Rondol)",
       "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 이그니스(발리안과 이셀라의 아들) / 발리안(이그니스의 아버지)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 이그니스 · 발리안 · 론돌]이(가) 함께 등장하여 “앉아라, 카단. 눈을 감고, 숨을 들이쉴 때마다 밤하늘의 샛별 하나를 가슴… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Ignis (Son of Balian & Ysela) / Balian (Ignis's Father)\n• Story Comprehension Guide: In this scene, [Kadan · Ignis · Balian · Rondol] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 6 forward.",
-      "dialogueQuoteKo": "“앉아라, 카단. 눈을 감고, 숨을 들이쉴 때마다 밤하늘의 샛별 하나를 가슴속에 모아들이고, 숨을 내쉴 때마다 발밑의 대지로 눈송이 하나를 돌려보내라.” “남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 무공을 쌓아가고 있다.”",
+      "dialogueQuoteKo": "“앉아라, 카단. 눈을 감고, 숨을 들이쉴 때마다 밤하늘의 샛별 하나를 가슴속에 모아들이고, 숨을 내쉴 때마다 발밑의 대지로 눈송이 하나를 돌려보내라.” “남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 마법 검술을 쌓아가고 있다.”",
       "dialogueQuoteEn": "“Sit, Kadan. Close your eyes. With each inhalation, gather a solitary star into your heart. With each exhalation, return a snowflake to the loam.” “In the southern Red Glass Court, Balian's son Ignis was born blessed with fierce white flame, amassing destructive arts with every sunrise.\n\nYet raw fire leaves only ash when the fuel burns out. What you must cultivate is the unquenchable breath of the stars.”",
       "sceneImageUrl": "/images/storybook/ep_06/page_08.webp",
       "sceneCharacters": [
@@ -6784,7 +6784,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -6814,11 +6814,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 38,
           "imageUrl": "/images/webtoon/episode_06/scene_38.webp",
-          "narrationKo": "“남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 무공을 쌓아가고 있다.”",
+          "narrationKo": "“남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 마법 검술을 쌓아가고 있다.”",
           "narrationEn": "\"In the southern Red Glass Court, Balian's son Ignis was born blessed with fierce white flame, amassing destructive arts with every sunrise.",
           "speakerKo": "말퓨온",
           "speakerEn": "Malfuon",
-          "dialogueKo": "“남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 무공을 쌓아가고 있다.”",
+          "dialogueKo": "“남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 마법 검술을 쌓아가고 있다.”",
           "dialogueEn": "\"In the southern Red Glass Court, Balian's son Ignis was born blessed with fierce white flame, amassing destructive arts with every sunrise."
         },
         {
@@ -6864,7 +6864,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제6화 · 장면 9/10] 말퓨온은 가혹하리만치 엄격하게 호흡의 중심을 바로잡아 주었다",
       "sceneTitleEn": "[EP.06 · Scene 9/10] The Art of Breathing Stars (Kadan · Gawain · Malfuon)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 가웨인(일곱 추적자의 수장) / 말퓨온(별빛 은자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 가웨인 · 말퓨온]이(가) 함께 등장하여 “별을 세느라 등 뒤에 선 동료의 발소리를 놓친다면, 그 방패는 대체 누구를… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 가웨인(일곱 추적자의 수장) / 말퓨온(별빛의 현자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 가웨인 · 말퓨온]이(가) 함께 등장하여 “별을 세느라 등 뒤에 선 동료의 발소리를 놓친다면, 그 방패는 대체 누구를… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Gawain (Leader of the Seven Pursuers) / Malfuon (Starlight Hermit Archmage)\n• Story Comprehension Guide: In this scene, [Kadan · Gawain · Malfuon] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 6 forward.",
       "dialogueQuoteKo": "“별을 세느라 등 뒤에 선 동료의 발소리를 놓친다면, 그 방패는 대체 누구를 위한 것이냐?” “제 방패는 제 목숨을 지키기 위함이 아니라, 등 뒤에서 추위에 떨고 있는 사람들의 온기를 지키기 위함입니다.”",
       "dialogueQuoteEn": "“If you count the stars so intently that you miss the tread of your comrade behind you, whom does that shield protect?” “My shield exists not to preserve my own breath, but to shield the warmth of those trembling behind me from the bitter gale.”",
@@ -6892,7 +6892,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": false
@@ -7072,7 +7072,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제7화 · 장면 1/10] 와일드랜드의 대평원을 휘감던 모닥불 연기가 잦아들 무렵,…",
       "sceneTitleEn": "[EP.07 · Scene 1/10] The Traitors Camp (Kadan · Malfuon · Aeolus · Medusa Gorgo)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 말퓨온(별빛 은자 대마법사) / 에올루스(서방 백타산의 광풍 대마도사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 말퓨온 · 에올루스 · 메두사 고르고]을(를) 중심으로 사건의 배경과 긴박한 정황이 입체적으로 묘사되며, 인물들이 처한 운명적 위기와 행동의 이유가 상세히 설명됩니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 말퓨온(별빛의 현자 대마법사) / 에올루스(서방 백타산의 광풍 대마도사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 말퓨온 · 에올루스 · 메두사 고르고]을(를) 중심으로 사건의 배경과 긴박한 정황이 입체적으로 묘사되며, 인물들이 처한 운명적 위기와 행동의 이유가 상세히 설명됩니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Malfuon (Starlight Hermit Archmage) / Aeolus (Gale Archmage of the West)\n• Story Comprehension Guide: This scene depicts [Kadan · Malfuon · Aeolus · Medusa Gorgo] within the unfolding crisis of Episode 7, explaining the setting, motivations, and dramatic stakes in full detail.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -7091,7 +7091,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": false
@@ -7198,7 +7198,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제7화 · 장면 2/10] 검붉은 사슬채찍이 칠흑의 바위를 내리칠 때마다 돌 속에…",
       "sceneTitleEn": "[EP.07 · Scene 2/10] The Traitors Camp (Lucian · Kadan · Malfuon · Fenrir)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 루시안(붉은 유리 궁정의 야심가 귀족) / 카단(주인공) / 말퓨온(별빛 은자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [루시안 · 카단 · 말퓨온 · 펜릴]이(가) 함께 등장하여 “약조한 거사일이 바로 내일 밤이오. 펜릴의 저녁 축제 술잔에 마비 독을 섞… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 루시안(붉은 유리 궁정의 야심가 귀족) / 카단(주인공) / 말퓨온(별빛의 현자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [루시안 · 카단 · 말퓨온 · 펜릴]이(가) 함께 등장하여 “약조한 거사일이 바로 내일 밤이오. 펜릴의 저녁 축제 술잔에 마비 독을 섞… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Lucian (Ambitious noble of the Red Glass Court) / Kadan (Protagonist) / Malfuon (Starlight Hermit Archmage)\n• Story Comprehension Guide: In this scene, [Lucian · Kadan · Malfuon · Fenrir] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 7 forward.",
       "dialogueQuoteKo": "“약조한 거사일이 바로 내일 밤이오. 펜릴의 저녁 축제 술잔에 마비 독을 섞어 둘 것이오. 펜릴이 쓰러지는 즉시 부족 전사들을 모조리 섀도우렐름의 깃발 아래 집결시키시오.”",
       "dialogueQuoteEn": "“The appointed strike falls upon tomorrow night. Paralyzing venom will be introduced into Fenrir's banquet horn. The instant Fenrir collapses, rally the clan lances beneath the banners of the Shadow Realm.”",
@@ -7226,7 +7226,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": false
@@ -7361,7 +7361,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": false
@@ -7440,7 +7440,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제7화 · 장면 4/10] 거대한 백은 늑대 가죽 왕좌에 앉아 있던 맹주 펜릴은…",
       "sceneTitleEn": "[EP.07 · Scene 4/10] The Traitors Camp (Malfuon · Fenrir)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 말퓨온(별빛 은자 대마법사) / 펜릴(설원의 빙결 늑대왕)\n• 장면 이해 포인트: 이 장면에서는 [말퓨온 · 펜릴]이(가) 함께 등장하여 “바르가스트는 나와 함께 삼십 년 동안 피를 흘리며 북방의 마수들을 토벌한 … 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 말퓨온(별빛의 현자 대마법사) / 펜릴(설원의 빙결 늑대왕)\n• 장면 이해 포인트: 이 장면에서는 [말퓨온 · 펜릴]이(가) 함께 등장하여 “바르가스트는 나와 함께 삼십 년 동안 피를 흘리며 북방의 마수들을 토벌한 … 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Malfuon (Starlight Hermit Archmage) / Fenrir (Frost Wolf King of the Tundra)\n• Story Comprehension Guide: In this scene, [Malfuon · Fenrir] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 7 forward.",
       "dialogueQuoteKo": "“바르가스트는 나와 함께 삼십 년 동안 피를 흘리며 북방의 마수들을 토벌한 내 피붙이 같은 아우다! 일개 떠돌이 전사의 세치 혀에 놀아나 내 심장을 바친 형제를 참소하란 말이냐?” “맹주 형님, 이 수상쩍은 노인과 애송이가 폐광산에서 궁정 사절과 밀담을 나누는 것을 제 눈으로 똑똑히 보았습니다! 북방의 결속을 해치려는 자들을 즉시 참수해야 합니다!”",
       "dialogueQuoteEn": "“Bargast has bled beside me for three decades hunting northern frost-beasts! Would you have me condemn my dearest brother upon the loose tongue of a wandering stripling?” “Lord brother, I witnessed this vagrant elder and his young pup conspiring in secret with court delegates within the old cobalt mine! Slay these disruptors of northern unity at once!”",
@@ -7450,7 +7450,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": true
@@ -7576,7 +7576,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": false
@@ -7656,7 +7656,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제7화 · 장면 6/10] 동이 틀 무렵, 바르가스트가 이끄는 반역군과 황궁의 룬…",
       "sceneTitleEn": "[EP.07 · Scene 6/10] The Traitors Camp (Kadan · Aleksandar · Malfuon · Fenrir)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 알렉산다르(카단의 아버지) / 말퓨온(별빛 은자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 알렉산다르 · 말퓨온 · 펜릴]이(가) 함께 등장하여 “아이들이 해마다 같은 우물을 놓고 피를 흘리는 비극을 끝내려는 거다. 전통… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 알렉산다르(카단의 아버지) / 말퓨온(별빛의 현자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 알렉산다르 · 말퓨온 · 펜릴]이(가) 함께 등장하여 “아이들이 해마다 같은 우물을 놓고 피를 흘리는 비극을 끝내려는 거다. 전통… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Aleksandar (Kadan's Father) / Malfuon (Starlight Hermit Archmage)\n• Story Comprehension Guide: In this scene, [Kadan · Aleksandar · Malfuon · Fenrir] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 7 forward.",
       "dialogueQuoteKo": "“아이들이 해마다 같은 우물을 놓고 피를 흘리는 비극을 끝내려는 거다. 전통이 무덤의 숫자를 늘리는 핑계에 불과하다면 내 손으로 깨부숴야지.”",
       "dialogueQuoteEn": "“I seek to end the madness of children slaughtering one another over the same frozen well year after year. If tradition serves only to swell the count of our graves, I shall shatter it with my own hands.”",
@@ -7684,7 +7684,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": false
@@ -7763,7 +7763,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제7화 · 운명의 분기점] 불타는 천막의 심판",
       "sceneTitleEn": "[EP.07 · Fate Crossroads] Judgment in the Burning Pavilions",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 알렉산다르 · 말퓨온\n• 선택 가이드: 소설 제7화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 알렉산다르 · 말퓨온\n• 선택 가이드: 소설 제7화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Aleksandar · Malfuon\n• Decision Guide: This is the climax crossroads of Episode 7. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -7791,7 +7791,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": false
@@ -7862,18 +7862,18 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch07_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "바람을 일으켜 불길을 역풍으로 되돌린다.",
           "labelEn": "Summon Arcane gusts to redirect the flames against the traitors.",
-          "followUpTextKo": "“성진호흡의 역풍이 불길을 되돌려 갇혀 있던 피난민들을 무사히 구출했다.”",
+          "followUpTextKo": "“별빛의 호흡의 역풍이 불길을 되돌려 갇혀 있던 피난민들을 무사히 구출했다.”",
           "followUpTextEn": "“A gust of Star Breathing turned the fire back, shielding the caged captives safely.”",
           "bonusType": "sns",
           "bonusValue": 25,
           "bonusDescKo": "+25 SNS 획득",
           "bonusDescEn": "+25 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "바람을 일으켜 불길을 역풍으로 되돌린다.",
           "textEn": "Summon Arcane gusts to redirect the flames against the traitors.",
@@ -7883,7 +7883,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
             "buffName": "+25 SNS 획득",
             "buffNameEn": "+25 SNS Points"
           },
-          "followUpLine": "“성진호흡의 역풍이 불길을 되돌려 갇혀 있던 피난민들을 무사히 구출했다.”",
+          "followUpLine": "“별빛의 호흡의 역풍이 불길을 되돌려 갇혀 있던 피난민들을 무사히 구출했다.”",
           "followUpLineEn": "“A gust of Star Breathing turned the fire back, shielding the caged captives safely.”"
         }
       ]
@@ -8188,7 +8188,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제8화 · 장면 1/10] 와일드랜드의 얼어붙은 툰드라를 벗어나 남쪽으로 반나절을…",
       "sceneTitleEn": "[EP.08 · Scene 1/10] Rider of the Crimson Mane (Kadan · Aleksandar · Malfuon · Pegasus)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 알렉산다르(카단의 아버지) / 말퓨온(별빛 은자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 알렉산다르 · 말퓨온 · 페가수스]을(를) 중심으로 사건의 배경과 긴박한 정황이 입체적으로 묘사되며, 인물들이 처한 운명적 위기와 행동의 이유가 상세히 설명됩니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 알렉산다르(카단의 아버지) / 말퓨온(별빛의 현자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 알렉산다르 · 말퓨온 · 페가수스]을(를) 중심으로 사건의 배경과 긴박한 정황이 입체적으로 묘사되며, 인물들이 처한 운명적 위기와 행동의 이유가 상세히 설명됩니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Aleksandar (Kadan's Father) / Malfuon (Starlight Hermit Archmage)\n• Story Comprehension Guide: This scene depicts [Kadan · Aleksandar · Malfuon · Pegasus] within the unfolding crisis of Episode 8, explaining the setting, motivations, and dramatic stakes in full detail.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -8216,7 +8216,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": false
@@ -8305,7 +8305,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제8화 · 장면 2/10] 황궁 기병대조차 길들이지 못해 사나운 마수로 낙인찍혀…",
       "sceneTitleEn": "[EP.08 · Scene 2/10] Rider of the Crimson Mane (Kadan · Pegasus · Malfuon · Aleksandar)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 페가수스(바람을 가르는 전설의 천마) / 말퓨온(별빛 은자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 페가수스 · 말퓨온 · 알렉산다르]이(가) 함께 등장하여 “단돈 은화 세 닢에 이 미친 괴물을 데려갈 용사 없소? 가까이 갔다간 대가… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 페가수스(바람을 가르는 전설의 천마) / 말퓨온(별빛의 현자 대마법사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 페가수스 · 말퓨온 · 알렉산다르]이(가) 함께 등장하여 “단돈 은화 세 닢에 이 미친 괴물을 데려갈 용사 없소? 가까이 갔다간 대가… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Pegasus (Legendary winged steed) / Malfuon (Starlight Hermit Archmage)\n• Story Comprehension Guide: In this scene, [Kadan · Pegasus · Malfuon · Aleksandar] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 8 forward.",
       "dialogueQuoteKo": "“단돈 은화 세 닢에 이 미친 괴물을 데려갈 용사 없소? 가까이 갔다간 대가리가 깨질 테니 조심들 하시오!” “이봐, 애송이! 뼈도 못 추리고 짓밟히고 싶어서 환장했어? 당장 물러서!”",
       "dialogueQuoteEn": "“Three silver pieces! Any gallant soul willing to claim this mad demon for three silver coins? Stand clear unless you fancy having your skulls caved in!” “Boy! Are you possessed? Back away before you are trampled into red paste!”",
@@ -8333,7 +8333,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 66,
           "nameKo": "말퓨온",
           "nameEn": "Malfuon",
-          "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+          "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
           "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
           "seatAsset": "/seat/Malfuon.png",
           "isSpeaker": false
@@ -8511,7 +8511,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -8609,7 +8609,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -8698,7 +8698,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -8771,13 +8771,13 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "적갈기마와의 교감",
       "nameEn": "Bond with the Crimson Mane",
-      "text": "흥분한 적갈기마가 앞발을 들며 마구간 기둥을 걷어찬다. 카단은 성진호흡의 온기를 손바닥에 품고 군마의 콧등으로 다가선다.",
+      "text": "흥분한 적갈기마가 앞발을 들며 마구간 기둥을 걷어찬다. 카단은 별빛의 호흡의 온기를 손바닥에 품고 군마의 콧등으로 다가선다.",
       "textEn": "The frenzied stallion reared up, kicking wooden beams. Channelling Star Breathing into his palm, Kadan stepped forward.",
       "sceneNumber": 7,
       "totalScenes": 10,
       "sceneTitleKo": "[제8화 · 운명의 분기점] 적갈기마와의 교감",
       "sceneTitleEn": "[EP.08 · Fate Crossroads] Bond with the Crimson Mane",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제8화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제8화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 8. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -8796,7 +8796,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -8876,7 +8876,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch08_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "군마의 심장박동에 내 숨결을 포갠다.",
           "labelEn": "Blend my heartbeat with the wild pulse of this great stallion.",
@@ -8887,7 +8887,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "군마의 심장박동에 내 숨결을 포갠다.",
           "textEn": "Blend my heartbeat with the wild pulse of this great stallion.",
@@ -8932,7 +8932,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -9030,7 +9030,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -9329,7 +9329,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 11,
       "name": "이그니스",
       "nameEn": "Ignis",
-      "text": "“일개 떠돌이 거지가 황실 기사단의 명예로운 결투에 난입하다니, 죽음을 자초하는구나. 그 녹슨 방패가 네 마지막 관짝이 될 것이다!”\n\n이그니스가 순백의 장검을 비껴들자, 타오르는 백색 화염이 칼날을 따라 폭포수처럼 맹렬하게 솟구쳤다. 이그니스의 첫 번째 초식인 ‘백열섬’이 벼락처럼 내리꽂혔다.\n\n눈이 멀 것 같은 백색 섬광이 허공을 갈랐으나, 카단은 반 걸음도 물러서지 않고 알렉산다르 스승에게 배운 방어의 호흡을 끌어올렸다.\n\n무쇠 방패의 모서리를 비스듬히 기울여 화염의 중심축을 튕겨내자, 귀를 찢는 쇳소리와 함께 백색 불꽃이 사방으로 흩뿌려졌다.\n\n자신의 일격이 막히자 이그니스의 얼굴이 차갑게 굳어졌다. 이그니스는 곧장 두 번째 초식인 ‘일륜참’을 펼치며 대지를 가르는 맹렬한 화염파를 쏘아 보냈다.",
+      "text": "“일개 떠돌이 거지가 황실 기사단의 명예로운 결투에 난입하다니, 죽음을 자초하는구나. 그 녹슨 방패가 네 마지막 관짝이 될 것이다!”\n\n이그니스가 순백의 장검을 비껴들자, 타오르는 백색 화염이 칼날을 따라 폭포수처럼 맹렬하게 솟구쳤다. 이그니스의 첫 번째 검술 오의인 ‘백열의 섬광’이 벼락처럼 내리꽂혔다.\n\n눈이 멀 것 같은 백색 섬광이 허공을 갈랐으나, 카단은 반 걸음도 물러서지 않고 알렉산다르 스승에게 배운 방어의 호흡을 끌어올렸다.\n\n무쇠 방패의 모서리를 비스듬히 기울여 화염의 중심축을 튕겨내자, 귀를 찢는 쇳소리와 함께 백색 불꽃이 사방으로 흩뿌려졌다.\n\n자신의 일격이 막히자 이그니스의 얼굴이 차갑게 굳어졌다. 이그니스는 곧장 두 번째 검술 오의인 ‘태양의 참격’을 펼치며 대지를 가르는 맹렬한 화염파를 쏘아 보냈다.",
       "textEn": "\"A nameless vagabond dares trespass upon an imperial duel? You court your own execution. That rusted iron lid shall serve as your headstone!\"\n\nIgnis raised his longsword in a high guard, and pure white sanctifying flames roared to life along the steel like a cataract of liquid fire. Descending with thunderous force, the opening gambit, 'Incandescent Flash,' struck like lightning.\n\nA blinding sheet of white brilliance cleaved the air, yet Kadan did not yield half a pace. Drawing upon the foundation taught by Master Aleksandar, he tilted the rim of his iron shield at an obtuse angle, deflecting the kinetic axis of the strike.\n\nWith a deafening clang, arcs of white flame scattered harmlessly into the empty air.\n\nShocked that his opening stroke was turned aside, Ignis's expression hardened into granite. Without pausing, he unleashed his second technique, 'Solar Cleave,' sending a fissure of roaring white flame across the arena stones.",
       "sceneNumber": 2,
       "totalScenes": 10,
@@ -9383,11 +9383,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 8,
           "imageUrl": "/images/webtoon/episode_09/scene_08.webp",
-          "narrationKo": "이그니스가 순백의 장검을 비껴들자, 타오르는 백색 화염이 칼날을 따라 폭포수처럼 맹렬하게 솟구쳤다. 이그니스의 첫 번째 초식인 ‘백열섬’이 벼락처럼 내리꽂혔다.",
+          "narrationKo": "이그니스가 순백의 장검을 비껴들자, 타오르는 백색 화염이 칼날을 따라 폭포수처럼 맹렬하게 솟구쳤다. 이그니스의 첫 번째 검술 오의인 ‘백열의 섬광’이 벼락처럼 내리꽂혔다.",
           "narrationEn": "Ignis raised his longsword in a high guard, and pure white sanctifying flames roared to life along the steel like a cataract of liquid fire. Descending with thunderous force, the opening gambit, 'Incandescent Flash,' struck like lightning.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "이그니스가 순백의 장검을 비껴들자, 타오르는 백색 화염이 칼날을 따라 폭포수처럼 맹렬하게 솟구쳤다. 이그니스의 첫 번째 초식인 ‘백열섬’이 벼락처럼 내리꽂혔다.",
+          "dialogueKo": "이그니스가 순백의 장검을 비껴들자, 타오르는 백색 화염이 칼날을 따라 폭포수처럼 맹렬하게 솟구쳤다. 이그니스의 첫 번째 검술 오의인 ‘백열의 섬광’이 벼락처럼 내리꽂혔다.",
           "dialogueEn": "Ignis raised his longsword in a high guard, and pure white sanctifying flames roared to life along the steel like a cataract of liquid fire. Descending with thunderous force, the opening gambit, 'Incandescent Flash,' struck like lightning."
         },
         {
@@ -9413,11 +9413,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 11,
           "imageUrl": "/images/webtoon/episode_09/scene_11.webp",
-          "narrationKo": "자신의 일격이 막히자 이그니스의 얼굴이 차갑게 굳어졌다. 이그니스는 곧장 두 번째 초식인 ‘일륜참’을 펼치며 대지를 가르는 맹렬한 화염파를 쏘아 보냈다.",
+          "narrationKo": "자신의 일격이 막히자 이그니스의 얼굴이 차갑게 굳어졌다. 이그니스는 곧장 두 번째 검술 오의인 ‘태양의 참격’을 펼치며 대지를 가르는 맹렬한 화염파를 쏘아 보냈다.",
           "narrationEn": "Shocked that his opening stroke was turned aside, Ignis's expression hardened into granite. Without pausing, he unleashed his second technique, 'Solar Cleave,' sending a fissure of roaring white flame across the arena stones.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "자신의 일격이 막히자 이그니스의 얼굴이 차갑게 굳어졌다. 이그니스는 곧장 두 번째 초식인 ‘일륜참’을 펼치며 대지를 가르는 맹렬한 화염파를 쏘아 보냈다.",
+          "dialogueKo": "자신의 일격이 막히자 이그니스의 얼굴이 차갑게 굳어졌다. 이그니스는 곧장 두 번째 검술 오의인 ‘태양의 참격’을 펼치며 대지를 가르는 맹렬한 화염파를 쏘아 보냈다.",
           "dialogueEn": "Shocked that his opening stroke was turned aside, Ignis's expression hardened into granite. Without pausing, he unleashed his second technique, 'Solar Cleave,' sending a fissure of roaring white flame across the arena stones."
         }
       ]
@@ -9452,7 +9452,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -9587,7 +9587,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -9676,7 +9676,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -9784,7 +9784,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -9899,7 +9899,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제9화 · 운명의 분기점] 검문소 통과",
       "sceneTitleEn": "[EP.09 · Fate Crossroads] Bypassing the Gate",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제9화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제9화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 9. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -9918,7 +9918,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -10016,7 +10016,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch09_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "바람 마나로 위병들의 귓가에 헛소문을 흘려보낸다.",
           "labelEn": "Send misleading wind whispers into the sentries' ears.",
@@ -10027,7 +10027,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+25 SNS 획득",
           "bonusDescEn": "+25 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "바람 마나로 위병들의 귓가에 헛소문을 흘려보낸다.",
           "textEn": "Send misleading wind whispers into the sentries' ears.",
@@ -10047,7 +10047,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "카단은 주먹을 꽉 쥐었다. 어머니 엘윈이 겨울밤마다 들려주던 자장가의 진실이 마침내 눈앞의 현실로 맞춰지는 순간이었다.\n\n“그렇다면 이그니스는 제 원수가 아니라... 함께 진실을 마주해야 할 형제였군요.”\n\n워커가 피 묻은 손으로 카단의 어깨를 짚었다. “그렇소. 그 아이를 칼로 베는 것은 쉬우나, 그 영혼을 어둠의 사슬에서 구원하는 것은 오직 진정한 맹세를 품은 자만이 할 수 있는 일이오.”\n\n“그리고 이 독을 해독하려면 황궁 직속 비밀 약초원에만 보관되어 있는 고대 영약 ‘달빛잎’이 필요하오.”\n\n“하지만 그곳은 철통같은 룬 결계로 봉인되어 있소. 그곳 지하에는 사람의 마나를 강제로 추출하는 끔찍한 연금술 설비들이 가동되고 있소.”\n\n카단은 품에서 어머니의 유품인 은빛 단검을 꺼내 쥐었다. “은빛 단검의 룬이라면 어떤 봉인도 풀 수 있습니다. 제가 가겠습니다.”",
+      "text": "카단은 주먹을 꽉 쥐었다. 어머니 엘윈이 겨울밤마다 들려주던 자장가의 진실이 마침내 눈앞의 현실로 맞춰지는 순간이었다.\n\n“그렇다면 이그니스는 제 원수가 아니라... 함께 진실을 마주해야 할 형제였군요.”\n\n워커가 피 묻은 손으로 카단의 어깨를 짚었다. “그렇소. 그 아이를 칼로 베는 것은 쉬우나, 그 영혼을 어둠의 사슬에서 구원하는 것은 오직 진정한 맹세를 품은 자만이 할 수 있는 일이오.”\n\n“그리고 이 독을 해독하려면 황궁 직속 비밀 약초원에만 보관되어 있는 고대 엘릭서 약초 ‘달빛잎’이 필요하오.”\n\n“하지만 그곳은 철통같은 룬 결계로 봉인되어 있소. 그곳 지하에는 사람의 마나를 강제로 추출하는 끔찍한 연금술 설비들이 가동되고 있소.”\n\n카단은 품에서 어머니의 유품인 은빛 단검을 꺼내 쥐었다. “은빛 단검의 룬이라면 어떤 봉인도 풀 수 있습니다. 제가 가겠습니다.”",
       "textEn": "Kadan tightened his calloused fists. The bedtime lullabies his mother Elwin had sung on frozen winter nights finally aligned with the harsh reality before his eyes.\n\n\"Then Ignis is not my sworn enemy... but a brother with whom I must share the truth.\"\n\nWalker rested a blood-stained gauntlet upon Kadan's shoulder. \"Indeed. To strike him down with steel is simple, but to liberate his soul from the fetters of shadow requires a heart bound to the true oath.\n\nTo purge this venom, you require the Moonlit Herb—an ancient panacea guarded exclusively inside the royal apothecary.\n\nYet that sanctum is sealed behind three tiers of impenetrable imperial wards, and beneath it operate horrific alchemical contraptions extracting the living mana of captive souls.\"\n\nKadan withdrew his mother's keepsake, the silver dagger. \"The runes upon this silver blade can unravel any lock. I shall breach the vault.\" Cilia blocked the doorway, shaking her head.",
       "sceneNumber": 8,
       "totalScenes": 10,
@@ -10130,11 +10130,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 37,
           "imageUrl": "/images/webtoon/episode_09/scene_37.webp",
-          "narrationKo": "“그리고 이 독을 해독하려면 황궁 직속 비밀 약초원에만 보관되어 있는 고대 영약 ‘달빛잎’이 필요하오.”",
+          "narrationKo": "“그리고 이 독을 해독하려면 황궁 직속 비밀 약초원에만 보관되어 있는 고대 엘릭서 약초 ‘달빛잎’이 필요하오.”",
           "narrationEn": "To purge this venom, you require the Moonlit Herb—an ancient panacea guarded exclusively inside the royal apothecary.",
           "speakerKo": "워커",
           "speakerEn": "Walker",
-          "dialogueKo": "“그리고 이 독을 해독하려면 황궁 직속 비밀 약초원에만 보관되어 있는 고대 영약 ‘달빛잎’이 필요하오.”",
+          "dialogueKo": "“그리고 이 독을 해독하려면 황궁 직속 비밀 약초원에만 보관되어 있는 고대 엘릭서 약초 ‘달빛잎’이 필요하오.”",
           "dialogueEn": "To purge this venom, you require the Moonlit Herb—an ancient panacea guarded exclusively inside the royal apothecary."
         },
         {
@@ -10189,7 +10189,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -10278,7 +10278,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -10387,7 +10387,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -10728,7 +10728,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -10863,7 +10863,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -10979,7 +10979,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -11104,7 +11104,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제10화 · 운명의 분기점] 유리 궁정의 잠입",
       "sceneTitleEn": "[EP.10 · Fate Crossroads] Infiltration of the Glass Palace",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제10화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제10화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 10. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -11123,7 +11123,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -11221,7 +11221,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch10_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "아주머니, 눈보라 치던 밤의 서약을 기억하십니까.",
           "labelEn": "My lady, do you remember the vow made beneath the blizzard?",
@@ -11232,7 +11232,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "아주머니, 눈보라 치던 밤의 서약을 기억하십니까.",
           "textEn": "My lady, do you remember the vow made beneath the blizzard?",
@@ -11393,7 +11393,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -11628,7 +11628,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -11754,7 +11754,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -12195,7 +12195,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -12320,7 +12320,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제11화 · 운명의 분기점] 투기장의 공명",
       "sceneTitleEn": "[EP.11 · Fate Crossroads] Resonance in the Arena",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제11화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제11화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 11. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -12339,7 +12339,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -12437,7 +12437,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch11_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "백색 화염과 아케인 방패의 공명 파문을 일으킨다.",
           "labelEn": "Unleash a resonant shockwave merging white fire and Arcane shield.",
@@ -12448,7 +12448,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "백색 화염과 아케인 방패의 공명 파문을 일으킨다.",
           "textEn": "Unleash a resonant shockwave merging white fire and Arcane shield.",
@@ -12493,7 +12493,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -12637,7 +12637,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -12745,7 +12745,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -12946,15 +12946,15 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "이셀라는 떨리는 손으로 으깬 컴프리 약초와 카단이 황궁 약초원에서 목숨을 걸고 구해온 달빛잎 즙을 개어 남편의 검게 물든 가슴 상처에 조심스럽게 덧대었다.\n\n약초 잎사귀가 살점에 닿을 때마다 지글거리는 소리와 함께 희미한 백색 김이 피어올랐다.\n\n“발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”\n\n발리안은 아내의 젖은 눈가를 상처투성이 손으로 쓸어내리며 힘없이 미소를 지었다.\n\n“이셀라... 내 육신은 이미 수용소의 혹독한 고문 속에서 다 타버렸소. 다만 당신이 기억을 되찾고 내 곁에 있어 주니, 지난 십팔 년 동안 겪었던 지옥 같은 어둠이 봄눈 녹듯 사라지는구려.”",
+      "text": "이셀라는 떨리는 손으로 으깬 컴프리 약초와 카단이 황궁 약초원에서 목숨을 걸고 구해온 달빛잎 즙을 개어 남편의 검게 물든 가슴 상처에 조심스럽게 덧대었다.\n\n약초 잎사귀가 살점에 닿을 때마다 지글거리는 소리와 함께 희미한 백색 김이 피어올랐다.\n\n“발리안, 조금만 더 기운을 내요. 카단이 가져온 치유의 비약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”\n\n발리안은 아내의 젖은 눈가를 상처투성이 손으로 쓸어내리며 힘없이 미소를 지었다.\n\n“이셀라... 내 육신은 이미 수용소의 혹독한 고문 속에서 다 타버렸소. 다만 당신이 기억을 되찾고 내 곁에 있어 주니, 지난 십팔 년 동안 겪었던 지옥 같은 어둠이 봄눈 녹듯 사라지는구려.”",
       "textEn": "With trembling hands, Issela blended crushed comfrey leaves with the cooling sap of the Moonlit Herb brought by Kadan from the imperial apothecary. Gently applying the poultice over the blackened lacerations upon her husband's breast.\n\nWhiffs of pale steam rose as the cooling herbs touched the fevered flesh.\n\n\"Bear it just a little longer, Balian. The medicine Kadan secured will soon extinguish the fever in your blood. You must live... to hold our boy, our Ignis, in your arms once more.\"\n\nBalian reached out with a scarred, calloused hand to brush away the tears gathering upon his wife's cheeks, a faint, weary smile touching his lips.\n\n\"Issela... my mortal shell was largely consumed under the inquisitors' fires in the mines. Yet now that you have reclaimed your true memories and sit beside me, the hellish eighteen years of isolation dissolve like spring snow upon the hearth.\"",
       "sceneNumber": 2,
       "totalScenes": 10,
       "sceneTitleKo": "[제12화 · 장면 2/10] 이셀라는 떨리는 손으로 으깬 컴프리 약초와 카단이 황궁…",
       "sceneTitleEn": "[EP.12 · Scene 2/10] Spring Between Two Graves (Kadan · Ignis · Balian · Ysela)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 이그니스(발리안과 이셀라의 아들) / 발리안(이그니스의 아버지)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 이그니스 · 발리안 · 이셀라]이(가) 함께 등장하여 “발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 … 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 이그니스(발리안과 이셀라의 아들) / 발리안(이그니스의 아버지)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 이그니스 · 발리안 · 이셀라]이(가) 함께 등장하여 “발리안, 조금만 더 기운을 내요. 카단이 가져온 치유의 비약이 곧 상처의 불길을 … 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Ignis (Son of Balian & Ysela) / Balian (Ignis's Father)\n• Story Comprehension Guide: In this scene, [Kadan · Ignis · Balian · Ysela] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 12 forward.",
-      "dialogueQuoteKo": "“발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.” “이셀라... 내 육신은 이미 수용소의 혹독한 고문 속에서 다 타버렸소. 다만 당신이 기억을 되찾고 내 곁에 있어 주니, 지난 십팔 년 동안 겪었던 지옥 같은 어둠이 봄눈 녹듯 사라지는구려.”",
+      "dialogueQuoteKo": "“발리안, 조금만 더 기운을 내요. 카단이 가져온 치유의 비약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.” “이셀라... 내 육신은 이미 수용소의 혹독한 고문 속에서 다 타버렸소. 다만 당신이 기억을 되찾고 내 곁에 있어 주니, 지난 십팔 년 동안 겪었던 지옥 같은 어둠이 봄눈 녹듯 사라지는구려.”",
       "dialogueQuoteEn": "“Bear it just a little longer, Balian. The medicine Kadan secured will soon extinguish the fever in your blood. You must live... to hold our boy, our Ignis, in your arms once more.” “Issela... my mortal shell was largely consumed under the inquisitors' fires in the mines. Yet now that you have reclaimed your true memories and sit beside me, the hellish eighteen years of isolation dissolve like spring snow upon the hearth.”",
       "sceneImageUrl": "/images/storybook/ep_12/page_02.webp",
       "sceneCharacters": [
@@ -13019,11 +13019,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 9,
           "imageUrl": "/images/webtoon/episode_12/scene_09.webp",
-          "narrationKo": "“발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”",
+          "narrationKo": "“발리안, 조금만 더 기운을 내요. 카단이 가져온 치유의 비약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”",
           "narrationEn": "\"Bear it just a little longer, Balian. The medicine Kadan secured will soon extinguish the fever in your blood. You must live... to hold our boy, our Ignis, in your arms once more.\"",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "“발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”",
+          "dialogueKo": "“발리안, 조금만 더 기운을 내요. 카단이 가져온 치유의 비약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”",
           "dialogueEn": "\"Bear it just a little longer, Balian. The medicine Kadan secured will soon extinguish the fever in your blood. You must live... to hold our boy, our Ignis, in your arms once more.\""
         },
         {
@@ -13221,7 +13221,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -13319,7 +13319,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -13542,7 +13542,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제12화 · 운명의 분기점] 묘원의 수호전",
       "sceneTitleEn": "[EP.12 · Fate Crossroads] Defense of the Cemetery",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 알렉산다르 · 엘윈\n• 선택 가이드: 소설 제12화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 알렉산다르 · 엘윈\n• 선택 가이드: 소설 제12화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Aleksandar · Elwin\n• Decision Guide: This is the climax crossroads of Episode 12. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -13641,7 +13641,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch12_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "선열들의 잔향이 깃든 대지에서 기도를 올린다.",
           "labelEn": "Offer silent prayers to the earth holding our forefathers' spirits.",
@@ -13652,7 +13652,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+20 SNS 획득",
           "bonusDescEn": "+20 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "선열들의 잔향이 깃든 대지에서 기도를 올린다.",
           "textEn": "Offer silent prayers to the earth holding our forefathers' spirits.",
@@ -13929,7 +13929,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -14011,7 +14011,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -14119,7 +14119,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -14217,7 +14217,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -14306,7 +14306,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -14379,11 +14379,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "레오나르의 첫 번째 초식인 ‘지룡파황’이 허공을 갈랐다. 지팡이가 대지를 내려찍자 석판이 파도처럼 솟구쳐 올랐다. 카단은 당황하지 않고 방패를 아래로 비스듬히 깔아 지진의 파동을 빗겨냈다.\n\n연이어 레오나르의 지팡이가 용의 꼬리처럼 회전하며 카단의 옆구리를 후려쳤다. 콰앙 하는 충격음과 함께 카단은 몸을 반 바퀴 회전시키며 타격의 원심력을 허공으로 흩뿌렸다.\n\n마지막으로 레오나르가 공중으로 솟구쳐 오르며 ‘낙천벽’의 궤적으로 지팡이를 내리꽂았다. 단순한 내려치기였지만 거대한 산봉우리가 통째로 쏟아져 내리는 듯한 엄청난 괴력이 실려 있었다.\n\n카단은 주저 없이 무쇠 방패를 45도 각도로 기울이며 별 호흡의 리듬을 탔다. 쾅 하는 굉음과 함께 지팡이의 타격선이 방패 곡면을 타고 허공으로 미끄러져 나갔다.\n\n카단의 발밑 석판이 쩌적 갈라졌지만 카단의 상체는 조금도 흔들리지 않았다.",
+      "text": "레오나르의 첫 번째 대지 격투기인 ‘대지의 파쇄격’이 허공을 갈랐다. 지팡이가 대지를 내려찍자 석판이 파도처럼 솟구쳐 올랐다. 카단은 당황하지 않고 방패를 아래로 비스듬히 깔아 지진의 파동을 빗겨냈다.\n\n연이어 레오나르의 지팡이가 용의 꼬리처럼 회전하며 카단의 옆구리를 후려쳤다. 콰앙 하는 충격음과 함께 카단은 몸을 반 바퀴 회전시키며 타격의 원심력을 허공으로 흩뿌렸다.\n\n마지막으로 레오나르가 공중으로 솟구쳐 오르며 ‘천공 낙하격’의 궤적으로 지팡이를 내리꽂았다. 단순한 내려치기였지만 거대한 산봉우리가 통째로 쏟아져 내리는 듯한 엄청난 괴력이 실려 있었다.\n\n카단은 주저 없이 무쇠 방패를 45도 각도로 기울이며 별 호흡의 리듬을 탔다. 쾅 하는 굉음과 함께 지팡이의 타격선이 방패 곡면을 타고 허공으로 미끄러져 나갔다.\n\n카단의 발밑 석판이 쩌적 갈라졌지만 카단의 상체는 조금도 흔들리지 않았다.",
       "textEn": "Leonar unleashed his first technique, 'Earth Dragon Sundering.' Stamping the staff against the flagstones, the earth surged forward in concussive waves. Unfazed, Kadan angled his shield low, skimming across the seismic shock.\n\nIn an instant, the Jade Staff spun like a dragon's tail, driving toward Kadan's ribs. With a resounding clash, Kadan rotated his footing, dispersing the centrifugal impact into the air.\n\nLeaping high, Leonar brought down the staff in the crushing arc of 'Heaven Fall.' Though a straightforward downward strike, it carried the terrifying momentum of a collapsing mountain peak.\n\nWithout hesitation, Kadan angled his iron shield at forty-five degrees, riding the rhythm of star-breathing. With a deafening boom, the strike glanced off the curved rim into empty space.\n\nThe stone beneath Kadan's boots fractured in spiderweb fissures, yet his upper body remained unyielding.",
       "sceneNumber": 5,
       "totalScenes": 10,
-      "sceneTitleKo": "[제13화 · 장면 5/10] 레오나르의 첫 번째 초식인 ‘지룡파황’이 허공을 갈랐다",
+      "sceneTitleKo": "[제13화 · 장면 5/10] 레오나르의 첫 번째 대지 격투기인 ‘대지의 파쇄격’이 허공을 갈랐다",
       "sceneTitleEn": "[EP.13 · Scene 5/10] Master of the Jade Staff (Kadan · Leonar)",
       "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 레오나르(녹옥 지팡이의 주인)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 레오나르]을(를) 중심으로 사건의 배경과 긴박한 정황이 입체적으로 묘사되며, 인물들이 처한 운명적 위기와 행동의 이유가 상세히 설명됩니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Leonar (Master of the Jade Staff)\n• Story Comprehension Guide: This scene depicts [Kadan · Leonar] within the unfolding crisis of Episode 13, explaining the setting, motivations, and dramatic stakes in full detail.",
@@ -14414,11 +14414,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 22,
           "imageUrl": "/images/webtoon/episode_13/scene_22.webp",
-          "narrationKo": "레오나르의 첫 번째 초식인 ‘지룡파황’이 허공을 갈랐다. 지팡이가 대지를 내려찍자 석판이 파도처럼 솟구쳐 올랐다. 카단은 당황하지 않고 방패를 아래로 비스듬히 깔아 지진의 파동을 빗겨냈다.",
+          "narrationKo": "레오나르의 첫 번째 대지 격투기인 ‘대지의 파쇄격’이 허공을 갈랐다. 지팡이가 대지를 내려찍자 석판이 파도처럼 솟구쳐 올랐다. 카단은 당황하지 않고 방패를 아래로 비스듬히 깔아 지진의 파동을 빗겨냈다.",
           "narrationEn": "Leonar unleashed his first technique, 'Earth Dragon Sundering.' Stamping the staff against the flagstones, the earth surged forward in concussive waves. Unfazed, Kadan angled his shield low, skimming across the seismic shock.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "레오나르의 첫 번째 초식인 ‘지룡파황’이 허공을 갈랐다. 지팡이가 대지를 내려찍자 석판이 파도처럼 솟구쳐 올랐다. 카단은 당황하지 않고 방패를 아래로 비스듬히 깔아 지진의 파동을 빗겨냈다.",
+          "dialogueKo": "레오나르의 첫 번째 대지 격투기인 ‘대지의 파쇄격’이 허공을 갈랐다. 지팡이가 대지를 내려찍자 석판이 파도처럼 솟구쳐 올랐다. 카단은 당황하지 않고 방패를 아래로 비스듬히 깔아 지진의 파동을 빗겨냈다.",
           "dialogueEn": "Leonar unleashed his first technique, 'Earth Dragon Sundering.' Stamping the staff against the flagstones, the earth surged forward in concussive waves. Unfazed, Kadan angled his shield low, skimming across the seismic shock."
         },
         {
@@ -14434,11 +14434,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 24,
           "imageUrl": "/images/webtoon/episode_13/scene_24.webp",
-          "narrationKo": "마지막으로 레오나르가 공중으로 솟구쳐 오르며 ‘낙천벽’의 궤적으로 지팡이를 내리꽂았다. 단순한 내려치기였지만 거대한 산봉우리가 통째로 쏟아져 내리는 듯한 엄청난 괴력이 실려 있었다.",
+          "narrationKo": "마지막으로 레오나르가 공중으로 솟구쳐 오르며 ‘천공 낙하격’의 궤적으로 지팡이를 내리꽂았다. 단순한 내려치기였지만 거대한 산봉우리가 통째로 쏟아져 내리는 듯한 엄청난 괴력이 실려 있었다.",
           "narrationEn": "Leaping high, Leonar brought down the staff in the crushing arc of 'Heaven Fall.' Though a straightforward downward strike, it carried the terrifying momentum of a collapsing mountain peak.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "마지막으로 레오나르가 공중으로 솟구쳐 오르며 ‘낙천벽’의 궤적으로 지팡이를 내리꽂았다. 단순한 내려치기였지만 거대한 산봉우리가 통째로 쏟아져 내리는 듯한 엄청난 괴력이 실려 있었다.",
+          "dialogueKo": "마지막으로 레오나르가 공중으로 솟구쳐 오르며 ‘천공 낙하격’의 궤적으로 지팡이를 내리꽂았다. 단순한 내려치기였지만 거대한 산봉우리가 통째로 쏟아져 내리는 듯한 엄청난 괴력이 실려 있었다.",
           "dialogueEn": "Leaping high, Leonar brought down the staff in the crushing arc of 'Heaven Fall.' Though a straightforward downward strike, it carried the terrifying momentum of a collapsing mountain peak."
         },
         {
@@ -14572,7 +14572,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제13화 · 운명의 분기점] 녹옥 지팡이의 시험",
       "sceneTitleEn": "[EP.13 · Fate Crossroads] Trial of the Jade Staff",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 알렉산다르 · 레오나르\n• 선택 가이드: 소설 제13화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 알렉산다르 · 레오나르\n• 선택 가이드: 소설 제13화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Aleksandar · Leonar\n• Decision Guide: This is the climax crossroads of Episode 13. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -14662,7 +14662,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch13_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "비스트 숲의 정령들과 조화로운 교감을 나눈다.",
           "labelEn": "Harmonize in gentle resonance with the beast spirits of the woods.",
@@ -14673,7 +14673,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "비스트 숲의 정령들과 조화로운 교감을 나눈다.",
           "textEn": "Harmonize in gentle resonance with the beast spirits of the woods.",
@@ -14825,7 +14825,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -14932,7 +14932,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -15041,7 +15041,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -15140,7 +15140,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -15229,7 +15229,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -15336,7 +15336,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -15427,15 +15427,15 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "호수에서 건져 올린 살진 잉어를 생강과 산나물에 쪄낸 구수한 냄새가 수상 가옥마다 가득했고, 아이들의 웃음소리가 울려 퍼졌다. 부두 한편에서는 늙은 드워프 대장장이가 화덕을 피우며 부러진 작살과 그물을 손질하고 있었다.\n\n장원의 주민들이 반갑게 다가와 따뜻한 보리차를 건네는 동안, 카단은 장원 중앙 회랑 벽면에 새겨진 고대 수호 마법진을 찬찬히 살펴보았다.\n\n그것은 단순한 벽화가 아니라 적의 공격을 호수의 수압으로 분산시키는 정교한 방어 전술도였다. 발리안 숙부의 수호 진법과 일맥상통하는 원리였다.\n\n카단이 벽화를 가리키며 론돌에게 물었다. “이 방어 진법은 북방 성기사단의 ‘대지 완충 진’과 형태가 놀라울 정도로 흡사합니다. 두 기예가 본래 하나의 뿌리에서 나온 것입니까?”\n\n론돌이 막걸리 사발을 들이켜며 고개를 끄덕였다.\n\n“날카로운 눈을 가졌구나, 청년. 백 년 전 발리안 경의 선대 성기사들과 우리 바람섬의 장인들이 함께 완성한 수호 진법이다. 방패는 막는 무기가 아니라 대지와 바다의 품으로 충격을 돌려보내는 문이라는 뜻이지.”",
+      "text": "호수에서 건져 올린 살진 잉어를 생강과 산나물에 쪄낸 구수한 냄새가 수상 가옥마다 가득했고, 아이들의 웃음소리가 울려 퍼졌다. 부두 한편에서는 늙은 드워프 대장장이가 화덕을 피우며 부러진 작살과 그물을 손질하고 있었다.\n\n장원의 주민들이 반갑게 다가와 따뜻한 보리차를 건네는 동안, 카단은 장원 중앙 회랑 벽면에 새겨진 고대 수호 마법진을 찬찬히 살펴보았다.\n\n그것은 단순한 벽화가 아니라 적의 공격을 호수의 수압으로 분산시키는 정교한 방어 전술도였다. 발리안 숙부의 수호 마법진과 일맥상통하는 원리였다.\n\n카단이 벽화를 가리키며 론돌에게 물었다. “이 방어 마법진은 북방 성기사단의 ‘대지 완충 마법진’과 형태가 놀라울 정도로 흡사합니다. 두 기예가 본래 하나의 뿌리에서 나온 것입니까?”\n\n론돌이 막걸리 사발을 들이켜며 고개를 끄덕였다.\n\n“날카로운 눈을 가졌구나, 청년. 백 년 전 발리안 경의 선대 성기사들과 우리 바람섬의 장인들이 함께 완성한 수호 마법진이다. 방패는 막는 무기가 아니라 대지와 바다의 품으로 충격을 돌려보내는 문이라는 뜻이지.”",
       "textEn": "The mouthwatering aroma of fat lake carp steamed with wild mountain ginger and forest greens drifted from the timber verandas, accompanied by the bright laughter of children playing along the railings. On one side of the jetty, an elderly dwarven blacksmith hammered away at a small forge, repairing broken harpoons and iron-weighted nets.\n\nAs the manor folk approached with welcoming smiles, offering mugs of steaming roasted barley tea, Kadan observed the ancient defensive arrays intricately carved into the walls of the central gallery.\n\nIt was far more than ornamental art; it was a sophisticated kinetic distribution matrix designed to absorb hostile impacts and diffuse the force through the immense water pressure of the lake. The tactical philosophy mirrored the profound defensive principles taught by Uncle Balian.\n\nPointing to the carvings, Kadan asked Rondol in quiet admiration. \"This ward configuration shares an extraordinary resemblance with the Earth Cushioning Array of the northern Holy Knights. Did these two traditions spring from a common foundation?\"\n\nRondol took a deep draught of cloud wine from an earthen bowl and nodded with a grin.\n\n\"You have a keen eye, lad. A century ago, Lord Balian's ancestral forebears and the master artisans of Whispering Wind Island collaborated to forge this very matrix. A shield is never merely a wall of metal; it is a gateway that redirects violence back into the gentle embrace of earth and sea.\"",
       "sceneNumber": 5,
       "totalScenes": 10,
       "sceneTitleKo": "[제14화 · 장면 5/10] 호수에서 건져 올린 살진 잉어를 생강과 산나물에 쪄낸…",
       "sceneTitleEn": "[EP.14 · Scene 5/10] Guests of the Mist Lake (Kadan · Balian · Rondol · Sylphid)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 발리안(이그니스의 아버지) / 론돌(일곱 추적자의 중갑 방패 기사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 발리안 · 론돌 · 실피드]이(가) 함께 등장하여 “이 방어 진법은 북방 성기사단의 ‘대지 완충 진’과 형태가 놀라울 정도로 … 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 발리안(이그니스의 아버지) / 론돌(일곱 추적자의 중갑 방패 기사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 발리안 · 론돌 · 실피드]이(가) 함께 등장하여 “이 방어 마법진은 북방 성기사단의 ‘대지 완충 마법진’과 형태가 놀라울 정도로 … 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Balian (Ignis's Father) / Rondol (Heavy shield knight of the Seven Pursuers)\n• Story Comprehension Guide: In this scene, [Kadan · Balian · Rondol · Sylphid] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 14 forward.",
-      "dialogueQuoteKo": "“이 방어 진법은 북방 성기사단의 ‘대지 완충 진’과 형태가 놀라울 정도로 흡사합니다. 두 기예가 본래 하나의 뿌리에서 나온 것입니까?” “날카로운 눈을 가졌구나, 청년. 백 년 전 발리안 경의 선대 성기사들과 우리 바람섬의 장인들이 함께 완성한 수호 진법이다. 방패는 막는 무기가 아니라 대지와 바다의 품으로 충격을 돌려보내는 문이라는 뜻이지.”",
+      "dialogueQuoteKo": "“이 방어 마법진은 북방 성기사단의 ‘대지 완충 마법진’과 형태가 놀라울 정도로 흡사합니다. 두 기예가 본래 하나의 뿌리에서 나온 것입니까?” “날카로운 눈을 가졌구나, 청년. 백 년 전 발리안 경의 선대 성기사들과 우리 바람섬의 장인들이 함께 완성한 수호 마법진이다. 방패는 막는 무기가 아니라 대지와 바다의 품으로 충격을 돌려보내는 문이라는 뜻이지.”",
       "dialogueQuoteEn": "“This ward configuration shares an extraordinary resemblance with the Earth Cushioning Array of the northern Holy Knights. Did these two traditions spring from a common foundation?” “You have a keen eye, lad. A century ago, Lord Balian's ancestral forebears and the master artisans of Whispering Wind Island collaborated to forge this very matrix. A shield is never merely a wall of metal; it is a gateway that redirects violence back into the gentle embrace of earth and sea.”",
       "sceneImageUrl": "/images/storybook/ep_14/page_05.webp",
       "sceneCharacters": [
@@ -15500,21 +15500,21 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 24,
           "imageUrl": "/images/webtoon/episode_14/scene_24.webp",
-          "narrationKo": "그것은 단순한 벽화가 아니라 적의 공격을 호수의 수압으로 분산시키는 정교한 방어 전술도였다. 발리안 숙부의 수호 진법과 일맥상통하는 원리였다.",
+          "narrationKo": "그것은 단순한 벽화가 아니라 적의 공격을 호수의 수압으로 분산시키는 정교한 방어 전술도였다. 발리안 숙부의 수호 마법진과 일맥상통하는 원리였다.",
           "narrationEn": "It was far more than ornamental art; it was a sophisticated kinetic distribution matrix designed to absorb hostile impacts and diffuse the force through the immense water pressure of the lake. The tactical philosophy mirrored the profound defensive principles taught by Uncle Balian.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "그것은 단순한 벽화가 아니라 적의 공격을 호수의 수압으로 분산시키는 정교한 방어 전술도였다. 발리안 숙부의 수호 진법과 일맥상통하는 원리였다.",
+          "dialogueKo": "그것은 단순한 벽화가 아니라 적의 공격을 호수의 수압으로 분산시키는 정교한 방어 전술도였다. 발리안 숙부의 수호 마법진과 일맥상통하는 원리였다.",
           "dialogueEn": "It was far more than ornamental art; it was a sophisticated kinetic distribution matrix designed to absorb hostile impacts and diffuse the force through the immense water pressure of the lake. The tactical philosophy mirrored the profound defensive principles taught by Uncle Balian."
         },
         {
           "cutNumber": 25,
           "imageUrl": "/images/webtoon/episode_14/scene_25.webp",
-          "narrationKo": "카단이 벽화를 가리키며 론돌에게 물었다. “이 방어 진법은 북방 성기사단의 ‘대지 완충 진’과 형태가 놀라울 정도로 흡사합니다. 두 기예가 본래 하나의 뿌리에서 나온 것입니까?”",
+          "narrationKo": "카단이 벽화를 가리키며 론돌에게 물었다. “이 방어 마법진은 북방 성기사단의 ‘대지 완충 마법진’과 형태가 놀라울 정도로 흡사합니다. 두 기예가 본래 하나의 뿌리에서 나온 것입니까?”",
           "narrationEn": "Pointing to the carvings, Kadan asked Rondol in quiet admiration. \"This ward configuration shares an extraordinary resemblance with the Earth Cushioning Array of the northern Holy Knights. Did these two traditions spring from a common foundation?\"",
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "dialogueKo": "카단이 벽화를 가리키며 론돌에게 물었다. “이 방어 진법은 북방 성기사단의 ‘대지 완충 진’과 형태가 놀라울 정도로 흡사합니다. 두 기예가 본래 하나의 뿌리에서 나온 것입니까?”",
+          "dialogueKo": "카단이 벽화를 가리키며 론돌에게 물었다. “이 방어 마법진은 북방 성기사단의 ‘대지 완충 마법진’과 형태가 놀라울 정도로 흡사합니다. 두 기예가 본래 하나의 뿌리에서 나온 것입니까?”",
           "dialogueEn": "Pointing to the carvings, Kadan asked Rondol in quiet admiration. \"This ward configuration shares an extraordinary resemblance with the Earth Cushioning Array of the northern Holy Knights. Did these two traditions spring from a common foundation?\""
         },
         {
@@ -15530,11 +15530,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 27,
           "imageUrl": "/images/webtoon/episode_14/scene_27.webp",
-          "narrationKo": "“날카로운 눈을 가졌구나, 청년. 백 년 전 발리안 경의 선대 성기사들과 우리 바람섬의 장인들이 함께 완성한 수호 진법이다. 방패는 막는 무기가 아니라 대지와 바다의 품으로 충격을 돌려보내는 문이라는 뜻이지.”",
+          "narrationKo": "“날카로운 눈을 가졌구나, 청년. 백 년 전 발리안 경의 선대 성기사들과 우리 바람섬의 장인들이 함께 완성한 수호 마법진이다. 방패는 막는 무기가 아니라 대지와 바다의 품으로 충격을 돌려보내는 문이라는 뜻이지.”",
           "narrationEn": "\"You have a keen eye, lad. A century ago, Lord Balian's ancestral forebears and the master artisans of Whispering Wind Island collaborated to forge this very matrix. A shield is never merely a wall of metal; it is a gateway that redirects violence back into the gentle embrace of earth and sea.\"",
           "speakerKo": "론돌",
           "speakerEn": "Rondol",
-          "dialogueKo": "“날카로운 눈을 가졌구나, 청년. 백 년 전 발리안 경의 선대 성기사들과 우리 바람섬의 장인들이 함께 완성한 수호 진법이다. 방패는 막는 무기가 아니라 대지와 바다의 품으로 충격을 돌려보내는 문이라는 뜻이지.”",
+          "dialogueKo": "“날카로운 눈을 가졌구나, 청년. 백 년 전 발리안 경의 선대 성기사들과 우리 바람섬의 장인들이 함께 완성한 수호 마법진이다. 방패는 막는 무기가 아니라 대지와 바다의 품으로 충격을 돌려보내는 문이라는 뜻이지.”",
           "dialogueEn": "\"You have a keen eye, lad. A century ago, Lord Balian's ancestral forebears and the master artisans of Whispering Wind Island collaborated to forge this very matrix. A shield is never merely a wall of metal; it is a gateway that redirects violence back into the gentle embrace of earth and sea.\""
         }
       ]
@@ -15569,7 +15569,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -15657,7 +15657,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제14화 · 운명의 분기점] 호수 위의 교전",
       "sceneTitleEn": "[EP.14 · Fate Crossroads] Battle on the Mist Lake",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 론돌\n• 선택 가이드: 소설 제14화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 론돌\n• 선택 가이드: 소설 제14화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Rondol\n• Decision Guide: This is the climax crossroads of Episode 14. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -15676,7 +15676,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -15756,7 +15756,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch14_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "론돌의 물결 파도에 맞춰 방패의 반발력을 싣는다.",
           "labelEn": "Channel shield repulsion in rhythm with Rondol's tidal waves.",
@@ -15767,7 +15767,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+20 SNS 획득",
           "bonusDescEn": "+20 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "론돌의 물결 파도에 맞춰 방패의 반발력을 싣는다.",
           "textEn": "Channel shield repulsion in rhythm with Rondol's tidal waves.",
@@ -16065,7 +16065,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "제 15화: # 눈히어로.com - 카단의 여정 15화 - 독사와 사자의 밤 · 카단",
       "nameEn": "Episode 15: Night of Serpent and Lion · Kadan",
-      "text": "자정이 깊어갈 무렵, 안개 호수의 물결은 한층 더 거칠어지고 있었다. 동해안 산맥에서 불어닥친 사나운 밤바람이 구름돌아오는장원의 삼나무 지붕을 사정없이 흔들었고, 굵은 빗줄기가 호수 수면을 어지럽게 두드렸다.\n\n장원 중앙 홀의 거대한 벽난로에서는 참나무 장작이 타닥거리며 붉은 불꽃을 뿜어내고 있었지만, 복도 구석구석으로 스며드는 음산한 한기는 쉽게 가시지 않았다.\n\n벽난로 주위에는 전쟁으로 집을 잃은 어부들과 피난민들이 모여 앉아 말린 생선을 구우며 추위를 녹이고 있었고, 실리아는 레오나르 장군의 오랜 전상(戰傷)을 돌보기 위해 은방울꽃 즙과 박하 잎을 빻아 약탕관을 달이고 있었다.\n\n실리아가 약사발을 저으며 창밖의 험악한 비바람을 내다보았다. “호수의 수면 아래에서 불길한 기류가 소용돌이치고 있어요. 파도의 결이 평소와 달리 검붉은 마나를 머금고 뒤틀려 있네요.”\n\n카단이 무쇠 방패를 난로 옆에 기대어 두며 고개를 끄덕였다. “수도에서 보았던 암흑 감찰대의 살기와 흡사하다. 루시안이 호수까지 추격대를 보낸 것이 분명해.”\n\n그때 나루터의 망루를 지키던 늙은 어부 하나가 흠뻑 젖은 우비를 털며 급히 홀 안으로 뛰어 들어왔다. 그의 품에는 정체불명의 화물 하나가 안겨 있었다.",
+      "text": "자정이 깊어갈 무렵, 안개 호수의 물결은 한층 더 거칠어지고 있었다. 동해안 산맥에서 불어닥친 사나운 밤바람이 구름돌아오는장원의 삼나무 지붕을 사정없이 흔들었고, 굵은 빗줄기가 호수 수면을 어지럽게 두드렸다.\n\n장원 중앙 홀의 거대한 벽난로에서는 참나무 장작이 타닥거리며 붉은 불꽃을 뿜어내고 있었지만, 복도 구석구석으로 스며드는 음산한 한기는 쉽게 가시지 않았다.\n\n벽난로 주위에는 전쟁으로 집을 잃은 어부들과 피난민들이 모여 앉아 말린 생선을 구우며 추위를 녹이고 있었고, 실리아는 레오나르 장군의 오랜 전투의 부상을 돌보기 위해 은방울꽃 즙과 박하 잎을 빻아 치유 포션을 달이고 있었다.\n\n실리아가 치유 물약 잔을 저으며 창밖의 험악한 비바람을 내다보았다. “호수의 수면 아래에서 불길한 기류가 소용돌이치고 있어요. 파도의 결이 평소와 달리 검붉은 마나를 머금고 뒤틀려 있네요.”\n\n카단이 무쇠 방패를 난로 옆에 기대어 두며 고개를 끄덕였다. “수도에서 보았던 암흑 감찰대의 살기와 흡사하다. 루시안이 호수까지 추격대를 보낸 것이 분명해.”\n\n그때 나루터의 망루를 지키던 늙은 어부 하나가 흠뻑 젖은 우비를 털며 급히 홀 안으로 뛰어 들어왔다. 그의 품에는 정체불명의 화물 하나가 안겨 있었다.",
       "textEn": "As midnight deepened, the waves across Mist Lake grew increasingly tumultuous. Violent nocturnal gales sweeping down from the eastern mountain crags battered the cedar shingles of Cloud Return Manor without mercy, while torrents of heavy rain churned the dark waters into foam.\n\nWithin the manor's great central hearth, logs of seasoned oak crackled and cast fluttering orange flames across the hall, yet the uncanny chill seeping through the drafty corridors defied the fire's warmth.\n\nHuddled around the hearthstone, displaced fishermen and war refugees roasted salted lake fish, seeking refuge from the bitter cold. Beside the brazier, Cilia ground lily-of-the-valley extracts and mountain mint leaves in a stone mortar, carefully preparing a restorative tonic for General Leonar's lingering battle wounds.\n\nStirring the ceramic medicine bowl, Cilia gazed through the rain-streaked window into the tempest. \"Ominous currents are churning beneath the lake surface. The cadence of the waves is distorted, poisoned with deep crimson mana.\"\n\nResting his unadorned iron shield against the stone mantle, Kadan nodded solemnly. \"It bears the chilling aura of the imperial secret inquisition we witnessed in the capital. Lucian has surely tracked our scent to this lake.\"\n\nAt that moment, an elderly watchman stationed at the jetty tower hurried into the hall, shaking the driving rain from his oilskin cloak. Clutched tightly against his chest was an unidentified parcel wrapped in sodden burlap.",
       "sceneNumber": 1,
       "totalScenes": 10,
@@ -16090,7 +16090,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -16138,21 +16138,21 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 3,
           "imageUrl": "/images/webtoon/episode_15/scene_03.webp",
-          "narrationKo": "벽난로 주위에는 전쟁으로 집을 잃은 어부들과 피난민들이 모여 앉아 말린 생선을 구우며 추위를 녹이고 있었고, 실리아는 레오나르 장군의 오랜 전상(戰傷)을 돌보기 위해 은방울꽃 즙과 박하 잎을 빻아 약탕관을 달이고 있었다.",
+          "narrationKo": "벽난로 주위에는 전쟁으로 집을 잃은 어부들과 피난민들이 모여 앉아 말린 생선을 구우며 추위를 녹이고 있었고, 실리아는 레오나르 장군의 오랜 전투의 부상을 돌보기 위해 은방울꽃 즙과 박하 잎을 빻아 치유 포션을 달이고 있었다.",
           "narrationEn": "Huddled around the hearthstone, displaced fishermen and war refugees roasted salted lake fish, seeking refuge from the bitter cold. Beside the brazier, Cilia ground lily-of-the-valley extracts and mountain mint leaves in a stone mortar, carefully preparing a restorative tonic for General Leonar's lingering battle wounds.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "벽난로 주위에는 전쟁으로 집을 잃은 어부들과 피난민들이 모여 앉아 말린 생선을 구우며 추위를 녹이고 있었고, 실리아는 레오나르 장군의 오랜 전상(戰傷)을 돌보기 위해 은방울꽃 즙과 박하 잎을 빻아 약탕관을 달이고 있었다.",
+          "dialogueKo": "벽난로 주위에는 전쟁으로 집을 잃은 어부들과 피난민들이 모여 앉아 말린 생선을 구우며 추위를 녹이고 있었고, 실리아는 레오나르 장군의 오랜 전투의 부상을 돌보기 위해 은방울꽃 즙과 박하 잎을 빻아 치유 포션을 달이고 있었다.",
           "dialogueEn": "Huddled around the hearthstone, displaced fishermen and war refugees roasted salted lake fish, seeking refuge from the bitter cold. Beside the brazier, Cilia ground lily-of-the-valley extracts and mountain mint leaves in a stone mortar, carefully preparing a restorative tonic for General Leonar's lingering battle wounds."
         },
         {
           "cutNumber": 4,
           "imageUrl": "/images/webtoon/episode_15/scene_04.webp",
-          "narrationKo": "실리아가 약사발을 저으며 창밖의 험악한 비바람을 내다보았다. “호수의 수면 아래에서 불길한 기류가 소용돌이치고 있어요. 파도의 결이 평소와 달리 검붉은 마나를 머금고 뒤틀려 있네요.”",
+          "narrationKo": "실리아가 치유 물약 잔을 저으며 창밖의 험악한 비바람을 내다보았다. “호수의 수면 아래에서 불길한 기류가 소용돌이치고 있어요. 파도의 결이 평소와 달리 검붉은 마나를 머금고 뒤틀려 있네요.”",
           "narrationEn": "Stirring the ceramic medicine bowl, Cilia gazed through the rain-streaked window into the tempest. \"Ominous currents are churning beneath the lake surface. The cadence of the waves is distorted, poisoned with deep crimson mana.\"",
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "dialogueKo": "실리아가 약사발을 저으며 창밖의 험악한 비바람을 내다보았다. “호수의 수면 아래에서 불길한 기류가 소용돌이치고 있어요. 파도의 결이 평소와 달리 검붉은 마나를 머금고 뒤틀려 있네요.”",
+          "dialogueKo": "실리아가 치유 물약 잔을 저으며 창밖의 험악한 비바람을 내다보았다. “호수의 수면 아래에서 불길한 기류가 소용돌이치고 있어요. 파도의 결이 평소와 달리 검붉은 마나를 머금고 뒤틀려 있네요.”",
           "dialogueEn": "Stirring the ceramic medicine bowl, Cilia gazed through the rain-streaked window into the tempest. \"Ominous currents are churning beneath the lake surface. The cadence of the waves is distorted, poisoned with deep crimson mana.\""
         },
         {
@@ -16182,7 +16182,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 86,
       "name": "레오나르",
       "nameEn": "Leonar",
-      "text": "어부가 거친 숨을 몰아쉬며 화물을 탁자 위에 내려놓았다. “방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 쏜살같이 사라졌습니다! 수신인에 분명히 레오나르 장군님의 존함이 적혀 있었습니다.”\n\n탁자 위에 놓인 것은 사람 두개골 크기만 한 투명한 흑수정 상자였다.\n\n상자 뚜껑 위에는 정교하게 세공된 다섯 마리의 독사 머리가 똬리를 튼 형상으로 조각되어 있었고, 상자의 이음매 사이로는 보랏빛 인광을 띤 불길한 독기가 실핏줄처럼 피어오르고 있었다.\n\n실리아가 녹옥 지팡이를 쥐며 다급하게 물러서라고 외쳤다. “가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 사독이 퍼져나갈 거예요!”\n\n하지만 주의를 주기도 전에, 상자 바닥에 설치된 교활한 시한식 룬 장치가 딸깍하는 소리와 함께 저절로 풀려나갔다.",
+      "text": "어부가 거친 숨을 몰아쉬며 화물을 탁자 위에 내려놓았다. “방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 쏜살같이 사라졌습니다! 수신인에 분명히 레오나르 장군님의 존함이 적혀 있었습니다.”\n\n탁자 위에 놓인 것은 사람 두개골 크기만 한 투명한 흑수정 상자였다.\n\n상자 뚜껑 위에는 정교하게 세공된 다섯 마리의 독사 머리가 똬리를 튼 형상으로 조각되어 있었고, 상자의 이음매 사이로는 보랏빛 인광을 띤 불길한 독기가 실핏줄처럼 피어오르고 있었다.\n\n실리아가 녹옥 지팡이를 쥐며 다급하게 물러서라고 외쳤다. “가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 맹독이 퍼져나갈 거예요!”\n\n하지만 주의를 주기도 전에, 상자 바닥에 설치된 교활한 시한식 룬 장치가 딸깍하는 소리와 함께 저절로 풀려나갔다.",
       "textEn": "Panting heavily, the fisherman set the container down atop the heavy trestle table. \"Just moments ago, a black-sailed cutter slipped through the fog, hurled this crate onto the jetty, and vanished into the darkness! General Leonar's honored name is carved distinctly across the lid!\"\n\nResting upon the timber planks was a skull-sized chest carved from translucent black crystal.\n\nAtop the lid squatted five masterfully sculpted viper heads coiled in serpentine tension, while from the fine hairline fractures along the seams seeped an ominous violet miasma, pulsing like living capillaries.\n\nCilia gripped her staff, her voice ringing out in sharp alarm. \"Do not approach it! The runes etched across those crystal facets bear the forbidden necromantic death-curses of Medusa Gorgo! The instant the lid is released, lethal necrotic venom will engulf this room!\"\n\nBefore her warning could be fully registered, the cunning internal clockwork trigger embedded within the box's base released with a crisp, fatal click.",
       "sceneNumber": 2,
       "totalScenes": 10,
@@ -16190,7 +16190,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "sceneTitleEn": "[EP.15 · Scene 2/10] Night of Serpent and Lion (Leonar · Celia · Medusa Gorgo · Kadan)",
       "sceneExplanationKo": "• 등장인물 및 관계: 레오나르(녹옥 지팡이의 주인) / 실리아(여주인공) / 메두사 고르고(맹독과 저주의 흑마녀)\n• 장면 이해 포인트: 이 장면에서는 [레오나르 · 실리아 · 메두사 고르고 · 카단]이(가) 함께 등장하여 “방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 … 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Leonar (Master of the Jade Staff) / Celia (Heroine) / Medusa Gorgo (Serpent Sorceress of Venom)\n• Story Comprehension Guide: In this scene, [Leonar · Celia · Medusa Gorgo · Kadan] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 15 forward.",
-      "dialogueQuoteKo": "“방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 쏜살같이 사라졌습니다! 수신인에 분명히 레오나르 장군님의 존함이 적혀 있었습니다.” “가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 사독이 퍼져나갈 거예요!”",
+      "dialogueQuoteKo": "“방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 쏜살같이 사라졌습니다! 수신인에 분명히 레오나르 장군님의 존함이 적혀 있었습니다.” “가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 맹독이 퍼져나갈 거예요!”",
       "dialogueQuoteEn": "“Just moments ago, a black-sailed cutter slipped through the fog, hurled this crate onto the jetty, and vanished into the darkness! General Leonar's honored name is carved distinctly across the lid!” “Do not approach it! The runes etched across those crystal facets bear the forbidden necromantic death-curses of Medusa Gorgo! The instant the lid is released, lethal necrotic venom will engulf this room!”",
       "sceneImageUrl": "/images/storybook/ep_15/page_02.webp",
       "sceneCharacters": [
@@ -16207,7 +16207,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -16265,11 +16265,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 10,
           "imageUrl": "/images/webtoon/episode_15/scene_10.webp",
-          "narrationKo": "실리아가 녹옥 지팡이를 쥐며 다급하게 물러서라고 외쳤다. “가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 사독이 퍼져나갈 거예요!”",
+          "narrationKo": "실리아가 녹옥 지팡이를 쥐며 다급하게 물러서라고 외쳤다. “가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 맹독이 퍼져나갈 거예요!”",
           "narrationEn": "Cilia gripped her staff, her voice ringing out in sharp alarm. \"Do not approach it! The runes etched across those crystal facets bear the forbidden necromantic death-curses of Medusa Gorgo! The instant the lid is released, lethal necrotic venom will engulf this room!\"",
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "dialogueKo": "실리아가 녹옥 지팡이를 쥐며 다급하게 물러서라고 외쳤다. “가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 사독이 퍼져나갈 거예요!”",
+          "dialogueKo": "실리아가 녹옥 지팡이를 쥐며 다급하게 물러서라고 외쳤다. “가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 맹독이 퍼져나갈 거예요!”",
           "dialogueEn": "Cilia gripped her staff, her voice ringing out in sharp alarm. \"Do not approach it! The runes etched across those crystal facets bear the forbidden necromantic death-curses of Medusa Gorgo! The instant the lid is released, lethal necrotic venom will engulf this room!\""
         },
         {
@@ -16314,7 +16314,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -16387,7 +16387,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 86,
       "name": "레오나르",
       "nameEn": "Leonar",
-      "text": "치이익 하는 끔찍한 파열음과 함께 독사들의 이빨이 늙은 사자의 살갗을 파고들었고, 시커먼 부식성 사독이 레오나르의 목덜미와 어깨를 타고 거미줄처럼 번져나갔다.\n\n노장의 단단한 근육이 독기에 썩어 들어가며 지독한 유황 타는 냄새가 진동했다.\n\n아이들을 꼭 껴안은 채 무릎을 꿇은 레오나르의 입에서 짙은 핏덩이가 쏟아져 나왔다.\n\n“크윽... 꼬마들아, 괜찮으냐... 다친 곳은 없지...?” 아이들이 공포에 질려 노장의 가슴팍에 얼굴을 묻고 울부짖었다.\n\n“할아버지! 등에서 피가... 검은 피가 흘러요!” 레오나르는 거친 손으로 아이들의 뺨을 어루만지며 억지로 미소를 지어 보였다.\n\n“사자 가죽은 질겨서 이까짓 뱀새끼들의 독니 따위엔 끄떡없단다. 걱정하지 마라.”",
+      "text": "치이익 하는 끔찍한 파열음과 함께 독사들의 이빨이 늙은 사자의 살갗을 파고들었고, 시커먼 부식성 맹독이 레오나르의 목덜미와 어깨를 타고 거미줄처럼 번져나갔다.\n\n노장의 단단한 근육이 독기에 썩어 들어가며 지독한 유황 타는 냄새가 진동했다.\n\n아이들을 꼭 껴안은 채 무릎을 꿇은 레오나르의 입에서 짙은 핏덩이가 쏟아져 나왔다.\n\n“크윽... 꼬마들아, 괜찮으냐... 다친 곳은 없지...?” 아이들이 공포에 질려 노장의 가슴팍에 얼굴을 묻고 울부짖었다.\n\n“할아버지! 등에서 피가... 검은 피가 흘러요!” 레오나르는 거친 손으로 아이들의 뺨을 어루만지며 억지로 미소를 지어 보였다.\n\n“사자 가죽은 질겨서 이까짓 뱀새끼들의 독니 따위엔 끄떡없단다. 걱정하지 마라.”",
       "textEn": "With a sickening hiss of dissolving flesh, the spectral fangs sank deep into the veteran's nape and collarbone. And a network of blackened, corrosive necrotic venom spread like spiderwebs beneath his graying skin.\n\nHis massive muscles sizzled as sulfurous fumes filled the air.\n\nKneeling rigidly with his arms locked around the weeping children, Leonar coughed violently, dark clots of corrupted blood spattering the flagstones.\n\n\"Ghk... Little ones, are you harmed...? Speak to me, are you whole...?\" Clinging to the titan's chest in sheer terror, the children cried out in agony.\n\n\"Grandfather! Your back... Black blood is pouring from your shoulders!\" Caressing their tear-stained cheeks with his massive, calloused hand, Leonar forced a reassuring grin.\n\n\"Lion hide is tougher than dragon scales; the poisoned nibbles of garden snakes cannot bring me down. Fear not, little ones.\"",
       "sceneNumber": 4,
       "totalScenes": 10,
@@ -16413,11 +16413,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 17,
           "imageUrl": "/images/webtoon/episode_15/scene_17.webp",
-          "narrationKo": "치이익 하는 끔찍한 파열음과 함께 독사들의 이빨이 늙은 사자의 살갗을 파고들었고, 시커먼 부식성 사독이 레오나르의 목덜미와 어깨를 타고 거미줄처럼 번져나갔다.",
+          "narrationKo": "치이익 하는 끔찍한 파열음과 함께 독사들의 이빨이 늙은 사자의 살갗을 파고들었고, 시커먼 부식성 맹독이 레오나르의 목덜미와 어깨를 타고 거미줄처럼 번져나갔다.",
           "narrationEn": "With a sickening hiss of dissolving flesh, the spectral fangs sank deep into the veteran's nape and collarbone. And a network of blackened, corrosive necrotic venom spread like spiderwebs beneath his graying skin.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "치이익 하는 끔찍한 파열음과 함께 독사들의 이빨이 늙은 사자의 살갗을 파고들었고, 시커먼 부식성 사독이 레오나르의 목덜미와 어깨를 타고 거미줄처럼 번져나갔다.",
+          "dialogueKo": "치이익 하는 끔찍한 파열음과 함께 독사들의 이빨이 늙은 사자의 살갗을 파고들었고, 시커먼 부식성 맹독이 레오나르의 목덜미와 어깨를 타고 거미줄처럼 번져나갔다.",
           "dialogueEn": "With a sickening hiss of dissolving flesh, the spectral fangs sank deep into the veteran's nape and collarbone. And a network of blackened, corrosive necrotic venom spread like spiderwebs beneath his graying skin."
         },
         {
@@ -16477,7 +16477,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "아이들은 울음을 터뜨렸고, 홀 안은 아비규환의 혼란에 휩싸였다. 상처에서 뿜어져 나오는 사독은 레오나르의 전신 마나 회로를 급속도로 태워버리며 피부를 잿빛으로 변색시켰다.\n\n카단이 성큼 앞으로 뛰쳐나가며 허리춤의 은빛 단검을 뽑아 들었다. 북방 혹한의 설원에서 단련된 별 호흡의 마나가 단검의 날카로운 칼날 위로 서릿발처럼 서려 올라왔다.\n\n“더러운 원혼들이 감히 의로운 자의 피를 더럽히지 못한다!” 카단의 은빛 단검이 허공을 가르며 푸른 유성 같은 궤적을 그렸다. 알렉산다르 스승이 전수했던 성기사의 파마 비검이 사령 독사들의 목을 연달아 꿰뚫었다.\n\n빛의 궤적이 지나간 자리마다 독사들이 처절한 비명을 지르며 하얀 재가 되어 흩어졌다.\n\n동시에 실리아가 녹옥 지팡이를 머리 위로 치켜들며 청아한 바람의 축복을 영창했다.",
+      "text": "아이들은 울음을 터뜨렸고, 홀 안은 아비규환의 혼란에 휩싸였다. 상처에서 뿜어져 나오는 맹독은 레오나르의 전신 마나 회로를 급속도로 태워버리며 피부를 잿빛으로 변색시켰다.\n\n카단이 성큼 앞으로 뛰쳐나가며 허리춤의 은빛 단검을 뽑아 들었다. 북방 혹한의 설원에서 단련된 별 호흡의 마나가 단검의 날카로운 칼날 위로 서릿발처럼 서려 올라왔다.\n\n“더러운 원혼들이 감히 의로운 자의 피를 더럽히지 못한다!” 카단의 은빛 단검이 허공을 가르며 푸른 유성 같은 궤적을 그렸다. 알렉산다르 스승이 전수했던 성기사의 파마 비검이 사령 독사들의 목을 연달아 꿰뚫었다.\n\n빛의 궤적이 지나간 자리마다 독사들이 처절한 비명을 지르며 하얀 재가 되어 흩어졌다.\n\n동시에 실리아가 녹옥 지팡이를 머리 위로 치켜들며 청아한 바람의 축복을 영창했다.",
       "textEn": "Kadan sprang forward with decisive fury, drawing the silver dagger from his belt.\n\nChanneling the star rhythm perfected across the frozen northern tundras, a brilliant aura of purifying starlight wrapped around the razor edge like crackling frost.\n\n\"Foul spirits shall never desecrate the blood of the righteous!\" With fluid, lightning precision, Kadan cleaved through the air. The sacred anti-fiend sword techniques passed down by Master Aleksandar severed the ethereal spines of the five phantom serpents in consecutive arcs of azure radiance.\n\nWherever the blade passed, the screeching apparitions dissolved into shimmering white ash, snuffed out by the starlight.\n\nSimultaneously, Cilia hoisted her Jade Staff high overhead, invoking the ancient cleansing cantrip of the eastern wind.",
       "sceneNumber": 5,
       "totalScenes": 10,
@@ -16502,7 +16502,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -16530,11 +16530,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 23,
           "imageUrl": "/images/webtoon/episode_15/scene_23.webp",
-          "narrationKo": "아이들은 울음을 터뜨렸고, 홀 안은 아비규환의 혼란에 휩싸였다. 상처에서 뿜어져 나오는 사독은 레오나르의 전신 마나 회로를 급속도로 태워버리며 피부를 잿빛으로 변색시켰다.",
+          "narrationKo": "아이들은 울음을 터뜨렸고, 홀 안은 아비규환의 혼란에 휩싸였다. 상처에서 뿜어져 나오는 맹독은 레오나르의 전신 마나 회로를 급속도로 태워버리며 피부를 잿빛으로 변색시켰다.",
           "narrationEn": "Kadan sprang forward with decisive fury, drawing the silver dagger from his belt.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "아이들은 울음을 터뜨렸고, 홀 안은 아비규환의 혼란에 휩싸였다. 상처에서 뿜어져 나오는 사독은 레오나르의 전신 마나 회로를 급속도로 태워버리며 피부를 잿빛으로 변색시켰다.",
+          "dialogueKo": "아이들은 울음을 터뜨렸고, 홀 안은 아비규환의 혼란에 휩싸였다. 상처에서 뿜어져 나오는 맹독은 레오나르의 전신 마나 회로를 급속도로 태워버리며 피부를 잿빛으로 변색시켰다.",
           "dialogueEn": "Kadan sprang forward with decisive fury, drawing the silver dagger from his belt."
         },
         {
@@ -16600,7 +16600,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -16688,7 +16688,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제15화 · 운명의 분기점] 연회장 문의 결전",
       "sceneTitleEn": "[EP.15 · Fate Crossroads] Stand at the Hall Doors",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제15화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제15화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 15. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -16707,7 +16707,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -16796,7 +16796,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch15_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "체내에 스며든 독기를 별 호흡으로 밀어낸다.",
           "labelEn": "Expel the venom seeped into veins using Stellar Arcane Breath.",
@@ -16807,7 +16807,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "체내에 스며든 독기를 별 호흡으로 밀어낸다.",
           "textEn": "Expel the venom seeped into veins using Stellar Arcane Breath.",
@@ -16969,7 +16969,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -17668,7 +17668,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -17783,7 +17783,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제16화 · 운명의 분기점] 풍차 언덕의 마지막 저항",
       "sceneTitleEn": "[EP.16 · Fate Crossroads] Last Stand on Windmill Ridge",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제16화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제16화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 16. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -17802,7 +17802,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -17900,7 +17900,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch16_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "두 아버지의 서약은 우리 가슴속에서 영원히 타오를 것이다.",
           "labelEn": "The vow of our two fathers will burn eternal within our hearts.",
@@ -17911,7 +17911,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "두 아버지의 서약은 우리 가슴속에서 영원히 타오를 것이다.",
           "textEn": "The vow of our two fathers will burn eternal within our hearts.",
@@ -18153,7 +18153,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -18342,7 +18342,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -18476,7 +18476,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -18610,7 +18610,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -18735,7 +18735,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -18808,7 +18808,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 11,
       "name": "이그니스",
       "nameEn": "Ignis",
-      "text": "론돌이 거친 턱수염을 쓰다듬으며 호탕하게 껄껄 웃었다. “하하! 북방의 늑대 녀석이 늙은 바다표범의 심장에 다시 불을 지르는구나. 좋다! 이 론돌의 외다리가 아직 녹슬지 않았음을 증명해 보이마!”\n\n이그니스 역시 입술을 다물며 결의를 다졌다. “황궁 함선의 포격각은 내가 잘 안다. 놈들의 사각을 찌르는 침투라면 내 화염이 길을 비출 것이다.”\n\n해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 해무(海霧) 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.\n\n갤리선의 쇠뇌 발사대에서 흑철 쇠뇌살과 유황 불화살들이 비 오듯 쏟아져 내렸다.\n\n카단이 지체 없이 무쇠 방패를 들어 올려 날아드는 불화살들을 쳐내며 선원들을 보호했다. 쾅 하는 굉음과 함께 방패 표면에서 화염이 튀었지만, 카단의 견고한 하체는 조금도 흔들리지 않았다.",
+      "text": "론돌이 거친 턱수염을 쓰다듬으며 호탕하게 껄껄 웃었다. “하하! 북방의 늑대 녀석이 늙은 바다표범의 심장에 다시 불을 지르는구나. 좋다! 이 론돌의 외다리가 아직 녹슬지 않았음을 증명해 보이마!”\n\n이그니스 역시 입술을 다물며 결의를 다졌다. “황궁 함선의 포격각은 내가 잘 안다. 놈들의 사각을 찌르는 침투라면 내 화염이 길을 비출 것이다.”\n\n해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 바다 안개 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.\n\n갤리선의 쇠뇌 발사대에서 흑철 쇠뇌살과 유황 불화살들이 비 오듯 쏟아져 내렸다.\n\n카단이 지체 없이 무쇠 방패를 들어 올려 날아드는 불화살들을 쳐내며 선원들을 보호했다. 쾅 하는 굉음과 함께 방패 표면에서 화염이 튀었지만, 카단의 견고한 하체는 조금도 흔들리지 않았다.",
       "textEn": "Rondol stroked his briny gray beard, letting out a booming belly laugh. \"Ha! The northern wolf knows how to stoke the embers in an old sea dog's chest! So be it! This pegleg will prove that an old sailor's blood has not turned to bilge water!\"\n\nIgnis tightened his jaw with fierce determination. \"I know the firing angles of imperial siege vessels by heart. If we penetrate their blind spots, my flames will light our path.\"\n\nAt twilight, as blood-red dusk stained the rolling swells, danger struck without warning. Slicing through the ocean fog, three black-hulled imperial attack galleys surged forward, flanking Breeze Wing from port and starboard.\n\nFrom their mounted ballistae erupted a lethal volley of sulfur-tipped fire quarrels and iron grappling anchors.\n\nStepping swiftly to the windward deck, Kadan angled his unadorned iron shield, deflecting the hail of flaming missiles to shield the crew. Sparks cascaded like fireworks against the iron rim, yet Kadan's grounded stance absorbed the kinetic momentum without yielding an inch.",
       "sceneNumber": 6,
       "totalScenes": 10,
@@ -18872,11 +18872,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 28,
           "imageUrl": "/images/webtoon/episode_17/scene_28.webp",
-          "narrationKo": "해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 해무(海霧) 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.",
+          "narrationKo": "해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 바다 안개 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.",
           "narrationEn": "At twilight, as blood-red dusk stained the rolling swells, danger struck without warning. Slicing through the ocean fog, three black-hulled imperial attack galleys surged forward, flanking Breeze Wing from port and starboard.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 해무(海霧) 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.",
+          "dialogueKo": "해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 바다 안개 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.",
           "dialogueEn": "At twilight, as blood-red dusk stained the rolling swells, danger struck without warning. Slicing through the ocean fog, three black-hulled imperial attack galleys surged forward, flanking Breeze Wing from port and starboard."
         },
         {
@@ -18912,7 +18912,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제17화 · 운명의 분기점] 폭풍우를 향한 출항",
       "sceneTitleEn": "[EP.17 · Fate Crossroads] Setting Sail into the Squall",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 론돌\n• 선택 가이드: 소설 제17화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 론돌\n• 선택 가이드: 소설 제17화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Ignis · Rondol\n• Decision Guide: This is the climax crossroads of Episode 17. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -19002,18 +19002,18 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch17_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "바다의 호흡과 교감하여 거친 파도를 다스린다.",
           "labelEn": "Commune with the sea's ancient pulse to calm the wild swells.",
-          "followUpTextKo": "“성진호흡의 마나가 바다에 퍼지자 거센 파도가 잔잔한 수로를 열어주었다.”",
+          "followUpTextKo": "“별빛의 호흡의 마나가 바다에 퍼지자 거센 파도가 잔잔한 수로를 열어주었다.”",
           "followUpTextEn": "“Arcane resonance quieted the raging surges, opening a safe canal through the sea.”",
           "bonusType": "sns",
           "bonusValue": 30,
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "바다의 호흡과 교감하여 거친 파도를 다스린다.",
           "textEn": "Commune with the sea's ancient pulse to calm the wild swells.",
@@ -19023,7 +19023,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
             "buffName": "+30 SNS 획득",
             "buffNameEn": "+30 SNS Points"
           },
-          "followUpLine": "“성진호흡의 마나가 바다에 퍼지자 거센 파도가 잔잔한 수로를 열어주었다.”",
+          "followUpLine": "“별빛의 호흡의 마나가 바다에 퍼지자 거센 파도가 잔잔한 수로를 열어주었다.”",
           "followUpLineEn": "“Arcane resonance quieted the raging surges, opening a safe canal through the sea.”"
         }
       ]
@@ -19049,7 +19049,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -19156,7 +19156,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -19263,7 +19263,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -19372,7 +19372,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -19499,7 +19499,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -19607,7 +19607,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -19751,7 +19751,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -19841,7 +19841,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -19967,7 +19967,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -20083,7 +20083,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제18화 · 운명의 분기점] 금단의 기록 회수",
       "sceneTitleEn": "[EP.18 · Fate Crossroads] Securing Forbidden Records",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제18화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제18화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 18. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -20102,7 +20102,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -20200,9 +20200,9 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch18_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
-          "labelKo": "간다르의 옛 지혜와 감응하여 사원의 결계를 해제한다.",
+          "labelKo": "에올루스의 옛 지혜와 감응하여 사원의 결계를 해제한다.",
           "labelEn": "Resonate with Gandar's primordial wisdom to dissolve the temple seals.",
           "followUpTextKo": "“사원 기둥마다 잠들어 있던 고대 영혼들이 카단의 빛을 보고 길을 열어주었다.”",
           "followUpTextEn": "“Dormant spirits within the columns recognized Kadan's pure aura and bowed.”",
@@ -20211,9 +20211,9 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
-          "text": "간다르의 옛 지혜와 감응하여 사원의 결계를 해제한다.",
+          "text": "에올루스의 옛 지혜와 감응하여 사원의 결계를 해제한다.",
           "textEn": "Resonate with Gandar's primordial wisdom to dissolve the temple seals.",
           "reward": {
             "snsCoins": 30,
@@ -20256,7 +20256,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -20348,7 +20348,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 62,
       "name": "실리아",
       "nameEn": "Celia",
-      "text": "“더 이상 너희 같은 그림자의 괴물들에게 속지 않는다!” 실리아는 녹옥 지팡이를 휘둘러 성전에 솟구친 거대한 지하수를 수십 자루의 서슬 퍼런 수류검(水流劍)으로 바꾸어 골렘들의 관절을 단숨에 절단해 버렸다.\n\n세 젊은이의 분노와 결의가 완벽한 삼위일체를 이루며, 암흑 암살 부대는 순식간에 차가운 잔해로 분쇄되었다.\n\n치열했던 전투가 끝나고 다시 고요한 적막이 찾아왔을 때, 실리아는 제단에서 추출한 푸른 ‘진실의 기억 수정체’를 비단 손수건에 소중히 감쌌다.\n\n십팔 년간 어둠 속에 묻혀 있던 어머니의 마지막 숨결이자, 억울하게 죽어간 알렉산다르 스승과 발리안 숙부의 결백을 입증할 무구한 증거였다.\n\n카단이 방패에 묻은 먼지를 털어내며 성전 뒤편 암벽에 뚫린 거대한 나선형 계단을 가리켰다.\n\n“이 계단은 비취 결계탑 바로 아래의 ‘하늘 제단’으로 이어진다. 그곳에 에올루스 국왕이 유폐되어 있을 것이다.”",
+      "text": "“더 이상 너희 같은 그림자의 괴물들에게 속지 않는다!” 실리아는 녹옥 지팡이를 휘둘러 성전에 솟구친 거대한 지하수를 수십 자루의 서슬 퍼런 물의 마법검으로 바꾸어 골렘들의 관절을 단숨에 절단해 버렸다.\n\n세 젊은이의 분노와 결의가 완벽한 삼위일체를 이루며, 암흑 암살 부대는 순식간에 차가운 잔해로 분쇄되었다.\n\n치열했던 전투가 끝나고 다시 고요한 적막이 찾아왔을 때, 실리아는 제단에서 추출한 푸른 ‘진실의 기억 수정체’를 비단 손수건에 소중히 감쌌다.\n\n십팔 년간 어둠 속에 묻혀 있던 어머니의 마지막 숨결이자, 억울하게 죽어간 알렉산다르 스승과 발리안 숙부의 결백을 입증할 무구한 증거였다.\n\n카단이 방패에 묻은 먼지를 털어내며 성전 뒤편 암벽에 뚫린 거대한 나선형 계단을 가리켰다.\n\n“이 계단은 비취 결계탑 바로 아래의 ‘하늘 제단’으로 이어진다. 그곳에 에올루스 국왕이 유폐되어 있을 것이다.”",
       "textEn": "\"I will never be deceived by monsters of shadow again!\" Sweeping her Jade Staff, Cilia transformed the geysering subterranean waters into razor-sharp hydro-blades, cleanly severing the golems' limbs.\n\nIn the face of the three youths' furious coordination, the ambush was annihilated within moments.\n\nAs silence settled once more over the hall, Cilia wrapped the glowing azure Memory Shard in a fine silk mantle.\n\nIt was the undeniable proof containing her mother's dying breath and the vindication of Master Aleksandar and Uncle Balian.\n\nPointing his shield toward the spiraling stone stairway carved into the cavern wall, Kadan spoke with determination.\n\n\"This stairway ascends directly beneath the Sky Altar of the Barrier Spire. King Aeolus must be held captive there.\"",
       "sceneNumber": 9,
       "totalScenes": 10,
@@ -20364,7 +20364,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -20419,11 +20419,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 44,
           "imageUrl": "/images/webtoon/episode_18/scene_44.webp",
-          "narrationKo": "“더 이상 너희 같은 그림자의 괴물들에게 속지 않는다!” 실리아는 녹옥 지팡이를 휘둘러 성전에 솟구친 거대한 지하수를 수십 자루의 서슬 퍼런 수류검(水流劍)으로 바꾸어 골렘들의 관절을 단숨에 절단해 버렸다.",
+          "narrationKo": "“더 이상 너희 같은 그림자의 괴물들에게 속지 않는다!” 실리아는 녹옥 지팡이를 휘둘러 성전에 솟구친 거대한 지하수를 수십 자루의 서슬 퍼런 물의 마법검으로 바꾸어 골렘들의 관절을 단숨에 절단해 버렸다.",
           "narrationEn": "\"I will never be deceived by monsters of shadow again!\" Sweeping her Jade Staff, Cilia transformed the geysering subterranean waters into razor-sharp hydro-blades, cleanly severing the golems' limbs.",
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "dialogueKo": "“더 이상 너희 같은 그림자의 괴물들에게 속지 않는다!” 실리아는 녹옥 지팡이를 휘둘러 성전에 솟구친 거대한 지하수를 수십 자루의 서슬 퍼런 수류검(水流劍)으로 바꾸어 골렘들의 관절을 단숨에 절단해 버렸다.",
+          "dialogueKo": "“더 이상 너희 같은 그림자의 괴물들에게 속지 않는다!” 실리아는 녹옥 지팡이를 휘둘러 성전에 솟구친 거대한 지하수를 수십 자루의 서슬 퍼런 물의 마법검으로 바꾸어 골렘들의 관절을 단숨에 절단해 버렸다.",
           "dialogueEn": "\"I will never be deceived by monsters of shadow again!\" Sweeping her Jade Staff, Cilia transformed the geysering subterranean waters into razor-sharp hydro-blades, cleanly severing the golems' limbs."
         },
         {
@@ -20499,7 +20499,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -20618,7 +20618,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -20710,7 +20710,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 25,
       "name": "에올루스",
       "nameEn": "Aeolus",
-      "text": "“아버지! 제발 눈을 뜨세요! 제 손에 들린 어머니의 지팡이와 이 기억 수정을 보세요! 어머니를 죽인 것은 성기사단이 아니라, 황실과 손을 잡고 왕권을 탐낸 제피르 대장로예요!”\n\n에올루스는 고통스러운 듯 이마를 감싸 쥐면서도 대검의 서슬을 낮추지 않았다.\n\n“사악한 속임수다! 성기사의 은빛 단검이 내 아내의 심장을 찔렀다는 제피르의 증언을 내 어찌 의심하겠느냐! 네 곁에 선 청년이 진정 결백하다면, 내 세 가지 시험을 통과하여 그 굳은 신념을 증명해 보아라!”\n\n카단이 한 걸음 앞으로 나서며 무쇠 방패를 가슴 높이로 굳건히 들어 올렸다.\n\n“어떤 시련이든 피하지 않겠습니다. 알렉산다르 스승님의 결백과 실리아의 진심을 증명할 수 있다면, 제 목숨을 걸고 이 다리를 건너겠습니다.”\n\n이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 일국의 신기(神器)다.”",
+      "text": "“아버지! 제발 눈을 뜨세요! 제 손에 들린 어머니의 지팡이와 이 기억 수정을 보세요! 어머니를 죽인 것은 성기사단이 아니라, 황실과 손을 잡고 왕권을 탐낸 제피르 대장로예요!”\n\n에올루스는 고통스러운 듯 이마를 감싸 쥐면서도 대검의 서슬을 낮추지 않았다.\n\n“사악한 속임수다! 성기사의 은빛 단검이 내 아내의 심장을 찔렀다는 제피르의 증언을 내 어찌 의심하겠느냐! 네 곁에 선 청년이 진정 결백하다면, 내 세 가지 시험을 통과하여 그 굳은 신념을 증명해 보아라!”\n\n카단이 한 걸음 앞으로 나서며 무쇠 방패를 가슴 높이로 굳건히 들어 올렸다.\n\n“어떤 시련이든 피하지 않겠습니다. 알렉산다르 스승님의 결백과 실리아의 진심을 증명할 수 있다면, 제 목숨을 걸고 이 다리를 건너겠습니다.”\n\n이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 왕국의 전설적인 성물이다.”",
       "textEn": "\"Father, look upon me! Look at mother's staff in my hands and this living memory crystal! It was not the Holy Knights who took mother's life, but High Elder Zephyr, who poisoned her cup in treasonous collusion with the imperial court!\"\n\nClutching his temples in agony, Aeolus refused to lower his guard.\n\n\"Vile deceptions! Zephyr testified before the council that the silver dagger of the Holy Order pierced my queen's heart! If the youth beside you is truly innocent, let him brave my three trials to prove his purity of purpose!\"\n\nPlanting his boots firmly, Kadan raised his unadorned iron shield to chest height.\n\n\"I will not shrink from any trial. If crossing this bridge can vindicate Master Aleksandar and prove Cilia's truth, I wager my life upon this stone.\"\n\nIgnis gripped Kadan's shoulder with solemn urgency. \"Stay sharp, Kadan. King Aeolus's storm blade is a divine relic of the winds, capable of cleaving imperial knights in twain with a single stroke.\"",
       "sceneNumber": 2,
       "totalScenes": 10,
@@ -20744,7 +20744,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -20822,11 +20822,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 12,
           "imageUrl": "/images/webtoon/episode_19/scene_12.webp",
-          "narrationKo": "이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 일국의 신기(神器)다.”",
+          "narrationKo": "이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 왕국의 전설적인 성물이다.”",
           "narrationEn": "Ignis gripped Kadan's shoulder with solemn urgency. \"Stay sharp, Kadan. King Aeolus's storm blade is a divine relic of the winds, capable of cleaving imperial knights in twain with a single stroke.\"",
           "speakerKo": "이그니스",
           "speakerEn": "Ignis",
-          "dialogueKo": "이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 일국의 신기(神器)다.”",
+          "dialogueKo": "이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 왕국의 전설적인 성물이다.”",
           "dialogueEn": "Ignis gripped Kadan's shoulder with solemn urgency. \"Stay sharp, Kadan. King Aeolus's storm blade is a divine relic of the winds, capable of cleaving imperial knights in twain with a single stroke.\""
         }
       ]
@@ -21245,7 +21245,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제19화 · 운명의 분기점] 시련의 정점",
       "sceneTitleEn": "[EP.19 · Fate Crossroads] Pinnacle of Trials",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 알렉산다르\n• 선택 가이드: 소설 제19화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 알렉산다르\n• 선택 가이드: 소설 제19화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Ignis · Aleksandar\n• Decision Guide: This is the climax crossroads of Episode 19. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -21344,7 +21344,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch19_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "시험관의 영혼을 상하게 하지 않고 마나만 부드럽게 흘린다.",
           "labelEn": "Harm not the examiners' spirits; divert their mana gently.",
@@ -21355,7 +21355,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "시험관의 영혼을 상하게 하지 않고 마나만 부드럽게 흘린다.",
           "textEn": "Harm not the examiners' spirits; divert their mana gently.",
@@ -21391,7 +21391,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -21498,7 +21498,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -21624,7 +21624,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -21708,7 +21708,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "제 20화: # 눈히어로.com - 카단의 여정 20화 - 꽃배를 삼킨 파도 · 카단",
       "nameEn": "Episode 20: The Wave That Swallowed the Flower Ship · Kadan",
-      "text": "비취 결계탑의 중심부에 진입했을 때, 제피르 대장로는 이미 제단 중앙의 마나 코어를 ‘나인섀도우 코덱스’의 칠흑빛 마도 장치와 강제로 연결해 둔 상태였다.\n\n금지된 암흑 마나가 비취색 결계탑의 회로를 시커멓게 오염시키며 대지를 뒤흔들었고, 탑의 첨탑에서 뿜어져 나온 검은 번개가 대해의 수평선을 가르며 잠들어 있던 심연의 해일(海嘯)을 깨워 올렸다.\n\n수천 년 동안 섬의 온화한 기후를 유지해 주던 고대 마나 순환계가 역류하면서 하늘은 핏빛으로 물들었고, 지축을 뒤흔드는 진동과 함께 성전의 거대한 대리석 벽면들이 무너져 내렸다.\n\n제피르가 광기에 찬 비웃음을 터뜨리며 마도 장치를 작동시켰다.\n\n“어리석은 에올루스와 철없는 왕녀여! 바람 속삭임 섬은 오늘부로 신세계를 열어젖힐 거대한 제물이 될 것이다! 대해의 심연이 모든 것을 삼키고 나면, 황실과 내가 손을 잡고 이 대륙의 새로운 지배자로 군림할 것이다!”\n\n카단과 이그니스가 무기를 쥐고 앞으로 달려들었지만, 폭주하는 결계탑의 마나 역류가 거대한 충격파를 일으키며 제피르의 신형을 공간 전이진 속으로 삼켜버렸다.",
+      "text": "비취 결계탑의 중심부에 진입했을 때, 제피르 대장로는 이미 제단 중앙의 마나 코어를 ‘나인섀도우 코덱스’의 칠흑빛 마도 장치와 강제로 연결해 둔 상태였다.\n\n금지된 암흑 마나가 비취색 결계탑의 회로를 시커멓게 오염시키며 대지를 뒤흔들었고, 탑의 첨탑에서 뿜어져 나온 검은 번개가 대해의 수평선을 가르며 잠들어 있던 심연의 거대한 해일을 깨워 올렸다.\n\n수천 년 동안 섬의 온화한 기후를 유지해 주던 고대 마나 순환계가 역류하면서 하늘은 핏빛으로 물들었고, 지축을 뒤흔드는 진동과 함께 성전의 거대한 대리석 벽면들이 무너져 내렸다.\n\n제피르가 광기에 찬 비웃음을 터뜨리며 마도 장치를 작동시켰다.\n\n“어리석은 에올루스와 철없는 왕녀여! 바람 속삭임 섬은 오늘부로 신세계를 열어젖힐 거대한 제물이 될 것이다! 대해의 심연이 모든 것을 삼키고 나면, 황실과 내가 손을 잡고 이 대륙의 새로운 지배자로 군림할 것이다!”\n\n카단과 이그니스가 무기를 쥐고 앞으로 달려들었지만, 폭주하는 결계탑의 마나 역류가 거대한 충격파를 일으키며 제피르의 신형을 공간 전이진 속으로 삼켜버렸다.",
       "textEn": "Entering the sanctum of the Jade Barrier Spire, the companions discovered that High Elder Zephyr had already integrated the core mana matrix into the obsidian apparatus of the Nine Shadows Codex.\n\nForbidden abyssal mana tainted the jade conduits of the spire, shaking the foundations of the island. Black lightning erupted from the apex, cleaving through the ocean horizon and awakening a catastrophic tidal wave from the sleeping depths.\n\nAncient mana circulation systems that had maintained the island's gentle climate for thousands of years inverted with cataclysmic violence. Staining the heavens crimson as colossal marble walls fractured and tumbled into the abyss.\n\nZephyr shrieked in maniacal ecstasy as he primed the conduits.\n\n\"Foolish Aeolus and witless princess! Whispering Wind Island shall serve as the grand sacrificial altar for the new era! Once the ocean swallows everything, the empire and I shall rule supreme over the continent!\"\n\nKadan and Ignis surged forward, but a violent concussive shockwave from the collapsing core swept Zephyr into a spatial teleportation rift.",
       "sceneNumber": 1,
       "totalScenes": 10,
@@ -21762,11 +21762,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 2,
           "imageUrl": "/images/webtoon/episode_20/scene_02.webp",
-          "narrationKo": "금지된 암흑 마나가 비취색 결계탑의 회로를 시커멓게 오염시키며 대지를 뒤흔들었고, 탑의 첨탑에서 뿜어져 나온 검은 번개가 대해의 수평선을 가르며 잠들어 있던 심연의 해일(海嘯)을 깨워 올렸다.",
+          "narrationKo": "금지된 암흑 마나가 비취색 결계탑의 회로를 시커멓게 오염시키며 대지를 뒤흔들었고, 탑의 첨탑에서 뿜어져 나온 검은 번개가 대해의 수평선을 가르며 잠들어 있던 심연의 거대한 해일을 깨워 올렸다.",
           "narrationEn": "Forbidden abyssal mana tainted the jade conduits of the spire, shaking the foundations of the island. Black lightning erupted from the apex, cleaving through the ocean horizon and awakening a catastrophic tidal wave from the sleeping depths.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "금지된 암흑 마나가 비취색 결계탑의 회로를 시커멓게 오염시키며 대지를 뒤흔들었고, 탑의 첨탑에서 뿜어져 나온 검은 번개가 대해의 수평선을 가르며 잠들어 있던 심연의 해일(海嘯)을 깨워 올렸다.",
+          "dialogueKo": "금지된 암흑 마나가 비취색 결계탑의 회로를 시커멓게 오염시키며 대지를 뒤흔들었고, 탑의 첨탑에서 뿜어져 나온 검은 번개가 대해의 수평선을 가르며 잠들어 있던 심연의 거대한 해일을 깨워 올렸다.",
           "dialogueEn": "Forbidden abyssal mana tainted the jade conduits of the spire, shaking the foundations of the island. Black lightning erupted from the apex, cleaving through the ocean horizon and awakening a catastrophic tidal wave from the sleeping depths."
         },
         {
@@ -21832,7 +21832,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -21930,7 +21930,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -22019,7 +22019,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -22209,7 +22209,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "카단은 양손으로 무쇠 방패를 꽉 쥐며 대지의 마나를 온몸으로 끌어올렸다. 알렉산다르 스승이 생전에 전수했던 성기사의 궁극오의, ‘성진불락벽(星辰不落壁)’의 호흡이 카단의 가슴속에서 찬란한 별빛으로 타올랐다.\n\n카단이 방패를 앞으로 내지르며 사자후를 토해냈다. “등 뒤의 온기를 지키기 위해 내 방패는 결코 깨어지지 않는다! 대지의 수호령들이여, 별의 숨결로 일어서라!”\n\n카단의 방패 전면에서 찬란한 푸른 별빛의 마나 장벽이 솟구쳐 올랐다. 실리아가 녹옥 지팡이의 바람 마나를 장벽에 불어넣었고, 에올루스 국왕 역시 하늘 제단에서 자신의 모든 폭풍 마나를 카단의 방패에 집중시켰다.\n\n별빛과 비취빛 바람이 하나로 응축되며 거대한 산맥만 한 수호벽이 바다 위에 우뚝 솟아올랐다.\n\n콰아아아아앙! 검은 해일과 리바이어던의 암흑 마나포가 카단의 별빛 장벽을 정면으로 강타했다. 하늘과 바다가 뒤집히는 듯한 굉음과 함께 엄청난 충격파가 대해를 뒤흔들었다.",
+      "text": "카단은 양손으로 무쇠 방패를 꽉 쥐며 대지의 마나를 온몸으로 끌어올렸다. 알렉산다르 스승이 생전에 전수했던 성기사의 궁극 수호 마법, ‘별빛의 절대 방벽’의 마나 호흡이 카단의 가슴속에서 찬란한 별빛으로 타올랐다.\n\n카단이 방패를 앞으로 내지르며 사자후를 토해냈다. “등 뒤의 온기를 지키기 위해 내 방패는 결코 깨어지지 않는다! 대지의 수호령들이여, 별의 숨결로 일어서라!”\n\n카단의 방패 전면에서 찬란한 푸른 별빛의 마나 장벽이 솟구쳐 올랐다. 실리아가 녹옥 지팡이의 바람 마나를 장벽에 불어넣었고, 에올루스 국왕 역시 하늘 제단에서 자신의 모든 폭풍 마나를 카단의 방패에 집중시켰다.\n\n별빛과 비취빛 바람이 하나로 응축되며 거대한 산맥만 한 수호벽이 바다 위에 우뚝 솟아올랐다.\n\n콰아아아아앙! 검은 해일과 리바이어던의 암흑 마나포가 카단의 별빛 장벽을 정면으로 강타했다. 하늘과 바다가 뒤집히는 듯한 굉음과 함께 엄청난 충격파가 대해를 뒤흔들었다.",
       "textEn": "Grasping his unadorned iron shield with both hands, Kadan drew the foundational power of the earth deep into his spirit. The ultimate defensive mystery passed down by Master Aleksandar—the 'Star-Steadfast Bulwark'—ignited within Kadan's breast in an aura of brilliant starlight.\n\nPlanting his boots into the timbers, Kadan unleashed a lion-hearted roar. \"To protect the warmth behind me, this shield shall never break! Guardians of the earth, awaken through the breath of the stars!\"\n\nA monumental wall of celestial blue starlight erupted from Kadan's shield. Cilia channeled the tempestuous winds of the Jade Staff into the barrier, while King Aeolus directed the full fury of his storm mana from the Sky Altar into Kadan's guard.\n\nStarlight and jade wind fused into an impenetrable mountain of protective light rising from the sea. Boom!\n\nThe black tsunami and the Leviathan's necrotic beam crashed headlong into Kadan's starlight barrier. A cataclysmic shockwave rent the heavens and the sea, vaporizing waves into billowing walls of white steam.",
       "sceneNumber": 6,
       "totalScenes": 10,
@@ -22234,7 +22234,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -22262,11 +22262,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 28,
           "imageUrl": "/images/webtoon/episode_20/scene_28.webp",
-          "narrationKo": "카단은 양손으로 무쇠 방패를 꽉 쥐며 대지의 마나를 온몸으로 끌어올렸다. 알렉산다르 스승이 생전에 전수했던 성기사의 궁극오의, ‘성진불락벽(星辰不落壁)’의 호흡이 카단의 가슴속에서 찬란한 별빛으로 타올랐다.",
+          "narrationKo": "카단은 양손으로 무쇠 방패를 꽉 쥐며 대지의 마나를 온몸으로 끌어올렸다. 알렉산다르 스승이 생전에 전수했던 성기사의 궁극 수호 마법, ‘별빛의 절대 방벽’의 마나 호흡이 카단의 가슴속에서 찬란한 별빛으로 타올랐다.",
           "narrationEn": "Grasping his unadorned iron shield with both hands, Kadan drew the foundational power of the earth deep into his spirit. The ultimate defensive mystery passed down by Master Aleksandar—the 'Star-Steadfast Bulwark'—ignited within Kadan's breast in an aura of brilliant starlight.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "카단은 양손으로 무쇠 방패를 꽉 쥐며 대지의 마나를 온몸으로 끌어올렸다. 알렉산다르 스승이 생전에 전수했던 성기사의 궁극오의, ‘성진불락벽(星辰不落壁)’의 호흡이 카단의 가슴속에서 찬란한 별빛으로 타올랐다.",
+          "dialogueKo": "카단은 양손으로 무쇠 방패를 꽉 쥐며 대지의 마나를 온몸으로 끌어올렸다. 알렉산다르 스승이 생전에 전수했던 성기사의 궁극 수호 마법, ‘별빛의 절대 방벽’의 마나 호흡이 카단의 가슴속에서 찬란한 별빛으로 타올랐다.",
           "dialogueEn": "Grasping his unadorned iron shield with both hands, Kadan drew the foundational power of the earth deep into his spirit. The ultimate defensive mystery passed down by Master Aleksandar—the 'Star-Steadfast Bulwark'—ignited within Kadan's breast in an aura of brilliant starlight."
         },
         {
@@ -22322,7 +22322,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제20화 · 운명의 분기점] 해일 앞의 방패",
       "sceneTitleEn": "[EP.20 · Fate Crossroads] Shield Before the Wave",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 알렉산다르\n• 선택 가이드: 소설 제20화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 알렉산다르\n• 선택 가이드: 소설 제20화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Aleksandar\n• Decision Guide: This is the climax crossroads of Episode 20. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -22341,7 +22341,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -22421,7 +22421,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch20_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "바람을 일으켜 꽃배의 선체를 수면 위로 띄운다.",
           "labelEn": "Summon Arcane upsurges to lift the flower ship above the swell.",
@@ -22432,7 +22432,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "바람을 일으켜 꽃배의 선체를 수면 위로 띄운다.",
           "textEn": "Summon Arcane upsurges to lift the flower ship above the swell.",
@@ -22576,7 +22576,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -22665,7 +22665,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -22875,7 +22875,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "카단이 무쇠 방패를 비껴 쥐며 갯벌 위로 가장 먼저 뛰어내렸다. 바닷물에 젖은 장화 밑으로 부서진 조개껍데기와 숯가루가 버석거렸다.\n\n“루시안의 황실 토벌대가 이미 해안선을 봉쇄하고 초토화 작전을 펼친 것이다. 불길이 번진 지 채 반나절도 지나지 않았다. 살아남은 사람들이 있는지 찾아야 한다.”\n\n실리아가 녹옥 지팡이를 들어 해안가의 바람을 모으며 미간을 찌푸렸다.\n\n“서쪽 해안 절벽 아래 소금 창고 쪽에서 미약한 사람들의 숨결이 느껴져요. 하지만 그 주변으로 사나운 마나의 덫들이 촘촘하게 깔려 있어요.”\n\n일행은 잿더미와 부러진 선박 잔해를 피해 조심스럽게 서쪽 해안 암벽으로 향했다. 그곳에는 불타 무너진 대형 병원선의 목재 용골(龍骨)이 비스듬히 누워 있었고, 선체 틈새로 검은 핏자국이 어지럽게 번져 있었다.",
+      "text": "카단이 무쇠 방패를 비껴 쥐며 갯벌 위로 가장 먼저 뛰어내렸다. 바닷물에 젖은 장화 밑으로 부서진 조개껍데기와 숯가루가 버석거렸다.\n\n“루시안의 황실 토벌대가 이미 해안선을 봉쇄하고 초토화 작전을 펼친 것이다. 불길이 번진 지 채 반나절도 지나지 않았다. 살아남은 사람들이 있는지 찾아야 한다.”\n\n실리아가 녹옥 지팡이를 들어 해안가의 바람을 모으며 미간을 찌푸렸다.\n\n“서쪽 해안 절벽 아래 소금 창고 쪽에서 미약한 사람들의 숨결이 느껴져요. 하지만 그 주변으로 사나운 마나의 덫들이 촘촘하게 깔려 있어요.”\n\n일행은 잿더미와 부러진 선박 잔해를 피해 조심스럽게 서쪽 해안 암벽으로 향했다. 그곳에는 불타 무너진 대형 병원선의 선체의 거대한 중심 뼈대가 비스듬히 누워 있었고, 선체 틈새로 검은 핏자국이 어지럽게 번져 있었다.",
       "textEn": "Bracing his unadorned iron shield, Kadan leaped first onto the wet mudflats, his leather boots crunching through crushed seashells and charcoal dust.\n\n\"Lucian's imperial vanguard has fortified the coastline and initiated a brutal scorched-earth campaign. The fires were set less than half a sunrise ago. We must search for survivors amidst the ruins.\"\n\nRaising her Jade Staff to gather the coastal winds, Cilia knit her brow in deep concentration.\n\n\"Beneath the western sea cliffs near the salt cellar, I sense the faint, labored breathing of living souls. But lethal mana snares are woven densely across the approach.\"\n\nWeaving through heaps of sodden ash and charred timber ribs, the companions advanced cautiously toward the western cliff face. There lay the canted keel of a massive, burned hospital barge, dark bloodstains smeared along the fractured hull.",
       "sceneNumber": 2,
       "totalScenes": 10,
@@ -22900,7 +22900,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -22959,11 +22959,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 11,
           "imageUrl": "/images/webtoon/episode_21/scene_11.webp",
-          "narrationKo": "일행은 잿더미와 부러진 선박 잔해를 피해 조심스럽게 서쪽 해안 암벽으로 향했다. 그곳에는 불타 무너진 대형 병원선의 목재 용골(龍骨)이 비스듬히 누워 있었고, 선체 틈새로 검은 핏자국이 어지럽게 번져 있었다.",
+          "narrationKo": "일행은 잿더미와 부러진 선박 잔해를 피해 조심스럽게 서쪽 해안 암벽으로 향했다. 그곳에는 불타 무너진 대형 병원선의 선체의 거대한 중심 뼈대가 비스듬히 누워 있었고, 선체 틈새로 검은 핏자국이 어지럽게 번져 있었다.",
           "narrationEn": "Weaving through heaps of sodden ash and charred timber ribs, the companions advanced cautiously toward the western cliff face. There lay the canted keel of a massive, burned hospital barge, dark bloodstains smeared along the fractured hull.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "일행은 잿더미와 부러진 선박 잔해를 피해 조심스럽게 서쪽 해안 암벽으로 향했다. 그곳에는 불타 무너진 대형 병원선의 목재 용골(龍骨)이 비스듬히 누워 있었고, 선체 틈새로 검은 핏자국이 어지럽게 번져 있었다.",
+          "dialogueKo": "일행은 잿더미와 부러진 선박 잔해를 피해 조심스럽게 서쪽 해안 암벽으로 향했다. 그곳에는 불타 무너진 대형 병원선의 선체의 거대한 중심 뼈대가 비스듬히 누워 있었고, 선체 틈새로 검은 핏자국이 어지럽게 번져 있었다.",
           "dialogueEn": "Weaving through heaps of sodden ash and charred timber ribs, the companions advanced cautiously toward the western cliff face. There lay the canted keel of a massive, burned hospital barge, dark bloodstains smeared along the fractured hull."
         }
       ]
@@ -23087,7 +23087,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -23203,7 +23203,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -23371,7 +23371,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제21화 · 운명의 분기점] 화염 갑판의 혈투",
       "sceneTitleEn": "[EP.21 · Fate Crossroads] Duel on the Burning Deck",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 루시안\n• 선택 가이드: 소설 제21화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 루시안\n• 선택 가이드: 소설 제21화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Ignis · Lucian\n• Decision Guide: This is the climax crossroads of Episode 21. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -23461,7 +23461,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch21_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "이그니스의 불길과 내 방패를 합쳐 탈출로를 연다.",
           "labelEn": "Combine Ignis's flame with my shield to blast an exit.",
@@ -23472,7 +23472,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "이그니스의 불길과 내 방패를 합쳐 탈출로를 연다.",
           "textEn": "Combine Ignis's flame with my shield to blast an exit.",
@@ -23517,7 +23517,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -23731,7 +23731,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -23967,7 +23967,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -24192,7 +24192,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -24300,7 +24300,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -24427,7 +24427,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -24534,7 +24534,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제22화 · 운명의 분기점] 무인도의 생존 결단",
       "sceneTitleEn": "[EP.22 · Fate Crossroads] Survival Pact on the Island",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제22화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제22화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 22. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -24553,7 +24553,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -24642,7 +24642,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch22_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "달빛 아래서 네 사람의 호흡을 하나로 모은다.",
           "labelEn": "Unite the four heartbeats into one beneath the full moon.",
@@ -24653,7 +24653,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "달빛 아래서 네 사람의 호흡을 하나로 모은다.",
           "textEn": "Unite the four heartbeats into one beneath the full moon.",
@@ -24698,7 +24698,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -24806,7 +24806,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -25116,7 +25116,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 62,
       "name": "실리아",
       "nameEn": "Celia",
-      "text": "카단이 무쇠 방패를 비껴 쥐며 어두운 동굴 안으로 먼저 발을 디뎠다. 동굴 안쪽은 바깥의 거친 해풍과 달리 서늘하고 고요했다.\n\n천장에 매달린 종유석마다 푸른 형광 이끼가 은은한 인광을 뿜어내며 동굴 바닥의 석판 통로를 비추고 있었다.\n\n실리아가 녹옥 지팡이 끝에 작은 바람 등불을 밝히며 주위를 살폈다.\n\n“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 진법이에요.”\n\n이그니스는 동굴 벽에 새겨진 백색 화염 기사단의 옛 표식을 어루만지며 마른침을 삼켰다.\n\n“이곳에... 내 아버지가 남기신 기록이 있단 말인가.” 동굴 입구 바닥에는 오랜 세월 동안 파도에 마모된 성기사단의 십자 표식들이 희미하게 남아 있었다. 발리안 숙부와 알렉산다르 스승이 과거 원정길에 남겨둔 이정표였다.",
+      "text": "카단이 무쇠 방패를 비껴 쥐며 어두운 동굴 안으로 먼저 발을 디뎠다. 동굴 안쪽은 바깥의 거친 해풍과 달리 서늘하고 고요했다.\n\n천장에 매달린 종유석마다 푸른 형광 이끼가 은은한 인광을 뿜어내며 동굴 바닥의 석판 통로를 비추고 있었다.\n\n실리아가 녹옥 지팡이 끝에 작은 바람 등불을 밝히며 주위를 살폈다.\n\n“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 마법진이에요.”\n\n이그니스는 동굴 벽에 새겨진 백색 화염 기사단의 옛 표식을 어루만지며 마른침을 삼켰다.\n\n“이곳에... 내 아버지가 남기신 기록이 있단 말인가.” 동굴 입구 바닥에는 오랜 세월 동안 파도에 마모된 성기사단의 십자 표식들이 희미하게 남아 있었다. 발리안 숙부와 알렉산다르 스승이 과거 원정길에 남겨둔 이정표였다.",
       "textEn": "Bracing his unadorned iron shield, Kadan took the lead into the gloom.\n\nThe interior was remarkably cool and tranquil, shielded from the coastal tempest.\n\nPhosphorescent lichen clinging to the stalactites overhead cast soothing azure luminescence, illuminating an ancient flagstone passage.\n\nKindling a gentle wind lantern at the head of her Jade Staff, Cilia examined the subterranean architecture.\n\n\"Ancient wind wards etched into the stone walls are still active.\n\nThey function as a screening matrix, neutralizing imperial tracking cantrips.\"",
       "sceneNumber": 2,
       "totalScenes": 10,
@@ -25124,7 +25124,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "sceneTitleEn": "[EP.23 · Scene 2/10] The Record Sleeping in the Cave (Celia · Kadan · Ignis · Aleksandar)",
       "sceneExplanationKo": "• 등장인물 및 관계: 실리아(여주인공) / 카단(주인공) / 이그니스(발리안과 이셀라의 아들)\n• 장면 이해 포인트: 이 장면에서는 [실리아 · 카단 · 이그니스 · 알렉산다르]이(가) 함께 등장하여 “동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Celia (Heroine) / Kadan (Protagonist) / Ignis (Son of Balian & Ysela)\n• Story Comprehension Guide: In this scene, [Celia · Kadan · Ignis · Aleksandar] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 23 forward.",
-      "dialogueQuoteKo": "“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 진법이에요.” “이곳에... 내 아버지가 남기신 기록이 있단 말인가.”",
+      "dialogueQuoteKo": "“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 마법진이에요.” “이곳에... 내 아버지가 남기신 기록이 있단 말인가.”",
       "dialogueQuoteEn": "“Ancient wind wards etched into the stone walls are still active.\n\nThey function as a screening matrix, neutralizing imperial tracking cantrips.”",
       "sceneImageUrl": "/images/storybook/ep_23/page_02.webp",
       "sceneCharacters": [
@@ -25132,7 +25132,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -25208,11 +25208,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 10,
           "imageUrl": "/images/webtoon/episode_23/scene_10.webp",
-          "narrationKo": "“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 진법이에요.”",
+          "narrationKo": "“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 마법진이에요.”",
           "narrationEn": "Kindling a gentle wind lantern at the head of her Jade Staff, Cilia examined the subterranean architecture.",
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "dialogueKo": "“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 진법이에요.”",
+          "dialogueKo": "“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 마법진이에요.”",
           "dialogueEn": "Kindling a gentle wind lantern at the head of her Jade Staff, Cilia examined the subterranean architecture."
         },
         {
@@ -25267,7 +25267,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -25384,7 +25384,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -25761,7 +25761,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제23화 · 운명의 분기점] 석비 앞의 계승",
       "sceneTitleEn": "[EP.23 · Fate Crossroads] Inheritance Before the Stele",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 발리안\n• 선택 가이드: 소설 제23화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 발리안\n• 선택 가이드: 소설 제23화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Ignis · Balian\n• Decision Guide: This is the climax crossroads of Episode 23. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -25847,7 +25847,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "attitudeEn": "[Insight]",
           "labelKo": "석판 뒷면에 새겨진 나인섀도우 코덱스 비전을 사경한다.",
           "labelEn": "Transcribe the Nine-Shadow Codex diagrams engraved on the reverse.",
-          "followUpTextKo": "“석판의 비전 도해를 완벽히 암기하여 아케인 연계 초식을 완성했다.”",
+          "followUpTextKo": "“석판의 비전 도해를 완벽히 암기하여 아케인 연계 검술을 완성했다.”",
           "followUpTextEn": "“Memorizing the ancient diagrams perfected their Arcane synergy chain.”",
           "bonusType": "sns",
           "bonusValue": 25,
@@ -25864,12 +25864,12 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
             "buffName": "+25 SNS 획득",
             "buffNameEn": "+25 SNS Points"
           },
-          "followUpLine": "“석판의 비전 도해를 완벽히 암기하여 아케인 연계 초식을 완성했다.”",
+          "followUpLine": "“석판의 비전 도해를 완벽히 암기하여 아케인 연계 검술을 완성했다.”",
           "followUpLineEn": "“Memorizing the ancient diagrams perfected their Arcane synergy chain.”"
         },
         {
           "id": "ch23_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "부모님들의 영혼과 마주하며 눈물을 닦는다.",
           "labelEn": "Face our parents' spirits in reverence and wipe away our tears.",
@@ -25880,7 +25880,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "부모님들의 영혼과 마주하며 눈물을 닦는다.",
           "textEn": "Face our parents' spirits in reverence and wipe away our tears.",
@@ -25916,7 +25916,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -26042,7 +26042,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -26168,7 +26168,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -26295,7 +26295,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -26430,7 +26430,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -26645,7 +26645,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -26771,7 +26771,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -26967,7 +26967,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제24화 · 운명의 분기점] 일곱 번째 밤의 돌파",
       "sceneTitleEn": "[EP.24 · Fate Crossroads] Breakthrough on the Seventh Night",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 루시안\n• 선택 가이드: 소설 제24화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 루시안\n• 선택 가이드: 소설 제24화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Ignis · Lucian\n• Decision Guide: This is the climax crossroads of Episode 24. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -27057,9 +27057,9 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch24_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
-          "labelKo": "성진호흡의 정수로 공기 중의 희박한 마나를 정화한다.",
+          "labelKo": "별빛의 호흡의 정수로 공기 중의 희박한 마나를 정화한다.",
           "labelEn": "Filter the stagnant air with the essence of Star Breathing.",
           "followUpTextKo": "“신선한 마나 기류가 밀폐실을 채우며 전원의 생명력을 온전히 보존했다.”",
           "followUpTextEn": "“A stream of fresh mana revitalized the vault, preserving everyone's strength.”",
@@ -27068,9 +27068,9 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
-          "text": "성진호흡의 정수로 공기 중의 희박한 마나를 정화한다.",
+          "text": "별빛의 호흡의 정수로 공기 중의 희박한 마나를 정화한다.",
           "textEn": "Filter the stagnant air with the essence of Star Breathing.",
           "reward": {
             "snsCoins": 30,
@@ -27113,7 +27113,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -27220,7 +27220,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -27328,7 +27328,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -27428,7 +27428,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -27536,7 +27536,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -27662,7 +27662,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -27878,7 +27878,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -27976,7 +27976,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -28074,7 +28074,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제25화 · 운명의 분기점] 성당 창문의 난입",
       "sceneTitleEn": "[EP.25 · Fate Crossroads] Crashing the Cathedral Window",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제25화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제25화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 25. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -28093,7 +28093,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -28173,7 +28173,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch25_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "바람의 갈대 피리 소리에 공명하여 호위병들을 혼란시킨다.",
           "labelEn": "Resonate with the reed flute melody to disorient imperial sentries.",
@@ -28184,7 +28184,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "바람의 갈대 피리 소리에 공명하여 호위병들을 혼란시킨다.",
           "textEn": "Resonate with the reed flute melody to disorient imperial sentries.",
@@ -28337,7 +28337,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -28463,7 +28463,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -28681,7 +28681,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -28807,7 +28807,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -29050,7 +29050,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -29176,7 +29176,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -29256,7 +29256,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제26화 · 운명의 분기점] 안뜰의 진형 형성",
       "sceneTitleEn": "[EP.26 · Fate Crossroads] Forming the Phalanx",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 루시안\n• 선택 가이드: 소설 제26화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 이그니스 · 루시안\n• 선택 가이드: 소설 제26화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Ignis · Lucian\n• Decision Guide: This is the climax crossroads of Episode 26. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -29293,7 +29293,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -29355,7 +29355,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch26_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "상처 입은 동료의 마음에 먼저 방패를 내어준다.",
           "labelEn": "Extend my shield first to heal the wounded hearts of comrades.",
@@ -29366,7 +29366,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "상처 입은 동료의 마음에 먼저 방패를 내어준다.",
           "textEn": "Extend my shield first to heal the wounded hearts of comrades.",
@@ -29420,7 +29420,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -29537,7 +29537,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -29782,7 +29782,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -29874,7 +29874,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 62,
       "name": "실리아",
       "nameEn": "Celia",
-      "text": "실리아가 난간에 기대어 바람의 결을 매만졌다. “당신은 항상 다른 사람들의 약속만을 짊어지고 있어요. 당신 자신을 위한 소원은 어디에 있나요?”\n\n내궁 테라스 아래로는 수백 년 된 주목(朱木)들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.\n\n카단은 그 부조를 손끝으로 쓸어내리며 스승 알렉산다르의 엄격하면서도 따뜻했던 목소리를 떠올렸다.\n\n실리아가 카단의 곁에서 밤하늘을 올려다보며 부드럽게 미소를 지었다. “북극성이 오늘 밤 유난히 맑게 빛나네요. 폭풍우가 지나간 뒤의 하늘은 언제나 거짓 없이 깨끗한 법이에요.”\n\n카단이 엷은 미소를 지으며 자신의 낡은 무쇠 방패를 바라보았다. “내 소원은 소박하다. 이 전쟁이 끝나면 스승님이 잠드신 북방의 고향으로 돌아가, 부서진 울타리를 고치고 버려진 밭에 보리를 심는 것이다.”\n\n“그리고 추위에 떠는 길손들이 언제든 쉬어갈 수 있는 따뜻한 모닥불을 피우는 것. 그것이 내가 바라는 유일한 평화다.”",
+      "text": "실리아가 난간에 기대어 바람의 결을 매만졌다. “당신은 항상 다른 사람들의 약속만을 짊어지고 있어요. 당신 자신을 위한 소원은 어디에 있나요?”\n\n내궁 테라스 아래로는 수백 년 된 붉은 고목들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.\n\n카단은 그 부조를 손끝으로 쓸어내리며 스승 알렉산다르의 엄격하면서도 따뜻했던 목소리를 떠올렸다.\n\n실리아가 카단의 곁에서 밤하늘을 올려다보며 부드럽게 미소를 지었다. “북극성이 오늘 밤 유난히 맑게 빛나네요. 폭풍우가 지나간 뒤의 하늘은 언제나 거짓 없이 깨끗한 법이에요.”\n\n카단이 엷은 미소를 지으며 자신의 낡은 무쇠 방패를 바라보았다. “내 소원은 소박하다. 이 전쟁이 끝나면 스승님이 잠드신 북방의 고향으로 돌아가, 부서진 울타리를 고치고 버려진 밭에 보리를 심는 것이다.”\n\n“그리고 추위에 떠는 길손들이 언제든 쉬어갈 수 있는 따뜻한 모닥불을 피우는 것. 그것이 내가 바라는 유일한 평화다.”",
       "textEn": "Tomorrow night, eighteen winters of bitter vengeance will reach their conclusion, yet your shoulders remain as steadfast as northern granite.\"\n\nSipping the warm tea, Kadan replied in a quiet, measured cadence.\n\n\"I was thinking of the sacred vows I pledged to Master Aleksandar.\n\nThat steel is never an instrument of dominion, but a shield to dry the tears of the suffering. And... the fraternal oath I shared with Ignis.\"\n\nLeaning against the balustrade, Cilia caressed the night air with her fingers. \"You constantly shoulder the covenants of others, Kadan.\n\nWhere does your own heart's longing reside?\"",
       "sceneNumber": 2,
       "totalScenes": 10,
@@ -29890,7 +29890,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -29937,11 +29937,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 8,
           "imageUrl": "/images/webtoon/episode_27/scene_08.webp",
-          "narrationKo": "내궁 테라스 아래로는 수백 년 된 주목(朱木)들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.",
+          "narrationKo": "내궁 테라스 아래로는 수백 년 된 붉은 고목들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.",
           "narrationEn": "Sipping the warm tea, Kadan replied in a quiet, measured cadence.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "내궁 테라스 아래로는 수백 년 된 주목(朱木)들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.",
+          "dialogueKo": "내궁 테라스 아래로는 수백 년 된 붉은 고목들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.",
           "dialogueEn": "Sipping the warm tea, Kadan replied in a quiet, measured cadence."
         },
         {
@@ -30016,7 +30016,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -30105,7 +30105,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -30329,7 +30329,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -30427,7 +30427,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제27화 · 운명의 분기점] 갈림길의 선택",
       "sceneTitleEn": "[EP.27 · Fate Crossroads] Choice at the Crossroads",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제27화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제27화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 27. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -30446,7 +30446,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -30526,7 +30526,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch27_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "피난민들의 공포를 가라앉히는 온기의 마나를 방출한다.",
           "labelEn": "Radiate calming warmth to soothe the terrified refugees.",
@@ -30537,7 +30537,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "피난민들의 공포를 가라앉히는 온기의 마나를 방출한다.",
           "textEn": "Radiate calming warmth to soothe the terrified refugees.",
@@ -30573,7 +30573,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -30689,7 +30689,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -30806,7 +30806,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -31023,7 +31023,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -31131,7 +31131,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -31383,7 +31383,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -31491,7 +31491,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -31598,7 +31598,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제28화 · 운명의 분기점] 의회장의 진압",
       "sceneTitleEn": "[EP.28 · Fate Crossroads] Quelling the Council Coup",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제28화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제28화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 28. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -31617,7 +31617,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -31715,7 +31715,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch28_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "대지 정령들의 분노를 일깨워 회의실 바닥을 진동시킨다.",
           "labelEn": "Awaken the earth spirits to shake the chamber foundations.",
@@ -31726,7 +31726,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "대지 정령들의 분노를 일깨워 회의실 바닥을 진동시킨다.",
           "textEn": "Awaken the earth spirits to shake the chamber foundations.",
@@ -31771,7 +31771,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -31897,7 +31897,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -32023,7 +32023,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -32133,7 +32133,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -32250,7 +32250,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -32340,7 +32340,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -32448,7 +32448,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -32558,15 +32558,15 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "“하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘사문(四門)의 독’ 결계를 통과해야 한다.”\n\n그림리가 모루를 내리치듯 탁자를 치며 덧붙였다. “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.”\n\n카단이 품속에서 이그니스의 유리 불씨를 꺼내 지도 위에 올려놓았다. 놀랍게도 유리 불씨의 빛이 북쪽 관문을 향해 가느다란 궤적을 그리며 가리키고 있었다.\n\n카단이 눈을 빛냈다. “이그니스가 길을 가리켜주고 있다. 놈들이 설치한 사문의 독을 파훼할 약점의 진맥이다.”\n\n작전 회의실 탁자 위에 놓인 유리 불씨는 마치 나침반처럼 북쪽을 향해 가느다란 백색 화염의 꼬리를 뻗고 있었다. 론돌과 그림리, 그리고 여섯 스승들은 그 기적 같은 광경에 숨을 죽였다.",
+      "text": "“하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘네 수문의 맹독’ 결계를 통과해야 한다.”\n\n그림리가 모루를 내리치듯 탁자를 치며 덧붙였다. “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.”\n\n카단이 품속에서 이그니스의 유리 불씨를 꺼내 지도 위에 올려놓았다. 놀랍게도 유리 불씨의 빛이 북쪽 관문을 향해 가느다란 궤적을 그리며 가리키고 있었다.\n\n카단이 눈을 빛냈다. “이그니스가 길을 가리켜주고 있다. 놈들이 설치한 네 수문의 맹독을 파훼할 약점의 마력 흐름이다.”\n\n작전 회의실 탁자 위에 놓인 유리 불씨는 마치 나침반처럼 북쪽을 향해 가느다란 백색 화염의 꼬리를 뻗고 있었다. 론돌과 그림리, 그리고 여섯 스승들은 그 기적 같은 광경에 숨을 죽였다.",
       "textEn": "\"Master Aleksandar and Queen Sylphid smile upon your wisdom from the heavens.\"\n\nRetiring to the war chamber, Kadan and Cilia convened with Rondol, Grimli, and the Six Masters around the regional charts.\n\nPointing to the northern passes, Rondol spoke in grim assessment.\n\n\"The wounded serpent Lucian has retreated to his final necromantic fortress in the Black Marsh, rallying the remaining legions of Belphegor.\n\nBut to pursue him, our armies must breach the Four Gates Fortress, where four colossal sluices spew lethal venom.\" Grimli slammed his fist onto the oak table.",
       "sceneNumber": 5,
       "totalScenes": 10,
       "sceneTitleKo": "[제29화 · 장면 5/10] 그림리가 모루를 내리치듯 탁자를 치며 덧붙였다",
       "sceneTitleEn": "[EP.29 · Scene 5/10] Queen of the Wind (Kadan · Ignis · Aleksandar · Lucian)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 이그니스(발리안과 이셀라의 아들) / 알렉산다르(카단의 아버지)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 이그니스 · 알렉산다르 · 루시안]이(가) 함께 등장하여 “하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘사문(四門)의 독’ 결… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 이그니스(발리안과 이셀라의 아들) / 알렉산다르(카단의 아버지)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 이그니스 · 알렉산다르 · 루시안]이(가) 함께 등장하여 “하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘네 수문의 맹독’ 결… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Ignis (Son of Balian & Ysela) / Aleksandar (Kadan's Father)\n• Story Comprehension Guide: In this scene, [Kadan · Ignis · Aleksandar · Lucian] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 29 forward.",
-      "dialogueQuoteKo": "“하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘사문(四門)의 독’ 결계를 통과해야 한다.” “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.”",
+      "dialogueQuoteKo": "“하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘네 수문의 맹독’ 결계를 통과해야 한다.” “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.”",
       "dialogueQuoteEn": "“Master Aleksandar and Queen Sylphid smile upon your wisdom from the heavens.” “The wounded serpent Lucian has retreated to his final necromantic fortress in the Black Marsh, rallying the remaining legions of Belphegor.\n\nBut to pursue him, our armies must breach the Four Gates Fortress, where four colossal sluices spew lethal venom.”",
       "sceneImageUrl": "/images/storybook/ep_29/page_05.webp",
       "sceneCharacters": [
@@ -32629,21 +32629,21 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 25,
           "imageUrl": "/images/webtoon/episode_29/scene_25.webp",
-          "narrationKo": "“하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘사문(四門)의 독’ 결계를 통과해야 한다.”",
+          "narrationKo": "“하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘네 수문의 맹독’ 결계를 통과해야 한다.”",
           "narrationEn": "\"Master Aleksandar and Queen Sylphid smile upon your wisdom from the heavens.\"",
           "speakerKo": "그림리",
           "speakerEn": "Grimli",
-          "dialogueKo": "“하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘사문(四門)의 독’ 결계를 통과해야 한다.”",
+          "dialogueKo": "“하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘네 수문의 맹독’ 결계를 통과해야 한다.”",
           "dialogueEn": "\"Master Aleksandar and Queen Sylphid smile upon your wisdom from the heavens.\""
         },
         {
           "cutNumber": 26,
           "imageUrl": "/images/webtoon/episode_29/scene_26.webp",
-          "narrationKo": "그림리가 모루를 내리치듯 탁자를 치며 덧붙였다. “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.”",
+          "narrationKo": "그림리가 모루를 내리치듯 탁자를 치며 덧붙였다. “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.”",
           "narrationEn": "Retiring to the war chamber, Kadan and Cilia convened with Rondol, Grimli, and the Six Masters around the regional charts.",
           "speakerKo": "그림리",
           "speakerEn": "Grimli",
-          "dialogueKo": "그림리가 모루를 내리치듯 탁자를 치며 덧붙였다. “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.”",
+          "dialogueKo": "그림리가 모루를 내리치듯 탁자를 치며 덧붙였다. “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.”",
           "dialogueEn": "Retiring to the war chamber, Kadan and Cilia convened with Rondol, Grimli, and the Six Masters around the regional charts."
         },
         {
@@ -32659,11 +32659,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 28,
           "imageUrl": "/images/webtoon/episode_29/scene_28.webp",
-          "narrationKo": "카단이 눈을 빛냈다. “이그니스가 길을 가리켜주고 있다. 놈들이 설치한 사문의 독을 파훼할 약점의 진맥이다.”",
+          "narrationKo": "카단이 눈을 빛냈다. “이그니스가 길을 가리켜주고 있다. 놈들이 설치한 네 수문의 맹독을 파훼할 약점의 마력 흐름이다.”",
           "narrationEn": "\"The wounded serpent Lucian has retreated to his final necromantic fortress in the Black Marsh, rallying the remaining legions of Belphegor.",
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "dialogueKo": "카단이 눈을 빛냈다. “이그니스가 길을 가리켜주고 있다. 놈들이 설치한 사문의 독을 파훼할 약점의 진맥이다.”",
+          "dialogueKo": "카단이 눈을 빛냈다. “이그니스가 길을 가리켜주고 있다. 놈들이 설치한 네 수문의 맹독을 파훼할 약점의 마력 흐름이다.”",
           "dialogueEn": "\"The wounded serpent Lucian has retreated to his final necromantic fortress in the Black Marsh, rallying the remaining legions of Belphegor."
         },
         {
@@ -32683,15 +32683,15 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "가웨인이 지팡이를 짚으며 감탄했다. “이그니스의 영혼이 불씨에 깃들어 사문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.”\n\n카단이 고개를 끄덕였다. “형제가 길을 열어주었다. 주저 없이 돌파한다.”\n\n카단과 실리아는 소수 정예 결사대를 이끌고 수도 북문의 수로 요새로 향했다. 늪지대에서 밀려온 짙은 유황 안개가 시야를 가로막고 있었고, 수로의 수면은 보랏빛 독극물로 부글부글 끓어오르고 있었다.\n\n수로 벽면에는 메두사 고르고의 금기된 룬이 음각되어 있어 접근하는 생명체의 살갗을 녹여 내리고 있었다.\n\n수로의 수문장이자 루시안의 심복인 독술사 아라크네가 거미줄 같은 독침을 번뜩이며 모습을 드러냈다.\n\n아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 사문의 독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”",
+      "text": "가웨인이 지팡이를 짚으며 감탄했다. “이그니스의 영혼이 불씨에 깃들어 네 수문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.”\n\n카단이 고개를 끄덕였다. “형제가 길을 열어주었다. 주저 없이 돌파한다.”\n\n카단과 실리아는 소수 정예 결사대를 이끌고 수도 북문의 수로 요새로 향했다. 늪지대에서 밀려온 짙은 유황 안개가 시야를 가로막고 있었고, 수로의 수면은 보랏빛 독극물로 부글부글 끓어오르고 있었다.\n\n수로 벽면에는 메두사 고르고의 금기된 룬이 음각되어 있어 접근하는 생명체의 살갗을 녹여 내리고 있었다.\n\n수로의 수문장이자 루시안의 심복인 독술사 아라크네가 거미줄 같은 독침을 번뜩이며 모습을 드러냈다.\n\n아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 네 수문의 맹독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”",
       "textEn": "\"A hellish barrier!\n\nAcidic mist that dissolves steel plate within minutes. No army can march through that defile.\"\n\nTaking the White Glass Ember from his coat, Kadan placed it upon the map.\n\nMiraculously, the ember cast a slender needle of pure white light pointing toward the northern sluice.\n\nKadan's eyes sharpened with certainty.\n\n\"Ignis is showing us the path. This is the structural flaw in their necrotic conduit.\"",
       "sceneNumber": 6,
       "totalScenes": 10,
       "sceneTitleKo": "[제29화 · 장면 6/10] 가웨인이 지팡이를 짚으며 감탄했다",
       "sceneTitleEn": "[EP.29 · Scene 6/10] Queen of the Wind (Kadan · Celia · Ignis · Lucian)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 실리아(여주인공) / 이그니스(발리안과 이셀라의 아들)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 실리아 · 이그니스 · 루시안]이(가) 함께 등장하여 “이그니스의 영혼이 불씨에 깃들어 사문의 약점을 짚어내고 있구나. 동쪽과 서… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 실리아(여주인공) / 이그니스(발리안과 이셀라의 아들)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 실리아 · 이그니스 · 루시안]이(가) 함께 등장하여 “이그니스의 영혼이 불씨에 깃들어 네 수문의 약점을 짚어내고 있구나. 동쪽과 서… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Celia (Heroine) / Ignis (Son of Balian & Ysela)\n• Story Comprehension Guide: In this scene, [Kadan · Celia · Ignis · Lucian] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 29 forward.",
-      "dialogueQuoteKo": "“이그니스의 영혼이 불씨에 깃들어 사문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.” “형제가 길을 열어주었다. 주저 없이 돌파한다.”",
+      "dialogueQuoteKo": "“이그니스의 영혼이 불씨에 깃들어 네 수문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.” “형제가 길을 열어주었다. 주저 없이 돌파한다.”",
       "dialogueQuoteEn": "“A hellish barrier!\n\nAcidic mist that dissolves steel plate within minutes. No army can march through that defile.” “Ignis is showing us the path. This is the structural flaw in their necrotic conduit.”",
       "sceneImageUrl": "/images/storybook/ep_29/page_06.webp",
       "sceneCharacters": [
@@ -32708,7 +32708,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -32754,11 +32754,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 30,
           "imageUrl": "/images/webtoon/episode_29/scene_30.webp",
-          "narrationKo": "가웨인이 지팡이를 짚으며 감탄했다. “이그니스의 영혼이 불씨에 깃들어 사문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.”",
+          "narrationKo": "가웨인이 지팡이를 짚으며 감탄했다. “이그니스의 영혼이 불씨에 깃들어 네 수문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.”",
           "narrationEn": "\"A hellish barrier!",
           "speakerKo": "가웨인",
           "speakerEn": "Gawain",
-          "dialogueKo": "가웨인이 지팡이를 짚으며 감탄했다. “이그니스의 영혼이 불씨에 깃들어 사문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.”",
+          "dialogueKo": "가웨인이 지팡이를 짚으며 감탄했다. “이그니스의 영혼이 불씨에 깃들어 네 수문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.”",
           "dialogueEn": "\"A hellish barrier!"
         },
         {
@@ -32804,11 +32804,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 35,
           "imageUrl": "/images/webtoon/episode_29/scene_35.webp",
-          "narrationKo": "아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 사문의 독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”",
+          "narrationKo": "아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 네 수문의 맹독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”",
           "narrationEn": "\"Ignis is showing us the path. This is the structural flaw in their necrotic conduit.\"",
           "speakerKo": "아라크네",
           "speakerEn": "Lucian",
-          "dialogueKo": "아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 사문의 독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”",
+          "dialogueKo": "아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 네 수문의 맹독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”",
           "dialogueEn": "\"Ignis is showing us the path. This is the structural flaw in their necrotic conduit.\""
         }
       ]
@@ -32824,7 +32824,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제29화 · 운명의 분기점] 천공의 가호 시험",
       "sceneTitleEn": "[EP.29 · Fate Crossroads] Trial of Celestial Blessing",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제29화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제29화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 29. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -32843,7 +32843,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -32941,18 +32941,18 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch29_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "바람의 여왕과 영혼의 화음을 맞추어 깃털을 받는다.",
           "labelEn": "Harmonize soul frequencies with the Queen to receive her feather.",
-          "followUpTextKo": "“여왕의 바람 마나와 성진호흡이 융합하며 순백의 날개 형상이 방패에 깃들었다.”",
+          "followUpTextKo": "“여왕의 바람 마나와 별빛의 호흡이 융합하며 순백의 날개 형상이 방패에 깃들었다.”",
           "followUpTextEn": "“Merging breathing with her wind mana bestowed wings of white radiance upon the shield.”",
           "bonusType": "sns",
           "bonusValue": 30,
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "바람의 여왕과 영혼의 화음을 맞추어 깃털을 받는다.",
           "textEn": "Harmonize soul frequencies with the Queen to receive her feather.",
@@ -32962,7 +32962,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
             "buffName": "+30 SNS 획득",
             "buffNameEn": "+30 SNS Points"
           },
-          "followUpLine": "“여왕의 바람 마나와 성진호흡이 융합하며 순백의 날개 형상이 방패에 깃들었다.”",
+          "followUpLine": "“여왕의 바람 마나와 별빛의 호흡이 융합하며 순백의 날개 형상이 방패에 깃들었다.”",
           "followUpLineEn": "“Merging breathing with her wind mana bestowed wings of white radiance upon the shield.”"
         }
       ]
@@ -32997,7 +32997,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -33080,7 +33080,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "카단의 방패 돌파와 실리아의 정화 돌풍 앞에 아라크네의 독술 방어선은 순식간에 무너져 내렸다.\n\n카단의 은빛 단검이 수문의 독기 제어 룬을 깔끔하게 절단하자, 부글거리던 보랏빛 독극물이 맑은 강물로 정화되며 사문의 첫 번째 관문이 활짝 열렸다.\n\n도망친 적병들을 뒤로하고, 북쪽으로 향하는 광활한 대지가 눈앞에 펼쳐졌다.\n\n저 멀리 북쪽 수평선에는 검푸른 늪지대의 먹구름이 똬리를 틀고 있었지만, 일행의 등 뒤에는 해방된 수도 라이트헤이븐의 황금빛 햇살이 찬란하게 쏟아져 내리고 있었다.\n\n실리아가 카단의 곁으로 다가와 어깨를 나란히 했다. “이그니스가 남긴 불씨가 가리키는 곳으로, 끝까지 함께 가요.”\n\n카단은 주머니 속에서 따스하게 고동치는 유리 불씨를 쥐며 고개를 끄덕였다.",
+      "text": "카단의 방패 돌파와 실리아의 정화 돌풍 앞에 아라크네의 독술 방어선은 순식간에 무너져 내렸다.\n\n카단의 은빛 단검이 수문의 독기 제어 룬을 깔끔하게 절단하자, 부글거리던 보랏빛 독극물이 맑은 강물로 정화되며 네 수문 요새의 첫 번째 관문이 활짝 열렸다.\n\n도망친 적병들을 뒤로하고, 북쪽으로 향하는 광활한 대지가 눈앞에 펼쳐졌다.\n\n저 멀리 북쪽 수평선에는 검푸른 늪지대의 먹구름이 똬리를 틀고 있었지만, 일행의 등 뒤에는 해방된 수도 라이트헤이븐의 황금빛 햇살이 찬란하게 쏟아져 내리고 있었다.\n\n실리아가 카단의 곁으로 다가와 어깨를 나란히 했다. “이그니스가 남긴 불씨가 가리키는 곳으로, 끝까지 함께 가요.”\n\n카단은 주머니 속에서 따스하게 고동치는 유리 불씨를 쥐며 고개를 끄덕였다.",
       "textEn": "A storm of poisoned quills rained from the heights.\n\nBracing his Dragon Breaker shield, Kadan unleashed the full power of star-breathing.\n\n\"This shield shall never yield before any poison!\"\n\nThe golden aegis deflected the volley harmlessly into the stone.\n\nSweeping her Jade Staff, Cilia conjured an azure gale that purged the violet fog into the upper atmosphere.\n\nWith Kadan shattering the central runic conduit with his silver dagger, the boiling toxins neutralized into crystal springs.",
       "sceneNumber": 9,
       "totalScenes": 10,
@@ -33105,7 +33105,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -33134,11 +33134,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 43,
           "imageUrl": "/images/webtoon/episode_29/scene_43.webp",
-          "narrationKo": "카단의 은빛 단검이 수문의 독기 제어 룬을 깔끔하게 절단하자, 부글거리던 보랏빛 독극물이 맑은 강물로 정화되며 사문의 첫 번째 관문이 활짝 열렸다.",
+          "narrationKo": "카단의 은빛 단검이 수문의 독기 제어 룬을 깔끔하게 절단하자, 부글거리던 보랏빛 독극물이 맑은 강물로 정화되며 네 수문 요새의 첫 번째 관문이 활짝 열렸다.",
           "narrationEn": "Bracing his Dragon Breaker shield, Kadan unleashed the full power of star-breathing.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "카단의 은빛 단검이 수문의 독기 제어 룬을 깔끔하게 절단하자, 부글거리던 보랏빛 독극물이 맑은 강물로 정화되며 사문의 첫 번째 관문이 활짝 열렸다.",
+          "dialogueKo": "카단의 은빛 단검이 수문의 독기 제어 룬을 깔끔하게 절단하자, 부글거리던 보랏빛 독극물이 맑은 강물로 정화되며 네 수문 요새의 첫 번째 관문이 활짝 열렸다.",
           "dialogueEn": "Bracing his Dragon Breaker shield, Kadan unleashed the full power of star-breathing."
         },
         {
@@ -33213,7 +33213,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -33295,13 +33295,13 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
     {
       "speaker": "kadan",
       "cardId": 41,
-      "name": "제 30화: # 눈히어로.com - 카단의 여정 30화 - 사문의 독 · 카단",
+      "name": "제 30화: # 눈히어로.com - 카단의 여정 30화 - 네 수문의 맹독 · 카단",
       "nameEn": "Episode 30: Poison at the Four Gates · Kadan",
-      "text": "사문의 첫 번째 관문을 돌파한 일행이 마주한 것은 고대 제국의 북방 방어선이자 악명 높은 ‘사문(四門) 요새’의 본진이었다.\n\n깎아지른 절벽 사이에 축조된 네 개의 거대한 흑철 수문에서는 메두사 고르고가 심어둔 치명적인 사독(蛇毒) 연무가 폭포수처럼 쏟아져 내리고 있었다.\n\n발목까지 차오른 늪지의 진흙탕은 끈적끈적하게 달라붙어 장화를 집어삼킬 듯했고, 썩은 갈대숲 사이에서는 유황 타는 냄새와 시체 썩는 악취가 진동했다.\n\n그림리가 도끼자루로 바닥돌을 두드리며 혀를 찼다. “고약한 독기로군! 쇠붙이마저 삭혀버리는 산성 독무다. 이 독기를 마시면 아무리 장사라도 십 리를 못 가고 피를 토하며 쓰러질 게야.”\n\n카단이 품속에서 이그니스의 유리 불씨를 꺼내 손바닥 위에 올려놓았다. 차가운 맹독의 안개 속에서도 유리 불씨는 은은하고 투명한 순백의 빛을 발산하며 카단의 손바닥을 따뜻하게 데워주고 있었다.\n\n실리아가 녹옥 지팡이 끝에 이슬 맺힌 약초 잎사귀를 매달며 말했다.",
+      "text": "네 수문 요새의 첫 번째 관문을 돌파한 일행이 마주한 것은 고대 제국의 북방 방어선이자 악명 높은 ‘네 수문 요새’의 본진이었다.\n\n깎아지른 절벽 사이에 축조된 네 개의 거대한 흑철 수문에서는 메두사 고르고가 심어둔 치명적인 맹독 연무가 폭포수처럼 쏟아져 내리고 있었다.\n\n발목까지 차오른 늪지의 진흙탕은 끈적끈적하게 달라붙어 장화를 집어삼킬 듯했고, 썩은 갈대숲 사이에서는 유황 타는 냄새와 시체 썩는 악취가 진동했다.\n\n그림리가 도끼자루로 바닥돌을 두드리며 혀를 찼다. “고약한 독기로군! 쇠붙이마저 삭혀버리는 산성 독무다. 이 독기를 마시면 아무리 장사라도 십 리를 못 가고 피를 토하며 쓰러질 게야.”\n\n카단이 품속에서 이그니스의 유리 불씨를 꺼내 손바닥 위에 올려놓았다. 차가운 맹독의 안개 속에서도 유리 불씨는 은은하고 투명한 순백의 빛을 발산하며 카단의 손바닥을 따뜻하게 데워주고 있었다.\n\n실리아가 녹옥 지팡이 끝에 이슬 맺힌 약초 잎사귀를 매달며 말했다.",
       "textEn": "Breaching the outer perimeter, the companions stood before the formidable citadel of the Four Gates—the ancient northern rampart of the empire.\n\nSpanning the narrow chasm between sheer granite precipices, four massive black-iron sluice gates vomited waterfalls of corrosive serpentine bile engineered by Medusa Gorgo.\n\nMuck rose to the warriors' knees, threatening to swallow their boots, while the stench of burning sulfur and putrefaction filled the air.\n\nTapping the stone with his hammer, Grimli grimaced in disgust. \"Vile filth! An acidic miasma capable of melting tempered dwarven steel. Breathe a lungful of this vapor, and the strongest warrior will vomit black blood within a mile.\"\n\nKadan withdrew the White Glass Ember, holding it in his open palm. Even amidst the toxic murk, the ember radiated pure, immaculate white brilliance, wrapping his skin in soothing warmth.\n\nFastening fresh comfrey leaves to her staff, Cilia observed with wonder.",
       "sceneNumber": 1,
       "totalScenes": 10,
-      "sceneTitleKo": "[제30화 · 장면 1/10] 사문의 첫 번째 관문을 돌파한 일행이 마주한 것은 고대…",
+      "sceneTitleKo": "[제30화 · 장면 1/10] 네 수문 요새의 첫 번째 관문을 돌파한 일행이 마주한 것은 고대…",
       "sceneTitleEn": "[EP.30 · Scene 1/10] Poison at the Four Gates (Kadan · Celia · Ignis · Grimli)",
       "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 실리아(여주인공) / 이그니스(발리안과 이셀라의 아들)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 실리아 · 이그니스 · 그림리]이(가) 함께 등장하여 “고약한 독기로군! 쇠붙이마저 삭혀버리는 산성 독무다. 이 독기를 마시면 아… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Celia (Heroine) / Ignis (Son of Balian & Ysela)\n• Story Comprehension Guide: In this scene, [Kadan · Celia · Ignis · Grimli] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 30 forward.",
@@ -33322,7 +33322,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -33359,21 +33359,21 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 1,
           "imageUrl": "/images/webtoon/episode_30/scene_01.webp",
-          "narrationKo": "사문의 첫 번째 관문을 돌파한 일행이 마주한 것은 고대 제국의 북방 방어선이자 악명 높은 ‘사문(四門) 요새’의 본진이었다.",
+          "narrationKo": "네 수문 요새의 첫 번째 관문을 돌파한 일행이 마주한 것은 고대 제국의 북방 방어선이자 악명 높은 ‘네 수문 요새’의 본진이었다.",
           "narrationEn": "Breaching the outer perimeter, the companions stood before the formidable citadel of the Four Gates—the ancient northern rampart of the empire.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "사문의 첫 번째 관문을 돌파한 일행이 마주한 것은 고대 제국의 북방 방어선이자 악명 높은 ‘사문(四門) 요새’의 본진이었다.",
+          "dialogueKo": "네 수문 요새의 첫 번째 관문을 돌파한 일행이 마주한 것은 고대 제국의 북방 방어선이자 악명 높은 ‘네 수문 요새’의 본진이었다.",
           "dialogueEn": "Breaching the outer perimeter, the companions stood before the formidable citadel of the Four Gates—the ancient northern rampart of the empire."
         },
         {
           "cutNumber": 2,
           "imageUrl": "/images/webtoon/episode_30/scene_02.webp",
-          "narrationKo": "깎아지른 절벽 사이에 축조된 네 개의 거대한 흑철 수문에서는 메두사 고르고가 심어둔 치명적인 사독(蛇毒) 연무가 폭포수처럼 쏟아져 내리고 있었다.",
+          "narrationKo": "깎아지른 절벽 사이에 축조된 네 개의 거대한 흑철 수문에서는 메두사 고르고가 심어둔 치명적인 맹독 연무가 폭포수처럼 쏟아져 내리고 있었다.",
           "narrationEn": "Spanning the narrow chasm between sheer granite precipices, four massive black-iron sluice gates vomited waterfalls of corrosive serpentine bile engineered by Medusa Gorgo.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "깎아지른 절벽 사이에 축조된 네 개의 거대한 흑철 수문에서는 메두사 고르고가 심어둔 치명적인 사독(蛇毒) 연무가 폭포수처럼 쏟아져 내리고 있었다.",
+          "dialogueKo": "깎아지른 절벽 사이에 축조된 네 개의 거대한 흑철 수문에서는 메두사 고르고가 심어둔 치명적인 맹독 연무가 폭포수처럼 쏟아져 내리고 있었다.",
           "dialogueEn": "Spanning the narrow chasm between sheer granite precipices, four massive black-iron sluice gates vomited waterfalls of corrosive serpentine bile engineered by Medusa Gorgo."
         },
         {
@@ -33423,7 +33423,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "“유리 불씨 주변으로 독기가 감히 범접하지 못하고 있어요. 이그니스의 거룩한 마나가 우리를 보이지 않는 방벽으로 지켜주고 있는 거예요.”\n\n카단이 방패를 굳건히 쥐며 앞장섰다. “이그니스가 열어준 길이다. 지체할 시간 없다. 네 개의 수문 핵을 차례로 파괴한다.”\n\n사문 요새 주변의 갈대밭은 이미 산성 독액에 절어 검게 타들어가 있었고, 흙탕물 위로는 정체불명의 해골들이 부유하고 있었다. 맹독의 증기가 폐부를 찌르며 숨을 쉴 때마다 목구멍이 타는 듯한 통증을 유발했다.\n\n카단은 가죽 두건으로 코와 입을 가리며 방패의 무게중심을 낮추었다. 품속의 유리 불씨가 순백의 빛을 뿜어내며 카단의 전신에 보이지 않는 공기 정화막을 펼쳐주고 있었다.\n\n카단은 전우의 온기에 감사하며 첫 번째 수문의 철교를 향해 발걸음을 옮겼다.",
+      "text": "“유리 불씨 주변으로 독기가 감히 범접하지 못하고 있어요. 이그니스의 거룩한 마나가 우리를 보이지 않는 방벽으로 지켜주고 있는 거예요.”\n\n카단이 방패를 굳건히 쥐며 앞장섰다. “이그니스가 열어준 길이다. 지체할 시간 없다. 네 개의 수문 핵을 차례로 파괴한다.”\n\n네 수문 요새 주변의 갈대밭은 이미 산성 독액에 절어 검게 타들어가 있었고, 흙탕물 위로는 정체불명의 해골들이 부유하고 있었다. 맹독의 증기가 폐부를 찌르며 숨을 쉴 때마다 목구멍이 타는 듯한 통증을 유발했다.\n\n카단은 가죽 두건으로 코와 입을 가리며 방패의 무게중심을 낮추었다. 품속의 유리 불씨가 순백의 빛을 뿜어내며 카단의 전신에 보이지 않는 공기 정화막을 펼쳐주고 있었다.\n\n카단은 전우의 온기에 감사하며 첫 번째 수문의 철교를 향해 발걸음을 옮겼다.",
       "textEn": "\"The toxic fumes dare not approach the ember's light.\n\nIgnis's sanctified mana encloses us in an invisible sanctuary of pure air.\"\n\nBracing his shield, Kadan took the lead.\n\n\"Ignis has carved our path.\n\nWe have no time to delay; we must demolish the four sluice cores in succession.\"",
       "sceneNumber": 2,
       "totalScenes": 10,
@@ -33457,7 +33457,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -33487,11 +33487,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 9,
           "imageUrl": "/images/webtoon/episode_30/scene_09.webp",
-          "narrationKo": "사문 요새 주변의 갈대밭은 이미 산성 독액에 절어 검게 타들어가 있었고, 흙탕물 위로는 정체불명의 해골들이 부유하고 있었다. 맹독의 증기가 폐부를 찌르며 숨을 쉴 때마다 목구멍이 타는 듯한 통증을 유발했다.",
+          "narrationKo": "네 수문 요새 주변의 갈대밭은 이미 산성 독액에 절어 검게 타들어가 있었고, 흙탕물 위로는 정체불명의 해골들이 부유하고 있었다. 맹독의 증기가 폐부를 찌르며 숨을 쉴 때마다 목구멍이 타는 듯한 통증을 유발했다.",
           "narrationEn": "Bracing his shield, Kadan took the lead.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "사문 요새 주변의 갈대밭은 이미 산성 독액에 절어 검게 타들어가 있었고, 흙탕물 위로는 정체불명의 해골들이 부유하고 있었다. 맹독의 증기가 폐부를 찌르며 숨을 쉴 때마다 목구멍이 타는 듯한 통증을 유발했다.",
+          "dialogueKo": "네 수문 요새 주변의 갈대밭은 이미 산성 독액에 절어 검게 타들어가 있었고, 흙탕물 위로는 정체불명의 해골들이 부유하고 있었다. 맹독의 증기가 폐부를 찌르며 숨을 쉴 때마다 목구멍이 타는 듯한 통증을 유발했다.",
           "dialogueEn": "Bracing his shield, Kadan took the lead."
         },
         {
@@ -33629,7 +33629,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 46,
       "name": "론돌",
       "nameEn": "Rondol",
-      "text": "론돌이 껄껄 웃으며 도끼를 휘둘렀다. “하하! 뼈다귀 놈들이 북방의 늑대 방패 앞에서 추풍낙엽이로구나! 다음 문으로 가자!”\n\n언데드 병사들의 잔해가 늪지 속으로 가라앉자, 동쪽 수문의 거대한 흑철 밸브가 완전히 멈추어 섰다. 론돌의 지휘 아래 돌격한 의용군들이 수문의 기계 장치를 해체하여 독액 분출을 완전히 차단했다.\n\n그림리가 망치로 수문의 톱니바퀴를 부수며 껄껄 웃었다. “하하! 이 늙은 드워프의 쇠망치 맛을 보니 흑마법 톱니바퀴도 별수 없구나! 서쪽 수문으로 길을 열어라!”\n\n세 번째 서쪽 수문은 공중을 비행하는 독익룡(毒翼龍) 스무 마리가 지키고 있었다. 날개 밑에서 보랏빛 독가루를 흩뿌리며 급강하하는 마수들 때문에 지상의 전사들이 눈을 뜨기조차 힘든 상황이었다.\n\n실리아가 녹옥 지팡이를 머리 위로 치켜들며 청아한 목소리로 바람의 노래를 불렀다.",
+      "text": "론돌이 껄껄 웃으며 도끼를 휘둘렀다. “하하! 뼈다귀 놈들이 북방의 늑대 방패 앞에서 추풍낙엽이로구나! 다음 문으로 가자!”\n\n언데드 병사들의 잔해가 늪지 속으로 가라앉자, 동쪽 수문의 거대한 흑철 밸브가 완전히 멈추어 섰다. 론돌의 지휘 아래 돌격한 의용군들이 수문의 기계 장치를 해체하여 독액 분출을 완전히 차단했다.\n\n그림리가 망치로 수문의 톱니바퀴를 부수며 껄껄 웃었다. “하하! 이 늙은 드워프의 쇠망치 맛을 보니 흑마법 톱니바퀴도 별수 없구나! 서쪽 수문으로 길을 열어라!”\n\n세 번째 서쪽 수문은 공중을 비행하는 맹독 와이번 스무 마리가 지키고 있었다. 날개 밑에서 보랏빛 독가루를 흩뿌리며 급강하하는 마수들 때문에 지상의 전사들이 눈을 뜨기조차 힘든 상황이었다.\n\n실리아가 녹옥 지팡이를 머리 위로 치켜들며 청아한 목소리로 바람의 노래를 불렀다.",
       "textEn": "Rondol barked a hearty laugh. \"Ha!\n\nThe northern wolf scatters bone-men like autumn leaves!\n\nOn to the western portal!\"\n\nThe western sluice was defended by twenty venomous wyverns circling overhead, raining clouds of caustic spores upon the defile.\n\nHoisting her Jade Staff, Cilia sang an ancient wind hymn to the heavens.",
       "sceneNumber": 4,
       "totalScenes": 10,
@@ -33654,7 +33654,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -33703,11 +33703,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 21,
           "imageUrl": "/images/webtoon/episode_30/scene_21.webp",
-          "narrationKo": "세 번째 서쪽 수문은 공중을 비행하는 독익룡(毒翼龍) 스무 마리가 지키고 있었다. 날개 밑에서 보랏빛 독가루를 흩뿌리며 급강하하는 마수들 때문에 지상의 전사들이 눈을 뜨기조차 힘든 상황이었다.",
+          "narrationKo": "세 번째 서쪽 수문은 공중을 비행하는 맹독 와이번 스무 마리가 지키고 있었다. 날개 밑에서 보랏빛 독가루를 흩뿌리며 급강하하는 마수들 때문에 지상의 전사들이 눈을 뜨기조차 힘든 상황이었다.",
           "narrationEn": "The western sluice was defended by twenty venomous wyverns circling overhead, raining clouds of caustic spores upon the defile.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "세 번째 서쪽 수문은 공중을 비행하는 독익룡(毒翼龍) 스무 마리가 지키고 있었다. 날개 밑에서 보랏빛 독가루를 흩뿌리며 급강하하는 마수들 때문에 지상의 전사들이 눈을 뜨기조차 힘든 상황이었다.",
+          "dialogueKo": "세 번째 서쪽 수문은 공중을 비행하는 맹독 와이번 스무 마리가 지키고 있었다. 날개 밑에서 보랏빛 독가루를 흩뿌리며 급강하하는 마수들 때문에 지상의 전사들이 눈을 뜨기조차 힘든 상황이었다.",
           "dialogueEn": "The western sluice was defended by twenty venomous wyverns circling overhead, raining clouds of caustic spores upon the defile."
         },
         {
@@ -33727,7 +33727,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 62,
       "name": "실리아",
       "nameEn": "Celia",
-      "text": "“바람 속삭임 섬의 정령들이여! 대지의 독기를 씻어낼 정화의 은빛 폭풍을 내리소서!”\n\n실리아의 발밑에서 솟구쳐 오른 거대한 회오리바람이 공중으로 솟구쳐 올랐다. 질풍의 소용돌이가 독익룡들의 독가루를 역류시켜 놈들의 눈과 호흡기를 마비시켰다.\n\n그 틈을 타 엘리아나와 에일라가 서리 화살을 일제히 난사했다. 공중에서 얼어붙은 독익룡들이 차례로 늪지 바닥으로 추락하며 산산조각 났다.\n\n카단이 뛰쳐나가 서쪽 수문의 흑요석 마나 코어를 은빛 단검으로 꿰뚫었다. 파지직 하는 스파크와 함께 서쪽 수문의 독기 분출구 역시 완벽하게 침묵했다.\n\n서쪽 수문의 흑요석 마나 코어가 부서지자, 공중을 맴돌던 나머지 독익룡들도 힘을 잃고 늪지 바닥으로 추락했다. 실리아가 일으킨 거대한 회오리바람이 공중에 남아 있던 보랏빛 독가루를 완전히 대기권 밖으로 밀어냈다.\n\n실리아가 숨을 고르며 카단을 바라보았다. “동쪽과 서쪽의 두 관문이 침묵했어요. 이제 북쪽 중앙의 주 수문만 남았어요.” 카단이 고개를 끄덕이며 전열을 이끌었다.",
+      "text": "“바람 속삭임 섬의 정령들이여! 대지의 독기를 씻어낼 정화의 은빛 폭풍을 내리소서!”\n\n실리아의 발밑에서 솟구쳐 오른 거대한 회오리바람이 공중으로 솟구쳐 올랐다. 질풍의 소용돌이가 맹독 와이번들의 독가루를 역류시켜 놈들의 눈과 호흡기를 마비시켰다.\n\n그 틈을 타 엘리아나와 에일라가 서리 화살을 일제히 난사했다. 공중에서 얼어붙은 맹독 와이번들이 차례로 늪지 바닥으로 추락하며 산산조각 났다.\n\n카단이 뛰쳐나가 서쪽 수문의 흑요석 마나 코어를 은빛 단검으로 꿰뚫었다. 파지직 하는 스파크와 함께 서쪽 수문의 독기 분출구 역시 완벽하게 침묵했다.\n\n서쪽 수문의 흑요석 마나 코어가 부서지자, 공중을 맴돌던 나머지 맹독 와이번들도 힘을 잃고 늪지 바닥으로 추락했다. 실리아가 일으킨 거대한 회오리바람이 공중에 남아 있던 보랏빛 독가루를 완전히 대기권 밖으로 밀어냈다.\n\n실리아가 숨을 고르며 카단을 바라보았다. “동쪽과 서쪽의 두 관문이 침묵했어요. 이제 북쪽 중앙의 주 수문만 남았어요.” 카단이 고개를 끄덕이며 전열을 이끌었다.",
       "textEn": "\"Spirits of the eastern sea! Cleanse this blight with the silver tempest of the dawn!\"\n\nA towering whirlwind erupted from Cilia's boots, reversing the falling spore clouds straight into the wyverns' maws.\n\nParalyzed by their own venom, the beasts tumbled from the sky, where Eliana and Eyla dispatched them with frost arrows.\n\nKadan leaped onto the parapet, driving his silver dagger into the obsidian mana core, silencing the western sluice in a shower of azure sparks.\n\nAt last, the companions arrived before the central northern gate, where General Bargast, Lucian's chief fortress commander, stood atop the iron catwalk.\n\nCovered in venomous serpent tattoos, the brute leveled a massive sulfur flamethrower.",
       "sceneNumber": 5,
       "totalScenes": 10,
@@ -33743,7 +33743,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -33799,21 +33799,21 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 24,
           "imageUrl": "/images/webtoon/episode_30/scene_24.webp",
-          "narrationKo": "실리아의 발밑에서 솟구쳐 오른 거대한 회오리바람이 공중으로 솟구쳐 올랐다. 질풍의 소용돌이가 독익룡들의 독가루를 역류시켜 놈들의 눈과 호흡기를 마비시켰다.",
+          "narrationKo": "실리아의 발밑에서 솟구쳐 오른 거대한 회오리바람이 공중으로 솟구쳐 올랐다. 질풍의 소용돌이가 맹독 와이번들의 독가루를 역류시켜 놈들의 눈과 호흡기를 마비시켰다.",
           "narrationEn": "A towering whirlwind erupted from Cilia's boots, reversing the falling spore clouds straight into the wyverns' maws.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "실리아의 발밑에서 솟구쳐 오른 거대한 회오리바람이 공중으로 솟구쳐 올랐다. 질풍의 소용돌이가 독익룡들의 독가루를 역류시켜 놈들의 눈과 호흡기를 마비시켰다.",
+          "dialogueKo": "실리아의 발밑에서 솟구쳐 오른 거대한 회오리바람이 공중으로 솟구쳐 올랐다. 질풍의 소용돌이가 맹독 와이번들의 독가루를 역류시켜 놈들의 눈과 호흡기를 마비시켰다.",
           "dialogueEn": "A towering whirlwind erupted from Cilia's boots, reversing the falling spore clouds straight into the wyverns' maws."
         },
         {
           "cutNumber": 25,
           "imageUrl": "/images/webtoon/episode_30/scene_25.webp",
-          "narrationKo": "그 틈을 타 엘리아나와 에일라가 서리 화살을 일제히 난사했다. 공중에서 얼어붙은 독익룡들이 차례로 늪지 바닥으로 추락하며 산산조각 났다.",
+          "narrationKo": "그 틈을 타 엘리아나와 에일라가 서리 화살을 일제히 난사했다. 공중에서 얼어붙은 맹독 와이번들이 차례로 늪지 바닥으로 추락하며 산산조각 났다.",
           "narrationEn": "Paralyzed by their own venom, the beasts tumbled from the sky, where Eliana and Eyla dispatched them with frost arrows.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "그 틈을 타 엘리아나와 에일라가 서리 화살을 일제히 난사했다. 공중에서 얼어붙은 독익룡들이 차례로 늪지 바닥으로 추락하며 산산조각 났다.",
+          "dialogueKo": "그 틈을 타 엘리아나와 에일라가 서리 화살을 일제히 난사했다. 공중에서 얼어붙은 맹독 와이번들이 차례로 늪지 바닥으로 추락하며 산산조각 났다.",
           "dialogueEn": "Paralyzed by their own venom, the beasts tumbled from the sky, where Eliana and Eyla dispatched them with frost arrows."
         },
         {
@@ -33829,11 +33829,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 27,
           "imageUrl": "/images/webtoon/episode_30/scene_27.webp",
-          "narrationKo": "서쪽 수문의 흑요석 마나 코어가 부서지자, 공중을 맴돌던 나머지 독익룡들도 힘을 잃고 늪지 바닥으로 추락했다. 실리아가 일으킨 거대한 회오리바람이 공중에 남아 있던 보랏빛 독가루를 완전히 대기권 밖으로 밀어냈다.",
+          "narrationKo": "서쪽 수문의 흑요석 마나 코어가 부서지자, 공중을 맴돌던 나머지 맹독 와이번들도 힘을 잃고 늪지 바닥으로 추락했다. 실리아가 일으킨 거대한 회오리바람이 공중에 남아 있던 보랏빛 독가루를 완전히 대기권 밖으로 밀어냈다.",
           "narrationEn": "At last, the companions arrived before the central northern gate, where General Bargast, Lucian's chief fortress commander, stood atop the iron catwalk.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "서쪽 수문의 흑요석 마나 코어가 부서지자, 공중을 맴돌던 나머지 독익룡들도 힘을 잃고 늪지 바닥으로 추락했다. 실리아가 일으킨 거대한 회오리바람이 공중에 남아 있던 보랏빛 독가루를 완전히 대기권 밖으로 밀어냈다.",
+          "dialogueKo": "서쪽 수문의 흑요석 마나 코어가 부서지자, 공중을 맴돌던 나머지 맹독 와이번들도 힘을 잃고 늪지 바닥으로 추락했다. 실리아가 일으킨 거대한 회오리바람이 공중에 남아 있던 보랏빛 독가루를 완전히 대기권 밖으로 밀어냈다.",
           "dialogueEn": "At last, the companions arrived before the central northern gate, where General Bargast, Lucian's chief fortress commander, stood atop the iron catwalk."
         },
         {
@@ -33853,15 +33853,15 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "마침내 네 번째 북쪽 중앙 수문에 도달했을 때, 거대한 철문 위에서 루시안의 마지막 호위사령관이자 사문의 총지휘관인 바르가스트가 모습을 드러냈다.\n\n바르가스트는 온몸에 메두사 고르고의 독사 문신을 두른 거한으로, 거대한 유황 화염 방사기를 양손에 들고 있었다.\n\n바르가스트가 흉포한 미소를 지으며 화염 방사기의 밸브를 열었다. “애송이 놈들! 이 최후의 사문독화(四門毒火)는 바위도 녹여버린다! 잿더미가 되어 늪지의 거름이나 되어라!”\n\n용암 같은 유황 불길과 맹독이 합쳐진 거대한 화염 폭풍이 좁은 협곡을 가득 채우며 일행을 덮쳐왔다.\n\n카단은 물러서지 않고 드래곤 브레이커 방패를 두 손으로 받쳐 들었다. 품속의 유리 불씨가 카단의 심장 마나와 공명하며 방패 전면에 눈부신 순백과 황금빛이 어우러진 이중 수호벽을 형성했다.",
+      "text": "마침내 네 번째 북쪽 중앙 수문에 도달했을 때, 거대한 철문 위에서 루시안의 마지막 호위사령관이자 네 수문 요새의 총지휘관인 바르가스트가 모습을 드러냈다.\n\n바르가스트는 온몸에 메두사 고르고의 독사 문신을 두른 거한으로, 거대한 유황 화염 방사기를 양손에 들고 있었다.\n\n바르가스트가 흉포한 미소를 지으며 화염 방사기의 밸브를 열었다. “애송이 놈들! 이 최후의 맹독의 지옥불은 바위도 녹여버린다! 잿더미가 되어 늪지의 거름이나 되어라!”\n\n용암 같은 유황 불길과 맹독이 합쳐진 거대한 화염 폭풍이 좁은 협곡을 가득 채우며 일행을 덮쳐왔다.\n\n카단은 물러서지 않고 드래곤 브레이커 방패를 두 손으로 받쳐 들었다. 품속의 유리 불씨가 카단의 심장 마나와 공명하며 방패 전면에 눈부신 순백과 황금빛이 어우러진 이중 수호벽을 형성했다.",
       "textEn": "Bargast sneered in sadistic triumph.\n\n\"Insolent pups! This Four Gates Hellfire melts living stone!\n\nBurn to ash and feed the swamp!\"\n\nA torrent of liquid hellfire and concentrated venom engulfed the narrow defile.\n\nKadan braced the Dragon Breaker shield with both hands.",
       "sceneNumber": 6,
       "totalScenes": 10,
       "sceneTitleKo": "[제30화 · 장면 6/10] 마침내 네 번째 북쪽 중앙 수문에 도달했을 때, 거대한…",
       "sceneTitleEn": "[EP.30 · Scene 6/10] Poison at the Four Gates (Kadan · Lucian · Medusa Gorgo)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 루시안(붉은 유리 궁정의 야심가 귀족) / 메두사 고르고(맹독과 저주의 흑마녀)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 루시안 · 메두사 고르고]이(가) 함께 등장하여 “애송이 놈들! 이 최후의 사문독화(四門毒火)는 바위도 녹여버린다! 잿더미가… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 루시안(붉은 유리 궁정의 야심가 귀족) / 메두사 고르고(맹독과 저주의 흑마녀)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 루시안 · 메두사 고르고]이(가) 함께 등장하여 “애송이 놈들! 이 최후의 맹독의 지옥불은 바위도 녹여버린다! 잿더미가… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Lucian (Ambitious noble of the Red Glass Court) / Medusa Gorgo (Serpent Sorceress of Venom)\n• Story Comprehension Guide: In this scene, [Kadan · Lucian · Medusa Gorgo] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 30 forward.",
-      "dialogueQuoteKo": "“애송이 놈들! 이 최후의 사문독화(四門毒火)는 바위도 녹여버린다! 잿더미가 되어 늪지의 거름이나 되어라!”",
+      "dialogueQuoteKo": "“애송이 놈들! 이 최후의 맹독의 지옥불은 바위도 녹여버린다! 잿더미가 되어 늪지의 거름이나 되어라!”",
       "dialogueQuoteEn": "“Insolent pups! This Four Gates Hellfire melts living stone!\n\nBurn to ash and feed the swamp!”",
       "sceneImageUrl": "/images/storybook/ep_30/page_06.webp",
       "sceneCharacters": [
@@ -33897,11 +33897,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 29,
           "imageUrl": "/images/webtoon/episode_30/scene_29.webp",
-          "narrationKo": "마침내 네 번째 북쪽 중앙 수문에 도달했을 때, 거대한 철문 위에서 루시안의 마지막 호위사령관이자 사문의 총지휘관인 바르가스트가 모습을 드러냈다.",
+          "narrationKo": "마침내 네 번째 북쪽 중앙 수문에 도달했을 때, 거대한 철문 위에서 루시안의 마지막 호위사령관이자 네 수문 요새의 총지휘관인 바르가스트가 모습을 드러냈다.",
           "narrationEn": "Bargast sneered in sadistic triumph.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "마침내 네 번째 북쪽 중앙 수문에 도달했을 때, 거대한 철문 위에서 루시안의 마지막 호위사령관이자 사문의 총지휘관인 바르가스트가 모습을 드러냈다.",
+          "dialogueKo": "마침내 네 번째 북쪽 중앙 수문에 도달했을 때, 거대한 철문 위에서 루시안의 마지막 호위사령관이자 네 수문 요새의 총지휘관인 바르가스트가 모습을 드러냈다.",
           "dialogueEn": "Bargast sneered in sadistic triumph."
         },
         {
@@ -33917,11 +33917,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 31,
           "imageUrl": "/images/webtoon/episode_30/scene_31.webp",
-          "narrationKo": "바르가스트가 흉포한 미소를 지으며 화염 방사기의 밸브를 열었다. “애송이 놈들! 이 최후의 사문독화(四門毒火)는 바위도 녹여버린다! 잿더미가 되어 늪지의 거름이나 되어라!”",
+          "narrationKo": "바르가스트가 흉포한 미소를 지으며 화염 방사기의 밸브를 열었다. “애송이 놈들! 이 최후의 맹독의 지옥불은 바위도 녹여버린다! 잿더미가 되어 늪지의 거름이나 되어라!”",
           "narrationEn": "Burn to ash and feed the swamp!\"",
           "speakerKo": "바르가스트",
           "speakerEn": "Barghest",
-          "dialogueKo": "바르가스트가 흉포한 미소를 지으며 화염 방사기의 밸브를 열었다. “애송이 놈들! 이 최후의 사문독화(四門毒火)는 바위도 녹여버린다! 잿더미가 되어 늪지의 거름이나 되어라!”",
+          "dialogueKo": "바르가스트가 흉포한 미소를 지으며 화염 방사기의 밸브를 열었다. “애송이 놈들! 이 최후의 맹독의 지옥불은 바위도 녹여버린다! 잿더미가 되어 늪지의 거름이나 되어라!”",
           "dialogueEn": "Burn to ash and feed the swamp!\""
         },
         {
@@ -33957,7 +33957,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제30화 · 운명의 분기점] 독기 수문의 정화",
       "sceneTitleEn": "[EP.30 · Fate Crossroads] Cleansing the Poison Sluice",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 루시안 · 메두사 고르고\n• 선택 가이드: 소설 제30화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 루시안 · 메두사 고르고\n• 선택 가이드: 소설 제30화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Lucian · Medusa Gorgo\n• Decision Guide: This is the climax crossroads of Episode 30. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -34047,7 +34047,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch30_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "대지의 수맥을 호흡으로 감싸 독기를 중화시킨다.",
           "labelEn": "Envelop the subterranean leylines with Star Breathing to neutralize poison.",
@@ -34058,7 +34058,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "대지의 수맥을 호흡으로 감싸 독기를 중화시킨다.",
           "textEn": "Envelop the subterranean leylines with Star Breathing to neutralize poison.",
@@ -34078,7 +34078,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "콰아아아앙! 유황 불길이 방패에 부딪쳐 양옆으로 갈라지며 바위벽을 녹여 내렸지만, 카단의 두 발은 늪지 바닥에 쐐기처럼 박힌 채 단 한 치도 흔들리지 않았다. 방패를 쥔 카단의 눈빛은 성기사의 영원한 신념으로 불타고 있었다.\n\n카단이 방패를 앞으로 내지르며 사자후를 토했다. “우리가 지켜야 할 사람들의 온기가 있는 한, 이 방패는 결코 녹아내리지 않는다!”\n\n바르가스트의 사문독화가 뿜어낸 유황 불길은 협곡 양쪽의 암벽을 통째로 녹여 붉은 쇳물처럼 흘러내리게 할 정도로 끔찍했다.\n\n그러나 카단의 드래곤 브레이커 방패는 별의 호흡과 이그니스의 순백 불씨가 결합된 성스러운 이중 결계로 그 모든 지옥도를 완벽하게 차단해 냈다.\n\n카단의 눈빛에는 두려움 대신 지키고자 하는 자의 숭고한 결의만이 타오르고 있었다. 방패 전면에서 터져 나온 황금빛 충격파는 대지를 가르며 바르가스트의 화염 방사기를 완전히 산산조각 냈다.\n\n카단의 거대한 방패 강타가 화염 폭풍을 찢어발기며 바르가스트를 정통으로 들이받았다. 콰앙 하는 충격음과 함께 유황 방사기가 폭발하며 바르가스트는 피를 토하고 절벽 아래로 추락했다.",
+      "text": "콰아아아앙! 유황 불길이 방패에 부딪쳐 양옆으로 갈라지며 바위벽을 녹여 내렸지만, 카단의 두 발은 늪지 바닥에 쐐기처럼 박힌 채 단 한 치도 흔들리지 않았다. 방패를 쥔 카단의 눈빛은 성기사의 영원한 신념으로 불타고 있었다.\n\n카단이 방패를 앞으로 내지르며 사자후를 토했다. “우리가 지켜야 할 사람들의 온기가 있는 한, 이 방패는 결코 녹아내리지 않는다!”\n\n바르가스트의 맹독의 지옥불이 뿜어낸 유황 불길은 협곡 양쪽의 암벽을 통째로 녹여 붉은 쇳물처럼 흘러내리게 할 정도로 끔찍했다.\n\n그러나 카단의 드래곤 브레이커 방패는 별의 호흡과 이그니스의 순백 불씨가 결합된 성스러운 이중 결계로 그 모든 지옥도를 완벽하게 차단해 냈다.\n\n카단의 눈빛에는 두려움 대신 지키고자 하는 자의 숭고한 결의만이 타오르고 있었다. 방패 전면에서 터져 나온 황금빛 충격파는 대지를 가르며 바르가스트의 화염 방사기를 완전히 산산조각 냈다.\n\n카단의 거대한 방패 강타가 화염 폭풍을 찢어발기며 바르가스트를 정통으로 들이받았다. 콰앙 하는 충격음과 함께 유황 방사기가 폭발하며 바르가스트는 피를 토하고 절벽 아래로 추락했다.",
       "textEn": "Resonating with his heart's resolve, the White Glass Ember within his coat blazed to life, weaving a double aegis of white fire and celestial gold across the shield's face.\n\nBOOM!\n\nThe inferno crashed against the bulwark, splitting in two and melting the canyon walls into slag, yet Kadan's boots remained anchored like iron pilings, yielding not a single fraction of an inch.\n\nRoaring with righteous fury, Kadan stepped through the flames.\n\n\"So long as we have living warmth to defend, this shield shall never melt!\"\n\nSlamming his shield into the machinery, Kadan's strike pulverized the flamethrower and hurled Bargast from the parapet into the chasm below.",
       "sceneNumber": 8,
       "totalScenes": 10,
@@ -34133,11 +34133,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 36,
           "imageUrl": "/images/webtoon/episode_30/scene_36.webp",
-          "narrationKo": "바르가스트의 사문독화가 뿜어낸 유황 불길은 협곡 양쪽의 암벽을 통째로 녹여 붉은 쇳물처럼 흘러내리게 할 정도로 끔찍했다.",
+          "narrationKo": "바르가스트의 맹독의 지옥불이 뿜어낸 유황 불길은 협곡 양쪽의 암벽을 통째로 녹여 붉은 쇳물처럼 흘러내리게 할 정도로 끔찍했다.",
           "narrationEn": "The inferno crashed against the bulwark, splitting in two and melting the canyon walls into slag, yet Kadan's boots remained anchored like iron pilings, yielding not a single fraction of an inch.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "바르가스트의 사문독화가 뿜어낸 유황 불길은 협곡 양쪽의 암벽을 통째로 녹여 붉은 쇳물처럼 흘러내리게 할 정도로 끔찍했다.",
+          "dialogueKo": "바르가스트의 맹독의 지옥불이 뿜어낸 유황 불길은 협곡 양쪽의 암벽을 통째로 녹여 붉은 쇳물처럼 흘러내리게 할 정도로 끔찍했다.",
           "dialogueEn": "The inferno crashed against the bulwark, splitting in two and melting the canyon walls into slag, yet Kadan's boots remained anchored like iron pilings, yielding not a single fraction of an inch."
         },
         {
@@ -34177,15 +34177,15 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "카단이 은빛 단검으로 중앙 수문의 거대한 제어 사슬을 끊어내자, 마침내 사문의 네 개 수문이 모두 열리며 갇혀 있던 거대한 호수의 맑은 물이 늪지로 쏟아져 들어왔다.\n\n우레 같은 물살이 부식성 진흙과 독기를 씻어내며, 썩어가던 늪지가 맑고 푸른 호수로 되살아나기 시작했다.\n\n수백 명의 피난민들과 의용군들이 환호성을 지르며 해방된 북문을 통과해 진격하기 시작했다.\n\n실리아가 녹옥 지팡이를 거두며 카단의 곁으로 다가왔다. “사문의 독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검은 늪지대의 심장부로 가는 길이 열렸어요.”\n\n카단은 주머니 속에서 따뜻하게 고동치는 이그니스의 유리 불씨를 쥐며 고개를 끄덕였다.",
+      "text": "카단이 은빛 단검으로 중앙 수문의 거대한 제어 사슬을 끊어내자, 마침내 요새의 네 개 수문이 모두 열리며 갇혀 있던 거대한 호수의 맑은 물이 늪지로 쏟아져 들어왔다.\n\n우레 같은 물살이 부식성 진흙과 독기를 씻어내며, 썩어가던 늪지가 맑고 푸른 호수로 되살아나기 시작했다.\n\n수백 명의 피난민들과 의용군들이 환호성을 지르며 해방된 북문을 통과해 진격하기 시작했다.\n\n실리아가 녹옥 지팡이를 거두며 카단의 곁으로 다가왔다. “네 수문의 맹독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검은 늪지대의 심장부로 가는 길이 열렸어요.”\n\n카단은 주머니 속에서 따뜻하게 고동치는 이그니스의 유리 불씨를 쥐며 고개를 끄덕였다.",
       "textEn": "With a final thrust of his silver dagger, Kadan severed the master chains.\n\nWith groaning thunder, all four iron sluices rose, unleashing the pristine mountain reservoirs behind the fortress.\n\nA flood of crystalline water rushed through the defile, washing away the corrosive slime and cleansing the putrid swamp into a clear, living lake.\n\nCheering wildly, thousands of volunteer troops and refugees surged through the liberated gates.\n\nCilia stepped to Kadan's side, her eyes fixed upon the northern peaks.",
       "sceneNumber": 9,
       "totalScenes": 10,
       "sceneTitleKo": "[제30화 · 장면 9/10] 카단이 은빛 단검으로 중앙 수문의 거대한 제어 사슬을…",
       "sceneTitleEn": "[EP.30 · Scene 9/10] Poison at the Four Gates (Kadan · Celia · Ignis · Lucian)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 실리아(여주인공) / 이그니스(발리안과 이셀라의 아들)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 실리아 · 이그니스 · 루시안]이(가) 함께 등장하여 “사문의 독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 실리아(여주인공) / 이그니스(발리안과 이셀라의 아들)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 실리아 · 이그니스 · 루시안]이(가) 함께 등장하여 “네 수문의 맹독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Celia (Heroine) / Ignis (Son of Balian & Ysela)\n• Story Comprehension Guide: In this scene, [Kadan · Celia · Ignis · Lucian] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 30 forward.",
-      "dialogueQuoteKo": "“사문의 독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검은 늪지대의 심장부로 가는 길이 열렸어요.”",
+      "dialogueQuoteKo": "“네 수문의 맹독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검은 늪지대의 심장부로 가는 길이 열렸어요.”",
       "dialogueQuoteEn": "",
       "sceneImageUrl": "/images/storybook/ep_30/page_09.webp",
       "sceneCharacters": [
@@ -34202,7 +34202,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -34230,11 +34230,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 40,
           "imageUrl": "/images/webtoon/episode_30/scene_40.webp",
-          "narrationKo": "카단이 은빛 단검으로 중앙 수문의 거대한 제어 사슬을 끊어내자, 마침내 사문의 네 개 수문이 모두 열리며 갇혀 있던 거대한 호수의 맑은 물이 늪지로 쏟아져 들어왔다.",
+          "narrationKo": "카단이 은빛 단검으로 중앙 수문의 거대한 제어 사슬을 끊어내자, 마침내 요새의 네 개 수문이 모두 열리며 갇혀 있던 거대한 호수의 맑은 물이 늪지로 쏟아져 들어왔다.",
           "narrationEn": "With a final thrust of his silver dagger, Kadan severed the master chains.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "카단이 은빛 단검으로 중앙 수문의 거대한 제어 사슬을 끊어내자, 마침내 사문의 네 개 수문이 모두 열리며 갇혀 있던 거대한 호수의 맑은 물이 늪지로 쏟아져 들어왔다.",
+          "dialogueKo": "카단이 은빛 단검으로 중앙 수문의 거대한 제어 사슬을 끊어내자, 마침내 요새의 네 개 수문이 모두 열리며 갇혀 있던 거대한 호수의 맑은 물이 늪지로 쏟아져 들어왔다.",
           "dialogueEn": "With a final thrust of his silver dagger, Kadan severed the master chains."
         },
         {
@@ -34260,11 +34260,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 43,
           "imageUrl": "/images/webtoon/episode_30/scene_43.webp",
-          "narrationKo": "실리아가 녹옥 지팡이를 거두며 카단의 곁으로 다가왔다. “사문의 독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검은 늪지대의 심장부로 가는 길이 열렸어요.”",
+          "narrationKo": "실리아가 녹옥 지팡이를 거두며 카단의 곁으로 다가왔다. “네 수문의 맹독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검은 늪지대의 심장부로 가는 길이 열렸어요.”",
           "narrationEn": "Cheering wildly, thousands of volunteer troops and refugees surged through the liberated gates.",
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "dialogueKo": "실리아가 녹옥 지팡이를 거두며 카단의 곁으로 다가왔다. “사문의 독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검은 늪지대의 심장부로 가는 길이 열렸어요.”",
+          "dialogueKo": "실리아가 녹옥 지팡이를 거두며 카단의 곁으로 다가왔다. “네 수문의 맹독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검은 늪지대의 심장부로 가는 길이 열렸어요.”",
           "dialogueEn": "Cheering wildly, thousands of volunteer troops and refugees surged through the liberated gates."
         },
         {
@@ -34284,7 +34284,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "“형제가 남겨준 등불을 따라, 최후의 어둠을 심판하러 가자.” 선대 영웅들의 넋과 전우의 희생을 가슴에 품은 두 젊은이는, 대륙의 평화를 되찾기 위한 마지막 전장을 향해 굳건히 발걸음을 옮겼다.\n\n사문의 네 개 수문이 모두 열리고 거대한 호수의 청정한 물살이 늪지를 뒤덮자, 수십 년간 썩어가던 검은 대지가 기적처럼 푸른 생명력을 되찾기 시작했다.\n\n맑은 물밑에서 어린 수초들이 돋아났고, 독기에 쫓겨났던 물새들이 하늘로 날아올랐다.\n\n수천 명의 의용군과 피난민들이 만세를 부르며 해방된 관문을 통과했다. 실리아와 카단은 물살을 헤치며 나아가는 군대의 선두에 서서 북쪽의 검은 늪지대 심장부를 응시했다.\n\n이그니스가 남긴 불씨는 여전히 따스하게 고동치며 그들의 앞길을 밝혀주고 있었다.",
+      "text": "“형제가 남겨준 등불을 따라, 최후의 어둠을 심판하러 가자.” 선대 영웅들의 넋과 전우의 희생을 가슴에 품은 두 젊은이는, 대륙의 평화를 되찾기 위한 마지막 전장을 향해 굳건히 발걸음을 옮겼다.\n\n요새의 네 개 수문이 모두 열리고 거대한 호수의 청정한 물살이 늪지를 뒤덮자, 수십 년간 썩어가던 검은 대지가 기적처럼 푸른 생명력을 되찾기 시작했다.\n\n맑은 물밑에서 어린 수초들이 돋아났고, 독기에 쫓겨났던 물새들이 하늘로 날아올랐다.\n\n수천 명의 의용군과 피난민들이 만세를 부르며 해방된 관문을 통과했다. 실리아와 카단은 물살을 헤치며 나아가는 군대의 선두에 서서 북쪽의 검은 늪지대 심장부를 응시했다.\n\n이그니스가 남긴 불씨는 여전히 따스하게 고동치며 그들의 앞길을 밝혀주고 있었다.",
       "textEn": "\"The poison of the Four Gates is cleansed.\n\nThe final road to the heart of the Black Marsh is open.\"\n\nHolding the warm ember in his hand, Kadan nodded with unbreakable resolve.\n\n\"Following the beacon left by our brother, we march to deliver the final judgment.\"\n\nBearing the memories of their forebears and the sacrifice of their comrade, the companions marched forward into the final campaign.",
       "sceneNumber": 10,
       "totalScenes": 10,
@@ -34309,7 +34309,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -34338,11 +34338,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 46,
           "imageUrl": "/images/webtoon/episode_30/scene_46.webp",
-          "narrationKo": "사문의 네 개 수문이 모두 열리고 거대한 호수의 청정한 물살이 늪지를 뒤덮자, 수십 년간 썩어가던 검은 대지가 기적처럼 푸른 생명력을 되찾기 시작했다.",
+          "narrationKo": "요새의 네 개 수문이 모두 열리고 거대한 호수의 청정한 물살이 늪지를 뒤덮자, 수십 년간 썩어가던 검은 대지가 기적처럼 푸른 생명력을 되찾기 시작했다.",
           "narrationEn": "The final road to the heart of the Black Marsh is open.\"",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "사문의 네 개 수문이 모두 열리고 거대한 호수의 청정한 물살이 늪지를 뒤덮자, 수십 년간 썩어가던 검은 대지가 기적처럼 푸른 생명력을 되찾기 시작했다.",
+          "dialogueKo": "요새의 네 개 수문이 모두 열리고 거대한 호수의 청정한 물살이 늪지를 뒤덮자, 수십 년간 썩어가던 검은 대지가 기적처럼 푸른 생명력을 되찾기 시작했다.",
           "dialogueEn": "The final road to the heart of the Black Marsh is open.\""
         },
         {
@@ -34384,15 +34384,15 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "제 31화: # 눈히어로.com - 카단의 여정 31화 - 내기에 건 손 · 카단",
       "nameEn": "Episode 31: The Hand That Wagered Everything · Kadan",
-      "text": "사문의 독을 정화하고 북쪽 평원으로 진격한 연합군이 마주한 것은 대륙 북방의 악명 높은 불모지, ‘검은 늪지대’의 외곽을 가로지르는 유사강(流砂江)이었다.\n\n수십 길 너비의 강물은 맑은 물 대신 끈적끈적한 모래와 진흙이 소용돌이치며 흐르고 있었고, 발을 잘못 디뎠다간 마차마저 통째로 삼켜버리는 치명적인 모래 수렁이 끝없이 도사리고 있었다.\n\n강 건너편으로는 루시안의 흑마법 요새가 검은 구름 속에 우뚝 솟아 있었지만, 배나 다리 없이는 단 한 명의 군사도 건널 수 없는 천연의 요새였다.\n\n론돌이 목재 의족으로 강가의 모래를 쿡쿡 찌르며 혀를 찼다.\n\n“이 유사강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.”\n\n카단이 무쇠 방패를 고쳐 쥐며 강변의 기괴한 해골 표지판을 살폈다.\n\n“이 일대의 나룻배를 독점하고 있는 자가 있다고 들었다.” 그림리가 침을 뱉으며 대답했다.",
+      "text": "네 수문의 맹독을 정화하고 북쪽 평원으로 진격한 연합군이 마주한 것은 대륙 북방의 악명 높은 불모지, ‘검은 늪지대’의 외곽을 가로지르는 흐르는 모래강이었다.\n\n수십 길 너비의 강물은 맑은 물 대신 끈적끈적한 모래와 진흙이 소용돌이치며 흐르고 있었고, 발을 잘못 디뎠다간 마차마저 통째로 삼켜버리는 치명적인 모래 수렁이 끝없이 도사리고 있었다.\n\n강 건너편으로는 루시안의 흑마법 요새가 검은 구름 속에 우뚝 솟아 있었지만, 배나 다리 없이는 단 한 명의 군사도 건널 수 없는 천연의 요새였다.\n\n론돌이 목재 의족으로 강가의 모래를 쿡쿡 찌르며 혀를 찼다.\n\n“이 흐르는 모래강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.”\n\n카단이 무쇠 방패를 고쳐 쥐며 강변의 기괴한 해골 표지판을 살폈다.\n\n“이 일대의 나룻배를 독점하고 있는 자가 있다고 들었다.” 그림리가 침을 뱉으며 대답했다.",
       "textEn": "Advancing across the northern plains after cleansing the Four Gates, the allied host stood before the Quicksand River, a treacherous watery boundary encircling the outer perimeter of the dreaded Black Marsh.\n\nScores of fathoms wide, the torrent churned with thick, viscous sludge and liquefied sand rather than clean water, harboring bottomless quicksand pits that could swallow supply wagons in seconds.\n\nAcross the opposite bank rose Lucian's dark citadel amidst rolling storm clouds, yet without specialized shallow-draft craft, crossing was impossible.\n\nProbing the riverbank with his timber pegleg, Rondol clicked his tongue in grim assessment.\n\n\"This quicksand river is more foul than any stormy sea. Standard timber cutters will founder within minutes under the weight of the mud. Only the buoyant reed-skiffs crafted by the swamp goblins can navigate this slurry.\"\n\nBracing his shield, Kadan examined a crude skull-inscribed marker post.\n\n\"I understand a solitary overlord monopolizes all the river barges.\" Spitting into the sand, Grimli replied in disgust.",
       "sceneNumber": 1,
       "totalScenes": 10,
-      "sceneTitleKo": "[제31화 · 장면 1/10] 사문의 독을 정화하고 북쪽 평원으로 진격한 연합군이…",
+      "sceneTitleKo": "[제31화 · 장면 1/10] 네 수문의 맹독을 정화하고 북쪽 평원으로 진격한 연합군이…",
       "sceneTitleEn": "[EP.31 · Scene 1/10] The Hand That Wagered Everything (Kadan · Lucian · Rondol · Grimli)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 루시안(붉은 유리 궁정의 야심가 귀족) / 론돌(일곱 추적자의 중갑 방패 기사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 루시안 · 론돌 · 그림리]이(가) 함께 등장하여 “이 유사강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 루시안(붉은 유리 궁정의 야심가 귀족) / 론돌(일곱 추적자의 중갑 방패 기사)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 루시안 · 론돌 · 그림리]이(가) 함께 등장하여 “이 흐르는 모래강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Lucian (Ambitious noble of the Red Glass Court) / Rondol (Heavy shield knight of the Seven Pursuers)\n• Story Comprehension Guide: In this scene, [Kadan · Lucian · Rondol · Grimli] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 31 forward.",
-      "dialogueQuoteKo": "“이 유사강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.” “이 일대의 나룻배를 독점하고 있는 자가 있다고 들었다.”",
+      "dialogueQuoteKo": "“이 흐르는 모래강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.” “이 일대의 나룻배를 독점하고 있는 자가 있다고 들었다.”",
       "dialogueQuoteEn": "“This quicksand river is more foul than any stormy sea. Standard timber cutters will founder within minutes under the weight of the mud. Only the buoyant reed-skiffs crafted by the swamp goblins can navigate this slurry.” “I understand a solitary overlord monopolizes all the river barges.”",
       "sceneImageUrl": "/images/storybook/ep_31/page_01.webp",
       "sceneCharacters": [
@@ -34437,11 +34437,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 1,
           "imageUrl": "/images/webtoon/episode_31/scene_01.webp",
-          "narrationKo": "사문의 독을 정화하고 북쪽 평원으로 진격한 연합군이 마주한 것은 대륙 북방의 악명 높은 불모지, ‘검은 늪지대’의 외곽을 가로지르는 유사강(流砂江)이었다.",
+          "narrationKo": "네 수문의 맹독을 정화하고 북쪽 평원으로 진격한 연합군이 마주한 것은 대륙 북방의 악명 높은 불모지, ‘검은 늪지대’의 외곽을 가로지르는 흐르는 모래강이었다.",
           "narrationEn": "Advancing across the northern plains after cleansing the Four Gates, the allied host stood before the Quicksand River, a treacherous watery boundary encircling the outer perimeter of the dreaded Black Marsh.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "사문의 독을 정화하고 북쪽 평원으로 진격한 연합군이 마주한 것은 대륙 북방의 악명 높은 불모지, ‘검은 늪지대’의 외곽을 가로지르는 유사강(流砂江)이었다.",
+          "dialogueKo": "네 수문의 맹독을 정화하고 북쪽 평원으로 진격한 연합군이 마주한 것은 대륙 북방의 악명 높은 불모지, ‘검은 늪지대’의 외곽을 가로지르는 흐르는 모래강이었다.",
           "dialogueEn": "Advancing across the northern plains after cleansing the Four Gates, the allied host stood before the Quicksand River, a treacherous watery boundary encircling the outer perimeter of the dreaded Black Marsh."
         },
         {
@@ -34477,11 +34477,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 5,
           "imageUrl": "/images/webtoon/episode_31/scene_05.webp",
-          "narrationKo": "“이 유사강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.”",
+          "narrationKo": "“이 흐르는 모래강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.”",
           "narrationEn": "\"This quicksand river is more foul than any stormy sea. Standard timber cutters will founder within minutes under the weight of the mud. Only the buoyant reed-skiffs crafted by the swamp goblins can navigate this slurry.\"",
           "speakerKo": "론돌",
           "speakerEn": "Rondol",
-          "dialogueKo": "“이 유사강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.”",
+          "dialogueKo": "“이 흐르는 모래강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.”",
           "dialogueEn": "\"This quicksand river is more foul than any stormy sea. Standard timber cutters will founder within minutes under the weight of the mud. Only the buoyant reed-skiffs crafted by the swamp goblins can navigate this slurry.\""
         },
         {
@@ -34511,7 +34511,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 62,
       "name": "실리아",
       "nameEn": "Celia",
-      "text": "“지하 도박장의 군주이자 탐욕스러운 고블린 왕 ‘보가트’다. 황실과 결탁하여 피난민들의 통행료를 갈취하며 배를 틀어쥐고 있지. 그놈의 소굴로 가서 담판을 지어야 한다.”\n\n실리아가 녹옥 지팡이로 서늘한 바람의 결을 읽으며 고개를 끄덕였다.\n\n“지하 암반 틈새에서 금화 부딪치는 소리와 기름진 고기 냄새가 풍겨와요. 저곳이 보가트의 은신처예요.”\n\n유사강 수면 위로는 정체불명의 가스 방울들이 부글거리며 터져 나왔고, 썩은 갈대뿌리 사이로는 독사들이 똬리를 틀고 있었다.\n\n강변의 검은 진흙은 한번 발을 들이면 무릎까지 순식간에 빨아들이는 무서운 흡인력을 지니고 있었다. 카단은 장화 끝으로 진흙의 점도를 확인하며 방패의 균형을 맞추었다.\n\n실리아가 강바람을 느끼며 덧붙였다. “강 건너편 요새에서 탐지 마법진이 주기적으로 붉은 파문을 뿜어내고 있어요. 정면으로 강을 건너려 했다간 대포의 표적이 되기 십상이에요.”\n\n일행은 갈대숲 뒤편에 숨겨진 동굴 통로를 따라 지하 밀수 도박장으로 잠입했다.",
+      "text": "“지하 도박장의 군주이자 탐욕스러운 고블린 왕 ‘보가트’다. 황실과 결탁하여 피난민들의 통행료를 갈취하며 배를 틀어쥐고 있지. 그놈의 소굴로 가서 담판을 지어야 한다.”\n\n실리아가 녹옥 지팡이로 서늘한 바람의 결을 읽으며 고개를 끄덕였다.\n\n“지하 암반 틈새에서 금화 부딪치는 소리와 기름진 고기 냄새가 풍겨와요. 저곳이 보가트의 은신처예요.”\n\n흐르는 모래강 수면 위로는 정체불명의 가스 방울들이 부글거리며 터져 나왔고, 썩은 갈대뿌리 사이로는 독사들이 똬리를 틀고 있었다.\n\n강변의 검은 진흙은 한번 발을 들이면 무릎까지 순식간에 빨아들이는 무서운 흡인력을 지니고 있었다. 카단은 장화 끝으로 진흙의 점도를 확인하며 방패의 균형을 맞추었다.\n\n실리아가 강바람을 느끼며 덧붙였다. “강 건너편 요새에서 탐지 마법진이 주기적으로 붉은 파문을 뿜어내고 있어요. 정면으로 강을 건너려 했다간 대포의 표적이 되기 십상이에요.”\n\n일행은 갈대숲 뒤편에 숨겨진 동굴 통로를 따라 지하 밀수 도박장으로 잠입했다.",
       "textEn": "\"Bogart, the greedy goblin casino king.\n\nColluding with the imperial court, he extorts fortune from fleeing refugees while hoarding the ferry fleet in his subterranean den.\n\nWe must confront the cur directly.\"\n\nCilia swept her Jade Staff, reading the subterranean drafts with a nod.\n\n\"Beneath that shale ledge, I hear the clinking of gold coins and smell roasted fat.\n\nThat is Bogart's lair.\"\n\nInfiltrating the cavern den behind the reeds, the companions entered a vast subterranean gambling hall.",
       "sceneNumber": 2,
       "totalScenes": 10,
@@ -34527,7 +34527,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -34585,11 +34585,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 11,
           "imageUrl": "/images/webtoon/episode_31/scene_11.webp",
-          "narrationKo": "유사강 수면 위로는 정체불명의 가스 방울들이 부글거리며 터져 나왔고, 썩은 갈대뿌리 사이로는 독사들이 똬리를 틀고 있었다.",
+          "narrationKo": "흐르는 모래강 수면 위로는 정체불명의 가스 방울들이 부글거리며 터져 나왔고, 썩은 갈대뿌리 사이로는 독사들이 똬리를 틀고 있었다.",
           "narrationEn": "Cilia swept her Jade Staff, reading the subterranean drafts with a nod.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "유사강 수면 위로는 정체불명의 가스 방울들이 부글거리며 터져 나왔고, 썩은 갈대뿌리 사이로는 독사들이 똬리를 틀고 있었다.",
+          "dialogueKo": "흐르는 모래강 수면 위로는 정체불명의 가스 방울들이 부글거리며 터져 나왔고, 썩은 갈대뿌리 사이로는 독사들이 똬리를 틀고 있었다.",
           "dialogueEn": "Cilia swept her Jade Staff, reading the subterranean drafts with a nod."
         },
         {
@@ -34629,7 +34629,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "지하 홀 안은 수백 명의 부랑배들과 고블린들이 둘러앉아 주사위 놀음과 카드 도박에 열을 올리고 있었고, 유황 등불의 매캐한 연기가 천장을 자욱하게 메우고 있었다.\n\n홀 중앙의 거대한 비단 방석 위에는 온몸에 번쩍이는 황금 패물을 두른 뚱뚱한 고블린 왕 보가트가 커다란 맥주잔을 들이켜고 있었다.\n\n보가트가 카단의 드래곤 브레이커 방패를 흘겨보며 교활한 웃음을 흘렸다.\n\n“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 유사강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”\n\n카단이 석탁 앞으로 걸어가 방패를 쾅 내려놓았다. “원하는 대가가 무엇이냐. 금화라면 황실 국고에서 압류한 것을 넉넉히 지불하겠다.”\n\n보가트가 황금 주사위 두 개를 손안에서 짤랑거리며 눈을 번뜩였다.",
+      "text": "지하 홀 안은 수백 명의 부랑배들과 고블린들이 둘러앉아 주사위 놀음과 카드 도박에 열을 올리고 있었고, 유황 등불의 매캐한 연기가 천장을 자욱하게 메우고 있었다.\n\n홀 중앙의 거대한 비단 방석 위에는 온몸에 번쩍이는 황금 패물을 두른 뚱뚱한 고블린 왕 보가트가 커다란 맥주잔을 들이켜고 있었다.\n\n보가트가 카단의 드래곤 브레이커 방패를 흘겨보며 교활한 웃음을 흘렸다.\n\n“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 흐르는 모래강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”\n\n카단이 석탁 앞으로 걸어가 방패를 쾅 내려놓았다. “원하는 대가가 무엇이냐. 금화라면 황실 국고에서 압류한 것을 넉넉히 지불하겠다.”\n\n보가트가 황금 주사위 두 개를 손안에서 짤랑거리며 눈을 번뜩였다.",
       "textEn": "Hundreds of rough brigands and goblins gathered around dice tables and card games amidst thick clouds of sulfuric tallow smoke.\n\nLounging atop a silk divan at the center sat the corpulent goblin king Bogart, festooned in garish gold jewelry and swigging dwarven stout.\n\nEyeing Kadan's Dragon Breaker shield with a covetous smirk, Bogart sneered.\n\n\"Heh-heh! The northern knight who shattered the palace gates graces my humble den!\n\nYou desire a hundred reed-skiffs to cross the Quicksand River? But Bogart never parts with his property for free!\"\n\nPlanting his shield onto the table with a heavy thud, Kadan spoke calmly.",
       "sceneNumber": 3,
       "totalScenes": 10,
@@ -34637,7 +34637,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "sceneTitleEn": "[EP.31 · Scene 3/10] The Hand That Wagered Everything (Kadan · Celia)",
       "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 실리아(여주인공)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 실리아]이(가) 함께 등장하여 “키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Celia (Heroine)\n• Story Comprehension Guide: In this scene, [Kadan · Celia] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 31 forward.",
-      "dialogueQuoteKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 유사강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!” “원하는 대가가 무엇이냐. 금화라면 황실 국고에서 압류한 것을 넉넉히 지불하겠다.”",
+      "dialogueQuoteKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 흐르는 모래강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!” “원하는 대가가 무엇이냐. 금화라면 황실 국고에서 압류한 것을 넉넉히 지불하겠다.”",
       "dialogueQuoteEn": "“Heh-heh! The northern knight who shattered the palace gates graces my humble den!\n\nYou desire a hundred reed-skiffs to cross the Quicksand River? But Bogart never parts with his property for free!”",
       "sceneImageUrl": "/images/storybook/ep_31/page_03.webp",
       "sceneCharacters": [
@@ -34654,7 +34654,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -34694,11 +34694,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 18,
           "imageUrl": "/images/webtoon/episode_31/scene_18.webp",
-          "narrationKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 유사강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”",
+          "narrationKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 흐르는 모래강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”",
           "narrationEn": "\"Heh-heh! The northern knight who shattered the palace gates graces my humble den!",
           "speakerKo": "보가트",
           "speakerEn": "Kadan",
-          "dialogueKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 유사강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”",
+          "dialogueKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 흐르는 모래강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”",
           "dialogueEn": "\"Heh-heh! The northern knight who shattered the palace gates graces my humble den!"
         },
         {
@@ -34744,7 +34744,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -34880,7 +34880,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -34988,7 +34988,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -35087,7 +35087,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제31화 · 운명의 분기점] 모든 것을 건 승부",
       "sceneTitleEn": "[EP.31 · Fate Crossroads] The All-In Wager",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제31화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제31화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 31. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -35106,7 +35106,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -35177,7 +35177,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch31_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "물의 요정들과 결속하여 바다 안개를 일으킨다.",
           "labelEn": "Commune with water spirits to conjure an impenetrable sea fog.",
@@ -35188,7 +35188,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "물의 요정들과 결속하여 바다 안개를 일으킨다.",
           "textEn": "Commune with water spirits to conjure an impenetrable sea fog.",
@@ -35298,7 +35298,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 62,
       "name": "실리아",
       "nameEn": "Celia",
-      "text": "도박판을 지켜보던 부랑배들이 웅성거리며 동요했다. “보가트 두목이 자석 주사위를 쓰고 있었잖아! 우리 돈을 사기로 털어간 거였어!” 고블린들의 사기가 바닥으로 떨어졌다.\n\n보가트의 부하들이 칼을 뽑아 달려들었지만, 여섯 스승과 실리아가 일제히 무기를 휘둘렀다.\n\n그림리의 무쇠 망치가 도박장 석탁을 박살 냈고, 가웨인의 돌풍이 불한당들의 무기를 허공으로 날려버렸다. 카단은 드래곤 브레이커 방패로 보가트의 멱살을 잡아 벽면에 처박았다.\n\n“사기를 친 것은 네놈이다, 보가트. 탁자 밑의 자석 장치를 부수고 네 목을 벨 수도 있지만, 목숨만은 살려주마. 당장 갈대나룻배 백 척을 강가에 대령해라.”\n\n보가트는 겁에 질려 오줌을 지리며 연신 머리를 조아렸다. “사, 살려주십시오! 나룻배 백 척... 아니 이백 척을 당장 내어드리겠습니다!”\n\n한 시간 뒤, 수백 척의 갈대나룻배가 유사강 기슭에 정렬했고, 연합군은 단 한 명의 희생도 없이 거친 모래강을 건너기 시작했다.\n\n카단은 주머니 속에서 따스하게 빛나는 이그니스의 유리 불씨를 쥐며 강 건너 흑마법 요새를 응시했다.",
+      "text": "도박판을 지켜보던 부랑배들이 웅성거리며 동요했다. “보가트 두목이 자석 주사위를 쓰고 있었잖아! 우리 돈을 사기로 털어간 거였어!” 고블린들의 사기가 바닥으로 떨어졌다.\n\n보가트의 부하들이 칼을 뽑아 달려들었지만, 여섯 스승과 실리아가 일제히 무기를 휘둘렀다.\n\n그림리의 무쇠 망치가 도박장 석탁을 박살 냈고, 가웨인의 돌풍이 불한당들의 무기를 허공으로 날려버렸다. 카단은 드래곤 브레이커 방패로 보가트의 멱살을 잡아 벽면에 처박았다.\n\n“사기를 친 것은 네놈이다, 보가트. 탁자 밑의 자석 장치를 부수고 네 목을 벨 수도 있지만, 목숨만은 살려주마. 당장 갈대나룻배 백 척을 강가에 대령해라.”\n\n보가트는 겁에 질려 오줌을 지리며 연신 머리를 조아렸다. “사, 살려주십시오! 나룻배 백 척... 아니 이백 척을 당장 내어드리겠습니다!”\n\n한 시간 뒤, 수백 척의 갈대나룻배가 흐르는 모래강 기슭에 정렬했고, 연합군은 단 한 명의 희생도 없이 거친 모래강을 건너기 시작했다.\n\n카단은 주머니 속에서 따스하게 빛나는 이그니스의 유리 불씨를 쥐며 강 건너 흑마법 요새를 응시했다.",
       "textEn": "Guards, butcher them all!\"\n\nThe ruffians lunged forward, but the Six Masters moved in devastating unison.\n\nGrimli's hammer pulverized the stone table, Gawain's wind blades disarmed the thugs, and Kadan pinned Bogart against the rock face with the rim of his shield.\n\n\"You played with loaded dice, Bogart.\n\nI could sever your head for your fraud, but I grant you your life.\n\nDeliver two hundred reed-skiffs to the riverbank at once.\"\n\nTerrified, the goblin king groveled in the dust.",
       "sceneNumber": 9,
       "totalScenes": 10,
@@ -35314,7 +35314,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -35410,11 +35410,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 52,
           "imageUrl": "/images/webtoon/episode_31/scene_52.webp",
-          "narrationKo": "한 시간 뒤, 수백 척의 갈대나룻배가 유사강 기슭에 정렬했고, 연합군은 단 한 명의 희생도 없이 거친 모래강을 건너기 시작했다.",
+          "narrationKo": "한 시간 뒤, 수백 척의 갈대나룻배가 흐르는 모래강 기슭에 정렬했고, 연합군은 단 한 명의 희생도 없이 거친 모래강을 건너기 시작했다.",
           "narrationEn": "Deliver two hundred reed-skiffs to the riverbank at once.\"",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "한 시간 뒤, 수백 척의 갈대나룻배가 유사강 기슭에 정렬했고, 연합군은 단 한 명의 희생도 없이 거친 모래강을 건너기 시작했다.",
+          "dialogueKo": "한 시간 뒤, 수백 척의 갈대나룻배가 흐르는 모래강 기슭에 정렬했고, 연합군은 단 한 명의 희생도 없이 거친 모래강을 건너기 시작했다.",
           "dialogueEn": "Deliver two hundred reed-skiffs to the riverbank at once.\""
         },
         {
@@ -35434,7 +35434,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 62,
       "name": "실리아",
       "nameEn": "Celia",
-      "text": "“이그니스, 네가 준 지혜가 또 한 번 피를 흘리지 않고 길을 열었다.”\n\n실리아가 곁에 서며 미소를 지었다. “이제 검은 늪지대의 심장부로 들어가요. 루시안의 마지막 숨통을 끊을 시간이에요.”\n\n갈대나룻배들은 늪지대의 유사(流砂) 위를 마치 얼음판 위를 미끄러지듯 유려하게 건너갔다. 연합군 병사들이 환호성을 지르며 강 건너편의 모래톱에 무사히 닻을 내렸다.\n\n도박장의 악당들을 무력화시키고 무고한 피를 흘리지 않은 채 천연의 험지를 돌파한 완벽한 승리였다.\n\n그림리가 카단의 어깨를 툭 치며 껄껄 웃었다. “주사위를 쪼개서 13을 만들다니, 알렉산다르 그 양반보다 네놈이 한 수 위로구나! 참으로 가슴이 뻥 뚫리는 한판이었다!”\n\n일행은 사기충천하여 흑마법 요새를 향해 진격을 개시했다.",
+      "text": "“이그니스, 네가 준 지혜가 또 한 번 피를 흘리지 않고 길을 열었다.”\n\n실리아가 곁에 서며 미소를 지었다. “이제 검은 늪지대의 심장부로 들어가요. 루시안의 마지막 숨통을 끊을 시간이에요.”\n\n갈대나룻배들은 늪지대의 늪모래 위를 마치 얼음판 위를 미끄러지듯 유려하게 건너갔다. 연합군 병사들이 환호성을 지르며 강 건너편의 모래톱에 무사히 닻을 내렸다.\n\n도박장의 악당들을 무력화시키고 무고한 피를 흘리지 않은 채 천연의 험지를 돌파한 완벽한 승리였다.\n\n그림리가 카단의 어깨를 툭 치며 껄껄 웃었다. “주사위를 쪼개서 13을 만들다니, 알렉산다르 그 양반보다 네놈이 한 수 위로구나! 참으로 가슴이 뻥 뚫리는 한판이었다!”\n\n일행은 사기충천하여 흑마법 요새를 향해 진격을 개시했다.",
       "textEn": "\"Mercy, noble knight! Two hundred skiffs...\n\nThree hundred skiffs, anything you desire!\"\n\nWithin an hour, a grand armada of buoyant reed-skiffs lined the shore, ferrying the entire allied host safely across the quicksand without shedding a drop of blood.\n\nTouching the warm glass ember in his pocket, Kadan gazed toward the distant citadel.\n\n\"Ignis, the wisdom you left behind has opened another bloodless path.\" Smiling beside him, Cilia gripped her staff.\n\n\"Now we march into the heart of the Black Marsh to end Lucian's reign forever.\"",
       "sceneNumber": 10,
       "totalScenes": 10,
@@ -35450,7 +35450,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -35525,11 +35525,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 56,
           "imageUrl": "/images/webtoon/episode_31/scene_56.webp",
-          "narrationKo": "갈대나룻배들은 늪지대의 유사(流砂) 위를 마치 얼음판 위를 미끄러지듯 유려하게 건너갔다. 연합군 병사들이 환호성을 지르며 강 건너편의 모래톱에 무사히 닻을 내렸다.",
+          "narrationKo": "갈대나룻배들은 늪지대의 늪모래 위를 마치 얼음판 위를 미끄러지듯 유려하게 건너갔다. 연합군 병사들이 환호성을 지르며 강 건너편의 모래톱에 무사히 닻을 내렸다.",
           "narrationEn": "Within an hour, a grand armada of buoyant reed-skiffs lined the shore, ferrying the entire allied host safely across the quicksand without shedding a drop of blood.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "갈대나룻배들은 늪지대의 유사(流砂) 위를 마치 얼음판 위를 미끄러지듯 유려하게 건너갔다. 연합군 병사들이 환호성을 지르며 강 건너편의 모래톱에 무사히 닻을 내렸다.",
+          "dialogueKo": "갈대나룻배들은 늪지대의 늪모래 위를 마치 얼음판 위를 미끄러지듯 유려하게 건너갔다. 연합군 병사들이 환호성을 지르며 강 건너편의 모래톱에 무사히 닻을 내렸다.",
           "dialogueEn": "Within an hour, a grand armada of buoyant reed-skiffs lined the shore, ferrying the entire allied host safely across the quicksand without shedding a drop of blood."
         },
         {
@@ -35571,11 +35571,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "제 32화: # 눈히어로.com - 카단의 여정 32화 - 첫사랑의 메아리 · 카단",
       "nameEn": "Episode 32: Echo of First Love · Kadan",
-      "text": "유사강을 건넌 연합군은 검은 늪지대의 깊은 안개 숲인 ‘속삭이는 버드나무 숲’으로 접어들었다.\n\n늪지대 한가운데에 기적처럼 보존되어 있던 이 고대 버드나무 군락지는, 수천 년 전 바람의 정령들과 고대 엘프들이 처음으로 사랑과 맹세를 나누었던 성스러운 유적지였다.\n\n수백 길 높이의 은빛 수양버들 가지들이 잔잔한 늪지 수면 위로 드리워져 있었고, 버들잎 사이로는 은은한 형광 반딧불이들이 별빛처럼 떠돌고 있었다.\n\n그러나 그 아름다운 풍경 뒤편으로는 벨페고르의 환각 마법이 뿜어내는 달콤하면서도 치명적인 마향(魔香)이 안개처럼 깔려 있었다.\n\n실리아가 녹옥 지팡이를 가슴에 품으며 걸음을 멈추었다. “이곳은... 어머니 실피드와 아버지 에올루스가 젊은 시절 처음으로 만나 사랑을 맹세하셨던 ‘은빛 버드나무 정원’이에요. 고향 섬의 옛 노래에 나오는 바로 그곳이에요.”\n\n카단이 무쇠 방패를 비껴 쥐며 사방의 기류를 경계했다. “공기 중에 기이한 환각 향료가 섞여 있다. 이그니스의 유리 불씨가 경고하듯 붉게 깜빡이고 있어. 정신을 바짝 차려야 한다.”",
+      "text": "흐르는 모래강을 건넌 연합군은 검은 늪지대의 깊은 안개 숲인 ‘속삭이는 버드나무 숲’으로 접어들었다.\n\n늪지대 한가운데에 기적처럼 보존되어 있던 이 고대 버드나무 군락지는, 수천 년 전 바람의 정령들과 고대 엘프들이 처음으로 사랑과 맹세를 나누었던 성스러운 유적지였다.\n\n수백 길 높이의 은빛 수양버들 가지들이 잔잔한 늪지 수면 위로 드리워져 있었고, 버들잎 사이로는 은은한 형광 반딧불이들이 별빛처럼 떠돌고 있었다.\n\n그러나 그 아름다운 풍경 뒤편으로는 벨페고르의 환각 마법이 뿜어내는 달콤하면서도 치명적인 환각의 향기가 안개처럼 깔려 있었다.\n\n실리아가 녹옥 지팡이를 가슴에 품으며 걸음을 멈추었다. “이곳은... 어머니 실피드와 아버지 에올루스가 젊은 시절 처음으로 만나 사랑을 맹세하셨던 ‘은빛 버드나무 정원’이에요. 고향 섬의 옛 노래에 나오는 바로 그곳이에요.”\n\n카단이 무쇠 방패를 비껴 쥐며 사방의 기류를 경계했다. “공기 중에 기이한 환각 향료가 섞여 있다. 이그니스의 유리 불씨가 경고하듯 붉게 깜빡이고 있어. 정신을 바짝 차려야 한다.”",
       "textEn": "Crossing the Quicksand River, the allied host entered the Whispering Willows, an ancient elven grove preserved amidst the desolate rot of the Black Marsh.\n\nThousands of years ago, this sanctuary was where the ancient spirits of the wind and the first high elven sovereigns had pledged their sacred covenants.\n\nSilver willow boughs cascaded across placid, glass-like ponds, and bioluminescent fireflies drifted between the leaves like falling starlight.\n\nYet beneath this breathtaking beauty lurked the intoxicating, lethal miasma of Lilith, arch-demon of illusions serving Belphegor.\n\nCilia paused, embracing the Jade Staff against her breast. \"This is the Silver Willow Garden... where my mother Sylphid and father Aeolus first met in their youth and pledged their eternal love.\n\nIt is the sacred grove praised in our kingdom's oldest lullabies.\" Bracing his shield, Kadan scanned the misty shadows with sharp senses.",
       "sceneNumber": 1,
       "totalScenes": 10,
-      "sceneTitleKo": "[제32화 · 장면 1/10] 유사강을 건넌 연합군은 검은 늪지대의 깊은 안개 숲인…",
+      "sceneTitleKo": "[제32화 · 장면 1/10] 흐르는 모래강을 건넌 연합군은 검은 늪지대의 깊은 안개 숲인…",
       "sceneTitleEn": "[EP.32 · Scene 1/10] Echo of First Love (Kadan · Celia · Ignis · Aeolus)",
       "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 실리아(여주인공) / 이그니스(발리안과 이셀라의 아들)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 실리아 · 이그니스 · 에올루스]이(가) 함께 등장하여 “이곳은... 어머니 실피드와 아버지 에올루스가 젊은 시절 처음으로 만나 사… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Celia (Heroine) / Ignis (Son of Balian & Ysela)\n• Story Comprehension Guide: In this scene, [Kadan · Celia · Ignis · Aeolus] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 32 forward.",
@@ -35596,7 +35596,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -35642,11 +35642,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 1,
           "imageUrl": "/images/webtoon/episode_32/scene_01.webp",
-          "narrationKo": "유사강을 건넌 연합군은 검은 늪지대의 깊은 안개 숲인 ‘속삭이는 버드나무 숲’으로 접어들었다.",
+          "narrationKo": "흐르는 모래강을 건넌 연합군은 검은 늪지대의 깊은 안개 숲인 ‘속삭이는 버드나무 숲’으로 접어들었다.",
           "narrationEn": "Crossing the Quicksand River, the allied host entered the Whispering Willows, an ancient elven grove preserved amidst the desolate rot of the Black Marsh.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "유사강을 건넌 연합군은 검은 늪지대의 깊은 안개 숲인 ‘속삭이는 버드나무 숲’으로 접어들었다.",
+          "dialogueKo": "흐르는 모래강을 건넌 연합군은 검은 늪지대의 깊은 안개 숲인 ‘속삭이는 버드나무 숲’으로 접어들었다.",
           "dialogueEn": "Crossing the Quicksand River, the allied host entered the Whispering Willows, an ancient elven grove preserved amidst the desolate rot of the Black Marsh."
         },
         {
@@ -35672,11 +35672,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 4,
           "imageUrl": "/images/webtoon/episode_32/scene_04.webp",
-          "narrationKo": "그러나 그 아름다운 풍경 뒤편으로는 벨페고르의 환각 마법이 뿜어내는 달콤하면서도 치명적인 마향(魔香)이 안개처럼 깔려 있었다.",
+          "narrationKo": "그러나 그 아름다운 풍경 뒤편으로는 벨페고르의 환각 마법이 뿜어내는 달콤하면서도 치명적인 환각의 향기가 안개처럼 깔려 있었다.",
           "narrationEn": "Yet beneath this breathtaking beauty lurked the intoxicating, lethal miasma of Lilith, arch-demon of illusions serving Belphegor.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "그러나 그 아름다운 풍경 뒤편으로는 벨페고르의 환각 마법이 뿜어내는 달콤하면서도 치명적인 마향(魔香)이 안개처럼 깔려 있었다.",
+          "dialogueKo": "그러나 그 아름다운 풍경 뒤편으로는 벨페고르의 환각 마법이 뿜어내는 달콤하면서도 치명적인 환각의 향기가 안개처럼 깔려 있었다.",
           "dialogueEn": "Yet beneath this breathtaking beauty lurked the intoxicating, lethal miasma of Lilith, arch-demon of illusions serving Belphegor."
         },
         {
@@ -35706,7 +35706,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 46,
       "name": "론돌",
       "nameEn": "Rondol",
-      "text": "그림리와 론돌 역시 무기를 쥐고 대열을 좁혔다. “오래된 유적일수록 악령들이 둥지를 틀기 좋은 법이지. 발소리를 죽여라.”\n\n은빛 수양버들 가지들이 바람에 흔들릴 때마다 은은한 종소리 같은 청아한 파문이 숲속을 맴돌았다.\n\n바닥의 이끼 융단 위에는 고대 엘프들의 연애시(戀愛詩)가 룬 문자로 아스라이 새겨져 있었고, 이슬 맺힌 버들잎에서는 달콤한 꿀 향기가 피어올랐다.\n\n카단은 그 향기를 맡으며 머리가 아찔해지는 것을 느끼고 즉시 별 호흡을 끌어올려 정신을 가다듬었다.\n\n가웨인이 지팡이로 바닥을 짚으며 경고했다. “이 달콤한 향기는 악마들이 정신을 마비시키기 위해 뿌려둔 망각의 독이다. 절대로 깊게 들이마시지 마라.”\n\n버드나무 숲의 가장 깊은 공터에 다다랐을 때, 갑자기 주변의 안개가 자욱하게 피어오르며 환상적인 에메랄드빛 궁전의 정경이 눈앞에 펼쳐졌다.",
+      "text": "그림리와 론돌 역시 무기를 쥐고 대열을 좁혔다. “오래된 유적일수록 악령들이 둥지를 틀기 좋은 법이지. 발소리를 죽여라.”\n\n은빛 수양버들 가지들이 바람에 흔들릴 때마다 은은한 종소리 같은 청아한 파문이 숲속을 맴돌았다.\n\n바닥의 이끼 융단 위에는 고대 엘프들의 사랑 노래가 룬 문자로 아스라이 새겨져 있었고, 이슬 맺힌 버들잎에서는 달콤한 꿀 향기가 피어올랐다.\n\n카단은 그 향기를 맡으며 머리가 아찔해지는 것을 느끼고 즉시 별 호흡을 끌어올려 정신을 가다듬었다.\n\n가웨인이 지팡이로 바닥을 짚으며 경고했다. “이 달콤한 향기는 악마들이 정신을 마비시키기 위해 뿌려둔 망각의 독이다. 절대로 깊게 들이마시지 마라.”\n\n버드나무 숲의 가장 깊은 공터에 다다랐을 때, 갑자기 주변의 안개가 자욱하게 피어오르며 환상적인 에메랄드빛 궁전의 정경이 눈앞에 펼쳐졌다.",
       "textEn": "\"Lethal hallucinatory spores are drifting on the breeze.\n\nIgnis's glass ember pulses with warning heat.\n\nMaintain utmost vigilance.\"\n\nTightening their formation, Grimli and Rondol readied their steel.\n\n\"Ancient sanctums make prime nesting grounds for foul phantoms. Keep your boots light.\"\n\nReaching the central clearing, the mist thickened into an ethereal emerald palace.",
       "sceneNumber": 2,
       "totalScenes": 10,
@@ -35788,11 +35788,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 9,
           "imageUrl": "/images/webtoon/episode_32/scene_09.webp",
-          "narrationKo": "바닥의 이끼 융단 위에는 고대 엘프들의 연애시(戀愛詩)가 룬 문자로 아스라이 새겨져 있었고, 이슬 맺힌 버들잎에서는 달콤한 꿀 향기가 피어올랐다.",
+          "narrationKo": "바닥의 이끼 융단 위에는 고대 엘프들의 사랑 노래가 룬 문자로 아스라이 새겨져 있었고, 이슬 맺힌 버들잎에서는 달콤한 꿀 향기가 피어올랐다.",
           "narrationEn": "Maintain utmost vigilance.\"",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "바닥의 이끼 융단 위에는 고대 엘프들의 연애시(戀愛詩)가 룬 문자로 아스라이 새겨져 있었고, 이슬 맺힌 버들잎에서는 달콤한 꿀 향기가 피어올랐다.",
+          "dialogueKo": "바닥의 이끼 융단 위에는 고대 엘프들의 사랑 노래가 룬 문자로 아스라이 새겨져 있었고, 이슬 맺힌 버들잎에서는 달콤한 꿀 향기가 피어올랐다.",
           "dialogueEn": "Maintain utmost vigilance.\""
         },
         {
@@ -35848,7 +35848,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -35937,7 +35937,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -36020,7 +36020,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "카단이 번개처럼 뛰쳐나가 실리아의 앞을 가로막아서며 드래곤 브레이커 방패를 강하게 내리찍었다.\n\n쾅! 지진 같은 충격파가 환영의 샘물을 뒤흔들며 실피드의 모습을 검은 마수의 그림자로 일그러뜨렸다. 그것은 어머니의 영혼이 아니라, 나인섀도우의 환마(幻魔) ‘릴리스’가 파놓은 영혼의 덫이었다.\n\n카단이 실리아의 어깨를 붙잡고 강하게 흔들었다.\n\n“눈을 떠라, 실리아! 저것은 네 어머니가 아니다! 네 어머니 실피드 여왕 전하는 마지막 순간까지 백성들을 위해 등을 꼿꼿이 세우셨던 고결한 수호자였다! 이런 비겁한 환영 뒤에 숨을 분이 아니다!”\n\n실리아가 카단의 외침에 번쩍 정신을 차렸다. 떨어진 녹옥 지팡이를 주워 든 실리아의 뺨 위로 뜨거운 눈물이 흘러내렸다.",
+      "text": "카단이 번개처럼 뛰쳐나가 실리아의 앞을 가로막아서며 드래곤 브레이커 방패를 강하게 내리찍었다.\n\n쾅! 지진 같은 충격파가 환영의 샘물을 뒤흔들며 실피드의 모습을 검은 마수의 그림자로 일그러뜨렸다. 그것은 어머니의 영혼이 아니라, 나인섀도우의 몽마 ‘릴리스’가 파놓은 영혼의 덫이었다.\n\n카단이 실리아의 어깨를 붙잡고 강하게 흔들었다.\n\n“눈을 떠라, 실리아! 저것은 네 어머니가 아니다! 네 어머니 실피드 여왕 전하는 마지막 순간까지 백성들을 위해 등을 꼿꼿이 세우셨던 고결한 수호자였다! 이런 비겁한 환영 뒤에 숨을 분이 아니다!”\n\n실리아가 카단의 외침에 번쩍 정신을 차렸다. 떨어진 녹옥 지팡이를 주워 든 실리아의 뺨 위로 뜨거운 눈물이 흘러내렸다.",
       "textEn": "Please... do not leave me alone again...\" Spellbound, Cilia took a trembling step toward the apparition.\n\nJust as the phantom slipped a poisoned necrotic dagger from behind her back, her features twisting into a cruel sneer, Kadan sprang forward like a thunderbolt, slamming his Dragon Breaker shield between them.\n\nBoom!\n\nA concussive shockwave shattered the phantom pool, revealing the hideous shadow demon beneath.\n\nIt was no queen, but Lilith, the soul-devouring illusionist of the Nine Shadows.",
       "sceneNumber": 5,
       "totalScenes": 10,
@@ -36045,7 +36045,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -36074,11 +36074,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 25,
           "imageUrl": "/images/webtoon/episode_32/scene_25.webp",
-          "narrationKo": "쾅! 지진 같은 충격파가 환영의 샘물을 뒤흔들며 실피드의 모습을 검은 마수의 그림자로 일그러뜨렸다. 그것은 어머니의 영혼이 아니라, 나인섀도우의 환마(幻魔) ‘릴리스’가 파놓은 영혼의 덫이었다.",
+          "narrationKo": "쾅! 지진 같은 충격파가 환영의 샘물을 뒤흔들며 실피드의 모습을 검은 마수의 그림자로 일그러뜨렸다. 그것은 어머니의 영혼이 아니라, 나인섀도우의 몽마 ‘릴리스’가 파놓은 영혼의 덫이었다.",
           "narrationEn": "Just as the phantom slipped a poisoned necrotic dagger from behind her back, her features twisting into a cruel sneer, Kadan sprang forward like a thunderbolt, slamming his Dragon Breaker shield between them.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "쾅! 지진 같은 충격파가 환영의 샘물을 뒤흔들며 실피드의 모습을 검은 마수의 그림자로 일그러뜨렸다. 그것은 어머니의 영혼이 아니라, 나인섀도우의 환마(幻魔) ‘릴리스’가 파놓은 영혼의 덫이었다.",
+          "dialogueKo": "쾅! 지진 같은 충격파가 환영의 샘물을 뒤흔들며 실피드의 모습을 검은 마수의 그림자로 일그러뜨렸다. 그것은 어머니의 영혼이 아니라, 나인섀도우의 몽마 ‘릴리스’가 파놓은 영혼의 덫이었다.",
           "dialogueEn": "Just as the phantom slipped a poisoned necrotic dagger from behind her back, her features twisting into a cruel sneer, Kadan sprang forward like a thunderbolt, slamming his Dragon Breaker shield between them."
         },
         {
@@ -36143,7 +36143,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -36241,7 +36241,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제32화 · 운명의 분기점] 달빛 아래의 서약",
       "sceneTitleEn": "[EP.32 · Fate Crossroads] Vow Beneath the Moonlight",
-      "sceneExplanationKo": "• 등장인물 및 상황: 실리아 · 카단 · 이그니스\n• 선택 가이드: 소설 제32화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 실리아 · 카단 · 이그니스\n• 선택 가이드: 소설 제32화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Celia · Kadan · Ignis\n• Decision Guide: This is the climax crossroads of Episode 32. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -36251,7 +36251,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -36340,7 +36340,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch32_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "은은한 바람결 속에 서로의 심장 박동을 포갠다.",
           "labelEn": "Harmonize heartbeats gently within the whispering night breeze.",
@@ -36351,7 +36351,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+25 SNS 획득",
           "bonusDescEn": "+25 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "은은한 바람결 속에 서로의 심장 박동을 포갠다.",
           "textEn": "Harmonize heartbeats gently within the whispering night breeze.",
@@ -36371,7 +36371,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "실리아는 허리춤에서 갈대 피리를 꺼내 입술에 대었다. 그리고 어머니가 생전에 가르쳐주셨던 태초의 바람의 노래, ‘정화의 메아리’를 연주하기 시작했다.\n\n청아하고도 맑은 피리 소리가 버드나무 숲 전체에 파문처럼 울려 퍼졌다. 피리 소리가 닿는 곳마다 검은 안개가 눈 녹듯 사라지고, 릴리스의 환각 결계가 유리 파편처럼 산산조각 났다.\n\n정체를 드러낸 환마 릴리스가 흉측한 박쥐 날개를 퍼덕이며 비명을 질렀다.\n\n“크아악! 천박한 피리 소리가 내 예술을 망치다니!” 카단이 방패를 앞으로 내지르며 도약했다.\n\n“스승님과 동료들의 영혼을 모독한 죄, 여기서 끝이다!” 카단의 방패 강타가 릴리스의 흉갑을 산산조각 냈고, 뒤이어 론돌과 그림리의 맹렬한 연격이 환마를 완전히 소멸시켰다.",
+      "text": "실리아는 허리춤에서 갈대 피리를 꺼내 입술에 대었다. 그리고 어머니가 생전에 가르쳐주셨던 태초의 바람의 노래, ‘정화의 메아리’를 연주하기 시작했다.\n\n청아하고도 맑은 피리 소리가 버드나무 숲 전체에 파문처럼 울려 퍼졌다. 피리 소리가 닿는 곳마다 검은 안개가 눈 녹듯 사라지고, 릴리스의 환각 결계가 유리 파편처럼 산산조각 났다.\n\n정체를 드러낸 몽마 릴리스가 흉측한 박쥐 날개를 퍼덕이며 비명을 질렀다.\n\n“크아악! 천박한 피리 소리가 내 예술을 망치다니!” 카단이 방패를 앞으로 내지르며 도약했다.\n\n“스승님과 동료들의 영혼을 모독한 죄, 여기서 끝이다!” 카단의 방패 강타가 릴리스의 흉갑을 산산조각 냈고, 뒤이어 론돌과 그림리의 맹렬한 연격이 환마를 완전히 소멸시켰다.",
       "textEn": "\"Kadan...\n\nI...\n\nI faltered for a moment...\"\n\nReaching into his tunic, Kadan placed the warm White Glass Ember into her trembling palm. \"We have an unbroken covenant to fulfill.\n\nRemember our promise to watch the green barley sprout through the northern snows together.\"",
       "sceneNumber": 8,
       "totalScenes": 10,
@@ -36396,7 +36396,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -36444,11 +36444,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 37,
           "imageUrl": "/images/webtoon/episode_32/scene_37.webp",
-          "narrationKo": "정체를 드러낸 환마 릴리스가 흉측한 박쥐 날개를 퍼덕이며 비명을 질렀다.",
+          "narrationKo": "정체를 드러낸 몽마 릴리스가 흉측한 박쥐 날개를 퍼덕이며 비명을 질렀다.",
           "narrationEn": "I faltered for a moment...\"",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "정체를 드러낸 환마 릴리스가 흉측한 박쥐 날개를 퍼덕이며 비명을 질렀다.",
+          "dialogueKo": "정체를 드러낸 몽마 릴리스가 흉측한 박쥐 날개를 퍼덕이며 비명을 질렀다.",
           "dialogueEn": "I faltered for a moment...\""
         },
         {
@@ -36503,7 +36503,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -36611,7 +36611,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -36686,15 +36686,15 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "제 33화: # 눈히어로.com - 카단의 여정 33화 - 검은 늪 · 카단",
       "nameEn": "Episode 33: Grudge of the Black Marsh · Kadan",
-      "text": "속삭이는 버드나무 숲을 벗어난 연합군이 당도한 곳은 마침내 대륙의 모든 악과 부패가 집결된 심연의 심장부, ‘검은 늪’의 본진이었다.\n\n지평선 끝까지 펼쳐진 칠흑의 늪지는 썩은 유황 진흙과 부식성 산성 웅덩이로 가득 차 있었고, 하늘은 나인섀도우 코덱스가 뿜어내는 검붉은 마나 폭풍으로 뒤덮여 태양빛조차 들어오지 않았다.\n\n늪지 중앙의 거대한 화산 암반 위에는 수천 년 전 고대 암흑 제국이 건설했던 거대한 흑요석 요새 ‘검은 성채’가 마치 웅크린 거대한 악마처럼 대륙을 굽어보고 있었다.\n\n성채의 외벽에는 수만 명의 언데드 군단과 골렘들이 흑철 창을 번뜩이며 도열해 있었다.\n\n카단이 드래곤 브레이커 방패를 고쳐 쥐며 성채의 방어선을 응시했다.\n\n“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 해자(垓字)에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.”",
+      "text": "속삭이는 버드나무 숲을 벗어난 연합군이 당도한 곳은 마침내 대륙의 모든 악과 부패가 집결된 심연의 심장부, ‘검은 늪’의 본진이었다.\n\n지평선 끝까지 펼쳐진 칠흑의 늪지는 썩은 유황 진흙과 부식성 산성 웅덩이로 가득 차 있었고, 하늘은 나인섀도우 코덱스가 뿜어내는 검붉은 마나 폭풍으로 뒤덮여 태양빛조차 들어오지 않았다.\n\n늪지 중앙의 거대한 화산 암반 위에는 수천 년 전 고대 암흑 제국이 건설했던 거대한 흑요석 요새 ‘검은 성채’가 마치 웅크린 거대한 악마처럼 대륙을 굽어보고 있었다.\n\n성채의 외벽에는 수만 명의 언데드 군단과 골렘들이 흑철 창을 번뜩이며 도열해 있었다.\n\n카단이 드래곤 브레이커 방패를 고쳐 쥐며 성채의 방어선을 응시했다.\n\n“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 깊은 해자에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.”",
       "textEn": "Clearing the willows, the allied army arrived before the ultimate bastion of imperial corruption: the central fortress of the Black Marsh.\n\nStretching to the horizon lay putrid quagmires and boiling sulfur pools, under skies choked by the necrotic squalls of the Nine Shadows Codex.\n\nAt the heart of the mire upon a volcanic crag rose the Black Citadel.\n\nA titanic obsidian fortress erected by primordial shadow warlords, bristling with legions of undead cataphracts and iron-plated golems.\n\nBracing his Dragon Breaker shield, Kadan surveyed the formidable ramparts.\n\n\"Lucian has marshaled every remaining reserve in the realm.",
       "sceneNumber": 1,
       "totalScenes": 10,
       "sceneTitleKo": "[제33화 · 장면 1/10] 속삭이는 버드나무 숲을 벗어난 연합군이 당도한 곳은…",
       "sceneTitleEn": "[EP.33 · Scene 1/10] Grudge of the Black Marsh (Kadan · Lucian · Magitech Golem)",
-      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 루시안(붉은 유리 궁정의 야심가 귀족) / 마기테크 골렘(고대 유적과 검은 성전을 지키는 마공학 거신병)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 루시안 · 마기테크 골렘]이(가) 함께 등장하여 “루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 해자(垓字)에… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
+      "sceneExplanationKo": "• 등장인물 및 관계: 카단(주인공) / 루시안(붉은 유리 궁정의 야심가 귀족) / 마기테크 골렘(고대 유적과 검은 성전을 지키는 마공학 거신병)\n• 장면 이해 포인트: 이 장면에서는 [카단 · 루시안 · 마기테크 골렘]이(가) 함께 등장하여 “루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 해자에… 대사를 통해 인물의 내면과 갈등, 그리고 앞으로 펼쳐질 사건의 핵심 단서를 드러냅니다.",
       "sceneExplanationEn": "• Characters & Roles: Kadan (Protagonist) / Lucian (Ambitious noble of the Red Glass Court) / Magitech Golem (Ancient arcane-mechanical guardian colossus protecting the Black Sanctum)\n• Story Comprehension Guide: In this scene, [Kadan · Lucian · Magitech Golem] appear together as key dialogue reveals their inner resolve, emotional conflict, and pivotal clues driving Episode 33 forward.",
-      "dialogueQuoteKo": "“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 해자(垓字)에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.”",
+      "dialogueQuoteKo": "“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 깊은 해자에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.”",
       "dialogueQuoteEn": "",
       "sceneImageUrl": "/images/storybook/ep_33/page_01.webp",
       "sceneCharacters": [
@@ -36780,11 +36780,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 6,
           "imageUrl": "/images/webtoon/episode_33/scene_06.webp",
-          "narrationKo": "“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 해자(垓字)에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.”",
+          "narrationKo": "“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 깊은 해자에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.”",
           "narrationEn": "\"Lucian has marshaled every remaining reserve in the realm.",
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "dialogueKo": "“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 해자(垓字)에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.”",
+          "dialogueKo": "“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 깊은 해자에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.”",
           "dialogueEn": "\"Lucian has marshaled every remaining reserve in the realm."
         }
       ]
@@ -36810,7 +36810,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -36936,7 +36936,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -37153,7 +37153,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "연합군의 사기는 하늘을 찔렀다. 성채 정문의 거대한 흑철 성교(城橋)에 다다랐을 때, 성문이 열리며 루시안이 나인섀도우 코덱스로 소환한 거대한 ‘고대 골룡(骨龍)’ 두 마리가 포효하며 솟구쳐 올랐다.\n\n썩은 뼈마디 사이에 암흑 마나를 품은 골룡들이 지상으로 급강하하며 부식성 화염 브레스를 내뿜었다.\n\n“모두 흩어져라!” 카단이 방패를 앞으로 내지르며 첫 번째 골룡의 브레스를 정면으로 받아냈다. 용암 같은 불길이 드래곤 브레이커의 표면을 타고 좌우로 갈라졌지만, 엄청난 열기에 카단의 장갑이 타들어갔다.\n\n그 절체절명의 순간, 론돌이 외족을 굴러 늪지의 거대한 진흙 기둥을 솟구쳐 올렸다.\n\n“뼈다귀 도마뱀 놈아, 바다의 짠맛을 보아라!” 진흙 기둥이 골룡의 날개를 강타하며 균형을 무너뜨렸고, 가웨인이 허공으로 도약해 폭풍의 참격으로 첫 번째 골룡의 목뼈를 단숨에 절단해 버렸다.",
+      "text": "연합군의 사기는 하늘을 찔렀다. 성채 정문의 거대한 흑철 성문 다리에 다다랐을 때, 성문이 열리며 루시안이 나인섀도우 코덱스로 소환한 거대한 ‘고대 본드래곤’ 두 마리가 포효하며 솟구쳐 올랐다.\n\n썩은 뼈마디 사이에 암흑 마나를 품은 본드래곤들이 지상으로 급강하하며 부식성 화염 브레스를 내뿜었다.\n\n“모두 흩어져라!” 카단이 방패를 앞으로 내지르며 첫 번째 본드래곤의 브레스를 정면으로 받아냈다. 용암 같은 불길이 드래곤 브레이커의 표면을 타고 좌우로 갈라졌지만, 엄청난 열기에 카단의 장갑이 타들어갔다.\n\n그 절체절명의 순간, 론돌이 외족을 굴러 늪지의 거대한 진흙 기둥을 솟구쳐 올렸다.\n\n“뼈다귀 도마뱀 놈아, 바다의 짠맛을 보아라!” 진흙 기둥이 본드래곤의 날개를 강타하며 균형을 무너뜨렸고, 가웨인이 허공으로 도약해 폭풍의 참격으로 첫 번째 본드래곤의 목뼈를 단숨에 절단해 버렸다.",
       "textEn": "The skeletal horrors plunged from the towers, vomiting torrents of caustic dragonfire.\n\n\"Scatter!\"\n\nKadan leaped forward, catching the direct blast upon his shield.\n\nMolten flames split around the dragonbone plate, scorching his gauntlets, yet his stance held firm.\n\nSeizing the opening, Rondol raised a massive mud spout with his pegleg, throwing the lead drake off balance.",
       "sceneNumber": 5,
       "totalScenes": 10,
@@ -37206,31 +37206,31 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 24,
           "imageUrl": "/images/webtoon/episode_33/scene_24.webp",
-          "narrationKo": "연합군의 사기는 하늘을 찔렀다. 성채 정문의 거대한 흑철 성교(城橋)에 다다랐을 때, 성문이 열리며 루시안이 나인섀도우 코덱스로 소환한 거대한 ‘고대 골룡(骨龍)’ 두 마리가 포효하며 솟구쳐 올랐다.",
+          "narrationKo": "연합군의 사기는 하늘을 찔렀다. 성채 정문의 거대한 흑철 성문 다리에 다다랐을 때, 성문이 열리며 루시안이 나인섀도우 코덱스로 소환한 거대한 ‘고대 본드래곤’ 두 마리가 포효하며 솟구쳐 올랐다.",
           "narrationEn": "The skeletal horrors plunged from the towers, vomiting torrents of caustic dragonfire.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "연합군의 사기는 하늘을 찔렀다. 성채 정문의 거대한 흑철 성교(城橋)에 다다랐을 때, 성문이 열리며 루시안이 나인섀도우 코덱스로 소환한 거대한 ‘고대 골룡(骨龍)’ 두 마리가 포효하며 솟구쳐 올랐다.",
+          "dialogueKo": "연합군의 사기는 하늘을 찔렀다. 성채 정문의 거대한 흑철 성문 다리에 다다랐을 때, 성문이 열리며 루시안이 나인섀도우 코덱스로 소환한 거대한 ‘고대 본드래곤’ 두 마리가 포효하며 솟구쳐 올랐다.",
           "dialogueEn": "The skeletal horrors plunged from the towers, vomiting torrents of caustic dragonfire."
         },
         {
           "cutNumber": 25,
           "imageUrl": "/images/webtoon/episode_33/scene_25.webp",
-          "narrationKo": "썩은 뼈마디 사이에 암흑 마나를 품은 골룡들이 지상으로 급강하하며 부식성 화염 브레스를 내뿜었다.",
+          "narrationKo": "썩은 뼈마디 사이에 암흑 마나를 품은 본드래곤들이 지상으로 급강하하며 부식성 화염 브레스를 내뿜었다.",
           "narrationEn": "\"Scatter!\"",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "썩은 뼈마디 사이에 암흑 마나를 품은 골룡들이 지상으로 급강하하며 부식성 화염 브레스를 내뿜었다.",
+          "dialogueKo": "썩은 뼈마디 사이에 암흑 마나를 품은 본드래곤들이 지상으로 급강하하며 부식성 화염 브레스를 내뿜었다.",
           "dialogueEn": "\"Scatter!\""
         },
         {
           "cutNumber": 26,
           "imageUrl": "/images/webtoon/episode_33/scene_26.webp",
-          "narrationKo": "“모두 흩어져라!” 카단이 방패를 앞으로 내지르며 첫 번째 골룡의 브레스를 정면으로 받아냈다. 용암 같은 불길이 드래곤 브레이커의 표면을 타고 좌우로 갈라졌지만, 엄청난 열기에 카단의 장갑이 타들어갔다.",
+          "narrationKo": "“모두 흩어져라!” 카단이 방패를 앞으로 내지르며 첫 번째 본드래곤의 브레스를 정면으로 받아냈다. 용암 같은 불길이 드래곤 브레이커의 표면을 타고 좌우로 갈라졌지만, 엄청난 열기에 카단의 장갑이 타들어갔다.",
           "narrationEn": "Kadan leaped forward, catching the direct blast upon his shield.",
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "dialogueKo": "“모두 흩어져라!” 카단이 방패를 앞으로 내지르며 첫 번째 골룡의 브레스를 정면으로 받아냈다. 용암 같은 불길이 드래곤 브레이커의 표면을 타고 좌우로 갈라졌지만, 엄청난 열기에 카단의 장갑이 타들어갔다.",
+          "dialogueKo": "“모두 흩어져라!” 카단이 방패를 앞으로 내지르며 첫 번째 본드래곤의 브레스를 정면으로 받아냈다. 용암 같은 불길이 드래곤 브레이커의 표면을 타고 좌우로 갈라졌지만, 엄청난 열기에 카단의 장갑이 타들어갔다.",
           "dialogueEn": "Kadan leaped forward, catching the direct blast upon his shield."
         },
         {
@@ -37246,11 +37246,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 28,
           "imageUrl": "/images/webtoon/episode_33/scene_28.webp",
-          "narrationKo": "“뼈다귀 도마뱀 놈아, 바다의 짠맛을 보아라!” 진흙 기둥이 골룡의 날개를 강타하며 균형을 무너뜨렸고, 가웨인이 허공으로 도약해 폭풍의 참격으로 첫 번째 골룡의 목뼈를 단숨에 절단해 버렸다.",
+          "narrationKo": "“뼈다귀 도마뱀 놈아, 바다의 짠맛을 보아라!” 진흙 기둥이 본드래곤의 날개를 강타하며 균형을 무너뜨렸고, 가웨인이 허공으로 도약해 폭풍의 참격으로 첫 번째 본드래곤의 목뼈를 단숨에 절단해 버렸다.",
           "narrationEn": "Seizing the opening, Rondol raised a massive mud spout with his pegleg, throwing the lead drake off balance.",
           "speakerKo": "가웨인",
           "speakerEn": "Gawain",
-          "dialogueKo": "“뼈다귀 도마뱀 놈아, 바다의 짠맛을 보아라!” 진흙 기둥이 골룡의 날개를 강타하며 균형을 무너뜨렸고, 가웨인이 허공으로 도약해 폭풍의 참격으로 첫 번째 골룡의 목뼈를 단숨에 절단해 버렸다.",
+          "dialogueKo": "“뼈다귀 도마뱀 놈아, 바다의 짠맛을 보아라!” 진흙 기둥이 본드래곤의 날개를 강타하며 균형을 무너뜨렸고, 가웨인이 허공으로 도약해 폭풍의 참격으로 첫 번째 본드래곤의 목뼈를 단숨에 절단해 버렸다.",
           "dialogueEn": "Seizing the opening, Rondol raised a massive mud spout with his pegleg, throwing the lead drake off balance."
         }
       ]
@@ -37260,7 +37260,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "실리아 역시 녹옥 지팡이로 거대한 진공 폭풍을 일으켜 두 번째 골룡을 성벽 암반에 처박아 산산조각 냈다. 선대 영웅들과 젊은 계승자들의 완벽한 합동 작전이 성채의 최강 마수들을 단숨에 격파한 것이었다.\n\n골룡들의 썩은 뼈마디에서 뿜어져 나오는 부식성 화염은 바위마저 녹여 쇳물로 만들 기세였다. 그러나 카단은 별 호흡의 대지 마나를 방패에 집중시켜 화염의 중심축을 하늘로 비틀어 쳐올렸다.\n\n거대한 불기둥이 먹구름을 뚫고 솟구치자, 가웨인의 폭풍검이 번개처럼 내리꽂히며 골룡의 두개골을 두 동강 냈다.\n\n골룡이 처참한 굉음과 함께 해자 속으로 추락하자, 펄펄 끓던 용암 해자가 얼어붙으며 안전한 도하로가 확보되었다. 연합군 병사들이 환호성을 질렀다.\n\n외곽 방어선이 무너지자, 일행은 마침내 검은 성채의 중앙 대성문 앞에 도달했다. 높이 쉰 길에 달하는 거대한 흑요석 성문에는 나인섀도우의 절대 방어 결계가 걸려 있어 어떤 공성 망치로도 부술 수 없었다.\n\n성벽 위에서 최고 재상 루시안이 핏빛 망토를 펄럭이며 모습을 드러냈다. 루시안의 전신은 이미 심연의 마나에 잠식되어 인간의 모습을 잃어가고 있었다.",
+      "text": "실리아 역시 녹옥 지팡이로 거대한 진공 폭풍을 일으켜 두 번째 본드래곤을 성벽 암반에 처박아 산산조각 냈다. 선대 영웅들과 젊은 계승자들의 완벽한 합동 작전이 성채의 최강 마수들을 단숨에 격파한 것이었다.\n\n본드래곤들의 썩은 뼈마디에서 뿜어져 나오는 부식성 화염은 바위마저 녹여 쇳물로 만들 기세였다. 그러나 카단은 별 호흡의 대지 마나를 방패에 집중시켜 화염의 중심축을 하늘로 비틀어 쳐올렸다.\n\n거대한 불기둥이 먹구름을 뚫고 솟구치자, 가웨인의 폭풍검이 번개처럼 내리꽂히며 본드래곤의 두개골을 두 동강 냈다.\n\n본드래곤이 처참한 굉음과 함께 해자 속으로 추락하자, 펄펄 끓던 용암 해자가 얼어붙으며 안전한 도하로가 확보되었다. 연합군 병사들이 환호성을 질렀다.\n\n외곽 방어선이 무너지자, 일행은 마침내 검은 성채의 중앙 대성문 앞에 도달했다. 높이 쉰 길에 달하는 거대한 흑요석 성문에는 나인섀도우의 절대 방어 결계가 걸려 있어 어떤 공성 망치로도 부술 수 없었다.\n\n성벽 위에서 최고 재상 루시안이 핏빛 망토를 펄럭이며 모습을 드러냈다. 루시안의 전신은 이미 심연의 마나에 잠식되어 인간의 모습을 잃어가고 있었다.",
       "textEn": "While Gawain vaulted overhead to decapitate the beast with an azure wind stroke.\n\nSimultaneously, Cilia swept her staff, conjuring a vacuum vortex that smashed the second drake against the granite ramparts.\n\nBreaching the outer lines, the companions stood before the great obsidian gates of the inner keep.\n\nStanding atop the parapet, Minister Lucian appeared in flowing crimson vestments, his body warping under demonic possession.\n\nLucian shrieked in maniacal frenzy.\n\n\"Insolent insects!",
       "sceneNumber": 6,
       "totalScenes": 10,
@@ -37285,7 +37285,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -37313,41 +37313,41 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 29,
           "imageUrl": "/images/webtoon/episode_33/scene_29.webp",
-          "narrationKo": "실리아 역시 녹옥 지팡이로 거대한 진공 폭풍을 일으켜 두 번째 골룡을 성벽 암반에 처박아 산산조각 냈다. 선대 영웅들과 젊은 계승자들의 완벽한 합동 작전이 성채의 최강 마수들을 단숨에 격파한 것이었다.",
+          "narrationKo": "실리아 역시 녹옥 지팡이로 거대한 진공 폭풍을 일으켜 두 번째 본드래곤을 성벽 암반에 처박아 산산조각 냈다. 선대 영웅들과 젊은 계승자들의 완벽한 합동 작전이 성채의 최강 마수들을 단숨에 격파한 것이었다.",
           "narrationEn": "While Gawain vaulted overhead to decapitate the beast with an azure wind stroke.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "실리아 역시 녹옥 지팡이로 거대한 진공 폭풍을 일으켜 두 번째 골룡을 성벽 암반에 처박아 산산조각 냈다. 선대 영웅들과 젊은 계승자들의 완벽한 합동 작전이 성채의 최강 마수들을 단숨에 격파한 것이었다.",
+          "dialogueKo": "실리아 역시 녹옥 지팡이로 거대한 진공 폭풍을 일으켜 두 번째 본드래곤을 성벽 암반에 처박아 산산조각 냈다. 선대 영웅들과 젊은 계승자들의 완벽한 합동 작전이 성채의 최강 마수들을 단숨에 격파한 것이었다.",
           "dialogueEn": "While Gawain vaulted overhead to decapitate the beast with an azure wind stroke."
         },
         {
           "cutNumber": 30,
           "imageUrl": "/images/webtoon/episode_33/scene_30.webp",
-          "narrationKo": "골룡들의 썩은 뼈마디에서 뿜어져 나오는 부식성 화염은 바위마저 녹여 쇳물로 만들 기세였다. 그러나 카단은 별 호흡의 대지 마나를 방패에 집중시켜 화염의 중심축을 하늘로 비틀어 쳐올렸다.",
+          "narrationKo": "본드래곤들의 썩은 뼈마디에서 뿜어져 나오는 부식성 화염은 바위마저 녹여 쇳물로 만들 기세였다. 그러나 카단은 별 호흡의 대지 마나를 방패에 집중시켜 화염의 중심축을 하늘로 비틀어 쳐올렸다.",
           "narrationEn": "Simultaneously, Cilia swept her staff, conjuring a vacuum vortex that smashed the second drake against the granite ramparts.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "골룡들의 썩은 뼈마디에서 뿜어져 나오는 부식성 화염은 바위마저 녹여 쇳물로 만들 기세였다. 그러나 카단은 별 호흡의 대지 마나를 방패에 집중시켜 화염의 중심축을 하늘로 비틀어 쳐올렸다.",
+          "dialogueKo": "본드래곤들의 썩은 뼈마디에서 뿜어져 나오는 부식성 화염은 바위마저 녹여 쇳물로 만들 기세였다. 그러나 카단은 별 호흡의 대지 마나를 방패에 집중시켜 화염의 중심축을 하늘로 비틀어 쳐올렸다.",
           "dialogueEn": "Simultaneously, Cilia swept her staff, conjuring a vacuum vortex that smashed the second drake against the granite ramparts."
         },
         {
           "cutNumber": 31,
           "imageUrl": "/images/webtoon/episode_33/scene_31.webp",
-          "narrationKo": "거대한 불기둥이 먹구름을 뚫고 솟구치자, 가웨인의 폭풍검이 번개처럼 내리꽂히며 골룡의 두개골을 두 동강 냈다.",
+          "narrationKo": "거대한 불기둥이 먹구름을 뚫고 솟구치자, 가웨인의 폭풍검이 번개처럼 내리꽂히며 본드래곤의 두개골을 두 동강 냈다.",
           "narrationEn": "Breaching the outer lines, the companions stood before the great obsidian gates of the inner keep.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "거대한 불기둥이 먹구름을 뚫고 솟구치자, 가웨인의 폭풍검이 번개처럼 내리꽂히며 골룡의 두개골을 두 동강 냈다.",
+          "dialogueKo": "거대한 불기둥이 먹구름을 뚫고 솟구치자, 가웨인의 폭풍검이 번개처럼 내리꽂히며 본드래곤의 두개골을 두 동강 냈다.",
           "dialogueEn": "Breaching the outer lines, the companions stood before the great obsidian gates of the inner keep."
         },
         {
           "cutNumber": 32,
           "imageUrl": "/images/webtoon/episode_33/scene_32.webp",
-          "narrationKo": "골룡이 처참한 굉음과 함께 해자 속으로 추락하자, 펄펄 끓던 용암 해자가 얼어붙으며 안전한 도하로가 확보되었다. 연합군 병사들이 환호성을 질렀다.",
+          "narrationKo": "본드래곤이 처참한 굉음과 함께 해자 속으로 추락하자, 펄펄 끓던 용암 해자가 얼어붙으며 안전한 도하로가 확보되었다. 연합군 병사들이 환호성을 질렀다.",
           "narrationEn": "Standing atop the parapet, Minister Lucian appeared in flowing crimson vestments, his body warping under demonic possession.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "골룡이 처참한 굉음과 함께 해자 속으로 추락하자, 펄펄 끓던 용암 해자가 얼어붙으며 안전한 도하로가 확보되었다. 연합군 병사들이 환호성을 질렀다.",
+          "dialogueKo": "본드래곤이 처참한 굉음과 함께 해자 속으로 추락하자, 펄펄 끓던 용암 해자가 얼어붙으며 안전한 도하로가 확보되었다. 연합군 병사들이 환호성을 질렀다.",
           "dialogueEn": "Standing atop the parapet, Minister Lucian appeared in flowing crimson vestments, his body warping under demonic possession."
         },
         {
@@ -37383,7 +37383,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제33화 · 운명의 분기점] 원혼의 늪 정화",
       "sceneTitleEn": "[EP.33 · Fate Crossroads] Cleansing the Marsh of Souls",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 루시안\n• 선택 가이드: 소설 제33화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 루시안\n• 선택 가이드: 소설 제33화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Lucian\n• Decision Guide: This is the climax crossroads of Episode 33. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -37402,7 +37402,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -37482,7 +37482,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch33_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "어둠의 사슬을 자비의 호흡으로 끊어낸다.",
           "labelEn": "Sever the chains of darkness with compassionate Star Breathing.",
@@ -37493,7 +37493,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "어둠의 사슬을 자비의 호흡으로 끊어낸다.",
           "textEn": "Sever the chains of darkness with compassionate Star Breathing.",
@@ -37538,7 +37538,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -37735,7 +37735,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -37826,7 +37826,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -37943,7 +37943,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -38060,7 +38060,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -38087,7 +38087,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -38221,7 +38221,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 44,
           "nameKo": "카제",
           "nameEn": "Kaze",
-          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+          "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
           "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
           "seatAsset": "/seat/Kaze.png",
           "isSpeaker": false
@@ -38311,7 +38311,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -38430,7 +38430,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "스승들의 피부가 창백하게 변해가며 근육이 뒤틀리는 고통 속에서도, 그들의 어깨는 단 한 치도 내려앉지 않았다.\n\n카단이 피눈물을 흘리며 기둥을 향해 손을 뻗었다. “안 됩니다! 스승님들과 함께 가지 않으면 제 방패는 아무런 의미가 없습니다!” 론돌이 피를 토하며 호통을 쳤다.\n\n“바보 같은 놈! 살아서 약속을 지키는 것이 진정한 제자의 도리다! 달려라, 카단!”\n\n가웨인이 자신의 모든 생명력을 연소시키며 ‘궁극오의 신풍대회전(神風大回轉)’을 시전했다.\n\n거대한 폭풍의 소용돌이가 골렘들을 산산조각 내며 제단으로 향하는 일직선의 통로를 뚫어냈다. 그와 동시에 가웨인의 신형은 그림리와 다른 스승들이 버티고 있는 중앙 기둥 앞으로 합류했다.",
+      "text": "스승들의 피부가 창백하게 변해가며 근육이 뒤틀리는 고통 속에서도, 그들의 어깨는 단 한 치도 내려앉지 않았다.\n\n카단이 피눈물을 흘리며 기둥을 향해 손을 뻗었다. “안 됩니다! 스승님들과 함께 가지 않으면 제 방패는 아무런 의미가 없습니다!” 론돌이 피를 토하며 호통을 쳤다.\n\n“바보 같은 놈! 살아서 약속을 지키는 것이 진정한 제자의 도리다! 달려라, 카단!”\n\n가웨인이 자신의 모든 생명력을 연소시키며 ‘궁극 마법 폭풍의 대소용돌이’을 시전했다.\n\n거대한 폭풍의 소용돌이가 골렘들을 산산조각 내며 제단으로 향하는 일직선의 통로를 뚫어냈다. 그와 동시에 가웨인의 신형은 그림리와 다른 스승들이 버티고 있는 중앙 기둥 앞으로 합류했다.",
       "textEn": "Planting his staff into the earth, Gawain turned to Kadan with fierce pride.\n\n\"Behold Gawain's final tempest, boy!\n\nLeap to the altar!\"\n\nIgniting his very soul, Gawain unleashed the forbidden mystery: the 'Divine Gale Gyre'.\n\nA colossal hurricane tore through the hall, pulverizing the golem horde and carving an open passage directly toward the high altar. Stepping into the center of the vortex, Gawain linked hands with Grimli and the other masters, holding the failing pillar firm.",
       "sceneNumber": 6,
       "totalScenes": 10,
@@ -38522,11 +38522,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 33,
           "imageUrl": "/images/webtoon/episode_34/scene_33.webp",
-          "narrationKo": "가웨인이 자신의 모든 생명력을 연소시키며 ‘궁극오의 신풍대회전(神風大回轉)’을 시전했다.",
+          "narrationKo": "가웨인이 자신의 모든 생명력을 연소시키며 ‘궁극 마법 폭풍의 대소용돌이’을 시전했다.",
           "narrationEn": "Igniting his very soul, Gawain unleashed the forbidden mystery: the 'Divine Gale Gyre'.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "가웨인이 자신의 모든 생명력을 연소시키며 ‘궁극오의 신풍대회전(神風大回轉)’을 시전했다.",
+          "dialogueKo": "가웨인이 자신의 모든 생명력을 연소시키며 ‘궁극 마법 폭풍의 대소용돌이’을 시전했다.",
           "dialogueEn": "Igniting his very soul, Gawain unleashed the forbidden mystery: the 'Divine Gale Gyre'."
         },
         {
@@ -38552,7 +38552,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제34화 · 운명의 분기점] 추락 속의 탈출로",
       "sceneTitleEn": "[EP.34 · Fate Crossroads] Skyway Through the Fall",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 가웨인 · 론돌\n• 선택 가이드: 소설 제34화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 가웨인 · 론돌\n• 선택 가이드: 소설 제34화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Gawain · Rondol\n• Decision Guide: This is the climax crossroads of Episode 34. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -38660,7 +38660,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch34_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "추락하는 바람의 흐름을 날개처럼 펼쳐 안착시킨다.",
           "labelEn": "Spread the falling updrafts like wings through Astral Breathing.",
@@ -38671,7 +38671,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "추락하는 바람의 흐름을 날개처럼 펼쳐 안착시킨다.",
           "textEn": "Spread the falling updrafts like wings through Astral Breathing.",
@@ -38691,7 +38691,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "스승들은 피를 흘리면서도 어깨를 맞댄 채 카단과 실리아를 향해 고개를 끄덕였다.\n\n“대륙의 미래를 부탁한다, 성기사의 후예여!” 쿠구구구궁!\n\n마침내 거대한 산봉우리가 무너지며, 수십만 톤의 바위와 토사가 중앙 대회랑을 완전히 집어삼켰다. 선대 영웅들의 거룩한 육신은 그렇게 후예들의 등을 지키며 영원한 바위산의 전설로 묻혀 들어갔다.\n\n“스승님————!!” 카단의 절규와 실리아의 오열이 무너진 암벽을 뒤흔들었지만, 닫혀버린 석벽 너머에서는 오직 고요한 침묵만이 흘러나왔다.\n\n가웨인의 궁극오의 신풍대회전이 휘몰아치자, 쏟아져 들어오던 수백 마리의 암흑 골렘들이 폭풍에 갈려 흙먼지가 되었다.\n\n폭풍의 중심에서 가웨인의 백발이 휘날리며, 노마도사는 평생을 갈고닦은 바람의 정수를 카단과 실리아의 등 뒤로 불어넣어 두 사람을 안전한 제단 계단 위로 밀어 올렸다.",
+      "text": "스승들은 피를 흘리면서도 어깨를 맞댄 채 카단과 실리아를 향해 고개를 끄덕였다.\n\n“대륙의 미래를 부탁한다, 성기사의 후예여!” 쿠구구구궁!\n\n마침내 거대한 산봉우리가 무너지며, 수십만 톤의 바위와 토사가 중앙 대회랑을 완전히 집어삼켰다. 선대 영웅들의 거룩한 육신은 그렇게 후예들의 등을 지키며 영원한 바위산의 전설로 묻혀 들어갔다.\n\n“스승님————!!” 카단의 절규와 실리아의 오열이 무너진 암벽을 뒤흔들었지만, 닫혀버린 석벽 너머에서는 오직 고요한 침묵만이 흘러나왔다.\n\n가웨인의 궁극 마법 폭풍의 대소용돌이이 휘몰아치자, 쏟아져 들어오던 수백 마리의 암흑 골렘들이 폭풍에 갈려 흙먼지가 되었다.\n\n폭풍의 중심에서 가웨인의 백발이 휘날리며, 노마도사는 평생을 갈고닦은 바람의 정수를 카단과 실리아의 등 뒤로 불어넣어 두 사람을 안전한 제단 계단 위로 밀어 올렸다.",
       "textEn": "Bloodied but smiling proudly, the masters nodded to Kadan and Cilia.\n\n\"We entrust the future to your shield, heir of the Holy Order!\"\n\nCRRR-AAASH!\n\nThe mountain peak collapsed in an apocalyptic avalanche, burying the central hall beneath hundreds of thousands of tons of granite.\n\nThe heroic champions passed into legend, shielding their disciples' retreat with their very flesh.\n\n\"MASTERS————!!\"",
       "sceneNumber": 8,
       "totalScenes": 10,
@@ -38716,7 +38716,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -38784,11 +38784,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 39,
           "imageUrl": "/images/webtoon/episode_34/scene_39.webp",
-          "narrationKo": "가웨인의 궁극오의 신풍대회전이 휘몰아치자, 쏟아져 들어오던 수백 마리의 암흑 골렘들이 폭풍에 갈려 흙먼지가 되었다.",
+          "narrationKo": "가웨인의 궁극 마법 폭풍의 대소용돌이이 휘몰아치자, 쏟아져 들어오던 수백 마리의 암흑 골렘들이 폭풍에 갈려 흙먼지가 되었다.",
           "narrationEn": "The heroic champions passed into legend, shielding their disciples' retreat with their very flesh.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "가웨인의 궁극오의 신풍대회전이 휘몰아치자, 쏟아져 들어오던 수백 마리의 암흑 골렘들이 폭풍에 갈려 흙먼지가 되었다.",
+          "dialogueKo": "가웨인의 궁극 마법 폭풍의 대소용돌이이 휘몰아치자, 쏟아져 들어오던 수백 마리의 암흑 골렘들이 폭풍에 갈려 흙먼지가 되었다.",
           "dialogueEn": "The heroic champions passed into legend, shielding their disciples' retreat with their very flesh."
         },
         {
@@ -38833,7 +38833,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -38950,7 +38950,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -39059,7 +39059,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -39194,7 +39194,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -39428,7 +39428,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -39618,7 +39618,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "두 눈을 감은 카단의 귓가에 오직 대지의 고동만이 고요하게 울려 퍼졌다. 스승 알렉산다르가 눈 덮인 설원에서 가르쳐주었던 ‘심안(心眼)’의 경지였다.\n\n허공을 가르는 네 개의 가짜 검풍 사이에서, 단 하나의 검격만이 바닥 석판의 미세한 진동을 일으키며 묵직한 살기를 품고 있었다.\n\n카단이 눈을 뜨며 방패를 회전시킨 순간, 드래곤 브레이커의 황금빛 섬광이 짙은 안개를 단숨에 찢어발겼다. 진짜 아르투스의 대검이 방패에 부딪쳐 튕겨 나가며, 어둠의 주술이 한순간에 파훼되었다.\n\n방패 표면에서 터져 나온 황금빛 별빛 고리가 공중 회랑 전체를 대낮처럼 환하게 밝혔다.\n\n가짜 환영들이 비명을 지르며 연기처럼 흩어지자, 짙게 깔려 있던 유백색 안개가 순식간에 걷히며 맑은 밤하늘의 차가운 달빛이 두 영웅의 발밑을 비추었다.\n\n시각을 버리고 대지의 맥박을 신뢰한 카단의 심안이 만들어낸 기적이었다.",
+      "text": "두 눈을 감은 카단의 귓가에 오직 대지의 고동만이 고요하게 울려 퍼졌다. 스승 알렉산다르가 눈 덮인 설원에서 가르쳐주었던 ‘마음의 눈’의 경지였다.\n\n허공을 가르는 네 개의 가짜 검풍 사이에서, 단 하나의 검격만이 바닥 석판의 미세한 진동을 일으키며 묵직한 살기를 품고 있었다.\n\n카단이 눈을 뜨며 방패를 회전시킨 순간, 드래곤 브레이커의 황금빛 섬광이 짙은 안개를 단숨에 찢어발겼다. 진짜 아르투스의 대검이 방패에 부딪쳐 튕겨 나가며, 어둠의 주술이 한순간에 파훼되었다.\n\n방패 표면에서 터져 나온 황금빛 별빛 고리가 공중 회랑 전체를 대낮처럼 환하게 밝혔다.\n\n가짜 환영들이 비명을 지르며 연기처럼 흩어지자, 짙게 깔려 있던 유백색 안개가 순식간에 걷히며 맑은 밤하늘의 차가운 달빛이 두 영웅의 발밑을 비추었다.\n\n시각을 버리고 대지의 맥박을 신뢰한 카단의 마음의 눈이 만들어낸 기적이었다.",
       "textEn": "Snapping his eyes open, Kadan spun his Dragon Breaker shield upward at a forty-five-degree angle.\n\nBoom!\n\nThe moment the true blade struck the dragonbone rim, a radial shockwave of golden starlight detonated across the span.\n\nThe four shadow clones dissolved into wisps of smoke, and the real Artus was hurled backward, vomiting black blood.\n\nStumbling, the death knight lost his balance.\n\nSeizing the opening, Cilia vaulted overhead with her Jade Staff.",
       "sceneNumber": 6,
       "totalScenes": 10,
@@ -39662,11 +39662,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 30,
           "imageUrl": "/images/webtoon/episode_35/scene_30.webp",
-          "narrationKo": "두 눈을 감은 카단의 귓가에 오직 대지의 고동만이 고요하게 울려 퍼졌다. 스승 알렉산다르가 눈 덮인 설원에서 가르쳐주었던 ‘심안(心眼)’의 경지였다.",
+          "narrationKo": "두 눈을 감은 카단의 귓가에 오직 대지의 고동만이 고요하게 울려 퍼졌다. 스승 알렉산다르가 눈 덮인 설원에서 가르쳐주었던 ‘마음의 눈’의 경지였다.",
           "narrationEn": "Snapping his eyes open, Kadan spun his Dragon Breaker shield upward at a forty-five-degree angle.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "두 눈을 감은 카단의 귓가에 오직 대지의 고동만이 고요하게 울려 퍼졌다. 스승 알렉산다르가 눈 덮인 설원에서 가르쳐주었던 ‘심안(心眼)’의 경지였다.",
+          "dialogueKo": "두 눈을 감은 카단의 귓가에 오직 대지의 고동만이 고요하게 울려 퍼졌다. 스승 알렉산다르가 눈 덮인 설원에서 가르쳐주었던 ‘마음의 눈’의 경지였다.",
           "dialogueEn": "Snapping his eyes open, Kadan spun his Dragon Breaker shield upward at a forty-five-degree angle."
         },
         {
@@ -39712,11 +39712,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 35,
           "imageUrl": "/images/webtoon/episode_35/scene_35.webp",
-          "narrationKo": "시각을 버리고 대지의 맥박을 신뢰한 카단의 심안이 만들어낸 기적이었다.",
+          "narrationKo": "시각을 버리고 대지의 맥박을 신뢰한 카단의 마음의 눈이 만들어낸 기적이었다.",
           "narrationEn": "Seizing the opening, Cilia vaulted overhead with her Jade Staff.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "시각을 버리고 대지의 맥박을 신뢰한 카단의 심안이 만들어낸 기적이었다.",
+          "dialogueKo": "시각을 버리고 대지의 맥박을 신뢰한 카단의 마음의 눈이 만들어낸 기적이었다.",
           "dialogueEn": "Seizing the opening, Cilia vaulted overhead with her Jade Staff."
         }
       ]
@@ -39732,7 +39732,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제35화 · 운명의 분기점] 환영을 깨뜨리는 심안",
       "sceneTitleEn": "[EP.35 · Fate Crossroads] Mind's Eye Piercing Illusion",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 알렉산다르 · 데스나이트 아르투스\n• 선택 가이드: 소설 제35화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 알렉산다르 · 데스나이트 아르투스\n• 선택 가이드: 소설 제35화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Aleksandar · Death Knight Artus\n• Decision Guide: This is the climax crossroads of Episode 35. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -39778,7 +39778,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "followUpTextEn": "“Shutting out false sight, sonic shield pulses shattered the phantom doppelgangers.”",
           "bonusType": "buff",
           "bonusValue": 25,
-          "bonusDescKo": "[심안의 방패] 환각 면역 및 치명타율 상승",
+          "bonusDescKo": "[진실의 눈 방패] 환각 면역 및 치명타율 상승",
           "bonusDescEn": "[Mind's Eye Shield] Illusion Immunity & Crit Up",
           "isDefault": true,
           "badge": "[결의/돌파]",
@@ -39788,7 +39788,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "reward": {
             "snsCoins": 50,
             "buff": "atk_boost",
-            "buffName": "[심안의 방패] 환각 면역 및 치명타율 상승",
+            "buffName": "[진실의 눈 방패] 환각 면역 및 치명타율 상승",
             "buffNameEn": "[Mind's Eye Shield] Illusion Immunity & Crit Up"
           },
           "followUpLine": "“시각을 차단하고 방패의 아케인 파동만으로 가짜 환영들을 모조리 분쇄했다.”",
@@ -39822,7 +39822,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch35_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "별 호흡의 파동을 방출해 환영 마법을 한 번에 깨뜨린다.",
           "labelEn": "Unleash Astral Wave pulses to shatter the illusion matrix at once.",
@@ -39833,7 +39833,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "별 호흡의 파동을 방출해 환영 마법을 한 번에 깨뜨린다.",
           "textEn": "Unleash Astral Wave pulses to shatter the illusion matrix at once.",
@@ -39869,7 +39869,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -39977,7 +39977,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -40112,7 +40112,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -40196,7 +40196,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "제 36화: # 눈히어로.com - 카단의 여정 36화 - 십자 흉터의 지도 · 카단",
       "nameEn": "Episode 36: Map of the Cross-Shaped Scar · Kadan",
-      "text": "환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다.\n\n흑요석 벽면으로 둘러싸인 거대한 원형 회랑의 천장은 뚫려 있어 차가운 밤하늘의 북두칠성이 서늘하게 쏟아져 내리고 있었고,\n\n회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 성도(星圖)’가 자리 잡고 있었다.\n\n스승들을 잃은 슬픔의 무게가 두 사람의 어깨를 짓누르고 있었지만, 카단의 발걸음은 조금도 흐트러짐이 없었다.\n\n드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다.\n\n실리아가 녹옥 지팡이를 들고 대륙 성도 앞으로 다가갔다.",
+      "text": "환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다.\n\n흑요석 벽면으로 둘러싸인 거대한 원형 회랑의 천장은 뚫려 있어 차가운 밤하늘의 북두칠성이 서늘하게 쏟아져 내리고 있었고,\n\n회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 별자리 지도’가 자리 잡고 있었다.\n\n스승들을 잃은 슬픔의 무게가 두 사람의 어깨를 짓누르고 있었지만, 카단의 발걸음은 조금도 흐트러짐이 없었다.\n\n드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다.\n\n실리아가 녹옥 지팡이를 들고 대륙 별자리 지도 앞으로 다가갔다.",
       "textEn": "Having fought their way through the suffocating illusions of the misty corridors, Kadan and Princess Cilia at last set foot within the highest sanctum of the Black Citadel.\n\nThe Starlight Archives, where the empire's darkest arcana had lain interred for centuries.\n\nThe vaulted ceiling of the circular obsidian gallery opened directly to the heavens, where the frigid constellations of the northern sky poured down their pale luminescence upon a colossal granite altar.\n\nChiseled into the altar's stone in deep relief was the Continental Star Chart, tracing every ancient leyline, ridge, and river across the breadth of the realm.\n\nThough the crushing grief of having lost the Six Masters pressed heavily against their shoulders, neither companion faltered in their stride.\n\nThe rough calluses on Kadan's forearm gripping the Dragon Breaker shield and the crimson cord binding the Silver Dagger whispered of solemn vows sworn in blood.",
       "sceneNumber": 1,
       "totalScenes": 10,
@@ -40221,7 +40221,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -40251,11 +40251,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 3,
           "imageUrl": "/images/webtoon/episode_36/scene_03.webp",
-          "narrationKo": "회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 성도(星圖)’가 자리 잡고 있었다.",
+          "narrationKo": "회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 별자리 지도’가 자리 잡고 있었다.",
           "narrationEn": "The vaulted ceiling of the circular obsidian gallery opened directly to the heavens, where the frigid constellations of the northern sky poured down their pale luminescence upon a colossal granite altar.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 성도(星圖)’가 자리 잡고 있었다.",
+          "dialogueKo": "회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 별자리 지도’가 자리 잡고 있었다.",
           "dialogueEn": "The vaulted ceiling of the circular obsidian gallery opened directly to the heavens, where the frigid constellations of the northern sky poured down their pale luminescence upon a colossal granite altar."
         },
         {
@@ -40281,11 +40281,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 6,
           "imageUrl": "/images/webtoon/episode_36/scene_06.webp",
-          "narrationKo": "실리아가 녹옥 지팡이를 들고 대륙 성도 앞으로 다가갔다.",
+          "narrationKo": "실리아가 녹옥 지팡이를 들고 대륙 별자리 지도 앞으로 다가갔다.",
           "narrationEn": "The rough calluses on Kadan's forearm gripping the Dragon Breaker shield and the crimson cord binding the Silver Dagger whispered of solemn vows sworn in blood.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "실리아가 녹옥 지팡이를 들고 대륙 성도 앞으로 다가갔다.",
+          "dialogueKo": "실리아가 녹옥 지팡이를 들고 대륙 별자리 지도 앞으로 다가갔다.",
           "dialogueEn": "The rough calluses on Kadan's forearm gripping the Dragon Breaker shield and the crimson cord binding the Silver Dagger whispered of solemn vows sworn in blood."
         }
       ]
@@ -40338,7 +40338,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -40427,7 +40427,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -40543,7 +40543,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -40659,7 +40659,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -40785,7 +40785,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -40891,7 +40891,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제36화 · 운명의 분기점] 십자 결계의 돌파",
       "sceneTitleEn": "[EP.36 · Fate Crossroads] Breaching the Cross-Barrier",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제36화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제36화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 36. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -40910,7 +40910,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -41008,7 +41008,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch36_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "용의 성흔과 내 마나를 공명시켜 결계를 붕괴시킨다.",
           "labelEn": "Resonate Astral Mana with the ancient dragon scar to dissolve the barrier.",
@@ -41019,7 +41019,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "용의 성흔과 내 마나를 공명시켜 결계를 붕괴시킨다.",
           "textEn": "Resonate Astral Mana with the ancient dragon scar to dissolve the barrier.",
@@ -41073,7 +41073,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -41189,7 +41189,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -41296,7 +41296,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -41405,7 +41405,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -41549,7 +41549,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -41629,7 +41629,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -41727,7 +41727,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -41835,7 +41835,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -41933,7 +41933,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -42012,7 +42012,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제37화 · 운명의 분기점] 평원의 중앙 방진",
       "sceneTitleEn": "[EP.37 · Fate Crossroads] Phalanx of the Plains",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 메두사 고르고\n• 선택 가이드: 소설 제37화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 메두사 고르고\n• 선택 가이드: 소설 제37화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Medusa Gorgo\n• Decision Guide: This is the climax crossroads of Episode 37. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -42031,7 +42031,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -42102,7 +42102,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch37_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "전장의 수만 군사들에게 수호의 마나를 불어넣는다.",
           "labelEn": "Channel protective Astral Mana across tens of thousands of warriors.",
@@ -42113,7 +42113,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+30 SNS 획득",
           "bonusDescEn": "+30 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "전장의 수만 군사들에게 수호의 마나를 불어넣는다.",
           "textEn": "Channel protective Astral Mana across tens of thousands of warriors.",
@@ -42266,7 +42266,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -42382,7 +42382,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -42608,7 +42608,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -42716,7 +42716,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -42814,7 +42814,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -42940,7 +42940,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -43066,7 +43066,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -43163,7 +43163,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제38화 · 운명의 분기점] 간신의 심판",
       "sceneTitleEn": "[EP.38 · Fate Crossroads] Judgment of Treason",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 알렉산다르\n• 선택 가이드: 소설 제38화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 알렉산다르\n• 선택 가이드: 소설 제38화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Aleksandar\n• Decision Guide: This is the climax crossroads of Episode 38. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -43182,7 +43182,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -43271,7 +43271,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch38_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "더 이상의 살육은 무의미하다. 항복하고 죄를 자백하라.",
           "labelEn": "Further bloodshed is pointless. Yield and confess your crimes.",
@@ -43282,7 +43282,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+25 SNS 획득",
           "bonusDescEn": "+25 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "더 이상의 살육은 무의미하다. 항복하고 죄를 자백하라.",
           "textEn": "Further bloodshed is pointless. Yield and confess your crimes.",
@@ -43318,7 +43318,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -43419,7 +43419,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "루시안의 살갗이 찢어지며 뿜어져 나온 검은 피가 거대한 차원 소용돌이를 형성했고, 소용돌이 중심부에서는 대륙 전체를 집어삼킬 거대한 흑구(黑球)가 팽창하고 있었다.\n\n카단과 실리아의 옷자락이 거센 차원의 중력에 찢겨 나갔다.\n\n실리아가 지팡이로 중심축을 겨누며 외쳤다. “저 핵을 파괴하지 못하면 성채뿐만 아니라 수도 전체가 차원 저편으로 빨려 들어가요! 카단, 당신의 방패와 단검을 믿어요!”\n\n카단은 품속에서 이그니스의 유리 불씨를 꺼내 방패 전면에 밀착시켰다.\n\n순백의 성화와 황금빛 별빛, 그리고 실리아의 청아한 비취빛 바람이 하나로 어우러지며, 카단의 전신을 감싸는 거대한 삼위일체의 빛의 창(槍)이 형성되었다.\n\n카단이 폭주하는 루시안의 마나 폭풍을 향해 쐐기처럼 돌진했다. “우리가 지켜낸 생명의 이름으로, 어둠의 심장을 꿰뚫는다!”",
+      "text": "루시안의 살갗이 찢어지며 뿜어져 나온 검은 피가 거대한 차원 소용돌이를 형성했고, 소용돌이 중심부에서는 대륙 전체를 집어삼킬 거대한 암흑 구체가 팽창하고 있었다.\n\n카단과 실리아의 옷자락이 거센 차원의 중력에 찢겨 나갔다.\n\n실리아가 지팡이로 중심축을 겨누며 외쳤다. “저 핵을 파괴하지 못하면 성채뿐만 아니라 수도 전체가 차원 저편으로 빨려 들어가요! 카단, 당신의 방패와 단검을 믿어요!”\n\n카단은 품속에서 이그니스의 유리 불씨를 꺼내 방패 전면에 밀착시켰다.\n\n순백의 성화와 황금빛 별빛, 그리고 실리아의 청아한 비취빛 바람이 하나로 어우러지며, 카단의 전신을 감싸는 거대한 삼위일체의 빛의 창이 형성되었다.\n\n카단이 폭주하는 루시안의 마나 폭풍을 향해 쐐기처럼 돌진했다. “우리가 지켜낸 생명의 이름으로, 어둠의 심장을 꿰뚫는다!”",
       "textEn": "\"The third seal is fused to his life force!\n\nUnless we pierce that core, the entire mountain will collapse into the void!\n\nKadan, I trust your shield and blade!\"\n\nKadan set his jaw, pressing Ignis's White Glass Ember against the crest of his shield.\n\n\"I shall open the vanguard.\n\nSupport my back with your wind, Cilia!\"",
       "sceneNumber": 9,
       "totalScenes": 10,
@@ -43444,7 +43444,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -43472,11 +43472,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 41,
           "imageUrl": "/images/webtoon/episode_38/scene_41.webp",
-          "narrationKo": "루시안의 살갗이 찢어지며 뿜어져 나온 검은 피가 거대한 차원 소용돌이를 형성했고, 소용돌이 중심부에서는 대륙 전체를 집어삼킬 거대한 흑구(黑球)가 팽창하고 있었다.",
+          "narrationKo": "루시안의 살갗이 찢어지며 뿜어져 나온 검은 피가 거대한 차원 소용돌이를 형성했고, 소용돌이 중심부에서는 대륙 전체를 집어삼킬 거대한 암흑 구체가 팽창하고 있었다.",
           "narrationEn": "\"The third seal is fused to his life force!",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "루시안의 살갗이 찢어지며 뿜어져 나온 검은 피가 거대한 차원 소용돌이를 형성했고, 소용돌이 중심부에서는 대륙 전체를 집어삼킬 거대한 흑구(黑球)가 팽창하고 있었다.",
+          "dialogueKo": "루시안의 살갗이 찢어지며 뿜어져 나온 검은 피가 거대한 차원 소용돌이를 형성했고, 소용돌이 중심부에서는 대륙 전체를 집어삼킬 거대한 암흑 구체가 팽창하고 있었다.",
           "dialogueEn": "\"The third seal is fused to his life force!"
         },
         {
@@ -43512,11 +43512,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 45,
           "imageUrl": "/images/webtoon/episode_38/scene_45.webp",
-          "narrationKo": "순백의 성화와 황금빛 별빛, 그리고 실리아의 청아한 비취빛 바람이 하나로 어우러지며, 카단의 전신을 감싸는 거대한 삼위일체의 빛의 창(槍)이 형성되었다.",
+          "narrationKo": "순백의 성화와 황금빛 별빛, 그리고 실리아의 청아한 비취빛 바람이 하나로 어우러지며, 카단의 전신을 감싸는 거대한 삼위일체의 빛의 창이 형성되었다.",
           "narrationEn": "\"I shall open the vanguard.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "순백의 성화와 황금빛 별빛, 그리고 실리아의 청아한 비취빛 바람이 하나로 어우러지며, 카단의 전신을 감싸는 거대한 삼위일체의 빛의 창(槍)이 형성되었다.",
+          "dialogueKo": "순백의 성화와 황금빛 별빛, 그리고 실리아의 청아한 비취빛 바람이 하나로 어우러지며, 카단의 전신을 감싸는 거대한 삼위일체의 빛의 창이 형성되었다.",
           "dialogueEn": "\"I shall open the vanguard."
         },
         {
@@ -43760,7 +43760,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -43870,7 +43870,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 50,
       "name": "알렉산다르",
       "nameEn": "Aleksandar",
-      "text": "카단은 칼을 휘두르지 않고, 드래곤 브레이커 방패로 아르투스의 검격을 부드럽게 감싸 안았다.\n\n쾅! 방패 표면에서 터져 나온 온화한 황금빛 별빛이 아르투스의 전신을 따뜻하게 감싸 안았다. 알렉산다르 스승이 전수했던 성기사의 궁극오의, 사령을 해방시키는 ‘성진해탈(星辰解脫)’의 마나였다.\n\n아르투스의 흑요석 갑주를 옭아매고 있던 메두사 고르고의 검은 저주 사슬들이 하얀 빛의 가루가 되어 하나둘 부서져 내렸다.\n\n아르투스의 투구가 벗겨지며, 백발이 성성한 노기사의 평온한 미소가 드러났다.\n\n노기사가 부러진 검을 바닥에 떨어뜨리며 무릎을 꿇었다.\n\n“고맙다... 알렉산다르의 아이여... 내 영혼이... 드디어 빛의 품으로 돌아가는구나... 이 세상은... 여전히 목숨을 바쳐... 지킬 만한 가치가 있는 곳이었어...”",
+      "text": "카단은 칼을 휘두르지 않고, 드래곤 브레이커 방패로 아르투스의 검격을 부드럽게 감싸 안았다.\n\n쾅! 방패 표면에서 터져 나온 온화한 황금빛 별빛이 아르투스의 전신을 따뜻하게 감싸 안았다. 알렉산다르 스승이 전수했던 성기사의 궁극 정화 마법, 망자의 영혼을 안식으로 이끄는 ‘별빛의 영혼 해방’의 마나였다.\n\n아르투스의 흑요석 갑주를 옭아매고 있던 메두사 고르고의 검은 저주 사슬들이 하얀 빛의 가루가 되어 하나둘 부서져 내렸다.\n\n아르투스의 투구가 벗겨지며, 백발이 성성한 노기사의 평온한 미소가 드러났다.\n\n노기사가 부러진 검을 바닥에 떨어뜨리며 무릎을 꿇었다.\n\n“고맙다... 알렉산다르의 아이여... 내 영혼이... 드디어 빛의 품으로 돌아가는구나... 이 세상은... 여전히 목숨을 바쳐... 지킬 만한 가치가 있는 곳이었어...”",
       "textEn": "\"His soul weeps in agony.\n\nThough his body was made a monster, the heart of a paladin beats within, yearning for release.\"\n\nArtus brought down his broken broadsword with a desperate cry—not an attack of malice, but a plea for deliverance.\n\nKadan did not draw his steel; instead, he stepped forward, meeting the blow with the gentle embrace of his shield.\n\nA soothing aura of golden starlight radiated from the shield face—Master Aleksandar's ultimate art.\n\n'Star Deliverance.' The necrotic tendrils wrapping Artus's plate disintegrated into luminous white butterflies that drifted upward into the sky.",
       "sceneNumber": 3,
       "totalScenes": 10,
@@ -43933,11 +43933,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 14,
           "imageUrl": "/images/webtoon/episode_39/scene_14.webp",
-          "narrationKo": "쾅! 방패 표면에서 터져 나온 온화한 황금빛 별빛이 아르투스의 전신을 따뜻하게 감싸 안았다. 알렉산다르 스승이 전수했던 성기사의 궁극오의, 사령을 해방시키는 ‘성진해탈(星辰解脫)’의 마나였다.",
+          "narrationKo": "쾅! 방패 표면에서 터져 나온 온화한 황금빛 별빛이 아르투스의 전신을 따뜻하게 감싸 안았다. 알렉산다르 스승이 전수했던 성기사의 궁극 정화 마법, 망자의 영혼을 안식으로 이끄는 ‘별빛의 영혼 해방’의 마나였다.",
           "narrationEn": "Though his body was made a monster, the heart of a paladin beats within, yearning for release.\"",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "쾅! 방패 표면에서 터져 나온 온화한 황금빛 별빛이 아르투스의 전신을 따뜻하게 감싸 안았다. 알렉산다르 스승이 전수했던 성기사의 궁극오의, 사령을 해방시키는 ‘성진해탈(星辰解脫)’의 마나였다.",
+          "dialogueKo": "쾅! 방패 표면에서 터져 나온 온화한 황금빛 별빛이 아르투스의 전신을 따뜻하게 감싸 안았다. 알렉산다르 스승이 전수했던 성기사의 궁극 정화 마법, 망자의 영혼을 안식으로 이끄는 ‘별빛의 영혼 해방’의 마나였다.",
           "dialogueEn": "Though his body was made a monster, the heart of a paladin beats within, yearning for release.\""
         },
         {
@@ -43987,7 +43987,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "cardId": 41,
       "name": "카단",
       "nameEn": "Kadan",
-      "text": "말을 마친 아르투스의 신형은 은빛 먼지가 되어 바람결을 타고 하늘로 평화롭게 흩어졌다. 죽음의 기사는 마침내 성기사의 명예를 되찾고 영면에 들었다.\n\n카단의 드래곤 브레이커 방패에서 뿜어져 나온 성진해탈의 황금빛 마나는 대지와 별의 치유력을 품고 있었다.\n\n방패와 맞부딪친 순간, 아르투스의 부러진 흑요석 대검은 산산조각 나 먼지로 흩어졌고, 노기사의 가슴을 짓누르던 검은 원혼의 멍에가 마침내 하얀 빛의 나비가 되어 허공으로 날아올랐다.\n\n아르투스는 무릎을 꿇은 채 눈물을 흘리며 카단의 손을 잡았다. “고맙다... 알렉산다르의 아이여... 네 방패가... 나를 구원하였구나... 이제 발리안 경과 알렉산다르 경을 뵈러 갈 수 있겠어...”\n\n노기사의 영혼은 평온한 미소를 머금은 채 아침 햇살 속으로 승화되었다.\n\n아르투스가 성불하고 남은 것은 오직 바닥에 쓰러져 피를 토하는 루시안뿐이었다. 마나를 모두 소진하고 세 개의 봉인을 잃은 루시안은 더 이상 권력자도 괴물도 아닌, 늙고 비참한 죄인에 불과했다.",
+      "text": "말을 마친 아르투스의 신형은 은빛 먼지가 되어 바람결을 타고 하늘로 평화롭게 흩어졌다. 죽음의 기사는 마침내 성기사의 명예를 되찾고 영면에 들었다.\n\n카단의 드래곤 브레이커 방패에서 뿜어져 나온 별빛의 영혼 해방의 황금빛 마나는 대지와 별의 치유력을 품고 있었다.\n\n방패와 맞부딪친 순간, 아르투스의 부러진 흑요석 대검은 산산조각 나 먼지로 흩어졌고, 노기사의 가슴을 짓누르던 검은 원혼의 멍에가 마침내 하얀 빛의 나비가 되어 허공으로 날아올랐다.\n\n아르투스는 무릎을 꿇은 채 눈물을 흘리며 카단의 손을 잡았다. “고맙다... 알렉산다르의 아이여... 네 방패가... 나를 구원하였구나... 이제 발리안 경과 알렉산다르 경을 뵈러 갈 수 있겠어...”\n\n노기사의 영혼은 평온한 미소를 머금은 채 아침 햇살 속으로 승화되었다.\n\n아르투스가 성불하고 남은 것은 오직 바닥에 쓰러져 피를 토하는 루시안뿐이었다. 마나를 모두 소진하고 세 개의 봉인을 잃은 루시안은 더 이상 권력자도 괴물도 아닌, 늙고 비참한 죄인에 불과했다.",
       "textEn": "His battered helm slipped away, revealing the serene countenance of a white-haired elder.\n\nKneeling before Kadan, Artus took the youth's hand with trembling fingers.\n\n\"Thank you... child of Aleksandar...\n\nYour shield has redeemed me...\n\nNow I may face Sir Balian and Sir Aleksandar with head held high...\n\nThis world... was truly worth defending...\"",
       "sceneNumber": 4,
       "totalScenes": 10,
@@ -44059,11 +44059,11 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         {
           "cutNumber": 20,
           "imageUrl": "/images/webtoon/episode_39/scene_20.webp",
-          "narrationKo": "카단의 드래곤 브레이커 방패에서 뿜어져 나온 성진해탈의 황금빛 마나는 대지와 별의 치유력을 품고 있었다.",
+          "narrationKo": "카단의 드래곤 브레이커 방패에서 뿜어져 나온 별빛의 영혼 해방의 황금빛 마나는 대지와 별의 치유력을 품고 있었다.",
           "narrationEn": "Kneeling before Kadan, Artus took the youth's hand with trembling fingers.",
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "dialogueKo": "카단의 드래곤 브레이커 방패에서 뿜어져 나온 성진해탈의 황금빛 마나는 대지와 별의 치유력을 품고 있었다.",
+          "dialogueKo": "카단의 드래곤 브레이커 방패에서 뿜어져 나온 별빛의 영혼 해방의 황금빛 마나는 대지와 별의 치유력을 품고 있었다.",
           "dialogueEn": "Kneeling before Kadan, Artus took the youth's hand with trembling fingers."
         },
         {
@@ -44246,7 +44246,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -44353,7 +44353,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제39화 · 운명의 분기점] 최후의 심연 대결전",
       "sceneTitleEn": "[EP.39 · Fate Crossroads] Final Abyssal Clash",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제39화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 이그니스\n• 선택 가이드: 소설 제39화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Ignis\n• Decision Guide: This is the climax crossroads of Episode 39. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -44372,7 +44372,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -44461,9 +44461,9 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch39_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
-          "labelKo": "백색 화염과 성진호흡의 합일! 어둠을 태양의 빛으로 씻어낸다!",
+          "labelKo": "백색 화염과 별빛의 호흡의 합일! 어둠을 태양의 빛으로 씻어낸다!",
           "labelEn": "Harmonize White Flame and Astral Breathing! Wash away darkness in solar light!",
           "followUpTextKo": "“두 청년의 영혼이 완벽하게 융합되며 도성 전체를 뒤덮던 칠흑의 어둠이 정화되었다.”",
           "followUpTextEn": "“A perfect fusion of their souls cleansed the dark miasma smothering the citadel.”",
@@ -44472,9 +44472,9 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+35 SNS 획득",
           "bonusDescEn": "+35 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
-          "text": "백색 화염과 성진호흡의 합일! 어둠을 태양의 빛으로 씻어낸다!",
+          "text": "백색 화염과 별빛의 호흡의 합일! 어둠을 태양의 빛으로 씻어낸다!",
           "textEn": "Harmonize White Flame and Astral Breathing! Wash away darkness in solar light!",
           "reward": {
             "snsCoins": 35,
@@ -44517,7 +44517,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -44625,7 +44625,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -44742,7 +44742,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -44833,7 +44833,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -44941,7 +44941,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -45049,7 +45049,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -45147,7 +45147,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -45282,7 +45282,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -45417,7 +45417,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -45496,7 +45496,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
       "totalScenes": 10,
       "sceneTitleKo": "[제40화 · 운명의 분기점] 새로운 봄을 향한 발걸음",
       "sceneTitleEn": "[EP.40 · Fate Crossroads] Steps Toward a New Spring",
-      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 엘윈\n• 선택 가이드: 소설 제40화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
+      "sceneExplanationKo": "• 등장인물 및 상황: 카단 · 실리아 · 엘윈\n• 선택 가이드: 소설 제40화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요.",
       "sceneExplanationEn": "• Characters & Situation: Kadan · Celia · Elwin\n• Decision Guide: This is the climax crossroads of Episode 40. Choose one of the three attitudes ([Resolve], [Insight], [Resonance]) to earn bonus SNS or combat buffs for the upcoming battle.",
       "dialogueQuoteKo": "",
       "dialogueQuoteEn": "",
@@ -45515,7 +45515,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false
@@ -45586,7 +45586,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
         },
         {
           "id": "ch40_choice_3",
-          "attitude": "[성진호흡/공명]",
+          "attitude": "[별빛 마나/공명]",
           "attitudeEn": "[Resonance]",
           "labelKo": "실리아, 약속을 지켰구나. 정말로 봄이 왔다.",
           "labelEn": "Celia, we kept our promise. Spring has truly arrived.",
@@ -45597,7 +45597,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "bonusDescKo": "+50 SNS 획득",
           "bonusDescEn": "+50 SNS Points",
           "isDefault": false,
-          "badge": "[성진호흡/공명]",
+          "badge": "[별빛 마나/공명]",
           "badgeEn": "[Resonance]",
           "text": "실리아, 약속을 지켰구나. 정말로 봄이 왔다.",
           "textEn": "Celia, we kept our promise. Spring has truly arrived.",
@@ -45633,7 +45633,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": true
@@ -45768,7 +45768,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "cardId": 62,
           "nameKo": "실리아",
           "nameEn": "Celia",
-          "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+          "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
           "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
           "seatAsset": "/seat/Celia.png",
           "isSpeaker": false

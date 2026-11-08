@@ -283,7 +283,7 @@
       "imageFile": "episode_23/scene_10.webp",
       "sourceImageFile": "episode_23/scene_10.webp",
       "narrationEn": "Kindling a gentle wind lantern at the head of her Jade Staff, Cilia examined the subterranean architecture.",
-      "narrationKo": "“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 진법이에요.”",
+      "narrationKo": "“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 마법진이에요.”",
       "sourceSentenceStart": 10,
       "sourceSentenceEnd": 10,
       "alignmentScore": 1.0,
@@ -291,7 +291,7 @@
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 진법이에요.”",
+          "textKo": "“동굴 벽면을 따라 고대 바람의 결계가 아직 살아 있어요. 외부의 추적 마법을 차단하는 차폐 마법진이에요.”",
           "textEn": "Kindling a gentle wind lantern at the head of her Jade Staff, Cilia examined the subterranean architecture.",
           "bubbleType": "speech",
           "position": "bottom-left",

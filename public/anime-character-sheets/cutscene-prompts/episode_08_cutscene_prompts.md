@@ -216,7 +216,7 @@
   - **캐릭터 외형 묘사**: 카단(Kadan, 7등신 컷아웃: `/anime-character-sheets/cutouts/041_Kadan.png`) — 등에 장착한 북방 설원 수호의 '눈(SNOW) 문양 방패(Snow-Emblem Shield)'와 붉은 머플러, 어머니·스승의 유품 '기억을 깨우는 은빛 룬 단검'
   - `EN`: Kadan (7-Head-Tall Cutout Reference: /anime-character-sheets/cutouts/041_Kadan.png) — 7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger
 - **4. 등장 소품 시트 및 소품 소지 캐릭터 (Props & Prop Holder)**:
-  - **소품 및 소지자**: [PROP-016 성진호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 성진호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
+  - **소품 및 소지자**: [PROP-016 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
   - `EN`: [PROP-016 Star-Breathing Astral Scroll (Prop Reference: /anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg)]: Kadan holds/carries Star-Breathing Astral Scroll (PROP-016)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
   - 6초 이내 캐릭터 대사 요약 지침: [카단(Kadan)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "더 이상 너를 아프게 결박하는 쇠사슬은 없다. 달리고 싶다면 너의 길을 가도 좋다." (영문 6s 대사: "No chain shall bind you in pain again.") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.

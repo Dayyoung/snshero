@@ -522,6 +522,67 @@ export class CardNurtureStore implements NurtureState {
   }
 
   /**
+   * Returns total unallocated stat points across the active 5-card deck
+   */
+  getUnspentDeckPoints(): number {
+    this.ensureValidDeck();
+    return this.activeDeckIds.reduce((sum, id) => {
+      const card = this.cards[id];
+      return sum + (card && card.statPoints > 0 ? card.statPoints : 0);
+    }, 0);
+  }
+
+  /**
+   * Returns total unallocated stat points across all owned cards
+   */
+  getTotalUnspentPoints(): number {
+    return this.ownedCardIds.reduce((sum, id) => {
+      const card = this.cards[id];
+      return sum + (card && card.statPoints > 0 ? card.statPoints : 0);
+    }, 0);
+  }
+
+  /**
+   * Automatically allocates all unspent stat points on owned/active deck cards
+   * in a balanced manner (prioritizing lowest directional stat first).
+   */
+  autoAllocateDeckStatPoints(): { pointsSpent: number; updatedCards: number[] } {
+    this.ensureValidDeck();
+    let pointsSpent = 0;
+    const updatedCards: number[] = [];
+    const dirs: Array<'top' | 'right' | 'bottom' | 'left'> = ['top', 'right', 'bottom', 'left'];
+
+    for (const id of this.ownedCardIds) {
+      const card = this.cards[id];
+      if (!card || card.statPoints <= 0) continue;
+      const db = CARD_DATABASE[id] || { top: 2, right: 2, bottom: 2, left: 2 };
+      while (card.statPoints > 0) {
+        // Pick direction with lowest current total stat to balance all 4 sides
+        let bestDir: 'top' | 'right' | 'bottom' | 'left' = 'top';
+        let minVal = Infinity;
+        for (const d of dirs) {
+          const cur = (db[d] || 0) + (card.bonusStats[d] || 0);
+          if (cur < minVal) {
+            minVal = cur;
+            bestDir = d;
+          }
+        }
+        card.statPoints -= 1;
+        card.bonusStats[bestDir] += 1;
+        card.totalBonus += 1;
+        pointsSpent += 1;
+      }
+      updatedCards.push(id);
+    }
+
+    if (pointsSpent > 0) {
+      this.saveToStorage();
+      this.dispatchUpdateEvent(updatedCards[0]);
+    }
+    return { pointsSpent, updatedCards };
+  }
+
+  /**
    * Add a new card to owned inventory (e.g. from shop or rewards)
    */
   addCard(cardId: number): boolean {

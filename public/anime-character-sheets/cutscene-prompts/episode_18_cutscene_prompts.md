@@ -697,7 +697,7 @@
   - **캐릭터 외형 묘사**: 카단(Kadan, 7등신 컷아웃: `/anime-character-sheets/cutouts/041_Kadan.png`) — 등에 장착한 북방 설원 수호의 '눈(SNOW) 문양 방패(Snow-Emblem Shield)'와 붉은 머플러, 어머니·스승의 유품 '기억을 깨우는 은빛 룬 단검'
   - `EN`: Kadan (7-Head-Tall Cutout Reference: /anime-character-sheets/cutouts/041_Kadan.png) — 7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger
 - **4. 등장 소품 시트 및 소품 소지 캐릭터 (Props & Prop Holder)**:
-  - **소품 및 소지자**: [PROP-003 무쇠 방패 (북방 전사의 철방패) (Weathered Iron Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg`)]: Kadan이(가) 무쇠 방패 (북방 전사의 철방패)(PROP-003)을(를) 소지 및 사용 / [PROP-016 성진호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 성진호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
+  - **소품 및 소지자**: [PROP-003 무쇠 방패 (북방 전사의 철방패) (Weathered Iron Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg`)]: Kadan이(가) 무쇠 방패 (북방 전사의 철방패)(PROP-003)을(를) 소지 및 사용 / [PROP-016 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
   - `EN`: [PROP-003 Weathered Iron Shield (Prop Reference: /anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg)]: Kadan holds/carries Weathered Iron Shield (PROP-003) ; [PROP-016 Star-Breathing Astral Scroll (Prop Reference: /anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg)]: Kadan holds/carries Star-Breathing Astral Scroll (PROP-016)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
   - 전지적 시점 배경 남자 나레이션 (6초 이내) 및 등장인물 전원 침묵 지침: 화면에 등장하는 모든 인물은 입을 굳게 다물고 아무 말도 해서는 안 되며(입 모양 움직임 절대 금지), 오직 배경에서만 중후한 남자 나레이션 음성으로 6초 이내에 다음 내용을 설명해야 함: "골렘들의 거대한 바위 주먹이 제단을 향해 벼락처럼 내리꽂혔다." (영문 6s 나레이션: "As the titan golems brought their colossal fists down toward the altar, Kadan bounded.")
@@ -771,7 +771,7 @@
   - **캐릭터 외형 묘사**: 카단(Kadan, 7등신 컷아웃: `/anime-character-sheets/cutouts/041_Kadan.png`) — 등에 장착한 북방 설원 수호의 '눈(SNOW) 문양 방패(Snow-Emblem Shield)'와 붉은 머플러, 어머니·스승의 유품 '기억을 깨우는 은빛 룬 단검' / 이그니스(Ignis, 7등신 컷아웃: `/anime-character-sheets/cutouts/011_Ignis.png`) — 불꽃 궁정 문장이 새겨진 화염 건틀릿과 마그마 룬 쌍검
   - `EN`: Kadan (7-Head-Tall Cutout Reference: /anime-character-sheets/cutouts/041_Kadan.png) — 7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger ; Ignis (7-Head-Tall Cutout Reference: /anime-character-sheets/cutouts/011_Ignis.png) — 7-head-tall crimson-and-black Flame Court warrior with magma-runed gauntlets and twin flame blades
 - **4. 등장 소품 시트 및 소품 소지 캐릭터 (Props & Prop Holder)**:
-  - **소품 및 소지자**: [PROP-016 성진호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 성진호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
+  - **소품 및 소지자**: [PROP-016 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
   - `EN`: [PROP-016 Star-Breathing Astral Scroll (Prop Reference: /anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg)]: Kadan holds/carries Star-Breathing Astral Scroll (PROP-016)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
   - 6초 이내 캐릭터 대사 요약 지침: [카단(Kadan)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "실리아, 이그니스! 증거가 담긴 기억 수정을 지켜라!" (영문 6s 대사: "Cilia, Ignis! Protect the memory crystal!") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
@@ -795,7 +795,7 @@
 ## EP18-CUT22 (02:06–02:12 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Wielding his iron pipe, Ignis unleashed his immaculate white flame with volcanic ferocity. Burning away his agonizing guilt, his holy fire pierced straight through the shadow stalkers' black iron blades. "I will never be deceived by monsters of shadow again!"
-- **원문 소설 구간 (KR)**: 이그니스가 부러진 쇠파이프를 꼬나쥐며 백색 화염을 폭발시켰다. 평생의 한과 죄책감을 씻어내듯 맹렬하게 타오른 화염이 그림자 추적자들의 흑철 칼날을 녹여버리고 심장을 꿰뚫었다. “더 이상 너희 같은 그림자의 괴물들에게 속지 않는다!” 실리아는 녹옥 지팡이를 휘둘러 성전에 솟구친 거대한 지하수를 수십 자루의 서슬 퍼런 수류검(水流劍)으로 바꾸어 골렘들의 관절을 단숨에 절단해 버렸다.
+- **원문 소설 구간 (KR)**: 이그니스가 부러진 쇠파이프를 꼬나쥐며 백색 화염을 폭발시켰다. 평생의 한과 죄책감을 씻어내듯 맹렬하게 타오른 화염이 그림자 추적자들의 흑철 칼날을 녹여버리고 심장을 꿰뚫었다. “더 이상 너희 같은 그림자의 괴물들에게 속지 않는다!” 실리아는 녹옥 지팡이를 휘둘러 성전에 솟구친 거대한 지하수를 수십 자루의 서슬 퍼런 물의 마법검으로 바꾸어 골렘들의 관절을 단숨에 절단해 버렸다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제18화 『검은 성전의 비밀』(Secret of the Black Sanctum): 칼날 산호초 해협의 해저 동굴을 빠져나온 일행은 바람 속삭임 섬 지하 깊은 곳에 자리 잡은 ‘검은 성전’의 폐허에 조심스럽게 발을 디뎠다. 중반부 카단이 다가가 이그니스의 어깨를 묵묵히 끌어안았다. 이어 결말에서는 세 사람은 서로를 향해 굳은 신뢰의 눈빛을 나누며, 성전의 어둠을 뒤로하고 지상을 향해 힘찬 발걸음을 옮겼다.
   - `EN`: Episode 18 ('Secret of the Black Sanctum'): Emerging cautiously from the flooded sea cavern beneath Razor Reef Defile, the companions set foot upon the ancient ruins of the Black Temple, buried deep in the subterranean foundations of Whispering Wind Island. As the conflict escalates ("Father.), the episode culminates when exchanging solemn smiles of brotherhood, the three young wanderers left the dark sanctuary behind, climbing boldly toward the light above.

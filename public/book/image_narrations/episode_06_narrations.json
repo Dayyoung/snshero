@@ -173,7 +173,7 @@
       "imageFile": "episode_06/scene_06.webp",
       "sourceImageFile": "episode_06/scene_06.webp",
       "narrationEn": "Eliana counseled him to discern poisonous spores, and Gawain the blind tracker told him to seal his ears and trust only the tremors beneath his boots.",
-      "narrationKo": "손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 보법을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.",
+      "narrationKo": "손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 날렵한 스텝을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.",
       "sourceSentenceStart": 6,
       "sourceSentenceEnd": 6,
       "alignmentScore": 1.0,
@@ -181,7 +181,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 보법을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.",
+          "textKo": "손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 날렵한 스텝을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.",
           "textEn": "Eliana counseled him to discern poisonous spores, and Gawain the blind tracker told him to seal his ears and trust only the tremors beneath his boots.",
           "bubbleType": "thought",
           "position": "top-left",
@@ -434,7 +434,7 @@
       "imageFile": "episode_06/scene_15.webp",
       "sourceImageFile": "episode_06/scene_15.webp",
       "narrationEn": "Even upon turning fifteen, the youth could not execute a basic three-step shield parry without tumbling into the snow.",
-      "narrationKo": "그러나 실전 대련에 들어서면 여섯 갈래의 무공 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 보법이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.",
+      "narrationKo": "그러나 실전 대련에 들어서면 여섯 갈래의 전투 기술과 마나 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 날렵한 스텝이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.",
       "sourceSentenceStart": 15,
       "sourceSentenceEnd": 15,
       "alignmentScore": 1.0,
@@ -442,7 +442,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "그러나 실전 대련에 들어서면 여섯 갈래의 무공 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 보법이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.",
+          "textKo": "그러나 실전 대련에 들어서면 여섯 갈래의 전투 기술과 마나 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 날렵한 스텝이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.",
           "textEn": "Even upon turning fifteen, the youth could not execute a basic three-step shield parry without tumbling into the snow.",
           "bubbleType": "thought",
           "position": "top-right",
@@ -800,7 +800,7 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "성진 은자",
+          "speakerKo": "별빛의 현자",
           "speakerEn": "Star Hermit",
           "textKo": "“너는 오직 팔다리의 근육과 뼈의 힘으로만 절벽을 오르려 하는구나, 아이야. 그러니 산이 너를 밀어내는 것이다.”",
           "textEn": "\"You climb with brute muscle alone, child. That is why the mountain rejects you.\"",
@@ -887,7 +887,7 @@
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "성진 은자",
+          "speakerKo": "별빛의 현자",
           "speakerEn": "Star Hermit",
           "textKo": "“천지 만물의 호흡에 귀를 기울이지 않고 제 고집으로만 부딪치는데, 산인들 어찌 너의 무례한 발길을 너그럽게 받아주겠느냐? 네 손에 쥔 칼과 방패도 이와 조금도 다르지 않다.”",
           "textEn": "The same is true of the steel in your hand.\" Without touching the rock with his hands, Malfurion walked lightly up the sheer vertical wall.",
@@ -1119,7 +1119,7 @@
       "imageFile": "episode_06/scene_38.webp",
       "sourceImageFile": "episode_06/scene_38.webp",
       "narrationEn": "\"In the southern Red Glass Court, Balian's son Ignis was born blessed with fierce white flame, amassing destructive arts with every sunrise.",
-      "narrationKo": "“남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 무공을 쌓아가고 있다.”",
+      "narrationKo": "“남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 마법 검술을 쌓아가고 있다.”",
       "sourceSentenceStart": 38,
       "sourceSentenceEnd": 38,
       "alignmentScore": 1.0,
@@ -1127,7 +1127,7 @@
         {
           "speakerKo": "말퓨온",
           "speakerEn": "Malfuon",
-          "textKo": "“남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 무공을 쌓아가고 있다.”",
+          "textKo": "“남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 마법 검술을 쌓아가고 있다.”",
           "textEn": "\"In the southern Red Glass Court, Balian's son Ignis was born blessed with fierce white flame, amassing destructive arts with every sunrise.",
           "bubbleType": "speech",
           "position": "bottom-left",

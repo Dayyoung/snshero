@@ -129,7 +129,7 @@
 ## EP12-CUT04 (00:18–00:24 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: "Bear it just a little longer, Balian. The medicine Kadan secured will soon extinguish the fever in your blood. You must live... to hold our boy, our Ignis, in your arms once more."
-- **원문 소설 구간 (KR)**: “발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”
+- **원문 소설 구간 (KR)**: “발리안, 조금만 더 기운을 내요. 카단이 가져온 치유의 비약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제12화 『두 무덤 사이의 봄』(Spring Between Two Graves): 수도 라이트헤븐의 외곽을 둘러싼 울창한 고대 참나무 숲 깊은 곳에는 세월의 풍파에 잊힌 옛 성기사단의 버려진 성소가 무거운 침묵 속에 잠겨 있었다. 중반부 “애송이 놈이 감히 황실 기병대의 진격을 가로막느냐! 네놈의 방패째로 베어버리마!”. 이어 결말에서는 성소를 뒤로하고 떠나는 그들의 등 뒤로, 아침 햇살이 눈부신 황금빛으로 산맥을 물들이고 있었다.
   - `EN`: Episode 12 ('Spring Between Two Graves'): Deep within the ancient oak groves encircling the outer boundaries of the capital, Lighthaven, the forgotten sanctuary of the Arcane Holy Knights lay steeped in heavy silence. As the conflict escalates ("A vagrant pup dares block the imperial vanguard? I shall cleave your shield in two!".), the episode culminates when behind them, the rising sun bathed the mountains in warm gold, illuminating their journey toward the sea.
@@ -145,7 +145,7 @@
   - **소품 및 소지자**: [CHAR-EQUIP 발리안의 기본 무장/소지품 (Balian's Signature Gear, 소품 원화: `/anime-character-sheets/cutouts/043_Balian.png`)]: 발리안(7등신 컷아웃: /anime-character-sheets/cutouts/043_Balian.png)이(가) 고유 무장(눈보라 속 마수의 숨통을 꿰뚫는 발광 시안 '아케인 창(Arcane Spear)'과 십자 방패)을 착용/소지함
   - `EN`: [CHAR-EQUIP Balian's Signature Gear (Prop Reference: /anime-character-sheets/cutouts/043_Balian.png)]: Balian (7-head-tall cutout: /anime-character-sheets/cutouts/043_Balian.png) carries their signature equipment (7-head-tall veteran spearman wielding a glowing cyan-runed Arcane Spear and heavy iron cross-shield)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
-  - 6초 이내 캐릭터 대사 요약 지침: [발리안(Balian)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 가라앉힐..." (영문 6s 대사: "Bear it just a little longer, Balian.") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
+  - 6초 이내 캐릭터 대사 요약 지침: [발리안(Balian)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "발리안, 조금만 더 기운을 내요. 카단이 가져온 치유의 비약이 곧 상처의 불길을 가라앉힐..." (영문 6s 대사: "Bear it just a little longer, Balian.") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
   - `EN`: 6-SECOND CHARACTER DIALOGUE RULE: The character Balian MUST speak the following summarized line concisely within 6 seconds in English with expressive anime lip-sync: "Bear it just a little longer, Balian." — ONLY Balian speaks; all other characters in the scene MUST keep their mouths closed and remain silent.
 - **6. 글자 포함 금지 지침 (Strict No-Text Rule)**:
   - 글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨.
@@ -801,7 +801,7 @@
   - `EN`: Episode 12 ('Spring Between Two Graves'): Deep within the ancient oak groves encircling the outer boundaries of the capital, Lighthaven, the forgotten sanctuary of the Arcane Holy Knights lay steeped in heavy silence. As the conflict escalates ("A vagrant pup dares block the imperial vanguard? I shall cleave your shield in two!".), the episode culminates when behind them, the rising sun bathed the mountains in warm gold, illuminating their journey toward the sea.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-020` **Altar of Ruin & Spring Between Two Graves** (파멸의 제단 & 두 무덤 사이의 봄) — [배경 원화(`/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg)
-  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 뇌전(雷電)에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
+  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 천둥번개에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
   - `EN`: Anime environment concept art showing the apocalyptic obsidian throne of the Altar of Ruin amidst crimson mana lightning on the left, transitioning into a peaceful sunlit spring hillside with two stone graves surrounded by blooming white snowdrop flowers on the right.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -838,7 +838,7 @@
   - `EN`: Episode 12 ('Spring Between Two Graves'): Deep within the ancient oak groves encircling the outer boundaries of the capital, Lighthaven, the forgotten sanctuary of the Arcane Holy Knights lay steeped in heavy silence. As the conflict escalates ("A vagrant pup dares block the imperial vanguard? I shall cleave your shield in two!".), the episode culminates when behind them, the rising sun bathed the mountains in warm gold, illuminating their journey toward the sea.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-020` **Altar of Ruin & Spring Between Two Graves** (파멸의 제단 & 두 무덤 사이의 봄) — [배경 원화(`/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg)
-  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 뇌전(雷電)에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
+  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 천둥번개에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
   - `EN`: Anime environment concept art showing the apocalyptic obsidian throne of the Altar of Ruin amidst crimson mana lightning on the left, transitioning into a peaceful sunlit spring hillside with two stone graves surrounded by blooming white snowdrop flowers on the right.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -875,7 +875,7 @@
   - `EN`: Episode 12 ('Spring Between Two Graves'): Deep within the ancient oak groves encircling the outer boundaries of the capital, Lighthaven, the forgotten sanctuary of the Arcane Holy Knights lay steeped in heavy silence. As the conflict escalates ("A vagrant pup dares block the imperial vanguard? I shall cleave your shield in two!".), the episode culminates when behind them, the rising sun bathed the mountains in warm gold, illuminating their journey toward the sea.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-020` **Altar of Ruin & Spring Between Two Graves** (파멸의 제단 & 두 무덤 사이의 봄) — [배경 원화(`/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg)
-  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 뇌전(雷電)에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
+  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 천둥번개에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
   - `EN`: Anime environment concept art showing the apocalyptic obsidian throne of the Altar of Ruin amidst crimson mana lightning on the left, transitioning into a peaceful sunlit spring hillside with two stone graves surrounded by blooming white snowdrop flowers on the right.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -912,7 +912,7 @@
   - `EN`: Episode 12 ('Spring Between Two Graves'): Deep within the ancient oak groves encircling the outer boundaries of the capital, Lighthaven, the forgotten sanctuary of the Arcane Holy Knights lay steeped in heavy silence. As the conflict escalates ("A vagrant pup dares block the imperial vanguard? I shall cleave your shield in two!".), the episode culminates when behind them, the rising sun bathed the mountains in warm gold, illuminating their journey toward the sea.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-020` **Altar of Ruin & Spring Between Two Graves** (파멸의 제단 & 두 무덤 사이의 봄) — [배경 원화(`/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg)
-  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 뇌전(雷電)에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
+  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 천둥번개에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
   - `EN`: Anime environment concept art showing the apocalyptic obsidian throne of the Altar of Ruin amidst crimson mana lightning on the left, transitioning into a peaceful sunlit spring hillside with two stone graves surrounded by blooming white snowdrop flowers on the right.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)

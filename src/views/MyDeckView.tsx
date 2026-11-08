@@ -2306,12 +2306,12 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     <div className="flex flex-wrap items-center gap-1">
                       {[
                         { id: 'ALL', labelKo: '전체', labelEn: 'ALL' },
-                        { id: 'WATER', labelKo: '수(水)', labelEn: 'Water' },
-                        { id: 'FIRE', labelKo: '화(火)', labelEn: 'Fire' },
-                        { id: 'EARTH', labelKo: '지(地)', labelEn: 'Earth' },
-                        { id: 'WIND', labelKo: '풍(風)', labelEn: 'Wind' },
-                        { id: 'HOLY', labelKo: '빛(聖)', labelEn: 'Holy' },
-                        { id: 'DARK', labelKo: '암(闇)', labelEn: 'Dark' }
+                        { id: 'WATER', labelKo: '물', labelEn: 'Water' },
+                        { id: 'FIRE', labelKo: '불', labelEn: 'Fire' },
+                        { id: 'EARTH', labelKo: '대지', labelEn: 'Earth' },
+                        { id: 'WIND', labelKo: '바람', labelEn: 'Wind' },
+                        { id: 'HOLY', labelKo: '신성', labelEn: 'Holy' },
+                        { id: 'DARK', labelKo: '암흑', labelEn: 'Dark' }
                       ].map(chip => (
                         <button
                           key={chip.id}

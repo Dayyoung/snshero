@@ -684,7 +684,7 @@
 ## EP17-CUT19 (01:48–01:54 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: At twilight, as blood-red dusk stained the rolling swells, danger struck without warning. Slicing through the ocean fog, three black-hulled imperial attack galleys surged forward, flanking Breeze Wing from port and starboard. From their mounted ballistae erupted a lethal volley of sulfur-tipped fire quarrels and iron grappling anchors.
-- **원문 소설 구간 (KR)**: 해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 해무(海霧) 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다. 갤리선의 쇠뇌 발사대에서 흑철 쇠뇌살과 유황 불화살들이 비 오듯 쏟아져 내렸다.
+- **원문 소설 구간 (KR)**: 해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 바다 안개 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다. 갤리선의 쇠뇌 발사대에서 흑철 쇠뇌살과 유황 불화살들이 비 오듯 쏟아져 내렸다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제17화 『바람섬의 초대장』(Invitation to the Wind Isle): 동쪽 대해를 가르는 범선 ‘미풍의날개호’의 갑판 위로는 소금기 머금은 거센 해풍이 쉴 새 없이 몰아치고 있었다. 중반부 카단이 은빛 단검의 칼자루를 매만지며 단호하게 말했다. 이어 결말에서는 세 젊은이와 노장은 결연한 각오를 다지며, 어둠 속 검은 성전의 해저 동굴을 향해 조용히 닻을 내렸다.
   - `EN`: Episode 17 ('Invitation to the Wind Isle'): Across the deck of the flagship 'Breeze Wing' slicing through the eastern ocean, salty gales whipped in relentless squalls. As the conflict escalates (Adjusting the scarlet ribbon bound to his silver dagger, Kadan spoke with unwavering resolve.), the episode culminates when with resolute hearts, the three young champions and the old mariner cast anchor into the dark waters before the submerged cavern of the Black Temple.

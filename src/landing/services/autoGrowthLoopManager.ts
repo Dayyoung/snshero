@@ -185,11 +185,15 @@ export function startAutoGrowthAndRetryLoop(): void {
             return;
           }
 
+          const prevTP = cardNurtureStore.getDeckTP();
+          if (typeof (cardNurtureStore as any).autoAllocateDeckStatPoints === 'function') {
+            (cardNurtureStore as any).autoAllocateDeckStatPoints();
+          }
           const opt = cardNurtureStore.autoOptimizeDeck();
           loopState.message = tr(
-            `⚡ [자동 성장 루프] 최강 5인 덱 자동 편성 완료! (전투력: ${opt.previousTP} ➔ ${opt.newTP}) 2.5초 후 전장으로 복귀하여 재도전합니다!`,
-            `⚡ [Auto-Growth Loop] Squad auto-optimized! (Power: ${opt.previousTP} ➔ ${opt.newTP}) Returning to battle in 2.5s!`,
-            `⚡ [自動成長ループ] 最強5人デッキ自動編成完了！（戦闘力: ${opt.previousTP} ➔ ${opt.newTP}）2.5秒後に戦場へ復帰して再挑戦します！`
+            `⚡ [자동 성장 루프] 스탯 업그레이드 및 최강 5인 덱 자동 편성 완료! (전투력: ${prevTP} ➔ ${opt.newTP}) 2.5초 후 전장으로 복귀하여 재도전합니다!`,
+            `⚡ [Auto-Growth Loop] Stats upgraded & squad auto-optimized! (Power: ${prevTP} ➔ ${opt.newTP}) Returning to battle in 2.5s!`,
+            `⚡ [自動成長ループ] ステータス強化＆最強5人デッキ自動編成完了！（戦闘力: ${prevTP} ➔ ${opt.newTP}）2.5秒後に戦場へ復帰して再挑戦します！`
           );
           notifyStateChanged();
 

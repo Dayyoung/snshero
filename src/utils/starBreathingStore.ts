@@ -34,7 +34,7 @@ export const STAGE_TITLES: Record<number, { nameKo: string; nameEn: string; perk
   4: { nameKo: '4성 개화식 (성좌의 맥동)', nameEn: '4-Star Constellation Pulse', perkKo: '오의 정화 타일 반경 확장' },
   5: { nameKo: '5성 붕괴식 (초신성의 파동)', nameEn: '5-Star Supernova Surge', perkKo: '오의 발동 시 인접 적 공격력 -2' },
   6: { nameKo: '6성 열반식 (성천의 서약)', nameEn: '6-Star Celestial Oath', perkKo: '매 턴 오의 게이지 +5% 자동 회복' },
-  7: { nameKo: '7성 완전식 (성진의 화신)', nameEn: '7-Star Avatar of Stars', perkKo: '오의 시전 시 모든 아군 카드 파워 +2' },
+  7: { nameKo: '7성 완전식 (별빛의 화신)', nameEn: '7-Star Avatar of Stars', perkKo: '오의 시전 시 모든 아군 카드 파워 +2' },
 };
 
 export const getStarBreathingState = (): StarBreathingState => {

@@ -101,7 +101,7 @@ Https://SNSHero.
 ## EP02-CUT03 (00:12–00:18 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Hercul's jaw hardened with righteous fury. Carefully burying the remains of the slaughtered villagers beneath clean drifts of snow, he wrapped the broken blade alongside Aleksandar's scabbard and followed the scent of the conspirators southward toward Sevenbridge, the bustling port metropolis where sea fog mingled with the shouts of merchants and desperate refugees. Sweeping through the narrow labyrinth of the fishmongers' quarter, Hercul found himself confronted by seven formidable figures bristling with lethal intent.
-- **원문 소설 구간 (KR)**: 헤르쿨의 굳은 턱선이 억누를 수 없는 분노로 파르르 떨렸다. 마을 회관 잿더미 아래에서 억울하게 학살당한 주민들의 유해를 수습하여 정성껏 눈무덤을 쌓은 헤르쿨은, 두 자루의 부러진 검날과 낡은 가죽집을 소중히 챙긴 뒤 흉적들의 냄새를 좇아 남방의 거대한 무역 항구인 세븐브리지로 향했다. 해무가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다. 어시장 안쪽, 생선 비린내와 썩은 그물 냄새가 진동하는 낡은 창고 골목을 은밀히 수색하던 헤르쿨은, 뜻밖에도 살기를 뿜어내는 기이한 일곱 사람의 무리와 정면으로 충돌했다.
+- **원문 소설 구간 (KR)**: 헤르쿨의 굳은 턱선이 억누를 수 없는 분노로 파르르 떨렸다. 마을 회관 잿더미 아래에서 억울하게 학살당한 주민들의 유해를 수습하여 정성껏 눈무덤을 쌓은 헤르쿨은, 두 자루의 부러진 검날과 낡은 가죽집을 소중히 챙긴 뒤 흉적들의 냄새를 좇아 남방의 거대한 무역 항구인 세븐브리지로 향했다. 바다 안개가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다. 어시장 안쪽, 생선 비린내와 썩은 그물 냄새가 진동하는 낡은 창고 골목을 은밀히 수색하던 헤르쿨은, 뜻밖에도 살기를 뿜어내는 기이한 일곱 사람의 무리와 정면으로 충돌했다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제2화 『일곱 추적자의 맹세』(Oath of the Seven Pursuers): 헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 중반부 가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. 이어 결말에서는 ==========================
 소설 관련 카드게임 플레이를 원하시나요?

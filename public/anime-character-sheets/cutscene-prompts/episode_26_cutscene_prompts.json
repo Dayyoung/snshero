@@ -963,16 +963,16 @@
         {
           "code": "PROP-016",
           "nameEn": "Star-Breathing Astral Scroll",
-          "nameKo": "성진호흡 천문 두루마리 (별을 호흡하는 비전서)",
+          "nameKo": "별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)",
           "artUrl": "/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg",
           "sheetUrl": "/anime-character-sheets/props/sheets/PROP_016_Star_Breathing_Astral_Scroll_sheet.jpg",
           "holderEn": "Kadan holds/carries Star-Breathing Astral Scroll (PROP-016)",
-          "holderKo": "Kadan이(가) 성진호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용",
+          "holderKo": "Kadan이(가) 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용",
           "promptEn": "Anime key prop concept sheet of the Star-Breathing Astral Scroll, an open ancient parchment scroll projecting a glowing blue holographic constellation of the Big Dipper and mana meridian stars above it."
         }
       ],
       "propHolderPromptEn": "[PROP-002 Dragon Breaker Shield (Prop Reference: /anime-character-sheets/props/art/PROP_002_Dragon_Breaker_Shield.jpg)]: Kadan holds/carries Dragon Breaker Shield (PROP-002) ; [PROP-016 Star-Breathing Astral Scroll (Prop Reference: /anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg)]: Kadan holds/carries Star-Breathing Astral Scroll (PROP-016)",
-      "propHolderPromptKo": "[PROP-002 드래곤 브레이커 방패 (눈꽃 성기사 방패) (Dragon Breaker Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_002_Dragon_Breaker_Shield.jpg`)]: Kadan이(가) 드래곤 브레이커 방패 (눈꽃 성기사 방패)(PROP-002)을(를) 소지 및 사용 / [PROP-016 성진호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 성진호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용",
+      "propHolderPromptKo": "[PROP-002 드래곤 브레이커 방패 (눈꽃 성기사 방패) (Dragon Breaker Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_002_Dragon_Breaker_Shield.jpg`)]: Kadan이(가) 드래곤 브레이커 방패 (눈꽃 성기사 방패)(PROP-002)을(를) 소지 및 사용 / [PROP-016 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용",
       "dialogue": {
         "hasDialogue": false,
         "hasNarration": true,

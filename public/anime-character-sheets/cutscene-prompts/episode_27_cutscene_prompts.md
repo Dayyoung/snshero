@@ -129,7 +129,7 @@
 ## EP27-CUT04 (00:18–00:24 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Sipping the warm tea, Kadan replied in a quiet, measured cadence. "I was thinking of the sacred vows I pledged to Master Aleksandar. That steel is never an instrument of dominion, but a shield to dry the tears of the suffering. And... the fraternal oath I shared with Ignis."
-- **원문 소설 구간 (KR)**: 내궁 테라스 아래로는 수백 년 된 주목(朱木)들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다. 카단은 그 부조를 손끝으로 쓸어내리며 스승 알렉산다르의 엄격하면서도 따뜻했던 목소리를 떠올렸다. 실리아가 카단의 곁에서 밤하늘을 올려다보며 부드럽게 미소를 지었다. “북극성이 오늘 밤 유난히 맑게 빛나네요. 폭풍우가 지나간 뒤의 하늘은 언제나 거짓 없이 깨끗한 법이에요.”
+- **원문 소설 구간 (KR)**: 내궁 테라스 아래로는 수백 년 된 붉은 고목들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다. 카단은 그 부조를 손끝으로 쓸어내리며 스승 알렉산다르의 엄격하면서도 따뜻했던 목소리를 떠올렸다. 실리아가 카단의 곁에서 밤하늘을 올려다보며 부드럽게 미소를 지었다. “북극성이 오늘 밤 유난히 맑게 빛나네요. 폭풍우가 지나간 뒤의 하늘은 언제나 거짓 없이 깨끗한 법이에요.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제27화 『두 개의 약속 사이에서』(Between Two Promises): 자정을 앞둔 황궁 내궁의 정원은 적막할 정도로 고요했다. 중반부 “내일 밤 평의회에서. 이어 결말에서는 카단과 이그니스는 서로의 눈빛을 마주 보며 고개를 끄덕였다.
   - `EN`: Episode 27 ('Between Two Promises'): As midnight approached, the gardens of the inner citadel fell into an uncanny, breathless stillness. As the conflict escalates ("Never, brother.), the episode culminates when beyond the horizon, the first faint gray of dawn stirred, heralding the fateful day that would decide the fate of the realm.

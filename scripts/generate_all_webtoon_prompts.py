@@ -335,13 +335,13 @@ PROP_SHEET_LOCKS = [
     ),
     (
         "PROP-015",
-        ["사문의 독병", "사독", "독병", "독침", "serpent venom", "poison vial"],
-        "[FIXED PROP SHEET LOCK - PROP-015 (사문의 독병 / Vial of Four Gates Serpent Venom)]: serpent-coiled dark glass vial filled with glowing toxic purple-green venom",
+        ["네 수문의 맹독병", "사독", "독병", "독침", "serpent venom", "poison vial"],
+        "[FIXED PROP SHEET LOCK - PROP-015 (네 수문의 맹독병 / Vial of Four Gates Serpent Venom)]: serpent-coiled dark glass vial filled with glowing toxic purple-green venom",
     ),
     (
         "PROP-016",
-        ["성진호흡", "천문 두루마리", "비전서", "star-breathing", "astral scroll"],
-        "[FIXED PROP SHEET LOCK - PROP-016 (성진호흡 천문 두루마리 / Star-Breathing Astral Scroll)]: ancient dark-indigo scroll unrolled with glowing cyan star-breathing diagrams",
+        ["별빛의 호흡", "천문 두루마리", "비전서", "star-breathing", "astral scroll"],
+        "[FIXED PROP SHEET LOCK - PROP-016 (별빛의 호흡 천문 두루마리 / Star-Breathing Astral Scroll)]: ancient dark-indigo scroll unrolled with glowing cyan star-breathing diagrams",
     ),
     (
         "PROP-017",

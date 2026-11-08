@@ -24,7 +24,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.061 루시안 (Lucian) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/061_Lucian.png)
@@ -61,7 +61,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.045 가웨인 (Gawain) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/045_Gawain.png)
@@ -98,7 +98,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.045 가웨인 (Gawain) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/045_Gawain.png)
@@ -135,7 +135,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.061 루시안 (Lucian) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/061_Lucian.png), [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -172,7 +172,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.061 루시안 (Lucian) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/061_Lucian.png), [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -209,7 +209,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.074 그림리 (Grimli) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/074_Grimli.png)
@@ -246,7 +246,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.074 그림리 (Grimli) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/074_Grimli.png)
@@ -283,7 +283,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.074 그림리 (Grimli) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/074_Grimli.png)
@@ -320,7 +320,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.044 카제 (Kaze) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/044_Kaze.png), [`NO.046 론돌 (Rondol) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/046_Rondol.png), [`NO.063 엘리아나 (Eliana) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/063_Eliana.png), [`NO.074 그림리 (Grimli) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/074_Grimli.png)
@@ -357,7 +357,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.050 알렉산다르 (Aleksandar) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/050_Aleksandar.png), [`NO.043 발리안 (Balian) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/043_Balian.png), [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.046 론돌 (Rondol) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/046_Rondol.png)
@@ -394,7 +394,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.050 알렉산다르 (Aleksandar) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/050_Aleksandar.png), [`NO.043 발리안 (Balian) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/043_Balian.png), [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -431,7 +431,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: 등장인물 없음 (배경 단독 컷)
@@ -468,7 +468,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.050 알렉산다르 (Aleksandar) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/050_Aleksandar.png), [`NO.063 엘리아나 (Eliana) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/063_Eliana.png)
@@ -505,7 +505,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.050 알렉산다르 (Aleksandar) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/050_Aleksandar.png), [`NO.063 엘리아나 (Eliana) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/063_Eliana.png)
@@ -542,7 +542,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.045 가웨인 (Gawain) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/045_Gawain.png)
@@ -573,13 +573,13 @@
 ## EP34-CUT16 (01:30–01:36 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Igniting his very soul, Gawain unleashed the forbidden mystery: the 'Divine Gale Gyre'.
-- **원문 소설 구간 (KR)**: 가웨인이 자신의 모든 생명력을 연소시키며 ‘궁극오의 신풍대회전(神風大回轉)’을 시전했다.
+- **원문 소설 구간 (KR)**: 가웨인이 자신의 모든 생명력을 연소시키며 ‘궁극 마법 폭풍의 대소용돌이’을 시전했다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제34화 『쓰러진 바람섬』(The Fallen Wind Isle): 검은 성채의 내부 회랑은 지옥의 형상을 띠고 있었다. 중반부 그때 회랑 뒤편에서 무너진 벽을 뚫고 수백 마리의 암흑 골렘들이 증원되어 쏟아져 들어왔다. 이어 결말에서는 카단이 방패를 겨누며 선언했다.
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.045 가웨인 (Gawain) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/045_Gawain.png)
@@ -589,7 +589,7 @@
   - **소품 및 소지자**: [CHAR-EQUIP 가웨인의 기본 무장/소지품 (Gawain's Signature Gear, 소품 원화: `/anime-character-sheets/cutouts/045_Gawain.png`)]: 가웨인(7등신 컷아웃: /anime-character-sheets/cutouts/045_Gawain.png)이(가) 고유 무장(성스러운 태양 십자 문양이 타오르는 초대형 양손 성검)을 착용/소지함
   - `EN`: [CHAR-EQUIP Gawain's Signature Gear (Prop Reference: /anime-character-sheets/cutouts/045_Gawain.png)]: Gawain (7-head-tall cutout: /anime-character-sheets/cutouts/045_Gawain.png) carries their signature equipment (7-head-tall leader of the Seven Pursuers in silver-gold paladin plate wielding a massive solar cross greatsword)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
-  - 전지적 시점 배경 남자 나레이션 (6초 이내) 및 등장인물 전원 침묵 지침: 화면에 등장하는 모든 인물은 입을 굳게 다물고 아무 말도 해서는 안 되며(입 모양 움직임 절대 금지), 오직 배경에서만 중후한 남자 나레이션 음성으로 6초 이내에 다음 내용을 설명해야 함: "가웨인이 자신의 모든 생명력을 연소시키며 ‘궁극오의 신풍대회전(神風大回轉)’을 시전했다." (영문 6s 나레이션: "Igniting his very soul, Gawain unleashed the forbidden mystery: the 'Divine Gale Gyre'.")
+  - 전지적 시점 배경 남자 나레이션 (6초 이내) 및 등장인물 전원 침묵 지침: 화면에 등장하는 모든 인물은 입을 굳게 다물고 아무 말도 해서는 안 되며(입 모양 움직임 절대 금지), 오직 배경에서만 중후한 남자 나레이션 음성으로 6초 이내에 다음 내용을 설명해야 함: "가웨인이 자신의 모든 생명력을 연소시키며 ‘궁극 마법 폭풍의 대소용돌이’을 시전했다." (영문 6s 나레이션: "Igniting his very soul, Gawain unleashed the forbidden mystery: the 'Divine Gale Gyre'.")
   - `EN`: OMNISCIENT MALE BACKGROUND NARRATION ONLY (<= 6 SECONDS) & ALL CHARACTERS SILENT: Every appearing character on screen MUST keep their mouth completely closed and MUST NOT speak a single word (zero lip movement). ONLY a deep, cinematic off-screen male narrator voiceover in the background speaks concisely within 6 seconds in English: "Igniting his very soul, Gawain unleashed the forbidden mystery: the 'Divine Gale Gyre'."
 - **6. 글자 포함 금지 지침 (Strict No-Text Rule)**:
   - 글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨.
@@ -616,7 +616,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.045 가웨인 (Gawain) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/045_Gawain.png), [`NO.074 그림리 (Grimli) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/074_Grimli.png)
@@ -653,7 +653,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -690,7 +690,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: 등장인물 없음 (배경 단독 컷)
@@ -721,13 +721,13 @@
 ## EP34-CUT20 (01:54–02:00 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: The mountain peak collapsed in an apocalyptic avalanche, burying the central hall beneath hundreds of thousands of tons of granite. The heroic champions passed into legend, shielding their disciples' retreat with their very flesh. "MASTERS————!!"
-- **원문 소설 구간 (KR)**: “스승님————!!” 카단의 절규와 실리아의 오열이 무너진 암벽을 뒤흔들었지만, 닫혀버린 석벽 너머에서는 오직 고요한 침묵만이 흘러나왔다. 가웨인의 궁극오의 신풍대회전이 휘몰아치자, 쏟아져 들어오던 수백 마리의 암흑 골렘들이 폭풍에 갈려 흙먼지가 되었다. 폭풍의 중심에서 가웨인의 백발이 휘날리며, 노마도사는 평생을 갈고닦은 바람의 정수를 카단과 실리아의 등 뒤로 불어넣어 두 사람을 안전한 제단 계단 위로 밀어 올렸다.
+- **원문 소설 구간 (KR)**: “스승님————!!” 카단의 절규와 실리아의 오열이 무너진 암벽을 뒤흔들었지만, 닫혀버린 석벽 너머에서는 오직 고요한 침묵만이 흘러나왔다. 가웨인의 궁극 마법 폭풍의 대소용돌이이 휘몰아치자, 쏟아져 들어오던 수백 마리의 암흑 골렘들이 폭풍에 갈려 흙먼지가 되었다. 폭풍의 중심에서 가웨인의 백발이 휘날리며, 노마도사는 평생을 갈고닦은 바람의 정수를 카단과 실리아의 등 뒤로 불어넣어 두 사람을 안전한 제단 계단 위로 밀어 올렸다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제34화 『쓰러진 바람섬』(The Fallen Wind Isle): 검은 성채의 내부 회랑은 지옥의 형상을 띠고 있었다. 중반부 그때 회랑 뒤편에서 무너진 벽을 뚫고 수백 마리의 암흑 골렘들이 증원되어 쏟아져 들어왔다. 이어 결말에서는 카단이 방패를 겨누며 선언했다.
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -764,7 +764,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-019` **Black Citadel & Starlight Archive** (검은 성채 & 별빛의 기록실) — [배경 원화(`/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_019_Black_Citadel_Starlight_Archive_sheet.jpg)
-  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 성도(星圖) 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
+  - **배경 묘사**: 검은 성채 & 별빛의 기록실 (Black Citadel & Starlight Archive) — 흑요석 원형 회랑, 개방형 천문 돔 천장, 대륙의 지맥이 양각된 중앙 화강암 별자리 지도 제단 / 서늘하고 경건한 밤하늘의 은빛 별빛 줄기와 황금빛으로 발광하는 대륙 지맥 지도
   - `EN`: Anime environment concept art of the Black Citadel and Starlight Archive, a monolithic dark-iron citadel whose highest circular chamber has an open domed ceiling where silver starlight from the Big Dipper shines onto a giant carved stone map table.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -801,7 +801,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-020` **Altar of Ruin & Spring Between Two Graves** (파멸의 제단 & 두 무덤 사이의 봄) — [배경 원화(`/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg)
-  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 뇌전(雷電)에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
+  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 천둥번개에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
   - `EN`: Anime environment concept art showing the apocalyptic obsidian throne of the Altar of Ruin amidst crimson mana lightning on the left, transitioning into a peaceful sunlit spring hillside with two stone graves surrounded by blooming white snowdrop flowers on the right.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -838,7 +838,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-020` **Altar of Ruin & Spring Between Two Graves** (파멸의 제단 & 두 무덤 사이의 봄) — [배경 원화(`/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg)
-  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 뇌전(雷電)에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
+  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 천둥번개에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
   - `EN`: Anime environment concept art showing the apocalyptic obsidian throne of the Altar of Ruin amidst crimson mana lightning on the left, transitioning into a peaceful sunlit spring hillside with two stone graves surrounded by blooming white snowdrop flowers on the right.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.061 루시안 (Lucian) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/061_Lucian.png)
@@ -875,7 +875,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-020` **Altar of Ruin & Spring Between Two Graves** (파멸의 제단 & 두 무덤 사이의 봄) — [배경 원화(`/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg)
-  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 뇌전(雷電)에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
+  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 천둥번개에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
   - `EN`: Anime environment concept art showing the apocalyptic obsidian throne of the Altar of Ruin amidst crimson mana lightning on the left, transitioning into a peaceful sunlit spring hillside with two stone graves surrounded by blooming white snowdrop flowers on the right.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.011 이그니스 (Ignis) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/011_Ignis.png)
@@ -912,7 +912,7 @@
   - `EN`: Episode 34 ('The Fallen Wind Isle'): The inner colonnades of the Black Citadel resembled the bowels of the underworld. As the conflict escalates ("Weep not, little princess.), the episode culminates when the final battle for the soul of the continent commenced upon the summit of ruin.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-020` **Altar of Ruin & Spring Between Two Graves** (파멸의 제단 & 두 무덤 사이의 봄) — [배경 원화(`/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_020_Altar_of_Ruin_Two_Graves.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_020_Altar_of_Ruin_Two_Graves_sheet.jpg)
-  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 뇌전(雷電)에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
+  - **배경 묘사**: 파멸의 제단 & 두 무덤 사이의 봄 (Altar of Ruin & Spring Between Two Graves) — 좌측: 부서진 흑요석 옥좌와 심연의 균열 / 우측: 나란히 선 두 개의 돌무덤과 낡은 무쇠 방패, 만개한 봄꽃 언덕 / 종말의 핏빛 천둥번개에서 찬란하고 따스한 봄날의 아침 햇살로 이어지는 서사적 완결
   - `EN`: Anime environment concept art showing the apocalyptic obsidian throne of the Altar of Ruin amidst crimson mana lightning on the left, transitioning into a peaceful sunlit spring hillside with two stone graves surrounded by blooming white snowdrop flowers on the right.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.061 루시안 (Lucian) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/061_Lucian.png), [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)

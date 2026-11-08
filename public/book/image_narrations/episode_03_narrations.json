@@ -580,7 +580,7 @@
       "imageFile": "episode_03/scene_19.webp",
       "sourceImageFile": "episode_03/scene_19.webp",
       "narrationEn": "Having stolen the dark codex of Nine Shadows, they sought to harvest wandering warriors to complete their forbidden techniques.",
-      "narrationKo": "두 사람은 스승의 서재에서 절대적인 무공 비급인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 마공을 완성하려 광기를 번뜩이고 있었다.",
+      "narrationKo": "두 사람은 스승의 서재에서 절대적인 고대 마법 비전서인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 흑마법을 완성하려 광기를 번뜩이고 있었다.",
       "sourceSentenceStart": 19,
       "sourceSentenceEnd": 19,
       "alignmentScore": 1.0,
@@ -588,7 +588,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "두 사람은 스승의 서재에서 절대적인 무공 비급인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 마공을 완성하려 광기를 번뜩이고 있었다.",
+          "textKo": "두 사람은 스승의 서재에서 절대적인 고대 마법 비전서인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 흑마법을 완성하려 광기를 번뜩이고 있었다.",
           "textEn": "Having stolen the dark codex of Nine Shadows, they sought to harvest wandering warriors to complete their forbidden techniques.",
           "bubbleType": "thought",
           "position": "bottom-left",

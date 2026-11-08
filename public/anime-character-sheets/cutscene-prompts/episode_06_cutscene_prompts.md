@@ -18,7 +18,7 @@
 ## EP06-CUT01 (00:00–00:06 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: The divergent teachings of the six masters pulled young Kadan in conflicting directions every single day. On the frozen plateau of the Wildlands, Grimli the dwarven smith roared at him to root his boots like an immoveable granite boulder, while Kaze the gambler urged him to deceive the eye and twist away before a blade could make contact. Aila the Demon Hunter commanded him to halt his breath entirely before drawing the string to erase his heartbeat, yet Rondol the boatman insisted that breath must flow incessantly like ocean swells lest his stamina wither. Eliana counseled him to discern poisonous spores, and Gawain the blind tracker told him to seal his ears and trust only the tremors beneath his boots.
-- **원문 소설 구간 (KR)**: 여섯 스승의 가르침은 소년 카단을 매일 서로 다른 극단적인 방향으로 끌어당겼다. 혹한의 와일드랜드 고원 지대를 가로지르는 삭풍 속에서 드워프 대장장이 그림리는 바위처럼 땅에 뿌리를 박고 물러서지 않는 묵직한 하체를 단련하라 호통쳤다. 그의 무쇠 모루 위에서 벌겋게 달아오른 쇳덩이가 튈 때마다 불꽃이 카단의 뺨을 스쳤고, 그림리의 거친 고함이 눈보라를 찢었다. “도끼와 망치는 잔꾀를 부리지 않아! 쇠를 달군 만큼 단단해지고 부딪친 만큼 불꽃이 튀는 법이다! 발바닥으로 대지를 짓이기고 한 치도 물러서지 마라!” 반면 도박사 카제는 바람의 눈을 속이고 칼끝이 닿기 직전에 몸을 비틀어 달아나는 잔기술을 연마하라 재촉했다. 손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 보법을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.
+- **원문 소설 구간 (KR)**: 여섯 스승의 가르침은 소년 카단을 매일 서로 다른 극단적인 방향으로 끌어당겼다. 혹한의 와일드랜드 고원 지대를 가로지르는 삭풍 속에서 드워프 대장장이 그림리는 바위처럼 땅에 뿌리를 박고 물러서지 않는 묵직한 하체를 단련하라 호통쳤다. 그의 무쇠 모루 위에서 벌겋게 달아오른 쇳덩이가 튈 때마다 불꽃이 카단의 뺨을 스쳤고, 그림리의 거친 고함이 눈보라를 찢었다. “도끼와 망치는 잔꾀를 부리지 않아! 쇠를 달군 만큼 단단해지고 부딪친 만큼 불꽃이 튀는 법이다! 발바닥으로 대지를 짓이기고 한 치도 물러서지 마라!” 반면 도박사 카제는 바람의 눈을 속이고 칼끝이 닿기 직전에 몸을 비틀어 달아나는 잔기술을 연마하라 재촉했다. 손가락 사이로 번뜩이는 세 닢의 은화처럼 가볍고 예측할 수 없는 날렵한 스텝을 익히지 못하면 사냥꾼의 덫에 걸린 짐승 꼴을 면치 못하리라는 조롱이었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제6화 『별을 호흡하는 법』(The Art of Breathing Stars): 여섯 스승의 가르침은 소년 카단을 매일 서로 다른 극단적인 방향으로 끌어당겼다. 중반부 “사흘 뒤 보름달이 뜰 때, 저 봉우리 가장 높은 정상 바위로 오너라. 이어 결말에서는 스승들의 칭찬 속에서 카단은 조용히 미소 지었다.
   - `EN`: Episode 06 ('The Art of Breathing Stars'): The divergent teachings of the six masters pulled young Kadan in conflicting directions every single day. As the conflict escalates (Malfurion sat cross-legged on the summit stone, carrying neither sword nor cudgel.), the episode culminates when at last, the breath of the cosmos had entered the young warrior's shield.
@@ -203,7 +203,7 @@
 ## EP06-CUT06 (00:30–00:36 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Kadan strove desperately to master each doctrine, yet in practice, the disparate disciplines collided, reducing his swordcraft to clumsy chaos. Even upon turning fifteen, the youth could not execute a basic three-step shield parry without tumbling into the snow.
-- **원문 소설 구간 (KR)**: 카단은 스승들의 가르침 중 어느 하나도 소홀히 여기지 않으려 피나는 노력을 거듭했다. 동이 트기 전부터 시작된 훈련은 밤하늘에 별이 질 때까지 이어졌다. 그러나 실전 대련에 들어서면 여섯 갈래의 무공 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 보법이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.
+- **원문 소설 구간 (KR)**: 카단은 스승들의 가르침 중 어느 하나도 소홀히 여기지 않으려 피나는 노력을 거듭했다. 동이 트기 전부터 시작된 훈련은 밤하늘에 별이 질 때까지 이어졌다. 그러나 실전 대련에 들어서면 여섯 갈래의 전투 기술과 마나 원리가 소년의 몸속에서 사납게 충돌하며 사지를 굳어버리게 만들었다. 그림리의 무게를 실으려 하면 카제의 날렵한 스텝이 꼬였고, 에일라의 침묵을 지키려 하면 론돌의 호흡이 막혔다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제6화 『별을 호흡하는 법』(The Art of Breathing Stars): 여섯 스승의 가르침은 소년 카단을 매일 서로 다른 극단적인 방향으로 끌어당겼다. 중반부 “사흘 뒤 보름달이 뜰 때, 저 봉우리 가장 높은 정상 바위로 오너라. 이어 결말에서는 스승들의 칭찬 속에서 카단은 조용히 미소 지었다.
   - `EN`: Episode 06 ('The Art of Breathing Stars'): The divergent teachings of the six masters pulled young Kadan in conflicting directions every single day. As the conflict escalates (Malfurion sat cross-legged on the summit stone, carrying neither sword nor cudgel.), the episode culminates when at last, the breath of the cosmos had entered the young warrior's shield.
@@ -647,7 +647,7 @@
 ## EP06-CUT18 (01:42–01:48 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: "In the southern Red Glass Court, Balian's son Ignis was born blessed with fierce white flame, amassing destructive arts with every sunrise. Yet raw fire leaves only ash when the fuel burns out. What you must cultivate is the unquenchable breath of the stars."
-- **원문 소설 구간 (KR)**: “남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 무공을 쌓아가고 있다.” “그러나 메마른 장작을 태우는 불길은 결국 잿더미만을 남길 뿐이지. 네가 익혀야 할 힘은 결코 꺼지지 않는 별들의 숨결이다.”
+- **원문 소설 구간 (KR)**: “남쪽 붉은 유리 궁정에선 발리안의 아들 이그니스가 태어날 때부터 순백의 불꽃을 품고 매일 파괴적인 화염 마법 검술을 쌓아가고 있다.” “그러나 메마른 장작을 태우는 불길은 결국 잿더미만을 남길 뿐이지. 네가 익혀야 할 힘은 결코 꺼지지 않는 별들의 숨결이다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제6화 『별을 호흡하는 법』(The Art of Breathing Stars): 여섯 스승의 가르침은 소년 카단을 매일 서로 다른 극단적인 방향으로 끌어당겼다. 중반부 “사흘 뒤 보름달이 뜰 때, 저 봉우리 가장 높은 정상 바위로 오너라. 이어 결말에서는 스승들의 칭찬 속에서 카단은 조용히 미소 지었다.
   - `EN`: Episode 06 ('The Art of Breathing Stars'): The divergent teachings of the six masters pulled young Kadan in conflicting directions every single day. As the conflict escalates (Malfurion sat cross-legged on the summit stone, carrying neither sword nor cudgel.), the episode culminates when at last, the breath of the cosmos had entered the young warrior's shield.

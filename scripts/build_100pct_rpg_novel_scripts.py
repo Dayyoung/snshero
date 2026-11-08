@@ -52,7 +52,7 @@ CHARACTER_LORE_DB = [
         "nameEn": "Celia",
         "aliasesKo": ["실리아"],
         "aliasesEn": ["Celia"],
-        "roleKo": "여주인공 · 바람섬 군주 간다르의 딸 · 뛰어난 지략과 성진호흡을 겸비한 동반자",
+        "roleKo": "여주인공 · 바람섬 군주 에올루스의 딸 · 뛰어난 지략과 별빛의 호흡을 겸비한 동반자",
         "roleEn": "Heroine · Daughter of Wind Isle Lord Gandar · Brilliant strategist and Kadan's devoted companion",
         "seatAsset": "/seat/Celia.png",
     },
@@ -172,7 +172,7 @@ CHARACTER_LORE_DB = [
         "nameEn": "Kaze",
         "aliasesKo": ["카제"],
         "aliasesEn": ["Kaze"],
-        "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 보법과 단검술을 전수하다 안개 절벽에서 산화한 스승",
+        "roleKo": "일곱 추적자의 그림자 자객 · 은밀한 그림자 걸음과 단검술을 전수하다 안개 절벽에서 산화한 스승",
         "roleEn": "Shadow assassin of the Seven Pursuers · Master of stealth footwork and daggers",
         "seatAsset": "/seat/Kaze.png",
     },
@@ -232,7 +232,7 @@ CHARACTER_LORE_DB = [
         "nameEn": "Malfuon",
         "aliasesKo": ["말퓨온"],
         "aliasesEn": ["Malfuon"],
-        "roleKo": "별빛 은자 대마법사 · 절벽 위 카단에게 고대 비전 '성진호흡법(Star Breathing)'을 전수한 고수",
+        "roleKo": "별빛의 현자 대마법사 · 절벽 위 카단에게 고대 비전 '별빛의 호흡법(Star Breathing)'을 전수한 고수",
         "roleEn": "Starlight Hermit Archmage · Taught Kadan the ancient 'Star Breathing' internal mana art",
         "seatAsset": "/seat/Malfuon.png",
     },
@@ -891,7 +891,7 @@ def build_all_episodes():
                     "sceneTitleEn": f"[EP.{ep_num:02d} · Fate Crossroads] {choice_obj.get('nameEn', 'Moment of Resolve')}",
                     "sceneExplanationKo": (
                         f"• 등장인물 및 상황: {ch_char_names_ko}\n"
-                        f"• 선택 가이드: 소설 제{ep_num}화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [성진호흡/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요."
+                        f"• 선택 가이드: 소설 제{ep_num}화의 절정 국면입니다. 세 가지 태도([결의/돌파], [신중/통찰], [별빛 마나/공명]) 중 하나를 선택하여 추가 SNS 보상 또는 다음 카드 전투의 공격/방어/마나 버프를 획득하세요."
                     ),
                     "sceneExplanationEn": (
                         f"• Characters & Situation: {ch_char_names_en}\n"
@@ -920,7 +920,7 @@ def build_all_episodes():
 
 export interface KadanRpgDialogueChoice {
   id: string;
-  attitude: '[결의/돌파]' | '[신중/통찰]' | '[성진호흡/공명]';
+  attitude: '[결의/돌파]' | '[신중/통찰]' | '[별빛 마나/공명]';
   attitudeEn: string;
   labelKo: string;
   labelEn: string;

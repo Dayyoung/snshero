@@ -91,7 +91,7 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
  >
  <span className="text-amber-400 text-xs">★</span>
  <span className="text-[11px] font-bold">
- [성진호흡 {state.stage}성: {Math.floor(state.astralResonance)}%]
+ [별빛의 호흡 {state.stage}성: {Math.floor(state.astralResonance)}%]
  </span>
  {isReady && (
  <span className="text-[9px] px-1 bg-cyan-950 text-cyan-300 border border-cyan-500/40 rounded-xs font-bold">
@@ -108,7 +108,7 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
  onClick={() => setShowDetail(true)}
  className="min-h-[44px] flex items-center space-x-1 text-amber-400 hover:text-amber-300 font-bold transition-colors min-h-[32px]"
  >
- <span>[EP.06 성진호흡 {state.stage}성]</span>
+ <span>[EP.06 별빛의 호흡 {state.stage}성]</span>
  <span className="text-stone-400 font-normal">?</span>
  </button>
  <button
@@ -165,7 +165,7 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
  [SYSTEM // ASTRAL SANCTUARY ENGAGED]
  </div>
  <div className="text-sm font-bold text-amber-300">
- 성진호흡 제{state.stage}성 오의 발동: 전장 타일 정화 & 적 카드 캡처
+ 별빛의 호흡 제{state.stage}성 오의 발동: 전장 타일 정화 & 적 카드 캡처
  </div>
  </div>
  </div>
@@ -177,7 +177,7 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
  <div className="relative w-full max-w-sm bg-[#090d16] border border-[#646262]/40 rounded-none p-5 text-stone-200">
  <div className="flex items-center justify-between border-b border-white/10 pb-2 mb-3">
  <div className="flex items-center space-x-1.5 text-xs text-amber-400 font-bold">
- <span>[소설 비전 // 성진호흡법 수련기]</span>
+ <span>[소설 비전 // 별빛의 호흡법 수련기]</span>
  </div>
  <button
  onClick={() => setShowDetail(false)}
@@ -216,7 +216,7 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
  </div>
 
  <div className="p-2 bg-white/5 border border-white/10 rounded-none text-[11px] text-stone-400 leading-relaxed">
- 110종 미니게임을 승리할 때마다 성진의 파편을 획득하며, 3x3 배틀 중 게이지가 100% 충전되면 전장의 적 카드를 정화 캡처하는 오의를 시전할 수 있습니다.
+ 110종 미니게임을 승리할 때마다 별빛의 파편을 획득하며, 3x3 배틀 중 게이지가 100% 충전되면 전장의 적 카드를 정화 캡처하는 오의를 시전할 수 있습니다.
  </div>
 
  <button

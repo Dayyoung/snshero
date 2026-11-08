@@ -4,7 +4,7 @@
 - **컷신 규격**: 1컷당 **6초 동영상 (`6-Second Video Cutscene`)** × 총 **27컷** (총 러닝타임 약 `2분 42초`)
 - **첨부 캐릭터 시트 기준**: **7등신 전신 컷아웃 (`public/anime-character-sheets/cutouts/XXX_Name.png`)**
 - **현재 회차 전체 스토리 요약 (Story Consistency Summary)**:
-  - **KR**: 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - **KR**: 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - **EN**: `Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.`
 - **필수 준수 규칙**:
   1. 모든 컷신 프롬프트에는 **현재 회차 전체 스토리 요약**이 포함되어 컷 간 스토리 일관성을 유지합니다.
@@ -20,7 +20,7 @@
 - **원문 소설 구간 (EN)**: On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. Though the fires had been extinguished, the crushing sorrow of losing Ignis weighed upon every stone of the grand cathedral and the imperial palace. Standing beside the fountain in the palace courtyard, Kadan held the White Glass Ember, which pulsed with gentle, living warmth against his palm like the steady heartbeat of his fallen brother.
 - **원문 소설 구간 (KR)**: 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 황궁 대전각의 화재는 진압되었지만, 이그니스를 잃은 슬픔의 무게는 대성당과 황궁 전체를 무겁게 짓누르고 있었다. 카단은 품속에서 은은한 온기를 뿜어내는 이그니스의 유리 불씨를 어루만지며 황궁 광장의 분수대 곁에 우두커니 서 있었다. 차가운 아침 바람이 뺨을 스칠 때마다 유리 불씨는 마치 전우의 맥박처럼 따스하게 깜빡였다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -57,7 +57,7 @@
 - **원문 소설 구간 (EN)**: Approaching with her Jade Staff, Cilia stood silently beside him, tears drying upon her pale cheeks.
 - **원문 소설 구간 (KR)**: 실리아가 녹옥 지팡이를 짚고 다가와 곁에 섰다. 그녀의 눈가에는 밤새 흘린 눈물의 자국이 아직 마르지 않은 채였다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -94,7 +94,7 @@
 - **원문 소설 구간 (EN)**: Cilia whispered softly into the morning draft. "Holding this glass ember, Ignis's pure spirit speaks clearly to my fingertips. Though his noble sacrifice delivered the capital, the hollow void beside us aches with bitter sorrow."
 - **원문 소설 구간 (KR)**: 실리아가 나지막이 속삭였다. “이 유리 불씨를 쥐고 있으면 이그니스의 정결한 영혼이 손끝으로 고스란히 전해져 와요. 그의 고결한 희생으로 황궁을 구했지만, 곁이 비어버린 슬픔은 쉽게 가시지 않네요.” 카단이 방패를 고쳐 쥐며 고개를 끄덕였다. “이그니스는 죽지 않았다. 그가 남긴 맹세는 이 불씨 속에서, 그리고 우리 두 사람의 심장 속에서 영원히 살아 숨 쉴 것이다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -131,7 +131,7 @@
 - **원문 소설 구간 (EN)**: Adjusting his shield, Kadan nodded with solemn depth. "Ignis is not dead. The oath he left behind breathes eternally within this ember and within the chambers of our hearts."
 - **원문 소설 구간 (KR)**: 그때 황실 근위대장과 원로원 의원들이 정중하게 다가와 실리아의 앞에 무릎을 꿇었다. 원로원 의장이 양피지 칙령을 받들어 올리며 고했다. “바람 속삭임 섬의 왕녀 전하여, 황제 폐하의 칙명으로 대륙 동부 연맹과 황실의 임시 섭정, ‘바람의 여왕’으로 즉위해 주실 것을 간청드립니다!” 광장의 시민들은 대성당 앞에 모여 조용히 묵념을 올리고 있었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -168,7 +168,7 @@
 - **원문 소설 구간 (EN)**: At that moment, the high council of senators and the captain of the imperial guard approached, sinking to their knees before Cilia.
 - **원문 소설 구간 (KR)**: 황궁을 집어삼킬 뻔했던 대폭발을 온몸으로 막아내고 산화한 젊은 백색 화염 기사의 숭고한 희생 소식이 전해지자, 거친 부두의 노동자들과 노파들도 눈물을 훔치며 하얀 야생 백합꽃을 제단 앞에 바쳤다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -205,7 +205,7 @@
 - **원문 소설 구간 (EN)**: Holding aloft an imperial parchment decree, the senate chancellor proclaimed with deep reverence. "Princess of Whispering Wind Island! By decree of His Imperial Majesty, we humbly petition you to ascend as Regent of the Empire and the Eastern Alliance—the Sovereign Queen of the Winds!"
 - **원문 소설 구간 (KR)**: 카단은 품속에서 은은한 온기를 내뿜는 이그니스의 유리 불씨를 어루만졌다. 불씨는 차가운 아침 바람 속에서도 꺼지지 않고 따스한 빛을 발하고 있었다. 카단이 혼잣말처럼 속삭였다. “네가 지킨 백성들이 너를 위해 기도하고 있다, 이그니스.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -242,7 +242,7 @@
 - **원문 소설 구간 (EN)**: Across the plaza, thousands of assembled citizens broke into thunderous acclamation, dropping to their knees in tearful entreaty. It was the offer of supreme dominion over the entire continent.
 - **원문 소설 구간 (KR)**: 원로원 의원들의 간청에 광장에 모여 있던 수천 명의 시민들도 일제히 환호성을 지르며 무릎을 꿇었다. 제국과 동부 연맹을 아우르는 절대적인 권좌의 제안이었다. 그러나 실리아는 조용히 고개를 가로저으며 원로원 의장을 부축해 일으켜 세웠다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -279,7 +279,7 @@
 - **원문 소설 구간 (EN)**: Yet Cilia shook her head gently, extending her hand to raise the chancellor to his feet.
 - **원문 소설 구간 (KR)**: 실리아의 목소리는 맑고 청아하게 광장 전체를 울렸다. “나를 여왕이라 부르지 마세요. 바람은 결코 왕좌에 앉지 않는 법입니다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -316,7 +316,7 @@
 - **원문 소설 구간 (EN)**: Her voice rang out across the square with crystal clarity. "Do not address me as Queen. The wind never seats itself upon a throne of stone."
 - **원문 소설 구간 (KR)**: 광장의 시민들이 숨을 죽이고 실리아의 입술을 주목했다. 실리아가 녹옥 지팡이를 높이 들어 올리며 선언했다. “내가 바라는 것은 권력의 왕관이 아닙니다. 이 땅의 모든 백성들이 폭군의 억압 없이 자유롭게 숨 쉴 수 있는 세상, 그것이 바람 속삭임 섬과 어머니 실피드가 꿈꾸었던 참된 바람의 길입니다.” “나는 여왕으로서가 아니라, 여러분의 상처를 보듬는 바람의 벗으로서 끝까지 싸우겠습니다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -353,7 +353,7 @@
 - **원문 소설 구간 (EN)**: A breathless silence fell upon the multitude.
 - **원문 소설 구간 (KR)**: 실리아의 진심 어린 선언에 광장은 눈물과 환희의 박수갈채로 뒤덮였다. 왕관을 거부하고 민중의 벗으로 남겠다는 결단이야말로 진정한 지도자의 품격이었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -390,7 +390,7 @@
 - **원문 소설 구간 (EN)**: Raising her Jade Staff, Cilia declared her covenant to the people. "I seek no gilded crown. A world where every soul draws breath in freedom without the terror of tyrants—that was the true path of the wind envisioned by my mother Sylphid. I shall stand not as an empress above you, but as a sister of the wind who binds up your wounds and marches beside you to the very end."
 - **원문 소설 구간 (KR)**: 카단이 미소를 지으며 실리아를 바라보았다. “스승님과 여왕 전하께서 하늘에서 보셨다면 참으로 자랑스러워하셨을 결단이다.” 실리아의 선언은 화려한 궁정의 권력 다툼에 신물이나 있던 수도 민중들의 가슴에 깊은 감동을 안겨주었다. 왕관을 탐하지 않고 백성들의 아픔을 어루만지는 바람의 벗으로 남겠다는 다짐은, 과거 제국 건국 이래 그 어떤 황제도 보여주지 못했던 진정한 지도자의 모습이었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -427,7 +427,7 @@
 - **원문 소설 구간 (EN)**: A roar of tears, cheers, and heartfelt reverence erupted across the metropolis. To reject the imperial crown in favor of walking beside the common folk was the hallmark of true sovereignty.
 - **원문 소설 구간 (KR)**: 원로원 의장 역시 떨리는 손으로 양피지 칙령을 가슴에 품으며 깊이 고개를 숙였다. “왕녀 전하의 숭고한 뜻을 받들겠습니다. 황실의 모든 의용군과 기사단은 오직 왕녀 전하와 성기사의 방패를 따를 것입니다.” 즉위식을 대신한 평화의 서약이 끝난 뒤, 카단과 실리아는 작전 회의실로 향했다. 론돌과 그림리, 그리고 여섯 스승들이 지도를 둘러싸고 모여 있었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -462,9 +462,9 @@
 ## EP29-CUT13 (01:12–01:18 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Kadan looked upon her with profound pride. "Master Aleksandar and Queen Sylphid smile upon your wisdom from the heavens."
-- **원문 소설 구간 (KR)**: 론돌이 해도 위의 수도 북쪽 출구를 짚으며 설명했다. “패퇴한 루시안은 북방의 흑마법 요새인 ‘검은 늪지대’로 퇴각했다. 그곳에는 고대 언데드 군단과 벨페고르의 심연 본대가 도사리고 있지.” “하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘사문(四門)의 독’ 결계를 통과해야 한다.”
+- **원문 소설 구간 (KR)**: 론돌이 해도 위의 수도 북쪽 출구를 짚으며 설명했다. “패퇴한 루시안은 북방의 흑마법 요새인 ‘검은 늪지대’로 퇴각했다. 그곳에는 고대 언데드 군단과 벨페고르의 심연 본대가 도사리고 있지.” “하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘네 수문의 맹독’ 결계를 통과해야 한다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -499,9 +499,9 @@
 ## EP29-CUT14 (01:18–01:24 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Retiring to the war chamber, Kadan and Cilia convened with Rondol, Grimli, and the Six Masters around the regional charts.
-- **원문 소설 구간 (KR)**: 그림리가 모루를 내리치듯 탁자를 치며 덧붙였다. “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.”
+- **원문 소설 구간 (KR)**: 그림리가 모루를 내리치듯 탁자를 치며 덧붙였다. “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-010` **Whispering Wind Island** (바람 속삭임 섬 (바람섬)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_010_Whispering_Wind_Island_sheet.jpg)
@@ -536,13 +536,13 @@
 ## EP29-CUT15 (01:24–01:30 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Pointing to the northern passes, Rondol spoke in grim assessment. "The wounded serpent Lucian has retreated to his final necromantic fortress in the Black Marsh, rallying the remaining legions of Belphegor. But to pursue him, our armies must breach the Four Gates Fortress, where four colossal sluices spew lethal venom."
-- **원문 소설 구간 (KR)**: 카단이 품속에서 이그니스의 유리 불씨를 꺼내 지도 위에 올려놓았다. 놀랍게도 유리 불씨의 빛이 북쪽 관문을 향해 가느다란 궤적을 그리며 가리키고 있었다. 카단이 눈을 빛냈다. “이그니스가 길을 가리켜주고 있다. 놈들이 설치한 사문의 독을 파훼할 약점의 진맥이다.” 작전 회의실 탁자 위에 놓인 유리 불씨는 마치 나침반처럼 북쪽을 향해 가느다란 백색 화염의 꼬리를 뻗고 있었다. 론돌과 그림리, 그리고 여섯 스승들은 그 기적 같은 광경에 숨을 죽였다.
+- **원문 소설 구간 (KR)**: 카단이 품속에서 이그니스의 유리 불씨를 꺼내 지도 위에 올려놓았다. 놀랍게도 유리 불씨의 빛이 북쪽 관문을 향해 가느다란 궤적을 그리며 가리키고 있었다. 카단이 눈을 빛냈다. “이그니스가 길을 가리켜주고 있다. 놈들이 설치한 네 수문의 맹독을 파훼할 약점의 마력 흐름이다.” 작전 회의실 탁자 위에 놓인 유리 불씨는 마치 나침반처럼 북쪽을 향해 가느다란 백색 화염의 꼬리를 뻗고 있었다. 론돌과 그림리, 그리고 여섯 스승들은 그 기적 같은 광경에 숨을 죽였다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (사문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
-  - **배경 묘사**: 사문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
+  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (네 수문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
+  - **배경 묘사**: 네 수문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
   - `EN`: Anime environment concept art of the Citadel of the Four Gates, a formidable fortress spanning a narrow mountain chasm with four colossal black-iron sluice gates pouring cascades of glowing purple poisonous mist into the canyon below.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.061 루시안 (Lucian) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/061_Lucian.png), [`NO.046 론돌 (Rondol) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/046_Rondol.png)
@@ -552,7 +552,7 @@
   - **소품 및 소지자**: [CHAR-EQUIP 루시안의 기본 무장/소지품 (Lucian's Signature Gear, 소품 원화: `/anime-character-sheets/cutouts/061_Lucian.png`)]: 루시안(7등신 컷아웃: /anime-character-sheets/cutouts/061_Lucian.png)이(가) 고유 무장(초록빛 마력 화살이 장전된 화려한 에메랄드 아케인 대궁)을 착용/소지함
   - `EN`: [CHAR-EQUIP Lucian's Signature Gear (Prop Reference: /anime-character-sheets/cutouts/061_Lucian.png)]: Lucian (7-head-tall cutout: /anime-character-sheets/cutouts/061_Lucian.png) carries their signature equipment (7-head-tall ambitious nobleman of the Red Glass Court wearing an ermine cloak with serpentine crest and wielding an emerald arcane bow/sword)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
-  - 6초 이내 캐릭터 대사 요약 지침: [루시안(Lucian)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "이그니스가 길을 가리켜주고 있다. 놈들이 설치한 사문의 독을 파훼할 약점의 진맥이다." (영문 6s 대사: "The wounded serpent Lucian has retreated to his final necromantic fortress in the Black...") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
+  - 6초 이내 캐릭터 대사 요약 지침: [루시안(Lucian)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "이그니스가 길을 가리켜주고 있다. 놈들이 설치한 네 수문의 맹독을 파훼할 약점의 마력 흐름이다." (영문 6s 대사: "The wounded serpent Lucian has retreated to his final necromantic fortress in the Black...") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
   - `EN`: 6-SECOND CHARACTER DIALOGUE RULE: The character Lucian MUST speak the following summarized line concisely within 6 seconds in English with expressive anime lip-sync: "The wounded serpent Lucian has retreated to his final necromantic fortress in the Black..." — ONLY Lucian speaks; all other characters in the scene MUST keep their mouths closed and remain silent.
 - **6. 글자 포함 금지 지침 (Strict No-Text Rule)**:
   - 글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨.
@@ -573,13 +573,13 @@
 ## EP29-CUT16 (01:30–01:36 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Grimli slammed his fist onto the oak table. "A hellish barrier! Acidic mist that dissolves steel plate within minutes. No army can march through that defile."
-- **원문 소설 구간 (KR)**: 가웨인이 지팡이를 짚으며 감탄했다. “이그니스의 영혼이 불씨에 깃들어 사문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.” 카단이 고개를 끄덕였다. “형제가 길을 열어주었다. 주저 없이 돌파한다.”
+- **원문 소설 구간 (KR)**: 가웨인이 지팡이를 짚으며 감탄했다. “이그니스의 영혼이 불씨에 깃들어 네 수문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.” 카단이 고개를 끄덕였다. “형제가 길을 열어주었다. 주저 없이 돌파한다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (사문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
-  - **배경 묘사**: 사문 요새 (네 관문) (Citadel of the Four Gates) 대장간 뒤편 통나무 선술집 내부 — 참숯 화로 불빛과 거친 참나무 식탁, 문틈으로 스며드는 눈보라
+  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (네 수문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
+  - **배경 묘사**: 네 수문 요새 (네 관문) (Citadel of the Four Gates) 대장간 뒤편 통나무 선술집 내부 — 참숯 화로 불빛과 거친 참나무 식탁, 문틈으로 스며드는 눈보라
   - `EN`: Interior of the weathered log tavern hidden behind the village smithy in Citadel of the Four Gates (Location Art: /anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg), rough oak tables, glowing red charcoal brazier, earthenware flasks on timber shelves, frost seeping through heavy pine door hinges, outside howling blue-white blizzard.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.074 그림리 (Grimli) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/074_Grimli.png)
@@ -589,7 +589,7 @@
   - **소품 및 소지자**: [CHAR-EQUIP 그림리의 기본 무장/소지품 (Grimli's Signature Gear, 소품 원화: `/anime-character-sheets/cutouts/074_Grimli.png`)]: 그림리(7등신 컷아웃: /anime-character-sheets/cutouts/074_Grimli.png)이(가) 고유 무장(대지를 박살 내는 초대형 고대 룬 전쟁 망치(Runic Warhammer))을 착용/소지함
   - `EN`: [CHAR-EQUIP Grimli's Signature Gear (Prop Reference: /anime-character-sheets/cutouts/074_Grimli.png)]: Grimli (7-head-tall cutout: /anime-character-sheets/cutouts/074_Grimli.png) carries their signature equipment (muscular dwarven master blacksmith wielding a massive runic warhammer)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
-  - 6초 이내 캐릭터 대사 요약 지침: [그림리(Grimli)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "이그니스의 영혼이 불씨에 깃들어 사문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나..." (영문 6s 대사: "A hellish barrier.") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
+  - 6초 이내 캐릭터 대사 요약 지침: [그림리(Grimli)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "이그니스의 영혼이 불씨에 깃들어 네 수문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나..." (영문 6s 대사: "A hellish barrier.") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
   - `EN`: 6-SECOND CHARACTER DIALOGUE RULE: The character Grimli MUST speak the following summarized line concisely within 6 seconds in English with expressive anime lip-sync: "A hellish barrier." — ONLY Grimli speaks; all other characters in the scene MUST keep their mouths closed and remain silent.
 - **6. 글자 포함 금지 지침 (Strict No-Text Rule)**:
   - 글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨.
@@ -612,11 +612,11 @@
 - **원문 소설 구간 (EN)**: Taking the White Glass Ember from his coat, Kadan placed it upon the map. Miraculously, the ember cast a slender needle of pure white light pointing toward the northern sluice.
 - **원문 소설 구간 (KR)**: 카단과 실리아는 소수 정예 결사대를 이끌고 수도 북문의 수로 요새로 향했다. 늪지대에서 밀려온 짙은 유황 안개가 시야를 가로막고 있었고, 수로의 수면은 보랏빛 독극물로 부글부글 끓어오르고 있었다. 수로 벽면에는 메두사 고르고의 금기된 룬이 음각되어 있어 접근하는 생명체의 살갗을 녹여 내리고 있었다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (사문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
-  - **배경 묘사**: 사문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
+  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (네 수문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
+  - **배경 묘사**: 네 수문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
   - `EN`: Anime environment concept art of the Citadel of the Four Gates, a formidable fortress spanning a narrow mountain chasm with four colossal black-iron sluice gates pouring cascades of glowing purple poisonous mist into the canyon below.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -647,13 +647,13 @@
 ## EP29-CUT18 (01:42–01:48 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Kadan's eyes sharpened with certainty. "Ignis is showing us the path. This is the structural flaw in their necrotic conduit."
-- **원문 소설 구간 (KR)**: 수로의 수문장이자 루시안의 심복인 독술사 아라크네가 거미줄 같은 독침을 번뜩이며 모습을 드러냈다. 아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 사문의 독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”
+- **원문 소설 구간 (KR)**: 수로의 수문장이자 루시안의 심복인 독술사 아라크네가 거미줄 같은 독침을 번뜩이며 모습을 드러냈다. 아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 네 수문의 맹독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (사문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
-  - **배경 묘사**: 사문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
+  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (네 수문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
+  - **배경 묘사**: 네 수문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
   - `EN`: Anime environment concept art of the Citadel of the Four Gates, a formidable fortress spanning a narrow mountain chasm with four colossal black-iron sluice gates pouring cascades of glowing purple poisonous mist into the canyon below.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.011 이그니스 (Ignis) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/011_Ignis.png)
@@ -663,7 +663,7 @@
   - **소품 및 소지자**: [CHAR-EQUIP 카단의 기본 무장/소지품 (Kadan's Signature Gear, 소품 원화: `/anime-character-sheets/cutouts/041_Kadan.png`)]: 카단(7등신 컷아웃: /anime-character-sheets/cutouts/041_Kadan.png)이(가) 고유 무장(등에 장착한 북방 설원 수호의 '눈(SNOW) 문양 방패(Snow-Emblem Shield)'와 붉은 머플러, 어머니·스승의 유품 '기억을 깨우는 은빛 룬 단검')을 착용/소지함
   - `EN`: [CHAR-EQUIP Kadan's Signature Gear (Prop Reference: /anime-character-sheets/cutouts/041_Kadan.png)]: Kadan (7-head-tall cutout: /anime-character-sheets/cutouts/041_Kadan.png) carries their signature equipment (7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
-  - 6초 이내 캐릭터 대사 요약 지침: [카단(Kadan)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "어리석은 놈들! 이 사문의 독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!" (영문 6s 대사: "Ignis is showing us the path. This is the structural flaw in their necrotic conduit.") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
+  - 6초 이내 캐릭터 대사 요약 지침: [카단(Kadan)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "어리석은 놈들! 이 네 수문의 맹독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!" (영문 6s 대사: "Ignis is showing us the path. This is the structural flaw in their necrotic conduit.") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
   - `EN`: 6-SECOND CHARACTER DIALOGUE RULE: The character Kadan MUST speak the following summarized line concisely within 6 seconds in English with expressive anime lip-sync: "Ignis is showing us the path. This is the structural flaw in their necrotic conduit." — ONLY Kadan speaks; all other characters in the scene MUST keep their mouths closed and remain silent.
 - **6. 글자 포함 금지 지침 (Strict No-Text Rule)**:
   - 글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨.
@@ -686,11 +686,11 @@
 - **원문 소설 구간 (EN)**: Leading an elite vanguard, Kadan and Cilia advanced to the northern water gates. Sulfuric fog choked the rocky canyon, and the waterways boiled with violet poison inscribed with Gorgo's necrotic runes.
 - **원문 소설 구간 (KR)**: 수천 개의 독침이 비 오듯 쏟아져 내렸다. 카단이 드래곤 브레이커 방패를 전면에 세우며 별의 호흡을 폭발시켰다. “내 방패는 어떤 맹독 앞에서도 물러서지 않는다!”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (사문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
-  - **배경 묘사**: 사문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
+  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (네 수문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
+  - **배경 묘사**: 네 수문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
   - `EN`: Anime environment concept art of the Citadel of the Four Gates, a formidable fortress spanning a narrow mountain chasm with four colossal black-iron sluice gates pouring cascades of glowing purple poisonous mist into the canyon below.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png)
@@ -723,11 +723,11 @@
 - **원문 소설 구간 (EN)**: Surfacing from the venomous swamp, the venom-mistress Arachne sneered with spider-like fangs. "Fools! A single breath of this miasma dissolves mortal flesh to bone! Your journey ends in this mire!"
 - **원문 소설 구간 (KR)**: 드래곤 브레이커의 황금빛 방벽이 빗발치는 독침을 모조리 튕겨냈다. 실리아는 녹옥 지팡이를 휘둘러 청아한 바람의 돌풍을 일으키며 수로에 고여 있던 보랏빛 독안개를 단숨에 날려버렸다. 북문 수로 요새의 절벽 암벽들은 메두사 고르고의 산성 독액에 녹아내려 흉측한 동굴처럼 입을 벌리고 있었다. 아라크네의 독거미 마수들이 수백 마리씩 기어 나오며 맹독을 뿜어댔지만, 카단의 드래곤 브레이커 방패는 황금빛 별빛 장벽을 두르고 전진을 멈추지 않았다. 실리아는 녹옥 지팡이를 휘둘러 날카로운 진공의 칼날로 거미줄을 모조리 베어 넘겼다. 청량한 바람이 수로를 휩쓸며 독기둥을 허공으로 날려버렸다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (사문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
-  - **배경 묘사**: 사문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
+  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (네 수문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
+  - **배경 묘사**: 네 수문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
   - `EN`: Anime environment concept art of the Citadel of the Four Gates, a formidable fortress spanning a narrow mountain chasm with four colossal black-iron sluice gates pouring cascades of glowing purple poisonous mist into the canyon below.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png)
@@ -760,11 +760,11 @@
 - **원문 소설 구간 (EN)**: A storm of poisoned quills rained from the heights.
 - **원문 소설 구간 (KR)**: 카단의 방패 돌파와 실리아의 정화 돌풍 앞에 아라크네의 독술 방어선은 순식간에 무너져 내렸다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (사문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
-  - **배경 묘사**: 사문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
+  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (네 수문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
+  - **배경 묘사**: 네 수문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
   - `EN`: Anime environment concept art of the Citadel of the Four Gates, a formidable fortress spanning a narrow mountain chasm with four colossal black-iron sluice gates pouring cascades of glowing purple poisonous mist into the canyon below.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png)
@@ -795,20 +795,20 @@
 ## EP29-CUT22 (02:06–02:12 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Bracing his Dragon Breaker shield, Kadan unleashed the full power of star-breathing. "This shield shall never yield before any poison!"
-- **원문 소설 구간 (KR)**: 카단의 은빛 단검이 수문의 독기 제어 룬을 깔끔하게 절단하자, 부글거리던 보랏빛 독극물이 맑은 강물로 정화되며 사문의 첫 번째 관문이 활짝 열렸다. 도망친 적병들을 뒤로하고, 북쪽으로 향하는 광활한 대지가 눈앞에 펼쳐졌다.
+- **원문 소설 구간 (KR)**: 카단의 은빛 단검이 수문의 독기 제어 룬을 깔끔하게 절단하자, 부글거리던 보랏빛 독극물이 맑은 강물로 정화되며 네 수문 요새의 첫 번째 관문이 활짝 열렸다. 도망친 적병들을 뒤로하고, 북쪽으로 향하는 광활한 대지가 눈앞에 펼쳐졌다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (사문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
-  - **배경 묘사**: 사문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
+  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (네 수문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
+  - **배경 묘사**: 네 수문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
   - `EN`: Anime environment concept art of the Citadel of the Four Gates, a formidable fortress spanning a narrow mountain chasm with four colossal black-iron sluice gates pouring cascades of glowing purple poisonous mist into the canyon below.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
   - **캐릭터 외형 묘사**: 카단(Kadan, 7등신 컷아웃: `/anime-character-sheets/cutouts/041_Kadan.png`) — 등에 장착한 북방 설원 수호의 '눈(SNOW) 문양 방패(Snow-Emblem Shield)'와 붉은 머플러, 어머니·스승의 유품 '기억을 깨우는 은빛 룬 단검'
   - `EN`: Kadan (7-Head-Tall Cutout Reference: /anime-character-sheets/cutouts/041_Kadan.png) — 7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger
 - **4. 등장 소품 시트 및 소품 소지 캐릭터 (Props & Prop Holder)**:
-  - **소품 및 소지자**: [PROP-002 드래곤 브레이커 방패 (눈꽃 성기사 방패) (Dragon Breaker Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_002_Dragon_Breaker_Shield.jpg`)]: Kadan이(가) 드래곤 브레이커 방패 (눈꽃 성기사 방패)(PROP-002)을(를) 소지 및 사용 / [PROP-016 성진호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 성진호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
+  - **소품 및 소지자**: [PROP-002 드래곤 브레이커 방패 (눈꽃 성기사 방패) (Dragon Breaker Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_002_Dragon_Breaker_Shield.jpg`)]: Kadan이(가) 드래곤 브레이커 방패 (눈꽃 성기사 방패)(PROP-002)을(를) 소지 및 사용 / [PROP-016 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
   - `EN`: [PROP-002 Dragon Breaker Shield (Prop Reference: /anime-character-sheets/props/art/PROP_002_Dragon_Breaker_Shield.jpg)]: Kadan holds/carries Dragon Breaker Shield (PROP-002) ; [PROP-016 Star-Breathing Astral Scroll (Prop Reference: /anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg)]: Kadan holds/carries Star-Breathing Astral Scroll (PROP-016)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
   - 6초 이내 캐릭터 대사 요약 지침: [카단(Kadan)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "This shield shall never yield before any poison!" (영문 6s 대사: "This shield shall never yield before any poison!") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
@@ -834,11 +834,11 @@
 - **원문 소설 구간 (EN)**: The golden aegis deflected the volley harmlessly into the stone. Sweeping her Jade Staff, Cilia conjured an azure gale that purged the violet fog into the upper atmosphere.
 - **원문 소설 구간 (KR)**: 저 멀리 북쪽 수평선에는 검푸른 늪지대의 먹구름이 똬리를 틀고 있었지만, 일행의 등 뒤에는 해방된 수도 라이트헤이븐의 황금빛 햇살이 찬란하게 쏟아져 내리고 있었다. 실리아가 카단의 곁으로 다가와 어깨를 나란히 했다. “이그니스가 남긴 불씨가 가리키는 곳으로, 끝까지 함께 가요.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (사문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
-  - **배경 묘사**: 사문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
+  - **첨부 배경 이미지**: `LOC-017` **Citadel of the Four Gates** (네 수문 요새 (네 관문)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_017_Citadel_of_the_Four_Gates.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_017_Citadel_of_the_Four_Gates_sheet.jpg)
+  - **배경 묘사**: 네 수문 요새 (네 관문) (Citadel of the Four Gates) — 협곡을 가로막은 4중 거대 흑철 수문, 독안개 배수구와 쇠사슬 현수교 / 폭포수처럼 흘러내리는 야광 보랏빛 독연무와 어두운 협곡의 위압감
   - `EN`: Anime environment concept art of the Citadel of the Four Gates, a formidable fortress spanning a narrow mountain chasm with four colossal black-iron sluice gates pouring cascades of glowing purple poisonous mist into the canyon below.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -871,11 +871,11 @@
 - **원문 소설 구간 (EN)**: With Kadan shattering the central runic conduit with his silver dagger, the boiling toxins neutralized into crystal springs. The first gate swung wide open, revealing the path to the Black Marsh.
 - **원문 소설 구간 (KR)**: 카단은 주머니 속에서 따스하게 고동치는 유리 불씨를 쥐며 고개를 끄덕였다. “그래. 이 불씨가 꺼지지 않는 한, 우리는 결코 길을 잃지 않는다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-018` **Quicksand River & Black Marsh** (유사강 & 검은 늪) — [배경 원화(`/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg)
-  - **배경 묘사**: 유사강 & 검은 늪 (Quicksand River & Black Marsh) — 거대한 모래 소용돌이 급류, 갈대 나룻배, 뒤틀린 고목과 침수된 고대 석상 / 황금빛 유사(流砂)와 검보랏빛 늪지 독안개·푸른 도깨비불의 기묘한 공존
+  - **첨부 배경 이미지**: `LOC-018` **Quicksand River & Black Marsh** (흐르는 모래강 & 검은 늪) — [배경 원화(`/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg)
+  - **배경 묘사**: 흐르는 모래강 & 검은 늪 (Quicksand River & Black Marsh) — 거대한 모래 소용돌이 급류, 갈대 나룻배, 뒤틀린 고목과 침수된 고대 석상 / 황금빛 흐르는 모래와 검보랏빛 늪지 독안개·푸른 도깨비불의 기묘한 공존
   - `EN`: Anime environment concept art of Quicksand River and the Black Marsh, a dramatic fantasy landscape with a swirling golden-sand vortex river beside a haunting dark swamp of twisted dead trees, purple miasma fog, and eerie blue ghost-lights.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -908,11 +908,11 @@
 - **원문 소설 구간 (EN)**: Standing beside Kadan, Cilia looked toward the northern horizon. "Where Ignis's light guides our steps, we walk together until the dawn."
 - **원문 소설 구간 (KR)**: 바람의 여왕과 성기사의 후예는 새로운 각오를 다지며, 최후의 결전지인 검은 늪지대를 향해 힘찬 발걸음을 내디뎠다. 첫 번째 관문이 무너지자, 갇혀 있던 수로의 수문이 열리며 맑은 물이 쏟아져 들어왔다. 패주하는 독술사 무리를 뒤로하고, 카단과 실리아는 북쪽 평원을 바라보았다.
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-018` **Quicksand River & Black Marsh** (유사강 & 검은 늪) — [배경 원화(`/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg)
-  - **배경 묘사**: 유사강 & 검은 늪 (Quicksand River & Black Marsh) — 거대한 모래 소용돌이 급류, 갈대 나룻배, 뒤틀린 고목과 침수된 고대 석상 / 황금빛 유사(流砂)와 검보랏빛 늪지 독안개·푸른 도깨비불의 기묘한 공존
+  - **첨부 배경 이미지**: `LOC-018` **Quicksand River & Black Marsh** (흐르는 모래강 & 검은 늪) — [배경 원화(`/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg)
+  - **배경 묘사**: 흐르는 모래강 & 검은 늪 (Quicksand River & Black Marsh) — 거대한 모래 소용돌이 급류, 갈대 나룻배, 뒤틀린 고목과 침수된 고대 석상 / 황금빛 흐르는 모래와 검보랏빛 늪지 독안개·푸른 도깨비불의 기묘한 공존
   - `EN`: Anime environment concept art of Quicksand River and the Black Marsh, a dramatic fantasy landscape with a swirling golden-sand vortex river beside a haunting dark swamp of twisted dead trees, purple miasma fog, and eerie blue ghost-lights.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.011 이그니스 (Ignis) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/011_Ignis.png)
@@ -945,11 +945,11 @@
 - **원문 소설 구간 (EN)**: Grasping the warm ember in his pocket, Kadan nodded. "So long as this fire burns, we shall never lose our way."
 - **원문 소설 구간 (KR)**: 검은 늪지대의 먹구름 너머로 루시안의 마지막 요새가 도사리고 있었다. 실리아가 카단의 손을 잡으며 말했다. “바람은 결코 멈추지 않아요. 우리가 지나간 자리에 반드시 평화로운 꽃이 필 거예요.” 카단은 주머니 속의 유리 불씨를 쥐며 화답했다. “가자, 최후의 결전지로.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-018` **Quicksand River & Black Marsh** (유사강 & 검은 늪) — [배경 원화(`/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg)
-  - **배경 묘사**: 유사강 & 검은 늪 (Quicksand River & Black Marsh) — 거대한 모래 소용돌이 급류, 갈대 나룻배, 뒤틀린 고목과 침수된 고대 석상 / 황금빛 유사(流砂)와 검보랏빛 늪지 독안개·푸른 도깨비불의 기묘한 공존
+  - **첨부 배경 이미지**: `LOC-018` **Quicksand River & Black Marsh** (흐르는 모래강 & 검은 늪) — [배경 원화(`/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg)
+  - **배경 묘사**: 흐르는 모래강 & 검은 늪 (Quicksand River & Black Marsh) — 거대한 모래 소용돌이 급류, 갈대 나룻배, 뒤틀린 고목과 침수된 고대 석상 / 황금빛 흐르는 모래와 검보랏빛 늪지 독안개·푸른 도깨비불의 기묘한 공존
   - `EN`: Anime environment concept art of Quicksand River and the Black Marsh, a dramatic fantasy landscape with a swirling golden-sand vortex river beside a haunting dark swamp of twisted dead trees, purple miasma fog, and eerie blue ghost-lights.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)
@@ -982,11 +982,11 @@
 - **원문 소설 구간 (EN)**: United in grief and unwavering resolve, the companions marched toward the final abyss.
 - **원문 소설 구간 (KR)**: 실리아가 카단의 손을 잡으며 말했다. “바람은 결코 멈추지 않아요. 우리가 지나간 자리에 반드시 평화로운 꽃이 필 거예요.” 카단은 주머니 속의 유리 불씨를 쥐며 화답했다. “가자, 최후의 결전지로.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
-  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
+  - 제29화 『바람의 여왕』(Queen of the Wind): 비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 중반부 “네 수문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이어 결말에서는 실리아가 카단의 손을 잡으며 말했다.
   - `EN`: Episode 29 ('Queen of the Wind'): On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. As the conflict escalates (Pointing to the northern passes, Rondol spoke in grim assessment.), the episode culminates when united in grief and unwavering resolve, the companions marched toward the final abyss.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
-  - **첨부 배경 이미지**: `LOC-018` **Quicksand River & Black Marsh** (유사강 & 검은 늪) — [배경 원화(`/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg)
-  - **배경 묘사**: 유사강 & 검은 늪 (Quicksand River & Black Marsh) — 거대한 모래 소용돌이 급류, 갈대 나룻배, 뒤틀린 고목과 침수된 고대 석상 / 황금빛 유사(流砂)와 검보랏빛 늪지 독안개·푸른 도깨비불의 기묘한 공존
+  - **첨부 배경 이미지**: `LOC-018` **Quicksand River & Black Marsh** (흐르는 모래강 & 검은 늪) — [배경 원화(`/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_018_Quicksand_River_Black_Marsh.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_018_Quicksand_River_Black_Marsh_sheet.jpg)
+  - **배경 묘사**: 흐르는 모래강 & 검은 늪 (Quicksand River & Black Marsh) — 거대한 모래 소용돌이 급류, 갈대 나룻배, 뒤틀린 고목과 침수된 고대 석상 / 황금빛 흐르는 모래와 검보랏빛 늪지 독안개·푸른 도깨비불의 기묘한 공존
   - `EN`: Anime environment concept art of Quicksand River and the Black Marsh, a dramatic fantasy landscape with a swirling golden-sand vortex river beside a haunting dark swamp of twisted dead trees, purple miasma fog, and eerie blue ghost-lights.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png)

@@ -1421,7 +1421,7 @@ export function selectDialogueChoice(choiceIndex: number): void {
       localStorage.setItem('hero_sns', String(cur + choice.bonusValue));
     } catch {}
   } else if (choice.bonusType === 'buff') {
-    playRpgState.activeBuff = choice.attitude || '성진호흡 각성';
+    playRpgState.activeBuff = choice.attitude || '별빛 마나 각성';
   }
 
   // Automatically advance to next dialogue line
@@ -1498,19 +1498,132 @@ export function getEpisodeActualOpponentDeck(chapter: number): {
   };
 }
 
+const CHAPTER_BASELINE_STORAGE_KEY = 'hero_chapter_baseline_tp_map';
+
 /**
- * Compute per-direction stat bonus for opponent cards based on reincarnation level.
- * By user decree: Reincarnations 1 through 10 are tuned for easy, triumphant progression (+0 opponent buff).
- * Beyond Reincarnation 10, progressive challenge starts (+1 per cycle above 10).
+ * Check whether the given chapter is an Upgrade Checkpoint / Gatekeeper Boss chapter
+ * where the opponent deck pushes the player to upgrade their cards.
+ */
+export function isUpgradeCheckpointChapter(
+  chapter: number = playRpgState.currentChapter,
+  rebirthLevel: number = playRpgState.reincarnationLevel
+): boolean {
+  const ch = Math.max(1, Math.min(40, Math.floor(chapter || 1)));
+  const bossChapters = [5, 8, 10, 15, 16, 20, 24, 25, 30, 32, 35, 38, 39, 40];
+  if (bossChapters.includes(ch)) return true;
+  if (rebirthLevel > 0) {
+    // When reincarnated, Chapter 1 and every 4th chapter also act as upgrade checkpoints
+    if (ch === 1 || ch % 4 === 0) return true;
+  }
+  return false;
+}
+
+/**
+ * Read or lock in the player's baseline deck TP when first entering (rebirthLevel, chapter).
+ * Locking the baseline ensures that when the user upgrades their cards mid-chapter,
+ * their newly added TP directly helps them overcome the current opponent!
+ */
+function getOrRecordChapterBaselineTP(
+  rebirthLevel: number,
+  chapter: number,
+  currentPlayerDeckTP: number
+): number {
+  const key = `${rebirthLevel}-${chapter}`;
+  if (typeof localStorage === 'undefined') return currentPlayerDeckTP;
+  try {
+    const raw = localStorage.getItem(CHAPTER_BASELINE_STORAGE_KEY);
+    const map: Record<string, number> = raw ? JSON.parse(raw) : {};
+    if (typeof map[key] === 'number' && map[key] > 0) {
+      return map[key];
+    }
+    map[key] = currentPlayerDeckTP;
+    localStorage.setItem(CHAPTER_BASELINE_STORAGE_KEY, JSON.stringify(map));
+    return currentPlayerDeckTP;
+  } catch {
+    return currentPlayerDeckTP;
+  }
+}
+
+/**
+ * Calculate real-time Deck Power matchup between User's 5-card deck and Opponent's 5-card deck.
+ * - Scales opponent deck power dynamically based on User's Deck TP + Reincarnation Level + Chapter progression.
+ * - Periodically applies Upgrade Checkpoint spikes (and unspent stat-point pressure) so the user
+ *   genuinely feels the need to upgrade their cards, and feels an immediate advantage once upgraded.
+ */
+export function getBattlePowerMatchup(
+  rebirthLevel: number = playRpgState.reincarnationLevel || 0,
+  chapter: number = playRpgState.currentChapter || 1
+): {
+  playerDeckTP: number;
+  opponentDeckTP: number;
+  unspentPoints: number;
+  isCheckpoint: boolean;
+  needsUpgrade: boolean;
+} {
+  const ch = Math.max(1, Math.min(40, Math.floor(chapter || 1)));
+  const reb = Math.max(0, Math.floor(rebirthLevel || 0));
+
+  const playerDeckTP =
+    typeof (cardNurtureStore as any).getDeckTP === 'function'
+      ? (cardNurtureStore as any).getDeckTP()
+      : 80;
+
+  const unspentPoints =
+    typeof (cardNurtureStore as any).getTotalUnspentPoints === 'function'
+      ? (cardNurtureStore as any).getTotalUnspentPoints()
+      : 0;
+
+  const baselineTP = getOrRecordChapterBaselineTP(reb, ch, playerDeckTP);
+  // If player upgraded their deck after entering this chapter, only 25% of the upgrade delta transfers to opponent,
+  // guaranteeing that upgrading cards makes the current chapter noticeably easier to beat!
+  const effectivePlayerRefTP =
+    playerDeckTP > baselineTP
+      ? baselineTP + Math.floor((playerDeckTP - baselineTP) * 0.25)
+      : playerDeckTP;
+
+  // Progressive minimum benchmark for (rebirthLevel, chapter) so un-upgraded starter decks hit a wall
+  const chapterBenchmarkTP = 78 + Math.round((ch - 1) * 1.15) + reb * 28;
+  const baseRefTP = Math.max(effectivePlayerRefTP, chapterBenchmarkTP);
+
+  const isCheckpoint = isUpgradeCheckpointChapter(ch, reb);
+
+  let powerRatio: number;
+  if (isCheckpoint) {
+    powerRatio =
+      reb === 0
+        ? 1.04 + (ch / 40) * 0.08 // 104% ~ 112% on Rebirth 0 checkpoints
+        : 1.09 + Math.min(0.16, reb * 0.025) + (ch / 40) * 0.04; // 111.5% ~ 129% on Rebirth 1+ checkpoints
+  } else {
+    powerRatio =
+      reb === 0
+        ? 0.90 + (ch / 40) * 0.08 // 90% ~ 98% on Rebirth 0 normal chapters
+        : 0.98 + Math.min(0.10, reb * 0.02) + (ch / 40) * 0.03; // 100% ~ 111% on Rebirth 1+ normal chapters
+  }
+
+  // If the user is sitting on unallocated stat points, add upgrade pressure until they spend them
+  const unspentPressureBonus = unspentPoints >= 2 ? Math.min(14, Math.floor(unspentPoints * 1.25)) : 0;
+
+  const opponentDeckTP = Math.max(45, Math.round(baseRefTP * powerRatio) + unspentPressureBonus);
+  const needsUpgrade = opponentDeckTP > playerDeckTP || unspentPoints > 0;
+
+  return {
+    playerDeckTP,
+    opponentDeckTP,
+    unspentPoints,
+    isCheckpoint,
+    needsUpgrade,
+  };
+}
+
+/**
+ * Compute per-direction stat bonus for opponent cards based on player deck power & reincarnation level.
  */
 export function getOpponentRebirthStatBonus(
   rebirthLevel: number = playRpgState.reincarnationLevel,
-  _chapter: number = playRpgState.currentChapter
+  chapter: number = playRpgState.currentChapter
 ): number {
-  if (!rebirthLevel || rebirthLevel <= 10) {
-    return 0;
-  }
-  return rebirthLevel - 10;
+  const matchup = getBattlePowerMatchup(rebirthLevel, chapter);
+  return Math.max(0, Math.round((matchup.opponentDeckTP - 80) / 20));
 }
 
 /**
@@ -1599,19 +1712,20 @@ function setupBattleStateInternal(
   playRpgState.playerHand = [...playerHand];
   playRpgState.opponentHand = [...opponentHand];
 
-  const playerAura = playRpgState.reincarnationLevel;
-  playRpgState.battleMessage =
-    playerAura > 0
-      ? tr(
-          `✨ [환생 ${playerAura}회차] 영웅 전원 스탯 +${playerAura} 오라 발동! 카드를 선택해 빈 슬롯에 배치하세요.`,
-          `✨ [Rebirth ${playerAura}] Hero Aura +${playerAura} active on all cards! Tap an empty slot to place.`,
-          `✨ [転生${playerAura}周目] 英雄全員ステータス+${playerAura}オーラ発動！空きスロットに配置してください。`
-        )
-      : tr(
-          '카드를 선택한 후 3x3 전장의 빈 슬롯을 터치하세요.',
-          'Select a card from your hand, then tap an empty slot on the 3x3 board.',
-          '手札からカードを選択し、3x3盤面の空きスロットをタップしてください。'
-        );
+  const matchup = getBattlePowerMatchup(playRpgState.reincarnationLevel, playRpgState.currentChapter);
+  if (matchup.opponentDeckTP > matchup.playerDeckTP) {
+    playRpgState.battleMessage = tr(
+      `⚠️ [강적 경보] 상대 덱 파워(⚡${matchup.opponentDeckTP})가 내 덱(⚡${matchup.playerDeckTP})보다 높습니다!${matchup.unspentPoints > 0 ? ` (미사용 스탯 +${matchup.unspentPoints}점 보유 — 카드 업그레이드 권장!)` : ' 신중한 배치 또는 카드 업그레이드가 필요합니다!'}`,
+      `⚠️ [Strong Foe] Enemy Deck (⚡${matchup.opponentDeckTP}) exceeds Your Deck (⚡${matchup.playerDeckTP})!${matchup.unspentPoints > 0 ? ` (+${matchup.unspentPoints} unspent stat pts — Upgrade recommended!)` : ' Tactical placement or card upgrade required!'}`,
+      `⚠️ [強敵警報] 敵デッキ戦力(⚡${matchup.opponentDeckTP})が自デッキ(⚡${matchup.playerDeckTP})を上回っています！カードの強化または慎重な配置が必要です！`
+    );
+  } else {
+    playRpgState.battleMessage = tr(
+      `⚔️ 내 덱 파워(⚡${matchup.playerDeckTP}) vs 상대 덱 파워(⚡${matchup.opponentDeckTP}) · 카드를 선택해 빈 슬롯에 배치하세요.`,
+      `⚔️ Your Deck (⚡${matchup.playerDeckTP}) vs Enemy Deck (⚡${matchup.opponentDeckTP}) · Select a card and tap an empty slot.`,
+      `⚔️ 自デッキ(⚡${matchup.playerDeckTP}) vs 敵デッキ(⚡${matchup.opponentDeckTP})・カードを選択して空きスロットに配置してください。`
+    );
+  }
 
   if (customOpponentName) {
     playRpgState.opponentName = customOpponentName;
@@ -1687,8 +1801,11 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
 
 /**
  * Helper to get 4-way card stats [top, right, bottom, left]
+ * - Player cards: exact Base + Allocated Nurture Bonus Stats (100% consistent with hand & deck UI).
+ * - Opponent cards: dynamically scaled so the 5 opponent cards match the target opponentDeckTP
+ *   calculated from the user's deck power, reincarnation level, and upgrade checkpoint progression.
  */
-function getCardCombatStats(
+export function getCardCombatStats(
   cardId: number,
   owner: 'player' | 'opponent' = 'player'
 ): [number, number, number, number] {
@@ -1701,36 +1818,58 @@ function getCardCombatStats(
     const rawRight = card?.right || 3;
     const rawBottom = card?.bottom || 3;
     const rawLeft = card?.left || 3;
+    const rawCardSum = Math.max(4, rawTop + rawRight + rawBottom + rawLeft);
 
-    // Story Chapter progression cap:
-    // In Reincarnations 1..10, cap starts at 2 (Ch 1..10) and gently rises to 5 (Ch 40)
-    // Ensures opponents are effortlessly defeated in Reincarnations 1..10
-    const chapterClamped = Math.max(1, Math.min(40, chapter));
-    const isEasyReincarnation = rebirthLevel <= 10;
-    const chapterCap = isEasyReincarnation
-      ? 2 + Math.floor((chapterClamped - 1) / 10) // Ch1..10: 2, Ch11..20: 3, Ch21..30: 4, Ch31..40: 5
-      : 3 + Math.floor((chapterClamped - 1) / 5);
+    const epDeck = getEpisodeActualOpponentDeck(chapter);
+    const oppIds = epDeck.cardIds.length === 5 ? epDeck.cardIds : [50, 42, 43, 107, 49];
+    const rawDeckSum = Math.max(
+      20,
+      oppIds.reduce((sum, cid) => {
+        const c = CARD_DATABASE[cid];
+        return sum + ((c?.top || 3) + (c?.right || 3) + (c?.bottom || 3) + (c?.left || 3));
+      }, 0)
+    );
 
-    const rebirthBonus = getOpponentRebirthStatBonus(rebirthLevel, chapter);
+    const matchup = getBattlePowerMatchup(rebirthLevel, chapter);
+    const targetCardSum = Math.max(
+      6,
+      Math.round((matchup.opponentDeckTP / rawDeckSum) * rawCardSum)
+    );
 
-    return [
-      Math.max(1, Math.min(rawTop, chapterCap) + rebirthBonus),
-      Math.max(1, Math.min(rawRight, chapterCap) + rebirthBonus),
-      Math.max(1, Math.min(rawBottom, chapterCap) + rebirthBonus),
-      Math.max(1, Math.min(rawLeft, chapterCap) + rebirthBonus),
+    const scale = targetCardSum / rawCardSum;
+    const scaled: [number, number, number, number] = [
+      Math.max(1, Math.round(rawTop * scale)),
+      Math.max(1, Math.round(rawRight * scale)),
+      Math.max(1, Math.round(rawBottom * scale)),
+      Math.max(1, Math.round(rawLeft * scale)),
     ];
+
+    // Deterministically adjust rounding remainder so 4-stat sum equals targetCardSum
+    let diff = targetCardSum - (scaled[0] + scaled[1] + scaled[2] + scaled[3]);
+    let step = 0;
+    while (diff !== 0 && step < 16) {
+      const dirIdx = (cardId + step) % 4;
+      if (diff > 0) {
+        scaled[dirIdx] += 1;
+        diff -= 1;
+      } else if (scaled[dirIdx] > 1) {
+        scaled[dirIdx] -= 1;
+        diff += 1;
+      }
+      step++;
+    }
+
+    return scaled;
   }
 
-  // Player cards: Base + Level bonuses + Reincarnation Hero Aura (+1 per rebirth level)
-  // Ensures triumphant player progression through Reincarnations 1..10
+  // Player cards: Base + Allocated upgrade bonus stats (true to cardNurtureStore & OriginalCardHtml)
   const nurture = (cardNurtureStore as any).getCard(cardId);
   const bonus = nurture?.bonusStats || { top: 0, right: 0, bottom: 0, left: 0 };
-  const playerRebirthAura = rebirthLevel;
 
-  const top = (card?.top || 2) + bonus.top + playerRebirthAura;
-  const right = (card?.right || 2) + bonus.right + playerRebirthAura;
-  const bottom = (card?.bottom || 2) + bonus.bottom + playerRebirthAura;
-  const left = (card?.left || 2) + bonus.left + playerRebirthAura;
+  const top = (card?.top || 2) + (bonus.top || 0);
+  const right = (card?.right || 2) + (bonus.right || 0);
+  const bottom = (card?.bottom || 2) + (bonus.bottom || 0);
+  const left = (card?.left || 2) + (bonus.left || 0);
 
   return [top, right, bottom, left];
 }
@@ -2367,29 +2506,35 @@ export function finalizeBattle(): void {
     else if (slot?.owner === 'opponent') oScore++;
   }
 
+  const reb = playRpgState.reincarnationLevel || 0;
+  const ch = playRpgState.currentChapter || 1;
+  const victoryExp = 60 + reb * 25 + Math.floor(ch * 1.5);
+  const consolationExp = 25 + reb * 10;
+  const matchup = getBattlePowerMatchup(reb, ch);
+
   if (pScore > oScore) {
     playRpgState.battleWinner = 'player';
     playRpgState.battleMessage = tr(
-      `🎉 승리! (스코어 ${pScore} : ${oScore}) +50 EXP가 활성 덱 전원에 지급되었습니다.`,
-      `🎉 Victory! (Score ${pScore} : ${oScore}) +50 EXP awarded to all active deck cards.`,
-      `🎉 勝利！（スコア ${pScore} : ${oScore}）編成デッキ全員に+50 EXPが付与されました。`
+      `🎉 승리! (스코어 ${pScore} : ${oScore}) +${victoryExp} EXP가 활성 덱 전원에 지급되었습니다.${matchup.unspentPoints > 0 ? ` (미사용 스탯 +${matchup.unspentPoints}점 보유 — #card에서 업그레이드 가능!)` : ''}`,
+      `🎉 Victory! (Score ${pScore} : ${oScore}) +${victoryExp} EXP awarded to all active deck cards.`,
+      `🎉 勝利！（スコア ${pScore} : ${oScore}）編成デッキ全員に+${victoryExp} EXPが付与されました。`
     );
-    finishBattleAndAwardExp();
+    finishBattleAndAwardExp(victoryExp);
   } else if (pScore < oScore) {
     playRpgState.battleWinner = 'opponent';
-    const reb = playRpgState.reincarnationLevel;
-    playRpgState.battleMessage =
-      reb > 0
-        ? tr(
-            `⚠️ 패배 (스코어 ${pScore} : ${oScore}) · 환생 ${reb}회차 강화 덱에 막혔습니다! 카드를 업그레이드하지 않으면 다음 회차로 진행할 수 없습니다.`,
-            `⚠️ Defeat (Score ${pScore} : ${oScore}) · Blocked by Reincarnation ${reb} deck! Upgrade your cards to advance to the next episode.`,
-            `⚠️ 敗北（スコア ${pScore} : ${oScore}）・転生${reb}周目強化デッキに阻まれました！カードを強化しないと次話へ進めません。`
-          )
-        : tr(
-            `⚠️ 패배 (스코어 ${pScore} : ${oScore}) · 승리해야 다음 회차로 진행할 수 있습니다. 카드를 업그레이드하거나 재도전하세요.`,
-            `⚠️ Defeat (Score ${pScore} : ${oScore}) · Victory is required to advance. Upgrade your cards or retry.`,
-            `⚠️ 敗北（スコア ${pScore} : ${oScore}）・次話へ進むには勝利が必要です。カードを強化するか再挑戦してください。`
-          );
+    // Award consolation EXP so the player can level up cards and earn stat points when stuck
+    if (cardNurtureStore.awardBattleVictoryExp) {
+      cardNurtureStore.awardBattleVictoryExp(consolationExp);
+    }
+    const updatedUnspent =
+      typeof (cardNurtureStore as any).getTotalUnspentPoints === 'function'
+        ? (cardNurtureStore as any).getTotalUnspentPoints()
+        : matchup.unspentPoints;
+    playRpgState.battleMessage = tr(
+      `⚠️ 패배 (스코어 ${pScore} : ${oScore}) · 상대 덱 파워(⚡${matchup.opponentDeckTP})가 내 덱(⚡${matchup.playerDeckTP})을 압도했습니다! (+${consolationExp} EXP 획득${updatedUnspent > 0 ? ` · 미사용 스탯 +${updatedUnspent}점 즉시 업그레이드 가능!` : ' · 카드를 업그레이드하여 돌파하세요!'})`,
+      `⚠️ Defeat (Score ${pScore} : ${oScore}) · Enemy Deck (⚡${matchup.opponentDeckTP}) overpowered Your Deck (⚡${matchup.playerDeckTP})! (+${consolationExp} EXP earned · Upgrade your cards to break through!)`,
+      `⚠️ 敗北（スコア ${pScore} : ${oScore}）・敵デッキ(⚡${matchup.opponentDeckTP})が自デッキ(⚡${matchup.playerDeckTP})を上回りました！（+${consolationExp} EXP獲得・カードを強化して突破しましょう！）`
+    );
     if (playRpgState.repeatHunting) {
       setTimeout(() => {
         initBattle();
@@ -2407,10 +2552,13 @@ export function finalizeBattle(): void {
     }
   } else {
     playRpgState.battleWinner = 'draw';
+    if (cardNurtureStore.awardBattleVictoryExp) {
+      cardNurtureStore.awardBattleVictoryExp(consolationExp);
+    }
     playRpgState.battleMessage = tr(
-      `⚠️ 무승부 (스코어 ${pScore} : ${oScore}) · 승리해야만 다음 회차로 전진할 수 있습니다. 카드를 업그레이드하거나 재도전하세요.`,
-      `⚠️ Draw (Score ${pScore} : ${oScore}) · Victory is required to advance. Upgrade your cards or retry.`,
-      `⚠️ 引き分け（スコア ${pScore} : ${oScore}）・次話へ進むには勝利が必要です。カードを強化するか再挑戦してください。`
+      `⚠️ 무승부 (스코어 ${pScore} : ${oScore}) · 내 덱(⚡${matchup.playerDeckTP}) vs 상대 덱(⚡${matchup.opponentDeckTP}) 팽팽한 접전! (+${consolationExp} EXP 획득 · 카드를 업그레이드하면 확실히 승리할 수 있습니다!)`,
+      `⚠️ Draw (Score ${pScore} : ${oScore}) · Your Deck (⚡${matchup.playerDeckTP}) vs Enemy Deck (⚡${matchup.opponentDeckTP})! (+${consolationExp} EXP earned · Upgrade your cards to secure victory!)`,
+      `⚠️ 引き分け（スコア ${pScore} : ${oScore}）・自デッキ(⚡${matchup.playerDeckTP}) vs 敵デッキ(⚡${matchup.opponentDeckTP})！（+${consolationExp} EXP獲得・カードを強化すれば確実に勝利できます！）`
     );
     if (playRpgState.repeatHunting) {
       setTimeout(() => {
@@ -2431,12 +2579,12 @@ export function finalizeBattle(): void {
 }
 
 /**
- * Award 50 EXP upon victory and persist progress
+ * Award EXP upon victory and persist progress
  */
-export function finishBattleAndAwardExp(): { expAwarded: number; deckCount: number; updatedCards?: number[] } {
+export function finishBattleAndAwardExp(expAmount: number = 60): { expAwarded: number; deckCount: number; updatedCards?: number[] } {
   const result = cardNurtureStore.awardBattleVictoryExp
-    ? cardNurtureStore.awardBattleVictoryExp(50)
-    : (cardNurtureStore as any).awardBattleVictoryExp(50);
+    ? cardNurtureStore.awardBattleVictoryExp(expAmount)
+    : (cardNurtureStore as any).awardBattleVictoryExp(expAmount);
 
   // If repeat hunting is active, immediately repeat battle
   if (playRpgState.repeatHunting) {

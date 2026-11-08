@@ -83,6 +83,7 @@ import {
   completeReincarnation,
   getEpisodeActualOpponentDeck,
   getOpponentRebirthStatBonus,
+  getBattlePowerMatchup,
   preloadDialogueChapterImages,
   selectChapter,
   selectPrevChapter,
@@ -413,6 +414,14 @@ export function handlePlayAction(action: string, target?: HTMLElement): void {
     case 'play-repeat-hunting':
       initBattle();
       break;
+    case 'play-quick-upgrade-deck': {
+      if (typeof (cardNurtureStore as any).autoAllocateDeckStatPoints === 'function') {
+        (cardNurtureStore as any).autoAllocateDeckStatPoints();
+      }
+      cardNurtureStore.autoOptimizeDeck();
+      initBattle();
+      break;
+    }
     case 'play-advance-next-chapter':
       advanceNextChapter();
       break;
@@ -765,6 +774,7 @@ export function renderBattleResultControlsHtml(): string {
   if (!playRpgState.battleWinner) return '';
   const currentChapter = playRpgState.currentChapter;
   const isPlayerWon = playRpgState.battleWinner === 'player';
+  const matchup = getBattlePowerMatchup(playRpgState.reincarnationLevel, currentChapter);
 
   return `
     <div class="w-full bg-[#0a1020] border border-white/15 p-3 rounded-none shadow-xl flex flex-col items-center gap-2.5">
@@ -773,16 +783,33 @@ export function renderBattleResultControlsHtml(): string {
       }">
         ${
           isPlayerWon
-            ? tr('🎉 전투 승리! 50 EXP 획득 완료.', '🎉 Victory! +50 EXP awarded.', '🎉 バトル勝利！50 EXPを獲得しました。')
+            ? tr(
+                `🎉 전투 승리! (내 덱 ⚡${matchup.playerDeckTP} vs 상대 ⚡${matchup.opponentDeckTP}) 경험치 보상이 지급되었습니다.`,
+                `🎉 Victory! (Your Deck ⚡${matchup.playerDeckTP} vs Enemy ⚡${matchup.opponentDeckTP}) EXP awarded.`,
+                `🎉 バトル勝利！（自デッキ ⚡${matchup.playerDeckTP} vs 敵 ⚡${matchup.opponentDeckTP}）EXPを獲得しました。`
+              )
             : tr(
-                '⚠️ 승리하지 못하면 다음 회차로 진행할 수 없습니다. 카드를 업그레이드(#card)하거나 재도전하세요!',
-                '⚠️ You must win to advance to the next episode. Upgrade your cards (#card) or retry!',
-                '⚠️ 勝利しないと次話へ進めません。カードを強化（#card）するか再挑戦してください！'
+                `⚠️ 상대 덱 파워(⚡${matchup.opponentDeckTP})가 강합니다! (내 덱 ⚡${matchup.playerDeckTP}) 카드를 업그레이드(#card)하여 돌파하세요!`,
+                `⚠️ Enemy Deck Power (⚡${matchup.opponentDeckTP}) is strong! (Your Deck ⚡${matchup.playerDeckTP}) Upgrade your cards (#card) to break through!`,
+                `⚠️ 敵デッキ戦力（⚡${matchup.opponentDeckTP}）が強力です！（自デッキ ⚡${matchup.playerDeckTP}）カードを強化して突破しましょう！`
               )
         }
       </div>
 
       <div class="flex flex-wrap items-center justify-center gap-2">
+        ${
+          matchup.unspentPoints > 0
+            ? `
+              <button
+                type="button"
+                data-action="play-quick-upgrade-deck"
+                class="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs font-black rounded-sm min-h-[44px] cursor-pointer active:translate-y-px shadow-md"
+              >
+                ⚡ ${tr(`스탯 즉시 업그레이드 (+${matchup.unspentPoints}P) & 재전투`, `Quick Stat Upgrade (+${matchup.unspentPoints}P) & Retry`, `ステータス即時強化 (+${matchup.unspentPoints}P) & 再戦`)}
+              </button>
+            `
+            : ''
+        }
         <button
           type="button"
           data-action="play-repeat-hunting"
@@ -1836,11 +1863,11 @@ function renderAdventureView(): string {
                   <h3 id="battle-modal-title" class="text-xs sm:text-sm md:text-base font-black text-white m-0 truncate">
                     vs ${epDeck.leaderName} ${tr('외', '& others', '他')} (${epDeck.deckNames.slice(0, 3).join('·')})
                   </h3>
-                  ${
-                    playRpgState.reincarnationLevel > 0
-                      ? `<span class="px-1.5 py-0.5 bg-amber-400 text-stone-950 text-[9px] sm:text-[10px] font-black rounded-sm shrink-0">✨${tr(`영웅오라 +${playRpgState.reincarnationLevel}`, `Hero Aura +${playRpgState.reincarnationLevel}`, `英雄オーラ +${playRpgState.reincarnationLevel}`)}</span>`
-                      : ''
-                  }
+                  ${(() => {
+                    const m = getBattlePowerMatchup(playRpgState.reincarnationLevel, currentChapter);
+                    const isHard = m.opponentDeckTP > m.playerDeckTP;
+                    return `<span class="px-1.5 py-0.5 ${isHard ? 'bg-rose-500 text-white' : 'bg-emerald-400 text-stone-950'} text-[9px] sm:text-[10px] font-black rounded-sm shrink-0">⚡${tr(`내덱 ${m.playerDeckTP} vs 적 ${m.opponentDeckTP}`, `P1 ${m.playerDeckTP} vs AI ${m.opponentDeckTP}`, `自${m.playerDeckTP} vs 敵${m.opponentDeckTP}`)}</span>`;
+                  })()}
                 </div>
                 <button
                   type="button"

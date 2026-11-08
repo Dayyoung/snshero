@@ -196,7 +196,7 @@
       "imageFile": "episode_02/scene_07.webp",
       "sourceImageFile": "episode_02/scene_07.webp",
       "narrationEn": "The bustling port metropolis where sea fog mingled with the shouts of merchants and desperate refugees.",
-      "narrationKo": "해무가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다.",
+      "narrationKo": "바다 안개가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다.",
       "sourceSentenceStart": 7,
       "sourceSentenceEnd": 7,
       "alignmentScore": 1.0,
@@ -204,7 +204,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "해무가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다.",
+          "textKo": "바다 안개가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다.",
           "textEn": "The bustling port metropolis where sea fog mingled with the shouts of merchants and desperate refugees.",
           "bubbleType": "thought",
           "position": "top-right",

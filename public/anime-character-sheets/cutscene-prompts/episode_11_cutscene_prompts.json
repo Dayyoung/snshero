@@ -306,16 +306,16 @@
         {
           "code": "PROP-016",
           "nameEn": "Star-Breathing Astral Scroll",
-          "nameKo": "성진호흡 천문 두루마리 (별을 호흡하는 비전서)",
+          "nameKo": "별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)",
           "artUrl": "/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg",
           "sheetUrl": "/anime-character-sheets/props/sheets/PROP_016_Star_Breathing_Astral_Scroll_sheet.jpg",
           "holderEn": "Kadan holds/carries Star-Breathing Astral Scroll (PROP-016)",
-          "holderKo": "Kadan이(가) 성진호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용",
+          "holderKo": "Kadan이(가) 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용",
           "promptEn": "Anime key prop concept sheet of the Star-Breathing Astral Scroll, an open ancient parchment scroll projecting a glowing blue holographic constellation of the Big Dipper and mana meridian stars above it."
         }
       ],
       "propHolderPromptEn": "[PROP-003 Weathered Iron Shield (Prop Reference: /anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg)]: Kadan holds/carries Weathered Iron Shield (PROP-003) ; [PROP-016 Star-Breathing Astral Scroll (Prop Reference: /anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg)]: Kadan holds/carries Star-Breathing Astral Scroll (PROP-016)",
-      "propHolderPromptKo": "[PROP-003 무쇠 방패 (북방 전사의 철방패) (Weathered Iron Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg`)]: Kadan이(가) 무쇠 방패 (북방 전사의 철방패)(PROP-003)을(를) 소지 및 사용 / [PROP-016 성진호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 성진호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용",
+      "propHolderPromptKo": "[PROP-003 무쇠 방패 (북방 전사의 철방패) (Weathered Iron Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg`)]: Kadan이(가) 무쇠 방패 (북방 전사의 철방패)(PROP-003)을(를) 소지 및 사용 / [PROP-016 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용",
       "dialogue": {
         "hasDialogue": false,
         "hasNarration": true,
@@ -2119,7 +2119,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg",
         "descriptionEn": "Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.",
-        "descriptionKo": "미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛"
+        "descriptionKo": "미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛"
       },
       "characters": [
         {
@@ -2218,7 +2218,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg",
         "descriptionEn": "Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.",
-        "descriptionKo": "미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛"
+        "descriptionKo": "미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛"
       },
       "characters": [
         {
@@ -2377,7 +2377,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg",
         "descriptionEn": "Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.",
-        "descriptionKo": "미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛"
+        "descriptionKo": "미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛"
       },
       "characters": [
         {
@@ -2476,7 +2476,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg",
         "descriptionEn": "Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.",
-        "descriptionKo": "미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛"
+        "descriptionKo": "미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛"
       },
       "characters": [
         {
@@ -2555,7 +2555,7 @@
         "artUrl": "/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg",
         "sheetUrl": "/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg",
         "descriptionEn": "Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.",
-        "descriptionKo": "미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛"
+        "descriptionKo": "미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛"
       },
       "characters": [
         {

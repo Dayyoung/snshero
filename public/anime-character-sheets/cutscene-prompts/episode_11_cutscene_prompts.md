@@ -142,7 +142,7 @@
   - **캐릭터 외형 묘사**: 카단(Kadan, 7등신 컷아웃: `/anime-character-sheets/cutouts/041_Kadan.png`) — 등에 장착한 북방 설원 수호의 '눈(SNOW) 문양 방패(Snow-Emblem Shield)'와 붉은 머플러, 어머니·스승의 유품 '기억을 깨우는 은빛 룬 단검'
   - `EN`: Kadan (7-Head-Tall Cutout Reference: /anime-character-sheets/cutouts/041_Kadan.png) — 7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger
 - **4. 등장 소품 시트 및 소품 소지 캐릭터 (Props & Prop Holder)**:
-  - **소품 및 소지자**: [PROP-003 무쇠 방패 (북방 전사의 철방패) (Weathered Iron Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg`)]: Kadan이(가) 무쇠 방패 (북방 전사의 철방패)(PROP-003)을(를) 소지 및 사용 / [PROP-016 성진호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 성진호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
+  - **소품 및 소지자**: [PROP-003 무쇠 방패 (북방 전사의 철방패) (Weathered Iron Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg`)]: Kadan이(가) 무쇠 방패 (북방 전사의 철방패)(PROP-003)을(를) 소지 및 사용 / [PROP-016 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
   - `EN`: [PROP-003 Weathered Iron Shield (Prop Reference: /anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg)]: Kadan holds/carries Weathered Iron Shield (PROP-003) ; [PROP-016 Star-Breathing Astral Scroll (Prop Reference: /anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg)]: Kadan holds/carries Star-Breathing Astral Scroll (PROP-016)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
   - 전지적 시점 배경 남자 나레이션 (6초 이내) 및 등장인물 전원 침묵 지침: 화면에 등장하는 모든 인물은 입을 굳게 다물고 아무 말도 해서는 안 되며(입 모양 움직임 절대 금지), 오직 배경에서만 중후한 남자 나레이션 음성으로 6초 이내에 다음 내용을 설명해야 함: "카단은 실리아의 신호에 맞추어 별의 호흡을 끌어올렸다." (영문 6s 나레이션: "Kadan regulated his breathing in harmony with Cilia's signal, drawing upon the celestial cadence.")
@@ -838,7 +838,7 @@
   - `EN`: Episode 11 ('The Dagger That Wakes Memory'): Subterranean Labor Prison No. As the conflict escalates ("Lies.), the episode culminates when at dawn's first light, Kadan and his companions reached an abandoned ancient sanctuary beyond the capital's perimeter.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png)
@@ -875,7 +875,7 @@
   - `EN`: Episode 11 ('The Dagger That Wakes Memory'): Subterranean Labor Prison No. As the conflict escalates ("Lies.), the episode culminates when at dawn's first light, Kadan and his companions reached an abandoned ancient sanctuary beyond the capital's perimeter.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.041 카단 (Kadan) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/041_Kadan.png), [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png), [`NO.045 가웨인 (Gawain) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/045_Gawain.png), [`NO.046 론돌 (Rondol) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/046_Rondol.png), [`NO.074 그림리 (Grimli) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/074_Grimli.png)
@@ -912,7 +912,7 @@
   - `EN`: Episode 11 ('The Dagger That Wakes Memory'): Subterranean Labor Prison No. As the conflict escalates ("Lies.), the episode culminates when at dawn's first light, Kadan and his companions reached an abandoned ancient sanctuary beyond the capital's perimeter.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.089 고르고 (Gorgo (Medusa Gorgo)) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/089_Medusa_Gorgo.png), [`NO.048 로비냐드 (Robinyard) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/048_Robinyard.png)
@@ -949,7 +949,7 @@
   - `EN`: Episode 11 ('The Dagger That Wakes Memory'): Subterranean Labor Prison No. As the conflict escalates ("Lies.), the episode culminates when at dawn's first light, Kadan and his companions reached an abandoned ancient sanctuary beyond the capital's perimeter.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.043 발리안 (Balian) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/043_Balian.png)
@@ -986,7 +986,7 @@
   - `EN`: Episode 11 ('The Dagger That Wakes Memory'): Subterranean Labor Prison No. As the conflict escalates ("Lies.), the episode culminates when at dawn's first light, Kadan and his companions reached an abandoned ancient sanctuary beyond the capital's perimeter.
 - **2. 배경장소 시트 및 배경 묘사 (Background / Location Sheet)**:
   - **첨부 배경 이미지**: `LOC-003` **Mistfall Cliff** (미스트폴 절벽 (안개 절벽)) — [배경 원화(`/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/art/LOC_003_Mistfall_Cliff.jpg) | [설정 시트(`/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg`)](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/locations/sheets/LOC_003_Mistfall_Cliff_sheet.jpg)
-  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 운해(雲海)와 매서운 칼바람, 차가운 새벽 달빛
+  - **배경 묘사**: 미스트폴 절벽 (안개 절벽) (Mistfall Cliff) — 얼음과 서리가 뒤덮인 깎아지른 흑암 절벽, 무너진 고대 돌기둥과 폐신전 제단 / 끝없는 은빛 구름 바다와 매서운 칼바람, 차가운 새벽 달빛
   - `EN`: Anime environment concept art of Mistfall Cliff, a sheer ice-crusted mountain cliff precipice above a sea of swirling silver clouds and dense fog, ancient ruined stone shrine pillars at the cliff edge, dramatic cold wind currents, cinematic anime background.
 - **3. 등장 캐릭터 7등신 Cutout 첨부 및 외형 묘사 (7-Head-Tall Character Cutouts)**:
   - **첨부 7등신 Cutout 파일**: [`NO.043 발리안 (Balian) 7등신 Cutout`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/cutouts/043_Balian.png)

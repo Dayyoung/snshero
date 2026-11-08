@@ -203,7 +203,7 @@
 ## EP19-CUT06 (00:30–00:36 · 6초 동영상)
 
 - **원문 소설 구간 (EN)**: Ignis gripped Kadan's shoulder with solemn urgency. "Stay sharp, Kadan. King Aeolus's storm blade is a divine relic of the winds, capable of cleaving imperial knights in twain with a single stroke."
-- **원문 소설 구간 (KR)**: 이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 일국의 신기(神器)다.”
+- **원문 소설 구간 (KR)**: 이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 왕국의 전설적인 성물이다.”
 - **1. 현재 회차 전체 스토리 요약 (Episode Story Context)**:
   - 제19화 『세 가지 시험』(Three Trials): 나선형 계단을 모두 오른 일행은 마침내 바람 속삭임 섬의 최정상이자 해발 수천 길 상공에 떠 있는 ‘하늘 제단’에 도달했다. 중반부 하지만 카단은 품속에서 은빛 단검의 붉은 매듭을 꽉 쥐며 깊은 숨을 내쉬었다. 이어 결말에서는 에올루스 국왕이 자신의 어깨에 둘렀던 푸른 깃털 망토를 벗어 실리아의 어깨에 걸쳐주었다.
   - `EN`: Episode 19 ('Three Trials'): Ascending the final coils of the spiraling staircase, the companions reached the Sky Altar, suspended thousands of fathoms above Whispering Wind Island. As the conflict escalates ("My shield was never forged for bloody vengeance.), the episode culminates when king Aeolus draped his mantle of royal azure feathers around Cilia's shoulders.
@@ -219,7 +219,7 @@
   - **소품 및 소지자**: [CHAR-EQUIP 카단의 기본 무장/소지품 (Kadan's Signature Gear, 소품 원화: `/anime-character-sheets/cutouts/041_Kadan.png`)]: 카단(7등신 컷아웃: /anime-character-sheets/cutouts/041_Kadan.png)이(가) 고유 무장(등에 장착한 북방 설원 수호의 '눈(SNOW) 문양 방패(Snow-Emblem Shield)'와 붉은 머플러, 어머니·스승의 유품 '기억을 깨우는 은빛 룬 단검')을 착용/소지함
   - `EN`: [CHAR-EQUIP Kadan's Signature Gear (Prop Reference: /anime-character-sheets/cutouts/041_Kadan.png)]: Kadan (7-head-tall cutout: /anime-character-sheets/cutouts/041_Kadan.png) carries their signature equipment (7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
-  - 6초 이내 캐릭터 대사 요약 지침: [카단(Kadan)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 일국의 신기(神器)다." (영문 6s 대사: "Stay sharp, Kadan.") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
+  - 6초 이내 캐릭터 대사 요약 지침: [카단(Kadan)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 왕국의 전설적인 성물이다." (영문 6s 대사: "Stay sharp, Kadan.") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
   - `EN`: 6-SECOND CHARACTER DIALOGUE RULE: The character Kadan MUST speak the following summarized line concisely within 6 seconds in English with expressive anime lip-sync: "Stay sharp, Kadan." — ONLY Kadan speaks; all other characters in the scene MUST keep their mouths closed and remain silent.
 - **6. 글자 포함 금지 지침 (Strict No-Text Rule)**:
   - 글자 포함 절대 금지: 영상 내 자막, 말풍선, 텍스트, 알파벳, 한자, 숫자, 워터마크, UI 등 어떠한 글자도 절대 포함되어서는 안 됨.
@@ -327,7 +327,7 @@
   - **캐릭터 외형 묘사**: 알렉산다르(Aleksandar, 7등신 컷아웃: `/anime-character-sheets/cutouts/050_Aleksandar.png`) — 별빛과 성흔의 마력이 깃든 전설의 '벼린 아케인 쌍검' / 카단(Kadan, 7등신 컷아웃: `/anime-character-sheets/cutouts/041_Kadan.png`) — 등에 장착한 북방 설원 수호의 '눈(SNOW) 문양 방패(Snow-Emblem Shield)'와 붉은 머플러, 어머니·스승의 유품 '기억을 깨우는 은빛 룬 단검'
   - `EN`: Aleksandar (7-Head-Tall Cutout Reference: /anime-character-sheets/cutouts/050_Aleksandar.png) — 7-head-tall muscular northern warrior wielding masterwork twin arcane longswords ; Kadan (7-Head-Tall Cutout Reference: /anime-character-sheets/cutouts/041_Kadan.png) — 7-head-tall young northern hero in dark frontier tunic and red scarf, carrying the Snow-Emblem Shield on his back and the Silver Dagger
 - **4. 등장 소품 시트 및 소품 소지 캐릭터 (Props & Prop Holder)**:
-  - **소품 및 소지자**: [PROP-003 무쇠 방패 (북방 전사의 철방패) (Weathered Iron Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg`)]: Aleksandar이(가) 무쇠 방패 (북방 전사의 철방패)(PROP-003)을(를) 소지 및 사용 / [PROP-016 성진호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 성진호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
+  - **소품 및 소지자**: [PROP-003 무쇠 방패 (북방 전사의 철방패) (Weathered Iron Shield, 소품 원화: `/anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg`)]: Aleksandar이(가) 무쇠 방패 (북방 전사의 철방패)(PROP-003)을(를) 소지 및 사용 / [PROP-016 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서) (Star-Breathing Astral Scroll, 소품 원화: `/anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg`)]: Kadan이(가) 별빛의 호흡 천문 두루마리 (별을 호흡하는 비전서)(PROP-016)을(를) 소지 및 사용
   - `EN`: [PROP-003 Weathered Iron Shield (Prop Reference: /anime-character-sheets/props/art/PROP_003_Weathered_Iron_Shield.jpg)]: Aleksandar holds/carries Weathered Iron Shield (PROP-003) ; [PROP-016 Star-Breathing Astral Scroll (Prop Reference: /anime-character-sheets/props/art/PROP_016_Star_Breathing_Astral_Scroll.jpg)]: Kadan holds/carries Star-Breathing Astral Scroll (PROP-016)
 - **5. 대사 6초 요약 / 전원 침묵 / 전지적 남자 나레이션 지침 (6-Second Audio Rule)**:
   - 6초 이내 캐릭터 대사 요약 지침: [알렉산다르(Aleksandar)] 캐릭터만 6초 이내로 다음 요약 대사를 발화해야 함: "알렉산다르 스승님께서는 바람을 거스르려 하지 말고, 대지의 무게로 바람의 결을 품으라고 가르치셨다." (영문 6s 대사: "Master Aleksandar taught me never to fight the gale, but to embrace its flow...") — 그 외 등장인물은 모두 입을 다물고 아무 말도 해서는 안 됨.
