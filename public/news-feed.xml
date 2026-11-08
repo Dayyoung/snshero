@@ -9,7 +9,7 @@
     <link>https://snshero.com/reddit</link>
     <description>실시간 구글 뉴스(Google News US Edition) 기반 신속하고 정확한 글로벌 뉴스 및 인공지능 요약 브리핑 - SNSHero News</description>
     <language>en-US</language>
-    <lastBuildDate>Sun, 08 Nov 2026 09:01:53 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 08 Nov 2026 11:40:55 GMT</lastBuildDate>
     <atom:link href="https://snshero.com/news-feed.xml" rel="self" type="application/rss+xml" />
     <image>
       <url>https://snshero.com/logo.jpg</url>
@@ -17,9 +17,609 @@
       <link>https://snshero.com/reddit</link>
     </image>
     <item>
+      <title><![CDATA[AGENTS.md Emerges as Open Standard for Repository AI Coding Agent Guidance]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794135660000_0</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794135660000_0</guid>
+      <pubDate>Sun, 08 Nov 2026 11:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The open-source software community has converged on AGENTS.md as a standardized markdown configuration specification, enabling development teams to establish bounded architectural instructions, testing policies, and execution scopes for autonomous coding agents.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="AGENTS.md Emerges as Open Standard for Repository AI Coding Agent Guidance" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The open-source software community has converged on AGENTS.md as a standardized markdown configuration specification, enabling development teams to establish bounded architectural instructions, testing policies, and execution scopes for autonomous coding agents.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/08/agents-md/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[AGENTS.md Emerges as Open Standard for Repository AI Coding Agent Guidance]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Claude Code Subagents Enable Modular AI Workflows with Isolated Context Windows]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794135660000_1</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794135660000_1</guid>
+      <pubDate>Sun, 08 Nov 2026 11:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Anthropic has rolled out subagents within Claude Code, allowing developers to spawn specialized, least-privilege agent roles that execute architectural reviews and security audits in parallel without polluting the primary context window.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="Claude Code Subagents Enable Modular AI Workflows with Isolated Context Windows" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Anthropic has rolled out subagents within Claude Code, allowing developers to spawn specialized, least-privilege agent roles that execute architectural reviews and security audits in parallel without polluting the primary context window.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/08/claude-code-subagents/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Claude Code Subagents Enable Modular AI Workflows with Isolated Context Windows]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[GitLab Unveils Duo Agent Platform in Public Beta for Agent-Orchestrated DevSecOps]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794135660000_2</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794135660000_2</guid>
+      <pubDate>Sun, 08 Nov 2026 11:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[GitLab has launched the public beta of its Duo Agent Platform, providing software engineering enterprises with an integrated environment where autonomous agents generate code, patch security vulnerabilities, and remediate broken CI/CD pipelines under centralized policy control.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="GitLab Unveils Duo Agent Platform in Public Beta for Agent-Orchestrated DevSecOps" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>GitLab has launched the public beta of its Duo Agent Platform, providing software engineering enterprises with an integrated environment where autonomous agents generate code, patch security vulnerabilities, and remediate broken CI/CD pipelines under centralized policy control.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/08/gitlab-duo-agent-platform/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[GitLab Unveils Duo Agent Platform in Public Beta for Agent-Orchestrated DevSecOps]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Databricks Agent Bricks Automates Enterprise AI Development with Data Intelligence]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794135660000_3</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794135660000_3</guid>
+      <pubDate>Sun, 08 Nov 2026 11:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Databricks has introduced Agent Bricks, an enterprise framework that leverages the Data Intelligence Platform to evaluate, optimize, and deploy customized autonomous agents that query corporate data lakes while adhering to enterprise governance.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80" alt="Databricks Agent Bricks Automates Enterprise AI Development with Data Intelligence" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Databricks has introduced Agent Bricks, an enterprise framework that leverages the Data Intelligence Platform to evaluate, optimize, and deploy customized autonomous agents that query corporate data lakes while adhering to enterprise governance.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/07/databricks-agent-bricks-platform/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Databricks Agent Bricks Automates Enterprise AI Development with Data Intelligence]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Google Releases Major Firebase Studio Updates for Autonomous Agentic Development]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794135660000_4</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794135660000_4</guid>
+      <pubDate>Sun, 08 Nov 2026 11:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Google has updated Firebase Studio into an agentic cloud development workspace, embedding autonomous agents that directly assist with full-stack coding, app prototyping, and database schema migrations across cloud environments.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" alt="Google Releases Major Firebase Studio Updates for Autonomous Agentic Development" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Google has updated Firebase Studio into an agentic cloud development workspace, embedding autonomous agents that directly assist with full-stack coding, app prototyping, and database schema migrations across cloud environments.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/07/firebase-studio-ai-agent-updates/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Google Releases Major Firebase Studio Updates for Autonomous Agentic Development]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[US Air Force Asks Industry to Develop Affordable Mass Cruise Missile for Allied Defense]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794135660000_5</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794135660000_5</guid>
+      <pubDate>Sun, 08 Nov 2026 11:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The US Air Force has solicited commercial defense proposals for a low-cost, containerized long-range cruise missile designed for rapid mass manufacturing and export to support allied deterrence requirements.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="US Air Force Asks Industry to Develop Affordable Mass Cruise Missile for Allied Defense" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The US Air Force has solicited commercial defense proposals for a low-cost, containerized long-range cruise missile designed for rapid mass manufacturing and export to support allied deterrence requirements.</p>
+          <p><small>출처 및 원문: <a href="https://www.defensenews.com/industry/2026/11/03/us-air-force-asks-industry-for-new-cruise-missile-for-ukraine/">defensenews.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[US Air Force Asks Industry to Develop Affordable Mass Cruise Missile for Allied Defense]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[MBDA Reveals High-Speed Strike Missile with Operational Range Far Exceeding Exocet]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794135660000_6</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794135660000_6</guid>
+      <pubDate>Sun, 08 Nov 2026 11:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[European missile consortium MBDA has unveiled a next-generation high-subsonic anti-ship and land-attack cruise missile engineered to significantly outrange legacy Exocet systems and penetrate sophisticated naval electronic countermeasures.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=800&q=80" alt="MBDA Reveals High-Speed Strike Missile with Operational Range Far Exceeding Exocet" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>European missile consortium MBDA has unveiled a next-generation high-subsonic anti-ship and land-attack cruise missile engineered to significantly outrange legacy Exocet systems and penetrate sophisticated naval electronic countermeasures.</p>
+          <p><small>출처 및 원문: <a href="https://www.defensenews.com/global/europe/2026/11/04/mbda-high-speed-strike-missile-to-have-range-far-exceeding-exocet/">defensenews.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[MBDA Reveals High-Speed Strike Missile with Operational Range Far Exceeding Exocet]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Ukraine Completes Development of Domestic SAM Missile Defense System Awaiting Partner Components]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794135660000_7</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794135660000_7</guid>
+      <pubDate>Sun, 08 Nov 2026 11:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Ukrainian defense manufacturers have finalized engineering of a sovereign medium-range surface-to-air missile system, establishing indigenous radar command integration while awaiting European partner interceptor guidance modules.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80" alt="Ukraine Completes Development of Domestic SAM Missile Defense System Awaiting Partner Components" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Ukrainian defense manufacturers have finalized engineering of a sovereign medium-range surface-to-air missile system, establishing indigenous radar command integration while awaiting European partner interceptor guidance modules.</p>
+          <p><small>출처 및 원문: <a href="https://www.defensenews.com/global/europe/2026/10/30/ukraine-completes-work-on-new-missile-defense-system-awaits-european-partner-components/">defensenews.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Ukraine Completes Development of Domestic SAM Missile Defense System Awaiting Partner Components]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Novel Autonomous Interceptor Drones Shift Air Defense Economics in Ukrainian Theater]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794135660000_8</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794135660000_8</guid>
+      <pubDate>Sun, 08 Nov 2026 11:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Ukrainian combat trials demonstrate that low-cost AI-assisted interceptor drones successfully destroy enemy loitering munitions at a fraction of the cost of traditional surface-to-air missile interceptors, transforming the economics of tactical air defense.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&fit=crop&w=800&q=80" alt="Novel Autonomous Interceptor Drones Shift Air Defense Economics in Ukrainian Theater" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Ukrainian combat trials demonstrate that low-cost AI-assisted interceptor drones successfully destroy enemy loitering munitions at a fraction of the cost of traditional surface-to-air missile interceptors, transforming the economics of tactical air defense.</p>
+          <p><small>출처 및 원문: <a href="https://www.militarytimes.com/global/europe/2026/03/05/novel-interceptor-drones-bend-air-defense-economics-in-ukraines-favor/">militarytimes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Novel Autonomous Interceptor Drones Shift Air Defense Economics in Ukrainian Theater]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Estonian Firm KrattWorks Develops Autonomous Dummy Target Drones Simulating Shahed Profiles]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794135660000_9</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794135660000_9</guid>
+      <pubDate>Sun, 08 Nov 2026 11:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Estonian defense robotics company KrattWorks is manufacturing autonomous target practice drones that replicate the radar cross-section, thermal signature, and flight characteristics of Shahed-type attack drones for allied air defense live-fire training.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80" alt="Estonian Firm KrattWorks Develops Autonomous Dummy Target Drones Simulating Shahed Profiles" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Estonian defense robotics company KrattWorks is manufacturing autonomous target practice drones that replicate the radar cross-section, thermal signature, and flight characteristics of Shahed-type attack drones for allied air defense live-fire training.</p>
+          <p><small>출처 및 원문: <a href="https://www.defensenews.com/global/europe/2026/10/09/estonias-krattworks-crafting-shahed-like-dummy-drone-for-target-practice/">defensenews.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Estonian Firm KrattWorks Develops Autonomous Dummy Target Drones Simulating Shahed Profiles]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Microsoft Releases A2A .NET SDK for Building Interoperable Collaborative AI Agents]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794132660000_10</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794132660000_10</guid>
+      <pubDate>Sun, 08 Nov 2026 10:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Microsoft has debuted the A2A .NET SDK, providing standardized Agent Cards for dynamic capability discovery, Server-Sent Events streaming, and ASP.NET Core integration to coordinate multi-agent collaborations.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Microsoft Releases A2A .NET SDK for Building Interoperable Collaborative AI Agents" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Microsoft has debuted the A2A .NET SDK, providing standardized Agent Cards for dynamic capability discovery, Server-Sent Events streaming, and ASP.NET Core integration to coordinate multi-agent collaborations.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/08/a2a-dotnet-sdk/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Microsoft Releases A2A .NET SDK for Building Interoperable Collaborative AI Agents]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Amazon Introduces Kiro: Spec-Driven AI Development Agent to Replace Vibe Coding]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794132660000_11</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794132660000_11</guid>
+      <pubDate>Sun, 08 Nov 2026 10:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Amazon Web Services has introduced Kiro, a spec-driven AI developer agent that structures software engineering into formal requirements, technical schemas, and verified implementation tasks to prevent architectural regressions.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="Amazon Introduces Kiro: Spec-Driven AI Development Agent to Replace Vibe Coding" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Amazon Web Services has introduced Kiro, a spec-driven AI developer agent that structures software engineering into formal requirements, technical schemas, and verified implementation tasks to prevent architectural regressions.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/08/aws-kiro-spec-driven-agent/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Amazon Introduces Kiro: Spec-Driven AI Development Agent to Replace Vibe Coding]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Microsoft Adds Deep Research Capabilities to Azure AI Foundry Agent Service]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794132660000_12</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794132660000_12</guid>
+      <pubDate>Sun, 08 Nov 2026 10:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Microsoft has enhanced the Azure AI Foundry Agent Service with deep research capabilities, utilizing o3-series reasoning models and web grounding to autonomously synthesize complex enterprise investigative reports with full traceability.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Microsoft Adds Deep Research Capabilities to Azure AI Foundry Agent Service" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Microsoft has enhanced the Azure AI Foundry Agent Service with deep research capabilities, utilizing o3-series reasoning models and web grounding to autonomously synthesize complex enterprise investigative reports with full traceability.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/07/azure-ai-foundry-deep-research/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Microsoft Adds Deep Research Capabilities to Azure AI Foundry Agent Service]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Azure Logic Apps Introduces Agent Loop for Iterative Think-Act-Learn Workflows]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794132660000_13</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794132660000_13</guid>
+      <pubDate>Sun, 08 Nov 2026 10:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Microsoft has launched Agent Loop in Azure Logic Apps, enabling AI agents to connect to over 1,400 enterprise connectors through iterative reasoning cycles while enforcing human-in-the-loop governance for high-stakes business operations.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80" alt="Azure Logic Apps Introduces Agent Loop for Iterative Think-Act-Learn Workflows" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Microsoft has launched Agent Loop in Azure Logic Apps, enabling AI agents to connect to over 1,400 enterprise connectors through iterative reasoning cycles while enforcing human-in-the-loop governance for high-stakes business operations.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/05/azure-logic-apps-agent-loop/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Azure Logic Apps Introduces Agent Loop for Iterative Think-Act-Learn Workflows]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[OWASP Backs ANS: DNS-Inspired Secure Discovery Protocol for Autonomous AI Agents]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794132660000_14</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794132660000_14</guid>
+      <pubDate>Sun, 08 Nov 2026 10:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The OWASP Foundation and PayPal engineers have introduced Agent Name Service (ANS), a decentralized, DNS-inspired discovery and registration fabric designed to verify agent identities and resolve capabilities across disparate corporate networks.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" alt="OWASP Backs ANS: DNS-Inspired Secure Discovery Protocol for Autonomous AI Agents" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The OWASP Foundation and PayPal engineers have introduced Agent Name Service (ANS), a decentralized, DNS-inspired discovery and registration fabric designed to verify agent identities and resolve capabilities across disparate corporate networks.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/06/secure-agent-discovery-ans/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[OWASP Backs ANS: DNS-Inspired Secure Discovery Protocol for Autonomous AI Agents]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[US Army Launches Counter-Drone High-Energy Laser Production with $465M Award]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794132660000_15</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794132660000_15</guid>
+      <pubDate>Sun, 08 Nov 2026 10:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The US Army has awarded a $465 million production contract to ramp up manufacturing of mobile high-energy laser weapon systems to protect tactical formations against hostile loitering munitions and reconnaissance drone swarms.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="US Army Launches Counter-Drone High-Energy Laser Production with $465M Award" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The US Army has awarded a $465 million production contract to ramp up manufacturing of mobile high-energy laser weapon systems to protect tactical formations against hostile loitering munitions and reconnaissance drone swarms.</p>
+          <p><small>출처 및 원문: <a href="https://www.militarytimes.com/industry/techwatch/2026/09/03/us-army-launches-laser-production-with-465m-contract-award/">militarytimes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[US Army Launches Counter-Drone High-Energy Laser Production with $465M Award]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[US Army Pursues Low-Cost Surface-to-Air Interceptor Missile to Defeat Small UAS]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794132660000_16</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794132660000_16</guid>
+      <pubDate>Sun, 08 Nov 2026 10:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The US Army has issued industry solicitations for an affordable, high-velocity surface-to-air missile designed to defeat Group 1-3 unmanned aircraft systems without expending high-end Stinger or Patriot air defense inventories.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=800&q=80" alt="US Army Pursues Low-Cost Surface-to-Air Interceptor Missile to Defeat Small UAS" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The US Army has issued industry solicitations for an affordable, high-velocity surface-to-air missile designed to defeat Group 1-3 unmanned aircraft systems without expending high-end Stinger or Patriot air defense inventories.</p>
+          <p><small>출처 및 원문: <a href="https://www.defensenews.com/industry/2026/08/04/us-army-wants-a-surface-to-air-missile-that-can-destroy-small-drones/">defensenews.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[US Army Pursues Low-Cost Surface-to-Air Interceptor Missile to Defeat Small UAS]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[NATO Allies Evaluate Commercial Low-Cost Drone Interceptors at European Showcase]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794132660000_17</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794132660000_17</guid>
+      <pubDate>Sun, 08 Nov 2026 10:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[NATO defense delegations gathered at Xponential Europe to evaluate mass-produced kinetic interceptor drones, focusing on sub-$2,000 unit costs to counter high-volume one-way attack drone incursions across European airspace.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&fit=crop&w=800&q=80" alt="NATO Allies Evaluate Commercial Low-Cost Drone Interceptors at European Showcase" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>NATO defense delegations gathered at Xponential Europe to evaluate mass-produced kinetic interceptor drones, focusing on sub-$2,000 unit costs to counter high-volume one-way attack drone incursions across European airspace.</p>
+          <p><small>출처 및 원문: <a href="https://www.militarytimes.com/industry/techwatch/2026/05/05/nato-nations-size-up-an-interceptor-drone-bazaar-where-low-price-is-everything/">militarytimes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[NATO Allies Evaluate Commercial Low-Cost Drone Interceptors at European Showcase]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Pentagon Seeks Fast-Track Procurement for Ukraine's $1,000 Sting Anti-Shahed Drone]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794132660000_18</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794132660000_18</guid>
+      <pubDate>Sun, 08 Nov 2026 10:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The Department of Defense has initiated procurement evaluations for Ukraine's $1,000 Sting FPV interceptor drone, which utilizes onboard target-locking software to autonomously chase down and ram Iranian-designed Shahed loitering munitions.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80" alt="Pentagon Seeks Fast-Track Procurement for Ukraine&apos;s $1,000 Sting Anti-Shahed Drone" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The Department of Defense has initiated procurement evaluations for Ukraine's $1,000 Sting FPV interceptor drone, which utilizes onboard target-locking software to autonomously chase down and ram Iranian-designed Shahed loitering munitions.</p>
+          <p><small>출처 및 원문: <a href="https://www.militarytimes.com/news/pentagon-congress/2026/03/11/these-are-ukraines-1000-interceptor-drones-the-pentagon-wants-to-buy/">militarytimes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Pentagon Seeks Fast-Track Procurement for Ukraine's $1,000 Sting Anti-Shahed Drone]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[US Navy Demonstrates Common Autonomous Mission Planning Software Across Unmanned Fleets]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794132660000_19</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794132660000_19</guid>
+      <pubDate>Sun, 08 Nov 2026 10:11:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_navytimes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The US Navy has successfully field-tested Common Autonomous Mission Planning (CAMP) software, establishing unified information-sharing protocols and mission command architectures across heterogeneous uncrewed aircraft and surface vessels.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80" alt="US Navy Demonstrates Common Autonomous Mission Planning Software Across Unmanned Fleets" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The US Navy has successfully field-tested Common Autonomous Mission Planning (CAMP) software, establishing unified information-sharing protocols and mission command architectures across heterogeneous uncrewed aircraft and surface vessels.</p>
+          <p><small>출처 및 원문: <a href="https://www.navytimes.com/news/your-navy/2026/09/22/navy-successfully-tests-new-autonomous-aircraft-feature-aimed-at-simplifying-mission-planning/">navytimes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[US Navy Demonstrates Common Autonomous Mission Planning Software Across Unmanned Fleets]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Microsoft Moves Azure DevOps MCP Server from Preview to General Availability]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794129300000_20</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794129300000_20</guid>
+      <pubDate>Sun, 08 Nov 2026 09:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Microsoft has made its Azure DevOps Model Context Protocol server generally available, exposing structured repositories, work items, and build pipelines to autonomous AI agents for automated planning and delivery management.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Microsoft Moves Azure DevOps MCP Server from Preview to General Availability" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Microsoft has made its Azure DevOps Model Context Protocol server generally available, exposing structured repositories, work items, and build pipelines to autonomous AI agents for automated planning and delivery management.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/11/microsoft-ado-mcp-server/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Microsoft Moves Azure DevOps MCP Server from Preview to General Availability]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Inaugural MCP Dev Summit Charts Next Evolution for Streamable Agent Protocols]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794129300000_21</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794129300000_21</guid>
+      <pubDate>Sun, 08 Nov 2026 09:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The first Model Context Protocol developer summit outlined roadmap priorities including streamable HTTP transports, asynchronous agent task execution, and official cross-language SDKs to expand enterprise agentic integration.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="Inaugural MCP Dev Summit Charts Next Evolution for Streamable Agent Protocols" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The first Model Context Protocol developer summit outlined roadmap priorities including streamable HTTP transports, asynchronous agent task execution, and official cross-language SDKs to expand enterprise agentic integration.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/07/mcp-summit-ai-future/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Inaugural MCP Dev Summit Charts Next Evolution for Streamable Agent Protocols]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[QCon San Francisco Focuses on Production Architectures Powering Enterprise AI Systems]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794129300000_22</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794129300000_22</guid>
+      <pubDate>Sun, 08 Nov 2026 09:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Technical leaders from Netflix, Meta, and Anthropic examined production architectures for enterprise AI, presenting field-tested patterns for de-risking autonomous agent fleets and scaling RAG pipelines across 100 million users.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="QCon San Francisco Focuses on Production Architectures Powering Enterprise AI Systems" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Technical leaders from Netflix, Meta, and Anthropic examined production architectures for enterprise AI, presenting field-tested patterns for de-risking autonomous agent fleets and scaling RAG pipelines across 100 million users.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/10/qcon-sf-2025-sessions/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[QCon San Francisco Focuses on Production Architectures Powering Enterprise AI Systems]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Azure AI Foundry Agent Service Reaches GA with Multi-Agent Orchestration Support]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794129300000_23</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794129300000_23</guid>
+      <pubDate>Sun, 08 Nov 2026 09:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Microsoft has announced the general availability of the Azure AI Foundry Agent Service, bringing enterprise security, containerized agent hosting, and multi-agent coordination across AutoGen and Semantic Kernel frameworks.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" alt="Azure AI Foundry Agent Service Reaches GA with Multi-Agent Orchestration Support" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Microsoft has announced the general availability of the Azure AI Foundry Agent Service, bringing enterprise security, containerized agent hosting, and multi-agent coordination across AutoGen and Semantic Kernel frameworks.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/05/azure-ai-foundry-agents-ga/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Azure AI Foundry Agent Service Reaches GA with Multi-Agent Orchestration Support]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Microsoft Foundry Adds Enterprise Runtime, Tooling, and Governance for Agent Fleets]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794129300000_24</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794129300000_24</guid>
+      <pubDate>Sun, 08 Nov 2026 09:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Microsoft has upgraded Foundry with unified agent runtime management, semantic model routing, and centralized policy enforcement to govern autonomous multi-agent systems operating across corporate Kubernetes clusters.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80" alt="Microsoft Foundry Adds Enterprise Runtime, Tooling, and Governance for Agent Fleets" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Microsoft has upgraded Foundry with unified agent runtime management, semantic model routing, and centralized policy enforcement to govern autonomous multi-agent systems operating across corporate Kubernetes clusters.</p>
+          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2026/06/microsoft-foundry-agents/">infoq.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Microsoft Foundry Adds Enterprise Runtime, Tooling, and Governance for Agent Fleets]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[White House Directed Restrictions on Starshield Tactical Satellite Network for Ukraine]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794129300000_25</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794129300000_25</guid>
+      <pubDate>Sun, 08 Nov 2026 09:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Senior defense officials confirmed that executive directives from the White House established policy guidelines restricting Starshield satellite communications during offensive tactical drone operations to prevent unintended escalation.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&w=800&q=80" alt="White House Directed Restrictions on Starshield Tactical Satellite Network for Ukraine" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Senior defense officials confirmed that executive directives from the White House established policy guidelines restricting Starshield satellite communications during offensive tactical drone operations to prevent unintended escalation.</p>
+          <p><small>출처 및 원문: <a href="https://www.militarytimes.com/news/pentagon-congress/2026/10/16/order-to-limit-starshield-for-ukraine-came-from-inside-white-house-sources-say/">militarytimes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[White House Directed Restrictions on Starshield Tactical Satellite Network for Ukraine]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Ukrainian Military Reports Russia Operating Domestic Alternative to Starlink for Comms]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794129300000_26</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794129300000_26</guid>
+      <pubDate>Sun, 08 Nov 2026 09:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Ukrainian intelligence assessments indicate Russian forces are fielding an alternative satellite network alongside electronic warfare jamming to bypass commercial satcom restrictions and maintain tactical drone command channels.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="Ukrainian Military Reports Russia Operating Domestic Alternative to Starlink for Comms" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Ukrainian intelligence assessments indicate Russian forces are fielding an alternative satellite network alongside electronic warfare jamming to bypass commercial satcom restrictions and maintain tactical drone command channels.</p>
+          <p><small>출처 및 원문: <a href="https://www.militarytimes.com/industry/techwatch/2026/11/06/russia-using-own-version-of-starlink-for-military-comms-over-ukraine-kyiv-says/">militarytimes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Ukrainian Military Reports Russia Operating Domestic Alternative to Starlink for Comms]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[BAE Systems Unveils Next-Generation Layered Counter-Drone Air Defense Architecture]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794129300000_27</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794129300000_27</guid>
+      <pubDate>Sun, 08 Nov 2026 09:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[BAE Systems has launched a multi-tiered air defense architecture integrating 40mm programmable kinetic weapons, electronic warfare jammers, and advanced 3D radars to protect military forward bases from saturation drone attacks.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=800&q=80" alt="BAE Systems Unveils Next-Generation Layered Counter-Drone Air Defense Architecture" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>BAE Systems has launched a multi-tiered air defense architecture integrating 40mm programmable kinetic weapons, electronic warfare jammers, and advanced 3D radars to protect military forward bases from saturation drone attacks.</p>
+          <p><small>출처 및 원문: <a href="https://www.defensenews.com/industry/techwatch/2026/10/13/bae-systems-unveils-new-layered-air-defense-system/">defensenews.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[BAE Systems Unveils Next-Generation Layered Counter-Drone Air Defense Architecture]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Australia Launches Procurement Phase for Medium-Range Integrated Air Defense System]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794129300000_28</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794129300000_28</guid>
+      <pubDate>Sun, 08 Nov 2026 09:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The Australian Defence Force has commenced the acquisition phase for Project AIR 6502, seeking an integrated medium-range surface-to-air missile system to defend critical national infrastructure against cruise missiles and advanced aerial threats.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80" alt="Australia Launches Procurement Phase for Medium-Range Integrated Air Defense System" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The Australian Defence Force has commenced the acquisition phase for Project AIR 6502, seeking an integrated medium-range surface-to-air missile system to defend critical national infrastructure against cruise missiles and advanced aerial threats.</p>
+          <p><small>출처 및 원문: <a href="https://www.defensenews.com/global/asia-pacific/2026/10/19/australia-gets-the-ball-rolling-on-medium-range-air-defense/">defensenews.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Australia Launches Procurement Phase for Medium-Range Integrated Air Defense System]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[US Army Evaluates Military Humanoid Robots and Autonomous Dual-Use Power Systems]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1794129300000_29</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794129300000_29</guid>
+      <pubDate>Sun, 08 Nov 2026 09:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[The US Army Combat Capabilities Development Command has launched competitive technology evaluations to assess bipedal humanoid robots and advanced battery architectures for dangerous logistics, explosive ordnance disposal, and field support.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80" alt="US Army Evaluates Military Humanoid Robots and Autonomous Dual-Use Power Systems" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>The US Army Combat Capabilities Development Command has launched competitive technology evaluations to assess bipedal humanoid robots and advanced battery architectures for dangerous logistics, explosive ordnance disposal, and field support.</p>
+          <p><small>출처 및 원문: <a href="https://www.militarytimes.com/industry/techwatch/2026/10/19/us-army-competition-explores-military-uses-for-humanoid-robots/">militarytimes.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
+      <media:content url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
+        <media:title><![CDATA[US Army Evaluates Military Humanoid Robots and Autonomous Dual-Use Power Systems]]></media:title>
+      </media:content>
+    </item>
+    <item>
       <title><![CDATA[Buoyant Adds MCP Support to Linkerd Service Mesh for Governed AI Agent Traffic]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794126060000_0</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_0</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794126060000_30</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_30</guid>
       <pubDate>Sun, 08 Nov 2026 08:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -38,8 +638,8 @@
     </item>
     <item>
       <title><![CDATA[Google Cloud Launches Managed Model Context Protocol Support for Cloud AI Agents]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794126060000_1</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_1</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794126060000_31</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_31</guid>
       <pubDate>Sun, 08 Nov 2026 08:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -58,8 +658,8 @@
     </item>
     <item>
       <title><![CDATA[Becoming AI-Native Without Architectural Amnesia: Establishing Governed Agent Identities]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794126060000_2</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_2</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794126060000_32</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_32</guid>
       <pubDate>Sun, 08 Nov 2026 08:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -78,8 +678,8 @@
     </item>
     <item>
       <title><![CDATA[IBM Research Introduces CUGA: Configurable Universal GUI Agent for Enterprise Automation]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794126060000_3</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_3</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794126060000_33</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_33</guid>
       <pubDate>Sun, 08 Nov 2026 08:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -98,8 +698,8 @@
     </item>
     <item>
       <title><![CDATA[OpenAI and Anthropic Donate AGENTS.md and MCP to Open-Source Foundations]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794126060000_4</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_4</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794126060000_34</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_34</guid>
       <pubDate>Sun, 08 Nov 2026 08:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -118,8 +718,8 @@
     </item>
     <item>
       <title><![CDATA[KBR Debuts Directed-Energy Base Defense Architecture to Neutralize Drone Swarms]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794126060000_5</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_5</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794126060000_35</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_35</guid>
       <pubDate>Sun, 08 Nov 2026 08:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -138,8 +738,8 @@
     </item>
     <item>
       <title><![CDATA[US Army Explores Service-Wide Acquisition of Northrop Grumman AN/TPS-80 G/ATOR Radar]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794126060000_6</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_6</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794126060000_36</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_36</guid>
       <pubDate>Sun, 08 Nov 2026 08:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -158,8 +758,8 @@
     </item>
     <item>
       <title><![CDATA[Lockheed Martin Wins $694M Contract for US Air Force ARRW Hypersonic Missile Production]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794126060000_7</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_7</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794126060000_37</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_37</guid>
       <pubDate>Sun, 08 Nov 2026 08:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -178,8 +778,8 @@
     </item>
     <item>
       <title><![CDATA[Germany Pledges Tens of Thousands of AI-Enabled Interceptor Drones to Support Ukraine Air Defense]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794126060000_8</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_8</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794126060000_38</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_38</guid>
       <pubDate>Sun, 08 Nov 2026 08:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -198,8 +798,8 @@
     </item>
     <item>
       <title><![CDATA[Taiwan Restructures Military Forces to Integrate Corps-Level Drone Battalions with Rocket Artillery]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794126060000_9</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_9</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794126060000_39</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794126060000_39</guid>
       <pubDate>Sun, 08 Nov 2026 08:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -218,8 +818,8 @@
     </item>
     <item>
       <title><![CDATA[The Architectural Shift: AI Agents Become Execution Engines for Enterprise IT]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794122160000_10</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_10</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794122160000_40</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_40</guid>
       <pubDate>Sun, 08 Nov 2026 07:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -238,8 +838,8 @@
     </item>
     <item>
       <title><![CDATA[Microsoft Adds Agent Mode and Office Agent to Enterprise Office Applications]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794122160000_11</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_11</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794122160000_41</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_41</guid>
       <pubDate>Sun, 08 Nov 2026 07:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -258,8 +858,8 @@
     </item>
     <item>
       <title><![CDATA[Vercel Ship AI Launches 'An Agent on Every Desk' Enterprise Adoption Program]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794122160000_12</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_12</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794122160000_42</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_42</guid>
       <pubDate>Sun, 08 Nov 2026 07:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -278,8 +878,8 @@
     </item>
     <item>
       <title><![CDATA[AWS Launches Amazon Quick Suite Agentic AI Workspace for Enterprise Automation]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794122160000_13</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_13</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794122160000_43</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_43</guid>
       <pubDate>Sun, 08 Nov 2026 07:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -298,8 +898,8 @@
     </item>
     <item>
       <title><![CDATA[How LinkedIn Built Enterprise Multi-Agent AI on Existing Messaging Infrastructure]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794122160000_14</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_14</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794122160000_44</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_44</guid>
       <pubDate>Sun, 08 Nov 2026 07:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -318,8 +918,8 @@
     </item>
     <item>
       <title><![CDATA[Saildrone Expands European Naval Market Reach with Norwegian Manufacturing Partner]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794122160000_15</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_15</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794122160000_45</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_45</guid>
       <pubDate>Sun, 08 Nov 2026 07:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -338,8 +938,8 @@
     </item>
     <item>
       <title><![CDATA[French Defense Ministry Kicks Off Industry Pact in Rush to Field Naval Drones]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794122160000_16</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_16</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794122160000_46</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_46</guid>
       <pubDate>Sun, 08 Nov 2026 07:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -358,8 +958,8 @@
     </item>
     <item>
       <title><![CDATA[Powerus Unveils Fully Autonomous Kinetic Drone Interceptors for Base Air Defense]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794122160000_17</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_17</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794122160000_47</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_47</guid>
       <pubDate>Sun, 08 Nov 2026 07:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -378,8 +978,8 @@
     </item>
     <item>
       <title><![CDATA[US Army Awards Lockheed Martin $1.08B to Develop PAC-3 Edge Future Interceptor]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794122160000_18</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_18</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794122160000_48</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_48</guid>
       <pubDate>Sun, 08 Nov 2026 07:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -398,8 +998,8 @@
     </item>
     <item>
       <title><![CDATA[European Union Allocates $195M to Rapidly Boost Missile, Drone, and Ammo Manufacturing]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794122160000_19</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_19</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1794122160000_49</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794122160000_49</guid>
       <pubDate>Sun, 08 Nov 2026 07:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -414,606 +1014,6 @@
       <enclosure url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
       <media:content url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
         <media:title><![CDATA[European Union Allocates $195M to Rapidly Boost Missile, Drone, and Ammo Manufacturing]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Amazon Adds A2A Protocol to Bedrock AgentCore for Interoperable Multi-Agent Collaboration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794117600000_20</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794117600000_20</guid>
-      <pubDate>Sun, 08 Nov 2026 06:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Amazon Web Services has integrated the Agent-to-Agent (A2A) protocol into Bedrock AgentCore, defining standard message passing and state synchronization contracts for orchestrating heterogeneous AI agent workflows across enterprise clouds.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Amazon Adds A2A Protocol to Bedrock AgentCore for Interoperable Multi-Agent Collaboration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Amazon Web Services has integrated the Agent-to-Agent (A2A) protocol into Bedrock AgentCore, defining standard message passing and state synchronization contracts for orchestrating heterogeneous AI agent workflows across enterprise clouds.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/11/a2a-amazon-bedrock-agentcore/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Amazon Adds A2A Protocol to Bedrock AgentCore for Interoperable Multi-Agent Collaboration]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Microsoft Releases Open-Source Agent Framework Supporting MCP and AutoGen Patterns]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794117600000_21</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794117600000_21</guid>
-      <pubDate>Sun, 08 Nov 2026 06:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Microsoft has debuted an enterprise open-source Agent Framework for Python and .NET, bringing Model Context Protocol support and production-hardened AutoGen reflection and debate patterns into enterprise CI/CD environments.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="Microsoft Releases Open-Source Agent Framework Supporting MCP and AutoGen Patterns" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Microsoft has debuted an enterprise open-source Agent Framework for Python and .NET, bringing Model Context Protocol support and production-hardened AutoGen reflection and debate patterns into enterprise CI/CD environments.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/10/microsoft-agent-framework/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Microsoft Releases Open-Source Agent Framework Supporting MCP and AutoGen Patterns]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Cloudflare Workflows Adds Python Support for Durable Multi-Step AI Agent Pipelines]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794117600000_22</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794117600000_22</guid>
-      <pubDate>Sun, 08 Nov 2026 06:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Cloudflare Workflows has introduced native Python support and asyncio integration, allowing developers to orchestrate multi-step autonomous agents and long-running data pipelines with automated state persistence and retry semantics.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Cloudflare Workflows Adds Python Support for Durable Multi-Step AI Agent Pipelines" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Cloudflare Workflows has introduced native Python support and asyncio integration, allowing developers to orchestrate multi-step autonomous agents and long-running data pipelines with automated state persistence and retry semantics.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/11/cloudflare-python-ai-workflows/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Cloudflare Workflows Adds Python Support for Durable Multi-Step AI Agent Pipelines]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Salesforce Details Self-Healing Cloud Architecture Using AIOps and Progressive Agent Autonomy]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794117600000_23</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794117600000_23</guid>
-      <pubDate>Sun, 08 Nov 2026 06:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Salesforce infrastructure engineers have shared architectural blueprints for autonomous self-healing cloud platforms, deploying Kubectl and AIOps agents to automate incident triage and eliminate manual platform operations.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80" alt="Salesforce Details Self-Healing Cloud Architecture Using AIOps and Progressive Agent Autonomy" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Salesforce infrastructure engineers have shared architectural blueprints for autonomous self-healing cloud platforms, deploying Kubectl and AIOps agents to automate incident triage and eliminate manual platform operations.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/11/salesforce-self-healing-aiops/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Salesforce Details Self-Healing Cloud Architecture Using AIOps and Progressive Agent Autonomy]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[GitHub Expands Copilot Ecosystem with AgentHQ for Multi-Agent Repository Automation]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794117600000_24</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794117600000_24</guid>
-      <pubDate>Sun, 08 Nov 2026 06:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[GitHub has unveiled AgentHQ, a unified orchestration surface allowing specialized coding, review, and security agents to coordinate directly across millions of code repositories using natural language and structured project context.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" alt="GitHub Expands Copilot Ecosystem with AgentHQ for Multi-Agent Repository Automation" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>GitHub has unveiled AgentHQ, a unified orchestration surface allowing specialized coding, review, and security agents to coordinate directly across millions of code repositories using natural language and structured project context.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/11/github-copilot-agenthq/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[GitHub Expands Copilot Ecosystem with AgentHQ for Multi-Agent Repository Automation]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Shield AI to Acquire Radar Maker Echodyne to Expand C-UAS Sensing and Tracking Capabilities]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794117600000_25</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794117600000_25</guid>
-      <pubDate>Sun, 08 Nov 2026 06:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Shield AI has agreed to acquire metamaterials electronically scanned array radar specialist Echodyne, merging Hivemind autonomy software with high-precision micro-radars to detect and track hostile drone swarms.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="Shield AI to Acquire Radar Maker Echodyne to Expand C-UAS Sensing and Tracking Capabilities" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Shield AI has agreed to acquire metamaterials electronically scanned array radar specialist Echodyne, merging Hivemind autonomy software with high-precision micro-radars to detect and track hostile drone swarms.</p>
-          <p><small>출처 및 원문: <a href="https://www.defensenews.com/industry/techwatch/2026/11/05/shield-ai-to-acquire-radar-maker-echodyne-to-bust-drones/">defensenews.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Shield AI to Acquire Radar Maker Echodyne to Expand C-UAS Sensing and Tracking Capabilities]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Shield AI Software Cuts Autonomous Flight Capability Development Cycles to Six Weeks]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794117600000_26</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794117600000_26</guid>
-      <pubDate>Sun, 08 Nov 2026 06:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Shield AI has demonstrated new digital engineering and software simulation pipelines that compress autonomous mission behavior integration onto new aircraft platforms from multi-year schedules down to six weeks.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=800&q=80" alt="Shield AI Software Cuts Autonomous Flight Capability Development Cycles to Six Weeks" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Shield AI has demonstrated new digital engineering and software simulation pipelines that compress autonomous mission behavior integration onto new aircraft platforms from multi-year schedules down to six weeks.</p>
-          <p><small>출처 및 원문: <a href="https://www.defensenews.com/industry/techwatch/2026/10/19/shield-ai-software-cuts-autonomous-flight-development-to-six-weeks/">defensenews.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Shield AI Software Cuts Autonomous Flight Capability Development Cycles to Six Weeks]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Dutch Firm Intelic Deploys AI Nexus Software to Unify Multi-Vendor Drones on Battlefield]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794117600000_27</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794117600000_27</guid>
-      <pubDate>Sun, 08 Nov 2026 06:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Dutch defense tech provider Intelic has developed Nexus, an AI-powered integration middleware that connects disparate European drone platforms into a single operational interface for Ukrainian front-line brigades.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&fit=crop&w=800&q=80" alt="Dutch Firm Intelic Deploys AI Nexus Software to Unify Multi-Vendor Drones on Battlefield" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Dutch defense tech provider Intelic has developed Nexus, an AI-powered integration middleware that connects disparate European drone platforms into a single operational interface for Ukrainian front-line brigades.</p>
-          <p><small>출처 및 원문: <a href="https://www.defensenews.com/industry/techwatch/2026/10/08/dutch-firm-uses-ai-to-help-drone-systems-talk-on-ukraines-battlefield/">defensenews.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Dutch Firm Intelic Deploys AI Nexus Software to Unify Multi-Vendor Drones on Battlefield]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Oshkosh Defense Partners with Emerging Startups to Accelerate Tactical Military Drones]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794117600000_28</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794117600000_28</guid>
-      <pubDate>Sun, 08 Nov 2026 06:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Oshkosh Defense has formed strategic partnerships with robotics startups to integrate autonomous logistics kits and uncrewed aerial systems with tactical ground vehicles for distributed military resupply missions.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80" alt="Oshkosh Defense Partners with Emerging Startups to Accelerate Tactical Military Drones" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Oshkosh Defense has formed strategic partnerships with robotics startups to integrate autonomous logistics kits and uncrewed aerial systems with tactical ground vehicles for distributed military resupply missions.</p>
-          <p><small>출처 및 원문: <a href="https://www.defensenews.com/industry/techwatch/2026/11/02/oshkosh-partners-with-startup-to-build-military-drones/">defensenews.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Oshkosh Defense Partners with Emerging Startups to Accelerate Tactical Military Drones]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[French Air Force Targets 2028 Maiden Flight for Sovereign Loyal Wingman Combat Drone]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794117600000_29</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794117600000_29</guid>
-      <pubDate>Sun, 08 Nov 2026 06:00:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The French Air and Space Force has scheduled the maiden flight of its sovereign AI-powered loyal wingman combat drone for 2028, operating alongside Rafale fighters to ensure European strategic technological autonomy.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80" alt="French Air Force Targets 2028 Maiden Flight for Sovereign Loyal Wingman Combat Drone" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The French Air and Space Force has scheduled the maiden flight of its sovereign AI-powered loyal wingman combat drone for 2028, operating alongside Rafale fighters to ensure European strategic technological autonomy.</p>
-          <p><small>출처 및 원문: <a href="https://www.defensenews.com/global/europe/2026/10/02/french-air-force-plans-loyal-wingman-flight-in-2028-in-sovereign-ai-push/">defensenews.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[French Air Force Targets 2028 Maiden Flight for Sovereign Loyal Wingman Combat Drone]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Ramp Builds Internal Coding Agent 'Inspect' Generating 30% of Production Code]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794115080000_30</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794115080000_30</guid>
-      <pubDate>Sun, 08 Nov 2026 05:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Fintech leader Ramp has revealed technical architecture details of Inspect, an internal agentic developer platform that provides non-engineers and developers with context-rich automated code contribution workflows accounting for 30% of shipped code.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Ramp Builds Internal Coding Agent &apos;Inspect&apos; Generating 30% of Production Code" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Fintech leader Ramp has revealed technical architecture details of Inspect, an internal agentic developer platform that provides non-engineers and developers with context-rich automated code contribution workflows accounting for 30% of shipped code.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2026/01/ramp-coding-agent-platform/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Ramp Builds Internal Coding Agent 'Inspect' Generating 30% of Production Code]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[GitLab 18.8 Achieves General Availability for Duo Agent Enterprise Platform]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794115080000_31</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794115080000_31</guid>
-      <pubDate>Sun, 08 Nov 2026 05:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[GitLab has launched GitLab 18.8 featuring the general availability of the Duo Agent platform, enabling enterprise development organizations to embed governed autonomous coding and CI/CD remediation workflows directly into production DevOps pipelines.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="GitLab 18.8 Achieves General Availability for Duo Agent Enterprise Platform" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>GitLab has launched GitLab 18.8 featuring the general availability of the Duo Agent platform, enabling enterprise development organizations to embed governed autonomous coding and CI/CD remediation workflows directly into production DevOps pipelines.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2026/01/gitlab-18-8-duo-agent-platform/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[GitLab 18.8 Achieves General Availability for Duo Agent Enterprise Platform]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Neptune Unveils AI-Assisted Platform Engineer for Grounded Infrastructure as Code]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794115080000_32</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794115080000_32</guid>
-      <pubDate>Sun, 08 Nov 2026 05:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Neptune has debuted an AI-driven platform engineering solution that provisions cloud infrastructure while returning authoritative metadata and physical identifiers to prevent coding agents from hallucinating configuration parameters.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="Neptune Unveils AI-Assisted Platform Engineer for Grounded Infrastructure as Code" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Neptune has debuted an AI-driven platform engineering solution that provisions cloud infrastructure while returning authoritative metadata and physical identifiers to prevent coding agents from hallucinating configuration parameters.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/12/neptune-ai-platform-engineer/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Neptune Unveils AI-Assisted Platform Engineer for Grounded Infrastructure as Code]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Memori Expands Open-Source Architecture into Full-Scale Memory Layer for AI Agents]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794115080000_33</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794115080000_33</guid>
-      <pubDate>Sun, 08 Nov 2026 05:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Open-source project Memori has evolved into a modular, multi-database memory infrastructure that bifurcates short-term prompt context from auto-ingested long-term knowledge to prevent context pollution in autonomous agent swarms.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" alt="Memori Expands Open-Source Architecture into Full-Scale Memory Layer for AI Agents" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Open-source project Memori has evolved into a modular, multi-database memory infrastructure that bifurcates short-term prompt context from auto-ingested long-term knowledge to prevent context pollution in autonomous agent swarms.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/12/memori/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Memori Expands Open-Source Architecture into Full-Scale Memory Layer for AI Agents]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[LinkedIn Details Platform Engineering Practices for Scaling Multi-Agent Systems and MCP]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794115080000_34</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794115080000_34</guid>
-      <pubDate>Sun, 08 Nov 2026 05:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[LinkedIn software engineering architects have shared production lessons on scaling multi-agent systems, highlighting context engineering and Model Context Protocol (MCP) tool standardization over expensive proprietary model fine-tuning.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80" alt="LinkedIn Details Platform Engineering Practices for Scaling Multi-Agent Systems and MCP" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>LinkedIn software engineering architects have shared production lessons on scaling multi-agent systems, highlighting context engineering and Model Context Protocol (MCP) tool standardization over expensive proprietary model fine-tuning.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2025/12/qcon-ai-linkedin/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[LinkedIn Details Platform Engineering Practices for Scaling Multi-Agent Systems and MCP]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[US Navy Prepares Fleet Deployment of Medium Unmanned Surface Vessels with Surface Forces]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794115080000_35</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794115080000_35</guid>
-      <pubDate>Sun, 08 Nov 2026 05:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_defensenews]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The US Navy is accelerating the operational integration of Medium Unmanned Surface Vessels (MUSVs) with active surface strike groups, establishing routine autonomous scouting, electronic warfare, and forward sensing capabilities.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="US Navy Prepares Fleet Deployment of Medium Unmanned Surface Vessels with Surface Forces" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The US Navy is accelerating the operational integration of Medium Unmanned Surface Vessels (MUSVs) with active surface strike groups, establishing routine autonomous scouting, electronic warfare, and forward sensing capabilities.</p>
-          <p><small>출처 및 원문: <a href="https://www.defensenews.com/unmanned/2026/01/15/us-navy-to-deploy-unmanned-systems-with-surface-forces-this-year/">defensenews.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[US Navy Prepares Fleet Deployment of Medium Unmanned Surface Vessels with Surface Forces]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[US Navy Down-Selects Contractors for Long-Endurance Autonomous MUSV Prototype Testing]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794115080000_36</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794115080000_36</guid>
-      <pubDate>Sun, 08 Nov 2026 05:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_navytimes]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Naval Sea Systems Command has selected industry contenders for rigorous at-sea prototype trials of 2,500-nautical-mile MUSVs capable of autonomous operations through Sea State 7 while enforcing strict radio frequency emission controls.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80" alt="US Navy Down-Selects Contractors for Long-Endurance Autonomous MUSV Prototype Testing" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Naval Sea Systems Command has selected industry contenders for rigorous at-sea prototype trials of 2,500-nautical-mile MUSVs capable of autonomous operations through Sea State 7 while enforcing strict radio frequency emission controls.</p>
-          <p><small>출처 및 원문: <a href="https://www.navytimes.com/news/your-navy/2026/06/02/us-navy-selects-companies-for-at-sea-musv-prototype-testing/">navytimes.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[US Navy Down-Selects Contractors for Long-Endurance Autonomous MUSV Prototype Testing]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[US CENTCOM Accelerates Combat Deployment of Multi-Domain Autonomous Strike Task Forces]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794115080000_37</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794115080000_37</guid>
-      <pubDate>Sun, 08 Nov 2026 05:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[US Central Command has operationalized Task Force Scorpion Strike and Falcon Strike, utilizing delegated autonomy frameworks to coordinate air, surface, and sub-surface one-way attack drones alongside regional coalition partners.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=800&q=80" alt="US CENTCOM Accelerates Combat Deployment of Multi-Domain Autonomous Strike Task Forces" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>US Central Command has operationalized Task Force Scorpion Strike and Falcon Strike, utilizing delegated autonomy frameworks to coordinate air, surface, and sub-surface one-way attack drones alongside regional coalition partners.</p>
-          <p><small>출처 및 원문: <a href="https://www.militarytimes.com/news/your-military/2026/09/22/centcom-has-become-a-battle-lab-for-unmanned-systems/">militarytimes.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[US CENTCOM Accelerates Combat Deployment of Multi-Domain Autonomous Strike Task Forces]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Vector Introduces Warfighter's Stack Turnkey One-Way Attack Combat Drone]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794115080000_38</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794115080000_38</guid>
-      <pubDate>Sun, 08 Nov 2026 05:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_militarytimes]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Vector has launched the Warfighter's Stack, an integrated tactical munition comprising a rapid-deployable one-way attack drone, high-voltage explosive payload mechanism, and ruggedized ground control unit for front-line infantry units.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&fit=crop&w=800&q=80" alt="Vector Introduces Warfighter&apos;s Stack Turnkey One-Way Attack Combat Drone" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Vector has launched the Warfighter's Stack, an integrated tactical munition comprising a rapid-deployable one-way attack drone, high-voltage explosive payload mechanism, and ruggedized ground control unit for front-line infantry units.</p>
-          <p><small>출처 및 원문: <a href="https://www.militarytimes.com/news/your-military/2026/11/05/vector-introduces-ready-to-go-one-way-attack-drone/">militarytimes.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Vector Introduces Warfighter's Stack Turnkey One-Way Attack Combat Drone]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[US Navy Expands Carrier Strike Group Deployments with Autonomous Drone Vessels]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794115080000_39</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794115080000_39</guid>
-      <pubDate>Sun, 08 Nov 2026 05:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_navytimes]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The US Navy is broadening visible operational deployments of medium unmanned surface vessels alongside aircraft carrier strike groups, leveraging autonomous sensor craft for extended maritime domain awareness and perimeter reconnaissance.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80" alt="US Navy Expands Carrier Strike Group Deployments with Autonomous Drone Vessels" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The US Navy is broadening visible operational deployments of medium unmanned surface vessels alongside aircraft carrier strike groups, leveraging autonomous sensor craft for extended maritime domain awareness and perimeter reconnaissance.</p>
-          <p><small>출처 및 원문: <a href="https://www.navytimes.com/news/your-navy/2026/10/29/us-navy-wants-more-visible-role-for-drone-boats-as-one-deploys-for-the-first-time/">navytimes.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[US Navy Expands Carrier Strike Group Deployments with Autonomous Drone Vessels]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[OpenAI Launches Frontier Platform to Build, Deploy, and Manage AI Agents Across Enterprises]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794110460000_40</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794110460000_40</guid>
-      <pubDate>Sun, 08 Nov 2026 04:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[OpenAI has rolled out Frontier, an enterprise-grade control platform providing centralized runtime management, security policy enforcement, and auditability for organizations orchestrating autonomous agent fleets across corporate environments.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="OpenAI Launches Frontier Platform to Build, Deploy, and Manage AI Agents Across Enterprises" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>OpenAI has rolled out Frontier, an enterprise-grade control platform providing centralized runtime management, security policy enforcement, and auditability for organizations orchestrating autonomous agent fleets across corporate environments.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2026/02/openai-frontier-agent-platform/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[OpenAI Launches Frontier Platform to Build, Deploy, and Manage AI Agents Across Enterprises]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Teleport Launches Agentic Identity Framework to Enforce Ephemeral Access for AI Agents]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794110460000_41</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794110460000_41</guid>
-      <pubDate>Sun, 08 Nov 2026 04:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Teleport has introduced an Agentic Identity Framework that eliminates long-lived credentials by cryptographically assigning ephemeral, scoped machine identities and continuous policy validation to autonomous agents invoking infrastructure APIs.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="Teleport Launches Agentic Identity Framework to Enforce Ephemeral Access for AI Agents" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Teleport has introduced an Agentic Identity Framework that eliminates long-lived credentials by cryptographically assigning ephemeral, scoped machine identities and continuous policy validation to autonomous agents invoking infrastructure APIs.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2026/02/teleport-secure-ai-agents/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Teleport Launches Agentic Identity Framework to Enforce Ephemeral Access for AI Agents]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Next Moca Open-Sources Agent Definition Language (ADL) for Production AI Governance]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794110460000_42</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794110460000_42</guid>
-      <pubDate>Sun, 08 Nov 2026 04:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Next Moca has released the Agent Definition Language as an open-source JSON Schema standard, enabling software teams to formalize agent capabilities, tool scopes, and validation tests within standard CI/CD deployment pipelines.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Next Moca Open-Sources Agent Definition Language (ADL) for Production AI Governance" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Next Moca has released the Agent Definition Language as an open-source JSON Schema standard, enabling software teams to formalize agent capabilities, tool scopes, and validation tests within standard CI/CD deployment pipelines.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2026/02/agent-definition-language/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Next Moca Open-Sources Agent Definition Language (ADL) for Production AI Governance]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Microsoft Open-Sources Evals for Agent Interop Starter Kit to Benchmark Multi-Agent Systems]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794110460000_43</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794110460000_43</guid>
-      <pubDate>Sun, 08 Nov 2026 04:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Microsoft has released the Evals for Agent Interop Starter Kit on GitHub, providing containerized benchmark suites and objective judge rubrics to evaluate communication fidelity and task completion across heterogeneous multi-agent swarms.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" alt="Microsoft Open-Sources Evals for Agent Interop Starter Kit to Benchmark Multi-Agent Systems" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Microsoft has released the Evals for Agent Interop Starter Kit on GitHub, providing containerized benchmark suites and objective judge rubrics to evaluate communication fidelity and task completion across heterogeneous multi-agent swarms.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2026/02/evals-agent-interop/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Microsoft Open-Sources Evals for Agent Interop Starter Kit to Benchmark Multi-Agent Systems]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Human-Centred AI for SRE: Multi-Agent Incident Response Architectures Without Hallucination]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794110460000_44</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794110460000_44</guid>
-      <pubDate>Sun, 08 Nov 2026 04:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Engineering architects at OpsWorker and AWS have detailed multi-agent incident response architectures, deploying coordinated specialized agents across telemetry, topology, and runbooks with human approval gates to eliminate unverified production fixes.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80" alt="Human-Centred AI for SRE: Multi-Agent Incident Response Architectures Without Hallucination" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Engineering architects at OpsWorker and AWS have detailed multi-agent incident response architectures, deploying coordinated specialized agents across telemetry, topology, and runbooks with human approval gates to eliminate unverified production fixes.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2026/01/opsworker-ai-sre/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Human-Centred AI for SRE: Multi-Agent Incident Response Architectures Without Hallucination]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Vercel Introduces Skills.sh as an Open Discovery Ecosystem for AI Agent Commands]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794110460000_45</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794110460000_45</guid>
-      <pubDate>Sun, 08 Nov 2026 04:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Vercel has launched Skills.sh, an open ecosystem designed to simplify agent tool discovery by prioritizing composable shell-based commands that agents can query and invoke alongside Model Context Protocol (MCP) servers.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&fit=crop&w=800&q=80" alt="Vercel Introduces Skills.sh as an Open Discovery Ecosystem for AI Agent Commands" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Vercel has launched Skills.sh, an open ecosystem designed to simplify agent tool discovery by prioritizing composable shell-based commands that agents can query and invoke alongside Model Context Protocol (MCP) servers.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2026/02/vercel-agent-skills/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1517976487507-5b3b4a45091a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Vercel Introduces Skills.sh as an Open Discovery Ecosystem for AI Agent Commands]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Google Launches Developer Knowledge API and MCP Endpoints for AI Coding Agents]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794110460000_46</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794110460000_46</guid>
-      <pubDate>Sun, 08 Nov 2026 04:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_infoq]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Google has updated its cloud developer documentation with an authoritative Developer Knowledge API and MCP integration, ensuring autonomous coding agents retrieve real-time, continuously re-indexed technical guidance directly from primary sources.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=800&q=80" alt="Google Launches Developer Knowledge API and MCP Endpoints for AI Coding Agents" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Google has updated its cloud developer documentation with an authoritative Developer Knowledge API and MCP integration, ensuring autonomous coding agents retrieve real-time, continuously re-indexed technical guidance directly from primary sources.</p>
-          <p><small>출처 및 원문: <a href="https://www.infoq.com/news/2026/02/google-documentation-ai-agents/">infoq.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Google Launches Developer Knowledge API and MCP Endpoints for AI Coding Agents]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Thales Develops HexaForce AI-Powered C2 Platform to Process 1,000 Tactical Targets Daily]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794110460000_47</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794110460000_47</guid>
-      <pubDate>Sun, 08 Nov 2026 04:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Thales has unveiled HexaForce, an AI-powered command-and-control platform integrating LLMs and autonomous agents to accelerate multi-domain targeting decisions from 100 to 1,000 targets per day while preserving sovereign operational data.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="Thales Develops HexaForce AI-Powered C2 Platform to Process 1,000 Tactical Targets Daily" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Thales has unveiled HexaForce, an AI-powered command-and-control platform integrating LLMs and autonomous agents to accelerate multi-domain targeting decisions from 100 to 1,000 targets per day while preserving sovereign operational data.</p>
-          <p><small>출처 및 원문: <a href="https://breakingdefense.com/2026/10/thales-looks-to-export-new-c2-platform-to-gulf-nations-says-executive/">breakingdefense.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Thales Develops HexaForce AI-Powered C2 Platform to Process 1,000 Tactical Targets Daily]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Pentagon DIU Launches 120-Day Sprint to Field Air Defense Counter-UAS Drone Boats]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794110460000_48</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794110460000_48</guid>
-      <pubDate>Sun, 08 Nov 2026 04:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_thedefensepost]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[The Pentagon's Defense Innovation Unit has kicked off a rapid 120-day sprint to integrate kinetic and directed energy air defense interceptors onto uncrewed surface vessels to counter persistent maritime drone swarm threats.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80" alt="Pentagon DIU Launches 120-Day Sprint to Field Air Defense Counter-UAS Drone Boats" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>The Pentagon's Defense Innovation Unit has kicked off a rapid 120-day sprint to integrate kinetic and directed energy air defense interceptors onto uncrewed surface vessels to counter persistent maritime drone swarm threats.</p>
-          <p><small>출처 및 원문: <a href="https://thedefensepost.com/2026/10/26/pentagon-air-defense-drone-boats/">thedefensepost.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Pentagon DIU Launches 120-Day Sprint to Field Air Defense Counter-UAS Drone Boats]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Turkish Armed Forces Showcase Ayaz and Super Simsek Turbojet Combat Drones in Live Drills]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1794110460000_49</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1794110460000_49</guid>
-      <pubDate>Sun, 08 Nov 2026 04:01:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_breakingdefense]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Turkish Aerospace Industries and military units demonstrated advanced autonomous strike drones including the Ayaz turbojet one-way attack UAV and warhead-equipped Super Simsek during live-fire exercises, highlighting accelerating export integration.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80" alt="Turkish Armed Forces Showcase Ayaz and Super Simsek Turbojet Combat Drones in Live Drills" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Turkish Aerospace Industries and military units demonstrated advanced autonomous strike drones including the Ayaz turbojet one-way attack UAV and warhead-equipped Super Simsek during live-fire exercises, highlighting accelerating export integration.</p>
-          <p><small>출처 및 원문: <a href="https://breakingdefense.com/2026/10/unmanned-systems-take-center-stage-at-turkish-ates-serbest-military-demonstration/">breakingdefense.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" length="240000" type="image/jpeg" />
-      <media:content url="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&amp;fit=crop&amp;w=800&amp;q=80" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Turkish Armed Forces Showcase Ayaz and Super Simsek Turbojet Combat Drones in Live Drills]]></media:title>
       </media:content>
     </item>
   </channel>

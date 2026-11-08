@@ -125,7 +125,7 @@ import {
 } from './services/adsenseManager';
 import { cardNurtureStore } from './services/cardNurtureStore';
 import { playRpgState, runAutoStep, ensureGameStarted } from './services/playRpgEngine';
-import { renderAutoGrowthBannerHtml } from './services/autoGrowthLoopManager';
+import { renderAutoGrowthBannerHtml, getAutoGrowthLoopState } from './services/autoGrowthLoopManager';
 
 interface LandingState {
   activeView: ViewKey;
@@ -1251,8 +1251,12 @@ export function mountLanding(): void {
 
     setInterval(() => {
       if (state.activeView === 'play' && playRpgState.autoMode && !getAutoGrowthLoopState().isActive) {
+        const prevSubState = playRpgState.subState;
         const didStep = runAutoStep(true);
         if (didStep) {
+          if (prevSubState === 'battle' && playRpgState.subState === 'battle' && syncBattleDomInPlace()) {
+            return;
+          }
           renderApp();
         }
       }

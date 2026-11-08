@@ -1769,6 +1769,9 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
     opponentHand = [...epDeck.cardIds];
   }
 
+  // Synchronously initialize battle state first so battleWinner is cleared to null immediately
+  setupBattleStateInternal(playerHand, opponentHand, customOpponentName);
+
   // Activate preloading screen with progress bar
   playRpgState.battleLoading = true;
   playRpgState.battleLoadingProgress = 0;
@@ -1786,12 +1789,14 @@ export function initBattle(customOpponentCards?: number[], customOpponentName?: 
     }
   }).then(() => {
     playRpgState.battleLoading = false;
+    playRpgState.lastAutoStepAt = Date.now() - 1800;
     setupBattleStateInternal(playerHand, opponentHand, customOpponentName);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('hero_rpg_board_updated'));
     }
   }).catch(() => {
     playRpgState.battleLoading = false;
+    playRpgState.lastAutoStepAt = Date.now() - 1800;
     setupBattleStateInternal(playerHand, opponentHand, customOpponentName);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('hero_rpg_board_updated'));
@@ -2798,6 +2803,7 @@ export function toggleAutoMode(): boolean {
     localStorage.setItem('hero_kadan_rpg_auto_mode', String(playRpgState.autoMode));
   } catch {}
   if (playRpgState.autoMode) {
+    playRpgState.lastAutoStepAt = 0;
     if (playRpgState.subState === 'dialogue' && playRpgState.dialogueTypingComplete) {
       scheduleDialogueAutoAdvance();
     }
@@ -2860,10 +2866,25 @@ export function rollRandomArcadeGame(): number {
 export function runAutoStep(respectSpeedAndImageGate: boolean = false): boolean {
   if (!playRpgState.autoMode) return false;
 
+  // Do not run battle auto-steps while battle assets are still preloading or during opponent's turn
+  if (playRpgState.subState === 'battle') {
+    if (playRpgState.battleLoading) {
+      return false;
+    }
+    if (!playRpgState.battleWinner && playRpgState.turn !== 'player') {
+      return false;
+    }
+  }
+
   if (respectSpeedAndImageGate) {
     const now = Date.now();
     if (playRpgState.subState === 'dialogue') {
       if (!isDialogueReadyToAdvance()) {
+        return false;
+      }
+    } else if (playRpgState.subState === 'battle' && !playRpgState.battleWinner) {
+      // Snappy 1.1s interval for active player card placement during Auto-Play
+      if (playRpgState.lastAutoStepAt > 0 && now - playRpgState.lastAutoStepAt < 1100) {
         return false;
       }
     } else if (playRpgState.lastAutoStepAt > 0 && now - playRpgState.lastAutoStepAt < AUTO_STEP_INTERVAL_MS) {
@@ -2929,7 +2950,6 @@ export function runAutoStep(respectSpeedAndImageGate: boolean = false): boolean 
         const nextEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === playRpgState.currentChapter);
         if (nextEvent) {
           playRpgState.heroTile = { ...nextEvent.tile };
-          triggerDialogue(nextEvent);
         }
         // Periodically run the Shop (all packs rotation + EXP Elixir pack) -> MyDeck (Card Upgrade) loop
         // every 3 chapters or whenever the upcoming chapter's enemy Deck TP exceeds the player's Deck TP
@@ -2938,6 +2958,8 @@ export function runAutoStep(respectSpeedAndImageGate: boolean = false): boolean 
           const shouldPeriodicUpgrade =
             playRpgState.currentChapter % 3 === 1 || matchup.opponentDeckTP > matchup.playerDeckTP;
           if (shouldPeriodicUpgrade) {
+            playRpgState.subState = 'map';
+            playRpgState.battleWinner = null;
             window.dispatchEvent(
               new CustomEvent('snshero_periodic_auto_growth_loop', {
                 detail: {
@@ -2946,7 +2968,11 @@ export function runAutoStep(respectSpeedAndImageGate: boolean = false): boolean 
                 },
               })
             );
+            return true;
           }
+        }
+        if (nextEvent) {
+          triggerDialogue(nextEvent);
         }
         return true;
       } else {

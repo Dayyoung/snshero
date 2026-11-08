@@ -171,6 +171,7 @@ export function cancelAutoGrowthLoop(): void {
  */
 export function startAutoGrowthAndRetryLoop(reason: AutoGrowthTriggerReason = 'defeat_retry'): void {
   if (!playRpgState.autoMode) return;
+  if (loopState.phase !== 'idle') return;
   clearCurrentTimer();
 
   loopState.loopCount += 1;

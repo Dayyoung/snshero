@@ -2,6 +2,22 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-08 20:40 KST] [자동플레이 시 3x3 카드 배틀 자동 진행 멈춤 버그 수정 및 배틀 턴 응답 속도·동기화 개선]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "지금 자동플레이 시 카드게임이 자동으로 진행 안되는 버그 /git-push"
+  - **2. 원인 분석 및 세부 수정 내역**:
+    - **(1) `src/landing/index.ts` 내 `getAutoGrowthLoopState` 미임포트 런타임 에러 수정 ([`src/landing/index.ts`](file:///Users/dayyoung/project/snshero/src/landing/index.ts))**:
+      - `#play` 자동플레이 인터벌(`setInterval`)에서 호출하는 `getAutoGrowthLoopState()`가 `src/landing/index.ts` 상단에 import되지 않아, 대사 종료 후 `battle`(카드게임) 진입 시 매 100ms 틱마다 `ReferenceError`가 발생하며 `runAutoStep(true)`가 실행되지 않던 핵심 원인을 해결.
+      - 또한 `subState === 'battle'` 중 `runAutoStep(true)`가 카드를 배치할 때 전체 DOM 재렌더링 대신 `syncBattleDomInPlace()`를 우선 호출하도록 개선하여 화면 깜박임 없이 매끄럽게 카드가 배치되도록 수정.
+    - **(2) `initBattle()` 비동기 프리로딩 중 상태 레이스 컨디션 및 배틀 자동 턴 간격 최적화 ([`src/landing/services/playRpgEngine.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/playRpgEngine.ts), [`src/landing/services/autoGrowthLoopManager.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/autoGrowthLoopManager.ts))**:
+      - `initBattle()` 진입 즉시 동기적으로 `setupBattleStateInternal()`을 먼저 실행하여 `battleWinner = null`, `turn = 'player'`로 초기화함으로써 프리로딩(`battleLoading = true`) 도중 이전 전투의 `battleWinner` 상태가 남아 잘못된 분기가 실행되는 문제를 원천 차단.
+      - `runAutoStep()`에서 `battleLoading === true`이거나 상대 턴(`turn === 'opponent'`)일 때는 `lastAutoStepAt` 타임스탬프를 갱신하지 않고 즉시 대기하도록 수정하고, 플레이어 카드 자동 배치 간격을 `1100ms`로 최적화하여 막힘 없이 경쾌하게 3x3 카드 배틀이 자동 진행되도록 개선.
+      - 정기 업그레이드 루프(`periodic_upgrade`) 진입 시 대사 타이머가 백그라운드에서 먼저 돌지 않도록 `subState = 'map'`으로 대기시킨 후 복귀 시 대사를 시작하도록 정리하고, `startAutoGrowthAndRetryLoop()` 중복 진입 방지 가드(`loopState.phase !== 'idle'`)를 추가.
+  - **3. 빌드 및 검증**:
+    - `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋, `git push origin main` 및 구글 폼 보고 완료.
+
 ## [2026-11-08 18:01 KST] [자동플레이 시 전 카드팩 순환 소환 + EXP 영약팩 구매 및 마이덱 이동·카드 업그레이드 루프 완성]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
