@@ -351,25 +351,20 @@ export function handleSettingAction(action: string, target?: HTMLElement): void 
       }
     }
   } else if (action === 'setting-factory-reset') {
-    const resetKeyword = tr('초기화', 'RESET', '初期化');
-    const confirmText = prompt(
+    const confirmed = confirm(
       tr(
-        "경고: 모든 카드, 덱, 재화, 진행도가 완전히 초기화됩니다!\n정말 초기화하려면 '초기화'를 입력하세요:",
-        "WARNING: All cards, decks, currency, and progress will be wiped!\nType 'RESET' to confirm:",
-        '警告: すべてのカード、デッキ、通貨、進行状況が完全に初期化されます！\n本当に初期化する場合は「初期化」と入力してください:'
+        '경고: 모든 카드, 덱, 재화, 진행도가 완전히 초기화됩니다!\n정말 게임 데이터를 초기화하시겠습니까?',
+        'WARNING: All cards, decks, currency, and progress will be wiped!\nAre you sure you want to reset all game data?',
+        '警告: すべてのカード、デッキ、通貨、進行状況が完全に初期化されます！\n本当にゲームデータを初期化しますか？'
       )
     );
-    if (confirmText === resetKeyword || confirmText === '초기화' || confirmText === 'RESET') {
+    if (confirmed) {
       const preserveLang = localStorage.getItem('hero_language') || 'ko';
       localStorage.clear();
+      try {
+        sessionStorage.clear();
+      } catch {}
       localStorage.setItem('hero_language', preserveLang);
-      alert(
-        tr(
-          '모든 로컬 게임 데이터가 초기화되었습니다. 페이지를 새로고침합니다.',
-          'All local game data has been reset. Reloading page.',
-          'すべてのローカルゲームデータが初期化されました。ページを再読み込みします。'
-        )
-      );
       if (typeof window !== 'undefined') {
         window.location.reload();
       }

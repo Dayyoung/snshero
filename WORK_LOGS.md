@@ -2,6 +2,18 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-09 08:13 KST] [게임 데이터 초기화 시 텍스트 입력(prompt) 제거 및 컨펌창(confirm) 원클릭 초기화 전환]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "게임 데이터 초기화 할때 \"초기화\" 텍스트를 입력 안해도 컨펌창만 누르면 초기화 되게 해줘."
+  - **2. 세부 구현 내역**:
+    - [`src/landing/views/SettingSection.tsx`](file:///Users/dayyoung/project/snshero/src/landing/views/SettingSection.tsx)의 `setting-factory-reset` 액션 핸들러 수정:
+      - 기존에 `prompt(...)`로 `'초기화'` 또는 `'RESET'` 텍스트를 직접 타이핑해야만 초기화되던 방식을 `confirm(...)` 컨펌창으로 변경.
+      - 컨펌창에서 확인 버튼만 누르면 즉시 `localStorage` 및 `sessionStorage` 데이터를 초기화(언어 설정 `hero_language` 보존)하고 페이지를 새로고침하도록 개선.
+  - **3. 빌드 및 검증**:
+    - `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-08 20:40 KST] [자동플레이 시 3x3 카드 배틀 자동 진행 멈춤 버그 수정 및 배틀 턴 응답 속도·동기화 개선]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
