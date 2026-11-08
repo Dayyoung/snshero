@@ -96,6 +96,38 @@ import {
   preloadLocationBackground,
 } from '../services/locationBgManager';
 import { syncAdSenseRatioLayout, pushAdSenseTags } from '../services/adsenseManager';
+import { audioManager } from '../services/audioManager';
+
+/**
+ * Render sleek top-bar Mute / Sound status toggle button for fullscreen RPG modals
+ */
+function renderModalTopAudioButton(): string {
+  const isMuted = audioManager.isMuted();
+  return `
+    <button
+      type="button"
+      data-action="toggle-mute"
+      aria-pressed="${isMuted ? 'true' : 'false'}"
+      class="px-2.5 py-1.5 rounded-sm border text-xs font-mono font-bold min-h-[44px] inline-flex items-center gap-1.5 cursor-pointer transition-all select-none active:scale-95 shrink-0 ${
+        isMuted
+          ? 'bg-rose-950/90 hover:bg-rose-900 text-rose-200 border-rose-500/70'
+          : 'bg-stone-900/90 hover:bg-stone-800 text-emerald-300 border-emerald-500/50'
+      }"
+      aria-label="${isMuted ? tr('음소거 상태 (클릭하여 소리 켜기)', 'Muted (Click to Unmute)', 'ミュート中（クリックで音声オン）') : tr('사운드 켜짐 (클릭하여 음소거)', 'Sound ON (Click to Mute)', 'サウンドオン（クリックでミュート）')}"
+      title="${isMuted ? tr('현재 음소거됨 — 클릭하면 소리가 켜집니다', 'Currently Muted — Click to turn sound ON', '現在ミュート中 — クリックで音声オン') : tr('현재 소리 켜짐 — 클릭하면 음소거됩니다', 'Sound is ON — Click to Mute', '現在サウンドオン — クリックでミュート')}"
+    >
+      <span class="w-2 h-2 rounded-full shrink-0 ${isMuted ? 'bg-rose-500' : 'bg-emerald-400 animate-pulse'}"></span>
+      ${
+        isMuted
+          ? `<svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-rose-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" fill-opacity="0.2"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>`
+          : `<svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" fill-opacity="0.2"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`
+      }
+      <span class="px-1.5 py-0.5 text-[10px] font-mono font-black rounded-xs leading-none ${
+        isMuted ? 'bg-rose-600 text-white' : 'bg-emerald-500 text-stone-950'
+      }">${isMuted ? tr('음소거', 'MUTE', '消音') : 'ON'}</span>
+    </button>
+  `;
+}
 
 /**
  * 40-Episode Quick Jump Drawer Open State for Adventure Tab
@@ -1567,7 +1599,8 @@ function renderAdventureView(): string {
                         📍 ${activeLocationName}
                       </span>
                     </div>
-                    <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                      ${renderModalTopAudioButton()}
                       <button
                         type="button"
                         data-action="play-dialogue-skip"
@@ -1869,14 +1902,17 @@ function renderAdventureView(): string {
                     return `<span class="px-1.5 py-0.5 ${isHard ? 'bg-rose-500 text-white' : 'bg-emerald-400 text-stone-950'} text-[9px] sm:text-[10px] font-black rounded-sm shrink-0">⚡${tr(`내덱 ${m.playerDeckTP} vs 적 ${m.opponentDeckTP}`, `P1 ${m.playerDeckTP} vs AI ${m.opponentDeckTP}`, `自${m.playerDeckTP} vs 敵${m.opponentDeckTP}`)}</span>`;
                   })()}
                 </div>
-                <button
-                  type="button"
-                  data-action="play-dialogue-close"
-                  class="px-3 py-1.5 bg-rose-950/90 hover:bg-rose-900 text-rose-200 border border-rose-500/70 text-xs font-black rounded-sm min-h-[44px] cursor-pointer shrink-0 flex items-center gap-1 active:translate-y-px"
-                  aria-label="${tr('배틀 중지 및 맵으로 복귀', 'Exit Battle & Return to Map', 'バトルを中断してマップへ戻る')}"
-                >
-                  ✕ ${tr('닫기', 'Close', '閉じる')}
-                </button>
+                <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                  ${renderModalTopAudioButton()}
+                  <button
+                    type="button"
+                    data-action="play-dialogue-close"
+                    class="px-3 py-1.5 bg-rose-950/90 hover:bg-rose-900 text-rose-200 border border-rose-500/70 text-xs font-black rounded-sm min-h-[44px] cursor-pointer shrink-0 flex items-center gap-1 active:translate-y-px"
+                    aria-label="${tr('배틀 중지 및 맵으로 복귀', 'Exit Battle & Return to Map', 'バトルを中断してマップへ戻る')}"
+                  >
+                    ✕ ${tr('닫기', 'Close', '閉じる')}
+                  </button>
+                </div>
               </header>
 
               <!-- 2. 중앙 메인: 턴 안내 바 + 3x3 전장 보드 필드 + 전투 승패 결과 (고유 ID 컨테이너로 깜박임 없는 국소 갱신 지원) -->

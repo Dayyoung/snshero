@@ -482,13 +482,34 @@ export function renderSettingSection(): string {
             activeSettingSubTab === 'all' || activeSettingSubTab === 'sound'
               ? `
             <section class="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 rounded-none space-y-6">
-              <div class="border-b border-[rgba(15,0,0,0.12)] pb-3 flex items-center justify-between">
+              <div class="border-b border-[rgba(15,0,0,0.12)] pb-3 flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <h2 class="text-base sm:text-lg font-bold text-[#201d1d] m-0 flex items-center gap-2">
                     <span>${t('sound_title')}</span>
                   </h2>
                   <p class="text-xs text-stone-500 m-0 pt-0.5">${t('sound_desc')}</p>
                 </div>
+                ${(() => {
+                  const isMuted = audioManager.isMuted();
+                  return `
+                    <button
+                      type="button"
+                      data-action="toggle-mute"
+                      aria-pressed="${isMuted ? 'true' : 'false'}"
+                      class="px-3.5 py-2 rounded-sm border text-xs font-mono font-bold min-h-[44px] inline-flex items-center gap-2 cursor-pointer transition-all select-none active:scale-95 ${
+                        isMuted
+                          ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-400'
+                          : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-400'
+                      }"
+                    >
+                      <span class="w-2 h-2 rounded-full shrink-0 ${isMuted ? 'bg-rose-500' : 'bg-emerald-500 animate-pulse'}"></span>
+                      <span>${isMuted ? tr('전체 음소거 중 (클릭 시 해제)', 'Master Muted (Click to Unmute)', '全体ミュート中（解除）') : tr('전체 사운드 켜짐 (클릭 시 음소거)', 'Master Sound ON (Click to Mute)', '全体サウンドON（ミュート）')}</span>
+                      <span class="px-1.5 py-0.5 text-[10px] font-mono font-black rounded-xs ${isMuted ? 'bg-rose-600 text-white' : 'bg-emerald-600 text-white'}">
+                        ${isMuted ? tr('음소거', 'MUTE', '消音') : 'ON'}
+                      </span>
+                    </button>
+                  `;
+                })()}
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

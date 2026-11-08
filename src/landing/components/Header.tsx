@@ -116,27 +116,87 @@ export function renderHeader(activeView: ViewKey): string {
         </nav>
 
         <!-- Right Action: Audio Mute, Setting, User Login & Game Launch -->
-        <div class="flex items-center gap-2">
-          <!-- Audio Mute / Unmute Button -->
-          <button
-            type="button"
-            data-action="toggle-mute"
-            class="p-2 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer transition-colors ${audioManager.isMuted() ? 'bg-[#edeaea] text-stone-500' : 'text-[#201d1d]'}"
-            aria-label="${audioManager.isMuted() ? tr('소리 켜기 (음소거 해제)', 'Unmute Audio', 'ミュート解除') : tr('소리 끄기 (음소거)', 'Mute Audio', 'ミュート')}"
-            title="${audioManager.isMuted() ? tr('소리 켜기 (음소거 해제)', 'Unmute Audio', 'ミュート解除') : tr('소리 끄기 (음소거)', 'Mute Audio', 'ミュート')}"
-          >
-            <span class="text-sm select-none">${audioManager.isMuted() ? '🔇' : '🔊'}</span>
-          </button>
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <!-- Audio Mute / Unmute Button (Precision SVG + Unmistakable ON / MUTE Badge) -->
+          ${(() => {
+            const isMuted = audioManager.isMuted();
+            return `
+              <button
+                type="button"
+                data-action="toggle-mute"
+                aria-pressed="${isMuted ? 'true' : 'false'}"
+                class="group px-2.5 sm:px-3 py-1.5 rounded-sm border text-xs font-mono font-bold min-h-[44px] inline-flex items-center gap-1.5 sm:gap-2 cursor-pointer transition-all select-none active:scale-95 ${
+                  isMuted
+                    ? 'bg-rose-50 hover:bg-rose-100/90 text-rose-700 border-rose-400'
+                    : 'bg-[#fdfcfc] hover:bg-[#f4f2f2] text-[#201d1d] border-[#201d1d]/25 hover:border-[#201d1d]/50'
+                }"
+                aria-label="${isMuted ? tr('음소거 상태 (클릭하여 소리 켜기)', 'Muted (Click to Unmute)', 'ミュート中（クリックで音声オン）') : tr('사운드 켜짐 (클릭하여 음소거)', 'Sound ON (Click to Mute)', 'サウンドオン（クリックでミュート）')}"
+                title="${isMuted ? tr('현재 음소거됨 — 클릭하면 소리가 켜집니다', 'Currently Muted — Click to turn sound ON', '現在ミュート中 — クリックで音声オン') : tr('현재 소리 켜짐 — 클릭하면 음소거됩니다', 'Sound is ON — Click to Mute', '現在サウンドオン — クリックでミュート')}"
+              >
+                <!-- Live Status Dot -->
+                <span class="w-2 h-2 rounded-full shrink-0 ${
+                  isMuted
+                    ? 'bg-rose-500'
+                    : 'bg-emerald-500 animate-pulse'
+                }"></span>
 
+                <!-- Precision Vector Speaker Icon -->
+                ${
+                  isMuted
+                    ? `
+                      <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-rose-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" fill-opacity="0.15" />
+                        <line x1="22" y1="9" x2="16" y2="15" />
+                        <line x1="16" y1="9" x2="22" y2="15" />
+                      </svg>
+                    `
+                    : `
+                      <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-[#201d1d]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" fill-opacity="0.12" />
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                      </svg>
+                    `
+                }
+
+                <!-- Explicit Mute / Sound ON Badge -->
+                <span class="px-1.5 py-0.5 text-[10px] font-mono font-black tracking-tight rounded-xs leading-none ${
+                  isMuted
+                    ? 'bg-rose-600 text-white'
+                    : 'bg-emerald-600 text-white'
+                }">
+                  ${isMuted ? tr('음소거', 'MUTE', '消音') : tr('소리ON', 'ON', 'ON')}
+                </span>
+              </button>
+            `;
+          })()}
+
+          <!-- Settings Button (Precision Vector Sliders Icon) -->
           <a
             href="#setting"
             data-nav="setting"
             data-google-vignette="false"
-            class="p-2 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer no-underline ${activeView === 'setting' ? 'bg-[#201d1d] text-[#fdfcfc]' : ''}"
+            class="group px-2.5 sm:px-3 py-1.5 border text-xs font-mono font-bold rounded-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center gap-1.5 cursor-pointer no-underline transition-all active:scale-95 ${
+              activeView === 'setting'
+                ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                : 'bg-[#fdfcfc] hover:bg-[#f4f2f2] text-[#201d1d] border-[#201d1d]/25 hover:border-[#201d1d]/50'
+            }"
             aria-label="${t('nav_setting')}"
             title="${t('setting_title')}"
           >
-            ⚙️
+            <svg
+              viewBox="0 0 24 24"
+              class="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:rotate-45"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            <span class="hidden xl:inline text-[11px] tracking-tight">${t('nav_setting', '설정')}</span>
           </a>
           ${(() => {
             const user = getCurrentUser();

@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-08 12:33 KST] [상단 음소거/설정 버튼 정밀 SVG 벡터 디자인 개편 및 음소거 상태 실시간 동기화·시각화 개선 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "상단 음소거/설정 버튼이 촌스럽고 음소거 유무가 정확히 표현이 안돼 /git-push"
+  - **2. 세부 구현 내역**:
+    - **(1) 상단 음소거 및 설정 버튼 정밀 SVG 벡터 + 상태 배지 디자인 개편 ([`src/landing/components/Header.tsx`](file:///Users/dayyoung/project/snshero/src/landing/components/Header.tsx), [`src/landing/views/PlaySection.tsx`](file:///Users/dayyoung/project/snshero/src/landing/views/PlaySection.tsx), [`src/landing/views/SettingSection.tsx`](file:///Users/dayyoung/project/snshero/src/landing/views/SettingSection.tsx), [`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+      - 기존에 이모지(`🔇`, `🔊`, `⚙️`)로만 작게 표시되어 음소거 유무가 잘 구분되지 않던 문제를 해결.
+      - **음소거/사운드 버튼**:
+        - **소리 켜짐(`ON`) 상태**: 초록색 라이브 펄스 도트(`bg-emerald-500 animate-pulse`) + 듀얼 음파 SVG 스피커 아이콘 + 선명한 초록색 `[소리ON / ON]` 배지 표시.
+        - **음소거(`MUTE`) 상태**: 붉은색 경계선(`border-rose-400 bg-rose-50`) + 레드 도트 + `X` 슬래시 SVG 스피커 아이콘(`text-rose-600`) + 붉은색 `[음소거 / MUTE]` 배지 표시.
+      - **설정 버튼**:
+        - 기존 `⚙️` 이모지를 제거하고 OpenCode Terminal-Flat 스타일의 정밀 SVG 기어 벡터 아이콘(호버 시 45° 회전 트랜지션) 및 데스크톱 라벨로 교체.
+      - `#play` 전체화면 대화 모달(`#play-dialogue-modal-root`) 및 배틀 모달(`#play-battle-modal-root`) 상단 헤더와 `#setting` 사운드 섹션 헤더에도 동일한 음소거 상태 표시/토글 버튼을 배치.
+    - **(2) 오디오 매니저 음소거 상태 판별 및 BGM/SFX 양방향 동기화 무결성 수정 ([`src/landing/services/audioManager.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/audioManager.ts))**:
+      - `parseInt(volStr, 10) || 20`에서 볼륨 `0`이 falsy로 평가되어 `20`/`90`으로 되돌아가던 버그를 `Number.isNaN(parsed)` 검사로 수정.
+      - 설정 화면에서 BGM 또는 SFX를 개별적으로 켜거나 볼륨을 조절할 때 `hero_audio_muted` 플래그가 실시간 동기화되도록 개선하여 실제 사운드 출력 여부와 상단 음소거 버튼 표시가 100% 일치하도록 보장.
+  - **3. 빌드 및 검증**:
+    - `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋, `git push origin main` 및 구글 폼 보고 완료.
+
 ## [2026-11-08 10:35 KST] [Auto Play 플로팅 버튼 대사창 가림 해결: 화면 상하 가운데 정렬(top-1/2 -translate-y-1/2) 및 원형(rounded-full) 버튼 전환 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

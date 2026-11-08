@@ -206,14 +206,17 @@ class AudioManager {
       };
     }
 
-    const bgmEnabled = localStorage.getItem('hero_bgm_enabled') !== 'false';
+    const isExplicitMute = localStorage.getItem('hero_audio_muted') === 'true';
+    const bgmEnabled = !isExplicitMute && localStorage.getItem('hero_bgm_enabled') !== 'false';
     const bgmVolStr = localStorage.getItem('hero_bgm_volume');
-    const bgmVolume = bgmVolStr !== null ? Math.max(0, Math.min(100, parseInt(bgmVolStr, 10) || 20)) : 20;
+    const parsedBgmVol = bgmVolStr !== null ? parseInt(bgmVolStr, 10) : 20;
+    const bgmVolume = Math.max(0, Math.min(100, Number.isNaN(parsedBgmVol) ? 20 : parsedBgmVol));
     const bgmTrack = localStorage.getItem('hero_bgm_track') || 'title';
 
-    const sfxEnabled = localStorage.getItem('hero_sfx_enabled') !== 'false';
+    const sfxEnabled = !isExplicitMute && localStorage.getItem('hero_sfx_enabled') !== 'false';
     const sfxVolStr = localStorage.getItem('hero_sfx_volume');
-    const sfxVolume = sfxVolStr !== null ? Math.max(0, Math.min(100, parseInt(sfxVolStr, 10) || 90)) : 90;
+    const parsedSfxVol = sfxVolStr !== null ? parseInt(sfxVolStr, 10) : 90;
+    const sfxVolume = Math.max(0, Math.min(100, Number.isNaN(parsedSfxVol) ? 90 : parsedSfxVol));
 
     const hapticEnabled = localStorage.getItem('hero_haptic_enabled') !== 'false';
 
@@ -231,10 +234,11 @@ class AudioManager {
 
   public isMuted(): boolean {
     if (typeof localStorage === 'undefined') return false;
-    const isExplicitMute = localStorage.getItem('hero_audio_muted') === 'true';
-    if (isExplicitMute) return true;
+    if (localStorage.getItem('hero_audio_muted') === 'true') return true;
     const settings = this.getSettings();
-    return (!settings.bgmEnabled && !settings.sfxEnabled) || (settings.bgmVolume === 0 && settings.sfxVolume === 0);
+    const bgmAudible = settings.bgmEnabled && settings.bgmVolume > 0;
+    const sfxAudible = settings.sfxEnabled && settings.sfxVolume > 0;
+    return !bgmAudible && !sfxAudible;
   }
 
   public toggleMute(): boolean {
@@ -246,20 +250,31 @@ class AudioManager {
       if (newMuted) {
         localStorage.setItem('hero_bgm_enabled', 'false');
         localStorage.setItem('hero_sfx_enabled', 'false');
+        localStorage.setItem('hero_bgm', 'false');
+        localStorage.setItem('hero_sfx', 'false');
         this.stopBgm();
+        try {
+          if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+          }
+        } catch {}
       } else {
         localStorage.setItem('hero_bgm_enabled', 'true');
         localStorage.setItem('hero_sfx_enabled', 'true');
+        localStorage.setItem('hero_bgm', 'true');
+        localStorage.setItem('hero_sfx', 'true');
         const settings = this.getSettings();
-        if (settings.bgmVolume === 0) {
-          localStorage.setItem('hero_bgm_volume', '50');
+        if (settings.bgmVolume <= 0) {
+          localStorage.setItem('hero_bgm_volume', '25');
         }
-        if (settings.sfxVolume === 0) {
-          localStorage.setItem('hero_sfx_volume', '70');
+        if (settings.sfxVolume <= 0) {
+          localStorage.setItem('hero_sfx_volume', '85');
         }
         this.unlockMobileAudio().then(() => {
-          this.playBgm();
-          this.playClickTick();
+          if (!this.isMuted()) {
+            this.playBgm();
+            this.playClickTick();
+          }
         });
       }
     }
@@ -418,11 +433,18 @@ class AudioManager {
     const settings = this.getSettings();
     const newEnabled = !settings.bgmEnabled;
     localStorage.setItem('hero_bgm_enabled', String(newEnabled));
+    localStorage.setItem('hero_bgm', String(newEnabled));
 
     if (newEnabled) {
+      localStorage.setItem('hero_audio_muted', 'false');
+      if (settings.bgmVolume <= 0) {
+        localStorage.setItem('hero_bgm_volume', '25');
+      }
       this.unlockMobileAudio().then(() => this.playSceneBgm(this.currentScene, true));
     } else {
       this.stopBgm();
+      const sfxStillOn = localStorage.getItem('hero_sfx_enabled') !== 'false' && (parseInt(localStorage.getItem('hero_sfx_volume') || '90', 10) > 0);
+      localStorage.setItem('hero_audio_muted', String(!sfxStillOn));
     }
     this.dispatchAudioChangedEvent();
     return newEnabled;
@@ -431,6 +453,9 @@ class AudioManager {
   public setBgmVolume(percent: number): void {
     const clamped = Math.max(0, Math.min(100, percent));
     localStorage.setItem('hero_bgm_volume', String(clamped));
+    if (clamped > 0) {
+      localStorage.setItem('hero_audio_muted', 'false');
+    }
 
     if (this.bgmAudioEl) {
       try {
@@ -698,8 +723,16 @@ class AudioManager {
     const settings = this.getSettings();
     const newEnabled = !settings.sfxEnabled;
     localStorage.setItem('hero_sfx_enabled', String(newEnabled));
+    localStorage.setItem('hero_sfx', String(newEnabled));
     if (newEnabled) {
+      localStorage.setItem('hero_audio_muted', 'false');
+      if (settings.sfxVolume <= 0) {
+        localStorage.setItem('hero_sfx_volume', '85');
+      }
       this.unlockMobileAudio().then(() => this.playTestChime());
+    } else {
+      const bgmStillOn = localStorage.getItem('hero_bgm_enabled') !== 'false' && (parseInt(localStorage.getItem('hero_bgm_volume') || '20', 10) > 0);
+      localStorage.setItem('hero_audio_muted', String(!bgmStillOn));
     }
     this.dispatchAudioChangedEvent();
     return newEnabled;
@@ -708,6 +741,9 @@ class AudioManager {
   public setSfxVolume(percent: number): void {
     const clamped = Math.max(0, Math.min(100, percent));
     localStorage.setItem('hero_sfx_volume', String(clamped));
+    if (clamped > 0) {
+      localStorage.setItem('hero_audio_muted', 'false');
+    }
     this.playClickTick();
     this.dispatchAudioChangedEvent();
   }

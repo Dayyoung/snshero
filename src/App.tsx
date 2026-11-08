@@ -6829,25 +6829,33 @@ function AppContent() {
                 <button
                   onClick={toggleAudioMute}
                   id="hud-audio-toggle"
+                  aria-pressed={isAudioMuted}
                   className={cn(
-                    "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 min-w-11 rounded-sm transition-colors cursor-pointer flex items-center justify-center touch-target",
+                    "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 px-2.5 rounded-sm transition-all cursor-pointer flex items-center gap-1.5 font-mono text-xs font-bold touch-target active:scale-95",
                     (!isAdRemoved && view !== 'landing') 
                       ? "top-[calc(env(safe-area-inset-top,0px)+53px)] lg:top-[10px]" 
                       : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
                     isAudioMuted
-                      ? "bg-rose-500/10 border border-rose-500/50 text-rose-500 hover:bg-rose-500/20"
+                      ? "bg-rose-50 border border-rose-400 text-rose-700 hover:bg-rose-100"
                       : (theme === 'dark' || theme === 'metal')
-                      ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
-                       : "bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7]"
+                      ? "bg-slate-900/95 border border-emerald-500/40 text-emerald-300 hover:bg-slate-800"
+                      : "bg-[#fdfcfc] border border-[#201d1d]/25 text-[#201d1d] hover:bg-[#f4f2f2]"
                   )}
                   title={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
                   aria-label={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
                 >
+                  <span className={cn("w-2 h-2 rounded-full shrink-0", isAudioMuted ? "bg-rose-500" : "bg-emerald-500 animate-pulse")} />
                   {isAudioMuted ? (
-                    <VolumeX size={20} className="text-rose-500" />
+                    <VolumeX size={16} className="text-rose-600 shrink-0" />
                   ) : (
-                    <Volume2 size={20} />
+                    <Volume2 size={16} className="shrink-0" />
                   )}
+                  <span className={cn(
+                    "px-1.5 py-0.5 text-[10px] font-mono font-black rounded-xs leading-none",
+                    isAudioMuted ? "bg-rose-600 text-white" : "bg-emerald-600 text-white"
+                  )}>
+                    {isAudioMuted ? (language === 'ko' ? '음소거' : 'MUTE') : (language === 'ko' ? '소리ON' : 'ON')}
+                  </span>
                 </button>
               )}
 
