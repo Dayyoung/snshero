@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-08 18:01 KST] [자동플레이 시 전 카드팩 순환 소환 + EXP 영약팩 구매 및 마이덱 이동·카드 업그레이드 루프 완성]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "자동플레이 시 일반 카드팩만 뽑지말고 모든 카드팩을 골고루 뽑게해줘. 그리고 한번씩은 영약팩을 구매해서 마이덱에서 이동해서 마이덱 카드를 업그래이드도 한번씩 진행해줘. 이렇게 해줘야 수월하게 진행이 돨것 같아 /git-push"
+  - **2. 세부 구현 내역**:
+    - **(1) 상점(`#shop` 및 React `ShopView`) 모든 카드팩 순환 소환 + EXP 영약팩 구매 적용 ([`src/landing/services/autoGrowthLoopManager.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/autoGrowthLoopManager.ts), [`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx))**:
+      - 기존에 `executeShopPurchase('pack_normal')`로 일반 카드팩만 고정 소환하던 로직을 개편하여 `AUTO_PACK_ROTATION = ['pack_normal', 'pack_magic', 'pack_rare', 'pack_starter_bundle']`(일반 ➔ 마법 ➔ 레어 ➔ 스타터 번들) 및 React 상점 `['bronze', 'silver', 'gold']` 순환 인덱스를 `localStorage`(`hero_auto_pack_rotation_idx`, `hero_react_shop_auto_pack_idx`)에 보존해 모든 카드팩을 골고루 소환하도록 구현.
+      - 상점 방문 시 카드팩 소환과 함께 **`EXP 영약팩 (대용량)` (`item_exp_pack`, +10병)**도 함께 구매하여 마이덱 카드 성장을 위한 영약을 확보하도록 연동.
+    - **(2) 마이덱(`#deck` 및 React `MyDeckView`) 이동 후 EXP 영약 투여·레벨업 및 4방위 스탯 업그레이드 자동 수행 ([`src/landing/services/cardNurtureStore.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/cardNurtureStore.ts), [`src/landing/views/MyDeckSection.tsx`](file:///Users/dayyoung/project/snshero/src/landing/views/MyDeckSection.tsx), [`src/landing/index.ts`](file:///Users/dayyoung/project/snshero/src/landing/index.ts), [`src/views/MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx))**:
+      - `cardNurtureStore.upgradeDeckWithElixirsAndStats(maxElixirsToUse)` 메서드를 신설하여 마이덱의 최강 5장 카드를 편성한 뒤, 보유한 EXP 영약을 가장 레벨이 낮은 주력 덱 카드들부터 골고루 투여해 레벨업시키고, 획득한 스탯 포인트를 상/우/하/좌 4방위 스탯에 균형 배분하도록 구현.
+      - 마이덱 화면 상단에 `[🧪 영약 투여 & 카드 업그레이드]` 버튼과 각 덱 슬롯별 `[⬆️ 업그레이드 (Lv.X)]` 1탭 버튼을 추가하여 수동/자동 모두에서 직관적으로 확인 및 업그레이드 가능하도록 개선.
+    - **(3) 자동플레이 중 주기적(3챕터마다 또는 적 TP 우세 시) 및 패배/무승부 시 중단 없는 상점 ➔ 마이덱 ➔ 전투 복귀 루프 보장 ([`src/landing/services/playRpgEngine.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/playRpgEngine.ts), [`src/landing/index.ts`](file:///Users/dayyoung/project/snshero/src/landing/index.ts))**:
+      - 패배/무승부 발생 시 `runAutoStep()`이 `playRpgState.autoMode = false`로 꺼버려 자동 성장 루프가 취소되던 버그를 수정하여, 자동플레이가 끊기지 않고 상점(팩 순환 소환 + 영약팩 구매) ➔ 마이덱(영약 투여 & 카드 업그레이드 & 최강 덱 편성) ➔ 전투 재도전까지 매끄럽게 이어지도록 수정.
+      - 승리 후 다음 챕터 진행 시에도 매 3챕터마다 또는 다음 챕터 적 덱 TP가 내 덱 TP보다 높을 때 선제적으로 상점(모든 카드팩 골고루 소환 + 영약팩 구매) ➔ 마이덱(카드 업그레이드)을 거친 뒤 복귀하도록 구현.
+  - **3. 빌드 및 검증**:
+    - `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋, `git push origin main` 및 구글 폼 보고 완료.
+
 ## [2026-11-08 12:33 KST] [상단 음소거/설정 버튼 정밀 SVG 벡터 디자인 개편 및 음소거 상태 실시간 동기화·시각화 개선 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

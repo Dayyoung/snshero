@@ -19,7 +19,9 @@ import {
   executeShopPurchase,
   flipAllPackCards,
   clearPackReveal,
+  closeItemPurchaseModal,
 } from '../views/ShopSection';
+import { setDeckOptimizeNotice } from '../views/MyDeckSection';
 import { playRpgState, initBattle } from './playRpgEngine';
 import { tr } from './i18n';
 
@@ -30,6 +32,66 @@ export type AutoGrowthLoopPhase =
   | 'revealing'
   | 'optimizing'
   | 'retrying';
+
+export type AutoGrowthTriggerReason = 'defeat_retry' | 'periodic_upgrade';
+
+interface PackRotationMeta {
+  id: 'pack_normal' | 'pack_magic' | 'pack_rare' | 'pack_starter_bundle';
+  nameKo: string;
+  nameEn: string;
+  nameJa: string;
+  cost: number;
+}
+
+const AUTO_PACK_ROTATION: PackRotationMeta[] = [
+  {
+    id: 'pack_normal',
+    nameKo: '일반 카드팩',
+    nameEn: 'Normal Card Pack',
+    nameJa: '一般カードパック',
+    cost: 300,
+  },
+  {
+    id: 'pack_magic',
+    nameKo: '매직 카드팩 (실버~골드)',
+    nameEn: 'Magic Card Pack (Silver~Gold)',
+    nameJa: 'マジックカードパック',
+    cost: 800,
+  },
+  {
+    id: 'pack_rare',
+    nameKo: '희귀 카드팩 (골드~전설)',
+    nameEn: 'Rare Card Pack (Gold~SSR)',
+    nameJa: 'レアカードパック',
+    cost: 1500,
+  },
+  {
+    id: 'pack_starter_bundle',
+    nameKo: '스타터 전설팩 (SSR 5종)',
+    nameEn: 'Starter Legend Pack (5 SSR)',
+    nameJa: 'スターター伝説パック (SSR 5種)',
+    cost: 2000,
+  },
+];
+
+const PACK_ROTATION_STORAGE_KEY = 'hero_auto_pack_rotation_idx';
+
+function getNextRotatingPack(): { pack: PackRotationMeta; index: number } {
+  let idx = 0;
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const saved = parseInt(localStorage.getItem(PACK_ROTATION_STORAGE_KEY) || '0', 10);
+      if (Number.isFinite(saved) && saved >= 0) {
+        idx = saved % AUTO_PACK_ROTATION.length;
+      }
+      localStorage.setItem(PACK_ROTATION_STORAGE_KEY, String((idx + 1) % AUTO_PACK_ROTATION.length));
+    } catch {}
+  }
+  return {
+    pack: AUTO_PACK_ROTATION[idx] || AUTO_PACK_ROTATION[0],
+    index: idx,
+  };
+}
 
 interface AutoGrowthLoopState {
   phase: AutoGrowthLoopPhase;
@@ -105,22 +167,33 @@ export function cancelAutoGrowthLoop(): void {
 }
 
 /**
- * Initiates the Auto-Growth & Retry Loop upon battle defeat/draw
+ * Initiates the Auto-Growth & Retry Loop (upon battle defeat/draw OR periodic chapter upgrade)
  */
-export function startAutoGrowthAndRetryLoop(): void {
+export function startAutoGrowthAndRetryLoop(reason: AutoGrowthTriggerReason = 'defeat_retry'): void {
   if (!playRpgState.autoMode) return;
   clearCurrentTimer();
 
   loopState.loopCount += 1;
+  const { pack: targetPack } = getNextRotatingPack();
+  // Buy EXP Elixir Pack every cycle (or whenever elixirs < 10) so My Deck cards always get upgraded
+  const shouldBuyElixirPack = true;
+
   loopState.phase = 'defeat_notified';
-  loopState.message = tr(
-    `🤖 [자동 성장 루프 #${loopState.loopCount}] 승리하지 못했습니다! 2초 후 상점으로 이동하여 카드를 소환합니다...`,
-    `🤖 [Auto-Growth Loop #${loopState.loopCount}] Victory not achieved! Moving to Shop in 2s to summon cards...`,
-    `🤖 [自動成長ループ #${loopState.loopCount}] 勝利できませんでした！2秒後にショップへ移動してカードを召喚します...`
-  );
+  loopState.message =
+    reason === 'periodic_upgrade'
+      ? tr(
+          `🤖 [정기 자동 성장 #${loopState.loopCount}] 상점으로 이동하여 [${targetPack.nameKo}] 소환 및 [EXP 영약팩] 구매 후 마이덱 카드를 업그레이드합니다...`,
+          `🤖 [Auto Upgrade #${loopState.loopCount}] Moving to Shop to summon [${targetPack.nameEn}] & buy [EXP Elixir Pack] to upgrade My Deck...`,
+          `🤖 [定期自動成長 #${loopState.loopCount}] ショップへ移動し[${targetPack.nameJa}]召喚＆[EXP霊薬パック]購入後マイデッキを強化します...`
+        )
+      : tr(
+          `🤖 [자동 성장 루프 #${loopState.loopCount}] 상점으로 이동하여 [${targetPack.nameKo}] 소환 및 [EXP 영약팩]을 구매합니다...`,
+          `🤖 [Auto-Growth Loop #${loopState.loopCount}] Moving to Shop to summon [${targetPack.nameEn}] & buy [EXP Elixir Pack]...`,
+          `🤖 [自動成長ループ #${loopState.loopCount}] ショップへ移動し[${targetPack.nameJa}]召喚＆[EXP霊薬パック]を購入します...`
+        );
   notifyStateChanged();
 
-  // Step 1: Wait 2s, then navigate to #shop
+  // Step 1: Wait 1.8s, then navigate to #shop
   loopState.activeTimer = setTimeout(() => {
     if (!playRpgState.autoMode) {
       cancelAutoGrowthLoop();
@@ -129,45 +202,52 @@ export function startAutoGrowthAndRetryLoop(): void {
 
     loopState.phase = 'shopping';
     loopState.message = tr(
-      '🛒 [자동 성장 루프] 상점 도착! SNS 코인을 소비하여 신규 카드팩(5장)을 소환 중...',
-      '🛒 [Auto-Growth Loop] Arrived at Shop! Consuming SNS coins to summon a 5-card pack...',
-      '🛒 [自動成長ループ] ショップ到着！SNSコインを消費して新カードパック(5枚)を召喚中...'
+      `🛒 [상점 소환 & 영약 구매] '${targetPack.nameKo}'(5장) 골고루 소환 및 'EXP 영약팩(10병)' 구매 진행 중...`,
+      `🛒 [Shop Summon & Elixir] Summoning '${targetPack.nameEn}' (5 cards) & purchasing 'EXP Elixir Pack (10 bottles)'...`,
+      `🛒 [ショップ召喚＆霊薬購入] '${targetPack.nameJa}'(5枚)召喚＆'EXP霊薬パック(10本)'を購入中...`
     );
     navigateSafely('shop');
     notifyStateChanged();
 
-    // Step 2: In shop, ensure coins and execute 5-card pack draw
+    // Step 2: In shop, ensure coins, purchase EXP Elixir Pack + rotating Card Pack
     loopState.activeTimer = setTimeout(() => {
       if (!playRpgState.autoMode) {
         cancelAutoGrowthLoop();
         return;
       }
 
-      // Guarantee minimum 500 SNS coins so the loop never stalls
+      // Guarantee sufficient SNS coins for both the rotating pack (up to 2,000 SNS) and EXP Elixir Pack (500 SNS)
+      const neededCoins = targetPack.cost + (shouldBuyElixirPack ? 500 : 0) + 300;
       const coins = getUserCoins();
-      if (coins < 500) {
-        creditUserCoins(1000, 'earned');
+      if (coins < neededCoins) {
+        creditUserCoins(neededCoins - coins + 500, 'earned');
       }
 
-      // Execute 5-card draw
-      executeShopPurchase('pack_normal');
+      // 2-A. Purchase EXP Elixir Pack (+10 bottles) so we can upgrade cards in My Deck
+      if (shouldBuyElixirPack) {
+        executeShopPurchase('item_exp_pack');
+        closeItemPurchaseModal();
+      }
+
+      // 2-B. Execute 5-card draw from the rotating pack (Normal -> Magic -> Rare -> Starter Legend)
+      executeShopPurchase(targetPack.id);
 
       loopState.phase = 'revealing';
       loopState.message = tr(
-        '✨ [자동 성장 루프] 5장의 소환된 카드를 확인했습니다! 3초 후 마이덱으로 이동하여 최적의 덱을 편성합니다...',
-        '✨ [Auto-Growth Loop] Inspected 5 summoned cards! Moving to My Deck in 3s to optimize squad...',
-        '✨ [自動成長ループ] 召喚された5枚のカードを確認しました！3秒後にマイデッキへ移動して最適デッキを編成します...'
+        `✨ [카드팩 & 영약팩 획득] '${targetPack.nameKo}' 5장 소환 + EXP 영약 10병 확보! 잠시 후 마이덱으로 이동해 카드를 업그레이드합니다...`,
+        `✨ [Pack & Elixirs Acquired] '${targetPack.nameEn}' 5 cards + 10 EXP Elixirs! Moving to My Deck to upgrade cards...`,
+        `✨ [パック＆霊薬獲得] '${targetPack.nameJa}' 5枚召喚＋EXP霊薬10本確保！マイデッキへ移動してカードを強化します...`
       );
 
       // Instantly reveal all 5 cards facedown -> faceup
       setTimeout(() => {
         flipAllPackCards();
         notifyStateChanged();
-      }, 500);
+      }, 450);
 
       notifyStateChanged();
 
-      // Step 3: Wait 3s so user inspects the 5 cards, then go to #deck
+      // Step 3: Wait 2.6s so user inspects the 5 cards, then go to #deck
       loopState.activeTimer = setTimeout(() => {
         if (!playRpgState.autoMode) {
           cancelAutoGrowthLoop();
@@ -178,26 +258,24 @@ export function startAutoGrowthAndRetryLoop(): void {
         loopState.phase = 'optimizing';
         navigateSafely('deck');
 
-        // Step 4: In My Deck, auto-optimize squad
+        // Step 4: In My Deck, feed EXP Elixirs, upgrade card levels & 4-way stats, and auto-optimize squad
         loopState.activeTimer = setTimeout(() => {
           if (!playRpgState.autoMode) {
             cancelAutoGrowthLoop();
             return;
           }
 
-          const prevTP = cardNurtureStore.getDeckTP();
-          if (typeof (cardNurtureStore as any).autoAllocateDeckStatPoints === 'function') {
-            (cardNurtureStore as any).autoAllocateDeckStatPoints();
-          }
-          const opt = cardNurtureStore.autoOptimizeDeck();
-          loopState.message = tr(
-            `⚡ [자동 성장 루프] 스탯 업그레이드 및 최강 5인 덱 자동 편성 완료! (전투력: ${prevTP} ➔ ${opt.newTP}) 2.5초 후 전장으로 복귀하여 재도전합니다!`,
-            `⚡ [Auto-Growth Loop] Stats upgraded & squad auto-optimized! (Power: ${prevTP} ➔ ${opt.newTP}) Returning to battle in 2.5s!`,
-            `⚡ [自動成長ループ] ステータス強化＆最強5人デッキ自動編成完了！（戦闘力: ${prevTP} ➔ ${opt.newTP}）2.5秒後に戦場へ復帰して再挑戦します！`
+          const upg = cardNurtureStore.upgradeDeckWithElixirsAndStats(6);
+          const deckNotice = tr(
+            `🧪⚡ [자동 카드 업그레이드 & 최강 덱 편성] '${targetPack.nameKo}' 반영 + EXP 영약 ${upg.elixirsUsed}병 투여 (레벨업 +${upg.levelsGained}Lv · 스탯 +${upg.pointsSpent}P 강화) · 덱 전투력 ${upg.previousTP} TP ➔ ${upg.newTP} TP!`,
+            `🧪⚡ [Auto Card Upgrade & Squad Optimization] '${targetPack.nameEn}' applied + ${upg.elixirsUsed} EXP Elixirs used (+${upg.levelsGained}Lv · +${upg.pointsSpent} Stat Pts) · Deck Power ${upg.previousTP} TP ➔ ${upg.newTP} TP!`,
+            `🧪⚡ [自動カード強化＆最強デッキ編成] '${targetPack.nameJa}'反映＋EXP霊薬${upg.elixirsUsed}本投与（+${upg.levelsGained}Lv・ステータス+${upg.pointsSpent}P強化）・デッキ戦闘力 ${upg.previousTP} TP ➔ ${upg.newTP} TP！`
           );
+          setDeckOptimizeNotice(deckNotice);
+          loopState.message = deckNotice;
           notifyStateChanged();
 
-          // Step 5: Return to #play and retry the battle
+          // Step 5: Return to #play and retry/continue the adventure
           loopState.activeTimer = setTimeout(() => {
             if (!playRpgState.autoMode) {
               cancelAutoGrowthLoop();
@@ -206,14 +284,14 @@ export function startAutoGrowthAndRetryLoop(): void {
 
             loopState.phase = 'retrying';
             loopState.message = tr(
-              '⚔️ [자동 성장 루프] 전장 복귀! 강화된 덱으로 즉시 재도전합니다!',
-              '⚔️ [Auto-Growth Loop] Returned to battlefield! Retrying battle with enhanced squad!',
-              '⚔️ [自動成長ループ] 戦場復帰！強化されたデッキで直ちに再挑戦します！'
+              `⚔️ [자동 성장 완료] 업그레이드된 마이덱(${upg.newTP} TP)으로 모험/전투에 즉시 복귀합니다!`,
+              `⚔️ [Auto Upgrade Complete] Returning to adventure/battle with upgraded My Deck (${upg.newTP} TP)!`,
+              `⚔️ [自動成長完了] 強化されたマイデッキ(${upg.newTP} TP)で冒険・戦闘に即時復帰します！`
             );
             navigateSafely('play');
             notifyStateChanged();
 
-            // Initiate battle retry on #play
+            // Resume or retry on #play
             loopState.activeTimer = setTimeout(() => {
               if (!playRpgState.autoMode) {
                 cancelAutoGrowthLoop();
@@ -222,14 +300,16 @@ export function startAutoGrowthAndRetryLoop(): void {
 
               loopState.phase = 'idle';
               loopState.message = null;
-              initBattle();
+              if (reason === 'defeat_retry' || playRpgState.subState === 'battle') {
+                initBattle();
+              }
               notifyStateChanged();
-            }, 1200);
-          }, 2500);
-        }, 800);
-      }, 3000);
-    }, 1000);
-  }, 2000);
+            }, 1000);
+          }, 2400);
+        }, 700);
+      }, 2600);
+    }, 900);
+  }, 1800);
 }
 
 /**
@@ -261,7 +341,11 @@ export function renderAutoGrowthBannerHtml(): string {
 // Register browser event listeners for auto-growth loop integration
 if (typeof window !== 'undefined') {
   window.addEventListener('snshero_battle_defeat_auto_loop', () => {
-    startAutoGrowthAndRetryLoop();
+    startAutoGrowthAndRetryLoop('defeat_retry');
+  });
+
+  window.addEventListener('snshero_periodic_auto_growth_loop', () => {
+    startAutoGrowthAndRetryLoop('periodic_upgrade');
   });
 
   window.addEventListener('snshero_auto_mode_toggled', (e: Event) => {

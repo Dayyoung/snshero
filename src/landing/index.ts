@@ -514,13 +514,14 @@ export function handleEventDelegation(event: Event): void {
       renderApp();
     }
   } else if (action === 'auto-optimize-deck') {
+    const alloc = cardNurtureStore.autoAllocateDeckStatPoints();
     const res = cardNurtureStore.autoOptimizeDeck();
     const firstId = res.newDeckIds[0] || 1;
     setSelectedDeckCardId(firstId);
     state.selectedDeckCardId = firstId;
-    if (res.changed) {
+    if (res.changed || alloc.pointsSpent > 0) {
       setDeckOptimizeNotice(
-        `⚡ 보유 영웅 중 최고 전투력 조합으로 덱이 자동 최적화되었습니다! (${res.previousTP} TP → ${res.newTP} TP)`
+        `⚡ 스탯 포인트 자동 배분(+${alloc.pointsSpent}P) 및 최강 5인 덱 자동 최적화가 완료되었습니다! (${res.previousTP} TP → ${res.newTP} TP)`
       );
     } else {
       setDeckOptimizeNotice(
@@ -528,6 +529,45 @@ export function handleEventDelegation(event: Event): void {
       );
     }
     renderApp();
+  } else if (action === 'upgrade-deck-with-elixirs') {
+    if (cardNurtureStore.getExpElixirCount() <= 0) {
+      // If user has 0 elixirs, try purchasing item_exp_pack if they have >= 500 coins, or navigate to #shop
+      if (getUserCoins() >= 500) {
+        executeShopPurchase('item_exp_pack');
+        closeItemPurchaseModal();
+      } else {
+        setDeckOptimizeNotice('🧪 보유 중인 EXP 영약이 없습니다. 상점(#shop)에서 EXP 영약팩을 구매해 주세요.');
+        renderApp();
+        return;
+      }
+    }
+    const upg = cardNurtureStore.upgradeDeckWithElixirsAndStats(5);
+    setDeckOptimizeNotice(
+      `🧪⚡ [마이덱 카드 업그레이드 완료] EXP 영약 ${upg.elixirsUsed}병 투여 (레벨업 +${upg.levelsGained}Lv · 스탯 +${upg.pointsSpent}P 강화) · 덱 전투력 ${upg.previousTP} TP → ${upg.newTP} TP!`
+    );
+    renderApp();
+  } else if (action === 'upgrade-single-deck-card') {
+    const cardId = Number(target.getAttribute('data-card-id'));
+    if (cardId && cardNurtureStore.isCardOwned(cardId)) {
+      const beforeStats = cardNurtureStore.getCard(cardId);
+      const beforeLv = beforeStats.level;
+      const beforeTP = cardNurtureStore.getDeckTP();
+      if (cardNurtureStore.getExpElixirCount() <= 0 && getUserCoins() >= 500) {
+        executeShopPurchase('item_exp_pack');
+        closeItemPurchaseModal();
+      }
+      if (cardNurtureStore.getExpElixirCount() > 0) {
+        cardNurtureStore.useExpElixir(cardId);
+        cardNurtureStore.useExpElixir(cardId);
+      }
+      const alloc = cardNurtureStore.autoAllocateDeckStatPoints();
+      const afterStats = cardNurtureStore.getCard(cardId);
+      const afterTP = cardNurtureStore.getDeckTP();
+      setDeckOptimizeNotice(
+        `⬆️ 영웅 #${cardId} 업그레이드 완료! (Lv.${beforeLv} → Lv.${afterStats.level}, 스탯 +${alloc.pointsSpent}P 배분, 덱 전투력 ${beforeTP} TP → ${afterTP} TP)`
+      );
+      renderApp();
+    }
   } else if (action === 'select-card') {
     const cardId = Number(target.getAttribute('data-card-id'));
     if (cardId) {
@@ -548,6 +588,7 @@ export function handleEventDelegation(event: Event): void {
     const cardId = Number(target.getAttribute('data-card-id'));
     if (cardId && cardNurtureStore.isCardOwned(cardId)) {
       cardNurtureStore.useExpElixir(cardId);
+      cardNurtureStore.autoAllocateDeckStatPoints();
       renderApp();
     }
   } else if (action === 'filter-card-element') {
@@ -1209,7 +1250,7 @@ export function mountLanding(): void {
     });
 
     setInterval(() => {
-      if (state.activeView === 'play' && playRpgState.autoMode) {
+      if (state.activeView === 'play' && playRpgState.autoMode && !getAutoGrowthLoopState().isActive) {
         const didStep = runAutoStep(true);
         if (didStep) {
           renderApp();

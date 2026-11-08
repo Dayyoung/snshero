@@ -553,25 +553,52 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         updatedDeck = [...baseDeck];
       }
 
-      // 스토리 연패 교착 탈출인 경우: 선발된 덱 카드의 잠재력 강화 레벨 +1 부스트하여 확실한 전력 상승 보장
-      if (storyReturnTarget && updatedDeck.length > 0) {
+      // 자동플레이 시 보유한 EXP 영약을 소모하여 마이덱 5장 카드를 골고루 레벨업 & 4방위 스탯 업그레이드 진행
+      if (updatedDeck.length > 0) {
+        let nurtureState: any = null;
+        try {
+          const raw = localStorage.getItem('hero_card_nurture_state_v1');
+          if (raw) nurtureState = JSON.parse(raw);
+        } catch {}
+
         updatedDeck = updatedDeck.map((c, idx) => {
           const imgIdx = Number(c.imageIndex || c.id);
-          if (idx === 0 && imgIdx > 0) {
+          // 슬롯 중 가장 레벨이 낮은 카드부터 순차 업그레이드 (회당 상위 2~3장 집중 강화)
+          const shouldUpgradeThisCard = idx < 3 || Boolean(storyReturnTarget);
+          if (shouldUpgradeThisCard && imgIdx > 0) {
             try {
               const enhKey = `hero_card_enhancement_${imgIdx}`;
               const curLv = parseInt(localStorage.getItem(enhKey) || '1', 10) || 1;
               localStorage.setItem(enhKey, String(curLv + 1));
             } catch {}
+            if (nurtureState && nurtureState.cards && nurtureState.cards[imgIdx]) {
+              const entry = nurtureState.cards[imgIdx];
+              if ((nurtureState.expElixirs || 0) > 0) {
+                nurtureState.expElixirs = Math.max(0, nurtureState.expElixirs - 1);
+              }
+              entry.level = Math.min(30, (entry.level || 1) + 1);
+              entry.bonusTop = (entry.bonusTop || 0) + (idx % 2 === 0 ? 1 : 0);
+              entry.bonusRight = (entry.bonusRight || 0) + (idx % 2 === 1 ? 1 : 0);
+              entry.bonusBottom = (entry.bonusBottom || 0) + (idx % 3 === 0 ? 1 : 0);
+              entry.bonusLeft = (entry.bonusLeft || 0) + 1;
+            }
           }
           const baseStats = Array.isArray(c.stats) && c.stats.length === 4 ? c.stats : [3, 3, 3, 3];
-          return {
-            ...c,
-            level: Math.min(10, (c.level || 1) + 1),
-            power: (c.power || getCardPower(c) || 100) + 25,
-            stats: baseStats.map((s) => Math.min(10, (Number(s) || 1) + 1)) as [number, number, number, number],
-          };
+          return shouldUpgradeThisCard
+            ? {
+                ...c,
+                level: Math.min(30, (c.level || 1) + 1),
+                power: (c.power || getCardPower(c) || 100) + 35,
+                stats: baseStats.map((s) => Math.min(15, (Number(s) || 1) + 1)) as [number, number, number, number],
+              }
+            : c;
         });
+
+        if (nurtureState) {
+          try {
+            localStorage.setItem('hero_card_nurture_state_v1', JSON.stringify(nurtureState));
+          } catch {}
+        }
       }
 
       // 변경된 슬롯 계산 (전체 최적화 시각 피드백)

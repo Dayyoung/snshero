@@ -579,19 +579,29 @@ export function renderMyDeckSection(selectedCardId?: number): string {
               </p>
             </div>
             <div class="flex flex-col sm:items-end gap-2">
-              <button
-                type="button"
-                data-action="auto-optimize-deck"
-                class="px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs sm:text-sm font-black rounded-sm min-h-[44px] inline-flex items-center justify-center gap-2 cursor-pointer transition-opacity shadow-xs"
-              >
-                <span>⚡</span>
-                <span>${tr('자동최적화 (최강 덱 편성)', 'Auto Optimize Deck', '自動最適化 (最強デッキ編成)')}</span>
-              </button>
+              <div class="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  data-action="upgrade-deck-with-elixirs"
+                  class="px-3.5 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white text-xs sm:text-sm font-black rounded-sm min-h-[44px] inline-flex items-center justify-center gap-1.5 cursor-pointer transition-colors shadow-xs"
+                >
+                  <span>🧪</span>
+                  <span>${tr(`영약 투여 & 카드 업그레이드 (영약 ${cardNurtureStore.getExpElixirCount()}병)`, `Elixir & Stat Upgrade (${cardNurtureStore.getExpElixirCount()} bottles)`, `霊薬投与＆カード強化 (${cardNurtureStore.getExpElixirCount()}本)`)}</span>
+                </button>
+                <button
+                  type="button"
+                  data-action="auto-optimize-deck"
+                  class="px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] hover:opacity-90 text-xs sm:text-sm font-black rounded-sm min-h-[44px] inline-flex items-center justify-center gap-2 cursor-pointer transition-opacity shadow-xs"
+                >
+                  <span>⚡</span>
+                  <span>${tr('자동최적화 (최강 덱 편성)', 'Auto Optimize Deck', '自動最適化 (最強デッキ編成)')}</span>
+                </button>
+              </div>
               <div class="text-[11px] text-stone-500 font-mono">
                 ${tr(
-                  '보유 카드 중 최고 전투력 5장 자동 배치 또는 슬롯별 [영웅 교체]',
-                  'Auto-equip top 5 owned cards by TP or click [Swap Hero] per slot',
-                  '保有カードから最高戦闘力5枚を自動配置、または各スロットで[英雄入替]'
+                  '영약 투여로 출격 카드를 즉시 레벨업·스탯 강화하거나 최강 5장 자동 배치',
+                  'Feed EXP Elixirs to upgrade squad levels & stats or auto-equip top 5 cards',
+                  '霊薬投与で出撃カードを即時レベルアップ・ステータス強化、または最強5枚を自動配置'
                 )}
               </div>
             </div>
@@ -655,8 +665,17 @@ export function renderMyDeckSection(selectedCardId?: number): string {
                     })}
                   </div>
 
-                  <!-- Bottom Slot Action: Card Swap Button (44px+ touch target) -->
-                  <div class="w-full pt-0.5 sm:pt-1">
+                  <!-- Bottom Slot Actions: Card Upgrade + Card Swap Buttons -->
+                  <div class="w-full pt-0.5 sm:pt-1 space-y-1">
+                    <button
+                      type="button"
+                      data-action="upgrade-single-deck-card"
+                      data-card-id="${cardId}"
+                      class="w-full py-1.5 sm:py-2 px-1 sm:px-2 bg-emerald-700 hover:bg-emerald-600 text-white text-[9px] sm:text-[11px] font-bold rounded-sm min-h-[38px] sm:min-h-[40px] inline-flex items-center justify-center gap-1 cursor-pointer transition-colors whitespace-nowrap"
+                    >
+                      <span>⬆️</span>
+                      <span>${tr(`업그레이드 (Lv.${stats.level})`, `Upgrade (Lv.${stats.level})`, `強化 (Lv.${stats.level})`)}</span>
+                    </button>
                     <button
                       type="button"
                       data-action="open-deck-swap-drawer"

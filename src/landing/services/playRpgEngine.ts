@@ -2931,14 +2931,39 @@ export function runAutoStep(respectSpeedAndImageGate: boolean = false): boolean 
           playRpgState.heroTile = { ...nextEvent.tile };
           triggerDialogue(nextEvent);
         }
+        // Periodically run the Shop (all packs rotation + EXP Elixir pack) -> MyDeck (Card Upgrade) loop
+        // every 3 chapters or whenever the upcoming chapter's enemy Deck TP exceeds the player's Deck TP
+        if (typeof window !== 'undefined' && playRpgState.autoMode) {
+          const matchup = getBattlePowerMatchup(playRpgState.reincarnationLevel, playRpgState.currentChapter);
+          const shouldPeriodicUpgrade =
+            playRpgState.currentChapter % 3 === 1 || matchup.opponentDeckTP > matchup.playerDeckTP;
+          if (shouldPeriodicUpgrade) {
+            window.dispatchEvent(
+              new CustomEvent('snshero_periodic_auto_growth_loop', {
+                detail: {
+                  chapter: playRpgState.currentChapter,
+                  reincarnationLevel: playRpgState.reincarnationLevel,
+                },
+              })
+            );
+          }
+        }
         return true;
       } else {
-        // Defeat or Draw: cannot advance to next chapter without winning (upgrade cards required)
-        playRpgState.autoMode = false;
-        try {
-          localStorage.setItem('hero_kadan_rpg_auto_mode', 'false');
-        } catch {}
-        return true;
+        // Defeat or Draw in Auto-Play: keep autoMode active and let autoGrowthLoopManager
+        // visit Shop (all packs + EXP Elixir pack) -> MyDeck (upgrade cards) -> Play (retry battle)
+        if (typeof window !== 'undefined' && playRpgState.autoMode) {
+          window.dispatchEvent(
+            new CustomEvent('snshero_battle_defeat_auto_loop', {
+              detail: {
+                winner: playRpgState.battleWinner,
+                chapter: playRpgState.currentChapter,
+                reincarnationLevel: playRpgState.reincarnationLevel,
+              },
+            })
+          );
+        }
+        return false;
       }
     }
   } else if (playRpgState.subState === 'reincarnation') {

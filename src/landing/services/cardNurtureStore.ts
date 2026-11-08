@@ -583,6 +583,76 @@ export class CardNurtureStore implements NurtureState {
   }
 
   /**
+   * Consumes owned EXP Elixirs on the active 5-card deck (prioritizing lowest-level deck cards),
+   * allocates all unspent stat points to N/E/S/W stats, and optimizes the 5-card squad.
+   */
+  upgradeDeckWithElixirsAndStats(maxElixirsToUse: number = 6): {
+    previousTP: number;
+    newTP: number;
+    elixirsUsed: number;
+    levelsGained: number;
+    pointsSpent: number;
+    remainingElixirs: number;
+    updatedCards: number[];
+  } {
+    this.ensureValidDeck();
+    const previousTP = this.getDeckTP();
+
+    // 1. Allocate any existing unspent stat points and optimize top 5 cards first
+    const preAlloc = this.autoAllocateDeckStatPoints();
+    this.autoOptimizeDeck();
+
+    let elixirsUsed = 0;
+    let levelsGained = 0;
+    const updatedSet = new Set<number>(preAlloc.updatedCards);
+
+    // 2. Feed EXP Elixirs to active 5-card deck (lowest level first for balanced growth)
+    const targetCount = Math.max(1, maxElixirsToUse);
+    for (let i = 0; i < targetCount; i++) {
+      if (this.getExpElixirCount() <= 0) break;
+
+      const candidates = this.activeDeckIds
+        .map((id) => this.getCard(id))
+        .filter((c) => c.level < 100)
+        .sort((a, b) => (a.level !== b.level ? a.level - b.level : a.exp - b.exp));
+
+      if (candidates.length === 0) break;
+      const targetCard = candidates[0];
+      const beforeLv = targetCard.level;
+      const res = this.useExpElixir(targetCard.cardId);
+      if (res.success) {
+        elixirsUsed += 1;
+        if (res.newLevel > beforeLv) {
+          levelsGained += res.newLevel - beforeLv;
+        }
+        updatedSet.add(targetCard.cardId);
+      } else {
+        break;
+      }
+    }
+
+    // 3. Allocate all newly gained stat points from level-ups
+    const postAlloc = this.autoAllocateDeckStatPoints();
+    for (const id of postAlloc.updatedCards) {
+      updatedSet.add(id);
+    }
+
+    // 4. Final squad optimization & sync
+    const opt = this.autoOptimizeDeck();
+    this.saveToStorage();
+
+    return {
+      previousTP,
+      newTP: opt.newTP,
+      elixirsUsed,
+      levelsGained,
+      pointsSpent: preAlloc.pointsSpent + postAlloc.pointsSpent,
+      remainingElixirs: this.getExpElixirCount(),
+      updatedCards: Array.from(updatedSet),
+    };
+  }
+
+  /**
    * Add a new card to owned inventory (e.g. from shop or rewards)
    */
   addCard(cardId: number): boolean {

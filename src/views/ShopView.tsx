@@ -2567,9 +2567,27 @@ export const ShopView: React.FC<ShopViewProps> = ({
         }
       })();
       const currentSns = Math.max(localSns, snsRef.current || 0);
-      const packRarity: GachaPackRarity = (storyReturnTarget || currentSns >= 100) ? 'silver' : 'bronze';
-      const rawCost = (packRarity === 'silver') ? 100 : 10;
+      // 모든 카드팩(브론즈/실버/골드)을 골고루 순환 소환 + EXP 영약팩 병행 확보
+      const rotationPacks: GachaPackRarity[] = ['bronze', 'silver', 'gold'];
+      let rotIdx = 0;
+      try {
+        rotIdx = parseInt(localStorage.getItem('hero_react_shop_auto_pack_idx') || '0', 10) || 0;
+        localStorage.setItem('hero_react_shop_auto_pack_idx', String((rotIdx + 1) % rotationPacks.length));
+      } catch {}
+      const packRarity: GachaPackRarity = rotationPacks[rotIdx % rotationPacks.length];
+      const rawCost = packRarity === 'gold' ? 500 : packRarity === 'silver' ? 100 : 10;
       const packCost = currentSns >= rawCost ? rawCost : 0; // 잔액 부족 시 구제/승리 보상 무료 소환
+
+      // 자동플레이 시 EXP 영약팩(+10병)도 함께 보충하여 마이덱 카드 업그레이드가 원활히 진행되도록 보장
+      try {
+        const nurtureRaw = localStorage.getItem('hero_card_nurture_state_v1');
+        if (nurtureRaw) {
+          const parsed = JSON.parse(nurtureRaw);
+          parsed.expElixirs = Math.max(0, Number(parsed.expElixirs || 0)) + 10;
+          localStorage.setItem('hero_card_nurture_state_v1', JSON.stringify(parsed));
+        }
+        localStorage.setItem('hero_auto_optimize_deck', 'true');
+      } catch {}
 
       // 팩 구매 실행 및 획득 카드 목록 수신 (페일오버 완비)
       let drawnCards = buyPackRef.current ? buyPackRef.current(packCost, packRarity) : null;
