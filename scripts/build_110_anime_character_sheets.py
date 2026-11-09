@@ -1286,7 +1286,7 @@ def main() -> None:
             fonts,
         )
         sheet_rgb.save(SHEET_DIR / f"{cid:03d}_{slug}_sheet.jpg", "JPEG", quality=92, optimize=True)
-        sheet_thumbs_for_poster.append(sheet_rgb.resize((240, 150), Image.Resampling.LANCZOS))
+        sheet_thumbs_for_poster.append(sheet_rgb)
 
         gender_type, novel_role, hair_desc, body_desc, item_desc = ANIME_CHAR_SPECS[cid]
         fac_label, fac_hex, _ = FACTION_META[card["faction"]]
@@ -1355,29 +1355,35 @@ def main() -> None:
         )
     print("Rendered all 11 Faction 10-Character Master Sheets (2400x1420)!")
 
-    # 9. Render Grand 110-Character Studio Overview Poster (10 cols x 11 rows of sheets)
-    poster_w = 10 * 244 + 36
-    poster_h = 11 * 154 + 110
+    # 9. Render Grand 110-Character Studio Overview Poster (10 cols x 11 rows at 1:1 full 1600x1000 resolution)
+    cell_w, cell_h = 1600, 1000
+    gap = 20
+    pad_x = 30
+    header_h = 160
+    poster_w = pad_x * 2 + 10 * cell_w + 9 * gap
+    poster_h = header_h + 11 * cell_h + 10 * gap + pad_x
     poster = Image.new("RGB", (poster_w, poster_h), (20, 20, 25))
     p_draw = ImageDraw.Draw(poster)
     p_draw.text(
-        (28, 24),
-        "SNSHERO ANIMATION PROJECT — 『카단의 여정』 110인 전체 캐릭터 설정 시트 총람 (NO.001 – NO.110)",
-        font=fonts["fac_title"],
+        (pad_x, 30),
+        "SNSHERO ANIMATION PROJECT — 『카단의 여정』 110인 전체 캐릭터 설정 시트 총람 (NO.001 – NO.110) [1:1 원본 무손실 통합본]",
+        font=load_font(64, bold=True),
         fill=(255, 255, 255),
     )
     p_draw.text(
-        (30, 64),
-        "11 Factions × 10 Characters = 110 Official Studio Character Model Sheets (Main Anime Design + 3등신 Cute SD Reference)",
-        font=fonts["small"],
+        (pad_x + 4, 106),
+        "11 Factions × 10 Characters = 110 Official Studio Character Model Sheets (1600×1000 Original Resolution per Sheet · Total 16,240×11,390 px)",
+        font=load_font(38, bold=False),
         fill=(185, 190, 205),
     )
-    for idx, thumb in enumerate(sheet_thumbs_for_poster):
+    for idx, full_sheet in enumerate(sheet_thumbs_for_poster):
         c = idx % 10
         r = idx // 10
-        poster.paste(thumb, (20 + c * 244, 100 + r * 154))
-    poster.save(OUT_ROOT / "all_110_cast_poster.jpg", "JPEG", quality=90, optimize=True)
-    print("Saved all_110_cast_poster.jpg!")
+        x = pad_x + c * (cell_w + gap)
+        y = header_h + r * (cell_h + gap)
+        poster.paste(full_sheet, (x, y))
+    poster.save(OUT_ROOT / "all_110_cast_poster.jpg", "JPEG", quality=94, subsampling=0, optimize=True)
+    print("Saved 1:1 Full-Resolution all_110_cast_poster.jpg (16240x11390)!")
 
     # 10. Save manifest.json (including 20 canonical locations and 20 canonical props)
     from build_locations_and_props_sheets import LOCATIONS, PROPS

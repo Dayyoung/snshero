@@ -2,6 +2,16 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-09 12:16 KST] [110인 캐릭터 시트 통합본(all_110_cast_poster.jpg) 1:1 원본 무손실 초고해상도(16,240×11,390px) 재생성 및 11대 종족 마스터 통합본 추가]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "all_110_cast_poster.jpg 케릭터와 글자가 너무 깨진다. 용량이 커도 좋으니까 케릭터 시트를 모두 합쳐놓은 리소스 없을까"
+  - **2. 원인 분석 및 세부 구현 내역**:
+    - 기존 `public/anime-character-sheets/all_110_cast_poster.jpg`는 개별 `1600×1000` 캐릭터 시트 110장을 `240×150` 썸네일로 1/6.67배 축소(`2,476×1,804px`, 1.72MB)하여 병합했기 때문에 확대 시 캐릭터와 텍스트가 심하게 깨지던 문제를 확인.
+    - 개별 캐릭터 시트 110장(`public/anime-character-sheets/sheets/001_Aquaris_sheet.jpg` ~ `110_Dreadwing_sheet.jpg`, 각 `1600×1000px`)을 **리사이즈 축소 없이 1:1 원본 해상도 그대로** 10열 × 11행으로 병합하고, 텍스트 색상 번짐을 방지하는 `subsampling=0` (4:4:4 무손실 크로마) 옵션을 적용하여 **`16,240 × 11,390 px` (약 53.96MB)** 초고해상도 통합 마스터 시트([`public/anime-character-sheets/all_110_cast_poster.jpg`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/all_110_cast_poster.jpg))로 재생성.
+    - 추가로 11대 속성/종족별 10인 마스터 시트(`2400×1420px` × 11장)를 1:1 원본 해상도로 합친 **[`public/anime-character-sheets/all_11_factions_master_poster.jpg`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/all_11_factions_master_poster.jpg)** (`4,884 × 8,810 px`, 약 14.53MB)도 함께 생성 및 [`scripts/build_110_anime_character_sheets.py`](file:///Users/dayyoung/project/snshero/scripts/build_110_anime_character_sheets.py) 반영 완료.
+
 ## [2026-11-09 11:48 KST] [Hero Awakening 등 전 BGM 4종 자체 신디사이저 엔진 통합 제작 및 음색 일원화]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
