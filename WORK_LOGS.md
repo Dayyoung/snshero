@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-09 11:06 KST] [카드게임 밸런스 재조정(자동플레이 8화 병목 해소) 및 EXP 영약 구매 후 미사용·누적 버그 완벽 수정]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "카드게임 발란스 조정에 실패한것 같아. 자동진행 시 8화 에서 멈춰있어. 그리고 영약을 구매만 하고 사용을 하지 않는 버그가 있어."
+  - **2. 원인 분석 및 세부 수정 내역**:
+    - **(1) EXP 영약 구매 후 미사용/잔여 누적 버그 수정 ([`src/landing/services/cardNurtureStore.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/cardNurtureStore.ts), [`src/landing/services/autoGrowthLoopManager.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/autoGrowthLoopManager.ts), [`src/landing/index.ts`](file:///Users/dayyoung/project/snshero/src/landing/index.ts), [`src/landing/views/ShopSection.tsx`](file:///Users/dayyoung/project/snshero/src/landing/views/ShopSection.tsx))**:
+      - 상점에서 `EXP 영약팩 (10병)`을 구매한 뒤 `upgradeDeckWithElixirsAndStats(6)`가 최대 6병까지만 소모하여 매번 4병씩 인벤토리에 미사용 상태로 누적되던 문제와, 카드 레벨이 Lv.6 이상(`expToNext >= 600`)이 되면 영약 1병(`+500 EXP`)을 투여해도 레벨업(`levelsGained = 0`)과 스탯 상승(`pointsSpent = 0`)이 전혀 일어나지 않던 버그를 해결.
+      - `useExpElixir(cardId)` 호출 시 영약 1병당 최소 `+500 EXP` 및 **최소 1레벨 업(`expToNext - exp`)과 스탯 포인트 +1P**를 100% 보장하도록 개선.
+      - `upgradeDeckWithElixirsAndStats()`가 인벤토리에 보유한 **모든 EXP 영약을 전량(100%) 소모(`remainingElixirs = 0`)**하여 마이덱 5장 카드의 레벨과 4방위 스탯을 즉시 끌어올리도록 수정하고, 자동플레이 배틀 시작(`initBattle`) 및 상점 영약 구매 모달의 `[🧪 마이덱으로 이동해 영약 즉시 투여하기]` 클릭 시에도 잔여 영약을 전량 자동 투여하도록 연동.
+    - **(2) 카드게임 밸런스 재조정 및 자동진행 시 8화 멈춤(무한 루프) 해소 ([`src/landing/services/playRpgEngine.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/playRpgEngine.ts))**:
+      - **3x3 보드 스코어 판정 불공정 수정 (`finalizeBattle`)**: 9칸 보드에서 선공 플레이어는 5장을 모두 배치(`playerHand = 0`)하고 후공 상대는 4장만 배치(`opponentHand = 1`)하는데, 기존에 `oScore`에 상대 미배치 손패 1장을 더해주어 플레이어가 보드 과반(5:4)을 점령하고도 `5:5 무승부`로 패배 처리되던 문제를 수정. 오직 3x3 보드 9칸의 점령 카드 수(`5:4` 이상 승리)로 공정하게 승패를 판정.
+      - **덱 파워 스케일링 및 재도전 적응형 밸런스 (`getBattlePowerMatchup`)**: 회차 진입 시점마다 플레이어 TP를 다시 잠가버려 초반(1~7화)에 업그레이드한 플레이어가 8화에서 오히려 더 높은 적 TP를 만나던 역설을 제거하고, 환생 시작 시점 TP(`rebirthStartTP`)를 기준으로 완만하게 상승하도록 재설계. 카드를 업그레이드한 덱은 상대 TP가 내 덱 TP의 `80%~86%` 이하로 유지되며, 만약 패배/무승부 후 재도전(`retryCount >= 1`) 시마다 적 TP를 `-18%`씩 추가 하향하여 8화를 비롯한 전 40화를 막힘 없이 돌파하도록 개선.
+      - **`ensureGameStarted()` 재도전 분기 수정**: 패배/무승부(`battleWinner !== 'player'`) 상태에서 `#play`로 복귀할 때 잘못된 `advanceNextChapter()` 호출 대신 즉시 `initBattle()`로 재전투가 시작되도록 수정.
+  - **3. 빌드 및 검증**:
+    - 1~40화 전 회차 자동플레이 시뮬레이션 전수 완주(잔여 미사용 영약 0병, 8화 포함 전 구간 무정체 클리어) 확인 및 `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-09 08:13 KST] [게임 데이터 초기화 시 텍스트 입력(prompt) 제거 및 컨펌창(confirm) 원클릭 초기화 전환]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

@@ -406,7 +406,7 @@ export function ensureGameStarted(): void {
       triggerDialogue(chEvent);
     }
   } else if (playRpgState.subState === 'battle' && playRpgState.battleWinner) {
-    if (playRpgState.repeatHunting) {
+    if (playRpgState.repeatHunting || playRpgState.battleWinner !== 'player') {
       initBattle();
     } else {
       advanceNextChapter();
@@ -1498,57 +1498,90 @@ export function getEpisodeActualOpponentDeck(chapter: number): {
   };
 }
 
-const CHAPTER_BASELINE_STORAGE_KEY = 'hero_chapter_baseline_tp_map';
+const REBIRTH_START_TP_STORAGE_KEY = 'hero_rebirth_start_tp_map';
+const CHAPTER_RETRY_COUNT_STORAGE_KEY = 'hero_chapter_retry_count_map';
+const memoryRebirthStartTpMap: Record<string, number> = {};
+const memoryChapterRetryMap: Record<string, number> = {};
 
 /**
  * Check whether the given chapter is an Upgrade Checkpoint / Gatekeeper Boss chapter
- * where the opponent deck pushes the player to upgrade their cards.
+ * where an un-upgraded deck feels mild pressure to upgrade cards.
  */
 export function isUpgradeCheckpointChapter(
   chapter: number = playRpgState.currentChapter,
   rebirthLevel: number = playRpgState.reincarnationLevel
 ): boolean {
   const ch = Math.max(1, Math.min(40, Math.floor(chapter || 1)));
-  const bossChapters = [5, 8, 10, 15, 16, 20, 24, 25, 30, 32, 35, 38, 39, 40];
+  const bossChapters = [10, 20, 30, 40];
   if (bossChapters.includes(ch)) return true;
-  if (rebirthLevel > 0) {
-    // When reincarnated, Chapter 1 and every 4th chapter also act as upgrade checkpoints
-    if (ch === 1 || ch % 4 === 0) return true;
-  }
+  if (rebirthLevel > 0 && ch % 10 === 0) return true;
   return false;
 }
 
 /**
- * Read or lock in the player's baseline deck TP when first entering (rebirthLevel, chapter).
- * Locking the baseline ensures that when the user upgrades their cards mid-chapter,
- * their newly added TP directly helps them overcome the current opponent!
+ * Read or record the player's starting deck TP at the beginning of a Rebirth cycle.
+ * Using the Rebirth starting TP as the anchor ensures that every card pack & EXP elixir upgrade
+ * performed during the 40 episodes gives a real, permanent power lead over upcoming chapters!
  */
-function getOrRecordChapterBaselineTP(
-  rebirthLevel: number,
-  chapter: number,
-  currentPlayerDeckTP: number
-): number {
+function getOrRecordRebirthStartTP(rebirthLevel: number, currentPlayerDeckTP: number): number {
+  const key = String(rebirthLevel);
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(REBIRTH_START_TP_STORAGE_KEY);
+      const map: Record<string, number> = raw ? JSON.parse(raw) : {};
+      if (typeof map[key] === 'number' && map[key] > 0) {
+        memoryRebirthStartTpMap[key] = map[key];
+        return map[key];
+      }
+      map[key] = currentPlayerDeckTP;
+      localStorage.setItem(REBIRTH_START_TP_STORAGE_KEY, JSON.stringify(map));
+    } catch {}
+  }
+  if (!memoryRebirthStartTpMap[key]) {
+    memoryRebirthStartTpMap[key] = currentPlayerDeckTP;
+  }
+  return memoryRebirthStartTpMap[key];
+}
+
+export function getChapterRetryCount(rebirthLevel: number, chapter: number): number {
   const key = `${rebirthLevel}-${chapter}`;
-  if (typeof localStorage === 'undefined') return currentPlayerDeckTP;
-  try {
-    const raw = localStorage.getItem(CHAPTER_BASELINE_STORAGE_KEY);
-    const map: Record<string, number> = raw ? JSON.parse(raw) : {};
-    if (typeof map[key] === 'number' && map[key] > 0) {
-      return map[key];
-    }
-    map[key] = currentPlayerDeckTP;
-    localStorage.setItem(CHAPTER_BASELINE_STORAGE_KEY, JSON.stringify(map));
-    return currentPlayerDeckTP;
-  } catch {
-    return currentPlayerDeckTP;
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(CHAPTER_RETRY_COUNT_STORAGE_KEY);
+      const map: Record<string, number> = raw ? JSON.parse(raw) : {};
+      if (typeof map[key] === 'number' && map[key] >= 0) {
+        memoryChapterRetryMap[key] = map[key];
+        return map[key];
+      }
+    } catch {}
+  }
+  return memoryChapterRetryMap[key] || 0;
+}
+
+export function recordChapterBattleRetry(rebirthLevel: number, chapter: number, reset: boolean = false): void {
+  const key = `${rebirthLevel}-${chapter}`;
+  const nextCount = reset ? 0 : getChapterRetryCount(rebirthLevel, chapter) + 1;
+  memoryChapterRetryMap[key] = nextCount;
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(CHAPTER_RETRY_COUNT_STORAGE_KEY);
+      const map: Record<string, number> = raw ? JSON.parse(raw) : {};
+      if (reset) {
+        delete map[key];
+      } else {
+        map[key] = nextCount;
+      }
+      localStorage.setItem(CHAPTER_RETRY_COUNT_STORAGE_KEY, JSON.stringify(map));
+    } catch {}
   }
 }
 
 /**
  * Calculate real-time Deck Power matchup between User's 5-card deck and Opponent's 5-card deck.
- * - Scales opponent deck power dynamically based on User's Deck TP + Reincarnation Level + Chapter progression.
- * - Periodically applies Upgrade Checkpoint spikes (and unspent stat-point pressure) so the user
- *   genuinely feels the need to upgrade their cards, and feels an immediate advantage once upgraded.
+ * - Scales opponent deck power dynamically based on User's Rebirth Start TP + Chapter progression.
+ * - Upgrading cards (via Card Packs or EXP Elixirs) directly outpaces opponent TP so upgraded decks
+ *   smoothly break through Episode 8 and all 40 episodes without stalling.
+ * - If a battle is ever retried after a defeat/draw, retry adaptation lowers opponent TP by 18% per retry.
  */
 export function getBattlePowerMatchup(
   rebirthLevel: number = playRpgState.reincarnationLevel || 0,
@@ -1573,38 +1606,38 @@ export function getBattlePowerMatchup(
       ? (cardNurtureStore as any).getTotalUnspentPoints()
       : 0;
 
-  const baselineTP = getOrRecordChapterBaselineTP(reb, ch, playerDeckTP);
-  // If player upgraded their deck after entering this chapter, only 25% of the upgrade delta transfers to opponent,
-  // guaranteeing that upgrading cards makes the current chapter noticeably easier to beat!
-  const effectivePlayerRefTP =
-    playerDeckTP > baselineTP
-      ? baselineTP + Math.floor((playerDeckTP - baselineTP) * 0.25)
-      : playerDeckTP;
-
-  // Progressive minimum benchmark for (rebirthLevel, chapter) so un-upgraded starter decks hit a wall
-  const chapterBenchmarkTP = 78 + Math.round((ch - 1) * 1.15) + reb * 28;
-  const baseRefTP = Math.max(effectivePlayerRefTP, chapterBenchmarkTP);
-
+  const rebirthStartTP = getOrRecordRebirthStartTP(reb, playerDeckTP);
+  const retryCount = getChapterRetryCount(reb, ch);
   const isCheckpoint = isUpgradeCheckpointChapter(ch, reb);
 
-  let powerRatio: number;
+  // Target progression across 40 episodes anchored to Rebirth Start TP
+  const chapterGrowthTP = Math.round((ch - 1) * (1.8 + Math.min(3, reb * 0.5)));
+  const expectedChapterTP = rebirthStartTP + chapterGrowthTP;
+
+  // Blend expected chapter curve (55%) with current player TP (30%) so upgrading always gives a huge lead!
+  let rawOpponentTP = Math.round(expectedChapterTP * 0.52 + playerDeckTP * 0.30);
+
   if (isCheckpoint) {
-    powerRatio =
-      reb === 0
-        ? 1.04 + (ch / 40) * 0.08 // 104% ~ 112% on Rebirth 0 checkpoints
-        : 1.09 + Math.min(0.16, reb * 0.025) + (ch / 40) * 0.04; // 111.5% ~ 129% on Rebirth 1+ checkpoints
-  } else {
-    powerRatio =
-      reb === 0
-        ? 0.90 + (ch / 40) * 0.08 // 90% ~ 98% on Rebirth 0 normal chapters
-        : 0.98 + Math.min(0.10, reb * 0.02) + (ch / 40) * 0.03; // 100% ~ 111% on Rebirth 1+ normal chapters
+    rawOpponentTP = Math.round(rawOpponentTP * (reb === 0 ? 1.06 : 1.10));
   }
 
-  // If the user is sitting on unallocated stat points, add upgrade pressure until they spend them
-  const unspentPressureBonus = unspentPoints >= 2 ? Math.min(14, Math.floor(unspentPoints * 1.25)) : 0;
+  // If the player has upgraded their deck (+12 TP above rebirthStartTP), reward them by capping enemy TP <= 86% of playerDeckTP!
+  const hasUpgradedInRebirth = playerDeckTP >= rebirthStartTP + 12;
+  if (hasUpgradedInRebirth) {
+    rawOpponentTP = Math.min(rawOpponentTP, Math.round(playerDeckTP * (isCheckpoint ? 0.86 : 0.80)));
+  }
 
-  const opponentDeckTP = Math.max(45, Math.round(baseRefTP * powerRatio) + unspentPressureBonus);
-  const needsUpgrade = opponentDeckTP > playerDeckTP || unspentPoints > 0;
+  // Retry adaptation: if the player lost/drew once on this chapter, scale down enemy TP so they never get stuck!
+  if (retryCount > 0) {
+    const retryFactor = Math.pow(0.82, retryCount);
+    rawOpponentTP = Math.min(
+      Math.round(rawOpponentTP * retryFactor),
+      Math.round(playerDeckTP * Math.max(0.65, 0.82 - retryCount * 0.06))
+    );
+  }
+
+  const opponentDeckTP = Math.max(45, rawOpponentTP);
+  const needsUpgrade = opponentDeckTP > playerDeckTP || unspentPoints >= 5;
 
   return {
     playerDeckTP,
@@ -1754,6 +1787,16 @@ function setupBattleStateInternal(
 export function initBattle(customOpponentCards?: number[], customOpponentName?: string): void {
   playRpgState.subState = 'battle';
   audioManager.playSceneBgm('battle');
+
+  // If in Auto-Play mode and there are any unused EXP Elixirs or unspent stat points, consume them now!
+  if (
+    playRpgState.autoMode &&
+    typeof (cardNurtureStore as any).upgradeDeckWithElixirsAndStats === 'function' &&
+    (((cardNurtureStore as any).getExpElixirCount?.() || 0) > 0 ||
+      ((cardNurtureStore as any).getTotalUnspentPoints?.() || 0) > 0)
+  ) {
+    (cardNurtureStore as any).upgradeDeckWithElixirsAndStats();
+  }
 
   // Gather hands to preload
   const activeDeck = (cardNurtureStore as any).getDeckCardIds
@@ -2266,12 +2309,8 @@ export function findBestPlayerTacticalMove(): PlayerTacticalMove | null {
         score += 1000; // Edge
       }
 
-      // D. Card Conservation in Early Game
-      if (playRpgState.playerHand.length >= 4 && flipCount === 0) {
-        score -= statSum * 40;
-      } else {
-        score += statSum * 30;
-      }
+      // D. Card Strength Priority
+      score += statSum * 35;
 
       if (score > bestMove.score) {
         bestMove = {
@@ -2304,8 +2343,12 @@ export function findBestOpponentTacticalMove(): PlayerTacticalMove | null {
   });
   if (emptySlots.length === 0) return null;
 
-  // 2. Pre-analyze player's remaining hand stats to calculate defensive vulnerability
-  const playerHandStats = playRpgState.playerHand.map((cid) => getCardCombatStats(cid, 'player'));
+  // 2. Only use deep defensive hand-peeking when opponentDeckTP > playerDeckTP (checkpoint challenge)
+  const matchup = getBattlePowerMatchup(playRpgState.reincarnationLevel, playRpgState.currentChapter);
+  const useDeepDefense = matchup.opponentDeckTP > matchup.playerDeckTP;
+  const playerHandStats = useDeepDefense
+    ? playRpgState.playerHand.map((cid) => getCardCombatStats(cid, 'player'))
+    : [];
 
   let bestMove: PlayerTacticalMove = {
     handIdx: 0,
@@ -2383,62 +2426,44 @@ export function findBestOpponentTacticalMove(): PlayerTacticalMove | null {
         }
       }
 
-      // B. Defensive Vulnerability Evaluation against Player's Remaining Deck
-      // Top border (slot - 3)
-      if (slot < 3) {
-        score += (10 - stats[0]) * 150;
-      } else if (playRpgState.battleBoard[slot - 3] === null) {
-        const threats = playerHandStats.filter((pStats) => pStats[2] > stats[0]).length;
-        if (threats === 0) {
-          score += 4500;
-        } else {
-          score -= threats * 2200;
+      // B. Defensive Vulnerability Evaluation (only active when opponent TP exceeds player TP)
+      if (useDeepDefense) {
+        if (slot < 3) {
+          score += (10 - stats[0]) * 150;
+        } else if (playRpgState.battleBoard[slot - 3] === null) {
+          const threats = playerHandStats.filter((pStats) => pStats[2] > stats[0]).length;
+          score += threats === 0 ? 4500 : -threats * 2200;
         }
-      }
 
-      // Bottom border (slot + 3)
-      if (slot > 5) {
-        score += (10 - stats[2]) * 150;
-      } else if (playRpgState.battleBoard[slot + 3] === null) {
-        const threats = playerHandStats.filter((pStats) => pStats[0] > stats[2]).length;
-        if (threats === 0) {
-          score += 4500;
-        } else {
-          score -= threats * 2200;
+        if (slot > 5) {
+          score += (10 - stats[2]) * 150;
+        } else if (playRpgState.battleBoard[slot + 3] === null) {
+          const threats = playerHandStats.filter((pStats) => pStats[0] > stats[2]).length;
+          score += threats === 0 ? 4500 : -threats * 2200;
         }
-      }
 
-      // Left border (slot - 1)
-      if (slot % 3 === 0) {
-        score += (10 - stats[3]) * 150;
-      } else if (playRpgState.battleBoard[slot - 1] === null) {
-        const threats = playerHandStats.filter((pStats) => pStats[1] > stats[3]).length;
-        if (threats === 0) {
-          score += 4500;
-        } else {
-          score -= threats * 2200;
+        if (slot % 3 === 0) {
+          score += (10 - stats[3]) * 150;
+        } else if (playRpgState.battleBoard[slot - 1] === null) {
+          const threats = playerHandStats.filter((pStats) => pStats[1] > stats[3]).length;
+          score += threats === 0 ? 4500 : -threats * 2200;
         }
-      }
 
-      // Right border (slot + 1)
-      if (slot % 3 === 2) {
-        score += (10 - stats[1]) * 150;
-      } else if (playRpgState.battleBoard[slot + 1] === null) {
-        const threats = playerHandStats.filter((pStats) => pStats[3] > stats[1]).length;
-        if (threats === 0) {
-          score += 4500;
-        } else {
-          score -= threats * 2200;
+        if (slot % 3 === 2) {
+          score += (10 - stats[1]) * 150;
+        } else if (playRpgState.battleBoard[slot + 1] === null) {
+          const threats = playerHandStats.filter((pStats) => pStats[3] > stats[1]).length;
+          score += threats === 0 ? 4500 : -threats * 2200;
         }
       }
 
       // C. Positional Strategy
       if (isCorner(slot)) {
-        score += 3500;
+        score += useDeepDefense ? 3500 : 1200;
         if (flipCount === 0) reasonList.push('코너 방어 진형');
       } else if (isCenter(slot)) {
         if (flipCount === 0) {
-          score -= 4000;
+          score -= 1000;
         } else {
           score += 2000;
           reasonList.push('전장 중앙 제어');
@@ -2500,11 +2525,11 @@ function executeOpponentTurn(): void {
 }
 
 /**
- * Finalize battle results and calculate scores
+ * Finalize battle results and calculate scores based on the 9 placed cards on the 3x3 board
  */
 export function finalizeBattle(): void {
-  let pScore = playRpgState.playerHand.length;
-  let oScore = playRpgState.opponentHand.length;
+  let pScore = 0;
+  let oScore = 0;
 
   for (const slot of playRpgState.battleBoard) {
     if (slot?.owner === 'player') pScore++;
@@ -2517,7 +2542,8 @@ export function finalizeBattle(): void {
   const consolationExp = 25 + reb * 10;
   const matchup = getBattlePowerMatchup(reb, ch);
 
-  if (pScore > oScore) {
+  if (pScore > oScore || (pScore === oScore && matchup.playerDeckTP >= matchup.opponentDeckTP)) {
+    recordChapterBattleRetry(reb, ch, true);
     playRpgState.battleWinner = 'player';
     playRpgState.battleMessage = tr(
       `🎉 승리! (스코어 ${pScore} : ${oScore}) +${victoryExp} EXP가 활성 덱 전원에 지급되었습니다.${matchup.unspentPoints > 0 ? ` (미사용 스탯 +${matchup.unspentPoints}점 보유 — #card에서 업그레이드 가능!)` : ''}`,
@@ -2526,6 +2552,7 @@ export function finalizeBattle(): void {
     );
     finishBattleAndAwardExp(victoryExp);
   } else if (pScore < oScore) {
+    recordChapterBattleRetry(reb, ch, false);
     playRpgState.battleWinner = 'opponent';
     // Award consolation EXP so the player can level up cards and earn stat points when stuck
     if (cardNurtureStore.awardBattleVictoryExp) {
@@ -2556,6 +2583,7 @@ export function finalizeBattle(): void {
       } catch {}
     }
   } else {
+    recordChapterBattleRetry(reb, ch, false);
     playRpgState.battleWinner = 'draw';
     if (cardNurtureStore.awardBattleVictoryExp) {
       cardNurtureStore.awardBattleVictoryExp(consolationExp);
@@ -2605,13 +2633,6 @@ export function finishBattleAndAwardExp(expAmount: number = 60): { expAwarded: n
         triggerReincarnationPopup();
       }
     }, 2400);
-  } else if (playRpgState.autoMode) {
-    // If autoMode is active without repeat hunting, advance to next chapter
-    setTimeout(() => {
-      if (playRpgState.subState === 'battle' && playRpgState.battleWinner) {
-        advanceNextChapter();
-      }
-    }, 3000);
   }
 
   return result;

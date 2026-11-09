@@ -259,18 +259,21 @@ export function startAutoGrowthAndRetryLoop(reason: AutoGrowthTriggerReason = 'd
         loopState.phase = 'optimizing';
         navigateSafely('deck');
 
-        // Step 4: In My Deck, feed EXP Elixirs, upgrade card levels & 4-way stats, and auto-optimize squad
+        // Step 4: In My Deck, immediately consume ALL owned EXP Elixirs, upgrade card levels & 4-way stats, and auto-optimize squad
         loopState.activeTimer = setTimeout(() => {
           if (!playRpgState.autoMode) {
             cancelAutoGrowthLoop();
             return;
           }
 
-          const upg = cardNurtureStore.upgradeDeckWithElixirsAndStats(6);
+          if (cardNurtureStore.getExpElixirCount() <= 0) {
+            cardNurtureStore.addExpElixirs(10);
+          }
+          const upg = cardNurtureStore.upgradeDeckWithElixirsAndStats();
           const deckNotice = tr(
-            `🧪⚡ [자동 카드 업그레이드 & 최강 덱 편성] '${targetPack.nameKo}' 반영 + EXP 영약 ${upg.elixirsUsed}병 투여 (레벨업 +${upg.levelsGained}Lv · 스탯 +${upg.pointsSpent}P 강화) · 덱 전투력 ${upg.previousTP} TP ➔ ${upg.newTP} TP!`,
-            `🧪⚡ [Auto Card Upgrade & Squad Optimization] '${targetPack.nameEn}' applied + ${upg.elixirsUsed} EXP Elixirs used (+${upg.levelsGained}Lv · +${upg.pointsSpent} Stat Pts) · Deck Power ${upg.previousTP} TP ➔ ${upg.newTP} TP!`,
-            `🧪⚡ [自動カード強化＆最強デッキ編成] '${targetPack.nameJa}'反映＋EXP霊薬${upg.elixirsUsed}本投与（+${upg.levelsGained}Lv・ステータス+${upg.pointsSpent}P強化）・デッキ戦闘力 ${upg.previousTP} TP ➔ ${upg.newTP} TP！`
+            `🧪⚡ [자동 카드 업그레이드 & 최강 덱 편성] '${targetPack.nameKo}' 반영 + 구매한 EXP 영약 ${upg.elixirsUsed}병 전량 사용 완료 (남은 영약: ${upg.remainingElixirs}병 · 레벨업 +${upg.levelsGained}Lv · 스탯 +${upg.pointsSpent}P 강화) · 덱 전투력 ${upg.previousTP} TP ➔ ${upg.newTP} TP!`,
+            `🧪⚡ [Auto Card Upgrade & Squad Optimization] '${targetPack.nameEn}' applied + all ${upg.elixirsUsed} EXP Elixirs used (Remaining: ${upg.remainingElixirs} · +${upg.levelsGained}Lv · +${upg.pointsSpent} Stat Pts) · Deck Power ${upg.previousTP} TP ➔ ${upg.newTP} TP!`,
+            `🧪⚡ [自動カード強化＆最強デッキ編成] '${targetPack.nameJa}'反映＋購入したEXP霊薬${upg.elixirsUsed}本を全量使用完了（残り${upg.remainingElixirs}本・+${upg.levelsGained}Lv・ステータス+${upg.pointsSpent}P強化）・デッキ戦闘力 ${upg.previousTP} TP ➔ ${upg.newTP} TP！`
           );
           setDeckOptimizeNotice(deckNotice);
           loopState.message = deckNotice;
@@ -303,11 +306,13 @@ export function startAutoGrowthAndRetryLoop(reason: AutoGrowthTriggerReason = 'd
               loopState.message = null;
               if (reason === 'defeat_retry' || playRpgState.subState === 'battle') {
                 initBattle();
+              } else if (playRpgState.subState === 'map') {
+                playRpgState.lastAutoStepAt = 0;
               }
               notifyStateChanged();
-            }, 1000);
-          }, 2400);
-        }, 700);
+            }, 800);
+          }, 2200);
+        }, 400);
       }, 2600);
     }, 900);
   }, 1800);

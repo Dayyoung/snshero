@@ -368,17 +368,21 @@ export class CardNurtureStore implements NurtureState {
     return this.nurtureCard(cardId, expGain);
   }
 
+  private expElixirsMemory: number = 0;
+
   /**
    * Get current owned EXP Elixir bottle count from LocalStorage
    */
   getExpElixirCount(): number {
-    if (typeof localStorage === 'undefined') return 0;
+    if (typeof localStorage === 'undefined') return this.expElixirsMemory;
     try {
       const raw = localStorage.getItem(EXP_ELIXIR_STORAGE_KEY);
       const parsed = raw ? parseInt(raw, 10) : 0;
-      return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+      const count = Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+      this.expElixirsMemory = count;
+      return count;
     } catch {
-      return 0;
+      return this.expElixirsMemory;
     }
   }
 
@@ -388,6 +392,7 @@ export class CardNurtureStore implements NurtureState {
   addExpElixirs(bottles: number = 10): number {
     const current = this.getExpElixirCount();
     const next = Math.max(0, current + bottles);
+    this.expElixirsMemory = next;
     if (typeof localStorage !== 'undefined') {
       try {
         localStorage.setItem(EXP_ELIXIR_STORAGE_KEY, String(next));
@@ -398,7 +403,7 @@ export class CardNurtureStore implements NurtureState {
   }
 
   /**
-   * Consume 1 EXP Elixir bottle (+500 EXP) on a specific owned hero card
+   * Consume 1 EXP Elixir bottle (+500 EXP or full level-up threshold) on a specific owned hero card
    */
   useExpElixir(cardId: number): {
     success: boolean;
@@ -429,12 +434,16 @@ export class CardNurtureStore implements NurtureState {
     }
 
     const next = current - 1;
+    this.expElixirsMemory = next;
     if (typeof localStorage !== 'undefined') {
       try {
         localStorage.setItem(EXP_ELIXIR_STORAGE_KEY, String(next));
       } catch {}
     }
-    const res = this.nurtureCard(cardId, 500);
+    // Guarantee at least +500 EXP AND at least 1 full level-up (+1 Stat Point) per elixir bottle!
+    const expNeededForNextLv = card ? Math.max(100, (card.expToNext || card.level * 100) - (card.exp || 0)) : 500;
+    const effectiveExpGain = Math.max(500, expNeededForNextLv);
+    const res = this.nurtureCard(cardId, effectiveExpGain);
     return {
       success: true,
       remainingElixirs: next,
@@ -583,10 +592,10 @@ export class CardNurtureStore implements NurtureState {
   }
 
   /**
-   * Consumes owned EXP Elixirs on the active 5-card deck (prioritizing lowest-level deck cards),
+   * Consumes ALL owned EXP Elixirs on the active 5-card deck (prioritizing lowest-level deck cards),
    * allocates all unspent stat points to N/E/S/W stats, and optimizes the 5-card squad.
    */
-  upgradeDeckWithElixirsAndStats(maxElixirsToUse: number = 6): {
+  upgradeDeckWithElixirsAndStats(maxElixirsToUse?: number): {
     previousTP: number;
     newTP: number;
     elixirsUsed: number;
@@ -606,8 +615,9 @@ export class CardNurtureStore implements NurtureState {
     let levelsGained = 0;
     const updatedSet = new Set<number>(preAlloc.updatedCards);
 
-    // 2. Feed EXP Elixirs to active 5-card deck (lowest level first for balanced growth)
-    const targetCount = Math.max(1, maxElixirsToUse);
+    // 2. Feed ALL owned EXP Elixirs (or up to maxElixirsToUse if explicitly capped) to active 5-card deck
+    const ownedElixirs = this.getExpElixirCount();
+    const targetCount = maxElixirsToUse && maxElixirsToUse > 0 ? Math.max(ownedElixirs, maxElixirsToUse) : ownedElixirs;
     for (let i = 0; i < targetCount; i++) {
       if (this.getExpElixirCount() <= 0) break;
 

@@ -1326,9 +1326,9 @@ export function renderItemPurchaseSuccessModal(): string {
                 <button
                   type="button"
                   data-action="view-my-deck-after-purchase"
-                  class="w-full sm:flex-1 py-3 bg-[#201d1d] hover:bg-[#343030] text-[#fdfcfc] font-black text-xs rounded-sm min-h-[44px] cursor-pointer flex items-center justify-center gap-1.5 transition-colors"
+                  class="w-full sm:flex-1 py-3 bg-emerald-700 hover:bg-emerald-600 text-[#fdfcfc] font-black text-xs rounded-sm min-h-[44px] cursor-pointer flex items-center justify-center gap-1.5 transition-colors"
                 >
-                  🃏 ${tr('마이덱에서 영웅 확인', 'View Heroes in My Deck', 'マイデッキで英雄を確認')}
+                  🧪 ${tr('마이덱으로 이동해 영약 즉시 투여하기', 'Move to My Deck & Apply Elixirs Now', 'マイデッキへ移動して霊薬を即時投与')}
                 </button>
               `
               : modal.itemId === 'item_novel_pass'

@@ -541,9 +541,9 @@ export function handleEventDelegation(event: Event): void {
         return;
       }
     }
-    const upg = cardNurtureStore.upgradeDeckWithElixirsAndStats(5);
+    const upg = cardNurtureStore.upgradeDeckWithElixirsAndStats();
     setDeckOptimizeNotice(
-      `🧪⚡ [마이덱 카드 업그레이드 완료] EXP 영약 ${upg.elixirsUsed}병 투여 (레벨업 +${upg.levelsGained}Lv · 스탯 +${upg.pointsSpent}P 강화) · 덱 전투력 ${upg.previousTP} TP → ${upg.newTP} TP!`
+      `🧪⚡ [마이덱 카드 업그레이드 완료] EXP 영약 ${upg.elixirsUsed}병 전량 투여 (남은 영약: ${upg.remainingElixirs}병 · 레벨업 +${upg.levelsGained}Lv · 스탯 +${upg.pointsSpent}P 강화) · 덱 전투력 ${upg.previousTP} TP → ${upg.newTP} TP!`
     );
     renderApp();
   } else if (action === 'upgrade-single-deck-card') {
@@ -697,6 +697,12 @@ export function handleEventDelegation(event: Event): void {
     renderApp();
   } else if (action === 'view-my-deck-after-purchase') {
     closeItemPurchaseModal();
+    if (cardNurtureStore.getExpElixirCount() > 0) {
+      const upg = cardNurtureStore.upgradeDeckWithElixirsAndStats();
+      setDeckOptimizeNotice(
+        `🧪⚡ [EXP 영약 즉시 투여 & 마이덱 업그레이드 완료] 구매한 EXP 영약 ${upg.elixirsUsed}병 전량 사용 (레벨업 +${upg.levelsGained}Lv · 스탯 +${upg.pointsSpent}P 강화) · 덱 전투력 ${upg.previousTP} TP → ${upg.newTP} TP!`
+      );
+    }
     navigateTo('deck');
   } else if (action === 'clear-coin-deficit-notice') {
     clearCoinDeficitNotice();
