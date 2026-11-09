@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-09 11:48 KST] [Hero Awakening 등 전 BGM 4종 자체 신디사이저 엔진 통합 제작 및 음색 일원화]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "Hero Awakening (mp3) 만 음색이 달르니까 이질적으로 보인다. 너가가진 배경음악 생성기능을 사용해서 모든 BGM을 자체생성해서 제작해서 변경해줘."
+  - **2. 원인 분석 및 세부 구현 내역**:
+    - **(1) 이질적인 외부 MP3(`mixkit-games-worldbeat-466.mp3`) 제거 및 자체 생성 4대 BGM 엔진 일원화 ([`src/landing/services/audioManager.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/audioManager.ts))**:
+      - 기존에 대사(`Whispering Wind`)와 배틀(`Colosseum Battle`) BGM은 Web Audio API 신디사이저로 생성되는 반면, 일반/맵 테마인 `Hero Awakening (title)`만 외부 월드비트 MP3(`/mixkit-games-worldbeat-466.mp3`)를 재생하여 장면 전환 시 음색이 이질적으로 튀던 문제를 해결.
+      - 마스터 웜 로우패스 필터(`2200Hz` BiquadFilter)와 폴리포닉 신스 보이스(`Triangle` 기본파 + `Sine` 2배음 하모닉 + 부드러운 ADSR 엔벨로프)를 공유하는 `createUnifiedBgmBus()` 및 `triggerUnifiedSynthVoice()` 아키텍처를 도입하여 4대 BGM 전수를 동일한 음색 패밀리로 자체 합성하도록 개편:
+        1. **타이틀/탐험 테마 (`title` / `map` — Hero Awakening)**: C장조/A단조 영웅 서곡 코드 진행(`C - G - Am - F - C - G - Dm - G`) + 웜 패드 + 하프/벨 주선율(32스텝) + 행진 베이스 펄스.
+        2. **대사 서정 테마 (`peace` / `dialogue` — Whispering Wind)**: A단조/F장조 스타라이트 앰비언트 패드 + 오르골/피아노 서정 멜로디.
+        3. **전투 결전 테마 (`battle` — Colosseum Battle)**: D단조 드라이빙 옥타브 베이스 + 자체 합성 팀파니 워 킥 + 결투 리드 신스.
+        4. **영지 로비 테마 (`lobby` — Sanctuary of Kadan)**: E단조/G장조 성역 코러스 패드 + 크리스탈 류트 아르페지오(32스텝).
+    - **(2) 자체 DSP 신디사이저 기반 4종 MP3 음원 파일 생성 및 정적 에셋 교체 ([`scripts/generate_bgm_tracks.py`](file:///Users/dayyoung/project/snshero/scripts/generate_bgm_tracks.py), [`src/lib/audioConstants.ts`](file:///Users/dayyoung/project/snshero/src/lib/audioConstants.ts), [`src/lib/audioCache.ts`](file:///Users/dayyoung/project/snshero/src/lib/audioCache.ts))**:
+      - 동일한 파형·배음·로패스 필터·코러스 스테레오 알고리즘으로 렌더링한 자체 제작 MP3 4종(`public/bgm/hero-awakening.mp3`, `public/bgm/whispering-wind.mp3`, `public/bgm/colosseum-battle.mp3`, `public/bgm/sanctuary-lobby.mp3` 및 `public/mixkit-games-worldbeat-466.mp3`)을 생성·반영하고 `BGM_TRACKS` 상수를 일원화.
+  - **3. 빌드 및 검증**:
+    - `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-09 11:06 KST] [카드게임 밸런스 재조정(자동플레이 8화 병목 해소) 및 EXP 영약 구매 후 미사용·누적 버그 완벽 수정]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

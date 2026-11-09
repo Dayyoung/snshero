@@ -14,7 +14,7 @@
  *   5. Safe Audio Context Scheduling: Executes sound generation after ensuring AudioContext is running.
  */
 
-export type SceneBgmType = 'map' | 'dialogue' | 'battle' | 'general';
+export type SceneBgmType = 'map' | 'dialogue' | 'battle' | 'lobby' | 'general';
 
 export interface AudioSettings {
   bgmEnabled: boolean;
@@ -28,6 +28,7 @@ export interface AudioSettings {
 class AudioManager {
   private audioCtx: AudioContext | null = null;
   private bgmAudioEl: HTMLAudioElement | null = null;
+  private bgmMasterGain: GainNode | null = null;
   private bgmSynthInterval: any = null;
   private isBgmPlaying: boolean = false;
   private userInteracted: boolean = false;
@@ -290,6 +291,17 @@ class AudioManager {
   }
 
   /**
+   * Resolves a track ID ('title' | 'peace' | 'battle' | 'lobby') to its scene BGM type.
+   */
+  public resolveTrackToScene(trackId?: string): SceneBgmType {
+    const id = trackId || this.currentTrack || 'title';
+    if (id === 'battle') return 'battle';
+    if (id === 'peace') return 'dialogue';
+    if (id === 'lobby') return 'lobby';
+    return 'map';
+  }
+
+  /**
    * Sync active BGM according to play RPG subState ('map' | 'dialogue' | 'battle' | 'reincarnation')
    */
   public syncSceneBgm(subState: string): void {
@@ -297,16 +309,21 @@ class AudioManager {
       this.playSceneBgm('battle');
     } else if (subState === 'dialogue') {
       this.playSceneBgm('dialogue');
+    } else if (subState === 'reincarnation') {
+      this.playSceneBgm('lobby');
     } else {
       this.playSceneBgm('map');
     }
   }
 
   /**
-   * Play scene-specific BGM with smooth crossfade and zero duplicate restarts.
+   * Play scene-specific BGM using 100% Unified Web Audio API Synthesizer Engine.
+   * All 4 tracks ('map' Hero Awakening, 'dialogue' Whispering Wind, 'battle' Colosseum Battle, 'lobby' Sanctuary of Kadan)
+   * share the same cohesive warm RPG synth sound signature.
    */
   public playSceneBgm(scene: SceneBgmType, force: boolean = false): void {
-    const normalizedScene: SceneBgmType = scene === 'general' ? 'map' : scene;
+    const normalizedScene: SceneBgmType =
+      scene === 'general' ? this.resolveTrackToScene(this.currentTrack) : scene;
 
     if (!force && this.isBgmPlaying && this.currentScene === normalizedScene) {
       return;
@@ -327,16 +344,17 @@ class AudioManager {
     if (vol <= 0) return;
 
     if (normalizedScene === 'map') {
-      // General/Map: Fantasy Adventure Field Theme (Local audio or Synth fallback)
-      this.playLocalAudioTrack('/mixkit-games-worldbeat-466.mp3', vol, () => {
-        this.startSynthFieldTheme(vol);
-      });
+      // Track 1 (Title / Map): Hero Awakening — Heroic Fantasy Adventure Overture (100% Unified Web Audio Synth)
+      this.startSynthFieldTheme(vol);
     } else if (normalizedScene === 'dialogue') {
-      // Dialogue: Lyrical Piano & Starlight Ambient (Visual Novel Theme)
+      // Track 2 (Peace / Dialogue): Whispering Wind — Lyrical Piano & Starlight Ambient
       this.startSynthDialogueTheme(vol);
     } else if (normalizedScene === 'battle') {
-      // Battle: Driving Bass & War Percussion (Tactical Card Duel Theme)
+      // Track 3 (Battle): Colosseum Battle — Driving Bass & Tactical Duel Lead
       this.startSynthBattleTheme(vol);
+    } else if (normalizedScene === 'lobby') {
+      // Track 4 (Lobby): Sanctuary of Kadan — Mystical Sanctuary Harp & Choir Pad
+      this.startSynthLobbyTheme(vol);
     }
   }
 
@@ -344,42 +362,27 @@ class AudioManager {
     this.playSceneBgm(this.currentScene, true);
   }
 
-  private playLocalAudioTrack(src: string, volumePercent: number, onFallback?: () => void): void {
-    try {
-      if (!this.bgmAudioEl) {
-        this.bgmAudioEl = new Audio(src);
-        this.bgmAudioEl.loop = true;
-        (this.bgmAudioEl as any).playsInline = true;
-        this.bgmAudioEl.setAttribute('playsinline', 'true');
-        this.bgmAudioEl.preload = 'auto';
-      } else {
-        if (!this.bgmAudioEl.src.includes(src)) {
-          this.bgmAudioEl.src = src;
-        }
-      }
+  /**
+   * Creates or returns the unified master BGM output chain (Master Gain -> Warm Lowpass Filter -> Destination)
+   * so all 4 synthesized BGM tracks share an identical warm analog-style timbre and respond to live volume changes.
+   */
+  private createUnifiedBgmBus(ctx: AudioContext, volumePercent: number): AudioNode {
+    const now = ctx.currentTime;
+    const masterGain = ctx.createGain();
+    const clampedVol = Math.max(0.0001, (volumePercent / 100) * 0.24);
+    masterGain.gain.setValueAtTime(clampedVol, now);
 
-      // Robust audible volume (0..100% -> 0..0.40 volume)
-      const targetVol = Math.max(0, Math.min(1, (volumePercent / 100) * 0.40));
-      this.bgmAudioEl.volume = targetVol;
+    const warmFilter = ctx.createBiquadFilter();
+    warmFilter.type = 'lowpass';
+    warmFilter.frequency.setValueAtTime(2200, now);
+    warmFilter.Q.setValueAtTime(0.7, now);
 
-      const playPromise = this.bgmAudioEl.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((err) => {
-          console.warn('[AudioManager] Local BGM play deferred/blocked, falling back to Web Audio synth:', err);
-          if (onFallback) {
-            onFallback();
-          } else {
-            this.startSynthFieldTheme(volumePercent);
-          }
-        });
-      }
-    } catch {
-      if (onFallback) {
-        onFallback();
-      } else {
-        this.startSynthFieldTheme(volumePercent);
-      }
-    }
+    masterGain.connect(warmFilter);
+    warmFilter.connect(ctx.destination);
+
+    this.bgmMasterGain = masterGain;
+    this.activeSynthNodes.gains.push(masterGain);
+    return masterGain;
   }
 
   private stopBgmNodes(markStopped: boolean = true): void {
@@ -423,6 +426,7 @@ class AudioManager {
       this.activeSynthNodes.oscs = [];
       this.activeSynthNodes.gains = [];
     }
+    this.bgmMasterGain = null;
   }
 
   public stopBgm(): void {
@@ -457,9 +461,10 @@ class AudioManager {
       localStorage.setItem('hero_audio_muted', 'false');
     }
 
-    if (this.bgmAudioEl) {
+    if (this.bgmMasterGain && this.audioCtx) {
       try {
-        this.bgmAudioEl.volume = Math.max(0, Math.min(1, (clamped / 100) * 0.40));
+        const targetGain = Math.max(0.0001, (clamped / 100) * 0.24);
+        this.bgmMasterGain.gain.setTargetAtTime(targetGain, this.audioCtx.currentTime, 0.04);
       } catch {}
     }
 
@@ -477,148 +482,214 @@ class AudioManager {
   public setBgmTrack(trackId: string): void {
     localStorage.setItem('hero_bgm_track', trackId);
     this.currentTrack = trackId;
-    if (trackId === 'battle') {
-      this.playSceneBgm('battle', true);
-    } else if (trackId === 'peace') {
-      this.playSceneBgm('dialogue', true);
-    } else {
-      this.playSceneBgm('map', true);
-    }
+    const targetScene = this.resolveTrackToScene(trackId);
+    this.playSceneBgm(targetScene, true);
     this.dispatchAudioChangedEvent();
   }
 
-  // ── Web Audio Synth Melodic Soundscapes (Zero Network Reliance) ────────────
+  // ── Web Audio Synth Melodic Soundscapes (100% Unified Self-Generated Engine) ─
 
   /**
-   * Theme 1: General/Map Field Theme (모험의 서막 / 평화로운 필드 탐험)
-   * Warm pentatonic pads + clear acoustic harp arpeggios (C major / G major)
+   * Helper: Plays a unified warm polyphonic synth note (Triangle fundamental + Sine harmonic overtone)
+   */
+  private triggerUnifiedSynthVoice(
+    ctx: AudioContext,
+    dest: AudioNode,
+    freq: number,
+    durationSec: number,
+    peakGain: number,
+    waveType: OscillatorType = 'triangle',
+    harmonicRatio: number = 0.22
+  ): void {
+    const t = ctx.currentTime;
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const voiceGain = ctx.createGain();
+    const overtoneGain = ctx.createGain();
+
+    osc1.type = waveType;
+    osc1.frequency.setValueAtTime(freq, t);
+
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(freq * 2, t);
+    overtoneGain.gain.setValueAtTime(harmonicRatio, t);
+
+    voiceGain.gain.setValueAtTime(0.0001, t);
+    voiceGain.gain.linearRampToValueAtTime(peakGain, t + 0.03);
+    voiceGain.gain.exponentialRampToValueAtTime(0.0001, t + durationSec);
+
+    osc1.connect(voiceGain);
+    osc2.connect(overtoneGain);
+    overtoneGain.connect(voiceGain);
+    voiceGain.connect(dest);
+
+    osc1.start(t);
+    osc2.start(t);
+    osc1.stop(t + durationSec + 0.04);
+    osc2.stop(t + durationSec + 0.04);
+  }
+
+  /**
+   * Theme 1: Title / Map Field Theme — Hero Awakening (타이틀 테마 / 모험의 서막)
+   * Self-generated heroic C-major / A-minor fantasy overture matching the exact synth timbre family
+   * of Whispering Wind, Colosseum Battle, and Sanctuary of Kadan.
    */
   private startSynthFieldTheme(volumePercent: number): void {
     this.stopBgmNodes(false);
 
     this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const baseGain = (volumePercent / 100) * 0.18;
+      const bus = this.createUnifiedBgmBus(ctx, volumePercent);
 
-      // 1. Warm harmonic pad (C3, G3) with gentle lowpass filter
-      const padFreqs = [130.81, 196.00];
+      // 1. Warm harmonic pad (C3, G3, E4) with gentle lowpass warmth
       const padFilter = ctx.createBiquadFilter();
       padFilter.type = 'lowpass';
-      padFilter.frequency.setValueAtTime(450, now);
-      padFilter.connect(ctx.destination);
+      padFilter.frequency.setValueAtTime(520, now);
+      padFilter.connect(bus);
 
-      padFreqs.forEach((freq) => {
+      const padOscs: OscillatorNode[] = [];
+      const initialPadFreqs = [130.81, 196.00, 329.63];
+      initialPadFreqs.forEach((freq, idx) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'triangle';
+        osc.type = idx === 2 ? 'sine' : 'triangle';
         osc.frequency.setValueAtTime(freq, now);
 
         gain.gain.setValueAtTime(0.001, now);
-        gain.gain.linearRampToValueAtTime(baseGain * 0.4, now + 1.2);
+        gain.gain.linearRampToValueAtTime(0.28, now + 1.0);
 
         osc.connect(gain);
         gain.connect(padFilter);
         osc.start(now);
 
+        padOscs.push(osc);
         this.activeSynthNodes.oscs.push(osc);
         this.activeSynthNodes.gains.push(gain);
       });
 
-      // 2. Lyrical harp arpeggio (C4..G5 pentatonic)
-      const fieldMelody = [261.63, 329.63, 392.00, 523.25, 440.00, 392.00, 329.63, 293.66, 329.63, 392.00, 523.25, 659.25];
-      let step = 0;
-      const intervalMs = 520;
+      // 2. Heroic progression chords (C -> G -> Am -> F -> C -> G -> Dm -> G)
+      const chordProgression: [number, number, number][] = [
+        [130.81, 196.00, 329.63], // C
+        [98.00, 146.83, 246.94],  // G
+        [110.00, 164.81, 261.63], // Am
+        [87.31, 130.81, 220.00],  // F
+        [130.81, 196.00, 329.63], // C
+        [98.00, 146.83, 246.94],  // G
+        [146.83, 220.00, 349.23], // Dm
+        [98.00, 146.83, 246.94],  // G
+      ];
 
-      const playHarpNote = () => {
+      // 3. Hero Awakening 32-step melodic motif
+      const heroMelody = [
+        392.00, 523.25, 587.33, 659.25,  587.33, 493.88, 392.00, 587.33,
+        523.25, 440.00, 659.25, 587.33,  523.25, 440.00, 349.23, 440.00,
+        392.00, 523.25, 659.25, 783.99,  698.46, 587.33, 493.88, 392.00,
+        440.00, 587.33, 698.46, 659.25,  587.33, 523.25, 493.88, 587.33,
+      ];
+
+      let step = 0;
+      const intervalMs = 280;
+
+      const playHeroStep = () => {
         if (!this.isBgmPlaying || this.currentScene !== 'map') return;
         try {
           const t = ctx.currentTime;
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
+          const chordIdx = Math.floor(step / 4) % chordProgression.length;
+          const chord = chordProgression[chordIdx];
 
-          const freq = fieldMelody[step % fieldMelody.length];
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, t);
+          // Smoothly glide pad chord every 4 steps
+          if (step % 4 === 0 && padOscs.length === 3) {
+            padOscs[0].frequency.setTargetAtTime(chord[0], t, 0.08);
+            padOscs[1].frequency.setTargetAtTime(chord[1], t, 0.08);
+            padOscs[2].frequency.setTargetAtTime(chord[2], t, 0.08);
+          }
 
-          gain.gain.setValueAtTime(0.001, t);
-          gain.gain.linearRampToValueAtTime(baseGain * 0.65, t + 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.65);
+          // Heroic harp/bell lead note
+          const melFreq = heroMelody[step % heroMelody.length];
+          this.triggerUnifiedSynthVoice(ctx, bus, melFreq, 0.48, 0.55, 'triangle', 0.25);
 
-          osc.connect(gain);
-          gain.connect(ctx.destination);
+          // Gentle marching bass pulse on beats 0 and 2
+          if (step % 2 === 0) {
+            const bassFreq = chord[0] * (step % 4 === 0 ? 0.5 : 1.0);
+            this.triggerUnifiedSynthVoice(ctx, padFilter, bassFreq, 0.36, 0.45, 'triangle', 0.10);
+          }
 
-          osc.start(t);
-          osc.stop(t + 0.70);
           step++;
         } catch {}
       };
 
-      playHarpNote();
-      const timer = setInterval(playHarpNote, intervalMs);
+      playHeroStep();
+      const timer = setInterval(playHeroStep, intervalMs);
       this.activeSynthNodes.intervals.push(timer);
     });
   }
 
   /**
-   * Theme 2: Dialogue / Visual Novel Theme (별빛 속삭임 / 감성적인 대사 서정곡)
-   * Deep nostalgic piano notes & ambient starlight drone (A minor / E minor)
-   * Frequency-balanced to ensure Animal Crossing typewriter chirps remain crystal-clear!
+   * Theme 2: Dialogue / Visual Novel Theme — Whispering Wind (바람 속삭임 / 별빛 속삭임)
+   * Lyrical celesta & warm starlight pad (A minor / F major / C major / G major).
    */
   private startSynthDialogueTheme(volumePercent: number): void {
     this.stopBgmNodes(false);
 
     this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const baseGain = (volumePercent / 100) * 0.16;
+      const bus = this.createUnifiedBgmBus(ctx, volumePercent);
 
-      // 1. Ambient low pad (A2, E3, C4)
-      const padFreqs = [110.00, 164.81, 261.63];
-      padFreqs.forEach((freq) => {
+      // 1. Ambient low starlight pad (Am -> F -> C -> G)
+      const padFilter = ctx.createBiquadFilter();
+      padFilter.type = 'lowpass';
+      padFilter.frequency.setValueAtTime(460, now);
+      padFilter.connect(bus);
+
+      const padOscs: OscillatorNode[] = [];
+      const initialPad = [110.00, 164.81, 261.63];
+      initialPad.forEach((freq) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, now);
 
         gain.gain.setValueAtTime(0.001, now);
-        gain.gain.linearRampToValueAtTime(baseGain * 0.35, now + 1.5);
+        gain.gain.linearRampToValueAtTime(0.26, now + 1.2);
 
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(padFilter);
         osc.start(now);
 
+        padOscs.push(osc);
         this.activeSynthNodes.oscs.push(osc);
         this.activeSynthNodes.gains.push(gain);
       });
 
-      // 2. Melancholy music-box & gentle piano melody
+      const dialogueChords: [number, number, number][] = [
+        [110.00, 164.81, 261.63], // Am
+        [87.31, 130.81, 220.00],  // F
+        [130.81, 196.00, 329.63], // C
+        [98.00, 146.83, 246.94],  // G
+      ];
+
       const dialogueMelody = [
-        220.00, 261.63, 329.63, 392.00,
-        329.63, 261.63, 246.94, 293.66,
-        329.63, 261.63, 220.00, 196.00
+        659.25, 523.25, 440.00, 329.63,
+        349.23, 440.00, 523.25, 698.46,
+        659.25, 523.25, 392.00, 523.25,
+        587.33, 493.88, 392.00, 493.88,
       ];
       let step = 0;
-      const intervalMs = 680;
+      const intervalMs = 380;
 
       const playPianoNote = () => {
         if (!this.isBgmPlaying || this.currentScene !== 'dialogue') return;
         try {
           const t = ctx.currentTime;
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
+          const chord = dialogueChords[Math.floor(step / 4) % dialogueChords.length];
+          if (step % 4 === 0 && padOscs.length === 3) {
+            padOscs[0].frequency.setTargetAtTime(chord[0], t, 0.12);
+            padOscs[1].frequency.setTargetAtTime(chord[1], t, 0.12);
+            padOscs[2].frequency.setTargetAtTime(chord[2], t, 0.12);
+          }
 
           const freq = dialogueMelody[step % dialogueMelody.length];
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, t);
-
-          gain.gain.setValueAtTime(0.001, t);
-          gain.gain.linearRampToValueAtTime(baseGain * 0.60, t + 0.05);
-          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.85);
-
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-
-          osc.start(t);
-          osc.stop(t + 0.90);
+          this.triggerUnifiedSynthVoice(ctx, bus, freq, 0.68, 0.48, 'triangle', 0.20);
           step++;
         } catch {}
       };
@@ -630,82 +701,65 @@ class AudioManager {
   }
 
   /**
-   * Theme 3: Battle Theme (운명의 전장 / 최후의 격돌 웅장한 전술 배틀)
-   * High-tension driving bass octaves + war percussion kicks + battle lead synth (D minor, BPM 130)
+   * Theme 3: Battle Theme — Colosseum Battle (투기장 결투 / 운명의 전장)
+   * High-tension driving bass octaves + synthesized timpani kicks + heroic duel synth lead (D minor)
    */
   private startSynthBattleTheme(volumePercent: number): void {
     this.stopBgmNodes(false);
 
     this.withActiveAudioContext((ctx) => {
       const now = ctx.currentTime;
-      const baseGain = (volumePercent / 100) * 0.22;
+      const bus = this.createUnifiedBgmBus(ctx, volumePercent);
 
-      // 1. Driving bass filter
       const bassFilter = ctx.createBiquadFilter();
       bassFilter.type = 'lowpass';
-      bassFilter.frequency.setValueAtTime(320, now);
-      bassFilter.connect(ctx.destination);
+      bassFilter.frequency.setValueAtTime(360, now);
+      bassFilter.connect(bus);
 
-      // 2. High-energy bass octaves + percussion kick (BPM 130, 230ms)
-      const bassOctaves = [73.42, 146.83, 73.42, 110.00, 73.42, 146.83, 87.31, 110.00];
-      const battleLead = [146.83, 174.61, 220.00, 293.66, 261.63, 220.00, 196.00, 220.00];
+      const bassOctaves = [
+        73.42, 146.83, 73.42, 110.00,   // Dm
+        58.27, 116.54, 58.27, 87.31,    // Bb
+        65.41, 130.81, 65.41, 98.00,    // C
+        55.00, 110.00, 55.00, 82.41,    // A
+      ];
+      const battleLead = [
+        293.66, 349.23, 440.00, 587.33,
+        523.25, 466.16, 440.00, 349.23,
+        392.00, 440.00, 523.25, 659.25,
+        587.33, 554.37, 440.00, 329.63,
+      ];
       let step = 0;
-      const intervalMs = 230;
+      const intervalMs = 225;
 
       const playBattleBeat = () => {
         if (!this.isBgmPlaying || this.currentScene !== 'battle') return;
         try {
           const t = ctx.currentTime;
 
-          // Bass pulse
-          const bassOsc = ctx.createOscillator();
-          const bassGain = ctx.createGain();
+          // 1. Driving bass pulse
           const bassFreq = bassOctaves[step % bassOctaves.length];
-          bassOsc.type = 'sawtooth';
-          bassOsc.frequency.setValueAtTime(bassFreq, t);
+          this.triggerUnifiedSynthVoice(ctx, bassFilter, bassFreq, 0.20, 0.65, 'sawtooth', 0.15);
 
-          bassGain.gain.setValueAtTime(baseGain * 0.70, t);
-          bassGain.gain.exponentialRampToValueAtTime(0.001, t + 0.21);
-
-          bassOsc.connect(bassGain);
-          bassGain.connect(bassFilter);
-          bassOsc.start(t);
-          bassOsc.stop(t + 0.22);
-
-          // War kick punch on downbeats (0, 4)
-          if (step % 4 === 0) {
+          // 2. Synthesized war timpani kick on every 2nd beat
+          if (step % 2 === 0) {
             const kickOsc = ctx.createOscillator();
             const kickGain = ctx.createGain();
             kickOsc.type = 'sine';
-            kickOsc.frequency.setValueAtTime(130, t);
-            kickOsc.frequency.exponentialRampToValueAtTime(45, t + 0.12);
+            kickOsc.frequency.setValueAtTime(125, t);
+            kickOsc.frequency.exponentialRampToValueAtTime(42, t + 0.13);
 
-            kickGain.gain.setValueAtTime(baseGain * 0.85, t);
+            kickGain.gain.setValueAtTime(0.68, t);
             kickGain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
 
             kickOsc.connect(kickGain);
-            kickGain.connect(ctx.destination);
+            kickGain.connect(bus);
             kickOsc.start(t);
             kickOsc.stop(t + 0.16);
           }
 
-          // Lead melody note every 2 steps
-          if (step % 2 === 0) {
-            const leadOsc = ctx.createOscillator();
-            const leadGain = ctx.createGain();
-            const leadNote = battleLead[(step / 2) % battleLead.length];
-            leadOsc.type = 'triangle';
-            leadOsc.frequency.setValueAtTime(leadNote, t);
-
-            leadGain.gain.setValueAtTime(0.001, t);
-            leadGain.gain.linearRampToValueAtTime(baseGain * 0.45, t + 0.03);
-            leadGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
-
-            leadOsc.connect(leadGain);
-            leadGain.connect(ctx.destination);
-            leadOsc.start(t);
-            leadOsc.stop(t + 0.45);
-          }
+          // 3. Heroic battle lead melody
+          const leadNote = battleLead[step % battleLead.length];
+          this.triggerUnifiedSynthVoice(ctx, bus, leadNote, 0.34, 0.52, 'triangle', 0.28);
 
           step++;
         } catch {}
@@ -713,6 +767,82 @@ class AudioManager {
 
       playBattleBeat();
       const timer = setInterval(playBattleBeat, intervalMs);
+      this.activeSynthNodes.intervals.push(timer);
+    });
+  }
+
+  /**
+   * Theme 4: Lobby Theme — Sanctuary of Kadan (영지 로비 / 카단의 성역)
+   * Mystical sanctuary choir pad & flowing crystal lute arpeggio (E minor / C major / G major / D major)
+   */
+  private startSynthLobbyTheme(volumePercent: number): void {
+    this.stopBgmNodes(false);
+
+    this.withActiveAudioContext((ctx) => {
+      const now = ctx.currentTime;
+      const bus = this.createUnifiedBgmBus(ctx, volumePercent);
+
+      const padFilter = ctx.createBiquadFilter();
+      padFilter.type = 'lowpass';
+      padFilter.frequency.setValueAtTime(500, now);
+      padFilter.connect(bus);
+
+      const padOscs: OscillatorNode[] = [];
+      const initialPad = [164.81, 196.00, 246.94];
+      initialPad.forEach((freq) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.25, now + 1.2);
+
+        osc.connect(gain);
+        gain.connect(padFilter);
+        osc.start(now);
+
+        padOscs.push(osc);
+        this.activeSynthNodes.oscs.push(osc);
+        this.activeSynthNodes.gains.push(gain);
+      });
+
+      const lobbyChords: [number, number, number][] = [
+        [164.81, 196.00, 246.94], // Em
+        [130.81, 164.81, 196.00], // C
+        [98.00, 146.83, 246.94],  // G
+        [146.83, 185.00, 220.00], // D
+      ];
+
+      const lobbyArpeggio = [
+        329.63, 392.00, 493.88, 659.25,  587.33, 493.88, 392.00, 493.88,
+        261.63, 329.63, 392.00, 523.25,  493.88, 392.00, 329.63, 392.00,
+        392.00, 493.88, 587.33, 783.99,  739.99, 587.33, 493.88, 587.33,
+        293.66, 369.99, 440.00, 587.33,  739.99, 587.33, 440.00, 369.99,
+      ];
+
+      let step = 0;
+      const intervalMs = 310;
+
+      const playSanctuaryStep = () => {
+        if (!this.isBgmPlaying || this.currentScene !== 'lobby') return;
+        try {
+          const t = ctx.currentTime;
+          const chord = lobbyChords[Math.floor(step / 8) % lobbyChords.length];
+          if (step % 8 === 0 && padOscs.length === 3) {
+            padOscs[0].frequency.setTargetAtTime(chord[0], t, 0.12);
+            padOscs[1].frequency.setTargetAtTime(chord[1], t, 0.12);
+            padOscs[2].frequency.setTargetAtTime(chord[2], t, 0.12);
+          }
+
+          const arpFreq = lobbyArpeggio[step % lobbyArpeggio.length];
+          this.triggerUnifiedSynthVoice(ctx, bus, arpFreq, 0.56, 0.50, 'triangle', 0.24);
+          step++;
+        } catch {}
+      };
+
+      playSanctuaryStep();
+      const timer = setInterval(playSanctuaryStep, intervalMs);
       this.activeSynthNodes.intervals.push(timer);
     });
   }

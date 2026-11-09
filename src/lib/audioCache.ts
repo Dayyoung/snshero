@@ -21,7 +21,10 @@ export function getCachedAudioBuffer(url: string): ArrayBuffer | undefined {
 // Pre-cache critical audio tracks on app init
 export function initAudioCache() {
   const criticalAudio = [
-    '/mixkit-games-worldbeat-466.mp3',
+    '/bgm/hero-awakening.mp3',
+    '/bgm/whispering-wind.mp3',
+    '/bgm/colosseum-battle.mp3',
+    '/bgm/sanctuary-lobby.mp3',
     'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3',
     'https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3',
     'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3'

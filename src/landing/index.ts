@@ -328,8 +328,8 @@ export function navigateTo(targetView: ViewKey, options?: RouteOptions): void {
   if (resolvedView === 'play') {
     ensureGameStarted();
   } else {
-    // Other landing views (home, novel, shop, etc.): switch to peaceful adventure map BGM
-    audioManager.playSceneBgm('map');
+    // Other landing views (deck, shop, rank, setting): play user's selected BGM track (or Hero Awakening default)
+    audioManager.playSceneBgm('general');
   }
 
   state.activeView = resolvedView;
@@ -1242,7 +1242,7 @@ export function mountLanding(): void {
       if (state.activeView === 'play') {
         audioManager.syncSceneBgm(playRpgState.subState);
       } else {
-        audioManager.playSceneBgm('map');
+        audioManager.playSceneBgm('general');
       }
     }
   } catch {}
