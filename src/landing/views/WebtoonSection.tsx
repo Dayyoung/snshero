@@ -173,7 +173,7 @@ export function handleWebtoonAction(action: string, target?: HTMLElement): void 
 export function renderWebtoonSection(): string {
   initWebtoonEpisodeFromUrl();
 
-  const cacheBustVer = `20261105_${Math.floor(Date.now() / 60000)}`;
+  const cacheBustVer = `20261110_${Math.floor(Date.now() / 60000)}`;
   const ep = currentWebtoonEpisode;
   const isKo = isKoreanLanguage();
   const epData = MANIFEST[String(ep)];
