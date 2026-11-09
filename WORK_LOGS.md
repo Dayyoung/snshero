@@ -2,6 +2,16 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-09 12:32 KST] [110개 캐릭터 시트 URL(https://snshero.com/anime-character-sheets/sheets/...) CSV 목록 생성 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "/Users/dayyoung/project/snshero/public/anime-character-sheets/sheet 에 110개 케릭터 링크를 snshero.com/anime-character-sheets/sheet 주소로 정리해서 csv로 작성해줘."
+  - **2. 세부 구현 내역**:
+    - `public/anime-character-sheets/manifest.json` 및 `public/anime-character-sheets/sheets/`의 110개 캐릭터 시트(`001_Aquaris_sheet.jpg` ~ `110_Dreadwing_sheet.jpg`) 전수 링크(`https://snshero.com/anime-character-sheets/sheets/...`)와 컷아웃·버스트 URL, 번호(`NO.001`~`NO.110`), 국문/영문 이름, 종족/속성, 등급, 서사 역할 및 특징을 UTF-8 BOM(`utf-8-sig`) 인코딩 CSV로 정리하여 생성:
+      - [`public/anime-character-sheets/character_sheets_110.csv`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/character_sheets_110.csv)
+      - [`public/anime-character-sheets/sheets/character_sheets_110.csv`](file:///Users/dayyoung/project/snshero/public/anime-character-sheets/sheets/character_sheets_110.csv)
+
 ## [2026-11-09 12:16 KST] [110인 캐릭터 시트 통합본(all_110_cast_poster.jpg) 1:1 원본 무손실 초고해상도(16,240×11,390px) 재생성 및 11대 종족 마스터 통합본 추가]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
