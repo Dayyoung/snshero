@@ -2005,7 +2005,7 @@ function renderAdventureView(): string {
                     <div class="flex items-center gap-4 bg-[#100d0d] border border-amber-400/40 p-3.5 rounded-none">
                       <div class="w-20 h-20 sm:w-24 sm:h-24 bg-[#0d0b0b] border border-amber-400 rounded-none shrink-0 overflow-hidden flex items-center justify-center">
                         <img
-                          src="${kadanAsset.bustPngUrl}?v=20261103v4"
+                          src="${kadanAsset.bustPngUrl}"
                           alt="${kadanAsset.nameKo}"
                           class="w-full h-full object-contain"
                           onerror="this.src='${kadanAsset.seatUrl}'; this.onerror=null;"

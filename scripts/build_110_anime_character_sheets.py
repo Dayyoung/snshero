@@ -1057,7 +1057,12 @@ def main() -> None:
         for cid in range(1, 111)
     }
     loaded_from_existing_cutouts = False
-    if all(p.exists() for p in raw_solo_files.values()):
+    if all(p.exists() for p in existing_cutouts.values()):
+        for cid, p in existing_cutouts.items():
+            anime_cutouts[cid] = Image.open(p).convert("RGBA")
+        loaded_from_existing_cutouts = True
+        print("Loaded all 110 canonical anime_cutouts directly from public/anime-character-sheets/cutouts/!")
+    elif all(p.exists() for p in raw_solo_files.values()):
         print("Re-processing all 110 ufotable raw solo images with clean RGBA transparent background & image quality optimization...")
         for cid, raw_p in raw_solo_files.items():
             im = Image.open(raw_p).convert("RGB")
@@ -1066,11 +1071,6 @@ def main() -> None:
             rgba.save(existing_cutouts[cid], "PNG", optimize=True)
         loaded_from_existing_cutouts = True
         print("Optimized and saved all 110 RGBA transparent cutouts in public/anime-character-sheets/cutouts/!")
-    elif all(p.exists() for p in existing_cutouts.values()):
-        for cid, p in existing_cutouts.items():
-            anime_cutouts[cid] = Image.open(p).convert("RGBA")
-        loaded_from_existing_cutouts = True
-        print("Loaded all 110 canonical anime_cutouts directly from public/anime-character-sheets/cutouts/!")
     else:
         # 1. Extract all 5-character new high-res sheets via DP seam carving!
         five_char_batches = [

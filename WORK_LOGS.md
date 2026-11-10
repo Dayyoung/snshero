@@ -2,6 +2,18 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-10 18:32 KST] [웹툰 등장 캐릭터 디자인(귀멸의 칼날 ufotable 스타일·섹시/글래머 원화) 기반 110종 카드·7등신 전신·상반신·캐릭터시트 전원 교체 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "지금 카드 케릭터 110종의 디자인과 웹툰에 등장하는 케릭터 110종의 디자인이 조금 달라. 웹툰에 등장하는 110개 케릭터 이미지가 좀더 귀멸의 칼날처럼 매력적이고 섹시한 매력이 있는 것 같아. 카드 케릭터 110종을 웹툰에 등장하는 케릭터로 전원 교체해 줄 수 있을까. 케릭터시트/7등신.상반신 110종도 웹툰에 등장하는 케릭터들로 변경해줘."
+  - **2. 원인 분석 및 세부 구현 내역**:
+    - 40화 웹툰 제작 당시(`853ac6db4` 및 `ANIME_CHAR_SPECS`, `generate_all_webtoon_prompts.py`)의 글래머러스하고 섹시한 S라인 캐릭터 원화(카제 #044 여닌자 메쉬 바디슈트, 실리아 #062 비취·골드 하이슬릿 드레스, 엘리아나 #063 핑크 꽃잎 코르셋 드레스, 티타니아 #064 북방 모피 코르셋·미니스커트, 실바니아 #065 리프 비키니 아머, 베작스 #067 보이드 하이슬릿 코르셋 드레스, 에일라 #070 미드나잇 블루 홀터넥 하이슬릿 드레스, 이셀라 #107 별빛 용신관 하이슬릿 드레스, 엘윈 #042 발키리 아머, 로비냐드 #048 레인저 코르셋, 아쿠아리스 #001, 나이아드 #002, 캐스케이드 #008, 파이로 #014, 실프 #022, 실피드 #023, 가이아 #031, 테라 #033, 카디스 #056, 캘토르 #068 및 카단 #041 민소매 전투복·붉은 머플러·설화 방패)가 이후 `raw_ufotable_solo` 덮어쓰기 과정에서 남성이 되거나 온몸을 가린 복장으로 변질된 원인을 규명.
+    - 110종 캐릭터 전수에 대해 웹툰 원형 캐릭터 디자인 복원 + 『귀멸의 칼날(ufotable)』 특유의 진한 먹선(Sumi-e Ink Outline) 및 고대비 셀 애니메이션 채색 강화 필터(`enhance_ufotable`)와 초고해상도 업스케일링을 적용하여 7등신 전신(`public/anime-character-sheets/cutouts/001..110_*.png`), 상반신(`public/anime-character-sheets/busts/001..110_bust.png` & `.jpg`), 110종 스튜디오 캐릭터 시트(`public/anime-character-sheets/sheets/001..110_*_sheet.jpg`), 11대 진영 마스터 시트(`public/anime-character-sheets/factions/01..11_*_master_sheet.jpg`), 통합 마스터 포스터(`all_110_cast_poster.jpg`, `all_11_factions_master_poster.jpg`)를 전수 재생성.
+    - 프론트엔드 카드 및 캐릭터 시트 렌더러([`src/landing/services/assetCatalog.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/assetCatalog.ts), [`src/content/cardImageVariants.ts`](file:///Users/dayyoung/project/snshero/src/content/cardImageVariants.ts), [`src/landing/views/MallSection.tsx`](file:///Users/dayyoung/project/snshero/src/landing/views/MallSection.tsx), [`src/landing/views/ShopSection.tsx`](file:///Users/dayyoung/project/snshero/src/landing/views/ShopSection.tsx), [`src/landing/views/PlaySection.tsx`](file:///Users/dayyoung/project/snshero/src/landing/views/PlaySection.tsx), [`src/components/WikiCardDetailModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/WikiCardDetailModal.tsx))의 캐시 버전을 `?v=20261110v1`로 일괄 갱신하여 즉시 반영.
+  - **3. 검증 및 보고**:
+    - `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋 및 구글 폼 작업 완료 보고서 제출 완료.
+
 ## [2026-11-09 12:32 KST] [110개 캐릭터 시트 URL(https://snshero.com/anime-character-sheets/sheets/...) CSV 목록 생성 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
