@@ -13,6 +13,8 @@ import os
 import re
 import shutil
 import sys
+import time
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
@@ -484,7 +486,7 @@ def build_episode_png(ep_num: int, out_dirs: list[Path]) -> tuple[Path, tuple[in
 
     # 1. Encode < 5MB 24-bit JPEG (Naver Webtoon's official recommended upload format)
     jpg_bytes: bytes | None = None
-    for q, sub in [(90, 0), (87, 0), (85, 1), (84, 1), (82, 1), (80, 1), (77, 1), (74, 1), (70, 2)]:
+    for q, sub in [(90, 0), (87, 0), (85, 1), (84, 1), (82, 1), (80, 1), (77, 1), (74, 1), (70, 2), (65, 2), (60, 2)]:
         buf = io.BytesIO()
         final_rgb.save(buf, "JPEG", quality=q, subsampling=sub, optimize=True)
         if buf.tell() <= MAX_BYTES:
@@ -492,12 +494,12 @@ def build_episode_png(ep_num: int, out_dirs: list[Path]) -> tuple[Path, tuple[in
             break
     if jpg_bytes is None:
         buf = io.BytesIO()
-        final_rgb.save(buf, "JPEG", quality=65, subsampling=2, optimize=True)
+        final_rgb.save(buf, "JPEG", quality=55, subsampling=2, optimize=True)
         jpg_bytes = buf.getvalue()
 
     # 2. Encode < 5MB quantized PNG (for users preferring .png extension)
     png_bytes: bytes | None = None
-    for colors in (112, 104, 96, 88, 76, 64):
+    for colors in (112, 104, 96, 88, 76, 64, 52, 42, 32):
         q_im = final_rgb.quantize(colors=colors, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.FLOYDSTEINBERG)
         buf = io.BytesIO()
         q_im.save(buf, "PNG", optimize=True, compress_level=9)
@@ -505,43 +507,74 @@ def build_episode_png(ep_num: int, out_dirs: list[Path]) -> tuple[Path, tuple[in
             png_bytes = buf.getvalue()
             break
     if png_bytes is None:
-        q_im = final_rgb.quantize(colors=56, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.FLOYDSTEINBERG)
+        q_im = final_rgb.quantize(colors=24, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.FLOYDSTEINBERG)
         buf = io.BytesIO()
         q_im.save(buf, "PNG", optimize=True, compress_level=9)
         png_bytes = buf.getvalue()
 
     first_png_path: Path | None = None
     for od in out_dirs:
-        od.mkdir(parents=True, exist_ok=True)
-        p_png = od / png_filename
-        p_jpg = od / jpg_filename
-        p_png.write_bytes(png_bytes)
-        p_jpg.write_bytes(jpg_bytes)
-        if first_png_path is None:
-            first_png_path = p_png
+        if od.name.endswith("_JPG") or od.name == "jpg":
+            od.mkdir(parents=True, exist_ok=True)
+            (od / jpg_filename).write_bytes(jpg_bytes)
+        elif od.name.endswith("_PNG") or od.name == "png":
+            od.mkdir(parents=True, exist_ok=True)
+            p_png = od / png_filename
+            p_png.write_bytes(png_bytes)
+            if first_png_path is None:
+                first_png_path = p_png
+        else:
+            od.mkdir(parents=True, exist_ok=True)
+            p_png = od / png_filename
+            p_jpg = od / jpg_filename
+            p_png.write_bytes(png_bytes)
+            p_jpg.write_bytes(jpg_bytes)
+            if first_png_path is None:
+                first_png_path = p_png
 
     assert first_png_path is not None
     png_mb = round(len(png_bytes) / (1024 * 1024), 2)
     jpg_mb = round(len(jpg_bytes) / (1024 * 1024), 2)
-    print(f"  -> PNG (<5MB): {len(png_bytes):,} bytes ({png_mb} MiB) | JPG (<5MB, 24-bit 권장): {len(jpg_bytes):,} bytes ({jpg_mb} MiB)")
-    return first_png_path, final_rgb.size, png_mb
+    return first_png_path, final_rgb.size, png_mb, jpg_mb, len(png_bytes), len(jpg_bytes)
 
 
 def main():
     ep_arg = sys.argv[1] if len(sys.argv) > 1 else "1"
+    dl = Path(os.path.expanduser("~/Downloads"))
     out_dirs = [
-        Path("exports/naver_webtoon"),
-        Path(os.path.expanduser("~/Downloads")),
-        Path("dist/naver-webtoon"),
+        Path("exports/naver_webtoon/jpg"),
+        Path("exports/naver_webtoon/png"),
+        dl / "네이버웹툰_전40화_JPG",
+        dl / "네이버웹툰_전40화_PNG",
     ]
     if ep_arg == "all":
-        for ep in range(1, 41):
-            p, dims, mb = build_episode_png(ep, out_dirs)
-            print(f"[EP{ep:02d}/40] Saved {p.stem} (.jpg & .png, {dims[0]}x{dims[1]}px, <= {mb} MiB)")
+        t0 = time.time()
+        print("Generating all 40 Naver Webtoon episodes (690px width, strict < 5MB) in parallel...")
+        results = []
+        with ProcessPoolExecutor(max_workers=6) as ex:
+            futs = {ex.submit(build_episode_png, ep, out_dirs): ep for ep in range(1, 41)}
+            for fut in as_completed(futs):
+                ep = futs[fut]
+                p, dims, png_mb, jpg_mb, png_b, jpg_b = fut.result()
+                results.append((ep, p.stem, dims, png_mb, jpg_mb, png_b, jpg_b))
+                print(
+                    f"  [{len(results):02d}/40] EP{ep:02d} {p.stem} -> {dims[0]}x{dims[1]}px | "
+                    f"JPG: {jpg_mb:.2f}MiB ({jpg_b:,}B) | PNG: {png_mb:.2f}MiB ({png_b:,}B)",
+                    flush=True,
+                )
+        results.sort(key=lambda x: x[0])
+        max_jpg_b = max(r[6] for r in results)
+        max_png_b = max(r[5] for r in results)
+        elapsed = round(time.time() - t0, 1)
+        print(
+            f"\nAll 40 episodes completed in {elapsed}s! "
+            f"Max JPG: {max_jpg_b:,} bytes (<5MB={max_jpg_b < 5_000_000}) | "
+            f"Max PNG: {max_png_b:,} bytes (<5MB={max_png_b < 5_000_000})"
+        )
     else:
         ep = int(ep_arg)
-        p, dims, mb = build_episode_png(ep, out_dirs)
-        print(f"Saved: {p.stem} (.jpg & .png in exports/naver_webtoon & ~/Downloads) | {dims[0]}x{dims[1]}px")
+        p, dims, png_mb, jpg_mb, png_b, jpg_b = build_episode_png(ep, out_dirs)
+        print(f"Saved: {p.stem} | {dims[0]}x{dims[1]}px | JPG={jpg_mb}MiB ({jpg_b:,}B), PNG={png_mb}MiB ({png_b:,}B)")
 
 
 if __name__ == "__main__":
