@@ -123,7 +123,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
  const attackMotionMeta = useMemo(() => getCharacterAttackMotionMeta(selectedCard.id), [selectedCard.id]);
  const characterSheetBustUrl = useMemo(
- () => getAssetUrl(`/anime-character-sheets/busts/${String(selectedCard.id).padStart(3, '0')}_bust.jpg?v=20261110v1`),
+ () => getAssetUrl(`/anime-character-sheets/busts/${String(selectedCard.id).padStart(3, '0')}_bust.jpg?v=20261110v2`),
  [selectedCard.id],
  );
 

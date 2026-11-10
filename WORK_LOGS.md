@@ -20996,3 +20996,10 @@
      - 본문: 영문·한국어·일본어 에피소드별 상세 줄거리와 중국어(간체/번체)·독일어·스페인어·프랑스어·인도네시아어·러시아어·태국어·베트남어 등 12개 국어 다국어 안내 및 `https://snshero.com` 공식 링크를 전 80개 영상에 적용 완료.
      - 내일 일일 한도 초기화 후 업로드될 한국어 본편/쇼츠 80편 업로드 스크립트(`scripts/manage_snshero_youtube_webtoon_160.py`)에도 동일한 표지 썸네일(`scene_00`) 및 12개 국어 다국어 제목·본문 자동 적용 로직을 반영 완료.
   3. **검증 및 보고**: YouTube Data API v3(`videos?part=snippet`) 전수 조회 결과 `Titles=80/80, 12-Lang Descriptions=80/80, Custom Cover Thumbnails=80/80` 검증 완료, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+### [2026-11-10 19:13:19] 카드 캐릭터 110종 및 캐릭터시트/7등신/상반신 110종 전원 귀멸의 칼날(ufotable) 웹툰 스타일 캐릭터로 교체 완료
+- **작업 내용**:
+  - 40화 웹툰과 동일한 귀멸의 칼날(`Kimetsu no Yaiba` by `ufotable`) 작화 스타일 및 글래머러스/섹시 S-line 매력으로 110종 캐릭터 전신 일러스트(`webtoon_char_001`~`110`) 전수 신규 생성 (이미지 생성 제한 발생 시 `schedule` 타이머 자동 재개 연동).
+  - `scripts/process_webtoon_char_cutouts.py` 및 `scripts/build_110_anime_character_sheets.py`를 통해 7등신 투명 컷아웃(`public/anime-character-sheets/cutouts/001..110_*.png`), 상반신(`public/anime-character-sheets/busts/001..110_bust.png/.jpg`), 스튜디오 캐릭터시트 110종(`public/anime-character-sheets/sheets/001..110_*_sheet.jpg`), 종족 마스터 시트 11종(`factions/`), 통합 캐스트 포스터(`all_110_cast_poster.jpg`) 일괄 갱신.
+  - 카드 캐릭터 110종(`public/seat/*.png`, `public/anime-character-sheets/sd/*.png`, `public/cards1.png`, `public/cards2.png`, `src/content/cardImageVariants.ts`, `src/landing/services/assetCatalog.ts`) 전원 웹툰 캐릭터로 교체 및 캐시 버스팅(`?v=20261110v2`) 적용.
+- **검증 결과**: `npm run build` 프로덕션 빌드 무결성 검증 통과 및 구글 폼 보고 완료.

@@ -75,7 +75,7 @@ export interface GoodsOrderRecord {
 
 const UNLOCKED_SHEETS_STORAGE_KEY = 'hero_unlocked_character_sheets';
 const GOODS_ORDERS_KEY = 'hero_goods_orders';
-const SHEET_CACHE_VER = '20261110v1';
+const SHEET_CACHE_VER = '20261110v2';
 
 export function getUnlockedSheetIds(): number[] {
   if (typeof window === 'undefined') return [];
