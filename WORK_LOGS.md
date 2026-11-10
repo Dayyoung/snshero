@@ -20938,3 +20938,13 @@
 ### 2026-11-10 14:45 KST | 다중 성우 감정 연기 기반 웹툰 슬라이드쇼 동영상 빌더 구축 및 1화 한/영 더빙 MP4 2편 제작 완료
 - **작업 내역**: `scripts/build_webtoon_slideshow_videos.py` 신규 구현(잔잔한 남성 나레이션 / 성별 맞춤 젊은 남녀 일반 대사 / 흥분한 남녀 강조 외침 대사 / 노장·악역·속삭임·애절 상황별 성우 프로소디 연출 + 1280x720 24fps Ken Burns 무빙 + 고정 하단 자막 + 잔잔한 오케스트라 BGM 믹싱).
 - **생성 파일**: `01화 눈보라 아래 두 서약 (한국어 더빙).mp4`(`11분 07초`, `74.77MB`) 및 `EP01 Two Vows Beneath the Blizzard (English Dub).mp4`(`10분 16초`, `70.84MB`) 생성 완료.
+
+### 2026-11-10 14:56 KST | 웹툰 슬라이드쇼 동영상 1화(한/영) 쾌활하고 속도감 있는 나레이션 성우·템포 개편 및 Apple Silicon GPU 가속 재생성 완료
+- **작업 내역**: 사용자 피드백 반영(`한글/영문 나레이션 목소리가 너무 나긋나긋 느려. 지금보다 쾌활한 목소리로 조금 빠르게 읽어줘`)하여 `scripts/build_webtoon_slideshow_videos.py` 개편:
+  - **한국어 나레이션**: 느린 `ko-KR-HyunsuMultilingualNeural`(`-6%`, `-4Hz`)에서 밝고 쾌활한 **`ko-KR-InJoonNeural`(`rate="+18%"`, `pitch="+4Hz"`, `volume="+6%"`)**로 교체하고, 젊은 남성 주인공 일반 대사는 `ko-KR-HyunsuMultilingualNeural`(`+9%`, `+4Hz`)로 분리하여 나레이션과 인물 대사 음색이 겹치지 않도록 최적화.
+  - **영어 나레이션**: 느린 `en-US-ChristopherNeural`(`-6%`, `-3Hz`)에서 경쾌하고 활기찬 **`en-US-RogerNeural`(`['Lively']`, `rate="+16%"`, `pitch="+3Hz"`, `volume="+6%"`)**로 교체 및 남녀 대사/외침 속도 상향(`+9%`~`+24%`).
+  - **문장 간 호흡 단축 & GPU 인코딩 가속**: 대사 간 여백(`adelay` `60ms`, `post_pad` `0.14s~0.26s`) 단축 및 `h264_videotoolbox` 하드웨어 가속 적용.
+- **검증 및 재생성 파일**:
+  - 한국어 1화: `01화 눈보라 아래 두 서약 (한국어 더빙).mp4` — 기존 `11분 07초` -> **`8분 54초`(`534.6초`)**로 약 2분 13초 단축 (`1280x720`, `24fps`, `h264` + `48kHz stereo aac`, `203.27MB`).
+  - 영어 1화: `EP01 Two Vows Beneath the Blizzard (English Dub).mp4` — 기존 `10분 16초` -> **`8분 58초`(`538.9초`)**로 약 1분 18초 단축 (`1280x720`, `24fps`, `h264` + `48kHz stereo aac`, `205.66MB`).
+  - 저장 경로(`exports/webtoon_videos/{ko,en}/`, `~/Downloads/웹툰슬라이드쇼_동영상/{ko,en}/`, `dist/naver-webtoon/videos/{ko,en}/`) 동기화, 로컬 Git 커밋 및 구글 폼 보고 완료.

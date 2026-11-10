@@ -167,100 +167,101 @@ def select_voice_and_prosody(lang: str, archetype: str, mood: str) -> tuple[str,
     """
     if lang == "ko":
         if archetype == "narrator":
-            # 일반 나레이션: 잔잔하고 깊이 있는 남성 목소리
-            return ("ko-KR-HyunsuMultilingualNeural", "-6%", "-4Hz", "+0%")
+            # 일반 나레이션: 쾌활하고 경쾌한 남성 목소리 + 속도감 있는 템포 (+18%)
+            return ("ko-KR-InJoonNeural", "+18%", "+4Hz", "+6%")
 
         if archetype == "young_female":
             if mood == "shout":
-                return ("ko-KR-SunHiNeural", "+14%", "+12Hz", "+18%")
+                return ("ko-KR-SunHiNeural", "+23%", "+13Hz", "+18%")
             if mood == "whisper":
-                return ("ko-KR-SunHiNeural", "-9%", "-1Hz", "-6%")
+                return ("ko-KR-SunHiNeural", "+2%", "+0Hz", "-4%")
             if mood in ("sorrow", "thought"):
-                return ("ko-KR-SunHiNeural", "-8%", "+0Hz", "-2%")
-            # 일반 대사: 잔잔한 젊은 여성 목소리
-            return ("ko-KR-SunHiNeural", "-3%", "+3Hz", "+2%")
+                return ("ko-KR-SunHiNeural", "+4%", "+1Hz", "+0%")
+            # 일반 대사: 맑고 자연스러운 젊은 여성 목소리
+            return ("ko-KR-SunHiNeural", "+9%", "+4Hz", "+4%")
 
         if archetype == "villain_female":
             if mood == "shout":
-                return ("ko-KR-SunHiNeural", "+12%", "+7Hz", "+18%")
-            return ("ko-KR-SunHiNeural", "-6%", "-8Hz", "+4%")
+                return ("ko-KR-SunHiNeural", "+21%", "+8Hz", "+18%")
+            return ("ko-KR-SunHiNeural", "+5%", "-6Hz", "+5%")
 
         if archetype == "child":
             if mood == "shout":
-                return ("ko-KR-SunHiNeural", "+12%", "+20Hz", "+14%")
-            return ("ko-KR-SunHiNeural", "+0%", "+16Hz", "+2%")
+                return ("ko-KR-SunHiNeural", "+20%", "+20Hz", "+14%")
+            return ("ko-KR-SunHiNeural", "+10%", "+16Hz", "+4%")
 
         if archetype == "veteran_male":
             if mood == "shout":
-                return ("ko-KR-HyunsuMultilingualNeural", "+12%", "+0Hz", "+20%")
+                return ("ko-KR-HyunsuMultilingualNeural", "+20%", "+1Hz", "+20%")
             if mood == "whisper":
-                return ("ko-KR-HyunsuMultilingualNeural", "-9%", "-13Hz", "-4%")
+                return ("ko-KR-HyunsuMultilingualNeural", "+2%", "-11Hz", "-2%")
             if mood == "sorrow":
-                return ("ko-KR-HyunsuMultilingualNeural", "-8%", "-11Hz", "+0%")
-            return ("ko-KR-HyunsuMultilingualNeural", "-4%", "-11Hz", "+5%")
+                return ("ko-KR-HyunsuMultilingualNeural", "+3%", "-9Hz", "+2%")
+            return ("ko-KR-HyunsuMultilingualNeural", "+7%", "-9Hz", "+6%")
 
         if archetype == "villain_male":
             if mood == "shout":
-                return ("ko-KR-InJoonNeural", "+15%", "+7Hz", "+22%")
+                return ("ko-KR-InJoonNeural", "+24%", "+8Hz", "+22%")
             if mood == "whisper":
-                return ("ko-KR-InJoonNeural", "-8%", "-10Hz", "-2%")
-            return ("ko-KR-InJoonNeural", "-4%", "-9Hz", "+5%")
+                return ("ko-KR-InJoonNeural", "+3%", "-8Hz", "+0%")
+            return ("ko-KR-InJoonNeural", "+7%", "-8Hz", "+6%")
 
-        # young_male (카단, 이그니스, 알렉산다르, 발리안 등)
+        # young_male (카단, 이그니스, 알렉산다르, 발리안 등 - 나레이터 InJoon과 구분되도록 젊은 톤의 Hyunsu 배정)
         if mood == "shout":
             # 강조 대사: 흥분한 젊은 남성 목소리
-            return ("ko-KR-InJoonNeural", "+15%", "+13Hz", "+20%")
+            return ("ko-KR-InJoonNeural", "+24%", "+14Hz", "+20%")
         if mood == "whisper":
-            return ("ko-KR-InJoonNeural", "-8%", "+0Hz", "-5%")
+            return ("ko-KR-HyunsuMultilingualNeural", "+3%", "+2Hz", "-3%")
         if mood in ("sorrow", "thought"):
-            return ("ko-KR-InJoonNeural", "-6%", "+1Hz", "+0%")
-        # 일반 대사: 잔잔한 젊은 남성 목소리
-        return ("ko-KR-InJoonNeural", "-2%", "+3Hz", "+2%")
+            return ("ko-KR-HyunsuMultilingualNeural", "+5%", "+2Hz", "+2%")
+        # 일반 대사: 자연스러운 젊은 남성 목소리
+        return ("ko-KR-HyunsuMultilingualNeural", "+9%", "+4Hz", "+4%")
 
     else:
         # English ('en') multi-actor neural cast
         if archetype == "narrator":
-            return ("en-US-ChristopherNeural", "-6%", "-3Hz", "+0%")
+            # Lively, upbeat, brisk English male narrator (+16%)
+            return ("en-US-RogerNeural", "+16%", "+3Hz", "+6%")
 
         if archetype == "young_female":
             if mood == "shout":
-                return ("en-US-AriaNeural", "+13%", "+10Hz", "+18%")
+                return ("en-US-AriaNeural", "+21%", "+10Hz", "+18%")
             if mood == "whisper":
-                return ("en-US-JennyNeural", "-8%", "-1Hz", "-6%")
+                return ("en-US-JennyNeural", "+2%", "+0Hz", "-4%")
             if mood in ("sorrow", "thought"):
-                return ("en-US-JennyNeural", "-7%", "+0Hz", "-2%")
-            return ("en-US-AvaNeural", "-3%", "+2Hz", "+2%")
+                return ("en-US-JennyNeural", "+4%", "+1Hz", "+0%")
+            return ("en-US-AvaNeural", "+9%", "+3Hz", "+4%")
 
         if archetype == "villain_female":
             if mood == "shout":
-                return ("en-US-AriaNeural", "+12%", "+6Hz", "+18%")
-            return ("en-GB-SoniaNeural", "-5%", "-5Hz", "+4%")
+                return ("en-US-AriaNeural", "+20%", "+7Hz", "+18%")
+            return ("en-GB-SoniaNeural", "+5%", "-4Hz", "+5%")
 
         if archetype == "child":
             if mood == "shout":
-                return ("en-US-AnaNeural", "+10%", "+8Hz", "+14%")
-            return ("en-US-AnaNeural", "+0%", "+4Hz", "+2%")
+                return ("en-US-AnaNeural", "+18%", "+8Hz", "+14%")
+            return ("en-US-AnaNeural", "+10%", "+4Hz", "+4%")
 
         if archetype == "veteran_male":
             if mood == "shout":
-                return ("en-US-RogerNeural", "+11%", "-2Hz", "+20%")
+                return ("en-US-ChristopherNeural", "+18%", "+2Hz", "+20%")
             if mood in ("whisper", "sorrow"):
-                return ("en-GB-RyanNeural", "-7%", "-9Hz", "+0%")
-            return ("en-GB-RyanNeural", "-4%", "-8Hz", "+5%")
+                return ("en-GB-RyanNeural", "+3%", "-7Hz", "+2%")
+            return ("en-GB-RyanNeural", "+7%", "-6Hz", "+6%")
 
         if archetype == "villain_male":
             if mood == "shout":
-                return ("en-US-EricNeural", "+14%", "+7Hz", "+22%")
-            return ("en-US-SteffanNeural", "-4%", "-7Hz", "+5%")
+                return ("en-US-EricNeural", "+22%", "+8Hz", "+22%")
+            return ("en-US-SteffanNeural", "+6%", "-6Hz", "+6%")
 
         # young_male
         if mood == "shout":
-            return ("en-US-GuyNeural", "+13%", "+10Hz", "+20%")
+            return ("en-US-GuyNeural", "+21%", "+11Hz", "+20%")
         if mood == "whisper":
-            return ("en-US-AndrewNeural", "-7%", "-1Hz", "-5%")
+            return ("en-US-AndrewNeural", "+3%", "+0Hz", "-3%")
         if mood in ("sorrow", "thought"):
-            return ("en-US-AndrewNeural", "-5%", "+0Hz", "+0%")
-        return ("en-US-BrianNeural", "-2%", "+2Hz", "+2%")
+            return ("en-US-AndrewNeural", "+5%", "+1Hz", "+2%")
+        return ("en-US-BrianNeural", "+9%", "+3Hz", "+4%")
 
 
 def extract_scene_voice_segments(ep_num: int, title_ko: str, title_en: str, item: dict, lang: str) -> list[dict]:
@@ -435,12 +436,12 @@ async def synthesize_tts_segment(
                     raise e
                 await asyncio.sleep(0.8 * (attempt + 1))
 
-        # Convert MP3 -> clean 48kHz stereo WAV with leading 0.12s + trailing post_pad_sec breath room
+        # Convert MP3 -> clean 48kHz stereo WAV with snappy 0.06s leading + post_pad_sec breath room
         subprocess.run(
             [
                 "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
                 "-i", str(mp3_tmp),
-                "-af", f"adelay=120|120,apad=pad_dur={post_pad_sec:.2f}",
+                "-af", f"adelay=60|60,apad=pad_dur={post_pad_sec:.2f}",
                 "-ar", "48000", "-ac", "2", "-c:a", "pcm_s16le",
                 str(out_wav),
             ],
@@ -686,7 +687,7 @@ def render_segment_mp4(job: dict) -> Path:
             "-filter_complex", filter_complex,
             "-map", "[v]", "-map", "2:a",
             "-t", f"{dur:.3f}",
-            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p",
+            "-c:v", "h264_videotoolbox", "-b:v", "2800k", "-pix_fmt", "yuv420p",
             "-c:a", "pcm_s16le",
             str(out_mp4),
         ],
@@ -741,13 +742,13 @@ async def build_single_episode_video(ep_num: int, lang: str, out_dirs: list[Path
             wav_path = work_dir / f"{seg_id}.wav"
             voice, rate, pitch, volume = select_voice_and_prosody(lang, seg["archetype"], seg["mood"])
             if seg["role"] == "title":
-                post_pad = 1.10
+                post_pad = 0.75
             elif seg["role"] == "ending":
-                post_pad = 1.40
+                post_pad = 1.00
             elif s_i == n_segs - 1:
-                post_pad = 0.50
+                post_pad = 0.26
             else:
-                post_pad = 0.28
+                post_pad = 0.14
 
             seg_record = {
                 **seg,
