@@ -41,12 +41,24 @@ if [ -n "$PUSH_SRV_PID" ]; then
   kill -9 $PUSH_SRV_PID 2>/dev/null || true
 fi
 
-# 2. dist/index.html이 없거나 --build 옵션이 주어진 경우에만 초기 빌드 수행 (즉시 기동 보장)
-if [ ! -f "dist/index.html" ] || [ "$1" = "--build" ]; then
+# 2. dist/index.html, dist/home.html 및 참조된 핵심 JS 번들 무결성 검사 (누락 시 자동 빌드 수행)
+NEEDS_BUILD=0
+if [ ! -f "dist/index.html" ] || [ ! -f "dist/home.html" ] || [ "$1" = "--build" ]; then
+  NEEDS_BUILD=1
+else
+  MAIN_BUNDLE=$(grep -oE 'assets/main-[A-Za-z0-9_-]+\.js' dist/index.html | head -n 1 || true)
+  HOME_BUNDLE=$(grep -oE 'assets/home-[A-Za-z0-9_-]+\.js' dist/home.html | head -n 1 || true)
+  if [ -z "$MAIN_BUNDLE" ] || [ ! -f "dist/$MAIN_BUNDLE" ] || [ -z "$HOME_BUNDLE" ] || [ ! -f "dist/$HOME_BUNDLE" ]; then
+    echo "⚠️ [start-server] dist/assets 내 핵심 JS 번들 누락 또는 불일치 감지 ($MAIN_BUNDLE / $HOME_BUNDLE)"
+    NEEDS_BUILD=1
+  fi
+fi
+
+if [ "$NEEDS_BUILD" -eq 1 ]; then
   echo "🔨 [start-server] 최신 프로덕션 정적 번들 빌드를 수행합니다..."
   npm run build
 else
-  echo "⚡ [start-server] 기존 최신 dist/ 번들을 감지했습니다. 대기 없이 즉시 서버를 기동합니다."
+  echo "⚡ [start-server] 무결성이 검증된 최신 dist/ 번들을 감지했습니다. 대기 없이 즉시 서버를 기동합니다."
 fi
 
 # 프로세스 종료 시 자식 프로세스 자동 정리 trap

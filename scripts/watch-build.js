@@ -5,13 +5,25 @@ import { exec } from 'child_process';
 const rootDir = process.cwd();
 const srcDir = path.join(rootDir, 'src');
 
+const WATCHED_EXTENSIONS = new Set([
+  '.ts',
+  '.tsx',
+  '.js',
+  '.jsx',
+  '.mjs',
+  '.css',
+  '.json',
+  '.html',
+]);
+
 let isBuilding = false;
 let pendingBuild = false;
 let debounceTimer = null;
+let currentBuildStartedAt = 0;
 let lastBuildFinishedAt = Date.now();
 
 console.log('👀 [watch-build] Watching src/ directory for changes...');
-console.log('⚡ Any file save will automatically trigger production build into dist/');
+console.log('⚡ Any file save will automatically trigger zero-downtime production build into dist/');
 
 function runBuild() {
   if (isBuilding) {
@@ -20,13 +32,13 @@ function runBuild() {
 
   isBuilding = true;
   pendingBuild = false;
-  const startTime = Date.now();
-  console.log(`\n🔨 [watch-build] File change detected! Starting build...`);
+  currentBuildStartedAt = Date.now();
+  console.log(`\n🔨 [watch-build] File change detected! Starting zero-downtime build...`);
 
-  exec('npm run build', (error, stdout, stderr) => {
+  exec('npm run build', (error, _stdout, stderr) => {
     isBuilding = false;
     lastBuildFinishedAt = Date.now();
-    const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+    const duration = ((lastBuildFinishedAt - currentBuildStartedAt) / 1000).toFixed(1);
 
     if (error) {
       console.error(`❌ [watch-build] Build failed (${duration}s):`, stderr || error.message);
@@ -36,21 +48,58 @@ function runBuild() {
 
     if (pendingBuild) {
       pendingBuild = false;
-      console.log('🔄 [watch-build] Pending changes detected during build. Rebuilding...');
-      setTimeout(runBuild, 1500);
+      console.log('🔄 [watch-build] Pending changes detected during build. Rebuilding after cooldown...');
+      setTimeout(runBuild, 3000);
     }
   });
 }
 
-function onChange(eventType, filename) {
+function onChange(_eventType, filename) {
   if (!filename) return;
-  if (isBuilding || Date.now() - lastBuildFinishedAt < 3000) return;
-  // Ignore temp files or auto-generated seed files
+  const normalized = String(filename).replace(/\\/g, '/');
+
+  // Ignore temp files, OS metadata, or auto-generated seed files
   if (
-    filename.includes('.git') ||
-    filename.includes('node_modules') ||
-    filename.includes('dist') ||
-    filename.includes('googleNewsSeedData')
+    normalized.includes('.git') ||
+    normalized.includes('node_modules') ||
+    normalized.includes('dist') ||
+    normalized.includes('.DS_Store') ||
+    normalized.endsWith('.swp') ||
+    normalized.endsWith('.tmp') ||
+    normalized.endsWith('~') ||
+    normalized.includes('googleNewsSeedData')
+  ) {
+    return;
+  }
+
+  const ext = path.extname(normalized).toLowerCase();
+  if (ext && !WATCHED_EXTENSIONS.has(ext)) {
+    return;
+  }
+
+  // Verify actual file mtime so delayed macOS FSEvents or build-time touches never loop
+  const fullPath = path.join(srcDir, normalized);
+  let fileMtimeMs = Date.now();
+  try {
+    if (fs.existsSync(fullPath)) {
+      const stat = fs.statSync(fullPath);
+      if (stat.isDirectory()) return;
+      fileMtimeMs = stat.mtimeMs;
+    }
+  } catch {
+    // File may have been deleted/renamed; proceed with current timestamp
+  }
+
+  if (isBuilding) {
+    if (fileMtimeMs > currentBuildStartedAt + 1000) {
+      pendingBuild = true;
+    }
+    return;
+  }
+
+  if (
+    Date.now() - lastBuildFinishedAt < 3000 ||
+    fileMtimeMs <= lastBuildFinishedAt + 500
   ) {
     return;
   }
@@ -58,7 +107,7 @@ function onChange(eventType, filename) {
   if (debounceTimer) clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
     runBuild();
-  }, 1500);
+  }, 2500);
 }
 
 try {

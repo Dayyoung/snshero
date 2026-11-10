@@ -81,6 +81,8 @@ function isSpaRoute(pathname: string): boolean {
     normalized === '/gwent' || normalized.startsWith('/gwent/') ||
     normalized === '/ai' || normalized.startsWith('/ai/') ||
     normalized === '/battle' || normalized.startsWith('/battle/') || normalized === '/battle.html' ||
+    normalized === '/game' || normalized.startsWith('/game/') || normalized === '/game.html' ||
+    normalized.startsWith('/hs-assets/') ||
     normalized === '/mlx-chat.html' ||
     normalized.startsWith('/anime-character-sheets/') ||
     normalized.startsWith('/pacpik') ||
@@ -138,6 +140,10 @@ export default defineConfig(({mode}) => {
             };
 
             const cleanNormalized = normalized.replace(/\/+$/, '') || '/';
+            if (cleanNormalized === '/game') {
+              req.url = `/game.html${query}`;
+              return next();
+            }
             if (legacyRedirects[cleanNormalized]) {
               res.writeHead(302, { Location: `${legacyRedirects[cleanNormalized]}${query}` });
               res.end();
@@ -174,6 +180,10 @@ export default defineConfig(({mode}) => {
             };
 
             const cleanNormalized = normalized.replace(/\/+$/, '') || '/';
+            if (cleanNormalized === '/game') {
+              req.url = `/game.html${query}`;
+              return next();
+            }
             if (legacyRedirects[cleanNormalized]) {
               res.writeHead(302, { Location: `${legacyRedirects[cleanNormalized]}${query}` });
               res.end();
@@ -204,31 +214,68 @@ export default defineConfig(({mode}) => {
       },
       {
         name: 'clean-dist-assets',
-        buildStart() {
+        writeBundle(_options: any, bundle: Record<string, unknown>) {
+          // Zero-downtime cleanup: ONLY prune old hashed assets AFTER the new bundle
+          // and HTML files have been completely written to disk (never in buildStart!).
+          // Keep current bundle outputs AND any asset modified within the last 5 minutes
+          // so in-flight page loads never hit a 404 during live rebuilds.
           const assetsDir = path.resolve(process.cwd(), 'dist', 'assets');
-          if (fs.existsSync(assetsDir)) {
-            try {
-              const files = fs.readdirSync(assetsDir);
-              for (const file of files) {
-                fs.rmSync(path.join(assetsDir, file), { recursive: true, force: true });
-              }
-            } catch (err) {
-              console.warn('[clean-dist-assets] Warning while cleaning assets:', err);
+          if (!fs.existsSync(assetsDir)) return;
+          try {
+            const emittedAssetNames = new Set(
+              Object.keys(bundle)
+                .filter((k) => k.startsWith('assets/'))
+                .map((k) => k.slice('assets/'.length))
+            );
+            const graceCutoffMs = Date.now() - 5 * 60 * 1000;
+            const files = fs.readdirSync(assetsDir);
+            for (const file of files) {
+              if (emittedAssetNames.has(file)) continue;
+              const fullPath = path.join(assetsDir, file);
+              try {
+                const stat = fs.statSync(fullPath);
+                if (stat.mtimeMs >= graceCutoffMs) continue;
+              } catch {}
+              fs.rmSync(fullPath, { recursive: true, force: true });
             }
+          } catch (err) {
+            console.warn('[clean-dist-assets] Warning while pruning old assets:', err);
           }
         },
       },
       (() => {
-        const middleware = (req: any, res: any, next: any) => {
+        const createMiddleware = (isPreview: boolean) => (req: any, res: any, next: any) => {
           if (!req.url) return next();
 
             try {
               const rawUrl = req.url.split('?')[0];
               const decodedUrl = decodeURIComponent(rawUrl);
 
-              // 0. Fast HTTP Cache-Control for immutable production assets
-              if (decodedUrl.startsWith('/assets/')) {
-                res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+              // 0. Safe HTTP Cache-Control for production assets:
+              // Only set 1-year immutable Cache-Control when the asset actually exists on disk!
+              // Never set immutable headers on missing /assets/* files (prevents poisoning browser cache with 1-year 404s).
+              if (decodedUrl === '/' || decodedUrl.endsWith('.html')) {
+                res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+              } else if (decodedUrl.startsWith('/assets/')) {
+                if (isPreview) {
+                  const distRoot = path.resolve(process.cwd(), 'dist');
+                  const candidatePath = path.resolve(distRoot, decodedUrl.replace(/^\/+/, ''));
+                  if (
+                    candidatePath.startsWith(distRoot + path.sep) &&
+                    fs.existsSync(candidatePath) &&
+                    fs.statSync(candidatePath).isFile()
+                  ) {
+                    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+                  } else {
+                    res.statusCode = 404;
+                    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+                    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+                    res.end('Asset Not Found');
+                    return;
+                  }
+                } else {
+                  res.setHeader('Cache-Control', 'no-cache');
+                }
               }
 
               // Real-time Reddit RSS Feed proxy (fetches live posts from reddit.com with smart in-memory caching)
@@ -797,8 +844,8 @@ export default defineConfig(({mode}) => {
           };
           return {
             name: 'public-wildcard-static-plugin',
-            configureServer(server: any) { server.middlewares.use(middleware); },
-            configurePreviewServer(server: any) { server.middlewares.use(middleware); },
+            configureServer(server: any) { server.middlewares.use(createMiddleware(false)); },
+            configurePreviewServer(server: any) { server.middlewares.use(createMiddleware(true)); },
           };
         })(),
         (() => {
@@ -859,11 +906,15 @@ export default defineConfig(({mode}) => {
         input: {
           main: path.resolve(process.cwd(), 'index.html'),
           home: path.resolve(process.cwd(), 'home.html'),
+          ...(fs.existsSync(path.resolve(process.cwd(), 'game.html')) &&
+          fs.existsSync(path.resolve(process.cwd(), 'src/hearthstone/main.tsx'))
+            ? { game: path.resolve(process.cwd(), 'game.html') }
+            : {}),
         },
         output: {
-          entryFileNames: `assets/[name]-[hash].js`,
-          chunkFileNames: `assets/[name]-[hash].js`,
-          assetFileNames: `assets/[name]-[hash][extname]`,
+          entryFileNames: `assets/[name]-[hash]-v2.js`,
+          chunkFileNames: `assets/[name]-[hash]-v2.js`,
+          assetFileNames: `assets/[name]-[hash]-v2[extname]`,
           manualChunks(id) {
             if (id.includes('src/landing')) return undefined;
             if (id.includes('webtoonEpisodeManifest')) return 'data-webtoon';

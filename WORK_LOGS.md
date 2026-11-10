@@ -2,6 +2,27 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 08:18 KST] [Tailscale Funnel(https://dayyoung-macbookpro.tail3717a4.ts.net/) 백지 화면 및 에셋 404 접속 장애 근본 수정·무중단 빌드 전환]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - "https://dayyoung-macbookpro.tail3717a4.ts.net/ 접속이 안돼."
+  - **2. 근본 원인 규명 (3중 복합 원인)**:
+    1. **빌드 시작 즉시 `dist/assets/` 일괄 삭제로 인한 서비스 공백 (`vite.config.ts`)**: 기존 `clean-dist-assets` 플러그인이 `buildStart()` 시점에 `dist/assets/*` 전체를 즉시 삭제하여, 빌드가 진행되는 45~65초 동안(또는 빌드 에러 발생 시 계속) 라이브 프리뷰 서버가 모든 `/assets/*.js` 요청에 404를 반환하며 백지 화면이 발생.
+    2. **미존재 `/assets/*` 요청에 대한 1년 `immutable` 캐시 오염 (`vite.config.ts`)**: 프리뷰 미들웨어가 실제 파일 존재 여부를 확인하기 전에 무조건 `Cache-Control: public, max-age=31536000, immutable` 헤더를 부여하여, 빌드 공백 중 접속한 브라우저에 `vendor-react` 등 핵심 청크의 404 응답이 1년간 디스크 캐시에 고착됨.
+    3. **`watch-build` 지연 이벤트 루프 및 초기 기동 무결성 미검증 (`scripts/watch-build.js`, `scripts/start-server.sh`)**: macOS `fs.watch` 지연 이벤트로 불필요한 재빌드가 유발될 수 있었고, `start-server.sh`가 `dist/index.html` 존재 여부만 확인하고 실제 참조된 `dist/assets/main-*.js` 번들 존재 여부는 검사하지 않음.
+  - **3. 세부 수정 내역**:
+    - [`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts):
+      - `clean-dist-assets`를 `buildStart()` 삭제 방식에서 `writeBundle()` 사후 정리 방식으로 전면 교체하고 최근 5분 이내 생성된 에셋을 보존하여 **재빌드 중 다운타임 0ms** 보장.
+      - 프리뷰 미들웨어에서 `dist/assets/*` 파일이 실제로 디스크에 존재할 때만 `immutable` 캐시 헤더를 설정하고, 누락 시 `no-store, no-cache` 헤더와 함께 즉시 404를 반환하도록 수정.
+      - 기존 접속자의 오염된 1년 404 브라우저 캐시를 수동 캐시 삭제 없이 즉시 우회하도록 출력 청크 파일명 패턴을 `assets/[name]-[hash]-v2.js`로 갱신 및 선택적 엔트리(`game.html`) 존재 가드 추가.
+    - [`scripts/watch-build.js`](file:///Users/dayyoung/project/snshero/scripts/watch-build.js): 실제 소스 확장자 필터링 및 파일 `mtimeMs` 비교 로직을 추가하여 지연된 FSEvents나 빌드 중 부수 파일로 인한 무한 재빌드 루프 원천 차단.
+    - [`scripts/start-server.sh`](file:///Users/dayyoung/project/snshero/scripts/start-server.sh): 기동 시 `dist/index.html`, `dist/home.html`뿐만 아니라 참조된 `main-*.js` / `home-*.js` 번들 실재 여부까지 무결성 검증 후 누락 시 자동 빌드하도록 강화.
+  - **4. 검증 및 보고**:
+    - 클린 프로덕션 빌드(`npm run build`) 완료 및 통합 프리뷰 서버(`0.0.0.0:3000`) 재기동 완료.
+    - 기존 404 캐시가 남아 있던 동일 브라우저 세션에서 `https://dayyoung-macbookpro.tail3717a4.ts.net/` 및 `/#play` 접속 테스트 결과 전 에셋(`*-v2.js`, `*-v2.css`) **HTTP 200 OK (404 0건)** 및 메인 덱·RPG 대화/배틀 화면 정상 렌더링 확인 완료.
+    - 로컬 Git 커밋 및 구글 폼 작업 완료 보고서 제출 완료.
+
 ## [2026-11-10 18:32 KST] [웹툰 등장 캐릭터 디자인(귀멸의 칼날 ufotable 스타일·섹시/글래머 원화) 기반 110종 카드·7등신 전신·상반신·캐릭터시트 전원 교체 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
