@@ -356,51 +356,8 @@ def ensure_all_4_playlists_exist_in_dialog(page, dialog, active_playlist_title: 
 
 
 def build_metadata(ep: int, meta: Dict[str, str], category: str) -> tuple[str, str]:
-    title_en = meta.get("titleEn", f"Episode {ep}")
-    title_ko = meta.get("titleKo", f"제{ep}화")
-    arc_en = meta.get("arcEn", "SNSHero.com Official Dark Fantasy Saga")
-    arc_ko = meta.get("arcKo", "눈히어로.com 공식 다크 판타지 연대기")
-    syn_en = meta.get("synopsisEn", "")
-    syn_ko = meta.get("synopsisKo", "")
-
-    if category == "en_full":
-        yt_title = f"SNSHero.com Webtoon EP{ep:02d} - {title_en} (English Dub)"
-        yt_desc = (
-            f"🎨 SNSHero.com - Kadan's Journey | Official Webtoon — Episode {ep:02d}: {title_en} (Full English Dub)\n"
-            f"({arc_en})\n\n"
-            f"📖 Episode Synopsis:\n{syn_en}\n\n"
-            f"⚔️ Play the Free 3x3 Tactical Card RPG & Read All 40 Webtoon Episodes at https://snshero.com !\n"
-            f"👉 Direct Episode Link: https://snshero.com/#webtoon\n\n"
-            f"#SNSHero #Webtoon #DarkFantasy #FantasyAnime #CardBattleGame #AudioWebtoon #RPG"
-        )
-    elif category == "en_shorts":
-        yt_title = f"SNSHero Webtoon Shorts EP{ep:02d} - {title_en} #Shorts"
-        yt_desc = (
-            f"⚡ SNSHero.com - Kadan's Journey | Webtoon Shorts — Episode {ep:02d}: {title_en}\n"
-            f"({arc_en})\n\n"
-            f"📖 {syn_en}\n\n"
-            f"🎮 Play the Webtoon Card Battle Game Free Now: https://snshero.com\n\n"
-            f"#Shorts #SNSHero #Webtoon #DarkFantasy #AnimeShorts #CardGame"
-        )
-    elif category == "ko_full":
-        yt_title = f"눈히어로 웹툰 {ep:02d}화 - {title_ko} (한국어 풀더빙)"
-        yt_desc = (
-            f"🎨 눈히어로(SNSHero.com) - 카단의 여정 | 공식 웹툰 제{ep:02d}화: {title_ko} (한국어 성우 풀더빙)\n"
-            f"({arc_ko})\n\n"
-            f"📖 줄거리:\n{syn_ko}\n\n"
-            f"⚔️ 지금 https://snshero.com (눈히어로.com)에서 웹툰 원작 3x3 전략 카드배틀 게임을 무료로 플레이하세요!\n\n"
-            f"#눈히어로 #SNSHero #웹툰 #판타지웹툰 #더빙웹툰 #카드게임 #다크판타지"
-        )
-    else:
-        yt_title = f"눈히어로 웹툰 쇼츠 {ep:02d}화 - {title_ko} #Shorts"
-        yt_desc = (
-            f"⚡ 눈히어로(SNSHero.com) - 카단의 여정 | 웹툰 쇼츠 제{ep:02d}화: {title_ko}\n"
-            f"({arc_ko})\n\n"
-            f"📖 {syn_ko}\n\n"
-            f"🎮 웹툰 원작 카드게임 무료 플레이: https://snshero.com (눈히어로.com)\n\n"
-            f"#Shorts #쇼츠 #눈히어로 #SNSHero #웹툰쇼츠 #판타지웹툰 #카드게임"
-        )
-    return yt_title[:100], yt_desc
+    from scripts.update_all_80_thumbnails_and_multilang_meta_yt import build_multilingual_title_and_desc
+    return build_multilingual_title_and_desc(ep, meta, category)
 
 
 def find_video_file(category: str, ep: int) -> Optional[Path]:
@@ -488,6 +445,13 @@ def upload_single_video(
         page.keyboard.press("Backspace")
         desc_box.fill(yt_desc)
         time.sleep(0.4)
+
+    thumb_path = PROJECT_ROOT / f"exports/webtoon_thumbnails/ep_{ep:02d}_cover_thumb.jpg"
+    if thumb_path.exists():
+        thumb_in = dialog.locator("input#file-loader").first
+        if thumb_in.count() > 0:
+            thumb_in.set_input_files(str(thumb_path))
+            time.sleep(1.2)
 
     ensure_all_4_playlists_exist_in_dialog(page, dialog, playlist_title, ep)
 

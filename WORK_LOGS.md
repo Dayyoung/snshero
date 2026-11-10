@@ -20973,3 +20973,14 @@
   3. **금일 영문 본편 40편 + 영문 쇼츠 40편 = 총 80개 동영상 공개 업로드 및 인게임 연동 완료**:
      - 영문 본편 1~40화(`q6-w_dz8Hbs` ~ `eF6P6n-x7P0`) 40편 및 영문 쇼츠 1~40화(`02d11sO1m68` ~ `e3NShVjS4GE`) 40편 공개 발행 및 `src/content/movieEpisodeMapping.ts`, `src/views/MovieView.tsx`, `src/views/AnimeView.tsx`, `src/views/CinemaView.tsx`, `scripts/youtube_webtoon_160_state.json` 동기화 완료.
   4. **검증 및 보고**: YouTube Data API v3(`AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU`)로 플레이리스트 4종 및 아이템 수(40, 40, 0, 0) 검증, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+### 2026-11-10 18:05 KST | SNSHero 공식 유튜브(`@snshero`) 업로드 80개 영상(영문 본편 40편 + 영문 쇼츠 40편) 웹툰 1번째 표지(`scene_00.webp`) 썸네일 통일 및 12개 국어 다국어 제목·본문 일괄 적용 완료
+- **작업 내역**:
+  1. **전 40화 웹툰 1번째 표지 이미지(`scene_00.webp`) 기반 커스텀 썸네일 생성 및 80개 영상 일괄 적용 (`scripts/update_all_80_thumbnails_and_multilang_meta_yt.py`)**:
+     - `public/images/webtoon/episode_01..40/scene_00.webp`를 `1280x720` 고화질 JPG(`exports/webtoon_thumbnails/ep_01_cover_thumb.jpg` ~ `ep_40_cover_thumb.jpg`)로 변환.
+     - 현재 업로드된 영문 본편 40편(`en_full`) 및 영문 쇼츠 40편(`en_shorts`) 총 80개 영상 모두 YouTube Studio `input#file-loader`를 통해 각 화의 1번째 표지 이미지로 썸네일을 100% 통일 적용 완료 (`https://i.ytimg.com/vi/{vid}/maxresdefault.jpg` 확인 완료).
+  2. **영문+국문 병기 다국어 제목 및 12개 국어(`EN, KO, JA, ZH-CN, ZH-TW, DE, ES, FR, ID, RU, TH, VI`) 공식 본문 일괄 저장**:
+     - 제목: `SNSHero Webtoon EP01: Two Vows Beneath the Blizzard | 눈히어로 01화: 눈보라 아래 두 서약 (EN Dub)` (본편) / `SNSHero Shorts EP01: Two Vows Beneath the Blizzard | 눈히어로 01화: 눈보라 아래 두 서약 #Shorts` (쇼츠) 형식으로 한·영 에피소드 제목을 모두 포함하여 전 80개 영상 저장 완료.
+     - 본문: 영문·한국어·일본어 에피소드별 상세 줄거리와 중국어(간체/번체)·독일어·스페인어·프랑스어·인도네시아어·러시아어·태국어·베트남어 등 12개 국어 다국어 안내 및 `https://snshero.com` 공식 링크를 전 80개 영상에 적용 완료.
+     - 내일 일일 한도 초기화 후 업로드될 한국어 본편/쇼츠 80편 업로드 스크립트(`scripts/manage_snshero_youtube_webtoon_160.py`)에도 동일한 표지 썸네일(`scene_00`) 및 12개 국어 다국어 제목·본문 자동 적용 로직을 반영 완료.
+  3. **검증 및 보고**: YouTube Data API v3(`videos?part=snippet`) 전수 조회 결과 `Titles=80/80, 12-Lang Descriptions=80/80, Custom Cover Thumbnails=80/80` 검증 완료, 로컬 Git 커밋 및 구글 폼 보고 완료.
