@@ -29,8 +29,8 @@ interface CinemaViewProps {
 }
 
 const TOTAL_EPISODES = 40;
-const YOUTUBE_PLAYLIST_ID = 'PLMkfo7bS3l4Q';
-const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=kipcS4NOw5s&list=PLMkfo7bS3l4Q';
+const YOUTUBE_PLAYLIST_ID = 'PLR3ZkIX_CTNA';
+const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=y1g9XmOq9Kc&list=PLR3ZkIX_CTNA';
 const YOUTUBE_DATA_API_KEY = 'AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU';
 
 export const CinemaView: React.FC<CinemaViewProps> = ({

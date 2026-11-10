@@ -20960,3 +20960,16 @@
      - **영어 쇼츠 40편 (`shorts_en/`)**: `EP01 Two Vows Beneath the Blizzard (English Shorts).mp4` ~ `EP40 One Who Is Not Called a Hero (English Shorts).mp4` (총 40개, `0.35 GiB`, 편당 `7.05 ~ 11.71 MB`, 전편 `52~56.5초` 60초 엄격 미만)
   3. **저장 경로 동기화 및 검증**:
      - 프로젝트 폴더(`exports/webtoon_videos/{ko,en,shorts_ko,shorts_en}`), 다운로드 폴더(`~/Downloads/웹툰슬라이드쇼_동영상/{ko,en,shorts_ko,shorts_en}`), 로컬 웹 서버 심볼릭 링크(`dist/naver-webtoon/videos`) 총 160개 MP4 전수 검증, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+### 2026-11-10 17:23 KST | SNSHero 공식 유튜브(`@snshero`) 기존 동영상·재생목록 전수 삭제, 신규 플레이리스트 4종 생성 및 영문 본편(40편)·영문 쇼츠(40편) 총 80개 업로드 완료
+- **작업 내역**:
+  1. **기존 동영상 및 구 재생목록 전수 삭제 (`scripts/manage_snshero_youtube_webtoon_160.py`)**:
+     - `https://www.youtube.com/@snshero` (`UCA6QmKiPstbiyBUHtnSMxyA`) 채널의 기존 업로드 동영상(153편) 및 쇼츠(5편) 총 158편과 구 재생목록 6종을 YouTube Studio 일괄 삭제 자동화로 100% 영구 삭제 완료.
+  2. **신규 공식 플레이리스트 4종 생성 및 오래된순(1화부터 재생) 정렬 적용**:
+     - `en_full` (`PLFvV2raCoFww`): `SNSHero.com - Kadan's Journey | Official Webtoon (English Dub · 40 Episodes)` (40개 배정 완료)
+     - `en_shorts` (`PLR3ZkIX_CTNA`): `SNSHero.com - Kadan's Journey | Official Webtoon Shorts (English · 40 Episodes)` (40개 배정 완료)
+     - `ko_full` (`PLVch67W9z4TA`): `눈히어로.com - 카단의 여정 | 공식 웹툰 (한국어 더빙 · 전 40화)` (생성 완료 — 내일 일일 한도 리셋 후 업로드 대기)
+     - `ko_shorts` (`PLBmhdute5Irg`): `눈히어로.com - 카단의 여정 | 공식 웹툰 쇼츠 (한국어 · 전 40화)` (생성 완료 — 내일 일일 한도 리셋 후 업로드 대기)
+  3. **금일 영문 본편 40편 + 영문 쇼츠 40편 = 총 80개 동영상 공개 업로드 및 인게임 연동 완료**:
+     - 영문 본편 1~40화(`q6-w_dz8Hbs` ~ `eF6P6n-x7P0`) 40편 및 영문 쇼츠 1~40화(`02d11sO1m68` ~ `e3NShVjS4GE`) 40편 공개 발행 및 `src/content/movieEpisodeMapping.ts`, `src/views/MovieView.tsx`, `src/views/AnimeView.tsx`, `src/views/CinemaView.tsx`, `scripts/youtube_webtoon_160_state.json` 동기화 완료.
+  4. **검증 및 보고**: YouTube Data API v3(`AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU`)로 플레이리스트 4종 및 아이템 수(40, 40, 0, 0) 검증, 로컬 Git 커밋 및 구글 폼 보고 완료.
