@@ -6,6 +6,7 @@ Naver Webtoon Vertical Scroll Strip Generator (가로 690px 정식 연재 규격
 - 출력: '{ep}화 {title_ko}.png' (예: '1화 눈보라 아래 두 서약.png')
 """
 
+import io
 import json
 import math
 import os
@@ -476,22 +477,54 @@ def build_episode_png(ep_num: int, out_dirs: list[Path]) -> tuple[Path, tuple[in
     final_h = total_h // SCALE
     final_rgb = canvas.convert("RGB").resize((FINAL_W, final_h), Image.Resampling.LANCZOS)
 
+    MAX_BYTES = 4_880_000  # Strictly < 5,000,000 decimal bytes (and < 5 MiB = 5,242,880 bytes)
     clean_title = re.sub(r"\s+", " ", re.sub(r"[^\w가-힣\s]+", " ", title_ko)).strip()
-    filename = f"{ep_num}화 {clean_title}.png"
+    png_filename = f"{ep_num}화 {clean_title}.png"
+    jpg_filename = f"{ep_num}화 {clean_title}.jpg"
 
-    first_saved_path: Path | None = None
+    # 1. Encode < 5MB 24-bit JPEG (Naver Webtoon's official recommended upload format)
+    jpg_bytes: bytes | None = None
+    for q, sub in [(90, 0), (87, 0), (85, 1), (84, 1), (82, 1), (80, 1), (77, 1), (74, 1), (70, 2)]:
+        buf = io.BytesIO()
+        final_rgb.save(buf, "JPEG", quality=q, subsampling=sub, optimize=True)
+        if buf.tell() <= MAX_BYTES:
+            jpg_bytes = buf.getvalue()
+            break
+    if jpg_bytes is None:
+        buf = io.BytesIO()
+        final_rgb.save(buf, "JPEG", quality=65, subsampling=2, optimize=True)
+        jpg_bytes = buf.getvalue()
+
+    # 2. Encode < 5MB quantized PNG (for users preferring .png extension)
+    png_bytes: bytes | None = None
+    for colors in (112, 104, 96, 88, 76, 64):
+        q_im = final_rgb.quantize(colors=colors, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.FLOYDSTEINBERG)
+        buf = io.BytesIO()
+        q_im.save(buf, "PNG", optimize=True, compress_level=9)
+        if buf.tell() <= MAX_BYTES:
+            png_bytes = buf.getvalue()
+            break
+    if png_bytes is None:
+        q_im = final_rgb.quantize(colors=56, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.FLOYDSTEINBERG)
+        buf = io.BytesIO()
+        q_im.save(buf, "PNG", optimize=True, compress_level=9)
+        png_bytes = buf.getvalue()
+
+    first_png_path: Path | None = None
     for od in out_dirs:
         od.mkdir(parents=True, exist_ok=True)
-        dst = od / filename
-        if first_saved_path is None:
-            final_rgb.save(dst, "PNG", optimize=True, compress_level=9)
-            first_saved_path = dst
-        else:
-            shutil.copy2(first_saved_path, dst)
+        p_png = od / png_filename
+        p_jpg = od / jpg_filename
+        p_png.write_bytes(png_bytes)
+        p_jpg.write_bytes(jpg_bytes)
+        if first_png_path is None:
+            first_png_path = p_png
 
-    assert first_saved_path is not None
-    size_mb = round(first_saved_path.stat().st_size / (1024 * 1024), 2)
-    return first_saved_path, final_rgb.size, size_mb
+    assert first_png_path is not None
+    png_mb = round(len(png_bytes) / (1024 * 1024), 2)
+    jpg_mb = round(len(jpg_bytes) / (1024 * 1024), 2)
+    print(f"  -> PNG (<5MB): {len(png_bytes):,} bytes ({png_mb} MiB) | JPG (<5MB, 24-bit 권장): {len(jpg_bytes):,} bytes ({jpg_mb} MiB)")
+    return first_png_path, final_rgb.size, png_mb
 
 
 def main():
@@ -499,15 +532,16 @@ def main():
     out_dirs = [
         Path("exports/naver_webtoon"),
         Path(os.path.expanduser("~/Downloads")),
+        Path("dist/naver-webtoon"),
     ]
     if ep_arg == "all":
         for ep in range(1, 41):
             p, dims, mb = build_episode_png(ep, out_dirs)
-            print(f"[EP{ep:02d}/40] Saved {p.name} ({dims[0]}x{dims[1]}px, {mb} MB)")
+            print(f"[EP{ep:02d}/40] Saved {p.stem} (.jpg & .png, {dims[0]}x{dims[1]}px, <= {mb} MiB)")
     else:
         ep = int(ep_arg)
         p, dims, mb = build_episode_png(ep, out_dirs)
-        print(f"Saved: {p} (also in ~/Downloads/{p.name}) | {dims[0]}x{dims[1]}px | {mb} MB")
+        print(f"Saved: {p.stem} (.jpg & .png in exports/naver_webtoon & ~/Downloads) | {dims[0]}x{dims[1]}px")
 
 
 if __name__ == "__main__":
