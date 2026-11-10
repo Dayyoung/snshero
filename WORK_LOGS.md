@@ -20921,3 +20921,6 @@
   - `public/battle.html`: 60FPS HTML5 2D 액션 캔버스(5인 검희 전열·후열 SD 자동전투 `/seat`, `/seat_attack` 전환 + 전장 터치 마스터 카단 `진·검기 일섬` 직접 개입 및 `진·백화일섬` 오버드라이브 + 7등신 전신 컷인 오의 연출 `/anime-character-sheets/cutouts`) 및 5탭 드로어(`전장`, `검희·편성`, `명검·천수각`, `인연·교감`, `백화소환`), 오프라인 방치 보상함, 2시간 고속소탕, 100% `localStorage`(`hero_ryoran_save_v1`) 실시간 저장 구현.
   - `vite.config.ts` 및 `scripts/post-build.js`: `/battle.html` 및 `/battle` 정적 직서빙 라우팅 보호(SPA 폴백 덮어쓰기 원천 차단) 적용.
 - **검증 및 보고**: `npm run build` 무결점 통과, `localhost:3000/battle.html?lang=ko` 및 `battle-data.js` `HTTP 200 OK` 검증 완료, 구글 폼 작업 완료 보고서 제출 완료.
+
+### 2026-11-10 13:57 KST | 네이버 웹툰 연재 규격(가로 690px) 통합 세로 스크롤 이미지 생성기 구축 및 《1화 눈보라 아래 두 서약.png》 생성 완료
+- **작업 내역**: `scripts/build_naver_webtoon_ep.py` 신규 구현(2배 슈퍼샘플링 `1380px` -> `690px` LANCZOS, 대사/외침 말풍선 및 내레이션 박스 자동 분리·조판) 후 1화 전체 51컷과 대사를 결합한 `1화 눈보라 아래 두 서약.png`(`690x27,925px`) 생성 완료.
