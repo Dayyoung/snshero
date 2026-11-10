@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>하스스톤: 워크래프트의 영웅들 — 클래식 웹 에디션 (Hearthstone Web Reconstruction)</title>
+  <meta name="description" content="블리자드 하스스톤 오리지널 클래식(9개 직업 · 382종 카드 · 여관 상자 · 카드 팩 개봉 · 수집품 덱 제작 · 한국어 음성/특수효과) 1:1 웹 복각 에디션" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    @font-face {
+      font-family: 'Belwe';
+      src: url('/hs-assets/fonts/BelweBdBTBold.ttf') format('truetype');
+      font-weight: bold;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'BelweBold';
+      src: url('/hs-assets/fonts/BelweBdBTBold.ttf') format('truetype');
+      font-weight: bold;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    html, body, #hs-root {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #1b120b 0%, #090604 100%);
+      color: #f8ebd2;
+      font-family: 'Belwe', 'Noto Serif KR', 'Noto Sans KR', serif;
+      cursor: url('/hs-assets/cursors/cursor.png') 6 2, auto;
+    }
+
+    button, [role="button"], .hs-clickable {
+      cursor: url('/hs-assets/cursors/click.png') 10 4, pointer;
+    }
+
+    .hs-grabbable {
+      cursor: url('/hs-assets/cursors/grab.png') 12 8, grab;
+    }
+
+    /* Hearthstone signature number outline (white fill + thick black Belwe stroke) */
+    .hs-num {
+      font-family: 'Belwe', 'Black Han Sans', serif;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow:
+        -2px -2px 0 #000,
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000,
+         0px -2.5px 0 #000,
+         0px  2.5px 0 #000,
+        -2.5px 0px 0 #000,
+         2.5px 0px 0 #000,
+         0 3px 6px rgba(0,0,0,0.85);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .hs-num-buffed {
+      color: #4ade80 !important;
+    }
+
+    .hs-num-damaged {
+      color: #ff4d4d !important;
+    }
+
+    .hs-title, .hs-title-stroke {
+      font-family: 'Belwe', 'Noto Serif KR', serif;
+      font-weight: 900;
+      text-shadow:
+        -1.5px -1.5px 0 #160c04,
+         1.5px -1.5px 0 #160c04,
+        -1.5px  1.5px 0 #160c04,
+         1.5px  1.5px 0 #160c04,
+         0 3px 8px rgba(0,0,0,0.9);
+    }
+
+    .hs-outline {
+      text-shadow:
+        -2px -2px 0 #000,
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000,
+         0 4px 10px rgba(0,0,0,0.92);
+    }
+
+    .hs-outline-sm {
+      text-shadow:
+        -1.4px -1.4px 0 #000,
+         1.4px -1.4px 0 #000,
+        -1.4px  1.4px 0 #000,
+         1.4px  1.4px 0 #000,
+         0 2px 5px rgba(0,0,0,0.88);
+    }
+
+    @keyframes hsCardPop {
+      0% { transform: scale(0.55) rotateY(90deg); opacity: 0; }
+      70% { transform: scale(1.06) rotateY(0deg); opacity: 1; }
+      100% { transform: scale(1) rotateY(0deg); opacity: 1; }
+    }
+
+    @keyframes hsShakeLight {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      20% { transform: translate3d(-7px, 5px, 0); }
+      50% { transform: translate3d(7px, -5px, 0); }
+      80% { transform: translate3d(-4px, 3px, 0); }
+    }
+
+    @keyframes hsShakeHeavy {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      15% { transform: translate3d(-14px, 10px, 0) rotate(-0.6deg); }
+      35% { transform: translate3d(14px, -10px, 0) rotate(0.6deg); }
+      60% { transform: translate3d(-10px, -7px, 0) rotate(-0.4deg); }
+      85% { transform: translate3d(8px, 6px, 0); }
+    }
+
+    @keyframes hsFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
+    }
+
+    @keyframes hsPulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.65)); }
+      50% { filter: drop-shadow(0 0 20px rgba(56, 189, 248, 1)); }
+    }
+
+    @keyframes hsScreenShake {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      15% { transform: translate3d(-9px, 6px, 0) rotate(-0.4deg); }
+      30% { transform: translate3d(8px, -7px, 0) rotate(0.4deg); }
+      45% { transform: translate3d(-7px, -4px, 0) rotate(-0.3deg); }
+      60% { transform: translate3d(6px, 5px, 0) rotate(0.2deg); }
+      75% { transform: translate3d(-4px, 2px, 0); }
+    }
+
+    @keyframes hsBigShake {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      10% { transform: translate3d(-16px, 11px, 0) rotate(-0.8deg); }
+      25% { transform: translate3d(15px, -12px, 0) rotate(0.8deg); }
+      40% { transform: translate3d(-13px, -9px, 0) rotate(-0.6deg); }
+      55% { transform: translate3d(11px, 9px, 0) rotate(0.5deg); }
+      70% { transform: translate3d(-8px, 5px, 0) rotate(-0.3deg); }
+      85% { transform: translate3d(5px, -4px, 0); }
+    }
+
+    @keyframes hsZzz {
+      0% { opacity: 0; transform: translate(0, 4px) scale(0.6) rotate(-10deg); }
+      30% { opacity: 1; }
+      100% { opacity: 0; transform: translate(18px, -28px) scale(1.25) rotate(12deg); }
+    }
+
+    @keyframes hsLegendarySlam {
+      0% { transform: scale(1.75) translateY(-60px); opacity: 0; filter: brightness(2.2); }
+      65% { transform: scale(0.95) translateY(4px); opacity: 1; filter: brightness(1.3); }
+      82% { transform: scale(1.04) translateY(-2px); }
+      100% { transform: scale(1) translateY(0); opacity: 1; filter: brightness(1); }
+    }
+
+    @keyframes hsMinionSummon {
+      0% { transform: scale(1.38) translateY(-28px); opacity: 0; }
+      70% { transform: scale(0.96) translateY(2px); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    @keyframes hsDamagePop {
+      0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+      25% { transform: translate(-50%, -50%) scale(1.28); opacity: 1; }
+      75% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -62%) scale(0.85); opacity: 0; }
+    }
+
+    .hs-shake-sm { animation: hsScreenShake 0.42s cubic-bezier(.36,.07,.19,.97) both; }
+    .hs-shake-lg { animation: hsBigShake 0.65s cubic-bezier(.36,.07,.19,.97) both; }
+
+    /* Custom warm tavern scrollbar inside deck tray & modals */
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: rgba(20, 12, 6, 0.7); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #b88a44, #6e4c1e); border-radius: 4px; border: 1px solid #2b1a08; }
+  </style>
+</head>
+<body>
+  <div id="hs-root"></div>
+  <script type="module" src="/src/hearthstone/main.tsx"></script>
+</body>
+</html>

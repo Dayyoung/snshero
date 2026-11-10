@@ -540,6 +540,19 @@ if (fs.existsSync(publicBattleHtml)) {
   console.log('[post-build] Preserved standalone public/battle.html & dist/battle/index.html');
 }
 
+// 4.3 Ensure standalone Hearthstone Web Reconstruction (dist/game.html & dist/game/index.html)
+const distGameHtml = path.join(distDir, 'game.html');
+if (fs.existsSync(distGameHtml)) {
+  const gameHtmlRaw = fs.readFileSync(distGameHtml, 'utf8')
+    .replace(/(src|href)=["']\.\/assets\//g, '$1="/assets/')
+    .replace(/(src|href)=["']assets\//g, '$1="/assets/');
+  fs.writeFileSync(distGameHtml, gameHtmlRaw, 'utf8');
+  const distGameDir = path.join(distDir, 'game');
+  if (!fs.existsSync(distGameDir)) fs.mkdirSync(distGameDir, { recursive: true });
+  fs.writeFileSync(path.join(distGameDir, 'index.html'), gameHtmlRaw, 'utf8');
+  console.log('[post-build] Preserved standalone dist/game.html & dist/game/index.html');
+}
+
 // 5. Ensure 404.html fallback (uses SPA template so deep links load client-side router)
 const notFoundPath = path.join(distDir, '404.html');
 const templateFor404 = fs.existsSync(homeHtmlPath) ? homeHtmlPath : indexPath;

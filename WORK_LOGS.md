@@ -2,6 +2,27 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 08:23 KST] [REA 역설계 기반 블리자드 하스스톤 오리지널 클래식(1.0.0.4944) 1:1 웹게임 복각 완료 (/game.html)]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - 로컬 Mac에 설치된 블리자드 하스스톤 클라이언트(`/Applications/Hearthstone`)를 `rea`(`https://github.com/morluto/rea`) 역설계 파이프라인으로 분석·추출하여, 기존 웹 복제 사례(`https://rymedy.github.io/hearthstone-web/`)를 능가하는 1:1 수준의 오리지널 클래식 웹게임을 `/game.html`(`/game`) 독립 엔트리에 구축.
+  - **2. REA 클라이언트 역설계 및 공식 에셋 추출 내역 ([`public/hs-assets/data/rea-manifest.json`](file:///Users/dayyoung/project/snshero/public/hs-assets/data/rea-manifest.json))**:
+    - `/Applications/Hearthstone/Hearthstone.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll`, `Blizzard.T5.Game.dll`, `Strings/koKR/GAMEPLAY.txt`, `GLUE.txt` 및 `Data/OSX/*.unity3d` 번들을 정적 분석·추출하여 SHA-256 증거 다이제스트 기반 [`public/hs-assets/data/rea-manifest.json`](file:///Users/dayyoung/project/snshero/public/hs-assets/data/rea-manifest.json) 생성.
+    - 순수 2014 오리지널/클래식(`VANILLA` Patch 1.0.0.4944) **수집 가능 카드 382종 전수 + 클래식 토큰 123종** 데이터베이스([`public/hs-assets/data/classic-cards.json`](file:///Users/dayyoung/project/snshero/public/hs-assets/data/classic-cards.json)), **공식 한국어 성우 보이스(VO) 135종**([`public/hs-assets/data/vo-manifest.json`](file:///Users/dayyoung/project/snshero/public/hs-assets/data/vo-manifest.json), `public/hs-assets/audio/vo/*.mp3`), 효과음(SFX) 28종, 여관·대전 BGM 5종, `BelweBdBTBold.ttf` 폰트, 공식 스톤 로고(`hs_titlelogo.webp`), 카드 뒷면 4종(`cardback_classic/legend/frost/gold.webp`), 마우스 커서 및 전장 배경 추출·배치.
+  - **3. 세부 구현 내역 ([`game.html`](file:///Users/dayyoung/project/snshero/game.html), [`src/hearthstone/HearthstoneApp.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/HearthstoneApp.tsx))**:
+    - **독립 MPA 아키텍처 및 CSS 격리**: [`game.html`](file:///Users/dayyoung/project/snshero/game.html), [`src/hearthstone/hearthstone.css`](file:///Users/dayyoung/project/snshero/src/hearthstone/hearthstone.css), [`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts), [`scripts/post-build.js`](file:///Users/dayyoung/project/snshero/scripts/post-build.js)를 구성하여 본편 SNSHero 터미널 스타일과 간섭 없이 하스스톤 고유의 3D 스큐어모픽 우드·황동·양피지 UI 및 Belwe 폰트를 완벽 재현.
+    - **전체 화면 플로우 구현**:
+      1. [`TavernIntroScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/TavernIntroScreen.tsx): 여관 양문 개방 인트로, 촛불 앰버 파티클, 공식 타이틀 로고 및 여관주인 환영 음성.
+      2. [`BoxHubScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BoxHubScreen.tsx): 회전하는 더 박스(The Box) 중앙 메달리온 허브(`대전`, `연습`, `입문 튜토리얼`, `카드 팩 개봉`, `내 카드첩 · 덱 편집`, `퀘스트 일지`, `상점`, `REA 명세서`, 1클릭 `여관 마스터 전체 해금`).
+      3. [`HeroDeckSelectScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/HeroDeckSelectScreen.tsx) & [`Modals.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/Modals.tsx): 9대 오리지널 영웅/덱 선택, 등급전(25등급 화난 닭 ~ 전설) 및 연습(일반/전문가 AI), 공식 `GLUE_SPINNER_*` 슬롯머신 매칭 스피너, 상점·퀘스트·카드 뒷면 설정·REA 아티팩트 모달.
+      4. [`PackOpeningScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/PackOpeningScreen.tsx) & [`CollectionScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/CollectionScreen.tsx): 제단 드래그 개봉 + 등급별 후광(희귀 파랑/특급 보라/전설 주황+여관주인 `"와우! 전설 카드라고요!"` VO) 5장 3D 플립 연출, 직업 탭·마나 필터·신비한 가루 제작/분해·30장 커스텀 덱 빌더.
+      5. [`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx) & [`BoardVfxCanvas.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/vfx/BoardVfxCanvas.tsx): VS 영웅 격돌, 선공 3장/후공 4장+`동전 한 닢` 멀리건, 7v7 타원형 하수인 토큰(도발 방패·천상의 보호막 돔·은신 안개·빙결 결정·질풍·격노·죽음의 메아리 해골·지속 효과 번개·전설 용 문양), 곡선형 붉은 조준 화살표, 60fps HTML5 Canvas 주문 투사체/폭발/광역기/치유 VFX, 15초 타오르는 밧줄 도화선, 전장 4모서리 인터랙티브 장난감, 6종 감정표현, 영웅 초상화 파열 승리/패배 연출.
+    - **100% 클래식 룰 엔진 및 전문가 AI ([`GameEngine.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/engine/GameEngine.ts), [`cardEffects.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/engine/cardEffects.ts), [`aiController.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/engine/aiController.ts), [`storage.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/storage.ts))**:
+      - 382종 수집 카드 + 123종 토큰 전수 효과 스크립트(전투의 함성, 죽음의 메아리, 선택, 연계, 과부하, 비밀 19종 자동 발동, 무기 내구도, 주문 공격력, 침묵, 오라 재계산, `군주 자락서스` 영웅 교체, 탈진 피해) 완벽 구현 및 `hero_hs_*` LocalStorage 100% 영구 저장 연동.
+  - **4. 검증 및 보고**:
+    - `verify_hs_engine.ts` 자동화 검증(382/382 카드 실행 에러 0건, 9직업 기본/전문가 AI 30장 덱 검증, 은신+도발 해제 및 자락서스 영웅 교체 검증, 9직업 풀 AI 시뮬레이션 완주 통과), `npx tsc --noEmit` `src/hearthstone` 에러 0건, `npm run build` 무결점 통과, 브라우저 E2E 5단계 + 비주얼 폴리싱 3항목 검증 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-11 08:18 KST] [Tailscale Funnel(https://dayyoung-macbookpro.tail3717a4.ts.net/) 백지 화면 및 에셋 404 접속 장애 근본 수정·무중단 빌드 전환]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
