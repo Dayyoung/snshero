@@ -1,0 +1,2720 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>백화영웅전: 마스터 검희 크로니클즈 | SNSHero Battle</title>
+  <meta name="description" content="5인의 검희 자동전투와 마스터의 터치 검기 개입, 명검 단조, 인연 교감, 백화 소환을 즐기는 무설치 HTML5 방치형 액션 RPG" />
+  <link rel="icon" type="image/png" href="/icon-192.png" />
+  <style>
+    :root {
+      --bg-void: #090d16;
+      --bg-ink: #121622;
+      --bg-card: #181d2c;
+      --bg-cream: #fdfcfc;
+      --border-hair: rgba(255, 255, 255, 0.14);
+      --border-gold: rgba(250, 204, 21, 0.55);
+      --accent-crimson: #e11d48;
+      --accent-sakura: #f472b6;
+      --accent-gold: #facc15;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #34d399;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background: #06080f;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* G123 Desktop 3-Column Wrapper (Left Telemetry + Center 480px Mobile Stage + Right Guide) */
+    .g123-shell {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      background:
+        radial-gradient(circle at 18% 25%, rgba(225, 29, 72, 0.12), transparent 45%),
+        radial-gradient(circle at 82% 75%, rgba(250, 204, 21, 0.09), transparent 45%),
+        #06080f;
+    }
+
+    .side-wing {
+      display: none;
+      width: 280px;
+      padding: 20px 16px;
+      border-right: 1px solid var(--border-hair);
+      background: rgba(12, 16, 26, 0.92);
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .side-wing.right {
+      border-right: none;
+      border-left: 1px solid var(--border-hair);
+    }
+    @media (min-width: 1040px) {
+      .side-wing { display: flex; }
+    }
+
+    .wing-box {
+      border: 1px solid var(--border-hair);
+      background: var(--bg-ink);
+      padding: 12px;
+    }
+    .wing-title {
+      font-size: 11px;
+      color: var(--accent-gold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border-hair);
+      padding-bottom: 6px;
+    }
+    .wing-stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 4px 0;
+      color: var(--text-sub);
+    }
+    .wing-stat-row strong {
+      color: var(--text-main);
+    }
+
+    /* Core Mobile Portrait Stage */
+    .game-stage {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      height: 100dvh;
+      background: var(--bg-void);
+      border-left: 1px solid var(--border-hair);
+      border-right: 1px solid var(--border-hair);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Resource Bar */
+    .top-hud {
+      position: relative;
+      z-index: 20;
+      background: rgba(9, 13, 22, 0.94);
+      border-bottom: 1px solid var(--border-hair);
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+    .hud-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .master-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      padding: 3px 8px 3px 4px;
+      border-radius: 2px;
+      cursor: pointer;
+      min-height: 36px;
+    }
+    .master-chip img {
+      width: 28px;
+      height: 28px;
+      object-fit: cover;
+      border: 1px solid var(--accent-gold);
+    }
+    .cp-badge {
+      font-size: 11px;
+      color: var(--accent-gold);
+      font-weight: 700;
+    }
+    .res-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+    .res-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border-hair);
+      padding: 4px 7px;
+      border-radius: 2px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .icon-btn {
+      min-width: 34px;
+      min-height: 34px;
+      padding: 0 6px;
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-hair);
+      border-radius: 2px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon-btn:active { transform: scale(0.96); }
+    .icon-btn.active {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      background: rgba(250, 204, 21, 0.12);
+    }
+
+    /* Battlefield Viewport */
+    .battle-viewport {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 210px;
+      width: 100%;
+      overflow: hidden;
+      touch-action: none;
+      cursor: crosshair;
+    }
+    #battle-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Stage Overlay Controls inside Battle Viewport */
+    .stage-banner {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      z-index: 12;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      pointer-events: none;
+    }
+    .stage-banner > * {
+      pointer-events: auto;
+    }
+    .chapter-box {
+      background: rgba(9, 13, 22, 0.86);
+      border: 1px solid var(--border-hair);
+      padding: 5px 9px;
+      border-left: 3px solid var(--accent-crimson);
+    }
+    .chapter-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .wave-sub {
+      font-size: 10px;
+      color: var(--accent-sakura);
+      margin-top: 2px;
+    }
+    .ctrl-cluster {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .ctrl-btn {
+      min-height: 36px;
+      padding: 0 8px;
+      background: rgba(9, 13, 22, 0.88);
+      border: 1px solid var(--border-hair);
+      border-radius: 2px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .ctrl-btn.on {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      background: rgba(250, 204, 21, 0.15);
+    }
+    .boss-call-btn {
+      min-height: 38px;
+      padding: 0 11px;
+      background: #9f1239;
+      border: 1px solid #fda4af;
+      border-radius: 2px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* Boss HP Bar Overlay */
+    .boss-hud {
+      position: absolute;
+      top: 56px;
+      left: 12px;
+      right: 12px;
+      z-index: 12;
+      background: rgba(9, 13, 22, 0.9);
+      border: 1px solid #fb7185;
+      padding: 6px 8px;
+      display: none;
+    }
+    .boss-hud.show { display: block; }
+    .boss-hud-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-bottom: 4px;
+      font-weight: 700;
+      color: #fecdd3;
+    }
+    .hp-track {
+      width: 100%;
+      height: 10px;
+      background: #1e293b;
+      border: 1px solid rgba(255,255,255,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .hp-fill {
+      height: 100%;
+      background: #e11d48;
+      width: 100%;
+      transition: width 0.12s linear;
+    }
+
+    /* Floating Quick Action Pills on Battlefield */
+    .battle-side-pills {
+      position: absolute;
+      left: 8px;
+      bottom: 84px;
+      z-index: 12;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .quick-pill {
+      min-height: 40px;
+      padding: 5px 10px;
+      background: rgba(9, 13, 22, 0.9);
+      border: 1px solid var(--border-hair);
+      border-left: 3px solid var(--accent-gold);
+      border-radius: 2px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .quick-pill small {
+      color: var(--accent-gold);
+      font-size: 10px;
+    }
+
+    /* Master Overdrive Ring Button (Right Bottom of Canvas) */
+    .overdrive-btn {
+      position: absolute;
+      right: 10px;
+      bottom: 84px;
+      z-index: 12;
+      width: 66px;
+      height: 66px;
+      background: rgba(18, 22, 34, 0.94);
+      border: 2px solid var(--border-gold);
+      border-radius: 4px;
+      color: #fff;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+    .overdrive-btn.ready {
+      background: #881337;
+      border-color: var(--accent-gold);
+    }
+    .overdrive-btn span {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--accent-gold);
+    }
+    .overdrive-btn strong {
+      font-size: 13px;
+    }
+
+    /* 5-Maiden SP Portrait Dock */
+    .squad-dock {
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      bottom: 6px;
+      z-index: 13;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+    }
+    .dock-slot {
+      position: relative;
+      height: 68px;
+      background: rgba(9, 13, 22, 0.92);
+      border: 1px solid var(--border-hair);
+      border-radius: 2px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .dock-slot.ready {
+      border-color: var(--accent-gold);
+    }
+    .dock-slot img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.88;
+    }
+    .dock-slot .ult-tag {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      right: 2px;
+      background: rgba(225, 29, 72, 0.92);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      text-align: center;
+      padding: 1px 0;
+      display: none;
+    }
+    .dock-slot.ready .ult-tag { display: block; }
+    .dock-bars {
+      position: relative;
+      z-index: 2;
+      background: rgba(9, 13, 22, 0.88);
+      padding: 2px 3px;
+    }
+    .dock-name {
+      font-size: 9px;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+    .mini-bar {
+      width: 100%;
+      height: 4px;
+      background: #1e293b;
+      margin-top: 1px;
+    }
+    .mini-bar > i {
+      display: block;
+      height: 100%;
+    }
+
+    /* Full-Body Anime Cut-In Ultimate Banner */
+    #cutin-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 25;
+      pointer-events: none;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(9, 13, 22, 0.58);
+      overflow: hidden;
+    }
+    #cutin-overlay.active {
+      display: flex;
+    }
+    .cutin-band {
+      position: relative;
+      width: 100%;
+      height: 210px;
+      background: #1a0b16;
+      border-top: 2px solid var(--accent-gold);
+      border-bottom: 2px solid var(--accent-gold);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      overflow: hidden;
+    }
+    .cutin-art {
+      height: 250px;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+      transform: translateY(8px);
+    }
+    .cutin-text {
+      flex: 1;
+      text-align: right;
+      z-index: 2;
+    }
+    .cutin-maiden {
+      font-size: 12px;
+      color: var(--accent-sakura);
+      font-weight: 700;
+    }
+    .cutin-skill {
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--accent-gold);
+      margin-top: 4px;
+      letter-spacing: -0.02em;
+    }
+
+    /* Sliding Progression Drawer (Open when Tabs 2~5 active) */
+    .drawer-panel {
+      position: relative;
+      z-index: 18;
+      height: 54dvh;
+      background: var(--bg-ink);
+      border-top: 2px solid var(--accent-gold);
+      display: none;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .drawer-panel.open {
+      display: flex;
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #0d111c;
+      border-bottom: 1px solid var(--border-hair);
+      flex-shrink: 0;
+    }
+    .drawer-head h2 {
+      font-size: 13px;
+      color: var(--accent-gold);
+    }
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Cards & Lists inside Drawer */
+    .panel-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-hair);
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .panel-card.ssr { border-left: 3px solid var(--accent-gold); }
+    .panel-card.sr  { border-left: 3px solid #c084fc; }
+    .panel-card.r   { border-left: 3px solid #38bdf8; }
+
+    .avatar-frame {
+      width: 56px;
+      height: 56px;
+      flex-shrink: 0;
+      border: 1px solid var(--border-hair);
+      position: relative;
+      overflow: hidden;
+      background: #090d16;
+    }
+    .avatar-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .rarity-tag {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 4px;
+      background: rgba(0,0,0,0.85);
+      color: var(--accent-gold);
+    }
+    .card-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .card-meta {
+      font-size: 10px;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .btn-flat {
+      min-height: 36px;
+      padding: 4px 10px;
+      background: #201d1d;
+      color: #fdfcfc;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-flat.gold {
+      background: #422006;
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }
+    .btn-flat.crimson {
+      background: #881337;
+      border-color: #fda4af;
+      color: #fff;
+    }
+    .btn-flat:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+    }
+
+    /* Bond Sanctuary Chamber */
+    .bond-stage {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 10px;
+      background: #0d121f;
+      border: 1px solid var(--border-hair);
+      padding: 10px;
+      min-height: 210px;
+    }
+    .bond-stand {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      background: rgba(244, 114, 182, 0.06);
+      border: 1px solid rgba(244, 114, 182, 0.25);
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .bond-stand img {
+      height: 195px;
+      width: auto;
+      object-fit: contain;
+    }
+    .dialogue-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-hair);
+      padding: 8px;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #fce7f3;
+      margin: 6px 0;
+    }
+
+    /* Bottom 5-Tab Bar (48px+ Touch Targets) */
+    .bottom-nav {
+      position: relative;
+      z-index: 22;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      background: #090d16;
+      border-top: 1px solid var(--border-hair);
+      flex-shrink: 0;
+    }
+    .nav-tab {
+      min-height: 52px;
+      background: transparent;
+      border: none;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+    }
+    .nav-tab:last-child { border-right: none; }
+    .nav-tab.active {
+      background: #1a1020;
+      color: var(--accent-gold);
+      border-top: 2px solid var(--accent-crimson);
+    }
+    .nav-tab i {
+      font-style: normal;
+      font-size: 15px;
+    }
+
+    /* Modal System */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(0, 0, 0, 0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg-ink);
+      border: 1px solid var(--accent-gold);
+      padding: 16px;
+      max-height: 86dvh;
+      overflow-y: auto;
+    }
+    .gacha-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin: 12px 0;
+    }
+    .gacha-item {
+      border: 1px solid var(--border-hair);
+      background: #090d16;
+      padding: 4px;
+      text-align: center;
+      font-size: 9px;
+    }
+    .gacha-item.SSR { border-color: var(--accent-gold); background: rgba(250,204,21,0.12); }
+    .gacha-item.SR  { border-color: #c084fc; }
+    .gacha-item img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
+
+    /* Toast Banner */
+    #toast {
+      position: absolute;
+      top: 104px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      background: rgba(9, 13, 22, 0.95);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="g123-shell">
+    <!-- Desktop Left Wing: Live Combat Telemetry -->
+    <aside class="side-wing">
+      <div>
+        <div class="wing-box" style="margin-bottom:12px;">
+          <div class="wing-title" id="wing-title">HYAKKA HEROES · G123 H5</div>
+          <p style="font-size:11px;color:var(--text-sub);line-height:1.55;" id="wing-desc">
+            5인의 검희 자동전투 + 화면 터치 마스터 검기 개입! 모든 진행도는 LocalStorage에 영구 보존됩니다.
+          </p>
+        </div>
+        <div class="wing-box">
+          <div class="wing-title">LIVE TELEMETRY</div>
+          <div class="wing-stat-row"><span id="lbl-dps">실시간 화력</span><strong id="stat-dps">0/s</strong></div>
+          <div class="wing-stat-row"><span>마스터 검기 피해</span><strong id="stat-tap">0</strong></div>
+          <div class="wing-stat-row"><span>치명타 확률</span><strong id="stat-crit">12%</strong></div>
+          <div class="wing-stat-row"><span id="lbl-resonance">오행 검진 공명</span><strong id="stat-res">ATK +0%</strong></div>
+          <div class="wing-stat-row"><span>분당 방치 금화</span><strong id="stat-gpm">0/m</strong></div>
+          <div class="wing-stat-row"><span>천수각 최고층</span><strong id="stat-tower">1F</strong></div>
+        </div>
+      </div>
+      <div class="wing-box">
+        <div class="wing-title">PC SHORTCUTS</div>
+        <div class="wing-stat-row"><span>전장 클릭 / Space</span><strong>진·검기 일섬</strong></div>
+        <div class="wing-stat-row"><span>숫자키 1 ~ 5</span><strong>검희 오의 발동</strong></div>
+        <div class="wing-stat-row"><span>데이터 상태</span><strong style="color:var(--accent-emerald);">실시간 저장</strong></div>
+      </div>
+    </aside>
+
+    <!-- Center 480px Mobile Game Stage -->
+    <main class="game-stage">
+      <!-- Top HUD -->
+      <header class="top-hud">
+        <div class="hud-row">
+          <div class="master-chip" id="btn-open-master" title="마스터 검기 수련">
+            <img src="/anime-character-sheets/busts/041_bust.jpg" alt="Kadan" />
+            <div>
+              <div style="font-size:11px;font-weight:800;">Lv.<span id="ui-master-lv">1</span> 카단</div>
+              <div class="cp-badge">⚔ <span id="ui-cp">0</span></div>
+            </div>
+          </div>
+          <div class="res-group">
+            <div class="res-pill" title="금화">🪙 <strong id="ui-gold">0</strong></div>
+            <div class="res-pill" title="홍옥">💎 <strong id="ui-gems">0</strong></div>
+            <div class="res-pill" title="백화 소환부">📜 <strong id="ui-scrolls">0</strong></div>
+          </div>
+          <div class="res-group">
+            <select id="lang-select" class="icon-btn" aria-label="Language">
+              <option value="ko">KO</option>
+              <option value="ja">JA</option>
+              <option value="en">EN</option>
+              <option value="zh-CN">简</option>
+              <option value="zh-TW">繁</option>
+              <option value="de">DE</option>
+              <option value="es">ES</option>
+              <option value="fr">FR</option>
+              <option value="id">ID</option>
+              <option value="ru">RU</option>
+              <option value="th">TH</option>
+              <option value="vi">VI</option>
+            </select>
+            <button class="icon-btn" id="btn-sfx" title="사운드 토글">🔊</button>
+            <a href="/" class="icon-btn" style="text-decoration:none;" title="SNS히어로 홈">🏠</a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Live 2D Action Battlefield -->
+      <section class="battle-viewport" id="battle-viewport">
+        <canvas id="battle-canvas"></canvas>
+
+        <!-- Stage & Speed Controls -->
+        <div class="stage-banner">
+          <div class="chapter-box">
+            <div class="chapter-name" id="ui-stage-name">제1장 · 엘윈 설원 마을 1-1</div>
+            <div class="wave-sub" id="ui-wave-text">웨이브 1 / 4 · 전장을 터치해 검기 방출!</div>
+          </div>
+          <div class="ctrl-cluster">
+            <button class="boss-call-btn" id="btn-boss-call" style="display:none;">👹 보스 도전</button>
+            <button class="ctrl-btn on" id="btn-auto-boss" title="보스 자동 진입">자동보스</button>
+            <button class="ctrl-btn" id="btn-speed">1x</button>
+            <button class="ctrl-btn on" id="btn-auto-ult">AUTO오의</button>
+            <button class="ctrl-btn" id="btn-clean-hud" title="클린뷰 토글">[—]</button>
+          </div>
+        </div>
+
+        <!-- Boss HP Bar & Timer -->
+        <div class="boss-hud" id="boss-hud">
+          <div class="boss-hud-top">
+            <span id="ui-boss-name">👹 BOSS</span>
+            <span id="ui-boss-timer">30.0s</span>
+          </div>
+          <div class="hp-track"><div class="hp-fill" id="ui-boss-hp"></div></div>
+        </div>
+
+        <!-- Left Floating Idle Chest & Quick Sweep -->
+        <div class="battle-side-pills" id="side-pills">
+          <button class="quick-pill" id="btn-afk-chest">
+            <span>🎁</span>
+            <div>
+              <div id="lbl-afk">방치 보물함</div>
+              <small id="ui-afk-timer">+0 🪙</small>
+            </div>
+          </button>
+          <button class="quick-pill" id="btn-quick-sweep">
+            <span>⚡</span>
+            <div>
+              <div id="lbl-sweep">2시간 고속소탕</div>
+              <small id="ui-sweep-left">무료 3/3</small>
+            </div>
+          </button>
+          <button class="quick-pill" id="btn-go-tower">
+            <span>🏯</span>
+            <div>
+              <div id="lbl-tower">천수각 무한탑</div>
+              <small id="ui-tower-badge">1층 도전</small>
+            </div>
+          </button>
+        </div>
+
+        <!-- Master Overdrive Button -->
+        <button class="overdrive-btn" id="btn-overdrive" title="마스터 오의: 진·백화일섬">
+          <span>진·검기</span>
+          <strong id="ui-od-pct">0%</strong>
+        </button>
+
+        <!-- 5-Heroine SP Portrait Dock -->
+        <div class="squad-dock" id="squad-dock"></div>
+
+        <!-- Full-Body Anime Cut-In Ultimate Overlay -->
+        <div id="cutin-overlay">
+          <div class="cutin-band">
+            <img id="cutin-img" class="cutin-art" src="/anime-character-sheets/cutouts/062_Celia.png" alt="Cut-in" />
+            <div class="cutin-text">
+              <div class="cutin-maiden" id="cutin-maiden">천풍의 백화검성 · 실리아</div>
+              <div class="cutin-skill" id="cutin-skill">「천풍백화·신검일섬!」</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="toast"></div>
+      </section>
+
+      <!-- Bottom Progression Drawer -->
+      <section class="drawer-panel" id="drawer-panel">
+        <div class="drawer-head">
+          <h2 id="drawer-title">검희 수련 및 5인 출진 편성</h2>
+          <button class="icon-btn" id="btn-close-drawer">[x]</button>
+        </div>
+        <div class="drawer-body" id="drawer-body"></div>
+      </section>
+
+      <!-- Bottom 5-Tab Navigation -->
+      <nav class="bottom-nav">
+        <button class="nav-tab active" data-tab="battle"><i>⚔️</i><span id="nav-battle">전장</span></button>
+        <button class="nav-tab" data-tab="maidens"><i>🌸</i><span id="nav-maidens">검희·편성</span></button>
+        <button class="nav-tab" data-tab="swords"><i>🗡️</i><span id="nav-swords">명검·천수각</span></button>
+        <button class="nav-tab" data-tab="bonds"><i>💗</i><span id="nav-bonds">인연·교감</span></button>
+        <button class="nav-tab" data-tab="summon"><i>⛩️</i><span id="nav-summon">백화소환</span></button>
+      </nav>
+    </main>
+
+    <!-- Desktop Right Wing: Clean-Room Guide & Save Control -->
+    <aside class="side-wing right">
+      <div>
+        <div class="wing-box" style="margin-bottom:12px;">
+          <div class="wing-title">백화요란 핵심 시스템</div>
+          <div class="wing-stat-row"><span>1. 터치 검기 개입</span><strong>직접 타격 + 콤보</strong></div>
+          <div class="wing-stat-row"><span>2. 마스터 연동</span><strong>검희 Lv상한 해방</strong></div>
+          <div class="wing-stat-row"><span>3. 검희 5인 진영</span><strong>오행 공명 + 컷인</strong></div>
+          <div class="wing-stat-row"><span>4. 명검 & 의상</span><strong>영구 수집 보너스</strong></div>
+          <div class="wing-stat-row"><span>5. 인연의 맹세</span><strong>교감 대사 & 홍옥</strong></div>
+        </div>
+        <div class="wing-box">
+          <div class="wing-title">오행 진영 공명표</div>
+          <div class="wing-stat-row"><span>동일 속성 2인</span><strong>ATK +12%</strong></div>
+          <div class="wing-stat-row"><span>동일 속성 3인</span><strong>ATK +28%</strong></div>
+          <div class="wing-stat-row"><span>5색 백화 만개</span><strong>ATK +40%</strong></div>
+        </div>
+      </div>
+      <div class="wing-box">
+        <div class="wing-title">SAVE MANAGEMENT</div>
+        <button class="btn-flat" style="width:100%;margin-bottom:6px;" id="btn-force-save">💾 즉시 로컬 저장</button>
+        <button class="btn-flat" style="width:100%;font-size:10px;color:#fca5a5;" id="btn-reset-save">초기화 (Reset)</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Universal Modal (AFK Reward / 10x Gacha Reveal) -->
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal-card" id="modal-content"></div>
+  </div>
+
+  <script src="/battle-data.js"></script>
+  <script>
+  (() => {
+    'use strict';
+    const { I18N, ELEMENTS, SKINS, MAIDENS, SWORDS, LOCATIONS, MOBS, BOSSES } = window.RYORAN_DATA;
+    const SAVE_KEY = 'hero_ryoran_save_v1';
+
+    // ─── URL ?lang=ko Detection & Persistence ─────────────────────────
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramLang = urlParams.get('lang');
+    const resolveLang = (raw) => {
+      if (!raw) return null;
+      if (I18N[raw]) return raw;
+      const lower = raw.toLowerCase();
+      if (lower.startsWith('ko')) return 'ko';
+      if (lower.startsWith('ja')) return 'ja';
+      if (lower.startsWith('zh-tw') || lower.startsWith('zh-hk')) return 'zh-TW';
+      if (lower.startsWith('zh')) return 'zh-CN';
+      for (const k of Object.keys(I18N)) {
+        if (lower.startsWith(k.toLowerCase())) return k;
+      }
+      return 'ko';
+    };
+
+    // ─── Default Save Schema (Single Source of Truth in localStorage) ─
+    function createInitialSave() {
+      const now = Date.now();
+      return {
+        version: 1,
+        lang: resolveLang(paramLang) || 'ko',
+        gold: 1500,
+        gems: 1800,
+        scrolls: 12,
+        teaItems: 8,
+        flowerItems: 5,
+        stage: 1,
+        maxStage: 1,
+        wave: 1,
+        autoBoss: true,
+        speed: 1,
+        autoUlt: true,
+        sfx: true,
+        cleanHud: false,
+        masterLv: 5,
+        equippedSword: 'sw1',
+        swords: { sw1: 1, sw2: 0, sw3: 0, sw4: 0, sw5: 0, sw6: 0, sw7: 0, sw8: 0 },
+        towerFloor: 1,
+        pityCount: 0,
+        lastFreePullDay: '',
+        sweepDay: new Date().toISOString().slice(0, 10),
+        sweepsLeft: 3,
+        afkBankGold: 0,
+        afkBankSec: 0,
+        lastSavedAt: now,
+        selectedBondId: 'celia',
+        squad: ['celia', 'elwin', 'kaze', 'aquaris', 'pyro'],
+        maidens: {
+          celia:   { owned: true, lv: 5, stars: 2, shards: 0, bondLv: 2, bondExp: 20, skin: 0, unlockedSkins: [0] },
+          elwin:   { owned: true, lv: 4, stars: 1, shards: 0, bondLv: 1, bondExp: 0,  skin: 0, unlockedSkins: [0] },
+          kaze:    { owned: true, lv: 4, stars: 1, shards: 0, bondLv: 1, bondExp: 0,  skin: 0, unlockedSkins: [0] },
+          aquaris: { owned: true, lv: 3, stars: 1, shards: 0, bondLv: 1, bondExp: 0,  skin: 0, unlockedSkins: [0] },
+          pyro:    { owned: true, lv: 3, stars: 1, shards: 0, bondLv: 1, bondExp: 0,  skin: 0, unlockedSkins: [0] }
+        }
+      };
+    }
+
+    let state = (() => {
+      try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (!raw) return createInitialSave();
+        const parsed = JSON.parse(raw);
+        const base = createInitialSave();
+        const merged = { ...base, ...parsed, maidens: { ...base.maidens, ...(parsed.maidens || {}) }, swords: { ...base.swords, ...(parsed.swords || {}) } };
+        if (paramLang) merged.lang = resolveLang(paramLang) || merged.lang;
+        const today = new Date().toISOString().slice(0, 10);
+        if (merged.sweepDay !== today) {
+          merged.sweepDay = today;
+          merged.sweepsLeft = 3;
+        }
+        return merged;
+      } catch (e) {
+        return createInitialSave();
+      }
+    })();
+
+    function saveNow() {
+      try {
+        state.lastSavedAt = Date.now();
+        localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn('LocalStorage write skipped:', e);
+      }
+    }
+
+    const t = (key) => (I18N[state.lang] && I18N[state.lang][key]) || I18N.ko[key] || key;
+
+    // ─── Number Formatter ─────────────────────────────────────────────
+    function fmt(n) {
+      if (!Number.isFinite(n)) return '0';
+      const abs = Math.abs(n);
+      if (abs >= 1e12) return (n / 1e12).toFixed(2) + 'T';
+      if (abs >= 1e9)  return (n / 1e9).toFixed(2) + 'B';
+      if (abs >= 1e6)  return (n / 1e6).toFixed(2) + 'M';
+      if (abs >= 1e4)  return (n / 1e3).toFixed(1) + 'K';
+      return Math.floor(n).toLocaleString();
+    }
+
+    // ─── Web Audio Synthesizer (Zero External Dependency Katana & Chime SFX) ─
+    let audioCtx = null;
+    function ensureAudio() {
+      if (!state.sfx) return null;
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+      return audioCtx;
+    }
+
+    function playSfx(type) {
+      const ctx = ensureAudio();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      if (type === 'slash' || type === 'crit') {
+        // Crisp Katana Wind + Metallic Ring
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type === 'crit' ? 'sawtooth' : 'triangle';
+        osc.frequency.setValueAtTime(type === 'crit' ? 920 : 620, now);
+        osc.frequency.exponentialRampToValueAtTime(110, now + 0.13);
+        gain.gain.setValueAtTime(0.11, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.14);
+      } else if (type === 'ult') {
+        // Koto/Bell Rising Chord
+        [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.type = 'sine';
+          o.frequency.setValueAtTime(freq, now + idx * 0.045);
+          g.gain.setValueAtTime(0.09, now + idx * 0.045);
+          g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.045 + 0.35);
+          o.connect(g).connect(ctx.destination);
+          o.start(now + idx * 0.045);
+          o.stop(now + idx * 0.045 + 0.36);
+        });
+      } else if (type === 'coin') {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(1046, now);
+        o.frequency.setValueAtTime(1318, now + 0.06);
+        g.gain.setValueAtTime(0.07, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        o.connect(g).connect(ctx.destination);
+        o.start(now);
+        o.stop(now + 0.19);
+      }
+    }
+
+    // ─── Core Stat & Formula Engine ───────────────────────────────────
+    function getMasterLevelCap() {
+      return state.masterLv * 5 + 10;
+    }
+
+    function getSwordBonuses() {
+      let tapMult = 1;
+      let squadAtk = 1;
+      let crit = 10;
+      for (const sw of SWORDS) {
+        const lv = state.swords[sw.id] || 0;
+        if (lv > 0) {
+          const eqFactor = state.equippedSword === sw.id ? 1.5 : 1.0;
+          tapMult += sw.tapMult * (1 + (lv - 1) * 0.22) * eqFactor;
+          squadAtk += sw.squadAtk * (1 + (lv - 1) * 0.18) * eqFactor;
+          if (state.equippedSword === sw.id) crit += sw.crit + Math.floor(lv * 0.5);
+        }
+      }
+      return { tapMult, squadAtk, crit: Math.min(75, crit) };
+    }
+
+    function getSkinGlobalBonus() {
+      let bonus = 1;
+      for (const m of MAIDENS) {
+        const st = state.maidens[m.id];
+        if (!st || !st.owned) continue;
+        for (const skId of (st.unlockedSkins || [0])) {
+          const sk = SKINS[skId];
+          if (sk) bonus += sk.bonusAtk;
+        }
+      }
+      return bonus;
+    }
+
+    function getResonanceBonus() {
+      const counts = {};
+      let distinct = 0;
+      for (const id of state.squad) {
+        const m = MAIDENS.find(x => x.id === id);
+        if (!m) continue;
+        if (!counts[m.elem]) distinct++;
+        counts[m.elem] = (counts[m.elem] || 0) + 1;
+      }
+      const maxSame = Math.max(0, ...Object.values(counts));
+      if (distinct >= 5) return { mult: 1.40, label: '5색 백화 +40%' };
+      if (maxSame >= 4)  return { mult: 1.35, label: '동속성4 +35%' };
+      if (maxSame >= 3)  return { mult: 1.28, label: '동속성3 +28%' };
+      if (maxSame >= 2)  return { mult: 1.12, label: '동속성2 +12%' };
+      return { mult: 1.0, label: '기본 +0%' };
+    }
+
+    function getMaidenStats(id) {
+      const m = MAIDENS.find(x => x.id === id);
+      const st = state.maidens[id] || { owned: false, lv: 1, stars: 1, bondLv: 1, skin: 0 };
+      const starMult = 1 + (st.stars - 1) * 0.38;
+      const bondMult = 1 + (st.bondLv - 1) * 0.08;
+      const masterAura = 1 + state.masterLv * 0.06;
+      const sw = getSwordBonuses();
+      const skinAll = getSkinGlobalBonus();
+      const res = getResonanceBonus();
+
+      const lvGrowth = Math.pow(1.115, st.lv - 1);
+      const atk = Math.floor(m.atkBase * lvGrowth * starMult * bondMult * masterAura * sw.squadAtk * skinAll * res.mult);
+      const hp  = Math.floor(m.hpBase  * lvGrowth * starMult * bondMult * masterAura);
+      return { atk, hp, spd: m.spd, crit: sw.crit, skillMult: m.skillMult + (st.stars - 1) * 0.45 };
+    }
+
+    function getMasterTapDamage() {
+      const sw = getSwordBonuses();
+      const skinAll = getSkinGlobalBonus();
+      let squadSum = 0;
+      for (const id of state.squad) squadSum += getMaidenStats(id).atk;
+      const base = 45 * Math.pow(1.14, state.masterLv - 1) * sw.tapMult * skinAll;
+      return Math.floor(base + squadSum * 0.28);
+    }
+
+    function getTotalCP() {
+      let cp = getMasterTapDamage() * 4;
+      for (const id of state.squad) {
+        const s = getMaidenStats(id);
+        cp += s.atk * 5 + Math.floor(s.hp * 0.6);
+      }
+      return Math.floor(cp);
+    }
+
+    function getGoldPerMin() {
+      return Math.floor((38 * Math.pow(1.22, state.stage - 1)) * 22);
+    }
+
+    function getMasterUpgradeCost(lv = state.masterLv) {
+      return Math.floor(85 * Math.pow(1.24, lv - 1));
+    }
+
+    function getMaidenUpgradeCost(lv) {
+      return Math.floor(55 * Math.pow(1.21, lv - 1));
+    }
+
+    // ─── Image Cache Loader ───────────────────────────────────────────
+    const imgCache = new Map();
+    function getImg(src) {
+      if (!src) return null;
+      if (imgCache.has(src)) return imgCache.get(src);
+      const img = new Image();
+      img.src = src;
+      imgCache.set(src, img);
+      return img;
+    }
+
+    // Preload active squad & current location
+    function preloadStageAssets() {
+      const loc = LOCATIONS[(state.stage - 1) % LOCATIONS.length];
+      getImg(loc.img);
+      getImg('/seat/Kadan.png');
+      getImg('/seat_attack/Kadan.png');
+      for (const id of state.squad) {
+        const m = MAIDENS.find(x => x.id === id);
+        if (m) {
+          getImg(m.seat);
+          getImg(m.atkSprite);
+          getImg(m.cutout);
+        }
+      }
+    }
+
+    // ─── Live Battlefield Entities & VFX State ────────────────────────
+    const canvas = document.getElementById('battle-canvas');
+    const ctx = canvas.getContext('2d');
+    const viewport = document.getElementById('battle-viewport');
+    let viewW = 420, viewH = 380;
+
+    function syncViewportSize() {
+      const rect = viewport.getBoundingClientRect();
+      viewW = Math.max(280, rect.width);
+      viewH = Math.max(200, rect.height);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(viewW * dpr);
+      canvas.height = Math.floor(viewH * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    new ResizeObserver(syncViewportSize).observe(viewport);
+    window.addEventListener('orientationchange', () => setTimeout(syncViewportSize, 120));
+
+    let combatMode = 'stage'; // 'stage' | 'boss' | 'tower'
+    let bossTimer = 30.0;
+    let overdriveGauge = 0;
+    let tapCombo = 0;
+    let tapComboTimer = 0;
+    let masterAtkAnim = 0;
+    let screenShake = 0;
+    let damageWindow = []; // [{ t, dmg }]
+
+    let allies = [];
+    let enemies = [];
+    let slashes = [];
+    let floatTexts = [];
+    let petals = Array.from({ length: 24 }, () => ({
+      x: Math.random() * 480,
+      y: Math.random() * 420,
+      r: 2 + Math.random() * 3.5,
+      vx: -18 - Math.random() * 26,
+      vy: 16 + Math.random() * 24,
+      rot: Math.random() * Math.PI * 2
+    }));
+
+    function rebuildSquadEntities() {
+      const oldSp = {};
+      allies.forEach(a => { oldSp[a.id] = a.sp; });
+      const frontIds = [];
+      const backIds = [];
+      state.squad.forEach(id => {
+        const m = MAIDENS.find(x => x.id === id);
+        if (!m) return;
+        if (m.row === 'front' && frontIds.length < 2) frontIds.push(m);
+        else backIds.push(m);
+      });
+
+      allies = [];
+      state.squad.forEach((id, idx) => {
+        const m = MAIDENS.find(x => x.id === id);
+        if (!m) return;
+        const stats = getMaidenStats(id);
+        const isFront = idx < 2;
+        allies.push({
+          id: m.id,
+          meta: m,
+          stats,
+          hp: stats.hp,
+          maxHp: stats.hp,
+          sp: oldSp[m.id] || (25 + idx * 12),
+          cd: 0.3 + idx * 0.22,
+          atkAnim: 0,
+          slotIdx: idx,
+          isFront
+        });
+      });
+      renderSquadDock();
+    }
+
+    function spawnWave() {
+      enemies = [];
+      const stageScale = Math.pow(1.26, state.stage - 1);
+
+      if (combatMode === 'tower') {
+        const towerScale = Math.pow(1.30, state.towerFloor - 1);
+        const bossMeta = BOSSES[(state.towerFloor - 1) % BOSSES.length];
+        const maxHp = Math.floor(2400 * towerScale);
+        enemies.push({
+          name: `[천수각 ${state.towerFloor}층] ${bossMeta.ko}`,
+          sprite: bossMeta.sprite,
+          hp: maxHp,
+          maxHp,
+          atk: Math.floor(65 * towerScale),
+          isBoss: true,
+          rx: 0.77,
+          ry: 0.56,
+          cd: 1.4,
+          atkAnim: 0,
+          hitFlash: 0
+        });
+        bossTimer = 30.0;
+        updateBossHud(true);
+        return;
+      }
+
+      if (combatMode === 'boss') {
+        const bossMeta = BOSSES[(state.stage - 1) % BOSSES.length];
+        const maxHp = Math.floor(1950 * stageScale);
+        enemies.push({
+          name: bossMeta.ko,
+          sprite: bossMeta.sprite,
+          hp: maxHp,
+          maxHp,
+          atk: Math.floor(48 * stageScale),
+          isBoss: true,
+          rx: 0.77,
+          ry: 0.56,
+          cd: 1.5,
+          atkAnim: 0,
+          hitFlash: 0
+        });
+        bossTimer = 30.0;
+        updateBossHud(true);
+        return;
+      }
+
+      updateBossHud(false);
+      const count = 3;
+      for (let i = 0; i < count; i++) {
+        const mob = MOBS[(state.stage * 3 + state.wave + i) % MOBS.length];
+        const maxHp = Math.floor((390 + i * 45) * stageScale);
+        enemies.push({
+          name: mob.ko,
+          sprite: mob.sprite,
+          hp: maxHp,
+          maxHp,
+          atk: Math.floor(24 * stageScale),
+          isBoss: false,
+          rx: 0.68 + (i % 2) * 0.13,
+          ry: 0.43 + i * 0.13,
+          cd: 1.0 + i * 0.35,
+          atkAnim: 0,
+          hitFlash: 0
+        });
+      }
+      updateStageBanner();
+    }
+
+    function recordDamage(amount) {
+      damageWindow.push({ t: performance.now(), dmg: amount });
+    }
+
+    function dealDamageToEnemy(enemy, rawDmg, color = '#ffffff', isCrit = false, labelPrefix = '') {
+      if (!enemy || enemy.hp <= 0) return;
+      const dmg = Math.max(1, Math.floor(rawDmg));
+      enemy.hp = Math.max(0, enemy.hp - dmg);
+      enemy.hitFlash = 0.14;
+      recordDamage(dmg);
+
+      const ex = enemy.rx * viewW + (Math.random() - 0.5) * 26;
+      const ey = enemy.ry * viewH - 36 + (Math.random() - 0.5) * 16;
+      floatTexts.push({
+        x: ex,
+        y: ey,
+        text: `${labelPrefix}${isCrit ? '⚡' : ''}${fmt(dmg)}`,
+        color: isCrit ? '#facc15' : color,
+        size: isCrit ? 17 : 13,
+        life: 0.75
+      });
+
+      if (enemy.hp <= 0) {
+        const dropGold = Math.floor((26 + state.stage * 9) * Math.pow(1.21, state.stage - 1) * (enemy.isBoss ? 6 : 1));
+        state.gold += dropGold;
+        floatTexts.push({ x: ex, y: ey - 18, text: `+${fmt(dropGold)} 🪙`, color: '#fde047', size: 12, life: 0.9 });
+      }
+    }
+
+    // ─── Protagonist Tap-to-Slash Intervention (원작 무네아키라 검기 개입) ─
+    function triggerMasterSlash(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      const tx = clientX ? (clientX - rect.left) : viewW * 0.72;
+      const ty = clientY ? (clientY - rect.top)  : viewH * 0.54;
+
+      masterAtkAnim = 0.25;
+      tapCombo++;
+      tapComboTimer = 2.0;
+      overdriveGauge = Math.min(100, overdriveGauge + 7);
+
+      const sw = getSwordBonuses();
+      const isCrit = Math.random() * 100 < (sw.crit + Math.min(20, tapCombo));
+      const comboMult = 1 + Math.min(0.6, tapCombo * 0.03);
+      const dmg = getMasterTapDamage() * comboMult * (isCrit ? 2.1 : 1.0);
+
+      playSfx(isCrit ? 'crit' : 'slash');
+      if (navigator.vibrate) navigator.vibrate(12);
+      screenShake = isCrit ? 5 : 2.5;
+
+      slashes.push({
+        x: tx,
+        y: ty,
+        angle: -0.55 + (Math.random() - 0.5) * 0.9,
+        radius: 64 + (isCrit ? 24 : 0),
+        color: isCrit ? '#facc15' : '#fb7185',
+        life: 0.26,
+        maxLife: 0.26
+      });
+
+      const alive = enemies.filter(e => e.hp > 0);
+      if (alive.length > 0) {
+        // Primary target closest to tap + splash cleave
+        alive.sort((a, b) => Math.hypot(a.rx * viewW - tx, a.ry * viewH - ty) - Math.hypot(b.rx * viewW - tx, b.ry * viewH - ty));
+        dealDamageToEnemy(alive[0], dmg, '#fda4af', isCrit, tapCombo >= 5 ? `${tapCombo}연격 ` : '');
+        for (let i = 1; i < alive.length; i++) {
+          dealDamageToEnemy(alive[i], dmg * 0.45, '#f472b6', false);
+        }
+      }
+      updateOverdriveUi();
+      checkWaveClear();
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      triggerMasterSlash(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && document.activeElement?.tagName !== 'SELECT') {
+        e.preventDefault();
+        triggerMasterSlash();
+      } else if (['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5'].includes(e.code)) {
+        const idx = Number(e.code.replace('Digit', '')) - 1;
+        if (allies[idx] && allies[idx].sp >= 100) triggerMaidenUltimate(allies[idx]);
+      }
+    });
+
+    // ─── Master Overdrive Skill ───────────────────────────────────────
+    function triggerOverdrive() {
+      if (overdriveGauge < 100) {
+        showToast('검기 게이지가 아직 100%가 아닙니다! 전장을 터치하세요!');
+        return;
+      }
+      overdriveGauge = 0;
+      updateOverdriveUi();
+      playSfx('ult');
+      screenShake = 9;
+      showCutIn('/anime-character-sheets/cutouts/041_Kadan.png', '마스터 사무라이 · 카단', '「진·백화일섬 천파!」');
+
+      const burst = getMasterTapDamage() * 9.5;
+      for (let i = 0; i < 6; i++) {
+        slashes.push({
+          x: viewW * (0.58 + Math.random() * 0.32),
+          y: viewH * (0.35 + Math.random() * 0.38),
+          angle: (i * 0.55) - 0.8,
+          radius: 95,
+          color: i % 2 === 0 ? '#facc15' : '#e11d48',
+          life: 0.42,
+          maxLife: 0.42
+        });
+      }
+      enemies.forEach(e => dealDamageToEnemy(e, burst, '#facc15', true, '진·일섬 '));
+      checkWaveClear();
+    }
+    document.getElementById('btn-overdrive').addEventListener('click', triggerOverdrive);
+
+    // ─── Sword Maiden Full-Body Cut-In Ultimate ───────────────────────
+    let cutinTimeout = null;
+    function showCutIn(imgSrc, maidenTitle, skillName) {
+      const ov = document.getElementById('cutin-overlay');
+      document.getElementById('cutin-img').src = imgSrc;
+      document.getElementById('cutin-maiden').textContent = maidenTitle;
+      document.getElementById('cutin-skill').textContent = skillName;
+      ov.classList.add('active');
+      if (cutinTimeout) clearTimeout(cutinTimeout);
+      cutinTimeout = setTimeout(() => ov.classList.remove('active'), 1150);
+    }
+
+    function triggerMaidenUltimate(ally) {
+      if (!ally || ally.sp < 100) return;
+      const alive = enemies.filter(e => e.hp > 0);
+      if (alive.length === 0) return;
+
+      ally.sp = 0;
+      ally.atkAnim = 0.45;
+      playSfx('ult');
+      screenShake = 7;
+
+      const elemColor = ELEMENTS[ally.meta.elem]?.color || '#facc15';
+      showCutIn(ally.meta.cutout, `${ally.meta.titleKo} · ${ally.meta.nameKo}`, `「${ally.meta.skillKo}!」`);
+
+      slashes.push({
+        x: viewW * 0.74,
+        y: viewH * 0.52,
+        angle: -0.35,
+        radius: 110,
+        color: elemColor,
+        life: 0.4,
+        maxLife: 0.4
+      });
+
+      const isCrit = Math.random() * 100 < (ally.stats.crit + 15);
+      const totalDmg = ally.stats.atk * ally.stats.skillMult * (isCrit ? 1.85 : 1.0);
+      alive.forEach(e => dealDamageToEnemy(e, totalDmg, elemColor, isCrit, `${ally.meta.nameKo} 오의 `));
+      checkWaveClear();
+    }
+
+    // ─── Wave & Boss Progression State Machine ────────────────────────
+    function checkWaveClear() {
+      if (enemies.length === 0) return;
+      if (enemies.some(e => e.hp > 0)) return;
+
+      if (combatMode === 'tower') {
+        const rewardGems = 60 + state.towerFloor * 15;
+        const rewardGold = Math.floor(getGoldPerMin() * 0.8);
+        state.gems += rewardGems;
+        state.gold += rewardGold;
+        if (state.towerFloor % 5 === 0) state.scrolls += 1;
+        showToast(`🏯 천수각 ${state.towerFloor}층 돌파! +${rewardGems}💎 +${fmt(rewardGold)}🪙`);
+        state.towerFloor++;
+        combatMode = 'stage';
+        saveNow();
+        spawnWave();
+        if (currentTab === 'swords') renderDrawer();
+        return;
+      }
+
+      if (combatMode === 'boss') {
+        state.gems += 25;
+        if (state.stage >= state.maxStage) {
+          state.maxStage = state.stage + 1;
+          if (state.stage % 3 === 0) state.scrolls += 1;
+        }
+        showToast(`🎉 스테이지 ${state.stage} 보스 토벌! +25💎`);
+        state.stage++;
+        state.wave = 1;
+        combatMode = 'stage';
+        preloadStageAssets();
+        saveNow();
+        spawnWave();
+        return;
+      }
+
+      // Normal Wave cleared
+      if (state.wave < 4) {
+        state.wave++;
+        spawnWave();
+      } else {
+        if (state.autoBoss) {
+          combatMode = 'boss';
+          spawnWave();
+        } else {
+          state.wave = 4;
+          document.getElementById('btn-boss-call').style.display = 'inline-flex';
+          spawnWave();
+        }
+      }
+    }
+
+    // ─── Main 60FPS Game Loop (Update + Canvas Render) ────────────────
+    let lastFrame = performance.now();
+    let hudSyncAcc = 0;
+    let afkAcc = 0;
+
+    function tick(now) {
+      const rawDt = Math.min(0.08, (now - lastFrame) / 1000);
+      lastFrame = now;
+      const dt = rawDt * state.speed;
+
+      // Accumulate AFK Chest rewards in real time
+      afkAcc += rawDt;
+      if (afkAcc >= 1.0) {
+        const sec = Math.floor(afkAcc);
+        afkAcc -= sec;
+        state.afkBankSec = Math.min(43200, (state.afkBankSec || 0) + sec);
+        state.afkBankGold = (state.afkBankGold || 0) + Math.floor((getGoldPerMin() / 60) * sec);
+      }
+
+      if (tapComboTimer > 0) {
+        tapComboTimer -= rawDt;
+        if (tapComboTimer <= 0) tapCombo = 0;
+      }
+      if (masterAtkAnim > 0) masterAtkAnim = Math.max(0, masterAtkAnim - rawDt);
+      if (screenShake > 0) screenShake = Math.max(0, screenShake - rawDt * 22);
+
+      // Boss / Tower countdown
+      if ((combatMode === 'boss' || combatMode === 'tower') && enemies.some(e => e.hp > 0)) {
+        bossTimer -= rawDt;
+        if (bossTimer <= 0) {
+          showToast(combatMode === 'tower' ? '⏳ 천수각 제한시간 초과! 전열 재정비' : '⏳ 보스 제한시간 초과! 자동보스 일시 해제');
+          if (combatMode === 'boss') {
+            state.autoBoss = false;
+            document.getElementById('btn-auto-boss').classList.remove('on');
+            document.getElementById('btn-boss-call').style.display = 'inline-flex';
+          }
+          combatMode = 'stage';
+          state.wave = 4;
+          spawnWave();
+        }
+      }
+
+      // Allies Auto-Attack & Auto-Ult
+      const aliveEnemies = enemies.filter(e => e.hp > 0);
+      for (const ally of allies) {
+        if (ally.atkAnim > 0) ally.atkAnim = Math.max(0, ally.atkAnim - dt);
+        ally.cd -= dt * ally.stats.spd;
+        if (ally.cd <= 0 && aliveEnemies.length > 0) {
+          ally.cd = 1.15;
+          ally.atkAnim = 0.28;
+          ally.sp = Math.min(100, ally.sp + 24);
+          const target = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+          const isCrit = Math.random() * 100 < ally.stats.crit;
+          const elemColor = ELEMENTS[ally.meta.elem]?.color || '#ffffff';
+          slashes.push({
+            x: target.rx * viewW,
+            y: target.ry * viewH - 12,
+            angle: (Math.random() - 0.5) * 1.4,
+            radius: 44,
+            color: elemColor,
+            life: 0.2,
+            maxLife: 0.2
+          });
+          dealDamageToEnemy(target, ally.stats.atk * (isCrit ? 1.9 : 1.0), elemColor, isCrit);
+          checkWaveClear();
+        }
+        if (state.autoUlt && ally.sp >= 100 && enemies.some(e => e.hp > 0)) {
+          triggerMaidenUltimate(ally);
+        }
+      }
+
+      // Enemies Attack visual pulse
+      for (const en of enemies) {
+        if (en.hp <= 0) continue;
+        if (en.hitFlash > 0) en.hitFlash = Math.max(0, en.hitFlash - rawDt);
+        if (en.atkAnim > 0) en.atkAnim = Math.max(0, en.atkAnim - dt);
+        en.cd -= dt;
+        if (en.cd <= 0 && allies.length > 0) {
+          en.cd = en.isBoss ? 1.8 : 2.1;
+          en.atkAnim = 0.25;
+          const frontPool = allies.slice(0, 2);
+          const victim = frontPool[Math.floor(Math.random() * frontPool.length)] || allies[0];
+          if (victim) {
+            victim.hp = Math.max(victim.maxHp * 0.18, victim.hp - en.atk * 0.35);
+            victim.sp = Math.min(100, victim.sp + 8);
+          }
+        }
+      }
+      // Subtle regen between hits
+      allies.forEach(a => { a.hp = Math.min(a.maxHp, a.hp + a.maxHp * 0.04 * dt); });
+
+      // Update VFX particles
+      slashes = slashes.filter(s => { s.life -= rawDt; return s.life > 0; });
+      floatTexts = floatTexts.filter(f => { f.y -= 34 * rawDt; f.life -= rawDt; return f.life > 0; });
+      for (const p of petals) {
+        p.x += p.vx * rawDt;
+        p.y += p.vy * rawDt;
+        p.rot += 1.8 * rawDt;
+        if (p.x < -10 || p.y > viewH + 10) {
+          p.x = Math.random() * viewW + 60;
+          p.y = -10;
+        }
+      }
+
+      renderCanvas(now);
+
+      hudSyncAcc += rawDt;
+      if (hudSyncAcc >= 0.2) {
+        hudSyncAcc = 0;
+        syncHud();
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function renderCanvas(now) {
+      ctx.save();
+      if (screenShake > 0) {
+        ctx.translate((Math.random() - 0.5) * screenShake * 2, (Math.random() - 0.5) * screenShake * 2);
+      }
+
+      // 1. Chapter Location Art Background
+      const loc = LOCATIONS[(state.stage - 1) % LOCATIONS.length];
+      const bgImg = getImg(loc.img);
+      if (bgImg && bgImg.complete && bgImg.naturalWidth > 0) {
+        const scale = Math.max(viewW / bgImg.naturalWidth, viewH / bgImg.naturalHeight) * 1.04;
+        const dw = bgImg.naturalWidth * scale;
+        const dh = bgImg.naturalHeight * scale;
+        const panX = Math.sin(now * 0.00025) * 8;
+        ctx.drawImage(bgImg, (viewW - dw) * 0.5 + panX, (viewH - dh) * 0.45, dw, dh);
+      } else {
+        ctx.fillStyle = '#111827';
+        ctx.fillRect(0, 0, viewW, viewH);
+      }
+
+      // Dark battle contrast overlay
+      ctx.fillStyle = 'rgba(8, 11, 20, 0.44)';
+      ctx.fillRect(0, 0, viewW, viewH);
+
+      // 2. Protagonist Master Kadan (Back-Left Commander)
+      const masterImg = getImg(masterAtkAnim > 0 ? '/seat_attack/Kadan.png' : '/seat/Kadan.png');
+      const mx = viewW * 0.11 + (masterAtkAnim > 0 ? 14 : 0);
+      const my = viewH * 0.52 + Math.sin(now * 0.004) * 3;
+      drawGroundShadow(mx, my + 28, 22);
+      if (masterImg && masterImg.complete && masterImg.naturalWidth > 0) {
+        ctx.drawImage(masterImg, mx - 30, my - 34, 60, 60);
+      }
+
+      // 3. 5 Deployed Sword Maidens (2 Front + 3 Back)
+      allies.forEach((ally, i) => {
+        const baseX = ally.isFront ? viewW * 0.34 : viewW * 0.22;
+        const rowSlots = ally.isFront ? [0.43, 0.63] : [0.37, 0.53, 0.69];
+        const localIdx = ally.isFront ? i : (i - 2);
+        const ay = viewH * (rowSlots[localIdx] || 0.52) + Math.sin(now * 0.005 + i) * 3;
+        const lunge = ally.atkAnim > 0 ? Math.sin((ally.atkAnim / 0.28) * Math.PI) * 28 : 0;
+        const ax = baseX + lunge;
+
+        const elemColor = ELEMENTS[ally.meta.elem]?.color || '#facc15';
+        drawGroundShadow(ax, ay + 28, 22, elemColor);
+
+        const spr = getImg(ally.atkAnim > 0 ? ally.meta.atkSprite : ally.meta.seat);
+        if (spr && spr.complete && spr.naturalWidth > 0) {
+          ctx.drawImage(spr, ax - 31, ay - 35, 62, 62);
+        }
+      });
+
+      // 4. Enemies & Bosses
+      enemies.forEach((en, idx) => {
+        if (en.hp <= 0) return;
+        const size = en.isBoss ? 104 : 66;
+        const lunge = en.atkAnim > 0 ? -20 : 0;
+        const ex = en.rx * viewW + lunge;
+        const ey = en.ry * viewH + Math.sin(now * 0.004 + idx * 1.4) * 3.5;
+
+        drawGroundShadow(ex, ey + size * 0.42, en.isBoss ? 38 : 23, en.isBoss ? 'rgba(225,29,72,0.5)' : null);
+        const spr = getImg((en.atkAnim > 0 ? '/seat_attack/' : '/seat/') + en.sprite);
+        if (spr && spr.complete && spr.naturalWidth > 0) {
+          ctx.save();
+          // Flip enemy horizontally to face left squad
+          ctx.translate(ex, ey);
+          ctx.scale(-1, 1);
+          if (en.hitFlash > 0) ctx.filter = 'brightness(2.2)';
+          ctx.drawImage(spr, -size / 2, -size / 2, size, size);
+          ctx.restore();
+        }
+
+        // Individual Mob HP bar
+        if (!en.isBoss) {
+          const bw = 46;
+          ctx.fillStyle = 'rgba(0,0,0,0.75)';
+          ctx.fillRect(ex - bw / 2, ey - size / 2 - 8, bw, 5);
+          ctx.fillStyle = '#fb7185';
+          ctx.fillRect(ex - bw / 2 + 1, ey - size / 2 - 7, (bw - 2) * (en.hp / en.maxHp), 3);
+        }
+      });
+
+      // 5. Katana Ink-Gold / Elemental Slash Arcs
+      for (const s of slashes) {
+        const alpha = Math.max(0, s.life / s.maxLife);
+        ctx.save();
+        ctx.translate(s.x, s.y);
+        ctx.rotate(s.angle);
+        ctx.strokeStyle = s.color;
+        ctx.globalAlpha = alpha;
+        ctx.lineWidth = 5 * alpha + 1.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, s.radius * (1.15 - alpha * 0.25), -0.85, 0.85);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2 * alpha;
+        ctx.beginPath();
+        ctx.arc(0, 0, s.radius * (1.12 - alpha * 0.25), -0.65, 0.65);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 6. Drifting Sakura Petals
+      ctx.fillStyle = 'rgba(251, 182, 206, 0.72)';
+      for (const p of petals) {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, p.r * 1.4, p.r * 0.75, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 7. Floating Damage Numbers
+      for (const f of floatTexts) {
+        ctx.save();
+        ctx.globalAlpha = Math.min(1, f.life * 1.6);
+        ctx.font = `800 ${f.size}px monospace`;
+        ctx.textAlign = 'center';
+        ctx.strokeStyle = '#090d16';
+        ctx.lineWidth = 3;
+        ctx.strokeText(f.text, f.x, f.y);
+        ctx.fillStyle = f.color;
+        ctx.fillText(f.text, f.x, f.y);
+        ctx.restore();
+      }
+
+      // 8. Tap Combo Counter Badge
+      if (tapCombo >= 2 && !state.cleanHud) {
+        ctx.save();
+        ctx.font = '800 13px monospace';
+        ctx.fillStyle = '#facc15';
+        ctx.strokeStyle = '#090d16';
+        ctx.lineWidth = 3;
+        const txt = `⚔ 마스터 검기 ${tapCombo} HIT!`;
+        ctx.strokeText(txt, 14, viewH - 86);
+        ctx.fillText(txt, 14, viewH - 86);
+        ctx.restore();
+      }
+
+      ctx.restore();
+    }
+
+    function drawGroundShadow(x, y, rx, ringColor = null) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,0,0,0.45)';
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx, rx * 0.34, 0, 0, Math.PI * 2);
+      ctx.fill();
+      if (ringColor) {
+        ctx.strokeStyle = ringColor;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // ─── UI Rendering & HUD Sync ──────────────────────────────────────
+    function renderSquadDock() {
+      const dock = document.getElementById('squad-dock');
+      dock.innerHTML = '';
+      for (let i = 0; i < 5; i++) {
+        const ally = allies[i];
+        const slot = document.createElement('div');
+        slot.className = 'dock-slot';
+        if (!ally) {
+          slot.innerHTML = `<div style="margin:auto;font-size:10px;color:#64748b;">빈 슬롯</div>`;
+          slot.addEventListener('click', () => switchTab('maidens'));
+        } else {
+          const elem = ELEMENTS[ally.meta.elem];
+          slot.dataset.allyIdx = String(i);
+          slot.innerHTML = `
+            <img src="${ally.meta.bust}" alt="${ally.meta.nameKo}" />
+            <div class="ult-tag">오의 발동!</div>
+            <div class="dock-bars">
+              <div class="dock-name"><span style="color:${elem.color}">●</span> ${ally.meta.nameKo}</div>
+              <div class="mini-bar"><i id="dock-hp-${i}" style="width:100%;background:#34d399;"></i></div>
+              <div class="mini-bar"><i id="dock-sp-${i}" style="width:0%;background:#facc15;"></i></div>
+            </div>
+          `;
+          slot.addEventListener('click', () => {
+            if (ally.sp >= 100) triggerMaidenUltimate(ally);
+            else showToast(`${ally.meta.nameKo} SP 충전중 (${Math.floor(ally.sp)}%)`);
+          });
+        }
+        dock.appendChild(slot);
+      }
+    }
+
+    function updateOverdriveUi() {
+      const btn = document.getElementById('btn-overdrive');
+      document.getElementById('ui-od-pct').textContent = `${Math.floor(overdriveGauge)}%`;
+      btn.classList.toggle('ready', overdriveGauge >= 100);
+    }
+
+    function updateStageBanner() {
+      const loc = LOCATIONS[(state.stage - 1) % LOCATIONS.length];
+      document.getElementById('ui-stage-name').textContent =
+        combatMode === 'tower'
+          ? `🏯 천수각 무한탑 · 제 ${state.towerFloor}층`
+          : `${loc.ko} (${state.stage}-${state.wave})`;
+      document.getElementById('ui-wave-text').textContent =
+        combatMode === 'boss'
+          ? `👹 ${t('bossBattle')} 진행중!`
+          : combatMode === 'tower'
+            ? `🏯 제한시간 내 수호자를 격파하세요!`
+            : `${t('wave')} ${state.wave} / 4 · ${t('tapHint')}`;
+    }
+
+    function updateBossHud(active) {
+      const el = document.getElementById('boss-hud');
+      el.classList.toggle('show', active);
+      if (active) document.getElementById('btn-boss-call').style.display = 'none';
+      updateStageBanner();
+    }
+
+    function syncHud() {
+      document.getElementById('ui-master-lv').textContent = state.masterLv;
+      document.getElementById('ui-cp').textContent = fmt(getTotalCP());
+      document.getElementById('ui-gold').textContent = fmt(state.gold);
+      document.getElementById('ui-gems').textContent = fmt(state.gems);
+      document.getElementById('ui-scrolls').textContent = fmt(state.scrolls);
+      document.getElementById('ui-afk-timer').textContent = `+${fmt(state.afkBankGold || 0)} 🪙`;
+      document.getElementById('ui-sweep-left').textContent = `무료 ${state.sweepsLeft}/3`;
+      document.getElementById('ui-tower-badge').textContent = `${state.towerFloor}F 도전`;
+
+      // Dock HP/SP
+      const slots = document.querySelectorAll('.dock-slot');
+      allies.forEach((ally, i) => {
+        const hpEl = document.getElementById(`dock-hp-${i}`);
+        const spEl = document.getElementById(`dock-sp-${i}`);
+        if (hpEl) hpEl.style.width = `${Math.max(0, Math.min(100, (ally.hp / ally.maxHp) * 100))}%`;
+        if (spEl) spEl.style.width = `${Math.max(0, Math.min(100, ally.sp))}%`;
+        if (slots[i]) slots[i].classList.toggle('ready', ally.sp >= 100);
+      });
+
+      // Boss HP
+      if (combatMode === 'boss' || combatMode === 'tower') {
+        const b = enemies[0];
+        if (b) {
+          document.getElementById('ui-boss-name').textContent = `👹 ${b.name}`;
+          document.getElementById('ui-boss-timer').textContent = `${Math.max(0, bossTimer).toFixed(1)}s`;
+          document.getElementById('ui-boss-hp').style.width = `${Math.max(0, (b.hp / b.maxHp) * 100)}%`;
+        }
+      }
+
+      // Desktop Telemetry
+      const now = performance.now();
+      damageWindow = damageWindow.filter(d => now - d.t <= 3000);
+      const dps = damageWindow.reduce((s, d) => s + d.dmg, 0) / 3;
+      const sw = getSwordBonuses();
+      const res = getResonanceBonus();
+      document.getElementById('stat-dps').textContent = `${fmt(dps)}/s`;
+      document.getElementById('stat-tap').textContent = fmt(getMasterTapDamage());
+      document.getElementById('stat-crit').textContent = `${sw.crit}%`;
+      document.getElementById('stat-res').textContent = res.label;
+      document.getElementById('stat-gpm').textContent = `${fmt(getGoldPerMin())}/m`;
+      document.getElementById('stat-tower').textContent = `${state.towerFloor}F`;
+    }
+
+    function applyI18nLabels() {
+      document.title = `${t('gameTitle')} | SNSHero`;
+      document.getElementById('wing-title').textContent = t('gameTitle');
+      document.getElementById('wing-desc') && (document.getElementById('wing-desc').textContent = t('subTitle'));
+      document.getElementById('lbl-dps').textContent = t('dpsLabel');
+      document.getElementById('lbl-resonance').textContent = t('resonance');
+      document.getElementById('lbl-afk').textContent = t('afkChest');
+      document.getElementById('lbl-sweep').textContent = t('quickSweep');
+      document.getElementById('lbl-tower').textContent = t('towerBtn');
+      document.getElementById('nav-battle').textContent = t('tabBattle');
+      document.getElementById('nav-maidens').textContent = t('tabMaidens');
+      document.getElementById('nav-swords').textContent = t('tabSwords');
+      document.getElementById('nav-bonds').textContent = t('tabBonds');
+      document.getElementById('nav-summon').textContent = t('tabSummon');
+      document.getElementById('btn-boss-call').textContent = `👹 ${t('challengeBoss')}`;
+      document.getElementById('btn-auto-boss').textContent = t('autoBoss');
+      document.getElementById('btn-auto-ult').textContent = t('autoUlt');
+      updateStageBanner();
+    }
+
+    // ─── Toast Helper ─────────────────────────────────────────────────
+    let toastTimer = null;
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 2100);
+    }
+
+    // ─── Top & Battle Control Buttons ─────────────────────────────────
+    document.getElementById('lang-select').value = state.lang;
+    document.getElementById('lang-select').addEventListener('change', (e) => {
+      state.lang = e.target.value;
+      saveNow();
+      applyI18nLabels();
+      if (currentTab !== 'battle') renderDrawer();
+    });
+
+    const sfxBtn = document.getElementById('btn-sfx');
+    sfxBtn.textContent = state.sfx ? '🔊' : '🔇';
+    sfxBtn.addEventListener('click', () => {
+      state.sfx = !state.sfx;
+      sfxBtn.textContent = state.sfx ? '🔊' : '🔇';
+      saveNow();
+    });
+
+    const spdBtn = document.getElementById('btn-speed');
+    spdBtn.textContent = `${state.speed}x`;
+    spdBtn.classList.toggle('on', state.speed > 1);
+    spdBtn.addEventListener('click', () => {
+      state.speed = state.speed === 1 ? 2 : state.speed === 2 ? 3 : 1;
+      spdBtn.textContent = `${state.speed}x`;
+      spdBtn.classList.toggle('on', state.speed > 1);
+      saveNow();
+    });
+
+    const autoUltBtn = document.getElementById('btn-auto-ult');
+    autoUltBtn.classList.toggle('on', state.autoUlt);
+    autoUltBtn.addEventListener('click', () => {
+      state.autoUlt = !state.autoUlt;
+      autoUltBtn.classList.toggle('on', state.autoUlt);
+      saveNow();
+    });
+
+    const autoBossBtn = document.getElementById('btn-auto-boss');
+    autoBossBtn.classList.toggle('on', state.autoBoss);
+    autoBossBtn.addEventListener('click', () => {
+      state.autoBoss = !state.autoBoss;
+      autoBossBtn.classList.toggle('on', state.autoBoss);
+      if (state.autoBoss && state.wave >= 4 && combatMode === 'stage') {
+        combatMode = 'boss';
+        spawnWave();
+      }
+      saveNow();
+    });
+
+    document.getElementById('btn-boss-call').addEventListener('click', () => {
+      combatMode = 'boss';
+      spawnWave();
+    });
+
+    document.getElementById('btn-clean-hud').addEventListener('click', () => {
+      state.cleanHud = !state.cleanHud;
+      document.getElementById('side-pills').style.display = state.cleanHud ? 'none' : 'flex';
+      document.getElementById('btn-clean-hud').textContent = state.cleanHud ? '[+]' : '[—]';
+    });
+
+    document.getElementById('btn-open-master').addEventListener('click', () => switchTab('maidens'));
+    document.getElementById('btn-go-tower').addEventListener('click', () => switchTab('swords'));
+
+    // ─── AFK Chest & 2-Hour Quick Sweep ───────────────────────────────
+    document.getElementById('btn-afk-chest').addEventListener('click', () => {
+      const goldGain = Math.max(50, state.afkBankGold || 0);
+      const mins = Math.max(1, Math.floor((state.afkBankSec || 60) / 60));
+      const gemGain = Math.min(120, Math.floor(mins / 5) * 5 + 5);
+      openModal(`
+        <h3 style="color:var(--accent-gold);font-size:15px;margin-bottom:8px;">🎁 ${t('afkChest')} 정산</h3>
+        <p style="font-size:12px;color:var(--text-sub);margin-bottom:12px;">
+          누적 방치 시간: <strong>${mins}분</strong> 동안 검희들이 전리품을 수집했습니다!
+        </p>
+        <div class="panel-card" style="justify-content:space-around;margin-bottom:14px;">
+          <div>🪙 금화 <strong style="color:var(--accent-gold);">+${fmt(goldGain)}</strong></div>
+          <div>💎 홍옥 <strong style="color:#fda4af;">+${gemGain}</strong></div>
+          <div>🍵 명차 <strong>+1</strong></div>
+        </div>
+        <button class="btn-flat gold" style="width:100%;min-height:44px;" id="modal-claim-afk">${t('claim')}</button>
+      `);
+      document.getElementById('modal-claim-afk').onclick = () => {
+        state.gold += goldGain;
+        state.gems += gemGain;
+        state.teaItems = (state.teaItems || 0) + 1;
+        state.afkBankGold = 0;
+        state.afkBankSec = 0;
+        playSfx('coin');
+        saveNow();
+        closeModal();
+        showToast(`+${fmt(goldGain)}🪙 +${gemGain}💎 수령 완료!`);
+      };
+    });
+
+    document.getElementById('btn-quick-sweep').addEventListener('click', () => {
+      const isFree = state.sweepsLeft > 0;
+      if (!isFree && state.gems < 50) {
+        showToast('홍옥 50개가 필요합니다!');
+        return;
+      }
+      if (isFree) state.sweepsLeft--;
+      else state.gems -= 50;
+
+      const sweepGold = getGoldPerMin() * 120;
+      state.gold += sweepGold;
+      state.teaItems = (state.teaItems || 0) + 2;
+      state.flowerItems = (state.flowerItems || 0) + 1;
+      playSfx('coin');
+      saveNow();
+      showToast(`⚡ 2시간 고속소탕 완료! +${fmt(sweepGold)}🪙 명차+2 백화+1`);
+    });
+
+    // ─── Tab Navigation & Drawer Views ────────────────────────────────
+    let currentTab = 'battle';
+    const drawer = document.getElementById('drawer-panel');
+    const drawerBody = document.getElementById('drawer-body');
+    const drawerTitle = document.getElementById('drawer-title');
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.nav-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+      if (tab === 'battle') {
+        drawer.classList.remove('open');
+        setTimeout(syncViewportSize, 40);
+        return;
+      }
+      drawer.classList.add('open');
+      document.getElementById('side-pills').style.display = 'none';
+      setTimeout(syncViewportSize, 40);
+      renderDrawer();
+    }
+
+    document.querySelectorAll('.nav-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const next = btn.dataset.tab;
+        if (next === 'battle' && !state.cleanHud) {
+          document.getElementById('side-pills').style.display = 'flex';
+        }
+        switchTab(next);
+      });
+    });
+
+    document.getElementById('btn-close-drawer').addEventListener('click', () => {
+      if (!state.cleanHud) document.getElementById('side-pills').style.display = 'flex';
+      switchTab('battle');
+    });
+
+    function renderDrawer() {
+      if (currentTab === 'maidens') renderMaidensTab();
+      else if (currentTab === 'swords') renderSwordsTab();
+      else if (currentTab === 'bonds') renderBondsTab();
+      else if (currentTab === 'summon') renderSummonTab();
+    }
+
+    // ─── TAB 2: Master Training + 18 Sword Maidens Squad / Skins ──────
+    function renderMaidensTab() {
+      const cap = getMasterLevelCap();
+      const res = getResonanceBonus();
+      drawerTitle.textContent = `${t('tabMaidens')} (상한 Lv.${cap} · ${res.label})`;
+      const mCost = getMasterUpgradeCost();
+
+      let html = `
+        <div class="panel-card ssr">
+          <div class="avatar-frame">
+            <img src="/anime-character-sheets/busts/041_bust.jpg" alt="Kadan" />
+            <span class="rarity-tag">MASTER</span>
+          </div>
+          <div class="card-info">
+            <div class="card-title">${t('masterTitle')} <span style="color:var(--accent-gold);">Lv.${state.masterLv}</span></div>
+            <div class="card-meta">${t('masterDesc')}</div>
+            <div class="card-meta" style="color:#fda4af;">터치 검기 피해: ${fmt(getMasterTapDamage())} · 검희 상한: Lv.${cap}</div>
+          </div>
+          <div class="card-actions">
+            <button class="btn-flat gold" id="act-master-up" ${state.gold < mCost ? 'disabled' : ''}>
+              ${t('lvUp')} (${fmt(mCost)}🪙)
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Sort owned first, then rarity
+      const rarityOrder = { SSR: 0, SR: 1, R: 2 };
+      const sorted = [...MAIDENS].sort((a, b) => {
+        const oa = state.maidens[a.id]?.owned ? 0 : 1;
+        const ob = state.maidens[b.id]?.owned ? 0 : 1;
+        if (oa !== ob) return oa - ob;
+        return rarityOrder[a.rarity] - rarityOrder[b.rarity];
+      });
+
+      for (const m of sorted) {
+        const st = state.maidens[m.id] || { owned: false, lv: 1, stars: 1, shards: 0, bondLv: 1, skin: 0, unlockedSkins: [0] };
+        const inSquad = state.squad.includes(m.id);
+        const elem = ELEMENTS[m.elem];
+        const stats = getMaidenStats(m.id);
+        const upCost = getMaidenUpgradeCost(st.lv);
+        const needShards = st.stars * 20;
+        const curSkin = SKINS[st.skin || 0];
+
+        html += `
+          <div class="panel-card ${m.rarity.toLowerCase()}" style="opacity:${st.owned ? 1 : 0.55}">
+            <div class="avatar-frame" style="border-color:${elem.color}">
+              <img src="${m.bust}" alt="${m.nameKo}" />
+              <span class="rarity-tag">${m.rarity}</span>
+            </div>
+            <div class="card-info">
+              <div class="card-title">
+                <span style="color:${elem.color}">[${elem.ko}]</span>
+                ${m.nameKo}
+                <span style="color:var(--accent-gold);">${'★'.repeat(st.stars)}</span>
+                ${st.owned ? `Lv.${st.lv}` : '(미보유)'}
+              </div>
+              <div class="card-meta">${m.titleKo} · 오의: ${m.skillKo} (${stats.skillMult.toFixed(1)}배)</div>
+              <div class="card-meta" style="color:#cbd5e1;">
+                ATK ${fmt(stats.atk)} · HP ${fmt(stats.hp)} · 의상: ${curSkin.ko} · 영혼석 ${st.shards || 0}/${needShards}
+              </div>
+            </div>
+            <div class="card-actions">
+              ${st.owned ? `
+                <button class="btn-flat gold" data-up="${m.id}" ${(state.gold < upCost || st.lv >= cap) ? 'disabled' : ''}>
+                  ${st.lv >= cap ? '상한도달' : `Lv+1 (${fmt(upCost)}🪙)`}
+                </button>
+                <div style="display:flex;gap:3px;">
+                  <button class="btn-flat ${inSquad ? 'crimson' : ''}" style="font-size:10px;padding:3px 6px;" data-deploy="${m.id}">
+                    ${inSquad ? t('deployed') : t('deploy')}
+                  </button>
+                  <button class="btn-flat" style="font-size:10px;padding:3px 6px;" data-skin="${m.id}">👘</button>
+                  ${st.stars < 5 && (st.shards || 0) >= needShards ? `<button class="btn-flat gold" style="font-size:10px;padding:3px 6px;" data-star="${m.id}">★UP</button>` : ''}
+                </div>
+              ` : `<span style="font-size:10px;color:var(--text-sub);">소환 획득</span>`}
+            </div>
+          </div>
+        `;
+      }
+
+      drawerBody.innerHTML = html;
+
+      const masterBtn = document.getElementById('act-master-up');
+      if (masterBtn) {
+        masterBtn.onclick = () => {
+          const c = getMasterUpgradeCost();
+          if (state.gold < c) return;
+          state.gold -= c;
+          state.masterLv++;
+          playSfx('coin');
+          rebuildSquadEntities();
+          saveNow();
+          renderMaidensTab();
+        };
+      }
+
+      drawerBody.querySelectorAll('[data-up]').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.up;
+          const st = state.maidens[id];
+          const c = getMaidenUpgradeCost(st.lv);
+          if (!st || state.gold < c || st.lv >= getMasterLevelCap()) return;
+          state.gold -= c;
+          st.lv++;
+          playSfx('coin');
+          rebuildSquadEntities();
+          saveNow();
+          renderMaidensTab();
+        };
+      });
+
+      drawerBody.querySelectorAll('[data-deploy]').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.deploy;
+          const idx = state.squad.indexOf(id);
+          if (idx >= 0) {
+            if (state.squad.length <= 1) {
+              showToast('최소 1명의 검희는 출진해야 합니다!');
+              return;
+            }
+            state.squad.splice(idx, 1);
+          } else {
+            if (state.squad.length >= 5) {
+              showToast('출진 파티는 최대 5명입니다. 기존 검희를 해제 후 편성하세요!');
+              return;
+            }
+            state.squad.push(id);
+          }
+          rebuildSquadEntities();
+          preloadStageAssets();
+          saveNow();
+          renderMaidensTab();
+        };
+      });
+
+      drawerBody.querySelectorAll('[data-star]').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.star;
+          const st = state.maidens[id];
+          const need = st.stars * 20;
+          if (st.stars < 5 && (st.shards || 0) >= need) {
+            st.shards -= need;
+            st.stars++;
+            playSfx('ult');
+            showToast(`✨ ★${st.stars} 성급 각성 성공!`);
+            rebuildSquadEntities();
+            saveNow();
+            renderMaidensTab();
+          }
+        };
+      });
+
+      drawerBody.querySelectorAll('[data-skin]').forEach(btn => {
+        btn.onclick = () => openSkinModal(btn.dataset.skin);
+      });
+    }
+
+    function openSkinModal(maidenId) {
+      const m = MAIDENS.find(x => x.id === maidenId);
+      const st = state.maidens[maidenId];
+      if (!m || !st) return;
+      st.unlockedSkins = st.unlockedSkins || [0];
+
+      let listHtml = SKINS.map(sk => {
+        const owned = st.unlockedSkins.includes(sk.id);
+        const active = (st.skin || 0) === sk.id;
+        return `
+          <div class="panel-card" style="margin-bottom:6px;">
+            <div class="card-info">
+              <div class="card-title">${sk.ko} <span style="color:var(--accent-gold);">${sk.badge}</span></div>
+              <div class="card-meta">해금 즉시 전 검희 영구 공격력 보너스 중첩 적용</div>
+            </div>
+            <button class="btn-flat ${active ? 'crimson' : 'gold'}" data-sk="${sk.id}">
+              ${owned ? (active ? '착용중' : '착용하기') : `해금 (${sk.costGems}💎)`}
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      openModal(`
+        <h3 style="color:var(--accent-gold);font-size:14px;margin-bottom:8px;">👘 ${m.nameKo} · ${t('skinBtn')}</h3>
+        <div style="text-align:center;margin-bottom:10px;background:#090d16;padding:8px;border:1px solid var(--border-hair);">
+          <img src="${m.cutout}" alt="${m.nameKo}" style="height:150px;object-fit:contain;filter:${SKINS[st.skin || 0].tint};" />
+        </div>
+        ${listHtml}
+        <button class="btn-flat" style="width:100%;margin-top:6px;" onclick="document.getElementById('modal-backdrop').classList.remove('show')">${t('close')}</button>
+      `);
+
+      document.querySelectorAll('[data-sk]').forEach(b => {
+        b.onclick = () => {
+          const skId = Number(b.dataset.sk);
+          const sk = SKINS[skId];
+          if (!st.unlockedSkins.includes(skId)) {
+            if (state.gems < sk.costGems) {
+              showToast('홍옥이 부족합니다!');
+              return;
+            }
+            state.gems -= sk.costGems;
+            st.unlockedSkins.push(skId);
+            playSfx('ult');
+            showToast(`🌸 [${sk.ko}] 영구 해금! 전체 공격력 상승!`);
+          }
+          st.skin = skId;
+          rebuildSquadEntities();
+          saveNow();
+          openSkinModal(maidenId);
+          renderMaidensTab();
+        };
+      });
+    }
+
+    // ─── TAB 3: Sacred Swords Forging & Infinite Pagoda Tower ─────────
+    function renderSwordsTab() {
+      drawerTitle.textContent = `${t('tabSwords')} (천수각 ${state.towerFloor}층)`;
+      let html = `
+        <div class="panel-card ssr">
+          <div class="card-info">
+            <div class="card-title">🏯 천수각 무한탑 · 제 ${state.towerFloor}층</div>
+            <div class="card-meta">강대한 수호자를 30초 내에 토벌하고 홍옥과 백화 소환부를 획득하세요!</div>
+            <div class="card-meta" style="color:var(--accent-gold);">클리어 보상: +${60 + state.towerFloor * 15}💎 ${state.towerFloor % 5 === 0 ? '+ 소환부 📜1장!' : ''}</div>
+          </div>
+          <button class="btn-flat crimson" id="act-enter-tower">${t('towerChallenge')}</button>
+        </div>
+      `;
+
+      for (const sw of SWORDS) {
+        const lv = state.swords[sw.id] || 0;
+        const cost = Math.floor(sw.baseCost * Math.pow(1.38, lv));
+        const isEq = state.equippedSword === sw.id;
+        html += `
+          <div class="panel-card ${lv > 0 ? 'sr' : ''}">
+            <div class="avatar-frame">
+              <img src="${sw.img}" alt="${sw.ko}" />
+              <span class="rarity-tag">${lv > 0 ? `+${lv}` : '미단조'}</span>
+            </div>
+            <div class="card-info">
+              <div class="card-title">${sw.ko} ${isEq ? '<span style="color:var(--accent-gold);">[장착중 1.5배]</span>' : ''}</div>
+              <div class="card-meta">검기 +${Math.round(sw.tapMult * 100)}% · 파티ATK +${Math.round(sw.squadAtk * 100)}% · 치명 +${sw.crit}%</div>
+            </div>
+            <div class="card-actions">
+              <button class="btn-flat gold" data-forge="${sw.id}" ${state.gold < cost ? 'disabled' : ''}>
+                ${lv === 0 ? '단조 해금' : '단조 +1'} (${fmt(cost)}🪙)
+              </button>
+              ${lv > 0 && !isEq ? `<button class="btn-flat" style="font-size:10px;" data-equip="${sw.id}">${t('equipBtn')}</button>` : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      drawerBody.innerHTML = html;
+
+      document.getElementById('act-enter-tower').onclick = () => {
+        combatMode = 'tower';
+        spawnWave();
+        if (!state.cleanHud) document.getElementById('side-pills').style.display = 'flex';
+        switchTab('battle');
+        showToast(`🏯 천수각 ${state.towerFloor}층 결전 개시!`);
+      };
+
+      drawerBody.querySelectorAll('[data-forge]').forEach(btn => {
+        btn.onclick = () => {
+          const sw = SWORDS.find(x => x.id === btn.dataset.forge);
+          const lv = state.swords[sw.id] || 0;
+          const cost = Math.floor(sw.baseCost * Math.pow(1.38, lv));
+          if (state.gold < cost) return;
+          state.gold -= cost;
+          state.swords[sw.id] = lv + 1;
+          playSfx('ult');
+          rebuildSquadEntities();
+          saveNow();
+          renderSwordsTab();
+        };
+      });
+
+      drawerBody.querySelectorAll('[data-equip]').forEach(btn => {
+        btn.onclick = () => {
+          state.equippedSword = btn.dataset.equip;
+          rebuildSquadEntities();
+          saveNow();
+          renderSwordsTab();
+        };
+      });
+    }
+
+    // ─── TAB 4: Master Bond & Affection Sanctuary (인연 교감 시스템) ───
+    function renderBondsTab() {
+      drawerTitle.textContent = `${t('tabBonds')} (명차 ${state.teaItems || 0}개 · 백화 ${state.flowerItems || 0}송이)`;
+      const ownedMaidens = MAIDENS.filter(m => state.maidens[m.id]?.owned);
+      if (!state.maidens[state.selectedBondId]?.owned && ownedMaidens[0]) {
+        state.selectedBondId = ownedMaidens[0].id;
+      }
+      const cur = MAIDENS.find(m => m.id === state.selectedBondId) || MAIDENS[0];
+      const st = state.maidens[cur.id];
+      const needExp = st.bondLv * 50;
+      const lineIdx = Math.min(cur.lines.length - 1, Math.floor((st.bondLv - 1) / 2));
+
+      const selectorHtml = ownedMaidens.map(m => `
+        <button class="btn-flat ${m.id === cur.id ? 'crimson' : ''}" style="font-size:10px;padding:4px 8px;" data-sel-bond="${m.id}">
+          ${m.nameKo} (♥${state.maidens[m.id].bondLv})
+        </button>
+      `).join('');
+
+      drawerBody.innerHTML = `
+        <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;flex-shrink:0;">${selectorHtml}</div>
+        <div class="bond-stage">
+          <div class="bond-stand" id="bond-touch-zone" title="터치하여 교감하기">
+            <img src="${cur.cutout}" alt="${cur.nameKo}" style="filter:${SKINS[st.skin || 0].tint};" />
+          </div>
+          <div style="display:flex;flex-direction:column;justify-content:space-between;">
+            <div>
+              <div style="font-size:13px;font-weight:800;color:var(--accent-gold);">
+                ${cur.nameKo} · 인연 등급 ♥ Lv.${st.bondLv}
+              </div>
+              <div style="font-size:10px;color:var(--text-sub);margin-top:2px;">
+                결속 보너스: 공격력/체력 +${(st.bondLv - 1) * 8}% (호감도 ${st.bondExp || 0} / ${needExp})
+              </div>
+              <div class="dialogue-box" id="bond-line">“${cur.lines[lineIdx]}”</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+              <button class="btn-flat gold" id="act-gift-tea" ${(state.teaItems || 0) <= 0 ? 'disabled' : ''}>
+                🍵 ${t('bondGiftTea')} (${state.teaItems || 0})
+              </button>
+              <button class="btn-flat crimson" id="act-gift-flower" ${(state.flowerItems || 0) <= 0 ? 'disabled' : ''}>
+                🌸 ${t('bondGiftFlower')} (${state.flowerItems || 0})
+              </button>
+              <button class="btn-flat" style="grid-column:span 2;" id="act-bond-talk">
+                💬 ${t('bondTouch')} (무료 교감 +10 ♥)
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      drawerBody.querySelectorAll('[data-sel-bond]').forEach(b => {
+        b.onclick = () => {
+          state.selectedBondId = b.dataset.selBond;
+          saveNow();
+          renderBondsTab();
+        };
+      });
+
+      function addBondExp(amount) {
+        st.bondExp = (st.bondExp || 0) + amount;
+        let leveled = false;
+        while (st.bondExp >= st.bondLv * 50) {
+          st.bondExp -= st.bondLv * 50;
+          st.bondLv++;
+          state.gems += 30;
+          leveled = true;
+        }
+        playSfx(leveled ? 'ult' : 'coin');
+        if (leveled) {
+          showToast(`💗 ${cur.nameKo} 인연 Lv.${st.bondLv} 달성! 보너스 +30💎!`);
+          rebuildSquadEntities();
+        }
+        saveNow();
+        renderBondsTab();
+      }
+
+      document.getElementById('act-gift-tea').onclick = () => {
+        if ((state.teaItems || 0) <= 0) return;
+        state.teaItems--;
+        addBondExp(25);
+      };
+      document.getElementById('act-gift-flower').onclick = () => {
+        if ((state.flowerItems || 0) <= 0) return;
+        state.flowerItems--;
+        addBondExp(60);
+      };
+      const talkAction = () => {
+        const randLine = cur.lines[Math.floor(Math.random() * cur.lines.length)];
+        document.getElementById('bond-line').textContent = `“${randLine}”`;
+        addBondExp(10);
+      };
+      document.getElementById('act-bond-talk').onclick = talkAction;
+      document.getElementById('bond-touch-zone').onclick = talkAction;
+    }
+
+    // ─── TAB 5: Hyakka Gacha Summon Altar (1x / 10x / Pity 50) ────────
+    function renderSummonTab() {
+      const today = new Date().toISOString().slice(0, 10);
+      const canFree = state.lastFreePullDay !== today;
+      const leftPity = Math.max(1, 50 - (state.pityCount || 0));
+      drawerTitle.textContent = `${t('tabSummon')} (${t('pityLabel')}: ${leftPity}회)`;
+
+      drawerBody.innerHTML = `
+        <div class="panel-card ssr" style="flex-direction:column;align-items:stretch;gap:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:14px;font-weight:800;color:var(--accent-gold);">⛩️ 백화 신검희 소환 제단</div>
+              <div style="font-size:11px;color:var(--text-sub);margin-top:2px;">
+                확률 공시: 신화(SSR) 8% · 전설(SR) 32% · 정예(R) 60% (중복 시 영혼석 +20 자동 변환)
+              </div>
+            </div>
+          </div>
+          <div class="hp-track" style="height:8px;">
+            <div class="hp-fill" style="background:var(--accent-gold);width:${((state.pityCount || 0) / 50) * 100}%;"></div>
+          </div>
+          <div style="font-size:10px;color:var(--accent-sakura);text-align:right;">
+            50회 도달 시 신화(SSR) 검희 100% 확정 강림! (현재 ${state.pityCount || 0}/50)
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;">
+            <button class="btn-flat ${canFree ? 'crimson' : ''}" id="act-pull-free" ${!canFree ? 'disabled' : ''}>
+              🌸 ${t('summonFree')} ${canFree ? '(가능!)' : '(완료)'}
+            </button>
+            <button class="btn-flat" id="act-pull-1">
+              📜 ${t('summon1')} (${state.scrolls >= 1 ? '소환부 1' : '150💎'})
+            </button>
+            <button class="btn-flat gold" style="grid-column:span 2;min-height:46px;font-size:13px;" id="act-pull-10">
+              ✨ ${t('summon10')} (${state.scrolls >= 10 ? '소환부 10장' : '1,350💎 · SR이상 확정!'})
+            </button>
+          </div>
+        </div>
+        <div class="panel-card">
+          <div class="card-info">
+            <div class="card-title">🍵 마스터 다실 보급품 교환</div>
+            <div class="card-meta">검희 인연 등급을 높이는 명차·백화 선물 세트 (금화로 즉시 조달)</div>
+          </div>
+          <button class="btn-flat" id="act-buy-gifts">보급 (500🪙)</button>
+        </div>
+      `;
+
+      document.getElementById('act-pull-free').onclick = () => {
+        state.lastFreePullDay = today;
+        executeSummon(1, true);
+      };
+      document.getElementById('act-pull-1').onclick = () => {
+        if (state.scrolls >= 1) state.scrolls -= 1;
+        else if (state.gems >= 150) state.gems -= 150;
+        else { showToast('소환부 또는 홍옥(150)이 부족합니다!'); return; }
+        executeSummon(1, true);
+      };
+      document.getElementById('act-pull-10').onclick = () => {
+        if (state.scrolls >= 10) state.scrolls -= 10;
+        else if (state.gems >= 1350) state.gems -= 1350;
+        else { showToast('소환부 10장 또는 홍옥(1,350)이 부족합니다!'); return; }
+        executeSummon(10, true);
+      };
+      document.getElementById('act-buy-gifts').onclick = () => {
+        if (state.gold < 500) { showToast('금화가 부족합니다!'); return; }
+        state.gold -= 500;
+        state.teaItems = (state.teaItems || 0) + 3;
+        state.flowerItems = (state.flowerItems || 0) + 1;
+        playSfx('coin');
+        saveNow();
+        showToast('🍵 명차 +3, 🌸 백화 +1 보급 완료!');
+      };
+    }
+
+    function executeSummon(count) {
+      const results = [];
+      const ssrPool = MAIDENS.filter(m => m.rarity === 'SSR');
+      const srPool  = MAIDENS.filter(m => m.rarity === 'SR');
+      const rPool   = MAIDENS.filter(m => m.rarity === 'R');
+
+      for (let i = 0; i < count; i++) {
+        state.pityCount = (state.pityCount || 0) + 1;
+        let picked;
+        if (state.pityCount >= 50) {
+          picked = ssrPool[Math.floor(Math.random() * ssrPool.length)];
+          state.pityCount = 0;
+        } else if (count === 10 && i === 9 && !results.some(r => r.m.rarity !== 'R')) {
+          picked = srPool[Math.floor(Math.random() * srPool.length)];
+        } else {
+          const roll = Math.random() * 100;
+          if (roll < 8) {
+            picked = ssrPool[Math.floor(Math.random() * ssrPool.length)];
+            state.pityCount = 0;
+          } else if (roll < 40) {
+            picked = srPool[Math.floor(Math.random() * srPool.length)];
+          } else {
+            picked = rPool[Math.floor(Math.random() * rPool.length)];
+          }
+        }
+
+        const existing = state.maidens[picked.id];
+        let isNew = false;
+        if (!existing || !existing.owned) {
+          isNew = true;
+          state.maidens[picked.id] = {
+            owned: true,
+            lv: 1,
+            stars: picked.rarity === 'SSR' ? 2 : 1,
+            shards: 0,
+            bondLv: 1,
+            bondExp: 0,
+            skin: 0,
+            unlockedSkins: [0]
+          };
+        } else {
+          existing.shards = (existing.shards || 0) + 20;
+        }
+        results.push({ m: picked, isNew });
+      }
+
+      playSfx('ult');
+      saveNow();
+      renderSummonTab();
+
+      const gridHtml = results.map(({ m, isNew }) => `
+        <div class="gacha-item ${m.rarity}">
+          <img src="${m.bust}" alt="${m.nameKo}" />
+          <div style="color:var(--accent-gold);font-weight:800;margin-top:2px;">${m.rarity}</div>
+          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.nameKo}</div>
+          <div style="color:${isNew ? '#34d399' : '#f472b6'};">${isNew ? 'NEW!' : '조각+20'}</div>
+        </div>
+      `).join('');
+
+      openModal(`
+        <h3 style="color:var(--accent-gold);font-size:15px;text-align:center;">⛩️ 백화 검희 강림 결과</h3>
+        <div class="gacha-grid" style="grid-template-columns:repeat(${count === 1 ? 1 : 5}, 1fr);">${gridHtml}</div>
+        <button class="btn-flat gold" style="width:100%;min-height:44px;" onclick="document.getElementById('modal-backdrop').classList.remove('show')">${t('close')}</button>
+      `);
+    }
+
+    // ─── Modal & Save Utilities ───────────────────────────────────────
+    function openModal(innerHtml) {
+      const bd = document.getElementById('modal-backdrop');
+      document.getElementById('modal-content').innerHTML = innerHtml;
+      bd.classList.add('show');
+    }
+    function closeModal() {
+      document.getElementById('modal-backdrop').classList.remove('show');
+    }
+    document.getElementById('modal-backdrop').addEventListener('click', (e) => {
+      if (e.target.id === 'modal-backdrop') closeModal();
+    });
+
+    document.getElementById('btn-force-save').addEventListener('click', () => {
+      saveNow();
+      showToast('💾 LocalStorage에 안전하게 저장되었습니다!');
+    });
+    document.getElementById('btn-reset-save').addEventListener('click', () => {
+      if (confirm('정말 모든 진행 데이터를 초기화하시겠습니까?')) {
+        localStorage.removeItem(SAVE_KEY);
+        window.location.reload();
+      }
+    });
+
+    // ─── Offline Elapsed Time Calculation on Boot ─────────────────────
+    function checkOfflineWelcome() {
+      const elapsedSec = Math.floor((Date.now() - (state.lastSavedAt || Date.now())) / 1000);
+      if (elapsedSec >= 60) {
+        const capped = Math.min(43200, elapsedSec);
+        const offlineGold = Math.floor((getGoldPerMin() / 60) * capped);
+        state.afkBankSec = Math.min(43200, (state.afkBankSec || 0) + capped);
+        state.afkBankGold = (state.afkBankGold || 0) + offlineGold;
+        saveNow();
+        showToast(`🌙 오프라인 ${Math.floor(capped / 60)}분 방치 전리품이 보물함에 누적되었습니다!`);
+      }
+    }
+
+    setInterval(saveNow, 8000);
+    window.addEventListener('beforeunload', saveNow);
+
+    // ─── Boot Sequence ────────────────────────────────────────────────
+    syncViewportSize();
+    preloadStageAssets();
+    rebuildSquadEntities();
+    applyI18nLabels();
+    spawnWave();
+    checkOfflineWelcome();
+    syncHud();
+    requestAnimationFrame(tick);
+  })();
+  </script>
+</body>
+</html>

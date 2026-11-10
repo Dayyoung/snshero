@@ -77,7 +77,7 @@ if (fs.existsSync(metaSource)) {
 
 // 4. Generate SPA route directories with index.html for clean URL routing (SEO/AEO/GEO direct crawlable)
 const routes = [
-  'home', 'bench', 'benchmark', 'shbp', 'reddit', 'play', 'card', 'card-play', 'deck', 'mydeck', 'shop', 'battle', 'market',
+  'home', 'bench', 'benchmark', 'shbp', 'reddit', 'play', 'card', 'card-play', 'deck', 'mydeck', 'shop', 'market',
   'rank', 'ranking', 'guild', 'novel', 'book', 'webtoon', 'script', 'animation', 'movie', 'cinema', 'event', 'companion',
   'stock', 'community', 'admin', 'status', 'profile',
   'setting', 'settings', 'share', 'boost', 'creator', 'web3', 'mall',
@@ -524,6 +524,20 @@ const distGwentDir = path.join(distDir, 'gwent');
 if (fs.existsSync(publicGwentDir) && !fs.existsSync(path.join(distGwentDir, 'index.html'))) {
   fs.cpSync(publicGwentDir, distGwentDir, { recursive: true });
   console.log('[post-build] Synced public/gwent to dist/gwent');
+}
+
+// 4.2 Ensure standalone public/battle.html & battle-data.js are preserved in dist/battle.html and dist/battle/index.html
+const publicBattleHtml = path.join(publicDir, 'battle.html');
+const publicBattleData = path.join(publicDir, 'battle-data.js');
+if (fs.existsSync(publicBattleHtml)) {
+  fs.copyFileSync(publicBattleHtml, path.join(distDir, 'battle.html'));
+  const distBattleDir = path.join(distDir, 'battle');
+  if (!fs.existsSync(distBattleDir)) fs.mkdirSync(distBattleDir, { recursive: true });
+  fs.copyFileSync(publicBattleHtml, path.join(distBattleDir, 'index.html'));
+  if (fs.existsSync(publicBattleData)) {
+    fs.copyFileSync(publicBattleData, path.join(distDir, 'battle-data.js'));
+  }
+  console.log('[post-build] Preserved standalone public/battle.html & dist/battle/index.html');
 }
 
 // 5. Ensure 404.html fallback (uses SPA template so deep links load client-side router)

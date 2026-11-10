@@ -20913,3 +20913,11 @@
 ### 2026-11-10 10:34 KST | GitHub Actions `actions/deploy-pages@v4` 10분 타임아웃(600000ms) 해결 및 미사용 원시 스크래치 폴더 배포 제외 후 git push 완료
 - **원인 분석**: 대용량 아티팩트(3.77GB) 언팩 대기 중 `actions/deploy-pages@v4` 기본 `timeout: 600000`(10분) 한도에 도달하여 `10m 5s` 타임아웃 발생 확인.
 - **조치 내역**: `.github/workflows/deploy.yml`의 `deploy-pages@v4` `timeout`을 `1800000`(30분), `error_count`를 `25`로 상향하고, 라이브 앱에서 전혀 참조하지 않는 중간 원시 스크래치 폴더(`raw_ufotable_solo`, `raw_solo_regenerated`, `anime-character-sheets/videos` 약 125MB)를 `dist/` 패키징 직전에 제거하여 업로드·언팩 부하 절감 후 `git push origin main` 수행.
+
+
+### 2026-11-10 11:30 KST | `/battle.html` G123 《백화요란 마스터 사무라이 크로니클즈》 클린룸 방치형 검희 액션 RPG 구축 완료
+- **작업 내역**:
+  - `public/battle-data.js`: 12개국어(`ko`, `en`, `ja`, `zh-CN`, `zh-TW`, `de`, `es`, `fr`, `id`, `ru`, `th`, `vi`) 다국어 팩, SSR/SR/R 검희 18종 마스터 테이블, 명검·신기 8종, 의상(스킨) 4단계, 챕터 전장 배경 20종, 선봉 마물·보스 데이터 구축.
+  - `public/battle.html`: 60FPS HTML5 2D 액션 캔버스(5인 검희 전열·후열 SD 자동전투 `/seat`, `/seat_attack` 전환 + 전장 터치 마스터 카단 `진·검기 일섬` 직접 개입 및 `진·백화일섬` 오버드라이브 + 7등신 전신 컷인 오의 연출 `/anime-character-sheets/cutouts`) 및 5탭 드로어(`전장`, `검희·편성`, `명검·천수각`, `인연·교감`, `백화소환`), 오프라인 방치 보상함, 2시간 고속소탕, 100% `localStorage`(`hero_ryoran_save_v1`) 실시간 저장 구현.
+  - `vite.config.ts` 및 `scripts/post-build.js`: `/battle.html` 및 `/battle` 정적 직서빙 라우팅 보호(SPA 폴백 덮어쓰기 원천 차단) 적용.
+- **검증 및 보고**: `npm run build` 무결점 통과, `localhost:3000/battle.html?lang=ko` 및 `battle-data.js` `HTTP 200 OK` 검증 완료, 구글 폼 작업 완료 보고서 제출 완료.

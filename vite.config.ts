@@ -80,6 +80,7 @@ function isSpaRoute(pathname: string): boolean {
     normalized === '/mall' || normalized.startsWith('/mall/') ||
     normalized === '/gwent' || normalized.startsWith('/gwent/') ||
     normalized === '/ai' || normalized.startsWith('/ai/') ||
+    normalized === '/battle' || normalized.startsWith('/battle/') || normalized === '/battle.html' ||
     normalized === '/mlx-chat.html' ||
     normalized.startsWith('/anime-character-sheets/') ||
     normalized.startsWith('/pacpik') ||
@@ -605,6 +606,21 @@ export default defineConfig(({mode}) => {
                   txHash: `0x${Math.random().toString(16).substring(2, 10)}${Date.now()}`
                 }));
                 return;
+              }
+
+              // Support /battle, /battle/, and /battle.html direct serving for Hyakka Heroes Idle Action RPG
+              if (/^\/battle(\/|\.html|\?|$)/i.test(decodedUrl) || /^\/battle(\/|\.html|\?|$)/i.test(rawUrl)) {
+                const targetPath = path.join(publicDir, 'battle.html');
+                if (fs.existsSync(targetPath)) {
+                  const stat = fs.statSync(targetPath);
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                  res.setHeader('Content-Length', stat.size);
+                  res.setHeader('Cache-Control', 'no-cache');
+                  res.setHeader('Access-Control-Allow-Origin', '*');
+                  fs.createReadStream(targetPath).pipe(res);
+                  return;
+                }
               }
 
               // Support /ai, /ai/, and /ai.html direct serving for MLX AI Chat
