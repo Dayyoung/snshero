@@ -20909,3 +20909,7 @@
 ### 2026-11-10 09:19 KST | 웹툰 전 회차(EP01~EP40, 총 40화) 마지막 명장면(`ending_promo`) 시네마틱 화이트 텍스트 오버레이 및 EP34~40 엔딩 원화 ufotable 화풍 통일 완료
 - **작업 내역**: EP34~EP40 마지막 명장면(`ep34_scene_52`~`ep40_scene_52`) 7컷의 구형 컷아웃 합성 이미지를 ufotable 다크판타지 카단 클라이맥스 원화로 신규 생성 통일 후, `universal_webtoon_processor.py`의 `render_episode_ending_card()`로 전 40화 마지막 명장면 컷에 2배 슈퍼샘플링 화이트 시네마틱 타이포그래피(`SNSHERO · EPISODE XX CLIMAX`, `웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이하세요!`, `https://SNSHero.com (눈히어로.com)`)를 일괄 오버레이 완료.
 - **뷰어 연동 및 캐시 갱신**: `WebtoonSection.tsx` 마지막 명장면 하단 중복 텍스트 제거 및 1클릭 `#play` 바로가기 버튼(`min-h-[44px]`) 연동, 캐시 버스터(`v15-endingcards20261110`) 갱신 완료.
+
+### 2026-11-10 10:34 KST | GitHub Actions `actions/deploy-pages@v4` 10분 타임아웃(600000ms) 해결 및 미사용 원시 스크래치 폴더 배포 제외 후 git push 완료
+- **원인 분석**: 대용량 아티팩트(3.77GB) 언팩 대기 중 `actions/deploy-pages@v4` 기본 `timeout: 600000`(10분) 한도에 도달하여 `10m 5s` 타임아웃 발생 확인.
+- **조치 내역**: `.github/workflows/deploy.yml`의 `deploy-pages@v4` `timeout`을 `1800000`(30분), `error_count`를 `25`로 상향하고, 라이브 앱에서 전혀 참조하지 않는 중간 원시 스크래치 폴더(`raw_ufotable_solo`, `raw_solo_regenerated`, `anime-character-sheets/videos` 약 125MB)를 `dist/` 패키징 직전에 제거하여 업로드·언팩 부하 절감 후 `git push origin main` 수행.

@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   deploy:
+    timeout-minutes: 45
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -59,13 +60,17 @@ jobs:
           VITE_BASE_PATH: /
           NODE_OPTIONS: "--max-old-space-size=4096"
 
-      - name: Post-Build Workspace Cleanup (Free Disk for Artifact Upload)
+      - name: Post-Build Workspace Cleanup (Free Disk & Prune Unused Raw Scratch Assets)
         run: |
-          echo "=== Cleaning up build workspace to maximize disk for artifact compression ==="
+          echo "=== Cleaning up build workspace & unreferenced intermediate raw folders in dist/ ==="
           rm -rf .git
           rm -rf node_modules
           rm -rf ~/.npm
-          echo "=== Remaining Disk Space ==="
+          rm -rf dist/anime-character-sheets/raw_ufotable_solo
+          rm -rf dist/anime-character-sheets/raw_solo_regenerated
+          rm -rf dist/anime-character-sheets/videos
+          echo "=== Final dist/ Size & Remaining Disk Space ==="
+          du -sh dist
           df -h
 
       - name: Upload Artifact
@@ -76,3 +81,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 1800000
+          error_count: 25
+          reporting_interval: 10000
