@@ -1273,7 +1273,7 @@ export function mountLanding(): void {
   if (typeof window !== 'undefined' && 'caches' in window) {
     caches.keys().then((keys) => {
       keys.forEach((key) => {
-        if (key !== 'snshero-media-v13-zerotext20261110') {
+        if (key !== 'snshero-media-v14-titlecards20261110') {
           caches.delete(key).catch(() => {});
         }
       });

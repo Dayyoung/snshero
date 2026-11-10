@@ -281,7 +281,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
     const epPad = pad2(epNum);
     const scPad = pad2(sceneIdx);
-    const cacheBust = '?v=conquest2009_v12_zerotext';
+    const cacheBust = '?v=conquest2009_v13_titlecards';
     const epData = WEBTOON_DATA[String(epNum)];
     const imgInfo = epData?.images?.find(img => img.index === sceneIdx);
     if (imgInfo?.type === 'ending_promo') {

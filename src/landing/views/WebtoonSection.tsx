@@ -545,9 +545,14 @@ export function renderWebtoonSection(): string {
                     const sceneIndex = img.index !== undefined ? img.index : idx;
                     const isTitleCard = sceneIndex === 0 || img.type === 'title_card';
                     const panelBadge = isTitleCard ? 'TITLE CARD' : `SCENE ${String(sceneIndex).padStart(2, '0')}`;
-                    const mainNarration = isKo
-                      ? img.narrationKo || img.narrationEn || ''
-                      : (img.narrationEn || img.narrationKo || '').replace(/\s*\(눈히어로\.com\)/g, '');
+                    const koChapterTitle = chapterTitles[ep - 1]?.titleKo || '';
+                    const mainNarration = isTitleCard
+                      ? isKo && koChapterTitle
+                        ? `제 ${ep} 화 · ${koChapterTitle}`
+                        : ''
+                      : isKo
+                        ? img.narrationKo || img.narrationEn || ''
+                        : (img.narrationEn || img.narrationKo || '').replace(/\s*\(눈히어로\.com\)/g, '');
                     const dialogues = img.dialogues || [];
                     const rawImgSrc = img.imageUrl || img.localArtUrl || '';
                     const imgSrc = rawImgSrc ? `${rawImgSrc}${rawImgSrc.includes('?') ? '&' : '?'}v=${cacheBustVer}` : '';
@@ -602,6 +607,9 @@ export function renderWebtoonSection(): string {
                           />
                         </div>
 
+                        ${
+                          dialogues.length > 0 || mainNarration
+                            ? `
                         <!-- Dialogue & Narration Box -->
                         <div class="bg-[#fcfbfb] p-4 sm:p-5 border-t border-[rgba(15,0,0,0.12)] space-y-3 font-mono">
                           
@@ -663,6 +671,9 @@ export function renderWebtoonSection(): string {
                           }
 
                         </div>
+                        `
+                            : ''
+                        }
 
                       </article>
                     `;

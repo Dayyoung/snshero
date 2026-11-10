@@ -7,7 +7,7 @@ import json
 from collections import deque
 from pathlib import Path
 import numpy as np
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 
 WIDTH = 768
 HEIGHT = 432
@@ -579,7 +579,141 @@ def find_generated_scene_images(ep_num: int):
                 scene_map[s_idx] = (f, mtime)
     return scene_map
 
-def process_episode_images(ep_num: int, force: bool = False):
+def get_episode_title_info(ep_num: int) -> tuple[str, str]:
+    manifest_path = "src/content/webtoonEpisodeManifest.json"
+    header = f"SNSHERO · EPISODE {ep_num:02d}"
+    subtitle = f"Episode {ep_num:02d}"
+    if os.path.exists(manifest_path):
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        ep_data = data.get(str(ep_num), {})
+        if ep_data.get("episodeTitle"):
+            subtitle = ep_data["episodeTitle"].strip()
+        else:
+            imgs = ep_data.get("images", [])
+            if imgs and imgs[0].get("narrationEn"):
+                raw = imgs[0]["narrationEn"]
+                if " - " in raw:
+                    subtitle = raw.split(" - ", 1)[1].strip()
+    return header, subtitle
+
+
+def _draw_tracked_text(draw: ImageDraw.ImageDraw, x_center: float, y: float, text: str, font: ImageFont.FreeTypeFont, tracking: float, fill: tuple, stroke_width: int = 0, stroke_fill: tuple = (0, 0, 0, 255)) -> float:
+    glyph_widths = [font.getlength(ch) for ch in text]
+    total_w = sum(glyph_widths) + tracking * max(0, len(text) - 1)
+    cx = x_center - total_w / 2.0
+    for ch, gw in zip(text, glyph_widths):
+        draw.text((cx, y), ch, font=font, fill=fill, stroke_width=stroke_width, stroke_fill=stroke_fill)
+        cx += gw + tracking
+    return total_w
+
+
+def render_episode_title_card(src_im: Image.Image, ep_num: int) -> Image.Image:
+    """
+    Renders a sleek, theatrical ufotable-style white title lockup onto Episode Scene 00
+    at 2x supersampled resolution (1536x864) before downscaling with LANCZOS to 768x432.
+    """
+    ss_w, ss_h = WIDTH * 2, HEIGHT * 2  # 1536 x 864
+    base = auto_crop_letterbox(src_im).convert("RGBA").resize((ss_w, ss_h), Image.Resampling.LANCZOS)
+
+    # 1. Smooth lower-third cinema gradient vignette so crisp white typography pops over any background
+    grad = np.zeros((ss_h, ss_w, 4), dtype=np.uint8)
+    y_start = int(ss_h * 0.56)
+    for y in range(y_start, ss_h):
+        t = (y - y_start) / max(1.0, float(ss_h - 1 - y_start))
+        alpha = int(round(212.0 * (t ** 1.55)))
+        grad[y, :, 0] = 6
+        grad[y, :, 1] = 9
+        grad[y, :, 2] = 16
+        grad[y, :, 3] = min(220, alpha)
+    base = Image.alpha_composite(base, Image.fromarray(grad))
+
+    header_str, main_title = get_episode_title_info(ep_num)
+
+    # Load crisp macOS system display & classical serif fonts
+    try:
+        kicker_font = ImageFont.truetype("/System/Library/Fonts/Avenir Next.ttc", 26, index=2)  # Demi Bold
+    except Exception:
+        kicker_font = ImageFont.load_default()
+
+    title_size = 62
+    title_font = None
+    while title_size >= 38:
+        try:
+            cand = ImageFont.truetype("/System/Library/Fonts/Palatino.ttc", title_size, index=2)  # Bold
+        except Exception:
+            cand = ImageFont.load_default()
+            title_font = cand
+            break
+        if cand.getlength(main_title) <= ss_w * 0.88:
+            title_font = cand
+            break
+        title_size -= 2
+    if title_font is None:
+        title_font = ImageFont.truetype("/System/Library/Fonts/Palatino.ttc", 38, index=2)
+
+    cx = ss_w / 2.0
+    kicker_y = ss_h - 166
+    title_y = ss_h - 118
+    rule_bottom_y = ss_h - 36
+
+    # 2. Soft dark outer glow/drop-shadow layer
+    shadow_layer = Image.new("RGBA", (ss_w, ss_h), (0, 0, 0, 0))
+    s_draw = ImageDraw.Draw(shadow_layer)
+    kicker_w = _draw_tracked_text(
+        s_draw, cx, kicker_y + 4, header_str, kicker_font, tracking=7.5,
+        fill=(0, 0, 0, 235), stroke_width=6, stroke_fill=(0, 0, 0, 235)
+    )
+    t_bbox = title_font.getbbox(main_title)
+    t_w = t_bbox[2] - t_bbox[0]
+    tx = cx - t_w / 2.0
+    s_draw.text((tx, title_y + 5), main_title, font=title_font, fill=(0, 0, 0, 245), stroke_width=10, stroke_fill=(0, 0, 0, 245))
+    shadow_layer = shadow_layer.filter(ImageFilter.GaussianBlur(radius=8))
+    base = Image.alpha_composite(base, shadow_layer)
+
+    # 3. Crisp foreground white typography + ornamental hairlines
+    fg_layer = Image.new("RGBA", (ss_w, ss_h), (0, 0, 0, 0))
+    f_draw = ImageDraw.Draw(fg_layer)
+
+    _draw_tracked_text(
+        f_draw, cx, kicker_y, header_str, kicker_font, tracking=7.5,
+        fill=(255, 255, 255, 242), stroke_width=3, stroke_fill=(8, 11, 18, 230)
+    )
+
+    # Flanking horizontal hairline rules + tiny diamond accents around kicker
+    k_mid_y = kicker_y + 15
+    gap = 24
+    line_len = 96
+    left_x1 = cx - kicker_w / 2.0 - gap
+    left_x0 = max(48, left_x1 - line_len)
+    right_x0 = cx + kicker_w / 2.0 + gap
+    right_x1 = min(ss_w - 48, right_x0 + line_len)
+
+    f_draw.line([(left_x0, k_mid_y), (left_x1, k_mid_y)], fill=(255, 255, 255, 175), width=2)
+    f_draw.line([(right_x0, k_mid_y), (right_x1, k_mid_y)], fill=(255, 255, 255, 175), width=2)
+    for dx_pt in (left_x1 + 6, right_x0 - 6):
+        r = 4
+        f_draw.polygon([(dx_pt, k_mid_y - r), (dx_pt + r, k_mid_y), (dx_pt, k_mid_y + r), (dx_pt - r, k_mid_y)], fill=(255, 255, 255, 220))
+
+    # Main episode title in radiant pure white with crisp dark ink rim
+    f_draw.text(
+        (tx, title_y),
+        main_title,
+        font=title_font,
+        fill=(255, 255, 255, 255),
+        stroke_width=4,
+        stroke_fill=(10, 13, 22, 245),
+    )
+
+    # Subtle bottom centered accent rule
+    sub_half = min(140, max(70, int(t_w * 0.22)))
+    f_draw.line([(cx - sub_half, rule_bottom_y), (cx + sub_half, rule_bottom_y)], fill=(255, 255, 255, 135), width=2)
+
+    composed = Image.alpha_composite(base, fg_layer).convert("RGB")
+    return composed.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
+
+
+def process_episode_images(ep_num: int, force: bool = False, titles_only: bool = False):
     out_dir = f"public/images/webtoon/episode_{ep_num:02d}"
     os.makedirs(out_dir, exist_ok=True)
     dist_out_dir = f"dist/images/webtoon/episode_{ep_num:02d}"
@@ -594,14 +728,19 @@ def process_episode_images(ep_num: int, force: bool = False):
 
     processed = 0
     for s_idx, (src_path, _) in sorted(scene_map.items()):
+        if titles_only and s_idx != 0:
+            continue
         dst_path = os.path.join(out_dir, f"scene_{s_idx:02d}.webp")
 
-        # Skip if already exists and newer (unless force=True)
-        if not force and os.path.exists(dst_path) and os.path.getmtime(dst_path) >= os.path.getmtime(src_path):
+        # Skip if already exists and newer (unless force=True or titles_only=True)
+        if not force and not titles_only and os.path.exists(dst_path) and os.path.getmtime(dst_path) >= os.path.getmtime(src_path):
             continue
 
         im = Image.open(src_path).convert("RGB")
-        im_resized = im.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
+        if s_idx == 0:
+            im_resized = render_episode_title_card(im, ep_num)
+        else:
+            im_resized = im.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
 
         metadata_comment = {
             "episode": ep_num,
@@ -609,7 +748,11 @@ def process_episode_images(ep_num: int, force: bool = False):
             "isDialogue": s_idx in dialogue_map
         }
 
-        if s_idx in dialogue_map:
+        if s_idx == 0:
+            h_str, m_title = get_episode_title_info(ep_num)
+            metadata_comment["titleCard"] = f"{h_str} - {m_title}"
+            print(f"[EP{ep_num:02d}] Scene 00 (Title Card): Rendered white title '{h_str} - {m_title}'")
+        elif s_idx in dialogue_map:
             dlg = dialogue_map[s_idx]
             metadata_comment.update({
                 "speaker": dlg["speaker"],
@@ -643,14 +786,15 @@ def process_episode_images(ep_num: int, force: bool = False):
 
 if __name__ == "__main__":
     force_run = "--force" in sys.argv
-    args = [a for a in sys.argv[1:] if a != "--force"]
+    titles_only_run = "--titles-only" in sys.argv
+    args = [a for a in sys.argv[1:] if a not in ("--force", "--titles-only")]
 
     if len(args) > 0:
         if args[0] == "all":
-            total = sum(process_episode_images(ep, force=force_run) for ep in range(1, 41))
+            total = sum(process_episode_images(ep, force=force_run, titles_only=titles_only_run) for ep in range(1, 41))
             print(f"Total processed across all episodes: {total}")
         else:
             ep = int(args[0])
-            process_episode_images(ep, force=force_run)
+            process_episode_images(ep, force=force_run, titles_only=titles_only_run)
     else:
-        process_episode_images(3, force=force_run)
+        process_episode_images(3, force=force_run, titles_only=titles_only_run)

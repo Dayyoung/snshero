@@ -20900,3 +20900,8 @@
 - **전수조사 방법**: Apple Vision 정밀 OCR(`VNRecognizeTextRequest`, `ko-KR`/`en-US`/`ja-JP`/`zh-Hans`, `minimumTextHeight=0.008`) 및 상하단 레터박스·말풍선 휴리스틱 탐색으로 전 40화 2,089컷을 전수 스캔하여 1차 후보 82컷 검출 후 전 컷 육안 전수 판독.
 - **판독 및 재생성 내역**: 순수 아트워크 기하학 오탐 12컷을 제외한 **오염 확정 70컷 전량**(`episode_12/scene_05.webp` 등 장소/회차 헤더·캐릭터명 라벨·하단 자막·효과음·문서/묘비 문구 26컷 + 방패 테두리·마법진·석주 알파벳형 룬 기호 44컷)을 무문자(Zero-Text/Zero-Rune) ufotable 프롬프트로 100% 재생성 및 WebP 동기화 완료.
 - **2차 재검증 및 캐시 갱신**: 재생성된 70컷 전량 Apple Vision OCR 재검증 결과 `0 / 70` 무결점 확인, 카단 이마 흉터 `0건` 확인, 브라우저/서비스워커 캐시 버스터(`20261110`, `snshero-media-v13-zerotext20261110`) 갱신 및 프로덕션 빌드 완료.
+
+### 2026-11-10 09:06 KST | 웹툰 전 회차(EP01~EP40, 총 40화) 타이틀 시작 이미지(`scene_00.webp`) 시네마틱 화이트 타이틀 타이포그래피 전수 적용 완료
+- **작업 내역**: `scripts/universal_webtoon_processor.py`에 2배 슈퍼샘플링(`1536x864` -> `768x432` LANCZOS) 기반 `render_episode_title_card()` 구현 및 `--titles-only` 옵션 추가.
+- **디자인 디테일**: 인물 얼굴과 상반신을 가리지 않는 하단 1/3 소프트 시네마 그라데이션 비네트 위에 상단 와이드 트래킹 키커(`────◆ SNSHERO · EPISODE XX ◆────`, Avenir Next Demi Bold) 및 메인 에피소드 타이틀(화이트 `Palatino Bold` + 다크 잉크 림 + 소프트 드롭섀도우)을 전 40화 `scene_00.webp`에 일괄 렌더링.
+- **뷰어 연동 및 캐시 갱신**: `WebtoonSection.tsx` 타이틀 카드 하단 영문 중복 박스 정리(한국어 모드 시 한글 부제만 깔끔히 표기) 및 브라우저/서비스워커 캐시 버스터(`v14-titlecards20261110`) 갱신 완료.
