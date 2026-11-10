@@ -20948,3 +20948,15 @@
   - 한국어 1화: `01화 눈보라 아래 두 서약 (한국어 더빙).mp4` — 기존 `11분 07초` -> **`8분 54초`(`534.6초`)**로 약 2분 13초 단축 (`1280x720`, `24fps`, `h264` + `48kHz stereo aac`, `203.27MB`).
   - 영어 1화: `EP01 Two Vows Beneath the Blizzard (English Dub).mp4` — 기존 `10분 16초` -> **`8분 58초`(`538.9초`)**로 약 1분 18초 단축 (`1280x720`, `24fps`, `h264` + `48kHz stereo aac`, `205.66MB`).
   - 저장 경로(`exports/webtoon_videos/{ko,en}/`, `~/Downloads/웹툰슬라이드쇼_동영상/{ko,en}/`, `dist/naver-webtoon/videos/{ko,en}/`) 동기화, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+### 2026-11-10 16:08 KST | 웹툰 슬라이드쇼 동영상 이미지 흔들림(`zoompan`) 완전 제거 및 전 40화 본편(한/영 80편) + 쇼츠(한/영 80편) 총 160개 동영상 일괄 제작 완료
+- **작업 내역**:
+  1. **이미지 흔들림 효과(`zoompan`) 100% 제거 및 초고속 고정 프레임 인코딩 아키텍처 전환 (`scripts/build_webtoon_slideshow_videos.py`)**:
+     - 기존 Ken Burns `zoompan` 흔들림 필터를 전면 제거하고, `1280x720`(16:9 본편) 및 `1080x1920`(9:16 세로형 쇼츠) 정지 고화질 프레임 합성 + `2000` 샘플(`48,000Hz / 24fps`) 오차 0.000000초 프레임 동기화 + `libx264 -tune stillimage` 인코딩으로 전환.
+  2. **전 40화 본편(16:9 가로형 `1280x720`) 80편 및 유튜브 쇼츠(9:16 세로형 `1080x1920`, 60초 미만) 80편 = 총 160개 MP4 일괄 생성 완료**:
+     - **한국어 본편 40편 (`ko/`)**: `01화 눈보라 아래 두 서약 (한국어 더빙).mp4` ~ `40화 영웅이라 불리지 않는 자 (한국어 더빙).mp4` (총 40개, `2.51 GiB`, 편당 `54.06 ~ 81.04 MB`, 약 8~9분)
+     - **영어 본편 40편 (`en/`)**: `EP01 Two Vows Beneath the Blizzard (English Dub).mp4` ~ `EP40 One Who Is Not Called a Hero (English Dub).mp4` (총 40개, `2.21 GiB`, 편당 `45.27 ~ 67.13 MB`, 약 7~9분)
+     - **한국어 쇼츠 40편 (`shorts_ko/`)**: `01화 눈보라 아래 두 서약 (한국어 쇼츠).mp4` ~ `40화 영웅이라 불리지 않는 자 (한국어 쇼츠).mp4` (총 40개, `0.33 GiB`, 편당 `6.66 ~ 10.48 MB`, 전편 `52~56.5초` 60초 엄격 미만)
+     - **영어 쇼츠 40편 (`shorts_en/`)**: `EP01 Two Vows Beneath the Blizzard (English Shorts).mp4` ~ `EP40 One Who Is Not Called a Hero (English Shorts).mp4` (총 40개, `0.35 GiB`, 편당 `7.05 ~ 11.71 MB`, 전편 `52~56.5초` 60초 엄격 미만)
+  3. **저장 경로 동기화 및 검증**:
+     - 프로젝트 폴더(`exports/webtoon_videos/{ko,en,shorts_ko,shorts_en}`), 다운로드 폴더(`~/Downloads/웹툰슬라이드쇼_동영상/{ko,en,shorts_ko,shorts_en}`), 로컬 웹 서버 심볼릭 링크(`dist/naver-webtoon/videos`) 총 160개 MP4 전수 검증, 로컬 Git 커밋 및 구글 폼 보고 완료.
