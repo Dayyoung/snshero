@@ -20905,3 +20905,7 @@
 - **작업 내역**: `scripts/universal_webtoon_processor.py`에 2배 슈퍼샘플링(`1536x864` -> `768x432` LANCZOS) 기반 `render_episode_title_card()` 구현 및 `--titles-only` 옵션 추가.
 - **디자인 디테일**: 인물 얼굴과 상반신을 가리지 않는 하단 1/3 소프트 시네마 그라데이션 비네트 위에 상단 와이드 트래킹 키커(`────◆ SNSHERO · EPISODE XX ◆────`, Avenir Next Demi Bold) 및 메인 에피소드 타이틀(화이트 `Palatino Bold` + 다크 잉크 림 + 소프트 드롭섀도우)을 전 40화 `scene_00.webp`에 일괄 렌더링.
 - **뷰어 연동 및 캐시 갱신**: `WebtoonSection.tsx` 타이틀 카드 하단 영문 중복 박스 정리(한국어 모드 시 한글 부제만 깔끔히 표기) 및 브라우저/서비스워커 캐시 버스터(`v14-titlecards20261110`) 갱신 완료.
+
+### 2026-11-10 09:19 KST | 웹툰 전 회차(EP01~EP40, 총 40화) 마지막 명장면(`ending_promo`) 시네마틱 화이트 텍스트 오버레이 및 EP34~40 엔딩 원화 ufotable 화풍 통일 완료
+- **작업 내역**: EP34~EP40 마지막 명장면(`ep34_scene_52`~`ep40_scene_52`) 7컷의 구형 컷아웃 합성 이미지를 ufotable 다크판타지 카단 클라이맥스 원화로 신규 생성 통일 후, `universal_webtoon_processor.py`의 `render_episode_ending_card()`로 전 40화 마지막 명장면 컷에 2배 슈퍼샘플링 화이트 시네마틱 타이포그래피(`SNSHERO · EPISODE XX CLIMAX`, `웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이하세요!`, `https://SNSHero.com (눈히어로.com)`)를 일괄 오버레이 완료.
+- **뷰어 연동 및 캐시 갱신**: `WebtoonSection.tsx` 마지막 명장면 하단 중복 텍스트 제거 및 1클릭 `#play` 바로가기 버튼(`min-h-[44px]`) 연동, 캐시 버스터(`v15-endingcards20261110`) 갱신 완료.

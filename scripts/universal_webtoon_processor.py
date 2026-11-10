@@ -713,7 +713,149 @@ def render_episode_title_card(src_im: Image.Image, ep_num: int) -> Image.Image:
     return composed.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
 
 
-def process_episode_images(ep_num: int, force: bool = False, titles_only: bool = False):
+def get_episode_ending_index(ep_num: int) -> int | None:
+    manifest_path = "src/content/webtoonEpisodeManifest.json"
+    if not os.path.exists(manifest_path):
+        return None
+    with open(manifest_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    imgs = data.get(str(ep_num), {}).get("images", [])
+    if not imgs:
+        return None
+    for img in reversed(imgs):
+        if img.get("type") == "ending_promo":
+            return int(img["index"])
+    return int(imgs[-1]["index"])
+
+
+def render_episode_ending_card(src_im: Image.Image, ep_num: int) -> Image.Image:
+    """
+    Renders a matching cinema-grade white ending climax overlay onto each episode's
+    final ending_promo (★ 명장면) panel at 2x supersampled resolution (1536x864 -> 768x432).
+    """
+    ss_w, ss_h = WIDTH * 2, HEIGHT * 2  # 1536 x 864
+    base = auto_crop_letterbox(src_im).convert("RGBA").resize((ss_w, ss_h), Image.Resampling.LANCZOS)
+
+    # 1. Smooth lower-third cinema gradient vignette
+    grad = np.zeros((ss_h, ss_w, 4), dtype=np.uint8)
+    y_start = int(ss_h * 0.50)
+    for y in range(y_start, ss_h):
+        t = (y - y_start) / max(1.0, float(ss_h - 1 - y_start))
+        alpha = int(round(226.0 * (t ** 1.48)))
+        grad[y, :, 0] = 6
+        grad[y, :, 1] = 9
+        grad[y, :, 2] = 16
+        grad[y, :, 3] = min(232, alpha)
+    base = Image.alpha_composite(base, Image.fromarray(grad))
+
+    kicker_str = f"SNSHERO · EPISODE {ep_num:02d} CLIMAX"
+    sub_ko = "웹툰 관련 카드게임 플레이를 원하시나요? 아래 사이트에서 플레이하세요!"
+    url_en = "https://SNSHero.com"
+    url_ko = " (눈히어로.com)"
+
+    try:
+        kicker_font = ImageFont.truetype("/System/Library/Fonts/Avenir Next.ttc", 24, index=2)  # Demi Bold
+    except Exception:
+        kicker_font = ImageFont.load_default()
+
+    try:
+        sub_ko_font = ImageFont.truetype("/System/Library/Fonts/AppleSDGothicNeo.ttc", 30, index=6)  # Bold
+        url_ko_font = ImageFont.truetype("/System/Library/Fonts/AppleSDGothicNeo.ttc", 38, index=14)  # ExtraBold
+    except Exception:
+        sub_ko_font = ImageFont.load_default()
+        url_ko_font = ImageFont.load_default()
+
+    try:
+        url_en_font = ImageFont.truetype("/System/Library/Fonts/Palatino.ttc", 50, index=2)  # Bold
+    except Exception:
+        url_en_font = ImageFont.load_default()
+
+    cx = ss_w / 2.0
+    kicker_y = ss_h - 198
+    sub_y = ss_h - 150
+    url_y = ss_h - 102
+    rule_bottom_y = ss_h - 32
+
+    sub_w = sub_ko_font.getlength(sub_ko)
+    sub_x = cx - sub_w / 2.0
+
+    url_en_w = url_en_font.getlength(url_en)
+    url_ko_w = url_ko_font.getlength(url_ko)
+    total_url_w = url_en_w + url_ko_w
+    url_x = cx - total_url_w / 2.0
+
+    # 2. Soft dark outer glow/drop-shadow layer
+    shadow_layer = Image.new("RGBA", (ss_w, ss_h), (0, 0, 0, 0))
+    s_draw = ImageDraw.Draw(shadow_layer)
+    kicker_w = _draw_tracked_text(
+        s_draw, cx, kicker_y + 4, kicker_str, kicker_font, tracking=6.5,
+        fill=(0, 0, 0, 235), stroke_width=6, stroke_fill=(0, 0, 0, 235)
+    )
+    s_draw.text((sub_x, sub_y + 4), sub_ko, font=sub_ko_font, fill=(0, 0, 0, 240), stroke_width=8, stroke_fill=(0, 0, 0, 240))
+    s_draw.text((url_x, url_y + 5), url_en, font=url_en_font, fill=(0, 0, 0, 245), stroke_width=10, stroke_fill=(0, 0, 0, 245))
+    s_draw.text((url_x + url_en_w, url_y + 11), url_ko, font=url_ko_font, fill=(0, 0, 0, 245), stroke_width=9, stroke_fill=(0, 0, 0, 245))
+    shadow_layer = shadow_layer.filter(ImageFilter.GaussianBlur(radius=8))
+    base = Image.alpha_composite(base, shadow_layer)
+
+    # 3. Crisp foreground white typography + ornamental hairlines
+    fg_layer = Image.new("RGBA", (ss_w, ss_h), (0, 0, 0, 0))
+    f_draw = ImageDraw.Draw(fg_layer)
+
+    _draw_tracked_text(
+        f_draw, cx, kicker_y, kicker_str, kicker_font, tracking=6.5,
+        fill=(255, 255, 255, 235), stroke_width=3, stroke_fill=(8, 11, 18, 230)
+    )
+
+    k_mid_y = kicker_y + 14
+    gap = 24
+    line_len = 92
+    left_x1 = cx - kicker_w / 2.0 - gap
+    left_x0 = max(48, left_x1 - line_len)
+    right_x0 = cx + kicker_w / 2.0 + gap
+    right_x1 = min(ss_w - 48, right_x0 + line_len)
+
+    f_draw.line([(left_x0, k_mid_y), (left_x1, k_mid_y)], fill=(255, 255, 255, 175), width=2)
+    f_draw.line([(right_x0, k_mid_y), (right_x1, k_mid_y)], fill=(255, 255, 255, 175), width=2)
+    for dx_pt in (left_x1 + 6, right_x0 - 6):
+        r = 4
+        f_draw.polygon([(dx_pt, k_mid_y - r), (dx_pt + r, k_mid_y), (dx_pt, k_mid_y + r), (dx_pt - r, k_mid_y)], fill=(255, 255, 255, 220))
+
+    # Korean invitation line in crisp pure white
+    f_draw.text(
+        (sub_x, sub_y),
+        sub_ko,
+        font=sub_ko_font,
+        fill=(255, 255, 255, 245),
+        stroke_width=3,
+        stroke_fill=(10, 13, 22, 240),
+    )
+
+    # Hero URL + (눈히어로.com) in radiant pure white
+    f_draw.text(
+        (url_x, url_y),
+        url_en,
+        font=url_en_font,
+        fill=(255, 255, 255, 255),
+        stroke_width=4,
+        stroke_fill=(10, 13, 22, 245),
+    )
+    f_draw.text(
+        (url_x + url_en_w, url_y + 6),
+        url_ko,
+        font=url_ko_font,
+        fill=(255, 255, 255, 250),
+        stroke_width=4,
+        stroke_fill=(10, 13, 22, 245),
+    )
+
+    sub_half = min(150, int(total_url_w * 0.22))
+    f_draw.line([(cx - sub_half, rule_bottom_y), (cx + sub_half, rule_bottom_y)], fill=(255, 255, 255, 135), width=2)
+
+    composed = Image.alpha_composite(base, fg_layer).convert("RGB")
+    return composed.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
+
+
+def process_episode_images(ep_num: int, force: bool = False, titles_only: bool = False, endings_only: bool = False):
     out_dir = f"public/images/webtoon/episode_{ep_num:02d}"
     os.makedirs(out_dir, exist_ok=True)
     dist_out_dir = f"dist/images/webtoon/episode_{ep_num:02d}"
@@ -722,6 +864,7 @@ def process_episode_images(ep_num: int, force: bool = False, titles_only: bool =
 
     dialogue_map = get_manifest_dialogues(ep_num)
     scene_map = find_generated_scene_images(ep_num)
+    ending_idx = get_episode_ending_index(ep_num)
 
     print(f"--- EPISODE {ep_num:02d} ---")
     print(f"Found generated images for {len(scene_map)} scenes. (Dialogue scenes with hidden bottom AI marker: {len(dialogue_map)})")
@@ -730,15 +873,20 @@ def process_episode_images(ep_num: int, force: bool = False, titles_only: bool =
     for s_idx, (src_path, _) in sorted(scene_map.items()):
         if titles_only and s_idx != 0:
             continue
+        if endings_only and s_idx != ending_idx:
+            continue
         dst_path = os.path.join(out_dir, f"scene_{s_idx:02d}.webp")
 
-        # Skip if already exists and newer (unless force=True or titles_only=True)
-        if not force and not titles_only and os.path.exists(dst_path) and os.path.getmtime(dst_path) >= os.path.getmtime(src_path):
+        # Skip if already exists and newer (unless force/titles_only/endings_only)
+        if not force and not titles_only and not endings_only and os.path.exists(dst_path) and os.path.getmtime(dst_path) >= os.path.getmtime(src_path):
             continue
 
         im = Image.open(src_path).convert("RGB")
         if s_idx == 0:
             im_resized = render_episode_title_card(im, ep_num)
+        elif ending_idx is not None and s_idx == ending_idx:
+            out_clean, _ = remove_kadan_forehead_scar_pil(im)
+            im_resized = render_episode_ending_card(out_clean, ep_num)
         else:
             im_resized = im.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
 
@@ -752,6 +900,9 @@ def process_episode_images(ep_num: int, force: bool = False, titles_only: bool =
             h_str, m_title = get_episode_title_info(ep_num)
             metadata_comment["titleCard"] = f"{h_str} - {m_title}"
             print(f"[EP{ep_num:02d}] Scene 00 (Title Card): Rendered white title '{h_str} - {m_title}'")
+        elif ending_idx is not None and s_idx == ending_idx:
+            metadata_comment["endingCard"] = "https://SNSHero.com (눈히어로.com)"
+            print(f"[EP{ep_num:02d}] Scene {s_idx:02d} (Ending Climax Card): Rendered white promo overlay")
         elif s_idx in dialogue_map:
             dlg = dialogue_map[s_idx]
             metadata_comment.update({
@@ -787,14 +938,15 @@ def process_episode_images(ep_num: int, force: bool = False, titles_only: bool =
 if __name__ == "__main__":
     force_run = "--force" in sys.argv
     titles_only_run = "--titles-only" in sys.argv
-    args = [a for a in sys.argv[1:] if a not in ("--force", "--titles-only")]
+    endings_only_run = "--endings-only" in sys.argv
+    args = [a for a in sys.argv[1:] if a not in ("--force", "--titles-only", "--endings-only")]
 
     if len(args) > 0:
         if args[0] == "all":
-            total = sum(process_episode_images(ep, force=force_run, titles_only=titles_only_run) for ep in range(1, 41))
+            total = sum(process_episode_images(ep, force=force_run, titles_only=titles_only_run, endings_only=endings_only_run) for ep in range(1, 41))
             print(f"Total processed across all episodes: {total}")
         else:
             ep = int(args[0])
-            process_episode_images(ep, force=force_run, titles_only=titles_only_run)
+            process_episode_images(ep, force=force_run, titles_only=titles_only_run, endings_only=endings_only_run)
     else:
-        process_episode_images(3, force=force_run, titles_only=titles_only_run)
+        process_episode_images(3, force=force_run, titles_only=titles_only_run, endings_only=endings_only_run)

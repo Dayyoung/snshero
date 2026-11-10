@@ -544,15 +544,18 @@ export function renderWebtoonSection(): string {
                   .map((img, idx) => {
                     const sceneIndex = img.index !== undefined ? img.index : idx;
                     const isTitleCard = sceneIndex === 0 || img.type === 'title_card';
+                    const isEndingPromo = img.type === 'ending_promo';
                     const panelBadge = isTitleCard ? 'TITLE CARD' : `SCENE ${String(sceneIndex).padStart(2, '0')}`;
                     const koChapterTitle = chapterTitles[ep - 1]?.titleKo || '';
                     const mainNarration = isTitleCard
                       ? isKo && koChapterTitle
                         ? `제 ${ep} 화 · ${koChapterTitle}`
                         : ''
-                      : isKo
-                        ? img.narrationKo || img.narrationEn || ''
-                        : (img.narrationEn || img.narrationKo || '').replace(/\s*\(눈히어로\.com\)/g, '');
+                      : isEndingPromo
+                        ? ''
+                        : isKo
+                          ? img.narrationKo || img.narrationEn || ''
+                          : (img.narrationEn || img.narrationKo || '').replace(/\s*\(눈히어로\.com\)/g, '');
                     const dialogues = img.dialogues || [];
                     const rawImgSrc = img.imageUrl || img.localArtUrl || '';
                     const imgSrc = rawImgSrc ? `${rawImgSrc}${rawImgSrc.includes('?') ? '&' : '?'}v=${cacheBustVer}` : '';
@@ -606,6 +609,21 @@ export function renderWebtoonSection(): string {
                             title="${tr('클릭하여 전체화면 모드로 감상', 'Click to view in fullscreen mode', 'クリックして全画面モードで鑑賞')}"
                           />
                         </div>
+
+                        ${
+                          isEndingPromo
+                            ? `
+                        <div class="bg-[#fcfbfb] px-4 py-3 border-t border-[rgba(15,0,0,0.12)] flex items-center justify-center font-mono">
+                          <a
+                            href="#play"
+                            class="w-full sm:w-auto min-h-[44px] px-5 py-2.5 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] text-xs sm:text-sm font-bold rounded-sm border border-[#646262]/30 flex items-center justify-center gap-2 transition-colors no-underline"
+                          >
+                            <span>▶ ${tr('웹툰 카드게임 바로 플레이 (SNSHero.com)', 'Play the Webtoon Card Game Now (SNSHero.com)', 'ウェブトゥーンカードゲームを今すぐプレイ (SNSHero.com)')}</span>
+                          </a>
+                        </div>
+                        `
+                            : ''
+                        }
 
                         ${
                           dialogues.length > 0 || mainNarration
