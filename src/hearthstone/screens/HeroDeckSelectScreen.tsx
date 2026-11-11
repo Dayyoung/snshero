@@ -130,7 +130,7 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
   return (
     <div
       style={{ backgroundImage: `url(${SNS_LOCATIONS.BOX_TABLE})` }}
-      className="relative flex h-[100dvh] w-full select-none flex-col justify-between overflow-hidden bg-cover bg-center p-2.5 sm:p-5"
+      className="relative flex h-full w-full select-none flex-col justify-between overflow-hidden bg-cover bg-center p-2.5 sm:p-5"
     >
       <div className="pointer-events-none absolute inset-0 bg-black/65" />
 

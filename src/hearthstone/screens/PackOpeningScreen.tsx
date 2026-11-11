@@ -73,8 +73,9 @@ const MOBILE_PENTAGON_SLOTS: {
 
 export const PackOpeningScreen: React.FC<{
   onBack: () => void;
+  onOpenShop: () => void;
   onProfileChanged: () => void;
-}> = ({ onBack, onProfileChanged }) => {
+}> = ({ onBack, onOpenShop, onProfileChanged }) => {
   const [profile, setProfile] = useState(() => hsStorage.getProfile());
   const [packBursting, setPackBursting] = useState(false);
   const [burstFlash, setBurstFlash] = useState(false);
@@ -151,7 +152,10 @@ export const PackOpeningScreen: React.FC<{
   const triggerOpenPack = useCallback(() => {
     if (packBursting || openedCardsRef.current) return;
     const currentProfile = hsStorage.getProfile();
-    if (currentProfile.packs <= 0) return;
+    if (currentProfile.packs <= 0) {
+      onOpenShop();
+      return;
+    }
 
     clearAllTimers();
     hsAudio.playSfx('pack_open');
@@ -182,7 +186,7 @@ export const PackOpeningScreen: React.FC<{
         scheduleTimer(() => setBurstFlash(false), 520);
       }
     }, 520);
-  }, [packBursting, clearAllTimers, scheduleTimer, sync]);
+  }, [packBursting, clearAllTimers, scheduleTimer, sync, onOpenShop]);
 
   const revealCardAt = useCallback(
     (idx: number, opts?: { suppressVo?: boolean }) => {
@@ -297,7 +301,7 @@ export const PackOpeningScreen: React.FC<{
   return (
     <div
       style={{ backgroundImage: `url(${SNS_LOCATIONS.PACK_ALTAR})` }}
-      className="relative flex h-[100dvh] w-full select-none flex-col justify-between overflow-hidden bg-cover bg-center p-2.5 text-amber-100 sm:p-4"
+      className="relative flex h-full w-full select-none flex-col justify-between overflow-hidden bg-cover bg-center p-2.5 text-amber-100 sm:p-4"
     >
       <div className="pointer-events-none absolute inset-0 bg-radial from-sky-500/14 via-black/52 to-black/90" />
 
@@ -323,15 +327,13 @@ export const PackOpeningScreen: React.FC<{
           <button
             type="button"
             onClick={() => {
-              if (hsStorage.buyPacksWithGold(1)) {
-                hsAudio.playSfx('purchase');
-                sync();
-              }
+              hsAudio.playSfx('ui_click');
+              onOpenShop();
             }}
             className="hs-arcane-btn flex min-h-[40px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-[11px] font-extrabold text-white sm:gap-1.5 sm:px-3.5 sm:text-xs"
           >
             <HsGoldCoinIcon size={15} />
-            <span>+ 1팩 구매 (100)</span>
+            <span>카드팩 구매 ($1 / $4)</span>
           </button>
         </div>
       </header>

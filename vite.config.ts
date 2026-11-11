@@ -82,7 +82,9 @@ function isSpaRoute(pathname: string): boolean {
     normalized === '/ai' || normalized.startsWith('/ai/') ||
     normalized === '/battle' || normalized.startsWith('/battle/') || normalized === '/battle.html' ||
     normalized === '/game' || normalized.startsWith('/game/') || normalized === '/game.html' ||
+    normalized === '/stone' || normalized.startsWith('/stone/') || normalized === '/stone.html' ||
     normalized.startsWith('/hs-assets/') ||
+    normalized.startsWith('/stone-assets/') ||
     normalized === '/mlx-chat.html' ||
     normalized.startsWith('/anime-character-sheets/') ||
     normalized.startsWith('/pacpik') ||
@@ -144,6 +146,10 @@ export default defineConfig(({mode}) => {
               req.url = `/game.html${query}`;
               return next();
             }
+            if (cleanNormalized === '/stone') {
+              req.url = `/stone.html${query}`;
+              return next();
+            }
             if (legacyRedirects[cleanNormalized]) {
               res.writeHead(302, { Location: `${legacyRedirects[cleanNormalized]}${query}` });
               res.end();
@@ -182,6 +188,10 @@ export default defineConfig(({mode}) => {
             const cleanNormalized = normalized.replace(/\/+$/, '') || '/';
             if (cleanNormalized === '/game') {
               req.url = `/game.html${query}`;
+              return next();
+            }
+            if (cleanNormalized === '/stone') {
+              req.url = `/stone.html${query}`;
               return next();
             }
             if (legacyRedirects[cleanNormalized]) {
@@ -909,6 +919,10 @@ export default defineConfig(({mode}) => {
           ...(fs.existsSync(path.resolve(process.cwd(), 'game.html')) &&
           fs.existsSync(path.resolve(process.cwd(), 'src/hearthstone/main.tsx'))
             ? { game: path.resolve(process.cwd(), 'game.html') }
+            : {}),
+          ...(fs.existsSync(path.resolve(process.cwd(), 'stone.html')) &&
+          fs.existsSync(path.resolve(process.cwd(), 'src/stone/main.tsx'))
+            ? { stone: path.resolve(process.cwd(), 'stone.html') }
             : {}),
         },
         output: {

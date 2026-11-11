@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { cardDb } from './cardDb';
+import { GameAdSenseLayout } from './components/GameAdSenseLayout';
 import {
   GameOptionsModal,
+  PaymentSuccessModal,
   QuestLogModal,
   TavernShopModal,
 } from './components/Modals';
 import { SNS_LOGO_URL } from './components/SnsHeroArtKit';
 import { initSnsHeroConsoleApi } from './consoleApi';
+import {
+  GamePaymentReturnResult,
+  checkAndProcessGamePaymentReturn,
+} from './paymentGateway';
 import { BattleScreen } from './screens/BattleScreen';
 import { BoxHubScreen } from './screens/BoxHubScreen';
 import { CollectionScreen } from './screens/CollectionScreen';
@@ -41,6 +47,7 @@ export const HearthstoneApp: React.FC = () => {
   // Global Modals
   const [questLogOpen, setQuestLogOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
+  const [paymentResult, setPaymentResult] = useState<GamePaymentReturnResult | null>(null);
   const [optionsState, setOptionsState] = useState<{
     open: boolean;
     inBattle: boolean;
@@ -63,6 +70,11 @@ export const HearthstoneApp: React.FC = () => {
       .then(() => {
         if (!mounted) return;
         hsStorage.ensureInitialized();
+        const payRes = checkAndProcessGamePaymentReturn();
+        if (payRes.handled) {
+          setPaymentResult(payRes);
+          setScreen('BOX_HUB');
+        }
         setProfile(hsStorage.getProfile());
         setReady(true);
       })
@@ -105,7 +117,7 @@ export const HearthstoneApp: React.FC = () => {
   }
 
   return (
-    <>
+    <GameAdSenseLayout screenKey={screen}>
       {screen === 'TAVERN_INTRO' && (
         <TavernIntroScreen onEnterHub={() => setScreen('BOX_HUB')} />
       )}
@@ -169,6 +181,7 @@ export const HearthstoneApp: React.FC = () => {
             refreshProfile();
             setScreen('BOX_HUB');
           }}
+          onOpenShop={() => setShopOpen(true)}
           onProfileChanged={refreshProfile}
         />
       )}
@@ -206,6 +219,17 @@ export const HearthstoneApp: React.FC = () => {
         />
       )}
 
+      {paymentResult && (
+        <PaymentSuccessModal
+          info={paymentResult}
+          onOpenPacks={() => {
+            setPaymentResult(null);
+            setScreen('PACK_OPENING');
+          }}
+          onClose={() => setPaymentResult(null)}
+        />
+      )}
+
       {optionsState.open && (
         <GameOptionsModal
           inBattle={optionsState.inBattle}
@@ -213,6 +237,6 @@ export const HearthstoneApp: React.FC = () => {
           onClose={() => setOptionsState({ open: false, inBattle: false })}
         />
       )}
-    </>
+    </GameAdSenseLayout>
   );
 };

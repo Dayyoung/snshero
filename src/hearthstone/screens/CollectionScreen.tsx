@@ -335,7 +335,7 @@ export const CollectionScreen: React.FC<{
   return (
     <div
       style={{ backgroundImage: `url(${SNS_LOCATIONS.COLLECTION_ARCHIVE})` }}
-      className="relative flex h-[100dvh] w-full select-none flex-col overflow-hidden bg-cover bg-center text-amber-100"
+      className="relative flex h-full w-full select-none flex-col overflow-hidden bg-cover bg-center text-amber-100"
     >
       <div className="pointer-events-none absolute inset-0 bg-black/72" />
 

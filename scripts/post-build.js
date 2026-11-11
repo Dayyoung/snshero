@@ -565,6 +565,18 @@ if (fs.existsSync(distGameHtml)) {
   console.log('[post-build] Preserved standalone dist/game.html & dist/game/index.html');
 }
 
+const distStoneHtml = path.join(distDir, 'stone.html');
+if (fs.existsSync(distStoneHtml)) {
+  const stoneHtmlRaw = fs.readFileSync(distStoneHtml, 'utf8')
+    .replace(/(src|href)=["']\.\/assets\//g, '$1="/assets/')
+    .replace(/(src|href)=["']assets\//g, '$1="/assets/');
+  fs.writeFileSync(distStoneHtml, stoneHtmlRaw, 'utf8');
+  const distStoneDir = path.join(distDir, 'stone');
+  if (!fs.existsSync(distStoneDir)) fs.mkdirSync(distStoneDir, { recursive: true });
+  fs.writeFileSync(path.join(distStoneDir, 'index.html'), stoneHtmlRaw, 'utf8');
+  console.log('[post-build] Preserved standalone dist/stone.html & dist/stone/index.html');
+}
+
 // 5. Ensure 404.html fallback (uses SPA template so deep links load client-side router)
 const notFoundPath = path.join(distDir, '404.html');
 const templateFor404 = fs.existsSync(homeHtmlPath) ? homeHtmlPath : indexPath;

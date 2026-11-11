@@ -1,0 +1,677 @@
+{
+  "innkeeper_welcome": {
+    "file": "/stone-assets/audio/vo/innkeeper_welcome.mp3",
+    "clip": "VO_INNKEEPER_INTRO_01",
+    "subtitle": ""
+  },
+  "announcer_versus": {
+    "file": "/stone-assets/audio/vo/announcer_versus.mp3",
+    "clip": "VO_ANNOUNCER_VERSUS_21",
+    "subtitle": ""
+  },
+  "announcer_warrior": {
+    "file": "/stone-assets/audio/vo/announcer_warrior.mp3",
+    "clip": "VO_ANNOUNCER_GARROSH_09",
+    "subtitle": ""
+  },
+  "announcer_hunter": {
+    "file": "/stone-assets/audio/vo/announcer_hunter.mp3",
+    "clip": "VO_ANNOUNCER_REXXAR_08",
+    "subtitle": ""
+  },
+  "announcer_mage": {
+    "file": "/stone-assets/audio/vo/announcer_mage.mp3",
+    "clip": "VO_ANNOUNCER_JAINA_06",
+    "subtitle": ""
+  },
+  "hero_warrior_greetings": {
+    "file": "/stone-assets/audio/vo/hero_warrior_greetings.mp3",
+    "clip": "VO_HERO_01_Greetings_01",
+    "subtitle": ""
+  },
+  "hero_warrior_well_played": {
+    "file": "/stone-assets/audio/vo/hero_warrior_well_played.mp3",
+    "clip": "VO_HERO_01_Well Played_02",
+    "subtitle": ""
+  },
+  "hero_warrior_thanks": {
+    "file": "/stone-assets/audio/vo/hero_warrior_thanks.mp3",
+    "clip": "VO_HERO_01_Thanks_05",
+    "subtitle": ""
+  },
+  "hero_warrior_wow": {
+    "file": "/stone-assets/audio/vo/hero_warrior_wow.mp3",
+    "clip": "VO_HERO_01_WOW_11",
+    "subtitle": ""
+  },
+  "hero_warrior_oops": {
+    "file": "/stone-assets/audio/vo/hero_warrior_oops.mp3",
+    "clip": "VO_HERO_01_Oops_03",
+    "subtitle": ""
+  },
+  "hero_warrior_threaten": {
+    "file": "/stone-assets/audio/vo/hero_warrior_threaten.mp3",
+    "clip": "VO_HERO_01_Threaten_04",
+    "subtitle": ""
+  },
+  "hero_warrior_start": {
+    "file": "/stone-assets/audio/vo/hero_warrior_start.mp3",
+    "clip": "VO_HERO_01_Start_09",
+    "subtitle": ""
+  },
+  "hero_warrior_concede": {
+    "file": "/stone-assets/audio/vo/hero_warrior_concede.mp3",
+    "clip": "VO_HERO_01_Concede_07",
+    "subtitle": ""
+  },
+  "hero_warrior_attack": {
+    "file": "/stone-assets/audio/vo/hero_warrior_attack.mp3",
+    "clip": "VO_HERO_01_Attack_16",
+    "subtitle": ""
+  },
+  "hero_warrior_error_mana": {
+    "file": "/stone-assets/audio/vo/hero_warrior_error_mana.mp3",
+    "clip": "VO_HERO_01_ERROR01_20",
+    "subtitle": ""
+  },
+  "hero_warrior_error_attacked": {
+    "file": "/stone-assets/audio/vo/hero_warrior_error_attacked.mp3",
+    "clip": "VO_HERO_01_ERROR03_22",
+    "subtitle": ""
+  },
+  "hero_warrior_error_taunt": {
+    "file": "/stone-assets/audio/vo/hero_warrior_error_taunt.mp3",
+    "clip": "VO_HERO_01_ERROR08_27",
+    "subtitle": ""
+  },
+  "hero_warrior_time": {
+    "file": "/stone-assets/audio/vo/hero_warrior_time.mp3",
+    "clip": "VO_HERO_01_Time_11",
+    "subtitle": ""
+  },
+  "hero_hunter_greetings": {
+    "file": "/stone-assets/audio/vo/hero_hunter_greetings.mp3",
+    "clip": "VO_HERO_05_Greetings_01",
+    "subtitle": ""
+  },
+  "hero_hunter_well_played": {
+    "file": "/stone-assets/audio/vo/hero_hunter_well_played.mp3",
+    "clip": "VO_HERO_05_Well Played_02",
+    "subtitle": ""
+  },
+  "hero_hunter_thanks": {
+    "file": "/stone-assets/audio/vo/hero_hunter_thanks.mp3",
+    "clip": "VO_HERO_05_Thanks_05",
+    "subtitle": ""
+  },
+  "hero_hunter_wow": {
+    "file": "/stone-assets/audio/vo/hero_hunter_wow.mp3",
+    "clip": "VO_HERO_05_WOW_06",
+    "subtitle": ""
+  },
+  "hero_hunter_oops": {
+    "file": "/stone-assets/audio/vo/hero_hunter_oops.mp3",
+    "clip": "VO_HERO_05_Oops_03",
+    "subtitle": ""
+  },
+  "hero_hunter_threaten": {
+    "file": "/stone-assets/audio/vo/hero_hunter_threaten.mp3",
+    "clip": "VO_HERO_05_Threaten_04",
+    "subtitle": ""
+  },
+  "hero_hunter_start": {
+    "file": "/stone-assets/audio/vo/hero_hunter_start.mp3",
+    "clip": "VO_HERO_05_Start_09",
+    "subtitle": ""
+  },
+  "hero_hunter_concede": {
+    "file": "/stone-assets/audio/vo/hero_hunter_concede.mp3",
+    "clip": "VO_HERO_05_Concede_07",
+    "subtitle": ""
+  },
+  "hero_hunter_attack": {
+    "file": "/stone-assets/audio/vo/hero_hunter_attack.mp3",
+    "clip": "VO_HERO_05_Attack_16",
+    "subtitle": ""
+  },
+  "hero_hunter_error_mana": {
+    "file": "/stone-assets/audio/vo/hero_hunter_error_mana.mp3",
+    "clip": "VO_HERO_05_ERROR01_21",
+    "subtitle": ""
+  },
+  "hero_hunter_error_attacked": {
+    "file": "/stone-assets/audio/vo/hero_hunter_error_attacked.mp3",
+    "clip": "VO_HERO_05_ERROR03_23",
+    "subtitle": ""
+  },
+  "hero_hunter_error_taunt": {
+    "file": "/stone-assets/audio/vo/hero_hunter_error_taunt.mp3",
+    "clip": "VO_HERO_05_ERROR08_28",
+    "subtitle": ""
+  },
+  "hero_hunter_time": {
+    "file": "/stone-assets/audio/vo/hero_hunter_time.mp3",
+    "clip": "VO_HERO_05_Time_11",
+    "subtitle": ""
+  },
+  "hero_mage_greetings": {
+    "file": "/stone-assets/audio/vo/hero_mage_greetings.mp3",
+    "clip": "VO_HERO_08_Greetings_56",
+    "subtitle": ""
+  },
+  "hero_mage_well_played": {
+    "file": "/stone-assets/audio/vo/hero_mage_well_played.mp3",
+    "clip": "VO_HERO_08_Well Played_57",
+    "subtitle": ""
+  },
+  "hero_mage_thanks": {
+    "file": "/stone-assets/audio/vo/hero_mage_thanks.mp3",
+    "clip": "VO_HERO_08_Thanks_60",
+    "subtitle": ""
+  },
+  "hero_mage_wow": {
+    "file": "/stone-assets/audio/vo/hero_mage_wow.mp3",
+    "clip": "VO_HERO_08_WOW_06",
+    "subtitle": ""
+  },
+  "hero_mage_oops": {
+    "file": "/stone-assets/audio/vo/hero_mage_oops.mp3",
+    "clip": "VO_HERO_08_Oops_58",
+    "subtitle": ""
+  },
+  "hero_mage_threaten": {
+    "file": "/stone-assets/audio/vo/hero_mage_threaten.mp3",
+    "clip": "VO_HERO_08_Threaten_59",
+    "subtitle": ""
+  },
+  "hero_mage_start": {
+    "file": "/stone-assets/audio/vo/hero_mage_start.mp3",
+    "clip": "VO_HERO_08_Start_64",
+    "subtitle": ""
+  },
+  "hero_mage_concede": {
+    "file": "/stone-assets/audio/vo/hero_mage_concede.mp3",
+    "clip": "VO_HERO_08_Concede_62",
+    "subtitle": ""
+  },
+  "hero_mage_attack": {
+    "file": "/stone-assets/audio/vo/hero_mage_attack.mp3",
+    "clip": "VO_HERO_08_Attack_71",
+    "subtitle": ""
+  },
+  "hero_mage_error_mana": {
+    "file": "/stone-assets/audio/vo/hero_mage_error_mana.mp3",
+    "clip": "VO_HERO_08_ERROR01_75",
+    "subtitle": ""
+  },
+  "hero_mage_error_attacked": {
+    "file": "/stone-assets/audio/vo/hero_mage_error_attacked.mp3",
+    "clip": "VO_HERO_08_ERROR03_77",
+    "subtitle": ""
+  },
+  "hero_mage_error_taunt": {
+    "file": "/stone-assets/audio/vo/hero_mage_error_taunt.mp3",
+    "clip": "VO_HERO_08_ERROR08_82",
+    "subtitle": ""
+  },
+  "hero_mage_time": {
+    "file": "/stone-assets/audio/vo/hero_mage_time.mp3",
+    "clip": "VO_HERO_08_Time_66",
+    "subtitle": ""
+  },
+  "innkeeper_mulligan": {
+    "file": "/stone-assets/audio/vo/innkeeper_mulligan.mp3",
+    "clip": "VO_INNKEEPER_MULLIGAN_13",
+    "subtitle": ""
+  },
+  "innkeeper_coin": {
+    "file": "/stone-assets/audio/vo/innkeeper_coin.mp3",
+    "clip": "VO_INNKEEPER_COIN_INTRO",
+    "subtitle": ""
+  },
+  "innkeeper_collection": {
+    "file": "/stone-assets/audio/vo/innkeeper_collection.mp3",
+    "clip": "VO_INNKEEPER_Male_Dwarf_CM_WELCOME_23",
+    "subtitle": ""
+  },
+  "announcer_rare": {
+    "file": "/stone-assets/audio/vo/announcer_rare.mp3",
+    "clip": "VO_ANNOUNCER_RARE_27",
+    "subtitle": ""
+  },
+  "announcer_epic": {
+    "file": "/stone-assets/audio/vo/announcer_epic.mp3",
+    "clip": "VO_ANNOUNCER_EPIC_26",
+    "subtitle": ""
+  },
+  "announcer_legendary": {
+    "file": "/stone-assets/audio/vo/announcer_legendary.mp3",
+    "clip": "VO_ANNOUNCER_LEGENDARY_25",
+    "subtitle": ""
+  },
+  "announcer_golden_legendary": {
+    "file": "/stone-assets/audio/vo/announcer_golden_legendary.mp3",
+    "clip": "VO_ANNOUNCER_FOIL_L_32",
+    "subtitle": ""
+  },
+  "announcer_shaman": {
+    "file": "/stone-assets/audio/vo/announcer_shaman.mp3",
+    "clip": "VO_ANNOUNCER_THRALL_11",
+    "subtitle": ""
+  },
+  "announcer_rogue": {
+    "file": "/stone-assets/audio/vo/announcer_rogue.mp3",
+    "clip": "VO_ANNOUNCER_VALEERA_07",
+    "subtitle": ""
+  },
+  "announcer_paladin": {
+    "file": "/stone-assets/audio/vo/announcer_paladin.mp3",
+    "clip": "VO_ANNOUNCER_UTHER_10",
+    "subtitle": ""
+  },
+  "announcer_druid": {
+    "file": "/stone-assets/audio/vo/announcer_druid.mp3",
+    "clip": "VO_ANNOUNCER_MALFURION_14",
+    "subtitle": ""
+  },
+  "announcer_warlock": {
+    "file": "/stone-assets/audio/vo/announcer_warlock.mp3",
+    "clip": "VO_ANNOUNCER_GUL'DAN_13",
+    "subtitle": ""
+  },
+  "announcer_priest": {
+    "file": "/stone-assets/audio/vo/announcer_priest.mp3",
+    "clip": "VO_ANNOUNCER_ANDUIN_12",
+    "subtitle": ""
+  },
+  "hero_shaman_greetings": {
+    "file": "/stone-assets/audio/vo/hero_shaman_greetings.mp3",
+    "clip": "VO_Hero_02_Greetings_01",
+    "subtitle": ""
+  },
+  "hero_shaman_concede": {
+    "file": "/stone-assets/audio/vo/hero_shaman_concede.mp3",
+    "clip": "VO_Hero_02_Concede_07",
+    "subtitle": ""
+  },
+  "hero_shaman_attack": {
+    "file": "/stone-assets/audio/vo/hero_shaman_attack.mp3",
+    "clip": "VO_Hero_02_Attack_16",
+    "subtitle": ""
+  },
+  "hero_shaman_error_mana": {
+    "file": "/stone-assets/audio/vo/hero_shaman_error_mana.mp3",
+    "clip": "VO_Hero_02_ERROR01_20",
+    "subtitle": ""
+  },
+  "hero_shaman_error_attacked": {
+    "file": "/stone-assets/audio/vo/hero_shaman_error_attacked.mp3",
+    "clip": "VO_Hero_02_ERROR03_22",
+    "subtitle": ""
+  },
+  "hero_shaman_error_taunt": {
+    "file": "/stone-assets/audio/vo/hero_shaman_error_taunt.mp3",
+    "clip": "VO_Hero_02_ERROR08_27",
+    "subtitle": ""
+  },
+  "hero_shaman_well_played": {
+    "file": "/stone-assets/audio/vo/hero_shaman_well_played.mp3",
+    "clip": "VO_Hero_02_Well Played_02",
+    "subtitle": ""
+  },
+  "hero_shaman_thanks": {
+    "file": "/stone-assets/audio/vo/hero_shaman_thanks.mp3",
+    "clip": "VO_Hero_02_Thanks_05",
+    "subtitle": ""
+  },
+  "hero_shaman_wow": {
+    "file": "/stone-assets/audio/vo/hero_shaman_wow.mp3",
+    "clip": "VO_HERO_02_WOW_12_ALT",
+    "subtitle": ""
+  },
+  "hero_shaman_threaten": {
+    "file": "/stone-assets/audio/vo/hero_shaman_threaten.mp3",
+    "clip": "VO_Hero_02_Threaten_04",
+    "subtitle": ""
+  },
+  "hero_shaman_start": {
+    "file": "/stone-assets/audio/vo/hero_shaman_start.mp3",
+    "clip": "VO_Hero_02_Start_09",
+    "subtitle": ""
+  },
+  "hero_shaman_time": {
+    "file": "/stone-assets/audio/vo/hero_shaman_time.mp3",
+    "clip": "VO_Hero_02_Time_11",
+    "subtitle": ""
+  },
+  "hero_rogue_greetings": {
+    "file": "/stone-assets/audio/vo/hero_rogue_greetings.mp3",
+    "clip": "VO_HERO_03_Greetings_01",
+    "subtitle": ""
+  },
+  "hero_rogue_well_played": {
+    "file": "/stone-assets/audio/vo/hero_rogue_well_played.mp3",
+    "clip": "VO_HERO_03_Well Played_02",
+    "subtitle": ""
+  },
+  "hero_rogue_thanks": {
+    "file": "/stone-assets/audio/vo/hero_rogue_thanks.mp3",
+    "clip": "VO_HERO_03_Thanks_05",
+    "subtitle": ""
+  },
+  "hero_rogue_wow": {
+    "file": "/stone-assets/audio/vo/hero_rogue_wow.mp3",
+    "clip": "VO_HERO_03_WOW_11",
+    "subtitle": ""
+  },
+  "hero_rogue_oops": {
+    "file": "/stone-assets/audio/vo/hero_rogue_oops.mp3",
+    "clip": "VO_HERO_03_Oops_03",
+    "subtitle": ""
+  },
+  "hero_rogue_threaten": {
+    "file": "/stone-assets/audio/vo/hero_rogue_threaten.mp3",
+    "clip": "VO_HERO_03_Threaten_04",
+    "subtitle": ""
+  },
+  "hero_rogue_start": {
+    "file": "/stone-assets/audio/vo/hero_rogue_start.mp3",
+    "clip": "VO_HERO_03_Start_09",
+    "subtitle": ""
+  },
+  "hero_rogue_concede": {
+    "file": "/stone-assets/audio/vo/hero_rogue_concede.mp3",
+    "clip": "VO_HERO_03_Concede_07",
+    "subtitle": ""
+  },
+  "hero_rogue_attack": {
+    "file": "/stone-assets/audio/vo/hero_rogue_attack.mp3",
+    "clip": "VO_HERO_03_Attack_16",
+    "subtitle": ""
+  },
+  "hero_rogue_error_mana": {
+    "file": "/stone-assets/audio/vo/hero_rogue_error_mana.mp3",
+    "clip": "VO_HERO_03_ERROR01_20",
+    "subtitle": ""
+  },
+  "hero_rogue_error_attacked": {
+    "file": "/stone-assets/audio/vo/hero_rogue_error_attacked.mp3",
+    "clip": "VO_HERO_03_ERROR03_22",
+    "subtitle": ""
+  },
+  "hero_rogue_error_taunt": {
+    "file": "/stone-assets/audio/vo/hero_rogue_error_taunt.mp3",
+    "clip": "VO_HERO_03_ERROR08_27",
+    "subtitle": ""
+  },
+  "hero_rogue_time": {
+    "file": "/stone-assets/audio/vo/hero_rogue_time.mp3",
+    "clip": "VO_HERO_03_Time_11",
+    "subtitle": ""
+  },
+  "hero_paladin_greetings": {
+    "file": "/stone-assets/audio/vo/hero_paladin_greetings.mp3",
+    "clip": "VO_HERO_04_Greetings_01",
+    "subtitle": ""
+  },
+  "hero_paladin_thanks": {
+    "file": "/stone-assets/audio/vo/hero_paladin_thanks.mp3",
+    "clip": "VO_HERO_04_Thanks_05",
+    "subtitle": ""
+  },
+  "hero_paladin_wow": {
+    "file": "/stone-assets/audio/vo/hero_paladin_wow.mp3",
+    "clip": "VO_HERO_04_WOW_06",
+    "subtitle": ""
+  },
+  "hero_paladin_oops": {
+    "file": "/stone-assets/audio/vo/hero_paladin_oops.mp3",
+    "clip": "VO_HERO_04_Oops_03",
+    "subtitle": ""
+  },
+  "hero_paladin_threaten": {
+    "file": "/stone-assets/audio/vo/hero_paladin_threaten.mp3",
+    "clip": "VO_HERO_04_Threaten_04",
+    "subtitle": ""
+  },
+  "hero_paladin_start": {
+    "file": "/stone-assets/audio/vo/hero_paladin_start.mp3",
+    "clip": "VO_HERO_04_Start_09",
+    "subtitle": ""
+  },
+  "hero_paladin_concede": {
+    "file": "/stone-assets/audio/vo/hero_paladin_concede.mp3",
+    "clip": "VO_HERO_04_Concede_07",
+    "subtitle": ""
+  },
+  "hero_paladin_attack": {
+    "file": "/stone-assets/audio/vo/hero_paladin_attack.mp3",
+    "clip": "VO_HERO_04_Attack_16",
+    "subtitle": ""
+  },
+  "hero_paladin_error_mana": {
+    "file": "/stone-assets/audio/vo/hero_paladin_error_mana.mp3",
+    "clip": "VO_HERO_04_ERROR01_20",
+    "subtitle": ""
+  },
+  "hero_paladin_error_attacked": {
+    "file": "/stone-assets/audio/vo/hero_paladin_error_attacked.mp3",
+    "clip": "VO_HERO_04_ERROR03_22",
+    "subtitle": ""
+  },
+  "hero_paladin_error_taunt": {
+    "file": "/stone-assets/audio/vo/hero_paladin_error_taunt.mp3",
+    "clip": "VO_HERO_04_ERROR08_27",
+    "subtitle": ""
+  },
+  "hero_paladin_time": {
+    "file": "/stone-assets/audio/vo/hero_paladin_time.mp3",
+    "clip": "VO_HERO_04_Time_11",
+    "subtitle": ""
+  },
+  "hero_druid_greetings": {
+    "file": "/stone-assets/audio/vo/hero_druid_greetings.mp3",
+    "clip": "VO_HERO_06_Greetings_01",
+    "subtitle": ""
+  },
+  "hero_druid_concede": {
+    "file": "/stone-assets/audio/vo/hero_druid_concede.mp3",
+    "clip": "VO_HERO_06_Concede_07",
+    "subtitle": ""
+  },
+  "hero_druid_attack": {
+    "file": "/stone-assets/audio/vo/hero_druid_attack.mp3",
+    "clip": "VO_HERO_06_Attack_16",
+    "subtitle": ""
+  },
+  "hero_druid_error_mana": {
+    "file": "/stone-assets/audio/vo/hero_druid_error_mana.mp3",
+    "clip": "VO_HERO_06_ERROR01_20",
+    "subtitle": ""
+  },
+  "hero_druid_error_attacked": {
+    "file": "/stone-assets/audio/vo/hero_druid_error_attacked.mp3",
+    "clip": "VO_HERO_06_ERROR03_22",
+    "subtitle": ""
+  },
+  "hero_druid_error_taunt": {
+    "file": "/stone-assets/audio/vo/hero_druid_error_taunt.mp3",
+    "clip": "VO_HERO_06_ERROR08_27",
+    "subtitle": ""
+  },
+  "hero_shaman_oops": {
+    "file": "/stone-assets/audio/vo/hero_shaman_oops.mp3",
+    "clip": "VO_HERO_02aa_Female_Naga_Oops_01",
+    "subtitle": "망치지 말자고."
+  },
+  "hero_paladin_well_played": {
+    "file": "/stone-assets/audio/vo/hero_paladin_well_played.mp3",
+    "clip": "VO_HERO_04aa_Male_Human_Well_Played_01",
+    "subtitle": "방금은 감자튀김보다 훌륭했네!"
+  },
+  "hero_druid_well_played": {
+    "file": "/stone-assets/audio/vo/hero_druid_well_played.mp3",
+    "clip": "VO_HERO_06_Well Played_02",
+    "subtitle": ""
+  },
+  "hero_druid_thanks": {
+    "file": "/stone-assets/audio/vo/hero_druid_thanks.mp3",
+    "clip": "VO_HERO_06_Thanks_05",
+    "subtitle": ""
+  },
+  "hero_druid_wow": {
+    "file": "/stone-assets/audio/vo/hero_druid_wow.mp3",
+    "clip": "VO_HERO_06_WOW_06",
+    "subtitle": ""
+  },
+  "hero_druid_oops": {
+    "file": "/stone-assets/audio/vo/hero_druid_oops.mp3",
+    "clip": "VO_HERO_06_Oops_03",
+    "subtitle": ""
+  },
+  "hero_druid_threaten": {
+    "file": "/stone-assets/audio/vo/hero_druid_threaten.mp3",
+    "clip": "VO_HERO_06_Threaten_04",
+    "subtitle": ""
+  },
+  "hero_druid_start": {
+    "file": "/stone-assets/audio/vo/hero_druid_start.mp3",
+    "clip": "VO_HERO_06_Start_09",
+    "subtitle": ""
+  },
+  "hero_druid_time": {
+    "file": "/stone-assets/audio/vo/hero_druid_time.mp3",
+    "clip": "VO_HERO_06_Time_11",
+    "subtitle": ""
+  },
+  "hero_warlock_greetings": {
+    "file": "/stone-assets/audio/vo/hero_warlock_greetings.mp3",
+    "clip": "VO_HERO_07_Greetings_01",
+    "subtitle": ""
+  },
+  "hero_warlock_well_played": {
+    "file": "/stone-assets/audio/vo/hero_warlock_well_played.mp3",
+    "clip": "VO_HERO_07_Well Played_02",
+    "subtitle": ""
+  },
+  "hero_warlock_thanks": {
+    "file": "/stone-assets/audio/vo/hero_warlock_thanks.mp3",
+    "clip": "VO_HERO_07_Thanks_05",
+    "subtitle": ""
+  },
+  "hero_warlock_wow": {
+    "file": "/stone-assets/audio/vo/hero_warlock_wow.mp3",
+    "clip": "VO_HERO_07_WOW_06",
+    "subtitle": ""
+  },
+  "hero_warlock_oops": {
+    "file": "/stone-assets/audio/vo/hero_warlock_oops.mp3",
+    "clip": "VO_HERO_07_Oops_03",
+    "subtitle": ""
+  },
+  "hero_warlock_threaten": {
+    "file": "/stone-assets/audio/vo/hero_warlock_threaten.mp3",
+    "clip": "VO_HERO_07_Threaten_04",
+    "subtitle": ""
+  },
+  "hero_warlock_start": {
+    "file": "/stone-assets/audio/vo/hero_warlock_start.mp3",
+    "clip": "VO_HERO_07_Start_09",
+    "subtitle": ""
+  },
+  "hero_warlock_concede": {
+    "file": "/stone-assets/audio/vo/hero_warlock_concede.mp3",
+    "clip": "VO_HERO_07_Concede_07",
+    "subtitle": ""
+  },
+  "hero_warlock_attack": {
+    "file": "/stone-assets/audio/vo/hero_warlock_attack.mp3",
+    "clip": "VO_HERO_07_Attack_16",
+    "subtitle": ""
+  },
+  "hero_warlock_error_mana": {
+    "file": "/stone-assets/audio/vo/hero_warlock_error_mana.mp3",
+    "clip": "VO_HERO_07_ERROR01_20",
+    "subtitle": ""
+  },
+  "hero_warlock_error_attacked": {
+    "file": "/stone-assets/audio/vo/hero_warlock_error_attacked.mp3",
+    "clip": "VO_HERO_07_ERROR03_22",
+    "subtitle": ""
+  },
+  "hero_warlock_error_taunt": {
+    "file": "/stone-assets/audio/vo/hero_warlock_error_taunt.mp3",
+    "clip": "VO_HERO_07_ERROR08_27",
+    "subtitle": ""
+  },
+  "hero_warlock_time": {
+    "file": "/stone-assets/audio/vo/hero_warlock_time.mp3",
+    "clip": "VO_HERO_07_Time_11",
+    "subtitle": ""
+  },
+  "hero_priest_greetings": {
+    "file": "/stone-assets/audio/vo/hero_priest_greetings.mp3",
+    "clip": "VO_HERO_09_Greetings_01",
+    "subtitle": ""
+  },
+  "hero_priest_well_played": {
+    "file": "/stone-assets/audio/vo/hero_priest_well_played.mp3",
+    "clip": "VO_HERO_09_Well_Played_02",
+    "subtitle": ""
+  },
+  "hero_priest_thanks": {
+    "file": "/stone-assets/audio/vo/hero_priest_thanks.mp3",
+    "clip": "VO_HERO_09_Thanks_05",
+    "subtitle": ""
+  },
+  "hero_priest_wow": {
+    "file": "/stone-assets/audio/vo/hero_priest_wow.mp3",
+    "clip": "VO_HERO_09_WOW_06",
+    "subtitle": ""
+  },
+  "hero_priest_oops": {
+    "file": "/stone-assets/audio/vo/hero_priest_oops.mp3",
+    "clip": "VO_HERO_09_Oops_03",
+    "subtitle": ""
+  },
+  "hero_priest_threaten": {
+    "file": "/stone-assets/audio/vo/hero_priest_threaten.mp3",
+    "clip": "VO_HERO_09_Threaten_04",
+    "subtitle": ""
+  },
+  "hero_priest_start": {
+    "file": "/stone-assets/audio/vo/hero_priest_start.mp3",
+    "clip": "VO_HERO_09_Start_09",
+    "subtitle": ""
+  },
+  "hero_priest_concede": {
+    "file": "/stone-assets/audio/vo/hero_priest_concede.mp3",
+    "clip": "VO_HERO_09_Concede_07",
+    "subtitle": ""
+  },
+  "hero_priest_attack": {
+    "file": "/stone-assets/audio/vo/hero_priest_attack.mp3",
+    "clip": "VO_HERO_09_Attack_16",
+    "subtitle": ""
+  },
+  "hero_priest_error_mana": {
+    "file": "/stone-assets/audio/vo/hero_priest_error_mana.mp3",
+    "clip": "VO_HERO_09_ERROR01_20",
+    "subtitle": ""
+  },
+  "hero_priest_error_attacked": {
+    "file": "/stone-assets/audio/vo/hero_priest_error_attacked.mp3",
+    "clip": "VO_HERO_09_ERROR03_22",
+    "subtitle": ""
+  },
+  "hero_priest_error_taunt": {
+    "file": "/stone-assets/audio/vo/hero_priest_error_taunt.mp3",
+    "clip": "VO_HERO_09_ERROR08_27",
+    "subtitle": ""
+  },
+  "hero_priest_time": {
+    "file": "/stone-assets/audio/vo/hero_priest_time.mp3",
+    "clip": "VO_HERO_09_Time_11",
+    "subtitle": ""
+  }
+}

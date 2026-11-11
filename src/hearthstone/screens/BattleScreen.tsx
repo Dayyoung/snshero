@@ -955,7 +955,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         if (selection) setSelection(null);
       }}
       style={{ backgroundImage: `url(${BOARD_BG_URL[matchState.boardTheme]})` }}
-      className={`relative flex h-[100dvh] w-full select-none flex-col justify-between overflow-hidden bg-cover bg-center ${
+      className={`relative flex h-full w-full select-none flex-col justify-between overflow-hidden bg-cover bg-center ${
         screenShake === 'HEAVY'
           ? 'animate-[hsShakeHeavy_0.36s_ease-in-out]'
           : screenShake === 'LIGHT'
@@ -973,7 +973,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       {selection && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="fixed left-1/2 top-11 z-[76] flex w-[94%] max-w-md -translate-x-1/2 items-center justify-between gap-2 rounded-2xl border-2 border-amber-300 bg-stone-950/95 px-3 py-1.5 text-xs font-extrabold text-amber-100 shadow-2xl sm:top-14"
+          className="absolute left-1/2 top-11 z-[76] flex w-[94%] max-w-md -translate-x-1/2 items-center justify-between gap-2 rounded-2xl border-2 border-amber-300 bg-stone-950/95 px-3 py-1.5 text-xs font-extrabold text-amber-100 shadow-2xl sm:top-14"
         >
           <span className="truncate">
             {selection.kind === 'ATTACKER'
@@ -1085,7 +1085,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 2200,
               );
             }}
-            className={`fixed ${posCls} z-30 hidden h-12 w-12 items-center justify-center rounded-2xl border-2 border-amber-400/50 bg-stone-950/65 text-2xl shadow-xl transition hover:scale-115 hover:border-amber-200 active:scale-90 md:flex`}
+            className={`absolute ${posCls} z-30 hidden h-12 w-12 items-center justify-center rounded-2xl border-2 border-amber-400/50 bg-stone-950/65 text-2xl shadow-xl transition hover:scale-115 hover:border-amber-200 active:scale-90 md:flex`}
           >
             {toy.icon}
           </button>
@@ -1093,7 +1093,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       })}
 
       {/* Left Action History Bar (Desktop / Tablet >= sm) */}
-      <aside className="fixed left-2.5 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-1.5 rounded-2xl border-2 border-[#a88344] bg-stone-950/80 p-1.5 shadow-2xl sm:flex">
+      <aside className="absolute left-2.5 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-1.5 rounded-2xl border-2 border-[#a88344] bg-stone-950/80 p-1.5 shadow-2xl sm:flex">
         <div className="text-center text-[9px] font-extrabold text-amber-300">기록</div>
         {matchState.history.slice(0, 7).map((item) => (
           <div
@@ -1123,7 +1123,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* History Hover Card Tooltip */}
       {hoveredHistoryItem && (
-        <div className="pointer-events-none fixed left-16 top-1/2 z-[80] hidden -translate-y-1/2 items-center gap-3 rounded-2xl border-2 border-amber-300 bg-stone-950/95 p-3 text-amber-100 shadow-2xl sm:flex">
+        <div className="pointer-events-none absolute left-16 top-1/2 z-[80] hidden -translate-y-1/2 items-center gap-3 rounded-2xl border-2 border-amber-300 bg-stone-950/95 p-3 text-amber-100 shadow-2xl sm:flex">
           <HearthstoneCard card={cardDb.mustGetCard(hoveredHistoryItem.cardId)} size="SM" />
           <div className="max-w-[200px]">
             <div className="text-xs font-extrabold text-yellow-300">
@@ -1140,7 +1140,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* Board Minion Hover Full-Card Inspector (Desktop XL) */}
       {hoveredBoardMinion && !selection && (
-        <div className="pointer-events-none fixed right-24 top-1/2 z-[80] hidden -translate-y-1/2 xl:block">
+        <div className="pointer-events-none absolute right-24 top-1/2 z-[80] hidden -translate-y-1/2 xl:block">
           <HearthstoneCard
             card={cardDb.mustGetCard(hoveredBoardMinion.cardId)}
             size="MD"
@@ -1149,7 +1149,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       )}
 
       {/* Right Deck Stacks & 3-State Sculpted End Turn Button (Desktop / Tablet >= sm) */}
-      <aside className="fixed right-2.5 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-center gap-4 sm:flex">
+      <aside className="absolute right-2.5 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-center gap-4 sm:flex">
         {/* Opponent Remaining Deck Stack */}
         <div
           title={
@@ -1692,7 +1692,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* Turn Change Banner ("내 턴!" / "상대 턴") */}
       {matchState.bannerMessage && !vsIntroActive && (
-        <div className="hs-wood-panel pointer-events-none fixed left-1/2 top-1/2 z-[82] -translate-x-1/2 -translate-y-1/2 animate-[hsCardPop_0.3s_ease-out] rounded-3xl px-8 py-3 sm:px-12 sm:py-4">
+        <div className="hs-wood-panel pointer-events-none absolute left-1/2 top-1/2 z-[82] -translate-x-1/2 -translate-y-1/2 animate-[hsCardPop_0.3s_ease-out] rounded-3xl px-8 py-3 sm:px-12 sm:py-4">
           <div className="hs-title hs-outline text-2xl font-extrabold tracking-widest text-amber-200 sm:text-3xl">
             {matchState.bannerMessage}
           </div>
@@ -1701,28 +1701,28 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* AI Action Callout Pill */}
       {aiHighlightText && (
-        <div className="pointer-events-none fixed left-1/2 top-24 z-[78] max-w-[90%] -translate-x-1/2 truncate rounded-full border-2 border-red-300 bg-stone-950/92 px-4 py-1.5 text-xs font-extrabold text-amber-100 shadow-xl sm:top-28 sm:px-5">
+        <div className="pointer-events-none absolute left-1/2 top-24 z-[78] max-w-[90%] -translate-x-1/2 truncate rounded-full border-2 border-red-300 bg-stone-950/92 px-4 py-1.5 text-xs font-extrabold text-amber-100 shadow-xl sm:top-28 sm:px-5">
           {aiHighlightText}
         </div>
       )}
 
       {/* Play Error Banner */}
       {matchState.errorBanner && (
-        <div className="pointer-events-none fixed bottom-44 left-1/2 z-[85] max-w-[92%] -translate-x-1/2 rounded-2xl border-2 border-red-300 bg-red-950/95 px-4 py-2 text-center text-xs font-extrabold text-red-100 shadow-2xl sm:bottom-48 sm:px-6 sm:text-sm">
+        <div className="pointer-events-none absolute bottom-44 left-1/2 z-[85] max-w-[92%] -translate-x-1/2 rounded-2xl border-2 border-red-300 bg-red-950/95 px-4 py-2 text-center text-xs font-extrabold text-red-100 shadow-2xl sm:bottom-48 sm:px-6 sm:text-sm">
           {matchState.errorBanner}
         </div>
       )}
 
       {/* Corner Toy Reaction Toast */}
       {toyToast && (
-        <div className="pointer-events-none fixed left-1/2 top-14 z-[85] max-w-[92%] -translate-x-1/2 rounded-2xl border border-amber-300 bg-stone-950/92 px-4 py-1.5 text-center text-xs font-bold text-amber-200 shadow-xl sm:top-16 sm:px-5">
+        <div className="pointer-events-none absolute left-1/2 top-14 z-[85] max-w-[92%] -translate-x-1/2 rounded-2xl border border-amber-300 bg-stone-950/92 px-4 py-1.5 text-center text-xs font-bold text-amber-200 shadow-xl sm:top-16 sm:px-5">
           {toyToast}
         </div>
       )}
 
       {/* 1. VS Clash Intro Overlay with Sculpted Hero Arch Portraits */}
       {vsIntroActive && (
-        <div className="fixed inset-0 z-[92] flex flex-col items-center justify-center bg-black/84 px-3 backdrop-blur-sm">
+        <div className="absolute inset-0 z-[92] flex flex-col items-center justify-center bg-black/84 px-3 backdrop-blur-sm">
           <div className="flex items-center gap-3 sm:gap-14">
             <div className="flex flex-col items-center text-center">
               <div
@@ -1784,7 +1784,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* 2. Mulligan (시작 손패 교체) Overlay — Tap Card to Enlarge & Toggle Replace! */}
       {!vsIntroActive && matchState.phase === 'MULLIGAN' && (
-        <div className="fixed inset-0 z-[88] flex flex-col items-center justify-center overflow-y-auto bg-black/82 p-3 text-center backdrop-blur-sm sm:p-4">
+        <div className="absolute inset-0 z-[88] flex flex-col items-center justify-center overflow-y-auto bg-black/82 p-3 text-center backdrop-blur-sm sm:p-4">
           <h2 className="hs-title hs-outline text-xl font-extrabold text-amber-200 sm:text-3xl">
             시작 카드 선택 ({matchState.firstPlayer === 'PLAYER' ? '선공 · 3장' : '후공 · 4장 + 엘윈의 은화'})
           </h2>
@@ -1838,7 +1838,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* 3. Choose One (선택) Modal — Tap Option Card to Enlarge & Confirm! */}
       {matchState.chooseOnePrompt && (
-        <div className="fixed inset-0 z-[90] flex flex-col items-center justify-center overflow-y-auto bg-black/82 p-3 text-center backdrop-blur-sm sm:p-4">
+        <div className="absolute inset-0 z-[90] flex flex-col items-center justify-center overflow-y-auto bg-black/82 p-3 text-center backdrop-blur-sm sm:p-4">
           <h3 className="hs-title hs-outline mb-3 text-xl font-extrabold text-amber-200 sm:mb-4 sm:text-2xl">
             운명의 선택 — 카드를 터치해 확대 후 선택하세요
           </h3>
@@ -1872,7 +1872,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* 4. Tracking (정찰 추적) 3-Card Picker Modal — Tap Card to Enlarge & Pick! */}
       {matchState.trackingPrompt && (
-        <div className="fixed inset-0 z-[90] flex flex-col items-center justify-center overflow-y-auto bg-black/82 p-3 text-center backdrop-blur-sm sm:p-4">
+        <div className="absolute inset-0 z-[90] flex flex-col items-center justify-center overflow-y-auto bg-black/82 p-3 text-center backdrop-blur-sm sm:p-4">
           <h3 className="hs-title hs-outline mb-1.5 text-xl font-extrabold text-emerald-300 sm:mb-2 sm:text-2xl">
             정찰 추적 — 카드를 터치해 확대 후 1장을 가져오세요
           </h3>
@@ -1899,7 +1899,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* 5. Victory / Defeat Heraldry Banner & Ranked Star / Gold Reward Overlay */}
       {matchState.phase === 'GAME_OVER' && (
-        <div className="fixed inset-0 z-[94] flex items-center justify-center bg-black/82 p-4 backdrop-blur-md">
+        <div className="absolute inset-0 z-[94] flex items-center justify-center bg-black/82 p-4 backdrop-blur-md">
           <div className="hs-wood-panel relative flex w-full max-w-md flex-col items-center overflow-hidden rounded-3xl p-6 text-center text-amber-100 sm:p-7">
             {matchState.winner === 'PLAYER' && (
               <div

@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 14:43 KST] [/game.html 이전 판타지 디자인 복구, /stone.html 원본 하스스톤 모바일 복원, 하스스톤 벤치마킹 BGM·한국어 성우·효과음 170종 자체 생성 및 '더 박스' 홈 화면 배치 1:1 적용 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항 (연속 2건 통합 완수)**:
+    1. 이전 화이트 플랫 UI 대신 풍부한 다크 골드·황동·참나무 판타지 디자인(`52bfaa8b4`)으로 `/game.html` 복구(단, `$1` 1팩 / `$4` 5팩 실결제 게이트웨이 및 데스크톱 좌우·모바일 상단 애드센스 배너는 판타지 테마로 자연스럽게 유지).
+    2. 비교 테스트를 위해 기존 하스스톤 디자인·사운드의 모바일 포트레이트 복원 버전을 **`/stone.html`**(`/stone`)로 독립 복구.
+    3. `/stone.html`과 비교 후 요청된 **하스스톤 수준의 배경음악(BGM)·한국어 성우(VO)·효과음(SFX) 벤치마킹 생성 및 적용**과 **홈 화면(인트로 양문 개방 + '더 박스' 회전 턴테이블 허브) 하스스톤식 배치 적용**.
+  - **2. 세부 구현 내역**:
+    - **`/stone.html` 원본 하스스톤 모바일 포트레이트 버전 독립 구축**:
+      - [`stone.html`](file:///Users/dayyoung/project/snshero/stone.html), [`src/stone/`](file:///Users/dayyoung/project/snshero/src/stone/HearthstoneApp.tsx) (29개 모듈, 모바일 포트레이트 + `CardZoomModal` + `Nanum Gothic` 완비, `stone_hs_*` 로컬스토리지 격리), [`public/stone-assets/`](file:///Users/dayyoung/project/snshero/public/stone-assets/data/classic-cards.json) (256개 에셋), [`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts), [`scripts/post-build.js`](file:///Users/dayyoung/project/snshero/scripts/post-build.js) 구성 완료.
+    - **하스스톤 벤치마킹 스튜디오급 오리지널 오디오 170종 자체 생성 및 탑재 ([`scripts/generate_snshero_card_audio.py`](file:///Users/dayyoung/project/snshero/scripts/generate_snshero_card_audio.py), [`src/hearthstone/audio.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/audio.ts))**:
+      - **멀티 악기 판타지 BGM 5곡 (`public/hs-assets/snshero-audio/bgm/*.mp3`)**: 6/8박자 경쾌한 켈틱 판타지 엘윈마을 주점 지그(`tavern_hub.mp3` — Karplus-Strong 류트/기타 스트럼 + 목관 플루트 멜로디 + 피들 하모니 + 보란 퍼커션), 3/4박자 하프·첼레스타 도감 왈츠(`collection.mp3`), 결투 전운 워혼·팀파니(`mulligan.mp3`), 웅장한 오케스트라 아레나 배틀 스코어(`duel_1.mp3`, `duel_2.mp3`).
+      - **한국어 캐릭터 성우 풀보이스 135종 (`public/hs-assets/snshero-audio/vo/*.mp3`)**: 성소 수호자 환영·멀리건·은화·카드첩 보이스 4종(`innkeeper_*`), 희귀/특급/전설/황금전설 팩 개봉 환호 및 9종족 대표 대결 호명 아나운서 14종(`announcer_*`), 9대 종족 영웅(카단·포세이돈·이그니시우스·바람신 토람·콜로서스·아르투스·에일라·아이언포지·펜릴) × 13개 대사 = 117종(`hero_*`)을 뉴럴 한국어 음성 합성 + 캐릭터별 보컬 마스터링(홀 리버브, 언데드 스펙트럴 코러스, 거석 서브베이스, 엘프 코러스, 메카닉 공명 등)으로 제작.
+      - **물리 폴리 + 아케인 공명 효과음 30종 (`public/hs-assets/snshero-audio/sfx/*.mp3`)**: 상자 경첩 개폐(`box_open`, `box_close`), 턴테이블 플립(`box_disk_flip`), 아이보리 명판 클릭(`box_press`), 부스터 팩 파열 및 등급별 크리스탈 팡파르(`pack_open`, `pack_rare`, `pack_epic`, `pack_legendary`), 묵직한 타격음(`attack`, `big_attack`) 등 30종 전수 탑재.
+    - **하스스톤 벤치마킹 인트로 & '더 박스(The Box)' 홈 화면 배치 적용 ([`TavernIntroScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/TavernIntroScreen.tsx), [`BoxHubScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BoxHubScreen.tsx), [`design.md`](file:///Users/dayyoung/project/snshero/src/hearthstone/design.md))**:
+      - **인트로 (`TavernIntroScreen.tsx`)**: 하스스톤과 동일한 **3D 좌우 스윙 더블 성소 도어(`perspective(1600px) rotateY(±96deg)`)** 및 중앙 황금 성광 틈새 연출 + `눈히어로` 로고 + 회전 아케인 룬 링 & 눈꽃 나침반 메달리온 + **`엘윈마을 입장`** 버튼 및 바로 아래 **`소설읽기`** (`/book`) / **`웹툰보기`** (`/webtoon`) 버튼 배치.
+      - **홈 허브 (`BoxHubScreen.tsx`)**: 하스스톤 '더 박스' 레이아웃과 1:1로 대응하는 상단 황동 HUD 바(`[의뢰 · 전적]`, `[골드 | 영웅 가루]`, `[메뉴]`), 중앙 조각 참나무·황동 경첩 상자(`.hs-wood-panel`) + 오버행 `눈히어로` 로고 + **중앙 3D 회전 황동 메달리온 턴테이블(`대전` / `엘윈마을 수련` / `카단의 첫걸음` 3단 베벨 아이보리 명판)** + **하단 매립형 황동 서랍 트레이 4버튼(`눈히어로 팩 개봉` / `내 카드첩` / `의뢰 일지` / `눈히어로 보급소`)** 완성.
+  - **3. 검증 및 보고**:
+    - 170종 MP3 생성 무결성(`sfx` 30 + `bgm` 5 + `vo` 135, 빈 파일 0건, `ffprobe` 재생 시간 확인), `src/hearthstone` 및 `src/stone` TypeScript 에러 **0건**, `npm run build` 성공, 데스크톱(`1440×900`) 및 모바일 포트레이트(`390×844`) 브라우저 E2E 및 오디오 재생 메타데이터 검증 통과(`/stone.html` 동시 정상 동작 확인), 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-11 13:33 KST] [/game.html 허브 '카단의 첫걸음' 버튼 및 영웅 컷아웃 이미지 깨짐(070_Aila.png / 060_Death_Knight_Artus.png 경로 오타) 완벽 수정]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

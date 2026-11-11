@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { hsAudio } from '../audio';
-import { CLASSIC_RANK_NAMES, CLASS_CREST_URL, getHeroArtUrl } from '../cardDb';
+import { CLASSIC_RANK_NAMES, CLASS_CREST_URL } from '../cardDb';
 import { HsArcaneDustVialIcon, HsGoldCoinIcon } from '../components/CardVisual';
 import {
   SNS_LOCATIONS,
@@ -31,21 +31,21 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
   onOpenShop,
   onOpenOptions,
 }) => {
-  const [launchingMode, setLaunchingMode] = useState<GameMode | null>(null);
+  const [diskSpinning, setDiskSpinning] = useState(false);
 
   useEffect(() => {
     hsAudio.playBgm('tavern_hub');
   }, []);
 
   const triggerModeTransition = (mode: GameMode) => {
-    if (launchingMode) return;
+    if (diskSpinning) return;
     hsAudio.playSfx('box_press');
-    hsAudio.playSfx('menu_select', 0.85);
-    setLaunchingMode(mode);
+    hsAudio.playSfx('box_disk_flip', 0.85);
+    setDiskSpinning(true);
     window.setTimeout(() => {
-      setLaunchingMode(null);
+      setDiskSpinning(false);
       onSelectPlayMode(mode);
-    }, 260);
+    }, 340);
   };
 
   const rankTitle = CLASSIC_RANK_NAMES[profile.rank] || '엘윈 마을 수습생';
@@ -53,18 +53,18 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
   return (
     <div
       style={{ backgroundImage: `url(${SNS_LOCATIONS.BOX_TABLE})` }}
-      className="relative flex h-[100dvh] w-full select-none flex-col items-center justify-between overflow-y-auto bg-cover bg-center px-2.5 py-2 sm:overflow-hidden sm:p-5"
+      className="relative flex h-full w-full select-none flex-col items-center justify-between overflow-y-auto bg-cover bg-center px-2.5 py-2 sm:overflow-hidden sm:p-5"
     >
-      {/* Atmospheric Elwin Command Hall Vignette */}
+      {/* Warm Candlelight & Elwin Sanctuary Table Vignette */}
       <div
         style={{
           background:
-            'radial-gradient(ellipse at 50% 45%, rgba(14,165,233,0.12) 0%, rgba(9,13,24,0.62) 60%, rgba(4,7,15,0.92) 100%)',
+            'radial-gradient(ellipse at 50% 48%, rgba(255,198,105,0.1) 0%, rgba(12,7,4,0.44) 62%, rgba(5,3,2,0.88) 100%)',
         }}
         className="pointer-events-none absolute inset-0"
       />
 
-      {/* Top HUD Bar */}
+      {/* Top Brass HUD Bar (Benchmarked 1:1 to Hearthstone Mobile & Desktop HUD) */}
       <header className="relative z-20 flex w-full max-w-6xl flex-wrap items-center justify-between gap-1.5 sm:gap-2">
         <div className="flex items-center gap-1.5 sm:gap-2.5">
           <button
@@ -129,7 +129,7 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
                 strokeWidth="2.2"
               />
               <path
-                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
                 stroke="currentColor"
                 strokeWidth="1.9"
               />
@@ -139,229 +139,231 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
         </div>
       </header>
 
-      {/* Centerpiece: Original Elwin Village Command Sanctuary (Zero Hearthstone Wooden Box Cliché) */}
-      <main className="relative z-20 my-auto flex w-full max-w-4xl flex-col items-center py-2">
-        {/* Official 눈히어로 Logo + Sanctuary Subtitle */}
-        <div className="mb-2.5 flex flex-col items-center text-center sm:mb-4">
+      {/* Centerpiece: THE SNSHERO BOX (Benchmarked 1:1 to Hearthstone's Carved Hinged Wooden Box) */}
+      <main className="relative z-20 my-auto flex w-full max-w-[820px] flex-col items-center pt-4 sm:pt-0">
+        <div className="hs-wood-panel relative flex w-full flex-col items-center rounded-[28px] px-3.5 pb-4 pt-2 sm:rounded-[34px] sm:px-10 sm:pb-7 sm:pt-3">
+          {/* Carved Wooden Chest Relief Grain & Brass Corner Inlay */}
+          <div
+            style={{
+              background:
+                'radial-gradient(circle at 50% 44%, rgba(251,191,36,0.14) 0%, rgba(24,13,6,0.45) 58%, rgba(10,5,2,0.78) 100%)',
+            }}
+            className="pointer-events-none absolute inset-2 rounded-[22px] sm:rounded-[26px]"
+          />
+
+          {/* Inner Recessed Brass Filigree Frame */}
+          <div className="pointer-events-none absolute inset-2.5 rounded-[20px] border-2 border-[#e2be75]/40 shadow-[inset_0_0_28px_rgba(0,0,0,0.8)] sm:inset-3 sm:rounded-[24px]" />
+
+          {/* 4 Forged Brass Corner Rivets */}
+          <div className="pointer-events-none absolute left-4 top-4 h-3 w-3 rounded-full border border-amber-100 bg-gradient-to-b from-amber-300 to-amber-800 shadow-md sm:left-5 sm:top-5 sm:h-3.5 sm:w-3.5" />
+          <div className="pointer-events-none absolute right-4 top-4 h-3 w-3 rounded-full border border-amber-100 bg-gradient-to-b from-amber-300 to-amber-800 shadow-md sm:right-5 sm:top-5 sm:h-3.5 sm:w-3.5" />
+          <div className="pointer-events-none absolute bottom-4 left-4 h-3 w-3 rounded-full border border-amber-100 bg-gradient-to-b from-amber-300 to-amber-800 shadow-md sm:bottom-5 sm:left-5 sm:h-3.5 sm:w-3.5" />
+          <div className="pointer-events-none absolute bottom-4 right-4 h-3 w-3 rounded-full border border-amber-100 bg-gradient-to-b from-amber-300 to-amber-800 shadow-md sm:bottom-5 sm:right-5 sm:h-3.5 sm:w-3.5" />
+
+          {/* Overhanging Official 눈히어로 Logo Crest */}
           <img
             src={SNS_LOGO_URL}
             alt="눈히어로"
             draggable={false}
-            className="w-[196px] drop-shadow-[0_14px_24px_rgba(0,0,0,0.92)] sm:w-[290px]"
+            className="relative z-10 -mt-6 w-[206px] drop-shadow-[0_14px_22px_rgba(0,0,0,0.94)] sm:-mt-11 sm:w-[318px]"
           />
-          <div className="mt-1 inline-flex items-center gap-2 rounded-full border border-sky-300/35 bg-slate-950/80 px-3.5 py-0.5 text-[10.5px] font-extrabold tracking-[0.18em] text-sky-200 shadow sm:text-xs">
-            <span>엘윈마을 대결 광장</span>
-            <span className="text-amber-400">·</span>
-            <span className="text-amber-200">카단의 여정</span>
+
+          {/* Center 3D Rotating Brass & Ivory Medallion ("The Box" Turntable) */}
+          <div
+            style={{
+              transform: diskSpinning
+                ? 'perspective(950px) rotateY(90deg) scale(0.95)'
+                : 'perspective(950px) rotateY(0deg) scale(1)',
+              transition: 'transform 0.34s cubic-bezier(0.22, 1, 0.36, 1)',
+            }}
+            className="relative z-10 my-1 flex h-[262px] w-[262px] flex-col items-center justify-center rounded-full border-[5px] border-[#dfb96c] bg-radial from-[#f5e7c4] via-[#c7a467] to-[#5e4120] p-4 shadow-[0_18px_44px_rgba(0,0,0,0.9),inset_0_0_30px_rgba(44,26,10,0.85)] sm:h-[338px] sm:w-[338px] sm:border-[6px] sm:p-6"
+          >
+            {/* Engraved Concentric Brass & Oak Turntable Rings */}
+            <div
+              style={{
+                background:
+                  'repeating-radial-gradient(circle at 50% 50%, rgba(74,44,17,0.12) 0px, rgba(74,44,17,0.12) 6px, rgba(255,243,214,0.08) 6px, rgba(255,243,214,0.08) 12px)',
+              }}
+              className="pointer-events-none absolute inset-1.5 rounded-full border border-[#6e481b]/45"
+            />
+
+            {/* Arcane Glow Ring around Turntable */}
+            <svg
+              viewBox="0 0 240 240"
+              className="pointer-events-none absolute -inset-5 h-[calc(100%+40px)] w-[calc(100%+40px)] animate-[hsSlowSpin_32s_linear_infinite] rounded-full opacity-90 sm:-inset-6 sm:h-[calc(100%+48px)] sm:w-[calc(100%+48px)]"
+            >
+              <defs>
+                <radialGradient id="hubTurntableGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="68%" stopColor="rgba(56,189,248,0)" />
+                  <stop offset="86%" stopColor="rgba(56,189,248,0.45)" />
+                  <stop offset="95%" stopColor="rgba(253,224,71,0.55)" />
+                  <stop offset="100%" stopColor="rgba(56,189,248,0)" />
+                </radialGradient>
+              </defs>
+              <circle cx="120" cy="120" r="116" fill="url(#hubTurntableGlow)" />
+              <circle
+                cx="120"
+                cy="120"
+                r="107"
+                fill="none"
+                stroke="rgba(186,230,253,0.55)"
+                strokeWidth="1.8"
+                strokeDasharray="12 9 3 9"
+              />
+            </svg>
+
+            {/* Top Sculpted Snow-Compass Seal */}
+            <SnsSnowCompassSeal
+              size={42}
+              className="relative z-10 -mt-1.5 mb-1 drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] sm:-mt-2 sm:mb-1.5 sm:h-13 sm:w-13"
+            />
+
+            {/* 3 Authentic Beveled Ivory/Parchment Menu Plates */}
+            <div className="relative z-10 flex w-full max-w-[205px] flex-col gap-1.5 sm:max-w-[232px] sm:gap-2.5">
+              <button
+                type="button"
+                onMouseEnter={() => hsAudio.playSfx('box_hover', 0.55)}
+                onClick={() => triggerModeTransition('RANKED')}
+                className="hs-ivory-plate group flex flex-col items-center rounded-2xl px-3 py-1.5 sm:px-4 sm:py-2.5"
+              >
+                <span className="hs-title text-base font-extrabold tracking-wider text-[#2d1a0b] group-hover:text-[#0c4a6e] sm:text-xl">
+                  대전
+                </span>
+                <span className="text-[9.5px] font-extrabold tracking-tight text-[#6b4826] sm:text-[10px]">
+                  눈히어로 등급전 · 일반전
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onMouseEnter={() => hsAudio.playSfx('box_hover', 0.55)}
+                onClick={() => triggerModeTransition('PRACTICE_NORMAL')}
+                className="hs-ivory-plate group flex flex-col items-center rounded-2xl px-3 py-1.5 sm:px-4 sm:py-2"
+              >
+                <span className="hs-title text-sm font-extrabold tracking-wider text-[#2d1a0b] group-hover:text-[#7c2d12] sm:text-lg">
+                  엘윈마을 수련
+                </span>
+                <span className="text-[9.5px] font-extrabold tracking-tight text-[#6b4826] sm:text-[10px]">
+                  9종족 대표 AI 대결 (일반 · 숙련)
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onMouseEnter={() => hsAudio.playSfx('box_hover', 0.55)}
+                onClick={() => triggerModeTransition('TUTORIAL')}
+                className="hs-ivory-plate group flex flex-col items-center rounded-2xl px-3 py-1 sm:px-4 sm:py-1.5"
+              >
+                <span className="hs-title text-xs font-extrabold tracking-wider text-[#2d1a0b] group-hover:text-[#14532d] sm:text-base">
+                  카단의 첫걸음
+                </span>
+                <span className="text-[9px] font-bold text-[#6b4826] sm:text-[9.5px]">
+                  실전 코칭 입문 튜토리얼
+                </span>
+              </button>
+            </div>
           </div>
-        </div>
 
-        {/* 3 Original SNSHero Battle Command Portals */}
-        <div className="grid w-full grid-cols-1 gap-2.5 sm:grid-cols-3 sm:gap-4">
-          {/* 1. 대전 (Ranked & Casual) */}
-          <button
-            type="button"
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.55)}
-            onClick={() => triggerModeTransition('RANKED')}
-            className={`group relative flex min-h-[104px] items-center justify-between overflow-hidden rounded-2xl border-2 border-sky-300/80 bg-gradient-to-br from-[#0f295c] via-[#0b1938] to-[#060c1b] p-3.5 text-left shadow-[0_16px_38px_rgba(0,0,0,0.88)] transition duration-200 hover:-translate-y-1 hover:border-yellow-300 hover:shadow-[0_0_28px_rgba(56,189,248,0.55)] sm:min-h-[214px] sm:flex-col sm:items-start sm:justify-end sm:p-5 ${
-              launchingMode === 'RANKED' ? 'scale-96 brightness-125' : ''
-            }`}
-          >
-            <img
-              src={getHeroArtUrl('HERO_09')}
-              alt=""
-              draggable={false}
-              className="pointer-events-none absolute -right-4 top-0 h-[155%] w-[132px] max-w-none object-cover object-top opacity-85 drop-shadow-[0_8px_16px_rgba(0,0,0,0.9)] transition duration-300 group-hover:scale-108 sm:-right-3 sm:h-[125%] sm:w-[170px]"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#060c1b]/95 via-[#09152e]/75 to-transparent sm:bg-gradient-to-t sm:from-[#050914] sm:via-[#071126]/68 sm:to-transparent" />
-            <div className="relative z-10 flex items-center gap-2 sm:mb-auto">
-              <SnsSnowCompassSeal size={36} className="shrink-0 drop-shadow" />
-              <span className="rounded-full border border-sky-300/50 bg-sky-950/90 px-2.5 py-0.5 text-[10px] font-extrabold text-sky-200">
-                실시간 전략 대결
-              </span>
-            </div>
-            <div className="relative z-10 mt-1">
-              <div className="hs-title hs-outline-sm text-xl font-extrabold tracking-wider text-white sm:text-2xl">
-                대전
+          {/* Bottom Recessed Brass Drawer Tray: 눈히어로 팩 개봉 · 내 카드첩 · 의뢰 일지 · 눈히어로 보급소 */}
+          <div className="relative z-10 mt-2.5 grid w-full max-w-2xl grid-cols-2 gap-2 rounded-2xl border-[2.5px] border-[#a88246] bg-gradient-to-b from-[#231409] to-[#120a04] p-2.5 shadow-[inset_0_4px_14px_rgba(0,0,0,0.9)] sm:mt-3 sm:grid-cols-4 sm:gap-2.5 sm:border-[3px] sm:p-3">
+            <button
+              type="button"
+              onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+              onClick={() => {
+                hsAudio.playSfx('box_press');
+                onOpenPacks();
+              }}
+              className="hs-brass-btn relative flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2"
+            >
+              {profile.packs > 0 && (
+                <span className="hs-num absolute -right-1.5 -top-1.5 z-20 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-red-200 bg-gradient-to-b from-red-500 to-red-800 px-1 text-[11px] text-white shadow-[0_3px_10px_rgba(220,38,38,0.85)] sm:-right-2 sm:-top-2 sm:h-6 sm:min-w-6 sm:px-1.5 sm:text-xs">
+                  {profile.packs}
+                </span>
+              )}
+              <div className="h-9 w-7 shrink-0 sm:h-10 sm:w-8">
+                <SnsBoosterPackArt />
               </div>
-              <div className="mt-0.5 text-xs font-bold text-sky-200/90">
-                눈히어로 등급전 · 일반전
+              <div className="min-w-0">
+                <div className="hs-title truncate text-xs font-extrabold text-amber-100 sm:text-sm">
+                  눈히어로 팩 개봉
+                </div>
+                <div className="text-[10px] font-bold text-amber-300/85">
+                  보유 {profile.packs}팩
+                </div>
               </div>
-            </div>
-          </button>
+            </button>
 
-          {/* 2. 엘윈마을 수련 (Practice vs 9 Faction Leaders) */}
-          <button
-            type="button"
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.55)}
-            onClick={() => triggerModeTransition('PRACTICE_NORMAL')}
-            className={`group relative flex min-h-[104px] items-center justify-between overflow-hidden rounded-2xl border-2 border-amber-300/75 bg-gradient-to-br from-[#47210d] via-[#261107] to-[#0f0703] p-3.5 text-left shadow-[0_16px_38px_rgba(0,0,0,0.88)] transition duration-200 hover:-translate-y-1 hover:border-yellow-300 hover:shadow-[0_0_28px_rgba(245,158,11,0.5)] sm:min-h-[214px] sm:flex-col sm:items-start sm:justify-end sm:p-5 ${
-              launchingMode === 'PRACTICE_NORMAL' ? 'scale-96 brightness-125' : ''
-            }`}
-          >
-            <img
-              src={getHeroArtUrl('HERO_01')}
-              alt=""
-              draggable={false}
-              className="pointer-events-none absolute -right-4 top-0 h-[155%] w-[132px] max-w-none object-cover object-top opacity-85 drop-shadow-[0_8px_16px_rgba(0,0,0,0.9)] transition duration-300 group-hover:scale-108 sm:-right-3 sm:h-[125%] sm:w-[170px]"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#120804]/95 via-[#241007]/75 to-transparent sm:bg-gradient-to-t sm:from-[#0d0502] sm:via-[#1e0d05]/68 sm:to-transparent" />
-            <div className="relative z-10 flex items-center gap-2 sm:mb-auto">
+            <button
+              type="button"
+              onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+              onClick={() => {
+                hsAudio.playSfx('box_press');
+                onOpenCollection();
+              }}
+              className="hs-brass-btn flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2"
+            >
               <img
-                src={CLASS_CREST_URL.WARRIOR}
+                src={CLASS_CREST_URL.PRIEST}
                 alt=""
-                className="h-8 w-8 rounded-full border border-amber-200/80 shadow"
+                className="h-8 w-8 shrink-0 rounded-full border border-amber-300/60 object-cover shadow sm:h-9 sm:w-9"
               />
-              <span className="rounded-full border border-amber-300/50 bg-amber-950/90 px-2.5 py-0.5 text-[10px] font-extrabold text-amber-200">
-                9대 종족 대표전
-              </span>
-            </div>
-            <div className="relative z-10 mt-1">
-              <div className="hs-title hs-outline-sm text-xl font-extrabold tracking-wider text-white sm:text-2xl">
-                엘윈마을 수련
+              <div className="min-w-0">
+                <div className="hs-title truncate text-xs font-extrabold text-amber-100 sm:text-sm">
+                  내 카드첩
+                </div>
+                <div className="text-[10px] font-bold text-amber-300/85">
+                  덱 빌더 · 382종
+                </div>
               </div>
-              <div className="mt-0.5 text-xs font-bold text-amber-200/90">
-                9종족 대표 수련 (일반 · 숙련)
-              </div>
-            </div>
-          </button>
+            </button>
 
-          {/* 3. 카단의 첫걸음 (Interactive Tutorial) */}
-          <button
-            type="button"
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.55)}
-            onClick={() => triggerModeTransition('TUTORIAL')}
-            className={`group relative flex min-h-[104px] items-center justify-between overflow-hidden rounded-2xl border-2 border-emerald-300/75 bg-gradient-to-br from-[#0d3b2e] via-[#07241c] to-[#04120e] p-3.5 text-left shadow-[0_16px_38px_rgba(0,0,0,0.88)] transition duration-200 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-[0_0_28px_rgba(52,211,153,0.5)] sm:min-h-[214px] sm:flex-col sm:items-start sm:justify-end sm:p-5 ${
-              launchingMode === 'TUTORIAL' ? 'scale-96 brightness-125' : ''
-            }`}
-          >
-            <img
-              src={getHeroArtUrl('HERO_02')}
-              alt=""
-              draggable={false}
-              className="pointer-events-none absolute -right-4 top-0 h-[155%] w-[132px] max-w-none object-cover object-top opacity-85 drop-shadow-[0_8px_16px_rgba(0,0,0,0.9)] transition duration-300 group-hover:scale-108 sm:-right-3 sm:h-[125%] sm:w-[170px]"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#04120e]/95 via-[#07241c]/75 to-transparent sm:bg-gradient-to-t sm:from-[#030e0b] sm:via-[#072119]/68 sm:to-transparent" />
-            <div className="relative z-10 flex items-center gap-2 sm:mb-auto">
-              <img
-                src={CLASS_CREST_URL.SHAMAN}
-                alt=""
-                className="h-8 w-8 rounded-full border border-emerald-200/80 shadow"
-              />
-              <span className="rounded-full border border-emerald-300/50 bg-emerald-950/90 px-2.5 py-0.5 text-[10px] font-extrabold text-emerald-200">
-                입문 가이드
-              </span>
-            </div>
-            <div className="relative z-10 mt-1">
-              <div className="hs-title hs-outline-sm text-xl font-extrabold tracking-wider text-white sm:text-2xl">
-                카단의 첫걸음
+            <button
+              type="button"
+              onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+              onClick={() => {
+                hsAudio.playSfx('box_open');
+                onOpenQuestLog();
+              }}
+              className="hs-brass-btn flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2"
+            >
+              <SnsQuestScrollIcon size={32} className="shrink-0 drop-shadow" />
+              <div className="min-w-0">
+                <div className="hs-title truncate text-xs font-extrabold text-amber-100 sm:text-sm">
+                  의뢰 일지
+                </div>
+                <div className="text-[10px] font-bold text-amber-300/85">
+                  일일 보상 · 등급
+                </div>
               </div>
-              <div className="mt-0.5 text-xs font-bold text-emerald-200/90">
-                실전 코칭 입문 튜토리얼
-              </div>
-            </div>
-          </button>
-        </div>
+            </button>
 
-        {/* Bottom 4-Action Dock: 눈히어로 팩 개봉 · 내 카드첩 · 의뢰 일지 · 눈히어로 보급소 */}
-        <div className="mt-3 grid w-full grid-cols-2 gap-2 rounded-2xl border-2 border-[#c8a158]/75 bg-[#0c111d]/90 p-2.5 shadow-[0_18px_40px_rgba(0,0,0,0.9)] backdrop-blur-xs sm:mt-4 sm:grid-cols-4 sm:gap-3 sm:p-3">
-          <button
-            type="button"
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
-            onClick={() => {
-              hsAudio.playSfx('box_press');
-              onOpenPacks();
-            }}
-            className="hs-brass-btn relative flex min-h-[52px] items-center gap-2 rounded-xl px-2.5 py-2 text-left text-amber-100 sm:gap-2.5 sm:px-3"
-          >
-            {profile.packs > 0 && (
-              <span className="hs-num absolute -right-1.5 -top-1.5 z-20 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-red-200 bg-gradient-to-b from-red-500 to-red-800 px-1 text-[11px] text-white shadow-[0_3px_10px_rgba(220,38,38,0.85)] sm:-right-2 sm:-top-2 sm:h-6 sm:min-w-6 sm:px-1.5 sm:text-xs">
-                {profile.packs}
-              </span>
-            )}
-            <div className="h-9 w-7 shrink-0 sm:h-10 sm:w-8">
-              <SnsBoosterPackArt />
-            </div>
-            <div className="min-w-0">
-              <div className="hs-title truncate text-xs font-extrabold text-amber-100 sm:text-sm">
-                눈히어로 팩 개봉
+            <button
+              type="button"
+              onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+              onClick={() => {
+                hsAudio.playSfx('box_press');
+                onOpenShop();
+              }}
+              className="hs-brass-btn flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2"
+            >
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-amber-300/50 bg-stone-950/60 sm:h-9 sm:w-9">
+                <HsGoldCoinIcon size={22} />
               </div>
-              <div className="text-[10px] font-bold text-amber-300/85">
-                보유 {profile.packs}팩
+              <div className="min-w-0">
+                <div className="hs-title truncate text-xs font-extrabold text-amber-100 sm:text-sm">
+                  눈히어로 보급소
+                </div>
+                <div className="text-[10px] font-bold text-amber-300/85">
+                  팩 구매 · 뒷면 변경
+                </div>
               </div>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
-            onClick={() => {
-              hsAudio.playSfx('box_press');
-              onOpenCollection();
-            }}
-            className="hs-brass-btn flex min-h-[52px] items-center gap-2 rounded-xl px-2.5 py-2 text-left text-amber-100 sm:gap-2.5 sm:px-3"
-          >
-            <img
-              src={CLASS_CREST_URL.PRIEST}
-              alt=""
-              className="h-8 w-8 shrink-0 rounded-full border border-amber-300/60 object-cover shadow sm:h-9 sm:w-9"
-            />
-            <div className="min-w-0">
-              <div className="hs-title truncate text-xs font-extrabold text-amber-100 sm:text-sm">
-                내 카드첩
-              </div>
-              <div className="text-[10px] font-bold text-amber-300/85">
-                영웅 도감 · 382종
-              </div>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
-            onClick={() => {
-              hsAudio.playSfx('box_open');
-              onOpenQuestLog();
-            }}
-            className="hs-brass-btn flex min-h-[52px] items-center gap-2 rounded-xl px-2.5 py-2 text-left text-amber-100 sm:gap-2.5 sm:px-3"
-          >
-            <SnsQuestScrollIcon size={32} className="shrink-0 drop-shadow" />
-            <div className="min-w-0">
-              <div className="hs-title truncate text-xs font-extrabold text-amber-100 sm:text-sm">
-                의뢰 일지
-              </div>
-              <div className="text-[10px] font-bold text-amber-300/85">
-                일일 보상 · 등급
-              </div>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
-            onClick={() => {
-              hsAudio.playSfx('box_press');
-              onOpenShop();
-            }}
-            className="hs-brass-btn flex min-h-[52px] items-center gap-2 rounded-xl px-2.5 py-2 text-left text-amber-100 sm:gap-2.5 sm:px-3"
-          >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-amber-300/50 bg-stone-950/60 sm:h-9 sm:w-9">
-              <HsGoldCoinIcon size={22} />
-            </div>
-            <div className="min-w-0">
-              <div className="hs-title truncate text-xs font-extrabold text-amber-100 sm:text-sm">
-                눈히어로 보급소
-              </div>
-              <div className="text-[10px] font-bold text-amber-300/85">
-                팩 구매 · 뒷면 변경
-              </div>
-            </div>
-          </button>
+            </button>
+          </div>
         </div>
       </main>
 
-      {/* Footer Plaque */}
-      <footer className="relative z-20 pt-1 text-center text-[10.5px] font-bold tracking-wide text-sky-100/80 sm:text-[11px]">
+      {/* Subtle Footer Plaque */}
+      <footer className="relative z-20 pt-1 text-center text-[10.5px] font-bold tracking-wide text-amber-200/80 sm:text-[11px]">
         눈히어로 11종족 110영웅 · 수집 카드 382종 완비 · 모든 진행 데이터 로컬 자동 보존
       </footer>
     </div>

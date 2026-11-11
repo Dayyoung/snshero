@@ -359,6 +359,14 @@ class HearthstoneStorage {
     return { count, dustGained };
   }
 
+  grantPacks(count: number): void {
+    const safeCount = Math.max(0, Math.floor(count));
+    if (safeCount <= 0) return;
+    const p = this.getProfile();
+    p.packs += safeCount;
+    this.saveProfile(p);
+  }
+
   unlockMasterCollection(): void {
     const col = this.getCollection();
     for (const c of cardDb.getAllCollectible()) {

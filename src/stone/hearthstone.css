@@ -1,0 +1,272 @@
+@import "tailwindcss";
+
+/* ============================================================================
+ * Hearthstone Classic Commercial UI Material & Shader System
+ * Specification: src/hearthstone/design.md
+ * ============================================================================ */
+
+@layer components {
+  /* Cast Brass & Aged Tavern Oak Frame */
+  .hs-wood-panel {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255, 204, 112, 0.12) 0%, transparent 65%),
+      repeating-linear-gradient(
+        92deg,
+        rgba(255, 215, 150, 0.025) 0px,
+        rgba(255, 215, 150, 0.025) 2px,
+        rgba(0, 0, 0, 0.06) 2px,
+        rgba(0, 0, 0, 0.06) 7px
+      ),
+      linear-gradient(180deg, #422815 0%, #29170b 52%, #170c05 100%);
+    border: 3px solid #c99d52;
+    box-shadow:
+      0 22px 55px rgba(0, 0, 0, 0.9),
+      inset 0 1.5px 0 rgba(255, 240, 194, 0.55),
+      inset 0 -3px 10px rgba(0, 0, 0, 0.78);
+  }
+
+  /* Forged Brass Plaque Button */
+  .hs-brass-btn {
+    background: linear-gradient(180deg, #6b4423 0%, #462a14 52%, #281609 100%);
+    border: 2px solid #deb668;
+    color: #fff3d6;
+    box-shadow:
+      0 5px 14px rgba(0, 0, 0, 0.8),
+      inset 0 1px 0 rgba(255, 244, 208, 0.6),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.65);
+    transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease;
+  }
+  .hs-brass-btn:hover:not(:disabled) {
+    filter: brightness(1.13);
+    box-shadow:
+      0 7px 18px rgba(0, 0, 0, 0.85),
+      0 0 14px rgba(245, 190, 92, 0.35),
+      inset 0 1px 0 rgba(255, 248, 220, 0.8);
+  }
+  .hs-brass-btn:active:not(:disabled) {
+    transform: translateY(1.5px) scale(0.985);
+  }
+
+  /* The Box Authentic Carved Ivory / Brass Menu Plate */
+  .hs-ivory-plate {
+    background:
+      linear-gradient(180deg, #fbf2dc 0%, #ead6af 48%, #c7a66f 100%);
+    border: 2.5px solid #6e481b;
+    color: #2c1908;
+    box-shadow:
+      0 4px 10px rgba(0, 0, 0, 0.7),
+      0 0 0 1.5px rgba(255, 232, 175, 0.65),
+      inset 0 2px 1px rgba(255, 255, 255, 0.85),
+      inset 0 -2px 4px rgba(102, 66, 22, 0.45);
+    transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease;
+  }
+  .hs-ivory-plate:hover:not(:disabled) {
+    filter: brightness(1.06);
+    transform: translateY(-1px) scale(1.025);
+    box-shadow:
+      0 6px 16px rgba(0, 0, 0, 0.8),
+      0 0 16px rgba(56, 189, 248, 0.55),
+      0 0 0 2px #fde68a,
+      inset 0 2px 2px rgba(255, 255, 255, 0.95);
+  }
+  .hs-ivory-plate:active:not(:disabled) {
+    transform: translateY(1.5px) scale(0.99);
+  }
+  .hs-ivory-plate .hs-title {
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+    -webkit-text-stroke: 0px transparent !important;
+  }
+
+  /* Arcane Sapphire Primary Action Plaque */
+  .hs-arcane-btn {
+    background:
+      radial-gradient(ellipse at 50% 15%, rgba(125, 211, 252, 0.55) 0%, transparent 60%),
+      linear-gradient(180deg, #0ea5e9 0%, #0369a1 52%, #172554 100%);
+    border: 3px solid #f3d285;
+    color: #ffffff;
+    box-shadow:
+      0 10px 26px rgba(0, 0, 0, 0.85),
+      0 0 22px rgba(56, 189, 248, 0.55),
+      inset 0 1.5px 0 rgba(255, 250, 220, 0.85),
+      inset 0 -3px 6px rgba(10, 20, 58, 0.85);
+    transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  }
+  .hs-arcane-btn:hover:not(:disabled) {
+    filter: brightness(1.12);
+    transform: translateY(-1.5px) scale(1.03);
+    box-shadow:
+      0 14px 30px rgba(0, 0, 0, 0.9),
+      0 0 32px rgba(56, 189, 248, 0.85),
+      inset 0 2px 0 #ffffff;
+  }
+  .hs-arcane-btn:active:not(:disabled) {
+    transform: translateY(1.5px) scale(0.985);
+  }
+}
+
+/* Alpha-Contour Card Silhouette Glow Filters (Zero Rectangular Box-Shadow!) */
+.hs-no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hs-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hs-card-shadow-base {
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.82));
+}
+
+.hs-card-glow-green {
+  filter:
+    drop-shadow(0 0 3px #86efac)
+    drop-shadow(0 0 8px #22c55e)
+    drop-shadow(0 0 15px rgba(34, 197, 94, 0.88))
+    drop-shadow(0 10px 14px rgba(0, 0, 0, 0.78));
+}
+
+.hs-card-glow-combo {
+  filter:
+    drop-shadow(0 0 3px #fef08a)
+    drop-shadow(0 0 9px #eab308)
+    drop-shadow(0 0 18px rgba(250, 204, 21, 0.92))
+    drop-shadow(0 10px 14px rgba(0, 0, 0, 0.78));
+}
+
+.hs-card-glow-rare {
+  filter:
+    drop-shadow(0 0 5px #60a5fa)
+    drop-shadow(0 0 16px rgba(37, 99, 235, 0.95))
+    drop-shadow(0 12px 18px rgba(0, 0, 0, 0.85));
+}
+
+.hs-card-glow-epic {
+  filter:
+    drop-shadow(0 0 6px #e879f9)
+    drop-shadow(0 0 18px rgba(168, 85, 247, 0.98))
+    drop-shadow(0 12px 18px rgba(0, 0, 0, 0.85));
+}
+
+.hs-card-glow-legendary {
+  filter:
+    drop-shadow(0 0 6px #fde047)
+    drop-shadow(0 0 20px rgba(249, 115, 22, 1))
+    drop-shadow(0 0 34px rgba(234, 179, 8, 0.85))
+    drop-shadow(0 12px 18px rgba(0, 0, 0, 0.85));
+}
+
+@keyframes hsEmberRise {
+  0% {
+    transform: translate3d(0, 20px, 0) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.95;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate3d(var(--ember-dx, 24px), -75vh, 0) scale(1.15);
+    opacity: 0;
+  }
+}
+
+@keyframes hsSlowSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hsGoldenFoil {
+  0% {
+    background-position: -180% 0;
+  }
+  100% {
+    background-position: 220% 0;
+  }
+}
+
+/* Pack Opening: Continuous Mid-Air Magical Levitation ("둥둥 떠다니는 효과") */
+@keyframes hsPackCardFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0px, 0) rotate(var(--base-tilt, 0deg));
+  }
+  25% {
+    transform: translate3d(2px, -9px, 0) rotate(calc(var(--base-tilt, 0deg) + 1.2deg));
+  }
+  50% {
+    transform: translate3d(0, -14px, 0) rotate(calc(var(--base-tilt, 0deg) - 0.6deg));
+  }
+  75% {
+    transform: translate3d(-2px, -5px, 0) rotate(calc(var(--base-tilt, 0deg) - 1.3deg));
+  }
+}
+
+/* Pack Opening: Altar Idle Pack Levitation */
+@keyframes hsAltarPackHover {
+  0%,
+  100% {
+    transform: translate3d(0, 0px, 0) rotate(-1deg);
+  }
+  50% {
+    transform: translate3d(0, -11px, 0) rotate(1.2deg);
+  }
+}
+
+/* Pack Opening: Pack Crack & Arcane Charge Shake */
+@keyframes hsPackTremble {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  20% {
+    transform: scale(1.06) rotate(-3deg);
+  }
+  40% {
+    transform: scale(1.12) rotate(3.5deg);
+  }
+  60% {
+    transform: scale(1.18) rotate(-4deg);
+  }
+  80% {
+    transform: scale(1.24) rotate(4deg);
+  }
+  100% {
+    transform: scale(1.32) rotate(0deg);
+  }
+}
+
+/* Pack Opening: 3D Lift-and-Flip Scale Arc */
+@keyframes hsCardFlipLift {
+  0% {
+    transform: scale(1) translateY(0px);
+  }
+  45% {
+    transform: scale(1.2) translateY(-18px);
+  }
+  82% {
+    transform: scale(0.98) translateY(2px);
+  }
+  100% {
+    transform: scale(1) translateY(0px);
+  }
+}
+
+/* Pack Opening: Rarity Shockwave Ring on Flip */
+@keyframes hsFlipBurstRing {
+  0% {
+    transform: scale(0.35);
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(2.15);
+    opacity: 0;
+  }
+}
