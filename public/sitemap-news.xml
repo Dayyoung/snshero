@@ -2,7 +2,777 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_0</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794380880000_0</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T07:08:00.000Z</news:publication_date>
+      <news:title><![CDATA[Defense Analysts Urge Pentagon's New Drone Czar to Prioritize Warfighter Synchronization]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794380880000_1</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T07:08:00.000Z</news:publication_date>
+      <news:title><![CDATA[Marine Corps Establishes Specialized Drone Implementation Teams to Speed Tactical Fielding]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794380880000_2</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T07:08:00.000Z</news:publication_date>
+      <news:title><![CDATA[Navantia Unveils LASV-75 Large Autonomous Surface Vessel and Naval Combat Cloud at Euronaval 2026]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794380880000_3</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T07:08:00.000Z</news:publication_date>
+      <news:title><![CDATA[Alseamar Launches Sonusia Distributed Multi-Platform Network for Persistent Subsea Surveillance]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794380880000_4</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T07:08:00.000Z</news:publication_date>
+      <news:title><![CDATA[Saab Debuts Next-Generation 9LV Naval Combat System Built for Connected Hybrid Fleet Autonomy]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794380880000_5</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T07:08:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Army Selects Vector AI Small Unmanned Aerial System to Equip Brigade Combat Teams]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794380880000_6</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T07:08:00.000Z</news:publication_date>
+      <news:title><![CDATA[Safe Pro Introduces SpotlightAI Edge Platform Generating Live Threat Heatmaps from Drone Feeds]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794380880000_7</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T07:08:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Defense Firm Unveils Acoustic-Guided Smart Kinetic Turret for Autonomous Counter-Drone Interception]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794380880000_8</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T07:08:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Navy and Shipbuilders Deploy Crawling Wall-Climbing Robots to Accelerate Fleet Overhauls]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794380880000_9</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T07:08:00.000Z</news:publication_date>
+      <news:title><![CDATA[Collaborative Autonomous Combat Systems and Multi-Agent Teaming Take Center Stage at AUSA 2026]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794377400000_10</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[First-Ever Collaborative Combat Aircraft Fly in Formation and Demonstrate Air Combat Maneuvers]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794377400000_11</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Shield AI Tapped to Integrate Hivemind Autonomous Software on LUCAS Low-Cost Attack Drone]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794377400000_12</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Defense Systems Leverage 3D Terrain Mapping and Optical Sensors for GPS-Denied Drone Navigation]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794377400000_13</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Multi-Domain Autonomous Systems Reshape Contested ISR and One-Way Attack Strategies]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794377400000_14</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Naval Group Contracted to Build Ocean-Going UCUV Underwater Combat Drone Demonstrator for French Navy]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794377400000_15</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[EDGE Europe and Novamarine Sign Agreement to Develop Modular Autonomous Naval Surface Vessels]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794377400000_16</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[ST Engineering Secures DNV Approval in Principle for Autonomous Vessel Control System AUTONOMAST]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794377400000_17</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[SEABER Launches RAVEN Compact Autonomous Underwater Vehicle for Covert Mine Countermeasure Operations]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794377400000_18</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[French Armed Forces Test Containerized Autonomous Drone Housing Stations for Relay Surveillance]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794377400000_19</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Aaronia Unveils Lightweight Mobile Hawk T1 AI Drone Detection System Engineered with Frontline Units]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794374640000_20</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump Nominates Palantir Security Chief Michael LoSapio to Lead CISA]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794374640000_21</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Air Force Formalizes Dynamic Sustainment Framework for Collaborative Combat Aircraft Drone Fleets]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794374640000_22</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[UK Royal Navy Schedules Jet-Powered Autonomous Drone Carrier Launches for 2027 Under Atlantic Net]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794374640000_23</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Navy Acquires Indefinite-Endurance Thermal Energy-Harvesting Undersea Drone for Subsurface Tracking]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794374640000_24</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[Teledyne FLIR Unveils Vehicle-Mounted Black Recon Autonomous Microdrone Reconnaissance System]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794374640000_25</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[Airbus Helicopters Debuts U145 Autonomous Uncrewed Rotary Platform for Heavy Tactical Cargo Resupply]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794374640000_26</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[General Atomics Reveals Ranger and GA-Ray Long-Range UUVs Built to Deploy Subsea Drone Swarms]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794374640000_27</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[Kongsberg Maritime Launches Arctic Hunter Autonomous Surface Vessel for Extreme Cold-Weather Hybrid Fleets]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794374640000_28</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[Thales and Kongsberg Team Up to Deliver AI-Driven Anti-Submarine Warfare for UK Type 92 USV Program]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794374640000_29</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[UK Royal Navy Commissions First-Ever Operational Autonomous Surface and Subsurface Warfare Squadron]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794370980000_30</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T04:23:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Activates Athena Counter-Drone Defense System Over Washington DC Capital Region]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794370980000_31</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T04:23:00.000Z</news:publication_date>
+      <news:title><![CDATA[HENSOLDT and TYTAN Partner to Integrate Elysion Autonomous C2 with Counter-UAS Interceptors]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794370980000_32</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T04:23:00.000Z</news:publication_date>
+      <news:title><![CDATA[Greek Armed Forces Incorporate AI Decision Engines Into Achilles' Shield Multi-Layer Air Defense Dome]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794370980000_33</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T04:23:00.000Z</news:publication_date>
+      <news:title><![CDATA[BAE Systems and Frankenburg Technologies Team Up on Scalable Counter-Drone Interceptors]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794370980000_34</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T04:23:00.000Z</news:publication_date>
+      <news:title><![CDATA[101st Airborne Division Validates Autonomous Attack Drones and Robotic Vehicles in Air Assault Exercise]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794370980000_35</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T04:23:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Combatant Commands Generate Operational War Plans Faster Using Predictive Enterprise AI]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794370980000_36</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T04:23:00.000Z</news:publication_date>
+      <news:title><![CDATA[Autonomous Corsair Unmanned Surface Vessel Successfully Rescues Downed Military Helicopter Crew]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794370980000_37</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T04:23:00.000Z</news:publication_date>
+      <news:title><![CDATA[Maris-Tech Unveils AI-Powered Miniature Dual-Sensor Gimbal Camera for Tactical Drone Fleets]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794370980000_38</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T04:23:00.000Z</news:publication_date>
+      <news:title><![CDATA[Defense Researchers Find Specialized Small AI Models Outperform Massive LLMs on Battlefield Systems]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794370980000_39</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T04:23:00.000Z</news:publication_date>
+      <news:title><![CDATA[Poland Procures Shield AI V-BAT Autonomous Drones to Bolster Baltic Sea Maritime Surveillance]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794366780000_40</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T03:13:00.000Z</news:publication_date>
+      <news:title><![CDATA[Pentagon Counter-Drone Task Force Inks $500M Contract for SkyValor Detect-and-Defeat System]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794366780000_41</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T03:13:00.000Z</news:publication_date>
+      <news:title><![CDATA[Department of Defense Awards $500M Contract to AeroVironment for Directed-Energy Counter-Drone Tech]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794366780000_42</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T03:13:00.000Z</news:publication_date>
+      <news:title><![CDATA[Air Force Special Operations Command Solicits Attack Drones Equipped With Native AI Target Recognition]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794366780000_43</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T03:13:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Transportation Command Deploys Agentic AI Algorithms to Unclog Contested Logistics Pipelines]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794366780000_44</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T03:13:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Northern Command Demonstrates Multi-Agent Counter-Drone Fusion in Falcon Peak 26.2 Trials]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794366780000_45</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T03:13:00.000Z</news:publication_date>
+      <news:title><![CDATA[GPS Industry Leadership Urges Resilient Navigation Alternatives Amid Expanding Military Electronic Jamming]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794366780000_46</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T03:13:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Army Tests Lumberjack Autonomous Strike Drone Integrated With Project Maven Smart Targeting]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794366780000_47</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T03:13:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Army Expands International Drone Marketplace and Autonomous Test Range Access to 29 Allies]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794366780000_48</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T03:13:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Air Force Initiates Industry Competition for Massed Modular Drone Successor to MQ-9 Reaper]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794366780000_49</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T03:13:00.000Z</news:publication_date>
+      <news:title><![CDATA[Defense Systems Engineers Highlight High-Bandwidth Resilient Data Links as Core Foundation for Autonomous UAS]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794363420000_50</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T02:17:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Air Force Solicits Rapid Autonomy Software for Cislunar Spacecraft Vehicles]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794363420000_51</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T02:17:00.000Z</news:publication_date>
+      <news:title><![CDATA[Defense Department Issues Standardized Operational Guidance for Counter-Drone Pursuits]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794363420000_52</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T02:17:00.000Z</news:publication_date>
+      <news:title><![CDATA[Defense Technology Analysis Highlights AI Orchestration Harnesses Over Foundation Models]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794363420000_53</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T02:17:00.000Z</news:publication_date>
+      <news:title><![CDATA[Allen Control Systems Establishes Dedicated Division to Build AI-Directed Counter-Drone Lasers]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794363420000_54</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T02:17:00.000Z</news:publication_date>
+      <news:title><![CDATA[Onboard AI Brain Enables MQ-20 Avenger Drone to Dynamically Reroute Around Emerging Threats]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794363420000_55</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T02:17:00.000Z</news:publication_date>
+      <news:title><![CDATA[DroneShield and Overland AI Integrate Autonomous Anti-Drone Defense on ULTRA Ground Robot]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794363420000_56</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T02:17:00.000Z</news:publication_date>
+      <news:title><![CDATA[Hoverfly and Overland AI Partner on Tethered 'Drone-on-Robot' Concept for Battlefield Sensing]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794363420000_57</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T02:17:00.000Z</news:publication_date>
+      <news:title><![CDATA[Defense Cyber Experts Urge Rapid Adoption of Post-AI Cryptographic Security Architecture]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794363420000_58</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T02:17:00.000Z</news:publication_date>
+      <news:title><![CDATA[Lithuanian Armed Forces Establish Dedicated Drone Warfare Unit to Scale Autonomous Tactics]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794363420000_59</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T02:17:00.000Z</news:publication_date>
+      <news:title><![CDATA[Defense Security Architects Redesign Military Base Perimeters Against Autonomous Aerial Incursions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794359940000_60</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T01:19:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Navy and Shield AI Commit $400M to Accelerate X-BAT Autonomous Fighter Jet Development]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794359940000_61</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T01:19:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Army Restructures Futures Command to Create Dedicated Autonomous Warfare Directorate]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794359940000_62</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T01:19:00.000Z</news:publication_date>
+      <news:title><![CDATA[Defense Contractors Deploy Over 1,000 Embedded AI Agents to Accelerate Mission Operations]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794359940000_63</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T01:19:00.000Z</news:publication_date>
+      <news:title><![CDATA[Overland AI Lands $4.5M Army Contract Expansion to Field Autonomous Vehicles With 75th Rangers]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794359940000_64</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T01:19:00.000Z</news:publication_date>
+      <news:title><![CDATA[Ideal Aerosmith Unveils 'Troublemaker' Autonomous One-Way Attack Drone for Affordable Mass]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794359940000_65</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T01:19:00.000Z</news:publication_date>
+      <news:title><![CDATA[Harmattan AI Unveils 2,000-Km Range Autonomous Deep-Strike Drone With Edge AI Guidance]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794359940000_66</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T01:19:00.000Z</news:publication_date>
+      <news:title><![CDATA[Germany and Ukraine Form Joint Defense Venture to Manufacture AI-Guided Combat Drones]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794359940000_67</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T01:19:00.000Z</news:publication_date>
+      <news:title><![CDATA[ARCYN Develops 'Iron Rain' Kinetic Counter-Drone System Powered by Edge Multi-Agent AI]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794359940000_68</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T01:19:00.000Z</news:publication_date>
+      <news:title><![CDATA[Beretta Integrates Multi-Barrel Automated Shotgun Turret for Close-Range Counter-Drone Defense]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794359940000_69</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-11T01:19:00.000Z</news:publication_date>
+      <news:title><![CDATA[Wingcopter Unveils All-Electric AI-Powered VTOL Drone Delivering Six-Hour Flight Endurance]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_70</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -13,7 +783,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_1</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_71</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -24,7 +794,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_2</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_72</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -35,7 +805,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_3</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_73</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -46,7 +816,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_4</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_74</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -57,7 +827,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_5</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_75</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -68,7 +838,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_6</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_76</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -79,7 +849,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_7</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_77</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -90,7 +860,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_8</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_78</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -101,7 +871,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_9</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794355560000_79</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -112,7 +882,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_10</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_80</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -123,7 +893,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_11</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_81</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -134,7 +904,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_12</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_82</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -145,7 +915,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_13</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_83</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -156,7 +926,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_14</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_84</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -167,7 +937,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_15</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_85</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -178,7 +948,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_16</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_86</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -189,7 +959,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_17</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_87</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -200,7 +970,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_18</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_88</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -211,7 +981,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_19</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794352380000_89</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -222,7 +992,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_20</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_90</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -233,7 +1003,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_21</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_91</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -244,7 +1014,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_22</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_92</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -255,7 +1025,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_23</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_93</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -266,7 +1036,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_24</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_94</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -277,7 +1047,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_25</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_95</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -288,7 +1058,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_26</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_96</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -299,7 +1069,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_27</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_97</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -310,7 +1080,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_28</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_98</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -321,7 +1091,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_29</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1794349620000_99</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -329,776 +1099,6 @@
       </news:publication>
       <news:publication_date>2026-11-10T22:27:00.000Z</news:publication_date>
       <news:title><![CDATA[US Military Prepares GroundBreaker 1 Operational Assessment for Autonomous Ground Vehicles]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794344820000_30</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T21:07:00.000Z</news:publication_date>
-      <news:title><![CDATA[Joint Chiefs Leadership Emphasizes AI and Unmanned Systems for Contested Maritime Rescue and Combat]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794344820000_31</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T21:07:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Navy Plans Acquisition of 30 Medium Unmanned Surface Vessels at $40M Per Hull]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794344820000_32</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T21:07:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Navy Launches Online Marketplace to Fast-Track Autonomous Sea Drone Qualification]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794344820000_33</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T21:07:00.000Z</news:publication_date>
-      <news:title><![CDATA[Palladyne AI and Draganfly Partner to Deploy Decentralized Swarm Autonomy for Tactical Drones]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794344820000_34</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T21:07:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Army Awards AeroVironment $117M Contract for AI-Enabled P550 Long-Range Reconnaissance Drones]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794344820000_35</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T21:07:00.000Z</news:publication_date>
-      <news:title><![CDATA[Pentagon Evaluates Voice-Controlled Drone Swarm AI Prototypes Following Industry Downselect]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794344820000_36</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T21:07:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Marine Corps Awards Anduril $16M for Pulsar-Lite Electronic Warfare Counter-Drone Systems]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794344820000_37</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T21:07:00.000Z</news:publication_date>
-      <news:title><![CDATA[Aerospace Defense Analysts Detail Evolution of Autonomous Collaborative Combat Aircraft Toward 2030]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794344820000_38</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T21:07:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Army Selects Four Defense Contractors for Next-Generation Autonomous Breaching Program]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794344820000_39</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T21:07:00.000Z</news:publication_date>
-      <news:title><![CDATA[Indian Army Selects V-BAT Vertical Take-Off Drones Powered by Shield AI Autonomy Software]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794342120000_40</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T20:22:00.000Z</news:publication_date>
-      <news:title><![CDATA[Defense Engineers Develop Compact AI-Directed Laser Sniper System Mounted on Tactical UGV]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794342120000_41</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T20:22:00.000Z</news:publication_date>
-      <news:title><![CDATA[Aeva Unveils 360-Degree AI LiDAR Sensor Architecture for Close-Range Military Autonomy]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794342120000_42</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T20:22:00.000Z</news:publication_date>
-      <news:title><![CDATA[Defense Department Outlines $50B Requirement to Scale Mass Autonomous Drone Production]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794342120000_43</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T20:22:00.000Z</news:publication_date>
-      <news:title><![CDATA[Bipartisan Senate Defense Legislation Proposes Mandatory Reporting of Military AI Vulnerabilities]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794342120000_44</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T20:22:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Marine Corps Sets Strategic Doctrine for High-Tech Autonomous Ground Warfare]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794342120000_45</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T20:22:00.000Z</news:publication_date>
-      <news:title><![CDATA[Defense Tech Firm Unveils Software-First Autonomous Drone Swarm Architecture for GPS-Denied Skies]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794342120000_46</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T20:22:00.000Z</news:publication_date>
-      <news:title><![CDATA[Autonomous MQ-20 Avenger Successfully Intercepts Piloted Combat Aircraft in Live Demonstration]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794342120000_47</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T20:22:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Air Force Selects Shield AI Hivemind Mission Autonomy for YFQ-44A CCA Prototype]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794342120000_48</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T20:22:00.000Z</news:publication_date>
-      <news:title><![CDATA[Pentagon Investigates AI-Driven Additive Manufacturing to Produce Parts in Contested Theaters]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794342120000_49</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T20:22:00.000Z</news:publication_date>
-      <news:title><![CDATA[Defense Intelligence Agency Rapidly Fields Enterprise AI Tools to Accelerate Operational Decisions]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794337680000_50</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T19:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[White House and Tech Developers Establish Coordinated Safety Measures After Advanced AI Containment Breaches]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794337680000_51</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T19:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Military and UAE Form Landmark Bilateral AI Task Force for Collaborative Defense Tech]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794337680000_52</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T19:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Pentagon Expands Drone Dominance Initiative to Include Heavy Autonomous Attack Bombers]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794337680000_53</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T19:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Office of Naval Research Unveils 'Research by AI' Strategy to Fast-Track Fleet Capabilities]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794337680000_54</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T19:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Palladyne AI Successfully Demonstrates Fully Autonomous Heterogeneous Drone Swarm Operations]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794337680000_55</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T19:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Fortem Technologies Achieves Autonomous '5-vs-5' Drone Swarm Interception in Live Trials]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794337680000_56</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T19:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[DARPA Enlists Shearwater Aerospace to Develop AI Guidance for Extended Drone Endurance]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794337680000_57</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T19:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Marine Forces Pacific Tests AI Logistics Decision Engine to Streamline Island Sustainment]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794337680000_58</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T19:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Defense Technologists Introduce Secure Decision Environment to Govern Human-Agent Machine Teams]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794337680000_59</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T19:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Navy Launches Next-Generation Undersea Security Initiative to Safeguard Maritime Infrastructure]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794334080000_60</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T18:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Air Force Awards $100M Production Contract for AI-Enabled Operational Readiness Platform]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794334080000_61</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T18:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Army Solicits High-Efficiency Autonomous AI Cybersecurity Agents Under Project Griffin]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794334080000_62</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T18:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Special Operations Command to Test Decentralized Mission Autonomy Software for Unmanned Systems]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794334080000_63</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T18:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Pentagon Integrates Frontier AI Models into Enterprise Defense Portal Serving 500,000 Military Users]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794334080000_64</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T18:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Overland AI Lands Pentagon Production Contract for Autonomous Marine Corps Ground Vehicles]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794334080000_65</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T18:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Department of Defense Establishes Standard Procedures for AI-Assisted Mission Software Development]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794334080000_66</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T18:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Autonomous MQ-20 Drone Teams With F-22 Stealth Fighter in Operational Air Combat Trials]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794334080000_67</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T18:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Pentagon Deploys AI Systems Integration Tools to Resolve Critical Weapon Parts Supply Deficits]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794334080000_68</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T18:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Air Force Leverages WarMatrix AI Platform to Accelerate Joint Operational Wargaming and Prototyping]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794334080000_69</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T18:08:00.000Z</news:publication_date>
-      <news:title><![CDATA[Defense Robotics Startup Introduces Autonomous Humanoid Robot for Hazardous Explosive Ordnance Disposal]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794330840000_70</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T17:14:00.000Z</news:publication_date>
-      <news:title><![CDATA[Federal Agencies Sign Landmark Accord to Neutralize Unauthorized Drones in Domestic Airspace]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794330840000_71</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T17:14:00.000Z</news:publication_date>
-      <news:title><![CDATA[Army Cyber Command Expands Deployment of Autonomous AI Agents for Live Network Operations]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794330840000_72</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T17:14:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Army Partners With AWS and WWT to Build Cloud-Native AI Cybersecurity Defense Architecture]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794330840000_73</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T17:14:00.000Z</news:publication_date>
-      <news:title><![CDATA[Pentagon Launches Enterprise AI Pilot to Automate Sensitive Security Classification Management]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794330840000_74</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T17:14:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Military Service Members Square Off Against Autonomous Multi-Agent AI in Tactical Swarm Wargames]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794330840000_75</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T17:14:00.000Z</news:publication_date>
-      <news:title><![CDATA[Pentagon Selects Shield AI Hivemind to Power Autonomous Low-Cost Attritable Swarm Drones]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794330840000_76</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T17:14:00.000Z</news:publication_date>
-      <news:title><![CDATA[Defense Department Modernizes Cyber Acquisition to Procure Mission Outcomes at Machine Speed]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794330840000_77</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T17:14:00.000Z</news:publication_date>
-      <news:title><![CDATA[Army Cyber Leadership Reveals Dedicated AI Task Force Engineering Autonomous Hunting Agents]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794330840000_78</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T17:14:00.000Z</news:publication_date>
-      <news:title><![CDATA[AeroVironment and Applied Intuition Partner on Collaborative Autonomy for Launched Effects Drones]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794330840000_79</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T17:14:00.000Z</news:publication_date>
-      <news:title><![CDATA[DARPA Initiates Operational Flight Trials of XRQ-73 Hybrid-Electric Stealth Reconnaissance Drone]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794328140000_80</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T16:29:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Cyber Command Requests 2,660% Surge in AI Funding and Names Chief of AI to Scale Enterprise Automation]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794328140000_81</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T16:29:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Defense Demonstration Recharges Airborne Drone Mid-Flight via Directed Energy Laser Power Beaming]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794328140000_82</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T16:29:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Navy Proposes Doubling Combatant and Unmanned Ship Procurement in Fiscal 2027 Budget Blueprint]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794328140000_83</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T16:29:00.000Z</news:publication_date>
-      <news:title><![CDATA[Defense Analysts Evaluate Man-Portable Directed Energy Weapon Systems Against Autonomous Swarming Threats]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794328140000_84</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T16:29:00.000Z</news:publication_date>
-      <news:title><![CDATA[Hanwha Systems and Schiebel Group Partner on Anti-Jam Autonomous Airborne Communications Drone]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794328140000_85</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T16:29:00.000Z</news:publication_date>
-      <news:title><![CDATA[Intelligence Community Overhauls Zero-Trust Protocols to Secure Autonomous AI Agent Workflows]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794328140000_86</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T16:29:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Cyber Command Awards Leidos $99M to Develop Unified Platform for Coordinated Mission Workflows]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794328140000_87</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T16:29:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Navy Contracts Thales for $54M Autonomous Mine-Hunting System Powered by Native AI Target Recognition]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794328140000_88</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T16:29:00.000Z</news:publication_date>
-      <news:title><![CDATA[Defense Department Awards Hidden Level $100M Contract for Passive RF Sensor Network Integration]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794328140000_89</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T16:29:00.000Z</news:publication_date>
-      <news:title><![CDATA[Senior Naval Cyber Leadership Warns Cyber Magazine Depletes Rapidly Without Automated Reconstitution]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794324300000_90</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T15:25:00.000Z</news:publication_date>
-      <news:title><![CDATA[US Air Force Successfully Fires Live Air-to-Air Missile From Autonomous Wingman Drone]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794324300000_91</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T15:25:00.000Z</news:publication_date>
-      <news:title><![CDATA[Pentagon Directed Energy Laser Systems Neutralize Smuggling Drone Incursions on Southern Border]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794324300000_92</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T15:25:00.000Z</news:publication_date>
-      <news:title><![CDATA[Pentagon Awards $820M Agreement to Accelerate Domestic Autonomous Drone Manufacturing]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794324300000_93</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T15:25:00.000Z</news:publication_date>
-      <news:title><![CDATA[Federal Technology Analysis Examines Orbital Edge AI Architectures for Constrained Environments]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794324300000_94</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T15:25:00.000Z</news:publication_date>
-      <news:title><![CDATA[Defense Department Unveils Proactive Cyber Strategy Mandating Machine-Speed AI Defense]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794324300000_95</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T15:25:00.000Z</news:publication_date>
-      <news:title><![CDATA[Federal Cybersecurity Framework Outlines Mandatory Zero-Trust Controls for Autonomous AI Agents]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794324300000_96</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T15:25:00.000Z</news:publication_date>
-      <news:title><![CDATA[Polish Armed Forces Demonstrate Autonomous Multi-Agent Drone Swarm in Precision Strike Trials]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794324300000_97</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T15:25:00.000Z</news:publication_date>
-      <news:title><![CDATA[Sparc AI Deploys Edge-Compute Visual Positioning System for Drones in Contested Airspace]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794324300000_98</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T15:25:00.000Z</news:publication_date>
-      <news:title><![CDATA[German Aerospace Developers Unveil Blended-Wing Autonomous Stealth Drone With 950-Km Range]]></news:title>
-    </news:news>
-  </url>
-  <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1794324300000_99</loc>
-    <news:news>
-      <news:publication>
-        <news:name>SNSHero News</news:name>
-        <news:language>en</news:language>
-      </news:publication>
-      <news:publication_date>2026-11-10T15:25:00.000Z</news:publication_date>
-      <news:title><![CDATA[Stratospheric Solar-Powered Drone Platform Extends Multi-Domain Battlefield Sensing Horizons]]></news:title>
     </news:news>
   </url>
 </urlset>

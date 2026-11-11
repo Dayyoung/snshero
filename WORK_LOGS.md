@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 16:54 KST] [110종 캐릭터 투명 배경(RGBA) 추출 시 머릿결·흰색 의상·하얀 날개·빛나는 구슬이 투명하게 구멍 나던 현상 근본 해결 및 전신/상반신/시트/아틀라스 전수 재빌드 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"좋아. 이제 상반신은 다 수정되었어. 문제는 머릿결 , 하얀옷을 입은사람이 투명하게 보이는 문제가 있어. 배경을 투명색을 적용하면서 발생한 오류인것 같아. 수정할 수 있어?"`
+  - **2. 원인 분석 및 근본 알고리즘 개선 ([`scripts/build_110_anime_character_sheets.py`](file:///Users/dayyoung/project/snshero/scripts/build_110_anime_character_sheets.py) — [`remove_white_bg_clean`](file:///Users/dayyoung/project/snshero/scripts/build_110_anime_character_sheets.py#L57-L239))**:
+    - **기존 오류 원인**: 기존 `remove_white_bg_clean` 함수가 얼굴 박스 외의 모든 밝은 하이라이트(`dist < 14 & sat < 10`)를 내부 배경 시드로 무조건 등록한 뒤 `dist < 44 & sat < 28`까지 플러드필(Flood-fill)을 확산시켜, 흰색 드레스/망토/방패(`#034 이셀라`, `#008 캐스케이드`, `#022 실프`, `#043 발리안`, `#045 가웨인`, `#064 티타니아`), 은백색 머릿결·수염(`#005 아쿠아로드`, `#010 포세이돈`, `#030 바람신 토람`, `#078 토르그림`, `#086 레오나르`), 백색 페가수스·메카·드래곤(`#090 페가수스`, `#097 하이페리온 프라임`, `#102 와이버니`, `#104 바하무트`) 및 빛나는 수정구 내부까지 투명 구멍이 뚫리는 현상 확인.
+    - **개선된 2단계 잉크 배리어 + 검증된 배경 포켓 매팅 알고리즘**:
+      1. **외곽 4면 잉크 배리어 플러드필**: 이미지 외곽 4면에서만 엄격한 스튜디오 순백(`dist < 24.0 & sat < 16.0`) 기준으로 진입하여 검은 먹선 외곽선이나 은회색/아이보리 셀 셰이딩 내부로 절대 침투하지 않도록 차단.
+      2. **내부 닫힌 배경 구멍(팔·허리 틈, 다리 사이, 활시위 내부 등) 정밀 판별**: 4px 반경(`9×9`) 외곽선 검증(`wall9 >= 0.95 & ink9 >= 0.25 & pure2_r >= 0.42`)을 통과한 실제 `#FFFFFF` 스튜디오 배경 포켓만 투명 처리하고, 캐릭터 내부의 흰색 옷·머릿결·방패·갑주·구슬·깃털 픽셀은 **100% 완전 불투명(`alpha = 255`)**으로 보존.
+      3. **1~2px 외곽 안티앨리어싱 및 화이트 프린지 디컨태미네이션(Color Decontamination)**: 어두운 게임 배경(`#090d16`) 위에서도 머릿결 끝단에 하얀 테두리가 남지 않고 선명하게 렌더링되도록 경계 픽셀만 정밀 역프리멀티플라이 보정 적용.
+  - **3. 110종 전체 에셋 일괄 재추출 및 동기화**:
+    - `public/anime-character-sheets/raw_ufotable_solo/*.jpg` 원본 110종으로부터 전신 컷아웃(`public/anime-character-sheets/cutouts/*.png`), 상반신 포트레이트(`public/anime-character-sheets/busts/*.png`, `.jpg`), 공식 캐릭터 설정화(`public/anime-character-sheets/sheets/*.jpg`), 11개 진영 마스터 시트(`factions/*.jpg`), 통합 포스터(`all_110_cast_poster.jpg`), 카드 시트/아틀라스(`public/seat/*.png`, `public/anime-character-sheets/sd/*.png`, `public/cards1.png`, `public/cards2.png`) 및 공격 모션(`public/seat_attack/*.png`, `public/characters/animations/card-*.webp`, `public/cards1_attack.png`, `public/cards2_attack.png`, `public/card100_attack.png`) 전수 재생성 완료.
+    - 브라우저 및 서비스 워커 캐시 즉시 갱신을 위해 캐시 버전 태그(`v=20261111v2` 및 `snshero-media-v17-opaque20261111`) 일괄 업데이트.
+  - **4. 검증 및 보고**:
+    - 다크 배경(`#090d16`) 위 흰색 의상·은백색 머릿결·백색 날개 캐릭터 24종 및 1:1 확대 검증 완료(내부 투명 구멍 0건), 프로덕션 빌드(`npm run build`) 성공, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-11 14:43 KST] [/game.html 이전 판타지 디자인 복구, /stone.html 원본 하스스톤 모바일 복원, 하스스톤 벤치마킹 BGM·한국어 성우·효과음 170종 자체 생성 및 '더 박스' 홈 화면 배치 1:1 적용 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

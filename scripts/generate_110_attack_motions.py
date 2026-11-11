@@ -759,6 +759,8 @@ def main():
     orig_cards2_path = PROJECT_ROOT / "public" / "cards2.png"
     if orig_cards2_path.exists():
         orig_c2 = Image.open(orig_cards2_path).convert("RGBA")
+        if orig_c2.size != (1000, 1000):
+            orig_c2 = orig_c2.resize((1000, 1000), Image.Resampling.LANCZOS)
         c2_arr = np.array(orig_c2)
         c2_arr[0:100, :, :] = 0
         cards2_attack = Image.fromarray(c2_arr)

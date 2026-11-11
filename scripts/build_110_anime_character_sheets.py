@@ -59,8 +59,11 @@ def remove_white_bg_clean(
     ground_line_y: tuple[int, int] | None = None,
 ) -> Image.Image:
     """
-    Cleanly removes solid/near-white background using border + large-hole flood fill,
-    preserving interior white eyes, teeth, pearls, and specular armor highlights.
+    Ink-barrier & verified-pocket studio white background extractor:
+    - Preserves 100% solid opacity (alpha=255) on white clothing, silver/white hair strands,
+      white fur/wings/shields/armor, eyes, teeth, and glowing orbs.
+    - Cleanly removes exterior #FFFFFF studio background plus verified enclosed studio-white
+      cutout pockets (between legs, arm-waist, hair-arm, bowstrings) with color-decontaminated edges.
     """
     arr = np.array(rgb_img, dtype=np.float32)
     h, w, _ = arr.shape
@@ -85,61 +88,130 @@ def remove_white_bg_clean(
 
     dist = np.sqrt(np.sum((255.0 - arr) ** 2, axis=2))
     sat = np.max(arr, axis=2) - np.min(arr, axis=2)
-    # Slightly wider outer candidate mask so studio shadows/halos around hair & capes are caught
-    bg_cand = (dist < 44.0) & (sat < 28.0)
+    lum = 0.299 * arr[:, :, 0] + 0.587 * arr[:, :, 1] + 0.114 * arr[:, :, 2]
 
-    visited = np.zeros((h, w), dtype=bool)
+    min_lum9 = np.array(
+        Image.fromarray(np.clip(lum, 0, 255).astype(np.uint8)).filter(ImageFilter.MinFilter(9)),
+        dtype=np.float32,
+    )
+    max_sat9 = np.array(
+        Image.fromarray(np.clip(sat, 0, 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(9)),
+        dtype=np.float32,
+    )
+
+    # 1. Strict exterior flood fill from the 4 borders (never crosses ink lines or cel-shaded white/silver)
+    ext_pass = (dist < 24.0) & (sat < 16.0)
+    bg_mask = np.zeros((h, w), dtype=bool)
     q = deque()
 
     for x in range(w):
-        if bg_cand[0, x]:
-            visited[0, x] = True
+        if ext_pass[0, x]:
+            bg_mask[0, x] = True
             q.append((0, x))
-        if bg_cand[h - 1, x]:
-            visited[h - 1, x] = True
+        if ext_pass[h - 1, x]:
+            bg_mask[h - 1, x] = True
             q.append((h - 1, x))
     for y in range(h):
-        if bg_cand[y, 0]:
-            visited[y, 0] = True
+        if ext_pass[y, 0]:
+            bg_mask[y, 0] = True
             q.append((y, 0))
-        if bg_cand[y, w - 1]:
-            visited[y, w - 1] = True
+        if ext_pass[y, w - 1]:
+            bg_mask[y, w - 1] = True
             q.append((y, w - 1))
-
-    # Protect character face zone (eyes/teeth/expressions) from interior gap seeding
-    yy, xx = np.meshgrid(np.arange(h), np.arange(w), indexing="ij")
-    face_box = (yy >= int(h * 0.05)) & (yy <= int(h * 0.23)) & (xx >= int(w * 0.34)) & (xx <= int(w * 0.66))
-
-    # Seed unambiguous white interior gaps (between hair strands, legs, arms, weapons, bowstrings) >= 3x3 px
-    pure_white = (dist < 14.0) & (sat < 10.0) & (~face_box)
-    pw_img = Image.fromarray((pure_white * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))
-    pw_seeds = np.array(pw_img) > 128
-    sy_arr, sx_arr = np.where(pw_seeds & (~visited))
-    for sy, sx in zip(sy_arr, sx_arr):
-        visited[sy, sx] = True
-        q.append((sy, sx))
 
     while q:
         cy, cx = q.popleft()
         for ny, nx in ((cy - 1, cx), (cy + 1, cx), (cy, cx - 1), (cy, cx + 1)):
-            if 0 <= ny < h and 0 <= nx < w and not visited[ny, nx] and bg_cand[ny, nx]:
-                visited[ny, nx] = True
+            if 0 <= ny < h and 0 <= nx < w and not bg_mask[ny, nx] and ext_pass[ny, nx]:
+                bg_mask[ny, nx] = True
                 q.append((ny, nx))
 
-    alpha = np.ones((h, w), dtype=np.float32) * 255.0
-    ramp = np.clip((dist - 16.0) / 26.0, 0.0, 1.0) * 255.0
-    alpha[visited] = ramp[visited]
+    # 2. Verified enclosed studio-white pockets (between legs, arm-waist, bowstrings, hair-arm)
+    yy, xx = np.meshgrid(np.arange(h), np.arange(w), indexing="ij")
+    face_box = (yy >= int(h * 0.04)) & (yy <= int(h * 0.24)) & (xx >= int(w * 0.34)) & (xx <= int(w * 0.66))
 
-    # Smooth alpha edge slightly and erode sub-pixel white fringe
-    alpha_im = Image.fromarray(np.clip(alpha, 0, 255).astype(np.uint8))
-    alpha_smooth = np.array(alpha_im.filter(ImageFilter.GaussianBlur(radius=0.55)), dtype=np.float32)
-    alpha = np.where(visited, np.minimum(alpha, alpha_smooth), alpha)
+    hole_pass = (~bg_mask) & (dist < 22.0) & (sat < 15.0) & (~face_box)
+    vis = np.zeros((h, w), dtype=bool)
+
+    for y in range(h):
+        for x in range(w):
+            if hole_pass[y, x] and not vis[y, x]:
+                if dist[y, x] >= 5.0:
+                    continue
+                cq = deque([(y, x)])
+                vis[y, x] = True
+                pts = []
+                b_pts = []
+                pure2 = 0
+                while cq:
+                    cy, cx = cq.popleft()
+                    pts.append((cy, cx))
+                    if dist[cy, cx] < 2.5:
+                        pure2 += 1
+                    is_b = False
+                    for ny, nx in ((cy - 1, cx), (cy + 1, cx), (cy, cx - 1), (cy, cx + 1)):
+                        if 0 <= ny < h and 0 <= nx < w:
+                            if not hole_pass[ny, nx]:
+                                if not bg_mask[ny, nx]:
+                                    is_b = True
+                            elif not vis[ny, nx]:
+                                vis[ny, nx] = True
+                                cq.append((ny, nx))
+                    if is_b:
+                        b_pts.append((cy, cx))
+
+                sz = len(pts)
+                if sz < 150 or len(b_pts) == 0:
+                    continue
+
+                bys = np.array([p[0] for p in b_pts])
+                bxs = np.array([p[1] for p in b_pts])
+                ink9 = float((min_lum9[bys, bxs] < 135.0).mean())
+                wall9 = float(((min_lum9[bys, bxs] < 135.0) | (max_sat9[bys, bxs] >= 28.0)).mean())
+                pure2_r = float(pure2) / float(sz)
+
+                is_true_gap = (
+                    (wall9 >= 0.95 and ink9 >= 0.25 and pure2_r >= 0.42)
+                    or (sz >= 3500 and ink9 >= 0.60 and pure2_r >= 0.44)
+                    or (sz >= 3500 and ink9 >= 0.80 and pure2_r >= 0.35)
+                )
+                if is_true_gap:
+                    ys_p = np.array([p[0] for p in pts])
+                    xs_p = np.array([p[1] for p in pts])
+                    bg_mask[ys_p, xs_p] = True
+
+    # 3. Crisp anti-aliased boundary feather for ink-outlined edges + smooth aura fade for lineless glows
+    bg_u8 = (bg_mask * 255).astype(np.uint8)
+    bg_dil1 = np.array(Image.fromarray(bg_u8).filter(ImageFilter.MaxFilter(3))) > 128
+    bg_dil2 = np.array(Image.fromarray(bg_u8).filter(ImageFilter.MaxFilter(5))) > 128
+    bg_dil4 = np.array(Image.fromarray(bg_u8).filter(ImageFilter.MaxFilter(9))) > 128
+
+    ring1 = bg_dil1 & (~bg_mask)
+    ring2 = bg_dil2 & (~bg_dil1)
+    aura_ring = bg_dil4 & (~bg_mask) & (min_lum9 >= 165.0) & (dist < 48.0)
+
+    alpha = np.full((h, w), 255.0, dtype=np.float32)
+    alpha[bg_mask] = 0.0
+
+    r1_alpha = np.clip((dist - 12.0) / 38.0, 0.0, 1.0) * 255.0
+    r1_alpha = np.maximum(r1_alpha, np.clip((sat - 8.0) / 22.0, 0.0, 1.0) * 255.0)
+    alpha = np.where(ring1, np.minimum(alpha, r1_alpha), alpha)
+
+    r2_halo = ring2 & (dist < 28.0) & (sat < 16.0)
+    r2_alpha = np.clip((dist - 10.0) / 24.0, 0.25, 1.0) * 255.0
+    alpha = np.where(r2_halo, np.minimum(alpha, r2_alpha), alpha)
+
+    aura_alpha = np.maximum(
+        np.clip((dist - 14.0) / 34.0, 0.0, 1.0),
+        np.clip((sat - 10.0) / 28.0, 0.0, 1.0),
+    ) * 255.0
+    alpha = np.where(aura_ring, np.minimum(alpha, aura_alpha), alpha)
     alpha[alpha < 14.0] = 0.0
 
-    # True color decontamination (un-premultiply white from semi-transparent edge pixels)
-    edge_zone = (alpha > 0.0) & (alpha < 252.0)
+    # 4. True color decontamination (un-premultiply white ONLY on semi-transparent boundary pixels)
+    edge_zone = (alpha > 0.0) & (alpha < 250.0)
     if np.any(edge_zone):
-        a_norm = np.clip(alpha / 255.0, 0.12, 1.0)
+        a_norm = np.clip(alpha / 255.0, 0.16, 1.0)
         for c_i in range(3):
             cv = arr[:, :, c_i]
             defringed = (cv - (1.0 - a_norm) * 255.0) / a_norm
@@ -1087,8 +1159,9 @@ def main() -> None:
         cid: CUTOUT_DIR / f"{cid:03d}_{cards[cid]['seat_filename'].replace('.png', '')}.png"
         for cid in range(1, 111)
     }
+    force_reextract = "--reextract-cutouts" in sys.argv
     loaded_from_existing_cutouts = False
-    if all(p.exists() for p in existing_cutouts.values()):
+    if not force_reextract and all(p.exists() for p in existing_cutouts.values()):
         for cid, p in existing_cutouts.items():
             anime_cutouts[cid] = Image.open(p).convert("RGBA")
         loaded_from_existing_cutouts = True

@@ -1273,7 +1273,7 @@ export function mountLanding(): void {
   if (typeof window !== 'undefined' && 'caches' in window) {
     caches.keys().then((keys) => {
       keys.forEach((key) => {
-        if (key !== 'snshero-media-v16-sheets20261111') {
+        if (key !== 'snshero-media-v17-opaque20261111') {
           caches.delete(key).catch(() => {});
         }
       });

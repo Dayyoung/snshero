@@ -408,18 +408,18 @@ export function getCardDisplayModeImageCandidates(
   if (mode === 'full7') {
     return cutoutFile
       ? [
-          `/anime-character-sheets/cutouts/${cutoutFile}?v=20261111v1`,
-          `/anime-character-sheets/busts/${pad3}_bust.png?v=20261111v1`,
+          `/anime-character-sheets/cutouts/${cutoutFile}?v=20261111v2`,
+          `/anime-character-sheets/busts/${pad3}_bust.png?v=20261111v2`,
         ]
       : [];
   }
 
   const candidates = [
-    `/anime-character-sheets/busts/${pad3}_bust.png?v=20261111v1`,
-    `/anime-character-sheets/busts/${pad3}_bust.jpg?v=20261111v1`,
+    `/anime-character-sheets/busts/${pad3}_bust.png?v=20261111v2`,
+    `/anime-character-sheets/busts/${pad3}_bust.jpg?v=20261111v2`,
   ];
   if (cutoutFile) {
-    candidates.push(`/anime-character-sheets/cutouts/${cutoutFile}?v=20261111v1`);
+    candidates.push(`/anime-character-sheets/cutouts/${cutoutFile}?v=20261111v2`);
   }
   return candidates;
 }

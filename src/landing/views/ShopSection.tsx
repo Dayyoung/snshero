@@ -1230,7 +1230,7 @@ function simulatePackDraw(
 
     const asset = getCharacterAsset(picked.id);
     const pad3 = String(picked.id).padStart(3, '0');
-    const bustUrl = asset.bustPngUrl || `/anime-character-sheets/busts/${pad3}_bust.png?v=20261111v1`;
+    const bustUrl = asset.bustPngUrl || `/anime-character-sheets/busts/${pad3}_bust.png?v=20261111v2`;
     const seatUrl = asset.cutoutUrl || asset.seatUrl || `/seat/${asset.nameEn}.png`;
     const fallbackUrl =
       asset.fallbackSvgDataUri ||
