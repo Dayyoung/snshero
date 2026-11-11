@@ -938,35 +938,44 @@ def extract_quote_and_narration(
             quotes_in_ep.append((idx, m.group(1).strip(), p))
 
     chosen_quotes = []
-    if len(quotes_in_ep) >= 4:
+    if len(quotes_in_ep) >= 5:
         q_len = len(quotes_in_ep)
-        chosen_quotes = [
-            quotes_in_ep[0],
-            quotes_in_ep[max(1, q_len // 3)],
-            quotes_in_ep[max(2, (2 * q_len) // 3)],
-            quotes_in_ep[-1],
+        raw_indices = [
+            0,
+            max(1, q_len // 4),
+            max(2, q_len // 2),
+            max(3, (3 * q_len) // 4),
+            q_len - 1,
         ]
+        # Ensure strictly non-decreasing distinct indices when q_len >= 5
+        distinct_indices = []
+        for idx_val in raw_indices:
+            if distinct_indices and idx_val <= distinct_indices[-1]:
+                idx_val = min(q_len - 1, distinct_indices[-1] + 1)
+            distinct_indices.append(idx_val)
+        chosen_quotes = [quotes_in_ep[i] for i in distinct_indices]
     else:
-        for i in range(4):
+        for i in range(5):
             if i < len(quotes_in_ep):
                 chosen_quotes.append(quotes_in_ep[i])
             else:
-                p_i = min(n - 1, (i * n) // 4)
+                p_i = min(n - 1, (i * n) // 5)
                 chosen_quotes.append((p_i, "", paras[p_i]))
 
-    stage_labels = ["1장 · 발단", "2장 · 전개", "3장 · 절정", "4장 · 결투 개막"]
-    page_nums = ["01", "04", "07", "10"]
+    stage_labels = ["1장 · 발단", "2장 · 전개", "3장 · 전환", "4장 · 위기", "5장 · 결전"]
+    page_nums = ["01", "03", "06", "08", "10"]
     fallback_speakers = [
         ally_keys[0],
         ally_keys[1] if len(ally_keys) > 1 else ally_keys[0],
         enemy_keys[0],
+        enemy_keys[-1] if len(enemy_keys) > 1 else (ally_keys[-1] if len(ally_keys) > 1 else enemy_keys[0]),
         ally_keys[0],
     ]
 
     syn_sentences = [s.strip() for s in re.split(r"(?<=[다요!])\.\s+|(?<=!)\s+", synopsis_ko) if s.strip()]
 
     beats = []
-    for b_idx in range(4):
+    for b_idx in range(5):
         p_idx, q_text, raw_p = chosen_quotes[b_idx]
         prev_p = paras[p_idx - 1] if p_idx > 0 else ""
         next_p = paras[p_idx + 1] if p_idx + 1 < n else ""
@@ -976,7 +985,7 @@ def extract_quote_and_narration(
 
         if b_idx == 0:
             narr = summarize_narration(paras[0], prev_context_ko)
-        elif b_idx == 3:
+        elif b_idx == 4:
             narr = battle_reason_ko
         else:
             candidate = prev_p if (raw_p.startswith("“") and len(prev_p) >= 32 and not prev_p.startswith("“")) else raw_p
@@ -1179,8 +1188,8 @@ def main():
             for x in webtoon_manifest.get(str(ep), {}).get("images", [])
             if x.get("type") != "title_card"
         ]
-        wt_ratios = [0.08, 0.36, 0.66, 0.88]
-        cut_tags = ["1컷 · 발단", "2컷 · 전개", "3컷 · 위기", "4컷 · 결전"]
+        wt_ratios = [0.06, 0.27, 0.50, 0.72, 0.90]
+        cut_tags = ["1컷 · 발단", "2컷 · 전개", "3컷 · 전환", "4컷 · 위기", "5컷 · 결전"]
 
         syn_parts = [
             s.strip()
@@ -1190,12 +1199,23 @@ def main():
         one_line_ko = shorten_comic_line(battle_reason_ko, 66)
 
         scenes = []
+        used_wt_idx = set()
         for idx_b, b in enumerate(beats):
             wt_url = f"/images/storybook/ep_{pad}/page_{b['pageNum']}.webp"
             wt_quote = b["quote"]
             wt_speaker = b["speakerName"]
             if wt_imgs:
-                pick = wt_imgs[min(len(wt_imgs) - 1, int(len(wt_imgs) * wt_ratios[idx_b]))]
+                pick_idx = min(len(wt_imgs) - 1, int(len(wt_imgs) * wt_ratios[idx_b]))
+                if len(wt_imgs) >= 5:
+                    while pick_idx in used_wt_idx and pick_idx + 1 < len(wt_imgs):
+                        pick_idx += 1
+                    if pick_idx in used_wt_idx:
+                        for cand in range(len(wt_imgs)):
+                            if cand not in used_wt_idx:
+                                pick_idx = cand
+                                break
+                used_wt_idx.add(pick_idx)
+                pick = wt_imgs[pick_idx]
                 wt_url = pick.get("localArtUrl") or pick.get("imageUrl") or wt_url
                 dlgs = [
                     d
@@ -1209,8 +1229,10 @@ def main():
             if idx_b == 0:
                 base_cap = syn_parts[0] if syn_parts else prev_context_ko
             elif idx_b == 1:
-                base_cap = syn_parts[min(1, len(syn_parts) - 1)] if syn_parts else b["narration"]
+                base_cap = syn_parts[min(1, len(syn_parts) - 1)] if len(syn_parts) >= 2 else b["narration"]
             elif idx_b == 2:
+                base_cap = b["narration"]
+            elif idx_b == 3:
                 base_cap = syn_parts[-1] if syn_parts else b["narration"]
             else:
                 base_cap = battle_reason_ko

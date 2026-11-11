@@ -1,0 +1,60 @@
+{
+  "name": "눈히어로 — 엘윈마을 카드 배틀",
+  "short_name": "눈히어로",
+  "description": "눈히어로(SNSHero) 전용 전체화면 웹 카드 배틀 게임 — 랭킹대전 · AI대전 · 스토리모드",
+  "categories": ["games", "entertainment", "card games", "strategy games"],
+  "lang": "ko",
+  "dir": "ltr",
+  "id": "/game.html",
+  "scope": "/",
+  "start_url": "/game.html",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#090604",
+  "theme_color": "#1b120b",
+  "related_applications": [],
+  "icons": [
+    {
+      "src": "/hs-assets/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/hs-assets/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/hs-assets/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "스토리모드 (카단의 여정)",
+      "short_name": "스토리모드",
+      "description": "40화 웹툰 스토리모드 즉시 출진",
+      "url": "/game.html?mode=story",
+      "icons": [{ "src": "/hs-assets/pwa-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "랭킹대전",
+      "short_name": "랭킹대전",
+      "description": "정통 30장 등급전·일반전 입장",
+      "url": "/game.html?mode=ranked",
+      "icons": [{ "src": "/hs-assets/pwa-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "AI대전",
+      "short_name": "AI대전",
+      "description": "9대 종족 AI대전 입장",
+      "url": "/game.html?mode=ai",
+      "icons": [{ "src": "/hs-assets/pwa-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}

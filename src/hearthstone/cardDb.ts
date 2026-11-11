@@ -319,6 +319,41 @@ export const DISENCHANT_VALUE: Record<string, number> = {
   LEGENDARY: 400,
 };
 
+export const GOLDEN_CRAFTING_COST: Record<string, number> = {
+  COMMON: 400,
+  RARE: 800,
+  EPIC: 1600,
+  LEGENDARY: 3200,
+};
+
+export const GOLDEN_DISENCHANT_VALUE: Record<string, number> = {
+  COMMON: 50,
+  RARE: 100,
+  EPIC: 400,
+  LEGENDARY: 1600,
+};
+
+/**
+ * 무기 카드의 내구도는 데이터에서 `durability` 또는 `health` 필드에 보관되므로
+ * 0 표기 버그 없이 정확한 정통 내구도 수치를 반환합니다.
+ */
+export function getCardBaseDurability(card: Pick<ClassicCardDef, 'durability' | 'health'>): number {
+  if (typeof card.durability === 'number' && card.durability > 0) return card.durability;
+  if (typeof card.health === 'number' && card.health > 0) return card.health;
+  return 1;
+}
+
+/**
+ * `/stone.html` 382장 도감과 100% 동일한 슬롯 순서(마나 비용 오름차순 -> 원작 기준 `stoneSortOrder`) 비교기
+ */
+export function compareCardsStoneOrder(a: ClassicCardDef, b: ClassicCardDef): number {
+  if (a.cost !== b.cost) return a.cost - b.cost;
+  if (a.stoneSortOrder !== undefined && b.stoneSortOrder !== undefined && a.stoneSortOrder !== b.stoneSortOrder) {
+    return a.stoneSortOrder - b.stoneSortOrder;
+  }
+  return a.name.localeCompare(b.name, 'ko');
+}
+
 /**
  * 9 SNSHero Faction Starter / Iconic Archetype Preset Decks (each 30 verified cards)
  */

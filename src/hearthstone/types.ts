@@ -36,6 +36,7 @@ export interface ClassicCardDef {
   overload: number;
   collectible: boolean;
   artId: string;
+  stoneSortOrder?: number;
   snsCharId?: number;
   snsCharCode?: string;
   snsCharName?: string;
@@ -343,11 +344,11 @@ export const CLASSIC_HEROES: Record<HeroClass, HeroDef> = {
 };
 
 export const HERO_CLASS_ORDER: HeroClass[] = [
-  'PRIEST',
   'MAGE',
   'WARRIOR',
   'HUNTER',
   'PALADIN',
+  'PRIEST',
   'ROGUE',
   'SHAMAN',
   'WARLOCK',

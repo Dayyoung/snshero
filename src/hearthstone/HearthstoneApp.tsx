@@ -23,6 +23,7 @@ import { CollectionScreen } from './screens/CollectionScreen';
 import { HeroDeckSelectScreen } from './screens/HeroDeckSelectScreen';
 import { PackOpeningScreen } from './screens/PackOpeningScreen';
 import { TavernIntroScreen } from './screens/TavernIntroScreen';
+import { initGamePwaFullscreen, isStandalonePwa } from './pwaFullscreen';
 import { hsStorage } from './storage';
 import {
   BoardThemeId,
@@ -76,6 +77,7 @@ export const HearthstoneApp: React.FC = () => {
   useEffect(() => {
     let mounted = true;
     initSnsHeroConsoleApi();
+    initGamePwaFullscreen();
 
     const syncFromStorage = () => {
       if (mounted) {
@@ -127,6 +129,32 @@ export const HearthstoneApp: React.FC = () => {
             setPopupReturnDone(payRes);
           } else {
             setPaymentResult(payRes);
+            setScreen('BOX_HUB');
+          }
+        } else {
+          // PWA App Shortcuts (`?mode=story` / `?mode=ranked` / `?mode=ai`) or standalone launch
+          const params = new URLSearchParams(window.location.search);
+          const launchMode = params.get('mode')?.toLowerCase();
+          if (launchMode === 'story') {
+            hsStorage.markJourneyGuideDone();
+            const decks = hsStorage.getDecks();
+            const kadanDeck = decks.find((d) => d.heroClass === 'PRIEST') || decks[0];
+            setActiveBattleParams({
+              mode: 'TUTORIAL',
+              deck: kadanDeck,
+              preferredOpponentClass: 'ROGUE',
+              boardTheme: 'STORMWIND',
+            });
+            setScreen('BATTLE');
+          } else if (launchMode === 'ranked') {
+            hsStorage.markJourneyGuideDone();
+            setSelectedMode('RANKED');
+            setScreen('HERO_SELECT');
+          } else if (launchMode === 'ai') {
+            hsStorage.markJourneyGuideDone();
+            setSelectedMode('PRACTICE_NORMAL');
+            setScreen('HERO_SELECT');
+          } else if (isStandalonePwa()) {
             setScreen('BOX_HUB');
           }
         }

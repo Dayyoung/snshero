@@ -570,10 +570,13 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         hsAudio.playInnkeeper(res.drawn.isGolden ? 'golden_legendary' : 'legendary');
       } else if (rar === 'EPIC') {
         hsAudio.playSfx('pack_epic', 0.9);
-        hsAudio.playInnkeeper('epic');
+        hsAudio.playInnkeeper(res.drawn.isGolden ? 'golden_epic' : 'epic');
       } else if (rar === 'RARE') {
         hsAudio.playSfx('pack_rare', 0.85);
-        hsAudio.playInnkeeper('rare');
+        hsAudio.playInnkeeper(res.drawn.isGolden ? 'golden_rare' : 'rare');
+      } else if (res.drawn.isGolden) {
+        hsAudio.playSfx('pack_rare', 0.78);
+        hsAudio.playInnkeeper('golden_common');
       } else {
         hsAudio.playSfx('card_flip', 0.85);
       }

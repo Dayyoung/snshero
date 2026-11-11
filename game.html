@@ -3,10 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#1b120b" />
+  <meta name="background-color" content="#090604" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="눈히어로" />
+  <meta name="application-name" content="눈히어로" />
+  <link rel="manifest" href="/game-manifest.json" />
   <link rel="icon" type="image/png" href="/favicon.png" />
-  <link rel="apple-touch-icon" href="/icon.png" />
-  <title>눈히어로 — 카단의 여정</title>
-  <meta name="description" content="눈히어로 공식 『카단의 여정』 세계관 기반 11종족 110영웅 · 수집 카드 382종 카드 배틀" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/hs-assets/pwa-icon-192.png" />
+  <title>눈히어로 — 엘윈마을 카드 배틀</title>
+  <meta name="description" content="눈히어로(SNSHero) 공식 전체화면 웹 카드 배틀 — 랭킹대전 · AI대전 · 스토리모드" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet" />
@@ -29,13 +37,27 @@
       padding: 0;
       width: 100%;
       height: 100dvh;
+      min-height: 100dvh;
       overflow: hidden;
+      overscroll-behavior: none;
+      -webkit-tap-highlight-color: transparent;
       background: radial-gradient(ellipse at center, #1b120b 0%, #090604 100%);
       color: #f8ebd2;
       font-family: var(--hs-font-sans) !important;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       cursor: default;
+    }
+
+    @media all and (display-mode: fullscreen), all and (display-mode: standalone) {
+      html, body, #hs-root {
+        width: 100vw;
+        height: 100dvh;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        padding-left: env(safe-area-inset-left, 0px);
+        padding-right: env(safe-area-inset-right, 0px);
+      }
     }
 
     button, input, select, textarea, [role="button"], .hs-clickable {
@@ -131,6 +153,33 @@
       85% { transform: translate3d(8px, 6px, 0); }
     }
 
+    /* Damage-proportional dynamic screen shake (scaled by --hs-shake-x, --hs-shake-y, --hs-shake-rot, --hs-shake-dur) */
+    @keyframes hsDamageShakeA {
+      0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+      14% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -1), var(--hs-shake-y, 4px), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * -1)); }
+      32% { transform: translate3d(var(--hs-shake-x, 6px), calc(var(--hs-shake-y, 4px) * -0.9), 0) rotate(var(--hs-shake-rot, 0.35deg)); }
+      52% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -0.72), calc(var(--hs-shake-y, 4px) * -0.65), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * -0.65)); }
+      72% { transform: translate3d(calc(var(--hs-shake-x, 6px) * 0.48), calc(var(--hs-shake-y, 4px) * 0.45), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * 0.4)); }
+      88% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -0.22), calc(var(--hs-shake-y, 4px) * 0.2), 0) rotate(0deg); }
+    }
+
+    @keyframes hsDamageShakeB {
+      0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+      14% { transform: translate3d(var(--hs-shake-x, 6px), calc(var(--hs-shake-y, 4px) * -1), 0) rotate(var(--hs-shake-rot, 0.35deg)); }
+      32% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -1), var(--hs-shake-y, 4px), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * -1)); }
+      52% { transform: translate3d(calc(var(--hs-shake-x, 6px) * 0.72), calc(var(--hs-shake-y, 4px) * 0.65), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * 0.65)); }
+      72% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -0.48), calc(var(--hs-shake-y, 4px) * -0.45), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * -0.4)); }
+      88% { transform: translate3d(calc(var(--hs-shake-x, 6px) * 0.22), calc(var(--hs-shake-y, 4px) * -0.2), 0) rotate(0deg); }
+    }
+
+    .hs-damage-shake-a {
+      animation: hsDamageShakeA var(--hs-shake-dur, 280ms) cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    .hs-damage-shake-b {
+      animation: hsDamageShakeB var(--hs-shake-dur, 280ms) cubic-bezier(.36,.07,.19,.97) both;
+    }
+
     @keyframes hsFloat {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-7px); }
@@ -218,5 +267,12 @@
 <body>
   <div id="hs-root"></div>
   <script type="module" src="/src/hearthstone/main.tsx"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
+      });
+    }
+  </script>
 </body>
 </html>

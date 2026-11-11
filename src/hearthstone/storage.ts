@@ -2,6 +2,7 @@ import {
   CLASSIC_PRESET_DECKS,
   CRAFTING_COST,
   DISENCHANT_VALUE,
+  GOLDEN_DISENCHANT_VALUE,
   cardDb,
   getStarsNeededForRank,
 } from './cardDb';
@@ -20,10 +21,41 @@ import {
 const KEYS = {
   PROFILE: 'hero_hs_profile',
   COLLECTION: 'hero_hs_collection',
+  GOLDEN_COLLECTION: 'hero_hs_golden_collection',
   DECKS: 'hero_hs_decks',
   QUESTS: 'hero_hs_quests',
   PITY: 'hero_hs_pack_pity',
   LORE_VER: 'hero_hs_lore_version',
+};
+
+export interface PackPityState {
+  totalPacksOpened: number;
+  firstTenLegendaryClaimed: boolean;
+  packsSinceLegendary: number;
+  packsSinceEpic: number;
+  packsSinceGoldenCommon: number;
+  packsSinceGoldenRare: number;
+  packsSinceGoldenEpic: number;
+  packsSinceGoldenLegendary: number;
+  everObtainedMaxCopies: Record<string, number>;
+}
+
+export const PACK_DROP_RATES_SPEC = {
+  cardsPerPack: 5,
+  guaranteedMinRarity: 'RARE' as const,
+  firstLegendaryGuaranteePacks: 10,
+  legendaryPityPacks: 40,
+  epicPityPacks: 10,
+  goldenCommonPityPacks: 25,
+  goldenRarePityPacks: 29,
+  goldenEpicPityPacks: 142,
+  goldenLegendaryPityPacks: 361,
+  avgPackLegendaryPct: 5.0,
+  avgPackEpicPct: 21.0,
+  perCardGoldenCommonPct: 1.47,
+  perCardGoldenRarePct: 1.37,
+  perCardGoldenEpicPct: 0.31,
+  perCardGoldenLegendaryPct: 0.11,
 };
 
 const CURRENT_LORE_VERSION = 'snshero_v3';
@@ -81,7 +113,7 @@ export interface ModeRewardGuide {
 export const MODE_REWARD_GUIDES: Record<GameMode, ModeRewardGuide> = {
   TUTORIAL: {
     mode: 'TUTORIAL',
-    modeNameKo: '카단의 여정 (스토리 RPG)',
+    modeNameKo: '스토리모드 (카단의 여정)',
     playStyleBadge: '자동 플레이 기본 · 3장=3배 강화 적용',
     baseWinRewardText: '승리 시 45G~240G+ (회차·환생 비례 증가)',
     specialBonusText: '최초 돌파 +30G · 5화마다 보스 팩 +1개 · 40화 완주 시 +300G & 팩 +3개 + 환생 개방',
@@ -89,7 +121,7 @@ export const MODE_REWARD_GUIDES: Record<GameMode, ModeRewardGuide> = {
   },
   RANKED: {
     mode: 'RANKED',
-    modeNameKo: '대전 · 등급전',
+    modeNameKo: '랭킹대전 · 등급전',
     playStyleBadge: '수동 플레이 기본 · 정통 1배 룰',
     baseWinRewardText: '1승당 +25 골드 + 등급 별 ★+1 획득',
     specialBonusText: '3승 달성마다 +30G 추가 · 3연승 시 별 ★+2 상승 · 전설 등급 도전',
@@ -97,7 +129,7 @@ export const MODE_REWARD_GUIDES: Record<GameMode, ModeRewardGuide> = {
   },
   CASUAL: {
     mode: 'CASUAL',
-    modeNameKo: '대전 · 일반전',
+    modeNameKo: '랭킹대전 · 일반전',
     playStyleBadge: '수동 플레이 기본 · 정통 1배 룰',
     baseWinRewardText: '1승당 +15 골드 (패배 시 등급 하락 없음)',
     specialBonusText: '3승 달성마다 +20G 추가 · 일일 의뢰 안전한 달성',
@@ -105,7 +137,7 @@ export const MODE_REWARD_GUIDES: Record<GameMode, ModeRewardGuide> = {
   },
   PRACTICE_NORMAL: {
     mode: 'PRACTICE_NORMAL',
-    modeNameKo: '엘윈마을 수련 · 일반',
+    modeNameKo: 'AI대전 · 일반 AI',
     playStyleBadge: '수동 플레이 기본 · 정통 1배 룰',
     baseWinRewardText: '1승당 +10 골드',
     specialBonusText: '9개 종족별 최초 제압 시 각 +25G 보너스 (총 +225G)',
@@ -113,7 +145,7 @@ export const MODE_REWARD_GUIDES: Record<GameMode, ModeRewardGuide> = {
   },
   PRACTICE_EXPERT: {
     mode: 'PRACTICE_EXPERT',
-    modeNameKo: '엘윈마을 수련 · 숙련가',
+    modeNameKo: 'AI대전 · 숙련 AI',
     playStyleBadge: '수동 플레이 기본 · 정통 1배 룰',
     baseWinRewardText: '1승당 +20 골드',
     specialBonusText: '종족별 최초 제압 +50G · 9종족 숙련가 올클리어 시 눈히어로 팩 +2개 지급',
@@ -179,7 +211,7 @@ function defaultQuests(): DailyQuest[] {
     {
       id: 'q_win_3',
       title: '엘윈마을의 승부사',
-      description: '여정·대전·수련 중 아무 모드에서 2승 달성',
+      description: '스토리모드·랭킹대전·AI대전 중 아무 모드에서 2승 달성',
       progress: 0,
       goal: 2,
       rewardGold: 60,
@@ -336,6 +368,78 @@ class HearthstoneStorage {
     emitStateChanged();
   }
 
+  getGoldenCollection(): CollectionMap {
+    try {
+      const raw = localStorage.getItem(KEYS.GOLDEN_COLLECTION);
+      if (raw) return JSON.parse(raw) as CollectionMap;
+    } catch {
+      // ignore
+    }
+    return {};
+  }
+
+  saveGoldenCollection(gcol: CollectionMap) {
+    localStorage.setItem(KEYS.GOLDEN_COLLECTION, JSON.stringify(gcol));
+    emitStateChanged();
+  }
+
+  getPackPityState(): PackPityState {
+    const col = this.getCollection();
+    const fallbackEver: Record<string, number> = {};
+    for (const [cid, cnt] of Object.entries(col)) {
+      if (cnt > 0) fallbackEver[cid] = cnt;
+    }
+    const defaults: PackPityState = {
+      totalPacksOpened: 0,
+      firstTenLegendaryClaimed: false,
+      packsSinceLegendary: 0,
+      packsSinceEpic: 0,
+      packsSinceGoldenCommon: 0,
+      packsSinceGoldenRare: 0,
+      packsSinceGoldenEpic: 0,
+      packsSinceGoldenLegendary: 0,
+      everObtainedMaxCopies: fallbackEver,
+    };
+    try {
+      const raw = localStorage.getItem(KEYS.PITY);
+      if (!raw) return defaults;
+      const trimmed = raw.trim();
+      // Migrate legacy numeric string pity counter seamlessly
+      if (/^\d+$/.test(trimmed)) {
+        const legacyNum = Math.max(0, Number(trimmed) || 0);
+        return {
+          ...defaults,
+          packsSinceLegendary: Math.min(39, legacyNum),
+        };
+      }
+      const parsed = JSON.parse(trimmed) as Partial<PackPityState>;
+      const mergedEver: Record<string, number> = {
+        ...fallbackEver,
+        ...(parsed.everObtainedMaxCopies || {}),
+      };
+      for (const [cid, cnt] of Object.entries(fallbackEver)) {
+        mergedEver[cid] = Math.max(mergedEver[cid] || 0, cnt);
+      }
+      return {
+        totalPacksOpened: Math.max(0, Number(parsed.totalPacksOpened) || 0),
+        firstTenLegendaryClaimed: Boolean(parsed.firstTenLegendaryClaimed),
+        packsSinceLegendary: Math.max(0, Number(parsed.packsSinceLegendary) || 0),
+        packsSinceEpic: Math.max(0, Number(parsed.packsSinceEpic) || 0),
+        packsSinceGoldenCommon: Math.max(0, Number(parsed.packsSinceGoldenCommon) || 0),
+        packsSinceGoldenRare: Math.max(0, Number(parsed.packsSinceGoldenRare) || 0),
+        packsSinceGoldenEpic: Math.max(0, Number(parsed.packsSinceGoldenEpic) || 0),
+        packsSinceGoldenLegendary: Math.max(0, Number(parsed.packsSinceGoldenLegendary) || 0),
+        everObtainedMaxCopies: mergedEver,
+      };
+    } catch {
+      return defaults;
+    }
+  }
+
+  private savePackPityState(state: PackPityState) {
+    localStorage.setItem(KEYS.PITY, JSON.stringify(state));
+  }
+
   getDecks(): CustomDeck[] {
     try {
       const raw = localStorage.getItem(KEYS.DECKS);
@@ -382,6 +486,19 @@ class HearthstoneStorage {
     return true;
   }
 
+  /**
+   * 공식 하스스톤 카드 팩 시스템 (나무위키 `하스스톤/카드 팩` & 블리자드 공시 확률 100% 준수):
+   * 1) 1팩 = 5장, 기본(FREE 129장) 제외 253장 클래식 전문가 세트에서만 등장, 최소 희귀(RARE) 이상 1장 100% 확정
+   * 2) 천장(Pity Timer):
+   *    - 최초 10팩 이내 첫 전설 1장 100% 확정 (`firstTenLegendaryClaimed`)
+   *    - 일반 전설 천장 최대 40팩 (팩당 평균 약 5.0%, 30팩 이후 소프트 확률 상승)
+   *    - 특급(영웅) 천장 최대 10팩 (팩당 평균 약 21.0%, 7팩 이후 소프트 확률 상승)
+   *    - 황금 천장: 황금 일반 25팩 / 황금 희귀 29팩 / 황금 특급 142팩 / 황금 전설 361팩
+   * 3) 전 등급 중복 방지(Duplicate Protection):
+   *    - 전설(36종): 마력 추출/직접 제작 이력(`everObtainedMaxCopies`) 포함 미수집 전설 100% 우선 등장
+   *    - 일반(98종)·희귀(81종)·특급(38종): 해당 등급 전 종을 2장씩 수집할 때까지 2장 미만 카드 우선 등장
+   *    - 단일 팩(5장) 내 동일 카드 3장 이상(전설 2장 이상) 동시 등장 원천 차단
+   */
   openOnePack(): OpenedPackCard[] | null {
     const p = this.getProfile();
     if (p.packs <= 0) return null;
@@ -389,59 +506,169 @@ class HearthstoneStorage {
     this.saveProfile(p);
 
     const col = this.getCollection();
-    const allCollectible = cardDb.getAllCollectible();
-    const byRarity: Record<CardRarity, ClassicCardDef[]> = {
-      FREE: allCollectible.filter((c) => c.rarity === 'FREE'),
-      COMMON: allCollectible.filter((c) => c.rarity === 'COMMON' || c.rarity === 'FREE'),
-      RARE: allCollectible.filter((c) => c.rarity === 'RARE'),
-      EPIC: allCollectible.filter((c) => c.rarity === 'EPIC'),
-      LEGENDARY: allCollectible.filter((c) => c.rarity === 'LEGENDARY'),
+    const gcol = this.getGoldenCollection();
+    const pity = this.getPackPityState();
+
+    const expertPool = cardDb.getAllCollectible().filter((c) => c.rarity !== 'FREE');
+    const byRarity: Record<Exclude<CardRarity, 'FREE'>, ClassicCardDef[]> = {
+      COMMON: expertPool.filter((c) => c.rarity === 'COMMON'),
+      RARE: expertPool.filter((c) => c.rarity === 'RARE'),
+      EPIC: expertPool.filter((c) => c.rarity === 'EPIC'),
+      LEGENDARY: expertPool.filter((c) => c.rarity === 'LEGENDARY'),
     };
 
-    let pity = Number(localStorage.getItem(KEYS.PITY) || '0') + 1;
-    const rollRarity = (forceRareOrBetter: boolean): CardRarity => {
+    const nextLegStreak = pity.packsSinceLegendary + 1;
+    const nextEpicStreak = pity.packsSinceEpic + 1;
+    const legCap = pity.firstTenLegendaryClaimed
+      ? PACK_DROP_RATES_SPEC.legendaryPityPacks
+      : PACK_DROP_RATES_SPEC.firstLegendaryGuaranteePacks;
+
+    const forceLegendaryInPack = nextLegStreak >= legCap;
+    const forceEpicInPack = nextEpicStreak >= PACK_DROP_RATES_SPEC.epicPityPacks;
+
+    // Soft-pity ramped per-slot probabilities calibrated to ~5.0% pack Legendary & ~21.0% pack Epic
+    const slotLegProb = !pity.firstTenLegendaryClaimed
+      ? nextLegStreak >= 8
+        ? 0.085
+        : 0.022
+      : nextLegStreak >= 31
+        ? 0.0085 + (nextLegStreak - 30) * 0.028
+        : 0.0085;
+    const slotEpicProb =
+      nextEpicStreak >= 8 ? 0.032 + (nextEpicStreak - 7) * 0.055 : 0.032;
+    const slotRareProb = 0.228;
+
+    const rarities: Exclude<CardRarity, 'FREE'>[] = Array.from({ length: 5 }, () => {
       const r = Math.random();
-      if (pity >= 15 || r < 0.035) {
-        pity = 0;
-        return 'LEGENDARY';
-      }
-      if (r < 0.12) return 'EPIC';
-      if (forceRareOrBetter || r < 0.35) return 'RARE';
+      if (r < slotLegProb) return 'LEGENDARY';
+      if (r < slotLegProb + slotEpicProb) return 'EPIC';
+      if (r < slotLegProb + slotEpicProb + slotRareProb) return 'RARE';
       return 'COMMON';
-    };
+    });
 
-    const rarities: CardRarity[] = [
-      rollRarity(false),
-      rollRarity(false),
-      rollRarity(false),
-      rollRarity(false),
-      rollRarity(false),
-    ];
-    if (!rarities.some((rar) => rar !== 'COMMON')) {
-      rarities[Math.floor(Math.random() * 5)] = rollRarity(true);
+    // Enforce Legendary Pity (10th pack first-time OR 40th pack standard)
+    if (forceLegendaryInPack && !rarities.includes('LEGENDARY')) {
+      const candidateIdxs = rarities
+        .map((rar, i) => (rar === 'COMMON' ? i : -1))
+        .filter((i) => i >= 0);
+      const targetIdx =
+        candidateIdxs.length > 0
+          ? candidateIdxs[Math.floor(Math.random() * candidateIdxs.length)]
+          : 0;
+      rarities[targetIdx] = 'LEGENDARY';
     }
-    localStorage.setItem(KEYS.PITY, String(pity));
 
+    // Enforce Epic Pity (10th pack) without overwriting a Legendary
+    if (forceEpicInPack && !rarities.includes('EPIC')) {
+      const nonLegIdxs = rarities
+        .map((rar, i) => (rar !== 'LEGENDARY' ? i : -1))
+        .filter((i) => i >= 0);
+      if (nonLegIdxs.length > 0) {
+        const commonNonLeg = nonLegIdxs.filter((i) => rarities[i] === 'COMMON');
+        const poolIdxs = commonNonLeg.length > 0 ? commonNonLeg : nonLegIdxs;
+        rarities[poolIdxs[Math.floor(Math.random() * poolIdxs.length)]] = 'EPIC';
+      }
+    }
+
+    // Enforce Guaranteed At Least 1 Rare or Better per Pack
+    if (!rarities.some((rar) => rar !== 'COMMON')) {
+      const idx = Math.floor(Math.random() * 5);
+      rarities[idx] = 'RARE';
+    }
+
+    // Update Pack-Level Rarity Pity Counters
+    pity.totalPacksOpened += 1;
+    if (rarities.includes('LEGENDARY')) {
+      pity.packsSinceLegendary = 0;
+      pity.firstTenLegendaryClaimed = true;
+    } else {
+      pity.packsSinceLegendary = nextLegStreak;
+    }
+    if (rarities.includes('EPIC')) {
+      pity.packsSinceEpic = 0;
+    } else {
+      pity.packsSinceEpic = nextEpicStreak;
+    }
+
+    // Golden Card Roll + Golden Pity Timers (25 / 29 / 142 / 361 packs)
+    let hitGoldenCommon = false;
+    let hitGoldenRare = false;
+    let hitGoldenEpic = false;
+    let hitGoldenLegendary = false;
+
+    const goldenFlags: boolean[] = rarities.map((rar) => {
+      if (rar === 'LEGENDARY') {
+        const forceGold =
+          !hitGoldenLegendary &&
+          pity.packsSinceGoldenLegendary + 1 >= PACK_DROP_RATES_SPEC.goldenLegendaryPityPacks;
+        const g = forceGold || Math.random() < 0.091;
+        if (g) hitGoldenLegendary = true;
+        return g;
+      }
+      if (rar === 'EPIC') {
+        const forceGold =
+          !hitGoldenEpic &&
+          pity.packsSinceGoldenEpic + 1 >= PACK_DROP_RATES_SPEC.goldenEpicPityPacks;
+        const g = forceGold || Math.random() < 0.072;
+        if (g) hitGoldenEpic = true;
+        return g;
+      }
+      if (rar === 'RARE') {
+        const forceGold =
+          !hitGoldenRare &&
+          pity.packsSinceGoldenRare + 1 >= PACK_DROP_RATES_SPEC.goldenRarePityPacks;
+        const g = forceGold || Math.random() < 0.06;
+        if (g) hitGoldenRare = true;
+        return g;
+      }
+      const forceGold =
+        !hitGoldenCommon &&
+        pity.packsSinceGoldenCommon + 1 >= PACK_DROP_RATES_SPEC.goldenCommonPityPacks;
+      const g = forceGold || Math.random() < 0.0205;
+      if (g) hitGoldenCommon = true;
+      return g;
+    });
+
+    pity.packsSinceGoldenCommon = hitGoldenCommon ? 0 : pity.packsSinceGoldenCommon + 1;
+    pity.packsSinceGoldenRare = hitGoldenRare ? 0 : pity.packsSinceGoldenRare + 1;
+    pity.packsSinceGoldenEpic = hitGoldenEpic ? 0 : pity.packsSinceGoldenEpic + 1;
+    pity.packsSinceGoldenLegendary = hitGoldenLegendary ? 0 : pity.packsSinceGoldenLegendary + 1;
+
+    // Select Specific Cards with Full Duplicate Protection & Per-Pack Copy Cap
+    const inPackCounts: Record<string, number> = {};
     const results: OpenedPackCard[] = rarities.map((rar, slotIdx) => {
       const pool = byRarity[rar].length > 0 ? byRarity[rar] : byRarity.COMMON;
-      let picked = pool[Math.floor(Math.random() * pool.length)];
+      const deckCopyCap = rar === 'LEGENDARY' ? 1 : 2;
 
-      // Gentle progression aid on slot 0: help owned combat cards reach 3+ stack for Journey mode
-      if (slotIdx === 0 && rar === 'COMMON' && Math.random() < 0.42) {
-        const upgradeCandidates = pool.filter(
-          (c) => hasCombatStatsForJourney(c) && (col[c.id] || 0) >= 2 && (col[c.id] || 0) < 5,
-        );
-        if (upgradeCandidates.length > 0) {
-          picked = upgradeCandidates[Math.floor(Math.random() * upgradeCandidates.length)];
-        }
-      }
+      // Filter out cards that already hit deckCopyCap inside THIS same 5-card pack
+      const packLegalPool = pool.filter((c) => (inPackCounts[c.id] || 0) < deckCopyCap);
+      const baseCandidates = packLegalPool.length > 0 ? packLegalPool : pool;
 
+      // Duplicate Protection: prioritize cards whose lifetime max copies (`everObtainedMaxCopies`) < deckCopyCap
+      const uncollectedPool = baseCandidates.filter((c) => {
+        const lifetimeCopies = Math.max(pity.everObtainedMaxCopies[c.id] || 0, col[c.id] || 0);
+        return lifetimeCopies < deckCopyCap;
+      });
+
+      const activePool = uncollectedPool.length > 0 ? uncollectedPool : baseCandidates;
+      const picked = activePool[Math.floor(Math.random() * activePool.length)];
+      const isGolden = goldenFlags[slotIdx];
+
+      inPackCounts[picked.id] = (inPackCounts[picked.id] || 0) + 1;
       const prevCount = col[picked.id] || 0;
       const nextCount = prevCount + 1;
       col[picked.id] = nextCount;
+      if (isGolden) {
+        gcol[picked.id] = (gcol[picked.id] || 0) + 1;
+      }
+      pity.everObtainedMaxCopies[picked.id] = Math.max(
+        pity.everObtainedMaxCopies[picked.id] || 0,
+        nextCount,
+      );
+
       return {
         card: picked,
-        isGolden: Math.random() < 0.08,
+        isGolden,
         isNew: prevCount === 0,
         newOwnedCount: nextCount,
         newJourneyMultiplier: getJourneyCardMultiplier(picked, nextCount),
@@ -449,6 +676,8 @@ class HearthstoneStorage {
     });
 
     this.saveCollection(col);
+    this.saveGoldenCollection(gcol);
+    this.savePackPityState(pity);
     return results;
   }
 
@@ -471,12 +700,14 @@ class HearthstoneStorage {
 
     const col = this.getCollection();
     const allCollectible = cardDb.getAllCollectible();
+    // Exclude FREE basic cards (already owned 2x for free) from single reinforcement draws too!
+    const reinforcementPool = allCollectible.filter((c) => c.rarity !== 'FREE');
     const byRarity: Record<CardRarity, ClassicCardDef[]> = {
-      FREE: allCollectible.filter((c) => c.rarity === 'FREE'),
-      COMMON: allCollectible.filter((c) => c.rarity === 'COMMON' || c.rarity === 'FREE'),
-      RARE: allCollectible.filter((c) => c.rarity === 'RARE'),
-      EPIC: allCollectible.filter((c) => c.rarity === 'EPIC'),
-      LEGENDARY: allCollectible.filter((c) => c.rarity === 'LEGENDARY'),
+      FREE: [],
+      COMMON: reinforcementPool.filter((c) => c.rarity === 'COMMON'),
+      RARE: reinforcementPool.filter((c) => c.rarity === 'RARE'),
+      EPIC: reinforcementPool.filter((c) => c.rarity === 'EPIC'),
+      LEGENDARY: reinforcementPool.filter((c) => c.rarity === 'LEGENDARY'),
     };
 
     const r = Math.random();
@@ -504,15 +735,27 @@ class HearthstoneStorage {
       }
     }
 
+    const isGolden = Math.random() < 0.06;
     const prevCount = col[picked.id] || 0;
     const nextCount = prevCount + 1;
     col[picked.id] = nextCount;
     this.saveCollection(col);
+    if (isGolden) {
+      const gcol = this.getGoldenCollection();
+      gcol[picked.id] = (gcol[picked.id] || 0) + 1;
+      this.saveGoldenCollection(gcol);
+    }
+    const pity = this.getPackPityState();
+    pity.everObtainedMaxCopies[picked.id] = Math.max(
+      pity.everObtainedMaxCopies[picked.id] || 0,
+      nextCount,
+    );
+    this.savePackPityState(pity);
 
     return {
       drawn: {
         card: picked,
-        isGolden: Math.random() < 0.08,
+        isGolden,
         isNew: prevCount === 0,
         newOwnedCount: nextCount,
         newJourneyMultiplier: getJourneyCardMultiplier(picked, nextCount),
@@ -526,60 +769,96 @@ class HearthstoneStorage {
     if (!def) {
       return { ok: false, reason: '존재하지 않는 카드입니다.' };
     }
-    const cost = def.rarity === 'FREE' ? 40 : CRAFTING_COST[def.rarity] || 40;
+    if (def.rarity === 'FREE') {
+      return { ok: false, reason: '기본 무료 지급 카드는 제작할 수 없습니다.' };
+    }
+    const cost = CRAFTING_COST[def.rarity] || 40;
     const p = this.getProfile();
     if (p.arcaneDust < cost) {
-      return { ok: false, reason: `영웅 가루가 부족합니다. (필요: ${cost})` };
+      return { ok: false, reason: `신비한 가루가 부족합니다. (필요: ${cost})` };
     }
     const col = this.getCollection();
     if ((col[cardId] || 0) >= 99) {
       return { ok: false, reason: '최대 보유 한도(99장)에 도달했습니다.' };
     }
     p.arcaneDust -= cost;
-    col[cardId] = (col[cardId] || 0) + 1;
+    const nextCount = (col[cardId] || 0) + 1;
+    col[cardId] = nextCount;
+
+    // Record in lifetime obtained history so crafted Legendaries/Rares/Epics never duplicate prematurely in packs!
+    const pity = this.getPackPityState();
+    pity.everObtainedMaxCopies[cardId] = Math.max(
+      pity.everObtainedMaxCopies[cardId] || 0,
+      nextCount,
+    );
+    this.savePackPityState(pity);
+
     this.saveProfile(p);
     this.saveCollection(col);
     return { ok: true };
   }
 
-  disenchantCard(cardId: string): { ok: boolean; reason?: string } {
+  disenchantCard(cardId: string, preferGolden = false): { ok: boolean; reason?: string; dustGained?: number } {
     const def = cardDb.getCard(cardId);
     if (!def) {
       return { ok: false, reason: '존재하지 않는 카드입니다.' };
     }
-    if (def.rarity === 'FREE' && (this.getCollection()[cardId] || 0) <= 2) {
-      return { ok: false, reason: '기본 카드 최소 수량(2장)은 마력을 추출할 수 없습니다.' };
+    if (def.rarity === 'FREE') {
+      return { ok: false, reason: '기본 무료 지급 카드는 마력을 추출할 수 없습니다.' };
     }
     const col = this.getCollection();
-    if ((col[cardId] || 0) <= 0) {
+    const totalOwned = col[cardId] || 0;
+    if (totalOwned <= 0) {
       return { ok: false, reason: '보유한 카드가 없습니다.' };
     }
-    const val = def.rarity === 'FREE' ? 5 : DISENCHANT_VALUE[def.rarity] || 5;
-    col[cardId] -= 1;
+    const gcol = this.getGoldenCollection();
+    const goldenOwned = Math.min(totalOwned, gcol[cardId] || 0);
+    const normalOwned = Math.max(0, totalOwned - goldenOwned);
+
+    const extractGolden = (preferGolden && goldenOwned > 0) || normalOwned <= 0;
+    const val = extractGolden
+      ? GOLDEN_DISENCHANT_VALUE[def.rarity] || 50
+      : DISENCHANT_VALUE[def.rarity] || 5;
+
+    col[cardId] = totalOwned - 1;
     if (col[cardId] <= 0) delete col[cardId];
+    if (extractGolden && goldenOwned > 0) {
+      gcol[cardId] = goldenOwned - 1;
+      if (gcol[cardId] <= 0) delete gcol[cardId];
+      this.saveGoldenCollection(gcol);
+    }
+
     const p = this.getProfile();
     p.arcaneDust += val;
     this.saveProfile(p);
     this.saveCollection(col);
-    return { ok: true };
+    return { ok: true, dustGained: val };
   }
 
   previewMassDisenchant(): MassDisenchantPreview {
     const col = this.getCollection();
+    const gcol = this.getGoldenCollection();
     let extraCardCount = 0;
     let affectedUniqueCards = 0;
     let dustGained = 0;
     const sampleAffectedCards: MassDisenchantPreview['sampleAffectedCards'] = [];
 
     for (const c of cardDb.getAllCollectible()) {
+      if (c.rarity === 'FREE') continue;
       const limit = c.rarity === 'LEGENDARY' ? 1 : 2;
       const owned = col[c.id] || 0;
       if (owned > limit) {
         const extra = owned - limit;
-        const unitDust = c.rarity === 'FREE' ? 5 : DISENCHANT_VALUE[c.rarity] || 5;
+        const goldenOwned = Math.min(owned, gcol[c.id] || 0);
+        const normalOwned = Math.max(0, owned - goldenOwned);
+        const normalDisenchanted = Math.min(extra, normalOwned);
+        const goldenDisenchanted = Math.max(0, extra - normalDisenchanted);
+        const normalUnit = DISENCHANT_VALUE[c.rarity] || 5;
+        const goldenUnit = GOLDEN_DISENCHANT_VALUE[c.rarity] || 50;
+
         extraCardCount += extra;
         affectedUniqueCards += 1;
-        dustGained += extra * unitDust;
+        dustGained += normalDisenchanted * normalUnit + goldenDisenchanted * goldenUnit;
         if (sampleAffectedCards.length < 6) {
           sampleAffectedCards.push({
             id: c.id,
@@ -601,17 +880,30 @@ class HearthstoneStorage {
 
   massDisenchantExtras(): { count: number; dustGained: number } {
     const col = this.getCollection();
+    const gcol = this.getGoldenCollection();
     let count = 0;
     let dustGained = 0;
     for (const c of cardDb.getAllCollectible()) {
+      if (c.rarity === 'FREE') continue;
       const limit = c.rarity === 'LEGENDARY' ? 1 : 2;
       const owned = col[c.id] || 0;
       if (owned > limit) {
         const extra = owned - limit;
-        const unitDust = c.rarity === 'FREE' ? 5 : DISENCHANT_VALUE[c.rarity] || 5;
+        const goldenOwned = Math.min(owned, gcol[c.id] || 0);
+        const normalOwned = Math.max(0, owned - goldenOwned);
+        const normalDisenchanted = Math.min(extra, normalOwned);
+        const goldenDisenchanted = Math.max(0, extra - normalDisenchanted);
+        const normalUnit = DISENCHANT_VALUE[c.rarity] || 5;
+        const goldenUnit = GOLDEN_DISENCHANT_VALUE[c.rarity] || 50;
+
         count += extra;
-        dustGained += extra * unitDust;
+        dustGained += normalDisenchanted * normalUnit + goldenDisenchanted * goldenUnit;
         col[c.id] = limit;
+        if (goldenDisenchanted > 0) {
+          const nextGold = Math.max(0, goldenOwned - goldenDisenchanted);
+          if (nextGold > 0) gcol[c.id] = nextGold;
+          else delete gcol[c.id];
+        }
       }
     }
     if (count > 0) {
@@ -619,6 +911,7 @@ class HearthstoneStorage {
       p.arcaneDust += dustGained;
       this.saveProfile(p);
       this.saveCollection(col);
+      this.saveGoldenCollection(gcol);
     }
     return { count, dustGained };
   }
@@ -666,6 +959,7 @@ class HearthstoneStorage {
   resetAllData(): void {
     localStorage.removeItem(KEYS.PROFILE);
     localStorage.removeItem(KEYS.COLLECTION);
+    localStorage.removeItem(KEYS.GOLDEN_COLLECTION);
     localStorage.removeItem(KEYS.DECKS);
     localStorage.removeItem(KEYS.QUESTS);
     localStorage.removeItem(KEYS.PITY);

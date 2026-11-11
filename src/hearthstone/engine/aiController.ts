@@ -288,7 +288,7 @@ export function buildAiOpponentSetup(
     const preset =
       CLASSIC_PRESET_DECKS.find((d) => d.heroClass === oppClass) || CLASSIC_PRESET_DECKS[0];
     return {
-      opponentName: `엘윈마을 수련 상대 (${CLASSIC_HEROES[oppClass].classNameKo})`,
+      opponentName: `AI대전 상대 (${CLASSIC_HEROES[oppClass].classNameKo})`,
       opponentClass: oppClass,
       opponentDeck: [...preset.cards],
     };
@@ -297,7 +297,7 @@ export function buildAiOpponentSetup(
   if (mode === 'PRACTICE_EXPERT') {
     const expert = CLASSIC_EXPERT_AI_DECKS[oppClass];
     return {
-      opponentName: `숙련 종족 대표 (${CLASSIC_HEROES[oppClass].classNameKo})`,
+      opponentName: `숙련 AI 대표 (${CLASSIC_HEROES[oppClass].classNameKo})`,
       opponentClass: oppClass,
       opponentDeck: [...expert.cards],
     };

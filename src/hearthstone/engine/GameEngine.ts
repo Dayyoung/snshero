@@ -1647,11 +1647,13 @@ export function createEngine(rawState: BattleMatchState) {
     } else if (def.type === 'WEAPON') {
       equipWeapon(side, def.id);
       spec?.onCastSpell?.(ops, side, targetId, isCombo);
+      const eqAtk = p.weapon?.attack ?? (def.attack || 1);
+      const eqDur = p.weapon?.durability ?? (def.durability || def.health || 1);
       pushHistory({
         actorSide: side,
         cardId: def.id,
         title: def.name,
-        detail: `${def.attack}/${def.durability} 무기를 장착했습니다.`,
+        detail: `공격력 ${eqAtk} · 내구도 ${eqDur} 무기를 영웅에게 장착했습니다.`,
         kind: 'EQUIP_WEAPON',
       });
     } else if (def.type === 'MINION') {

@@ -505,7 +505,8 @@ class SnsHeroCardAudioEngine {
       | 'SILENCE'
       | 'ROPE_TICK'
       | 'ARMOR'
-      | 'FATIGUE',
+      | 'FATIGUE'
+      | 'LEGENDARY_FANFARE',
   ) {
     if (!this.isWindowActive || this.settings.muted || this.settings.sfxVolume <= 0) return;
     const ctx = this.getAudioCtx();
@@ -581,6 +582,14 @@ class SnsHeroCardAudioEngine {
       case 'FATIGUE':
         tone(150, 52, 0.55, 'sawtooth');
         break;
+      case 'LEGENDARY_FANFARE':
+        // Majestic Heroic Brass + Celestial Triad Stinger for Legendary Entrance
+        tone(293.66, 293.66, 0.68, 'sawtooth', 0);
+        tone(440.0, 440.0, 0.72, 'triangle', 0.04);
+        tone(587.33, 587.33, 0.78, 'triangle', 0.09);
+        tone(739.99, 739.99, 0.82, 'sine', 0.14);
+        tone(880.0, 1174.66, 0.85, 'sine', 0.18);
+        break;
     }
   }
 
@@ -629,12 +638,18 @@ class SnsHeroCardAudioEngine {
       | 'rare'
       | 'epic'
       | 'legendary'
+      | 'golden_common'
+      | 'golden_rare'
+      | 'golden_epic'
       | 'golden_legendary',
   ) {
     if (
       line === 'rare' ||
       line === 'epic' ||
       line === 'legendary' ||
+      line === 'golden_common' ||
+      line === 'golden_rare' ||
+      line === 'golden_epic' ||
       line === 'golden_legendary'
     ) {
       this.playVoFile(`announcer_${line}`);

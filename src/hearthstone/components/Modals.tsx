@@ -18,6 +18,15 @@ import {
   resolveCryptoDepositDetails,
 } from '../paymentGateway';
 import {
+  canInstallGamePwa,
+  isBrowserFullscreen,
+  isFullscreenSupported,
+  isStandalonePwa,
+  promptInstallGamePwa,
+  subscribePwaFullscreen,
+  toggleBrowserFullscreen,
+} from '../pwaFullscreen';
+import {
   GOLD_PACK_BUNDLES,
   MODE_REWARD_GUIDES,
   hsStorage,
@@ -82,7 +91,7 @@ export const QuestLogModal: React.FC<{
                 엘윈마을 의뢰 · 보상 일지
               </h2>
               <p className="text-xs font-semibold text-amber-300/85">
-                모드별 확정 승리 보상 · 카단의 여정 진행도 · 오늘의 일일 의뢰
+                모드별 확정 승리 보상 · 스토리모드 진행도 · 오늘의 일일 의뢰
               </p>
             </div>
           </div>
@@ -128,7 +137,7 @@ export const QuestLogModal: React.FC<{
                 </div>
               )}
               <div className="mt-1 text-xs font-semibold text-emerald-300">
-                카단의 여정: 환생 {profile.journeyReincarnation}회차 · 제{profile.journeyEpisode}화 진행 중
+                스토리모드: 환생 {profile.journeyReincarnation}회차 · 제{profile.journeyEpisode}화 진행 중
               </div>
               <div className="mt-0.5 text-[11px] font-semibold text-amber-200/75">
                 통산 {profile.totalWins}승 / {profile.totalGames}전 · 현재 {profile.winStreak}연승
@@ -1214,7 +1223,17 @@ export const GameOptionsModal: React.FC<{
   onClose: () => void;
 }> = ({ inBattle = false, onConcede, onClose }) => {
   const [settings, setSettings] = useState<AudioSettings>(() => hsAudio.getSettings());
+  const [, setPwaTick] = useState(0);
   const vibSupport = useMemo(() => hsAudio.getVibrationSupportInfo(), []);
+
+  useEffect(() => {
+    return subscribePwaFullscreen(() => setPwaTick((n) => n + 1));
+  }, []);
+
+  const standaloneApp = isStandalonePwa();
+  const fullscreenOn = isBrowserFullscreen() || standaloneApp;
+  const fullscreenSupported = isFullscreenSupported();
+  const canInstallPwa = canInstallGamePwa();
 
   const update = (patch: Partial<AudioSettings>) => {
     hsAudio.updateSettings(patch);
@@ -1250,6 +1269,61 @@ export const GameOptionsModal: React.FC<{
 
         <div className="space-y-3 rounded-2xl border border-[#c8a158]/40 bg-black/40 p-4">
           <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <div className="text-sm font-extrabold text-amber-100">전체화면 모드 (PWA)</div>
+              <div className="mt-0.5 text-[11px] font-semibold text-amber-200/75">
+                {standaloneApp
+                  ? '독립형 전체화면 PWA 앱 모드로 실행 중'
+                  : '브라우저 주소창을 숨기고 몰입형 전체화면으로 플레이'}
+              </div>
+            </div>
+            {standaloneApp ? (
+              <span className="shrink-0 rounded-lg border border-emerald-300/60 bg-emerald-900/80 px-3 py-1.5 text-xs font-extrabold text-emerald-100">
+                PWA 전체화면 ✓
+              </span>
+            ) : (
+              <button
+                type="button"
+                data-testid="toggle-fullscreen-mode"
+                disabled={!fullscreenSupported}
+                onClick={() => {
+                  hsAudio.playSfx('ui_click', 0.75);
+                  toggleBrowserFullscreen();
+                }}
+                className={`min-h-[38px] shrink-0 rounded-lg border px-3.5 py-1.5 text-xs font-extrabold transition ${
+                  fullscreenOn
+                    ? 'border-emerald-300/60 bg-emerald-800 text-white'
+                    : 'border-amber-300/60 bg-amber-900/80 text-amber-100 hover:brightness-110'
+                } disabled:opacity-45`}
+              >
+                {fullscreenOn ? '전체화면 켜짐' : '전체화면 전환'}
+              </button>
+            )}
+          </div>
+
+          {canInstallPwa && (
+            <div className="flex items-center justify-between gap-2 border-t border-amber-500/20 pt-3">
+              <div className="min-w-0">
+                <div className="text-sm font-extrabold text-sky-200">홈 화면에 앱 설치</div>
+                <div className="mt-0.5 text-[11px] font-semibold text-amber-200/75">
+                  바탕화면 아이콘으로 언제든 즉시 전체화면 실행
+                </div>
+              </div>
+              <button
+                type="button"
+                data-testid="options-install-pwa"
+                onClick={() => {
+                  hsAudio.playSfx('ui_click', 0.8);
+                  promptInstallGamePwa();
+                }}
+                className="hs-arcane-btn min-h-[38px] shrink-0 rounded-lg px-3.5 py-1.5 text-xs font-extrabold text-white"
+              >
+                📲 앱 설치
+              </button>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between gap-2 border-t border-amber-500/20 pt-3">
             <span className="text-sm font-extrabold">사운드 출력</span>
             <button
               type="button"
@@ -1271,8 +1345,8 @@ export const GameOptionsModal: React.FC<{
               </div>
               <div className="mt-0.5 text-[11px] font-semibold text-amber-200/75">
                 {vibSupport.supportedOnDevice
-                  ? '현재 안드로이드 기기에서 타격 햅틱 진동 지원됨'
-                  : '안드로이드 웹 접속 시 카드·주문 공격 타격 진동 작동'}
+                  ? '주고받는 데미지에 비례해 타격 진동 강도 자동 조절'
+                  : '안드로이드 웹 접속 시 데미지 비례 타격 진동 작동'}
               </div>
             </div>
             <button

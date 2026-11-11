@@ -4,7 +4,9 @@ import {
   CLASS_CREST_URL,
   CRAFTING_COST,
   DISENCHANT_VALUE,
+  GOLDEN_DISENCHANT_VALUE,
   cardDb,
+  compareCardsStoneOrder,
   decodeDeckShareCode,
   encodeDeckShareCode,
   getCardTileUrl,
@@ -20,7 +22,6 @@ import { CardZoomAction, CardZoomModal } from '../components/CardZoomModal';
 import { SNS_LOCATIONS } from '../components/SnsHeroArtKit';
 import {
   MassDisenchantPreview,
-  getJourneyCardMultiplier,
   hsStorage,
 } from '../storage';
 import {
@@ -56,10 +57,14 @@ export const CollectionScreen: React.FC<{
   onReturnToJourney?: () => void;
 }> = ({ onBack, onProfileChanged, onReturnToJourney }) => {
   const [collection, setCollection] = useState(() => hsStorage.getCollection());
+  const [goldenCollection, setGoldenCollection] = useState(() =>
+    hsStorage.getGoldenCollection(),
+  );
   const [decks, setDecks] = useState<CustomDeck[]>(() => hsStorage.getDecks());
   const [profile, setProfile] = useState(() => hsStorage.getProfile());
 
-  const [activeTab, setActiveTab] = useState<CardClass>('PRIEST');
+  // Default tab matches /stone.html ('MAGE') 1:1 so all 382 cards align page-for-page & slot-for-slot
+  const [activeTab, setActiveTab] = useState<CardClass>('MAGE');
   const [manaFilter, setManaFilter] = useState<number | 'ALL'>('ALL');
   const [rarityFilter, setRarityFilter] = useState<'ALL' | CardRarity>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,6 +96,7 @@ export const CollectionScreen: React.FC<{
       );
     const onStateChanged = () => {
       setCollection(hsStorage.getCollection());
+      setGoldenCollection(hsStorage.getGoldenCollection());
       setDecks(hsStorage.getDecks());
       setProfile(hsStorage.getProfile());
     };
@@ -104,6 +110,7 @@ export const CollectionScreen: React.FC<{
 
   const syncAll = () => {
     setCollection(hsStorage.getCollection());
+    setGoldenCollection(hsStorage.getGoldenCollection());
     setDecks(hsStorage.getDecks());
     setProfile(hsStorage.getProfile());
     onProfileChanged();
@@ -144,14 +151,23 @@ export const CollectionScreen: React.FC<{
         if (q) {
           const raceKo = c.race ? RACE_KO[c.race] || '' : '';
           const rarityKo = RARITY_KO[c.rarity] || '';
+          const typeKo =
+            c.type === 'WEAPON'
+              ? '무기 병기 장착'
+              : c.type === 'SPELL'
+                ? c.mechanics?.includes('SECRET')
+                  ? '비밀 주문'
+                  : '주문'
+                : '하수인';
+          const goldenTag = (goldenCollection[c.id] || 0) > 0 ? '황금' : '';
           const charKo = `${c.snsCharName || ''} ${c.snsFactionKo || ''}`;
-          const hay = `${c.name} ${c.text} ${raceKo} ${rarityKo} ${c.rarity} ${charKo}`.toLowerCase();
+          const hay = `${c.name} ${c.text} ${typeKo} ${raceKo} ${rarityKo} ${c.rarity} ${goldenTag} ${charKo}`.toLowerCase();
           if (!hay.includes(q)) return false;
         }
         return true;
       })
-      .sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name, 'ko'));
-  }, [activeTab, craftingMode, collection, manaFilter, rarityFilter, searchQuery, editingDeck]);
+      .sort(compareCardsStoneOrder);
+  }, [activeTab, craftingMode, collection, goldenCollection, manaFilter, rarityFilter, searchQuery, editingDeck]);
 
   const PAGE_SIZE = 8;
   const totalPages = Math.max(1, Math.ceil(filteredCards.length / PAGE_SIZE));
@@ -336,7 +352,7 @@ export const CollectionScreen: React.FC<{
     }
     const entries = Array.from(counts.entries())
       .map(([cid, count]) => ({ card: cardDb.mustGetCard(cid), count }))
-      .sort((a, b) => a.card.cost - b.card.cost || a.card.name.localeCompare(b.card.name, 'ko'));
+      .sort((a, b) => compareCardsStoneOrder(a.card, b.card));
     return { entries, curve };
   }, [editingDeck]);
 
@@ -394,7 +410,7 @@ export const CollectionScreen: React.FC<{
               }}
               className="hs-arcane-btn min-h-[36px] rounded-xl px-2.5 py-1 text-[11px] font-extrabold text-white sm:px-3.5 sm:py-1.5 sm:text-xs"
             >
-              ⚔ 카단의 여정 출진
+              ⚔ 스토리모드 출진
             </button>
           )}
 
@@ -547,11 +563,10 @@ export const CollectionScreen: React.FC<{
               </button>
             )}
 
-            {/* 8-Card Spread Grid (Tapping ANY Card Selects & Enlarges via CardZoomModal!) */}
+            {/* 8-Card Spread Grid (Standard 1x Stats Only — Avoids Confusion with Story-Mode Multipliers!) */}
             <div className="grid min-h-0 flex-1 grid-cols-2 place-items-center gap-x-1.5 gap-y-1 overflow-y-auto px-7 py-0.5 sm:grid-cols-4 sm:gap-x-2 sm:gap-y-1.5">
               {pageCards.map((card) => {
                 const owned = collection[card.id] || 0;
-                const journeyMult = getJourneyCardMultiplier(card, owned);
                 const inDeck = editingDeck
                   ? editingDeck.cards.filter((cid) => cid === card.id).length
                   : 0;
@@ -571,7 +586,7 @@ export const CollectionScreen: React.FC<{
                     >
                       <HearthstoneCard
                         card={card}
-                        journeyMultiplier={journeyMult}
+                        isGolden={(goldenCollection[card.id] || 0) > 0}
                         size={isCompactMobile ? 'XS' : 'SM'}
                         enableTilt
                         onClick={() => {
@@ -580,6 +595,11 @@ export const CollectionScreen: React.FC<{
                         }}
                         className="cursor-pointer"
                       />
+                      {(goldenCollection[card.id] || 0) > 0 && (
+                        <span className="hs-outline-sm pointer-events-none absolute left-1.5 bottom-1.5 z-30 rounded border border-yellow-200 bg-gradient-to-b from-yellow-400 to-amber-700 px-1 py-[1px] text-[8px] font-black text-white shadow">
+                          황금×{Math.min(owned, goldenCollection[card.id] || 0)}
+                        </span>
+                      )}
                       {editingDeck && inDeck > 0 && (
                         <span className="hs-num pointer-events-none absolute right-1.5 top-2 z-30 rounded-full border border-emerald-200 bg-emerald-700 px-1.5 py-0.5 text-[9.5px] text-white shadow sm:right-2 sm:top-3 sm:px-2 sm:text-[10px]">
                           덱 {inDeck}
@@ -587,7 +607,7 @@ export const CollectionScreen: React.FC<{
                       )}
                     </div>
 
-                    {/* Clean Parchment Ownership Ribbon + Journey Multiplier Pill */}
+                    {/* Clean Parchment Ownership Ribbon (No Story Multiplier Clutter in Deck Builder) */}
                     <div className="-mt-1 flex flex-wrap items-center justify-center gap-1">
                       <span
                         className={`rounded-md border px-1.5 py-0.5 text-[9.5px] font-extrabold shadow-sm sm:px-2 sm:text-[10px] ${
@@ -598,11 +618,6 @@ export const CollectionScreen: React.FC<{
                       >
                         {owned > 0 ? `보유 ×${owned}` : '미보유'}
                       </span>
-                      {journeyMult > 1 && (
-                        <span className="rounded-md border border-emerald-300 bg-emerald-800 px-1.5 py-0.5 text-[9px] font-extrabold text-emerald-100 shadow-sm sm:text-[9.5px]">
-                          여정 ×{journeyMult}배
-                        </span>
-                      )}
                       <button
                         type="button"
                         onClick={() => {
@@ -1181,34 +1196,66 @@ export const CollectionScreen: React.FC<{
               });
             }
             if (owned > 0) {
+              const goldenOwned = Math.min(owned, goldenCollection[inspectCard.id] || 0);
+              const normalOwned = Math.max(0, owned - goldenOwned);
+              const nextExtractDust =
+                normalOwned > 0
+                  ? DISENCHANT_VALUE[inspectCard.rarity]
+                  : GOLDEN_DISENCHANT_VALUE[inspectCard.rarity];
               secondaryActions.push({
-                label: `카드 분해 (+${DISENCHANT_VALUE[inspectCard.rarity]} 가루)`,
+                label:
+                  normalOwned > 0
+                    ? `마력 추출 (+${nextExtractDust} 가루)`
+                    : `황금 마력 추출 (+${nextExtractDust} 가루)`,
                 variant: 'brass',
                 onClick: () => {
                   const res = hsStorage.disenchantCard(inspectCard.id);
                   if (res.ok) {
                     hsAudio.playSfx('cm_remove_card');
                     syncAll();
-                    showNotice(`[${inspectCard.name}] 카드 분해 완료!`);
+                    showNotice(
+                      `[${inspectCard.name}] 마력 추출 완료! (+${res.dustGained ?? nextExtractDust} 가루)`,
+                    );
                   } else {
                     showNotice(res.reason || '분해 실패');
                   }
                 },
               });
+              if (normalOwned > 0 && goldenOwned > 0) {
+                secondaryActions.push({
+                  label: `황금 카드 추출 (+${GOLDEN_DISENCHANT_VALUE[inspectCard.rarity]} 가루)`,
+                  variant: 'brass',
+                  onClick: () => {
+                    const res = hsStorage.disenchantCard(inspectCard.id, true);
+                    if (res.ok) {
+                      hsAudio.playSfx('cm_remove_card');
+                      syncAll();
+                      showNotice(
+                        `[${inspectCard.name}] 황금 카드 마력 추출 완료! (+${res.dustGained} 가루)`,
+                      );
+                    } else {
+                      showNotice(res.reason || '분해 실패');
+                    }
+                  },
+                });
+              }
             }
           }
 
-          const inspectJourneyMult = getJourneyCardMultiplier(inspectCard, owned);
+          const inspectGoldenCount = Math.min(
+            owned,
+            goldenCollection[inspectCard.id] || 0,
+          );
 
           return (
             <CardZoomModal
               card={inspectCard}
+              isGolden={inspectGoldenCount > 0}
               rarityAura={inspectCard.rarity}
-              journeyMultiplier={inspectJourneyMult}
               subtitleBadge={
                 editingDeck
-                  ? `보유 ×${owned}장 · 덱 편성 ${inDeck}/${maxCopy}장${inspectJourneyMult > 1 ? ` · 카단의 여정 ×${inspectJourneyMult}배` : ''}`
-                  : `보유 수량: ${owned}장${inspectJourneyMult > 1 ? ` · 카단의 여정 ×${inspectJourneyMult}배 강화!` : ''}`
+                  ? `보유 ×${owned}장${inspectGoldenCount > 0 ? ` (황금 ×${inspectGoldenCount})` : ''} · 덱 편성 ${inDeck}/${maxCopy}장`
+                  : `보유 수량: ${owned}장${inspectGoldenCount > 0 ? ` (황금 ×${inspectGoldenCount})` : ''}`
               }
               showFlavor
               primaryAction={primaryAction}
@@ -1218,7 +1265,7 @@ export const CollectionScreen: React.FC<{
           );
         })()}
 
-      {/* ==================== 여분 분해 & 카단의 여정 3배 강화 메커니즘 설명 모달 ==================== */}
+      {/* ==================== 여분 분해 안내 모달 (중복 배수 강화 = 스토리모드 전용 안내) ==================== */}
       {disenchantModalPreview && (
         <div
           onClick={() => setDisenchantModalPreview(null)}
@@ -1232,7 +1279,7 @@ export const CollectionScreen: React.FC<{
               <div className="flex items-center gap-2">
                 <HsArcaneDustVialIcon size={24} />
                 <h2 className="hs-title text-lg font-extrabold text-amber-100 sm:text-xl">
-                  여분 분해 전 『카단의 여정』 3배 법칙 안내
+                  여분 카드 분해 확인 (※ 배수 강화는 스토리모드 전용)
                 </h2>
               </div>
               <button
@@ -1248,20 +1295,19 @@ export const CollectionScreen: React.FC<{
             <div className="space-y-2.5 rounded-2xl border-2 border-emerald-400/60 bg-gradient-to-b from-emerald-950/75 to-stone-950/90 p-3.5 text-xs leading-relaxed">
               <div className="flex items-center gap-1.5 text-sm font-extrabold text-emerald-300">
                 <span>⚡</span>
-                <span>『카단의 여정』 전용 중복 카드 배수 강화 메커니즘</span>
+                <span>중복 카드 배수 강화는 오직 [스토리모드]에서만 적용됩니다</span>
               </div>
               <p className="font-semibold text-amber-100/95">
-                일반 <b className="text-sky-300">대전(등급전·일반전)</b> 및{' '}
-                <b className="text-sky-300">엘윈마을 수련</b> 모드에서는 정통 규칙대로 덱당 최대 2장(전설 1장)만 사용되며 스탯 배수가 적용되지 않습니다.
+                <b className="text-sky-300">랭킹대전</b> 및{' '}
+                <b className="text-sky-300">AI대전</b>에서는 정통 규칙대로 덱당 최대 2장(전설 1장)만 사용되며, 카드 수량에 따른 공격력·체력 배수 강화가 절대 적용되지 않습니다.
               </p>
               <p className="font-semibold text-emerald-100">
-                하지만 오직 <b className="text-yellow-300">『카단의 여정』 스토리 모드</b>에서는 공격력·체력(내구도)을 지닌 하수인·무기 카드를{' '}
-                <b className="text-emerald-300 underline">3장 이상 보유하면 공격력과 생명력이 보유 장수만큼 배수로 증폭(3장 = 3배, 4장 = 4배, N장 = N배 · 전설은 2장부터 2배)</b>
-                됩니다!
+                반면 <b className="text-yellow-300">스토리모드</b>에서는 하수인·무기 카드를{' '}
+                <b className="text-emerald-300 underline">3장 이상 보유 시 해당 모드의 전장에서만 공격력·체력이 보유 장수 배수(3장 = 3배, N장 = N배 · 전설 2장부터 2배)</b>
+                로 증폭됩니다.
               </p>
               <div className="rounded-xl border border-amber-400/40 bg-black/45 px-3 py-2 text-[11px] font-bold text-amber-200">
-                💡 회차(1~40화)와 환생이 거듭될수록 적 영웅과 보스 하수인이 점점 강력해지므로,{' '}
-                <b className="text-yellow-300">여분 카드를 분해하지 않고 모아두면 카단의 여정 돌파력이 비약적으로 상승</b>합니다.
+                💡 여분 카드를 분해하면 가루를 얻지만 스토리모드 배수 보너스는 해제됩니다.
               </div>
             </div>
 
@@ -1286,13 +1332,13 @@ export const CollectionScreen: React.FC<{
                   {disenchantModalPreview.sampleAffectedCards.length > 0 && (
                     <div className="mt-2 space-y-1 rounded-xl bg-stone-950/80 p-2.5 text-[11px]">
                       <div className="font-bold text-amber-300/85">
-                        여정 배수가 해제되는 주요 보유 카드:
+                        스토리모드 배수가 해제되는 주요 보유 카드:
                       </div>
                       {disenchantModalPreview.sampleAffectedCards.map((sc) => (
                         <div key={sc.id} className="flex items-center justify-between text-amber-100/90">
                           <span className="truncate font-bold">{sc.name}</span>
                           <span className="shrink-0 font-extrabold text-amber-300">
-                            {sc.owned}장 (×{sc.owned}배) → {sc.afterCount}장 (×1배)
+                            {sc.owned}장 → {sc.afterCount}장
                           </span>
                         </div>
                       ))}
@@ -1302,10 +1348,6 @@ export const CollectionScreen: React.FC<{
               ) : (
                 <div className="py-2 text-center font-bold text-amber-200/90">
                   현재 분해할 여분 카드(일반 3장 이상 / 전설 2장 이상)가 없습니다.
-                  <br />
-                  <span className="text-[11px] text-emerald-300">
-                    눈히어로 팩을 개봉해 동일 카드를 3장 이상 모으면 『카단의 여정』에서 3배 강화됩니다!
-                  </span>
                 </div>
               )}
             </div>
@@ -1320,7 +1362,7 @@ export const CollectionScreen: React.FC<{
                 className="hs-arcane-btn flex-1 rounded-xl py-2.5 text-xs font-extrabold text-white sm:text-sm"
               >
                 {disenchantModalPreview.extraCardCount > 0
-                  ? '취소 · 카단의 여정 배수 강화 유지 (권장)'
+                  ? '취소 · 여분 카드 유지'
                   : '확인 (닫기)'}
               </button>
 

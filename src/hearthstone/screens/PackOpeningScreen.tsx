@@ -7,7 +7,7 @@ import {
   SnsBoosterPackArt,
   SnsCardBackArt,
 } from '../components/SnsHeroArtKit';
-import { OpenedPackCard, hsStorage } from '../storage';
+import { OpenedPackCard, PACK_DROP_RATES_SPEC, hsStorage } from '../storage';
 import { CardRarity } from '../types';
 
 const HOVER_RARITY_GLOW: Record<CardRarity, string> = {
@@ -78,6 +78,12 @@ export const PackOpeningScreen: React.FC<{
   onReturnToJourney?: () => void;
 }> = ({ onBack, onOpenShop, onProfileChanged, onReturnToJourney }) => {
   const [profile, setProfile] = useState(() => hsStorage.getProfile());
+  const [pityState, setPityState] = useState(() => hsStorage.getPackPityState());
+  const [showOddsModal, setShowOddsModal] = useState(false);
+  const [innkeeperCallout, setInnkeeperCallout] = useState<{
+    text: string;
+    borderCls: string;
+  } | null>(null);
   const [packBursting, setPackBursting] = useState(false);
   const [burstFlash, setBurstFlash] = useState(false);
   const [openedCards, setOpenedCards] = useState<OpenedPackCard[] | null>(null);
@@ -109,7 +115,10 @@ export const PackOpeningScreen: React.FC<{
       setIsDesktopStage(
         window.innerWidth >= 768 || window.innerWidth > window.innerHeight,
       );
-    const onState = () => setProfile(hsStorage.getProfile());
+    const onState = () => {
+      setProfile(hsStorage.getProfile());
+      setPityState(hsStorage.getPackPityState());
+    };
     window.addEventListener('resize', onResize);
     window.addEventListener('snshero:state-changed', onState);
     return () => {
@@ -153,6 +162,7 @@ export const PackOpeningScreen: React.FC<{
 
   const sync = useCallback(() => {
     setProfile(hsStorage.getProfile());
+    setPityState(hsStorage.getPackPityState());
     onProfileChanged();
   }, [onProfileChanged]);
 
@@ -213,24 +223,58 @@ export const PackOpeningScreen: React.FC<{
       }, 680);
 
       hsAudio.playSfx('card_flip', 0.92);
+      const showCallout = (text: string, borderCls: string) => {
+        setInnkeeperCallout({ text, borderCls });
+        scheduleTimer(() => {
+          setInnkeeperCallout((prev) => (prev?.text === text ? null : prev));
+        }, 2500);
+      };
+
       if (item.card.rarity === 'LEGENDARY') {
         hsAudio.playSfx('pack_legendary');
         setAltarShake(true);
         scheduleTimer(() => setAltarShake(false), 450);
         if (!opts?.suppressVo) {
           hsAudio.playInnkeeper(item.isGolden ? 'golden_legendary' : 'legendary');
+          showCallout(
+            item.isGolden ? '“오~ 황금 전설 카드!”' : '“오~ 전설 카드!”',
+            item.isGolden
+              ? 'border-yellow-300 bg-gradient-to-r from-amber-950/95 via-orange-900/95 to-amber-950/95 text-yellow-200 shadow-[0_0_28px_rgba(251,191,36,0.95)]'
+              : 'border-orange-400 bg-orange-950/95 text-amber-200 shadow-[0_0_24px_rgba(249,115,22,0.9)]',
+          );
         }
       } else if (item.card.rarity === 'EPIC') {
         hsAudio.playSfx('pack_epic');
         setAltarShake(true);
         scheduleTimer(() => setAltarShake(false), 320);
         if (!opts?.suppressVo) {
-          hsAudio.playInnkeeper('epic');
+          hsAudio.playInnkeeper(item.isGolden ? 'golden_epic' : 'epic');
+          showCallout(
+            item.isGolden ? '“황금 특급 카드!”' : '“특급 카드!”',
+            item.isGolden
+              ? 'border-yellow-300 bg-purple-950/95 text-purple-100 shadow-[0_0_24px_rgba(192,132,252,0.95)]'
+              : 'border-purple-400 bg-purple-950/95 text-purple-200 shadow-[0_0_22px_rgba(168,85,247,0.88)]',
+          );
         }
       } else if (item.card.rarity === 'RARE') {
         hsAudio.playSfx('pack_rare');
         if (!opts?.suppressVo) {
-          hsAudio.playInnkeeper('rare');
+          hsAudio.playInnkeeper(item.isGolden ? 'golden_rare' : 'rare');
+          showCallout(
+            item.isGolden ? '“황금 희귀 카드!”' : '“희귀 카드!”',
+            item.isGolden
+              ? 'border-yellow-300 bg-sky-950/95 text-sky-100 shadow-[0_0_22px_rgba(56,189,248,0.92)]'
+              : 'border-sky-400 bg-sky-950/95 text-sky-200 shadow-[0_0_20px_rgba(59,130,246,0.85)]',
+          );
+        }
+      } else if (item.isGolden) {
+        hsAudio.playSfx('pack_rare', 0.78);
+        if (!opts?.suppressVo) {
+          hsAudio.playInnkeeper('golden_common');
+          showCallout(
+            '“황금 일반 카드!”',
+            'border-yellow-300 bg-stone-900/95 text-yellow-200 shadow-[0_0_18px_rgba(250,204,21,0.8)]',
+          );
         }
       }
     },
@@ -249,11 +293,12 @@ export const PackOpeningScreen: React.FC<{
     }
     if (unrevealedIndices.length === 0) return;
 
-    // Pick the single highest-rarity unrevealed card to announce cleanly
+    // Pick the single highest-rarity (with Golden tie-breaker) unrevealed card to announce cleanly
     let bestVoIdx = -1;
-    let bestScore = 1;
+    let bestScore = 2; // Normal COMMON = 2 (no callout), Golden COMMON = 3, RARE = 4, Golden RARE = 5, EPIC = 6, Golden EPIC = 7, LEGENDARY = 8, Golden LEGENDARY = 9
     for (const idx of unrevealedIndices) {
-      const score = RARITY_PRIORITY[cards[idx].card.rarity];
+      const score =
+        RARITY_PRIORITY[cards[idx].card.rarity] * 2 + (cards[idx].isGolden ? 1 : 0);
       if (score > bestScore) {
         bestScore = score;
         bestVoIdx = idx;
@@ -335,9 +380,20 @@ export const PackOpeningScreen: React.FC<{
               }}
               className="hs-brass-btn min-h-[40px] rounded-xl border-emerald-300/75 bg-gradient-to-b from-emerald-600 to-emerald-900 px-2.5 py-1.5 text-[11px] font-extrabold text-white sm:px-3.5 sm:text-xs"
             >
-              ⚔ 카단의 여정 출진
+              ⚔ 스토리모드 출진
             </button>
           )}
+          <button
+            type="button"
+            data-testid="pack-odds-guide-btn"
+            onClick={() => {
+              hsAudio.playSfx('ui_click');
+              setShowOddsModal(true);
+            }}
+            className="hs-brass-btn flex min-h-[40px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-[11px] font-extrabold text-amber-200 sm:px-3 sm:text-xs"
+          >
+            <span>확률 · 등급 안내</span>
+          </button>
           <div className="flex min-h-[40px] items-center gap-1.5 rounded-xl border-2 border-[#c8a158] bg-stone-950/90 px-2.5 py-1 text-xs font-extrabold shadow-lg sm:gap-2 sm:px-3.5 sm:py-1.5">
             <HsGoldCoinIcon size={18} />
             <span className="hidden sm:inline">보유 골드</span>
@@ -435,6 +491,17 @@ export const PackOpeningScreen: React.FC<{
             <br />
             <b className="text-amber-100">클릭 / 스페이스바</b>로 개봉
           </p>
+
+          <div className="mt-3 w-full rounded-xl border border-amber-400/35 bg-black/55 px-2.5 py-2 text-center text-[10.5px] font-bold text-amber-200/90">
+            <div>
+              {!pityState.firstTenLegendaryClaimed
+                ? `첫 전설 확정 천장: ${pityState.packsSinceLegendary} / 10팩`
+                : `전설 천장: ${pityState.packsSinceLegendary} / 40팩`}
+            </div>
+            <div className="mt-0.5 text-purple-300">
+              특급 천장: {pityState.packsSinceEpic} / 10팩 · 중복 방지 ON
+            </div>
+          </div>
         </aside>
 
         {/* Right: Glowing Sky Altar + 5-Card Floating 3D Flip Stage */}
@@ -487,6 +554,16 @@ export const PackOpeningScreen: React.FC<{
           {burstFlash && (
             <div className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center">
               <div className="h-52 w-52 animate-[hsFlipBurstRing_0.52s_ease-out_forwards] rounded-full border-[8px] border-amber-200 bg-sky-300/45 shadow-[0_0_120px_50px_rgba(125,211,252,0.95)] sm:h-64 sm:w-64" />
+            </div>
+          )}
+
+          {/* Innkeeper Authentic Korean Rarity Voice Callout Banner */}
+          {innkeeperCallout && (
+            <div
+              data-testid="innkeeper-pack-callout"
+              className={`pointer-events-none absolute left-1/2 top-14 z-[55] -translate-x-1/2 whitespace-nowrap rounded-full border-2 px-4 py-1 text-xs font-black tracking-wide sm:top-16 sm:px-5 sm:py-1.5 sm:text-sm ${innkeeperCallout.borderCls}`}
+            >
+              🎙 {innkeeperCallout.text}
             </div>
           )}
 
@@ -558,7 +635,7 @@ export const PackOpeningScreen: React.FC<{
                         }}
                         className="hs-arcane-btn min-h-[44px] rounded-2xl px-5 py-2 text-sm font-extrabold text-white sm:text-base"
                       >
-                        ⚔ 업그레이드 완료 · 카단의 여정 도전
+                        ⚔ 업그레이드 완료 · 스토리모드 도전
                       </button>
                     )}
                   </>
@@ -721,7 +798,6 @@ export const PackOpeningScreen: React.FC<{
                                     card={item.card}
                                     isGolden={item.isGolden}
                                     rarityAura={item.card.rarity}
-                                    journeyMultiplier={item.newJourneyMultiplier}
                                     size="MD"
                                   />
                                 </div>
@@ -733,12 +809,12 @@ export const PackOpeningScreen: React.FC<{
                                 )}
                                 {item.newJourneyMultiplier > 1 && (
                                   <span className="hs-outline-sm pointer-events-none absolute -top-2.5 left-1/2 z-40 -translate-x-1/2 whitespace-nowrap rounded-full border border-emerald-200 bg-gradient-to-r from-emerald-600 to-teal-800 px-2 py-0.5 text-[8px] font-extrabold text-white shadow-lg md:-top-3 md:px-2.5 md:text-[10px]">
-                                    ⚡여정 ×{item.newJourneyMultiplier}배 ({item.newOwnedCount}장)
+                                    ⚡스토리 ×{item.newJourneyMultiplier}배 ({item.newOwnedCount}장)
                                   </span>
                                 )}
                                 {item.isGolden && (
                                   <span className="hs-outline-sm pointer-events-none absolute -bottom-1 left-1/2 z-40 -translate-x-1/2 whitespace-nowrap rounded border border-yellow-200 bg-gradient-to-b from-yellow-400 to-amber-700 px-1.5 py-0.5 text-[8px] font-extrabold text-white shadow md:rounded-md md:px-2 md:text-[9.5px]">
-                                    황금 영웅
+                                    황금 카드
                                   </span>
                                 )}
                               </div>
@@ -756,8 +832,159 @@ export const PackOpeningScreen: React.FC<{
       </main>
 
       <footer className="relative z-30 shrink-0 text-center text-[10.5px] font-bold text-amber-200/80 sm:text-[11px]">
-        카드를 터치하면 입체 회전 개봉되며 · 동일 하수인·무기 3장 이상 누적 시 『카단의 여정』에서 능력치가 3배(N장=N배) 증폭됩니다
+        1팩 5장 (최소 희귀 이상 1장 확정) · 전 등급 중복 방지 및 천장(첫 10팩 / 이후 40팩 전설 확정) 적용 · 배수 강화는 스토리모드 전용
       </footer>
+
+      {/* Official Hearthstone Pack Probabilities, Rarity Value & Innkeeper VO Guide Modal */}
+      {showOddsModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="카드 팩 확률 및 등급 안내"
+          onClick={() => setShowOddsModal(false)}
+          className="fixed inset-0 z-[140] flex items-center justify-center bg-black/82 p-3 backdrop-blur-sm sm:p-5"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="hs-wood-panel relative max-h-[92%] w-full max-w-2xl overflow-y-auto rounded-3xl p-4 text-amber-100 shadow-2xl sm:p-6"
+          >
+            <div className="mb-3 flex items-center justify-between border-b border-amber-400/35 pb-2.5">
+              <h2 className="hs-title text-base font-extrabold text-amber-100 sm:text-xl">
+                카드 팩 획득 확률 · 등급 가치 · 여관주인 대사 안내
+              </h2>
+              <button
+                type="button"
+                onClick={() => setShowOddsModal(false)}
+                className="hs-brass-btn rounded-xl px-2.5 py-1 text-xs font-extrabold text-amber-100"
+              >
+                닫기 ✕
+              </button>
+            </div>
+
+            <div className="space-y-3.5 text-xs leading-relaxed">
+              {/* 1. Pack Drop Rates, Pity Timer & Duplicate Protection */}
+              <div className="rounded-2xl border border-sky-400/40 bg-stone-950/85 p-3.5">
+                <div className="mb-1.5 text-sm font-extrabold text-sky-300">
+                  1. 공식 카드 팩 확률 · 천장(Pity Timer) · 중복 방지 (382장 기준)
+                </div>
+                <ul className="space-y-1 font-semibold text-amber-100/95">
+                  <li>
+                    • <b>팩 구성:</b> 1팩당 <b>{PACK_DROP_RATES_SPEC.cardsPerPack}장</b> 등장 (기본 무료 카드 129장 제외, 클래식 전문가 카드 <b>253장</b> 풀에서 등장 · <b>최소 희귀 이상 1장 100% 확정</b>)
+                  </li>
+                  <li>
+                    • <b>전설(주황):</b> 팩당 평균 <b>{PACK_DROP_RATES_SPEC.avgPackLegendaryPct}%</b> (약 20팩당 1장) ·{' '}
+                    <span className="text-yellow-300">
+                      최초 {PACK_DROP_RATES_SPEC.firstLegendaryGuaranteePacks}팩 이내 첫 전설 1장 확정, 이후 최대 {PACK_DROP_RATES_SPEC.legendaryPityPacks}번째 팩 전설 100% 확정
+                    </span>
+                  </li>
+                  <li>
+                    • <b>특급(보라):</b> 팩당 평균 <b>{PACK_DROP_RATES_SPEC.avgPackEpicPct}%</b> (약 5팩당 1장) ·{' '}
+                    <span className="text-purple-300">
+                      최대 {PACK_DROP_RATES_SPEC.epicPityPacks}번째 팩 이내 특급 1장 이상 100% 확정
+                    </span>
+                  </li>
+                  <li>
+                    • <b>황금 카드 & 천장:</b> 카드당 황금 일반 {PACK_DROP_RATES_SPEC.perCardGoldenCommonPct}% (천장 {PACK_DROP_RATES_SPEC.goldenCommonPityPacks}팩) · 황금 희귀 {PACK_DROP_RATES_SPEC.perCardGoldenRarePct}% (천장 {PACK_DROP_RATES_SPEC.goldenRarePityPacks}팩) · 황금 특급 {PACK_DROP_RATES_SPEC.perCardGoldenEpicPct}% (천장 {PACK_DROP_RATES_SPEC.goldenEpicPityPacks}팩) · 황금 전설 {PACK_DROP_RATES_SPEC.perCardGoldenLegendaryPct}% (천장 {PACK_DROP_RATES_SPEC.goldenLegendaryPityPacks}팩)
+                  </li>
+                  <li>
+                    • <b>전 등급 중복 방지:</b> 전설(36종)은 제작·분해 이력까지 기억해 미수집 전설이 100% 먼저 등장하며, 일반·희귀·특급도 전 종류 2장 수집 전까지 미수집 카드가 우선 등장합니다. (한 팩 내 동일 카드 3장 동시 등장 없음)
+                  </li>
+                </ul>
+                <div className="mt-2 flex flex-wrap gap-2 rounded-xl border border-amber-400/30 bg-black/50 px-3 py-1.5 text-[11px] font-extrabold text-amber-200">
+                  <span>누적 개봉: {pityState.totalPacksOpened}팩</span>
+                  <span>·</span>
+                  <span>
+                    {!pityState.firstTenLegendaryClaimed
+                      ? `첫 10팩 전설 천장: ${pityState.packsSinceLegendary}/10`
+                      : `전설 천장: ${pityState.packsSinceLegendary}/40`}
+                  </span>
+                  <span>·</span>
+                  <span>특급 천장: {pityState.packsSinceEpic}/10</span>
+                </div>
+              </div>
+
+              {/* 2. Arcane Dust Crafting & Disenchant Value Table */}
+              <div className="rounded-2xl border border-amber-400/40 bg-stone-950/85 p-3.5">
+                <div className="mb-1.5 text-sm font-extrabold text-amber-300">
+                  2. 등급별 보석 색상 · 신비한 가루 제작 비용 & 마력 추출 획득량
+                </div>
+                <p className="mb-2 text-[11.5px] font-semibold text-amber-100/90">
+                  전설 카드는 덱에 단 1장만 편성 가능한 핵심 결전 능력을 지니며, 중복·미사용 고등급 카드를 마력 추출하면 훨씬 많은 가루를 얻어 원하는 카드를 직접 제작할 수 있습니다.
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse text-center text-[11.5px] font-bold">
+                    <thead>
+                      <tr className="border-b border-amber-500/35 bg-amber-950/45 text-amber-200">
+                        <th className="px-2 py-1.5">등급</th>
+                        <th className="px-2 py-1.5">보석 색깔</th>
+                        <th className="px-2 py-1.5">직접 제작 비용</th>
+                        <th className="px-2 py-1.5">분해(마력 추출)</th>
+                        <th className="px-2 py-1.5">황금 분해</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-amber-500/20">
+                      <tr>
+                        <td className="px-2 py-1.5 text-slate-100">일반</td>
+                        <td className="px-2 py-1.5 text-slate-200">흰색</td>
+                        <td className="px-2 py-1.5">40 가루</td>
+                        <td className="px-2 py-1.5 text-emerald-300">5 가루</td>
+                        <td className="px-2 py-1.5 text-yellow-300">50 가루</td>
+                      </tr>
+                      <tr>
+                        <td className="px-2 py-1.5 text-sky-300">희귀</td>
+                        <td className="px-2 py-1.5 text-sky-300">파란색</td>
+                        <td className="px-2 py-1.5">100 가루</td>
+                        <td className="px-2 py-1.5 text-emerald-300">20 가루</td>
+                        <td className="px-2 py-1.5 text-yellow-300">100 가루</td>
+                      </tr>
+                      <tr>
+                        <td className="px-2 py-1.5 text-purple-300">특급</td>
+                        <td className="px-2 py-1.5 text-purple-300">보라색</td>
+                        <td className="px-2 py-1.5">400 가루</td>
+                        <td className="px-2 py-1.5 text-emerald-300">100 가루</td>
+                        <td className="px-2 py-1.5 text-yellow-300">400 가루</td>
+                      </tr>
+                      <tr>
+                        <td className="px-2 py-1.5 text-orange-300">전설</td>
+                        <td className="px-2 py-1.5 text-orange-300">주황색</td>
+                        <td className="px-2 py-1.5">1,600 가루</td>
+                        <td className="px-2 py-1.5 text-emerald-300">400 가루</td>
+                        <td className="px-2 py-1.5 text-yellow-300">1,600 가루</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* 3. Innkeeper Voiceover Preview Buttons */}
+              <div className="rounded-2xl border border-orange-400/40 bg-stone-950/85 p-3.5">
+                <div className="mb-1.5 text-sm font-extrabold text-orange-300">
+                  3. 개봉 시 여관주인 실제 대사 & 전설·황금 특수 연출 (터치 시 미리듣기)
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { key: 'rare' as const, label: '“희귀 카드!” (파랑)', cls: 'border-sky-400 text-sky-200' },
+                    { key: 'epic' as const, label: '“특급 카드!” (보라)', cls: 'border-purple-400 text-purple-200' },
+                    { key: 'legendary' as const, label: '“오~ 전설 카드!” (주황)', cls: 'border-orange-400 text-orange-200' },
+                    { key: 'golden_rare' as const, label: '“황금 희귀 카드!”', cls: 'border-yellow-300 text-yellow-200' },
+                    { key: 'golden_epic' as const, label: '“황금 특급 카드!”', cls: 'border-yellow-300 text-yellow-200' },
+                    { key: 'golden_legendary' as const, label: '“오~ 황금 전설 카드!”', cls: 'border-yellow-300 text-yellow-200' },
+                  ].map((b) => (
+                    <button
+                      key={b.key}
+                      type="button"
+                      onClick={() => hsAudio.playInnkeeper(b.key)}
+                      className={`rounded-xl border bg-black/60 px-2.5 py-1.5 text-[11px] font-extrabold hover:brightness-125 ${b.cls}`}
+                    >
+                      🔊 {b.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Card Zoom Modal for Inspecting Any Flipped Pack Card */}
       {zoomedPackCard && (

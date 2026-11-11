@@ -11,6 +11,15 @@ import {
   SnsSnowCompassSeal,
 } from '../components/SnsHeroArtKit';
 import { getJourneyEpisodeDef } from '../kadanJourneyData';
+import {
+  canInstallGamePwa,
+  isBrowserFullscreen,
+  isFullscreenSupported,
+  isStandalonePwa,
+  promptInstallGamePwa,
+  subscribePwaFullscreen,
+  toggleBrowserFullscreen,
+} from '../pwaFullscreen';
 import { hsStorage } from '../storage';
 import { GameMode, PlayerProfile } from '../types';
 
@@ -34,12 +43,18 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
   onOpenOptions,
 }) => {
   const [diskSpinning, setDiskSpinning] = useState(false);
+  const [, setPwaTick] = useState(0);
   const isFirstVisitGuide = !profile.journeyGuideDone;
   const currentEp = getJourneyEpisodeDef(profile.journeyEpisode || 1);
 
   useEffect(() => {
     hsAudio.playBgm('tavern_hub');
+    return subscribePwaFullscreen(() => setPwaTick((n) => n + 1));
   }, []);
+
+  const fullscreenActive = isBrowserFullscreen() || isStandalonePwa();
+  const showFullscreenBtn = isFullscreenSupported() && !isStandalonePwa();
+  const showInstallBtn = canInstallGamePwa();
 
   const triggerModeTransition = (mode: GameMode) => {
     if (diskSpinning) return;
@@ -128,6 +143,40 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
             </span>
           </button>
 
+          {showInstallBtn && (
+            <button
+              type="button"
+              data-testid="hub-pwa-install-btn"
+              onClick={() => {
+                hsAudio.playSfx('ui_click');
+                promptInstallGamePwa();
+              }}
+              className="hs-arcane-btn flex min-h-[42px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-extrabold text-white sm:px-3 sm:py-2"
+            >
+              <span>📲</span>
+              <span>앱 설치</span>
+            </button>
+          )}
+
+          {showFullscreenBtn && (
+            <button
+              type="button"
+              data-testid="hub-fullscreen-btn"
+              onClick={() => {
+                hsAudio.playSfx('ui_click');
+                toggleBrowserFullscreen();
+              }}
+              onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+              title={fullscreenActive ? '전체화면 해제' : '전체화면 전환'}
+              className="hs-brass-btn flex min-h-[42px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-extrabold text-amber-100 sm:px-3 sm:py-2"
+            >
+              <span className="text-amber-300">{fullscreenActive ? '🗗' : '⛶'}</span>
+              <span className="hidden sm:inline">
+                {fullscreenActive ? '창모드' : '전체화면'}
+              </span>
+            </button>
+          )}
+
           <button
             type="button"
             disabled={isFirstVisitGuide}
@@ -160,7 +209,7 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
       <main className="relative z-20 my-auto flex w-full max-w-[820px] flex-col items-center pt-3 sm:pt-0">
         {isFirstVisitGuide && (
           <div className="mb-2 rounded-full border-2 border-emerald-300 bg-gradient-to-r from-emerald-950/95 via-teal-900/95 to-emerald-950/95 px-4 py-1.5 text-center text-xs font-extrabold text-emerald-100 shadow-[0_0_24px_rgba(16,185,129,0.55)] sm:text-sm">
-            ✨ 첫 방문 가이드: 아래 손가락이 가리키는 <b className="text-yellow-300">「카단의 여정」</b>을 눌러 첫 모험을 시작하세요!
+            ✨ 첫 방문 가이드: 아래 손가락이 가리키는 <b className="text-yellow-300">「스토리모드」</b>를 눌러 첫 모험을 시작하세요!
           </div>
         )}
 
@@ -242,39 +291,41 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
 
             {/* 3 Identical-Height Beveled Ivory/Parchment Menu Plates */}
             <div className="relative z-10 flex w-full max-w-[218px] flex-col gap-2 sm:max-w-[248px] sm:gap-2.5">
-              {/* 1. 대전 */}
+              {/* 1. 랭킹대전 */}
               <button
                 type="button"
+                data-testid="hub-mode-ranked"
                 disabled={isFirstVisitGuide}
                 onMouseEnter={() => !isFirstVisitGuide && hsAudio.playSfx('box_hover', 0.55)}
                 onClick={() => triggerModeTransition('RANKED')}
                 className={`hs-ivory-plate group flex h-[52px] w-full flex-col items-center justify-center rounded-2xl px-3 sm:h-[60px] sm:px-4 ${lockedBtnStyle}`}
               >
                 <span className="hs-title text-[15px] font-extrabold leading-tight tracking-wider text-[#2d1a0b] group-hover:text-[#0c4a6e] sm:text-lg">
-                  대전
+                  랭킹대전
                 </span>
                 <span className="mt-0.5 truncate text-[9.5px] font-extrabold tracking-tight text-[#6b4826] sm:text-[10.5px]">
                   승리 +25G · 3승 +30G · 등급 별(★)
                 </span>
               </button>
 
-              {/* 2. 엘윈마을 수련 */}
+              {/* 2. AI대전 */}
               <button
                 type="button"
+                data-testid="hub-mode-ai"
                 disabled={isFirstVisitGuide}
                 onMouseEnter={() => !isFirstVisitGuide && hsAudio.playSfx('box_hover', 0.55)}
                 onClick={() => triggerModeTransition('PRACTICE_NORMAL')}
                 className={`hs-ivory-plate group flex h-[52px] w-full flex-col items-center justify-center rounded-2xl px-3 sm:h-[60px] sm:px-4 ${lockedBtnStyle}`}
               >
                 <span className="hs-title text-[15px] font-extrabold leading-tight tracking-wider text-[#2d1a0b] group-hover:text-[#7c2d12] sm:text-lg">
-                  엘윈마을 수련
+                  AI대전
                 </span>
                 <span className="mt-0.5 truncate text-[9.5px] font-extrabold tracking-tight text-[#6b4826] sm:text-[10.5px]">
                   종족 초회 +25~50G · 올클리어 +2팩
                 </span>
               </button>
 
-              {/* 3. 카단의 여정 (Equal Height + First-Visit Pointing Hand Indicator) */}
+              {/* 3. 스토리모드 (Equal Height + First-Visit Pointing Hand Indicator) */}
               <div className="relative w-full">
                 {isFirstVisitGuide && (
                   <div
@@ -288,6 +339,7 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
 
                 <button
                   type="button"
+                  data-testid="hub-mode-story"
                   onMouseEnter={() => hsAudio.playSfx('box_hover', 0.55)}
                   onClick={() => triggerModeTransition('TUTORIAL')}
                   className={`hs-ivory-plate group relative flex h-[52px] w-full flex-col items-center justify-center rounded-2xl px-3 sm:h-[60px] sm:px-4 ${
@@ -297,7 +349,7 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
                   }`}
                 >
                   <span className="hs-title text-[15px] font-extrabold leading-tight tracking-wider text-[#14532d] group-hover:text-[#064e3b] sm:text-lg">
-                    카단의 여정
+                    스토리모드
                   </span>
                   <span className="mt-0.5 max-w-full truncate text-[9.5px] font-extrabold tracking-tight text-[#5c3d1e] sm:text-[10.5px]">
                     {profile.journeyReincarnation > 0 ? `${profile.journeyReincarnation}환생 · ` : ''}

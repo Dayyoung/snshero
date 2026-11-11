@@ -1,6 +1,13 @@
 import React, { useEffect } from 'react';
 import { hsAudio } from '../audio';
-import { CLASS_CREST_URL, formatCardHtmlText } from '../cardDb';
+import {
+  CLASS_CREST_URL,
+  CRAFTING_COST,
+  DISENCHANT_VALUE,
+  GOLDEN_DISENCHANT_VALUE,
+  formatCardHtmlText,
+  getCardBaseDurability,
+} from '../cardDb';
 import {
   CLASSIC_HEROES,
   CardClass,
@@ -111,18 +118,26 @@ export const CardZoomModal: React.FC<CardZoomModalProps> = ({
         : (card.attack ?? 0) * journeyMultiplier
       : card.attack;
 
+  const baseWeaponDur = getCardBaseDurability(card);
   const shownHealth =
     liveStats !== undefined
       ? liveStats.health
       : multActive
         ? card.type === 'WEAPON'
-          ? Math.max(1, (card.durability ?? 1) * journeyMultiplier)
+          ? Math.max(1, baseWeaponDur * journeyMultiplier)
           : Math.max(1, (card.health ?? 1) * journeyMultiplier)
         : card.type === 'WEAPON'
-          ? card.durability
+          ? baseWeaponDur
           : card.health;
 
   const cleanHtml = formatCardHtmlText(card.text || '', spellPowerBonus, velenMultiplier).trim();
+  const craftDust = card.rarity !== 'FREE' ? CRAFTING_COST[card.rarity] : null;
+  const disenchantDust =
+    card.rarity !== 'FREE'
+      ? isGolden
+        ? GOLDEN_DISENCHANT_VALUE[card.rarity]
+        : DISENCHANT_VALUE[card.rarity]
+      : null;
 
   const renderBtnClass = (variant: CardZoomAction['variant'] = 'arcane', disabled?: boolean) => {
     if (disabled) {
@@ -273,13 +288,52 @@ export const CardZoomModal: React.FC<CardZoomModalProps> = ({
             )}
           </div>
 
+          {/* Explicit Card Purpose Banner (Weapon / Spell / Minion Role Clarity) */}
+          <div
+            className={`mt-1.5 rounded-lg border px-2.5 py-1 text-[11.5px] font-extrabold ${
+              card.type === 'WEAPON'
+                ? 'border-slate-600 bg-slate-900 text-slate-100'
+                : card.type === 'SPELL'
+                  ? 'border-sky-700/60 bg-sky-950/90 text-sky-100'
+                  : 'border-[#9a743a]/55 bg-[#f3e2bc] text-[#3a220d]'
+            }`}
+          >
+            {card.type === 'WEAPON'
+              ? `⚔ 영웅 장착 무기 · 내 영웅이 장착하여 직접 공격 (공격력 ${shownAttack ?? 0} / 내구도 ${shownHealth ?? baseWeaponDur}, 공격 시 내구도 -1)`
+              : card.type === 'SPELL'
+                ? card.mechanics?.includes('SECRET')
+                  ? '✦ 비밀 주문 · 장착 후 상대 턴에 조건이 충족되면 자동 발동합니다.'
+                  : '✦ 주문 카드 · 사용 즉시 마법 효과가 발동하고 소모됩니다.'
+                : card.rarity === 'LEGENDARY'
+                  ? '★ 전설 하수인 · 덱에 단 1장만 편성 가능한 고유 결전 능력 보유'
+                  : '🛡 전장 하수인 · 전장에 소환되어 적 하수인·영웅과 교전합니다.'}
+          </div>
+
           {/* Large Readable Nanum Gothic Card Ability Text */}
-          <div className="mt-2 rounded-xl border border-[#b9965b]/55 bg-[#fffbf0] px-3 py-2 text-center text-[14px] font-bold leading-relaxed text-[#1a0f06] sm:text-[15px]">
+          <div className="mt-1.5 rounded-xl border border-[#b9965b]/55 bg-[#fffbf0] px-3 py-2 text-center text-[14px] font-bold leading-relaxed text-[#1a0f06] sm:text-[15px]">
             {cleanHtml ? (
               <div dangerouslySetInnerHTML={{ __html: cleanHtml }} />
+            ) : card.type === 'WEAPON' ? (
+              <span className="text-xs font-extrabold text-slate-800">
+                특수 부가 효과 없음 — 영웅에게 공격력 +{shownAttack ?? 0} (내구도 {shownHealth ?? baseWeaponDur}회)을 부여하는 순수 전투 무기입니다.
+              </span>
             ) : (
               <span className="text-xs font-bold text-[#6e5032]">
                 특수 능력 없음 (기본 공격력·생명력 전투 하수인)
+              </span>
+            )}
+          </div>
+
+          {/* Official Hearthstone Arcane Dust Economy Readout */}
+          <div className="mt-1.5 flex items-center justify-between rounded-lg border border-[#a88246]/50 bg-[#f5e7c6] px-2.5 py-1 text-[10.5px] font-extrabold text-[#4a2b0f]">
+            <span>
+              {card.rarity === 'FREE'
+                ? '기본 무료 지급 카드 (팩 미등장 · 추출 불가)'
+                : `${RARITY_LABEL_KO[card.rarity]}${isGolden ? ' (황금)' : ''} · ${card.rarity === 'LEGENDARY' ? '덱 1장 제한' : '덱 최대 2장'}`}
+            </span>
+            {craftDust !== null && disenchantDust !== null && (
+              <span className="text-[#7c2d12]">
+                제작 {craftDust.toLocaleString()} / 추출 +{disenchantDust.toLocaleString()} 가루
               </span>
             )}
           </div>

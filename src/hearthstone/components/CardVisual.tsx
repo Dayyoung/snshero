@@ -4,6 +4,7 @@ import {
   cardDb,
   formatCardHtmlText,
   getCardArtUrl,
+  getCardBaseDurability,
   getCardBustUrl,
   getCardTileUrl,
   getHeroArtUrl,
@@ -617,12 +618,33 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
   // Prefer RGBA transparent hero cutout (`getCardArtUrl`) or full-frame bespoke card illustration!
   const portraitSrc = useBustFallback ? getCardBustUrl(card) : getCardArtUrl(card);
   const isCutoutArt = portraitSrc.includes('/cutouts/');
-  const bottomTribeText =
-    (card.race && RACE_KO[card.race]) || card.snsFactionKo || '';
+  const isSecretSpell = isSpell && Boolean(card.mechanics?.includes('SECRET'));
+  const bottomTribeText = isWeapon
+    ? '⚔ 무기'
+    : isSpell
+      ? isSecretSpell
+        ? '비밀'
+        : '주문'
+      : (card.race && RACE_KO[card.race]) || '';
 
-  const formattedHtml = formatCardHtmlText(card.text || '', spellPowerBonus, velenMultiplier);
-  const plainTextLen = (card.text || '').replace(/<[^>]+>/g, '').length;
-  const bodyFontSize = plainTextLen > 72 ? 12.5 : plainTextLen > 46 ? 14 : 15.5;
+  const baseWeaponDurability = getCardBaseDurability(card);
+  const shownWeaponAttack =
+    journeyMultiplier > 1
+      ? Math.max(1, (card.attack ?? 1) * journeyMultiplier)
+      : (card.attack ?? 0);
+  const shownWeaponDurability =
+    journeyMultiplier > 1
+      ? Math.max(1, baseWeaponDurability * journeyMultiplier)
+      : baseWeaponDurability;
+
+  const rawFormattedHtml = formatCardHtmlText(card.text || '', spellPowerBonus, velenMultiplier);
+  const formattedHtml = isWeapon
+    ? rawFormattedHtml
+      ? `<span style="color:#fcd34d;font-size:11.5px;font-weight:900">[영웅 장착 무기]</span><br/>${rawFormattedHtml}`
+      : `<span style="color:#fcd34d;font-weight:900">[영웅 장착 무기]</span><br/><span style="color:#e2e8f0;font-size:12.5px">내 영웅이 장착하여 직접 공격<br/>(공격력 ${shownWeaponAttack} · 내구도 ${shownWeaponDurability})</span>`
+    : rawFormattedHtml;
+  const plainTextLen = (card.text || '').replace(/<[^>]+>/g, '').length + (isWeapon ? 12 : 0);
+  const bodyFontSize = plainTextLen > 72 ? 12.2 : plainTextLen > 46 ? 13.6 : 15;
 
   return (
     <div
@@ -1087,16 +1109,16 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
             )}
           </g>
 
-          {/* Chiseled Bottom Faction / Tribe Plaque */}
+          {/* Chiseled Bottom Card Type / Minion Tribe Plaque (Matches /stone.html Clarity) */}
           {bottomTribeText && (
             <g transform="translate(150, 386)">
               <rect
-                x="-58"
+                x="-62"
                 y="-11"
-                width="116"
+                width="124"
                 height="22"
                 rx="6"
-                fill="#29190c"
+                fill={isWeapon ? '#0f172a' : isSpell ? '#1e1b4b' : '#29190c'}
                 stroke={`url(#bezelGrad_${uid})`}
                 strokeWidth="2.4"
               />
@@ -1104,12 +1126,12 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
                 x="0"
                 y="4.5"
                 textAnchor="middle"
-                fill="#fde68a"
-                stroke="#120903"
+                fill={isWeapon ? '#f8fafc' : isSpell ? '#bae6fd' : '#fde68a'}
+                stroke="#090d16"
                 strokeWidth="3"
                 paintOrder="stroke"
                 fontFamily="'Nanum Gothic', sans-serif"
-                fontWeight="800"
+                fontWeight="900"
                 fontSize="13"
               >
                 {bottomTribeText}
@@ -1117,6 +1139,14 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
             </g>
           )}
         </svg>
+
+        {/* Weapon Crossed-Blades Medallion Pin (Instant Visual Distinction for Weapons) */}
+        {isWeapon && (
+          <div className="pointer-events-none absolute right-[14px] top-[14px] z-[26] flex items-center gap-1 rounded-full border-2 border-slate-200 bg-gradient-to-b from-slate-600 via-slate-800 to-slate-950 px-2.5 py-0.5 text-[12px] font-black text-amber-200 shadow-[0_4px_10px_rgba(0,0,0,0.92)]">
+            <span>⚔</span>
+            <span>무기</span>
+          </div>
+        )}
 
         {/* 3. LAYER C: Ability Scroll Watermark + Crisp Korean Ability Copy */}
         <div
@@ -1150,18 +1180,19 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
           <SnsLegendaryCrestSvg className="absolute -top-[8px] left-1/2 z-[22] w-[264px] -translate-x-1/2 drop-shadow-[0_6px_10px_rgba(0,0,0,0.92)]" />
         )}
 
-        {/* 5. LAYER E: Golden Foil Specular Shimmer */}
+        {/* 5. LAYER E: Golden Foil Specular Shimmer & Expanded 24K Gold Frame Rim */}
         {isGolden && (
           <div
             style={{
-              left: 18,
-              top: 18,
-              width: 264,
-              height: 382,
+              left: 16,
+              top: 16,
+              width: 268,
+              height: 386,
               background:
-                'linear-gradient(115deg, transparent 30%, rgba(254,240,138,0.38) 48%, rgba(255,255,255,0.62) 50%, rgba(250,204,21,0.32) 54%, transparent 70%)',
+                'linear-gradient(115deg, transparent 26%, rgba(254,240,138,0.44) 47%, rgba(255,255,255,0.72) 50%, rgba(250,204,21,0.40) 54%, transparent 72%)',
               backgroundSize: '240% 100%',
-              animation: 'hsGoldenFoil 3.4s linear infinite',
+              animation: 'hsGoldenFoil 3.1s linear infinite',
+              boxShadow: 'inset 0 0 0 3px rgba(253,224,71,0.88), 0 0 22px rgba(250,204,21,0.55)',
             }}
             className="pointer-events-none absolute z-[24] rounded-[24px] mix-blend-screen"
           />
@@ -1181,11 +1212,11 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
           <div className="absolute bottom-[4px] left-[0px] z-[30]">
             <HsAttackBadge
               value={
-                journeyMultiplier > 1
-                  ? isWeapon
-                    ? Math.max(1, (card.attack ?? 1) * journeyMultiplier)
-                    : (card.attack ?? 0) * journeyMultiplier
-                  : (card.attack ?? 0)
+                isWeapon
+                  ? shownWeaponAttack
+                  : journeyMultiplier > 1
+                    ? (card.attack ?? 0) * journeyMultiplier
+                    : (card.attack ?? 0)
               }
               buffed={journeyMultiplier > 1 && (card.attack ?? 0) > 0}
               isWeapon={isWeapon}
@@ -1211,11 +1242,7 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
         {isWeapon && (
           <div className="absolute bottom-[4px] right-[4px] z-[30]">
             <HsHealthBadge
-              value={
-                journeyMultiplier > 1
-                  ? Math.max(1, (card.durability ?? 1) * journeyMultiplier)
-                  : (card.durability ?? 1)
-              }
+              value={shownWeaponDurability}
               state={journeyMultiplier > 1 ? 'buffed' : 'normal'}
               isWeaponDurability
               size={68}
