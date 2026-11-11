@@ -573,7 +573,7 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
           ctx.fill();
           ctx.stroke();
 
-          ctx.font = 'bold 24px BelweBold, "Black Han Sans", sans-serif';
+          ctx.font = '800 24px "Nanum Gothic", "나눔고딕", sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.lineWidth = 5;
@@ -582,7 +582,7 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
           ctx.fillStyle = '#ffffff';
           ctx.fillText(b.text, 0, 1);
         } else if (b.subKind === 'HEAL') {
-          ctx.font = 'bold 25px BelweBold, "Black Han Sans", sans-serif';
+          ctx.font = '800 25px "Nanum Gothic", "나눔고딕", sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.lineWidth = 5;
@@ -591,7 +591,7 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
           ctx.fillStyle = '#4ade80';
           ctx.fillText(b.text, 0, 0);
         } else if (b.subKind === 'ARMOR') {
-          ctx.font = 'bold 20px BelweBold, "Noto Sans KR", sans-serif';
+          ctx.font = '800 20px "Nanum Gothic", "나눔고딕", sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.lineWidth = 4;
@@ -600,7 +600,7 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
           ctx.fillStyle = '#e2e8f0';
           ctx.fillText(b.text, 0, 0);
         } else {
-          ctx.font = 'bold 22px BelweBold, "Noto Sans KR", sans-serif';
+          ctx.font = '800 22px "Nanum Gothic", "나눔고딕", sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.lineWidth = 5;

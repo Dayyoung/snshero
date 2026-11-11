@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ============================================================================
- * Hearthstone Classic Commercial UI Material & Shader System
+ * 눈히어로: 카단의 여정 (SNSHero Stigma Card Battle) Commercial UI Material System
  * Specification: src/hearthstone/design.md
  * ============================================================================ */
 
@@ -105,6 +105,14 @@
 }
 
 /* Alpha-Contour Card Silhouette Glow Filters (Zero Rectangular Box-Shadow!) */
+.hs-no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hs-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .hs-card-shadow-base {
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.82));
 }

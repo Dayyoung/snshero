@@ -1,58 +1,17 @@
-import { CardClass, ClassicCardDef, CustomDeck, HERO_CLASS_ORDER, HeroClass } from './types';
-
-export interface ReaManifestData {
-  generator: string;
-  sourceInstallation: string;
-  evidence: {
-    assemblyCSharp: {
-      evidenceId: string;
-      sha256: string;
-      byteLength: number;
-      tableRowCounts: Record<string, number>;
-    };
-    blizzardT5Game: {
-      evidenceId: string;
-      sha256: string;
-    };
-    rymedyBaseline: {
-      evidenceId: string;
-      sha256: string;
-    };
-  };
-  engineConstants: {
-    turnDurationSeconds: number;
-    ropeFuseSeconds: number;
-    maxHandSize: number;
-    maxBoardMinions: number;
-    maxManaCrystals: number;
-    deckSize: number;
-    craftingCost: Record<string, number>;
-    disenchantValue: Record<string, number>;
-  };
-  koKR: {
-    spinnerTitles: string[];
-    playErrors: Record<string, string>;
-    ui: Record<string, string>;
-  };
-}
+import { CLASSIC_HEROES, CardClass, ClassicCardDef, CustomDeck, HERO_CLASS_ORDER, HeroClass } from './types';
 
 class ClassicCardDatabase {
   private cardsById = new Map<string, ClassicCardDef>();
   private collectibleList: ClassicCardDef[] = [];
-  private manifest: ReaManifestData | null = null;
   private loaded = false;
 
   async init(): Promise<void> {
     if (this.loaded) return;
-    const [cardsRes, manifestRes] = await Promise.all([
-      fetch('/hs-assets/data/classic-cards.json'),
-      fetch('/hs-assets/data/rea-manifest.json'),
-    ]);
+    const cardsRes = await fetch('/hs-assets/data/classic-cards.json');
     const cardsJson = (await cardsRes.json()) as {
       cards: ClassicCardDef[];
       tokens: ClassicCardDef[];
     };
-    this.manifest = (await manifestRes.json()) as ReaManifestData;
 
     this.collectibleList = cardsJson.cards;
     for (const c of cardsJson.cards) {
@@ -74,16 +33,13 @@ class ClassicCardDatabase {
     return this.loaded;
   }
 
-  getManifest(): ReaManifestData | null {
-    return this.manifest;
-  }
-
   getCard(id: string): ClassicCardDef | undefined {
-    return this.cardsById.get(id);
+    const clean = id.startsWith('VAN_') ? id.slice(4) : id;
+    return this.cardsById.get(id) || this.cardsById.get(clean);
   }
 
   mustGetCard(id: string): ClassicCardDef {
-    const c = this.cardsById.get(id);
+    const c = this.getCard(id);
     if (!c) {
       return {
         id,
@@ -101,6 +57,12 @@ class ClassicCardDatabase {
         overload: 0,
         collectible: false,
         artId: 'CS2_231',
+        snsCharId: 41,
+        snsCharName: '카단',
+        snsFaction: 'human',
+        snsFactionKo: '인간종족',
+        artUrl: '/anime-character-sheets/cutouts/041_Kadan.png',
+        bustUrl: '/anime-character-sheets/busts/041_bust.jpg',
       };
     }
     return c;
@@ -113,53 +75,144 @@ class ClassicCardDatabase {
 
 export const cardDb = new ClassicCardDatabase();
 
-export function getCardArtUrl(artId: string): string {
-  const clean = artId.startsWith('VAN_') ? artId.slice(4) : artId;
-  return `https://art.hearthstonejson.com/v1/256x/${clean}.jpg`;
+export function getCardArtUrl(cardOrArtId: ClassicCardDef | string): string {
+  if (typeof cardOrArtId !== 'string') {
+    return cardOrArtId.artUrl || cardOrArtId.bustUrl || '/anime-character-sheets/cutouts/041_Kadan.png';
+  }
+  const c = cardDb.getCard(cardOrArtId);
+  return c?.artUrl || c?.bustUrl || '/anime-character-sheets/cutouts/041_Kadan.png';
+}
+
+export function getCardBustUrl(cardOrArtId: ClassicCardDef | string): string {
+  if (typeof cardOrArtId !== 'string') {
+    return cardOrArtId.bustUrl || cardOrArtId.artUrl || '/anime-character-sheets/busts/041_bust.jpg';
+  }
+  const c = cardDb.getCard(cardOrArtId);
+  return c?.bustUrl || c?.artUrl || '/anime-character-sheets/busts/041_bust.jpg';
 }
 
 export function getCardTileUrl(artId: string): string {
-  const clean = artId.startsWith('VAN_') ? artId.slice(4) : artId;
-  return `https://art.hearthstonejson.com/v1/tiles/${clean}.webp`;
+  return getCardBustUrl(artId);
 }
+
+const HERO_ID_TO_PORTRAIT: Record<string, string> = {
+  HERO_01: CLASSIC_HEROES.WARRIOR.heroPortraitUrl,
+  HERO_02: CLASSIC_HEROES.SHAMAN.heroPortraitUrl,
+  HERO_03: CLASSIC_HEROES.ROGUE.heroPortraitUrl,
+  HERO_04: CLASSIC_HEROES.PALADIN.heroPortraitUrl,
+  HERO_05: CLASSIC_HEROES.HUNTER.heroPortraitUrl,
+  HERO_06: CLASSIC_HEROES.DRUID.heroPortraitUrl,
+  HERO_07: CLASSIC_HEROES.WARLOCK.heroPortraitUrl,
+  HERO_08: CLASSIC_HEROES.MAGE.heroPortraitUrl,
+  HERO_09: CLASSIC_HEROES.PRIEST.heroPortraitUrl,
+  EX1_323h: '/anime-character-sheets/busts/080_bust.jpg',
+  EX1_323: '/anime-character-sheets/busts/080_bust.jpg',
+};
 
 export function getHeroArtUrl(heroId: string): string {
-  return `https://art.hearthstonejson.com/v1/256x/${heroId}.jpg`;
+  if (HERO_ID_TO_PORTRAIT[heroId]) return HERO_ID_TO_PORTRAIT[heroId];
+  const c = cardDb.getCard(heroId);
+  return c?.bustUrl || '/anime-character-sheets/busts/041_bust.jpg';
 }
 
-/**
- * Official Blizzard Korean (`koKR`) transparent-alpha card render URL.
- * Prefers 2014 Classic `VAN_*` IDs so un-nerfed stats, swirl watermarks,
- * Legendary dragon crests, sword/blood-drop gems, and S-curved scrolls match 1:1.
- */
-export function getOfficialCardRenderUrl(
-  card: ClassicCardDef,
-  res: '256x' | '512x' = '256x',
-): string {
-  const primaryId = card.vanId || card.id || card.artId;
-  return `https://art.hearthstonejson.com/v1/render/latest/koKR/${res}/${primaryId}.png`;
-}
-
-export function getOfficialCardRenderFallbackUrl(
-  card: ClassicCardDef,
-  res: '256x' | '512x' = '256x',
-): string {
-  const cleanId = card.id.startsWith('VAN_') ? card.id.slice(4) : card.id;
-  return `https://art.hearthstonejson.com/v1/render/latest/koKR/${res}/${cleanId}.png`;
+function makeCrestDataUri(bgTop: string, bgBot: string, rim: string, glyphPath: string): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <defs>
+      <radialGradient id="g" cx="35%" cy="28%" r="72%">
+        <stop offset="0%" stop-color="${bgTop}"/>
+        <stop offset="100%" stop-color="${bgBot}"/>
+      </radialGradient>
+      <linearGradient id="r" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#fff3c4"/>
+        <stop offset="50%" stop-color="${rim}"/>
+        <stop offset="100%" stop-color="#5c3d14"/>
+      </linearGradient>
+    </defs>
+    <circle cx="32" cy="32" r="30" fill="url(#g)" stroke="url(#r)" stroke-width="3.5"/>
+    <circle cx="32" cy="32" r="24.5" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1"/>
+    <path d="${glyphPath}" fill="#fff8e1" stroke="rgba(0,0,0,0.55)" stroke-width="1.2" stroke-linejoin="round"/>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
 export const CLASS_CREST_URL: Record<CardClass, string> = {
-  MAGE: '/hs-assets/ui/crest_mage.webp',
-  PALADIN: '/hs-assets/ui/crest_paladin.webp',
-  PRIEST: '/hs-assets/ui/crest_priest.webp',
-  ROGUE: '/hs-assets/ui/crest_rogue.webp',
-  SHAMAN: '/hs-assets/ui/crest_shaman.webp',
-  WARLOCK: '/hs-assets/ui/crest_warlock.webp',
-  WARRIOR: '/hs-assets/ui/crest_warrior.webp',
-  DRUID: '/hs-assets/ui/crest_druid.webp',
-  HUNTER: '/hs-assets/ui/crest_hunter.webp',
-  NEUTRAL: '/hs-assets/ui/crest_neutral.webp',
-  DREAM: '/hs-assets/ui/crest_druid.webp',
+  // 인간종족 (설원 눈꽃 성기사 방패)
+  PRIEST: makeCrestDataUri(
+    '#60a5fa',
+    '#1e3a8a',
+    '#eab308',
+    'M32 13 L46 19 V32 C46 42 39 48 32 52 C25 48 18 42 18 32 V19 Z M32 20 V44 M23 31 H41',
+  ),
+  // 물종족 (포세이돈 삼지창)
+  MAGE: makeCrestDataUri(
+    '#38bdf8',
+    '#0c4a6e',
+    '#7dd3fc',
+    'M32 13 L36 21 H33.8 V49 H30.2 V21 H28 Z M21 18 L25 25 L23 31 H28 V27 H25.5 Z M43 18 L39 25 L41 31 H36 V27 H38.5 Z',
+  ),
+  // 불종족 (태양 불꽃 대검)
+  WARRIOR: makeCrestDataUri(
+    '#f87171',
+    '#7f1d1d',
+    '#f59e0b',
+    'M32 12 C39 20 44 26 42 35 C40 43 35 48 32 51 C29 48 24 43 22 35 C20 26 25 20 32 12 Z M32 23 C29 28 28 33 32 42 C36 33 35 28 32 23 Z',
+  ),
+  // 바람종족 (폭풍 날개 화살)
+  HUNTER: makeCrestDataUri(
+    '#2dd4bf',
+    '#115e59',
+    '#99f6e4',
+    'M32 12 L42 26 H35 V40 L42 48 L32 44 L22 48 L29 40 V26 H22 Z',
+  ),
+  // 땅종족 (대지 거석 수정)
+  PALADIN: makeCrestDataUri(
+    '#a3e635',
+    '#365314',
+    '#fde047',
+    'M32 12 L47 24 L42 48 H22 L17 24 Z M32 19 L24 27 L27 42 H37 L40 27 Z',
+  ),
+  // 언데드종족 (섀도우 서리 쌍검)
+  ROGUE: makeCrestDataUri(
+    '#c084fc',
+    '#3b0764',
+    '#d8b4fe',
+    'M20 15 L45 43 L41 47 L16 19 Z M44 15 L19 43 L23 47 L48 19 Z M32 24 L37 32 L32 40 L27 32 Z',
+  ),
+  // 엘프종족 (달빛 실반 초승달 & 별)
+  SHAMAN: makeCrestDataUri(
+    '#4ade80',
+    '#14532d',
+    '#bbf7d0',
+    'M36 14 C25 16 19 25 21 36 C23 45 32 50 42 47 C33 46 28 39 28 31 C28 23 32 17 36 14 Z M41 22 L43 27 L48 29 L43 31 L41 36 L39 31 L34 29 L39 27 Z',
+  ),
+  // 드워프종족 (딥포지 룬 전쟁망치)
+  WARLOCK: makeCrestDataUri(
+    '#fbbf24',
+    '#78350f',
+    '#fde68a',
+    'M18 17 H46 L43 29 H35 V50 H29 V29 H21 Z',
+  ),
+  // 동물종족 (야성 빙결늑대 발톱)
+  DRUID: makeCrestDataUri(
+    '#fb7185',
+    '#881337',
+    '#fda4af',
+    'M21 16 L26 34 L22 48 L17 33 Z M32 13 L36 33 L32 50 L28 33 Z M43 16 L47 33 L42 48 L38 34 Z',
+  ),
+  // 중립 (로봇·용·110종족 성흔 8각 별)
+  NEUTRAL: makeCrestDataUri(
+    '#94a3b8',
+    '#1e293b',
+    '#e2e8f0',
+    'M32 12 L37 25 L50 25 L40 34 L44 48 L32 39 L20 48 L24 34 L14 25 L27 25 Z',
+  ),
+  // 성몽 (신록룡 알렉스트라 비전)
+  DREAM: makeCrestDataUri(
+    '#34d399',
+    '#064e3b',
+    '#a7f3d0',
+    'M32 13 C42 21 46 31 32 50 C18 31 22 21 32 13 Z',
+  ),
 };
 
 export function encodeDeckShareCode(deck: CustomDeck): string {
@@ -171,12 +224,12 @@ export function encodeDeckShareCode(deck: CustomDeck): string {
     .map(([cid, n]) => `${cid}:${n}`)
     .join(',');
   const payload = JSON.stringify({
-    v: 1,
+    v: 2,
     c: deck.heroClass,
     n: deck.name,
     d: pairs,
   });
-  return `HSCLASSIC1:${btoa(encodeURIComponent(payload))}`;
+  return `SNSHERO1:${btoa(encodeURIComponent(payload))}`;
 }
 
 export function decodeDeckShareCode(
@@ -184,7 +237,11 @@ export function decodeDeckShareCode(
 ): { name: string; heroClass: HeroClass; cards: string[] } | null {
   try {
     const trimmed = rawCode.trim();
-    const b64 = trimmed.startsWith('HSCLASSIC1:') ? trimmed.slice('HSCLASSIC1:'.length) : trimmed;
+    const b64 = trimmed.startsWith('SNSHERO1:')
+      ? trimmed.slice('SNSHERO1:'.length)
+      : trimmed.startsWith('HSCLASSIC1:')
+        ? trimmed.slice('HSCLASSIC1:'.length)
+        : trimmed;
     const parsed = JSON.parse(decodeURIComponent(atob(b64))) as {
       c?: string;
       n?: string;
@@ -205,8 +262,9 @@ export function decodeDeckShareCode(
       }
     }
     if (cards.length === 0) return null;
+    const heroInfo = CLASSIC_HEROES[parsed.c as HeroClass];
     return {
-      name: (parsed.n || `${parsed.c} 공유 덱`).slice(0, 28),
+      name: (parsed.n || `${heroInfo.classNameKo}의 ${heroInfo.nameKo}`).slice(0, 28),
       heroClass: parsed.c as HeroClass,
       cards,
     };
@@ -216,9 +274,9 @@ export function decodeDeckShareCode(
 }
 
 /**
- * Formats Hearthstone card text:
+ * Formats card ability text:
  * - `$6` -> dynamic spell damage (e.g. `*7*` when spellDamage > 0)
- * - `#8` -> dynamic heal value (e.g. `*16*` with Prophet Velen)
+ * - `#8` -> dynamic heal value (e.g. `*16*` with Alexandar)
  * - Cleans `[x]` layout markers
  */
 export function formatCardHtmlText(
@@ -233,16 +291,16 @@ export function formatCardHtmlText(
     if (n2) {
       const v2 = (parseInt(n2, 10) + spellPowerBonus) * velenMultiplier;
       return spellPowerBonus > 0 || velenMultiplier > 1
-        ? `<b style="color:#4ade80">*${v1}-${v2}*</b>`
+        ? `<b style="color:#15803d">*${v1}-${v2}*</b>`
         : `${v1}-${v2}`;
     }
     return spellPowerBonus > 0 || velenMultiplier > 1
-      ? `<b style="color:#4ade80">*${v1}*</b>`
+      ? `<b style="color:#15803d">*${v1}*</b>`
       : `${v1}`;
   });
   txt = txt.replace(/#(\d+)/g, (_, n1: string) => {
     const v1 = parseInt(n1, 10) * velenMultiplier;
-    return velenMultiplier > 1 ? `<b style="color:#4ade80">*${v1}*</b>` : `${v1}`;
+    return velenMultiplier > 1 ? `<b style="color:#15803d">*${v1}*</b>` : `${v1}`;
   });
   return txt.replace(/\n/g, '<br/>');
 }
@@ -262,246 +320,245 @@ export const DISENCHANT_VALUE: Record<string, number> = {
 };
 
 /**
- * 9 Classic Starter / Iconic Archetype Preset Decks (each 30 verified Classic cards)
- * Uses Basic (FREE) + Classic staples so every class plays authentically right out of the box!
+ * 9 SNSHero Faction Starter / Iconic Archetype Preset Decks (each 30 verified cards)
  */
 export const CLASSIC_PRESET_DECKS: CustomDeck[] = [
   {
+    id: 'preset_priest',
+    name: '인간종족의 카단',
+    heroClass: 'PRIEST',
+    isPreset: true,
+    cards: [
+      'EX1_621', 'EX1_621',
+      'CS2_235', 'CS2_235',
+      'CS2_004', 'CS2_004',
+      'CS1_130', 'CS1_130',
+      'CS2_234', 'CS2_234',
+      'NEW1_020', 'NEW1_020',
+      'EX1_622', 'EX1_622',
+      'EX1_339', 'EX1_339',
+      'CS2_181', 'CS2_181',
+      'EX1_591', 'EX1_591',
+      'CS2_179', 'CS2_179',
+      'CS1_112', 'CS1_112',
+      'EX1_284', 'EX1_284',
+      'EX1_624', 'EX1_624',
+      'EX1_623', 'CS1_113',
+    ],
+  },
+  {
     id: 'preset_mage',
-    name: '키린 토 클래식 마법사',
+    name: '물종족의 포세이돈',
     heroClass: 'MAGE',
     isPreset: true,
     cards: [
-      'NEW1_012', 'NEW1_012', // 마나 지룡 x2
-      'EX1_277', 'EX1_277', // 신비한 화살 x2
-      'CS2_024', 'CS2_024', // 얼음 화살 x2
-      'EX1_608', 'EX1_608', // 마술사의 수습생 x2
-      'CS2_172', 'CS2_172', // 붉은늪지랩터 x2
-      'EX1_015', 'EX1_015', // 풋내기 기술자 x2
-      'CS2_023', 'CS2_023', // 신비한 지능 x2
-      'EX1_019', 'EX1_019', // 무너진 태양 성직자 x2
-      'CS2_022', 'CS2_022', // 변이 x2
-      'CS2_029', 'CS2_029', // 화염구 x2
-      'CS2_033', 'CS2_033', // 물의 정령 x2
-      'CS2_182', 'CS2_182', // 서리바람 설인 x2
-      'CS2_179', 'CS2_179', // 센진 방패대가 x2
-      'EX1_284', 'EX1_284', // 하늘빛 비룡 x2
-      'CS2_032', 'CS2_032', // 불기둥 x2
+      'NEW1_012', 'NEW1_012',
+      'EX1_277', 'EX1_277',
+      'CS2_024', 'CS2_024',
+      'EX1_608', 'EX1_608',
+      'CS2_172', 'CS2_172',
+      'EX1_015', 'EX1_015',
+      'CS2_023', 'CS2_023',
+      'EX1_019', 'EX1_019',
+      'CS2_022', 'CS2_022',
+      'CS2_029', 'CS2_029',
+      'CS2_033', 'CS2_033',
+      'CS2_182', 'CS2_182',
+      'CS2_179', 'CS2_179',
+      'EX1_284', 'EX1_284',
+      'CS2_032', 'CS2_032',
     ],
   },
   {
     id: 'preset_warrior',
-    name: '호드의 방패 컨트롤 전사',
+    name: '불종족의 이그니시우스',
     heroClass: 'WARRIOR',
     isPreset: true,
     cards: [
-      'EX1_607', 'EX1_607', // 내면의 분노 x2
-      'CS2_108', 'CS2_108', // 마무리 일격 x2
-      'EX1_400', 'EX1_400', // 소용돌이 x2
-      'CS2_106', 'CS2_106', // 이글거리는 전쟁 도끼 x2
-      'EX1_603', 'EX1_603', // 잔인한 감독관 x2
-      'EX1_391', 'EX1_391', // 격돌 x2
-      'EX1_402', 'EX1_402', // 방어구 제작자 x2
-      'EX1_606', 'EX1_606', // 방패 올리기 x2
-      'EX1_007', 'EX1_007', // 고통의 수행사제 x2
-      'EX1_604', 'EX1_604', // 거품 무는 광전사 x2
-      'NEW1_011', 'NEW1_011', // 코르크론 정예병 x2
-      'CS2_179', 'CS2_179', // 센진 방패대가 x2
-      'CS2_112', 'CS2_112', // 아케이나이트 도끼 x2
-      'CS2_200', 'CS2_200', // 돌주먹 오우거 x2
-      'EX1_410', 'EX1_407', // 방패 밀쳐내기 + 난투
+      'EX1_607', 'EX1_607',
+      'CS2_108', 'CS2_108',
+      'EX1_400', 'EX1_400',
+      'CS2_106', 'CS2_106',
+      'EX1_603', 'EX1_603',
+      'EX1_391', 'EX1_391',
+      'EX1_402', 'EX1_402',
+      'EX1_606', 'EX1_606',
+      'EX1_007', 'EX1_007',
+      'EX1_604', 'EX1_604',
+      'NEW1_011', 'NEW1_011',
+      'CS2_179', 'CS2_179',
+      'CS2_112', 'CS2_112',
+      'CS2_200', 'CS2_200',
+      'EX1_410', 'EX1_407',
     ],
   },
   {
     id: 'preset_hunter',
-    name: '야수 조련 미드레인지 사냥꾼',
+    name: '바람종족의 토람',
     heroClass: 'HUNTER',
     isPreset: true,
     cards: [
-      'CS2_084', 'CS2_084', // 사냥꾼의 징표 x2
-      'DS1_185', 'DS1_185', // 신비한 사격 x2
-      'DS1_175', 'DS1_175', // 회갈색 늑대 x2
-      'CS2_172', 'CS2_172', // 붉은늪지랩터 x2
-      'CS2_120', 'CS2_120', // 민물악어 x2
-      'EX1_531', 'EX1_531', // 청소부 하이에나 x2
-      'EX1_610', 'EX1_611', // 폭발의 덫 + 빙결의 덫
-      'NEW1_031', 'NEW1_031', // 야생의 벗 x2
-      'EX1_539', 'EX1_539', // 살상 명령 x2
-      'EX1_538', 'EX1_538', // 개들을 풀어라 x2
-      'EX1_617', 'EX1_617', // 치명적인 사격 x2
-      'DS1_070', 'DS1_070', // 사냥개조련사 x2
-      'DS1_183', 'DS1_183', // 일제 사격 x2
-      'DS1_178', 'DS1_178', // 툰드라 코뿔소 x2
-      'EX1_534', 'EX1_534', // 사바나 사자 x2
+      'CS2_084', 'CS2_084',
+      'DS1_185', 'DS1_185',
+      'DS1_175', 'DS1_175',
+      'CS2_172', 'CS2_172',
+      'CS2_120', 'CS2_120',
+      'EX1_531', 'EX1_531',
+      'EX1_610', 'EX1_611',
+      'NEW1_031', 'NEW1_031',
+      'EX1_539', 'EX1_539',
+      'EX1_538', 'EX1_538',
+      'EX1_617', 'EX1_617',
+      'DS1_070', 'DS1_070',
+      'DS1_183', 'DS1_183',
+      'DS1_178', 'DS1_178',
+      'EX1_534', 'EX1_534',
     ],
   },
   {
     id: 'preset_paladin',
-    name: '은빛 성기사단 미드레인지',
+    name: '땅종족의 콜로서스',
     heroClass: 'PALADIN',
     isPreset: true,
     cards: [
-      'CS2_087', 'CS2_087', // 힘의 축복 x2
-      'EX1_360', 'EX1_360', // 겸손 x2
-      'EX1_008', 'EX1_008', // 은빛십자군 종자 x2
-      'EX1_619', 'EX1_619', // 평등 x2
-      'EX1_362', 'EX1_362', // 여명회 파수병 x2
-      'EX1_019', 'EX1_019', // 무너진 태양 성직자 x2
-      'EX1_382', 'EX1_382', // 알도르 평화감시단 x2
-      'CS2_093', 'CS2_093', // 신성화 x2
-      'CS2_097', 'CS2_097', // 용사의 진은검 x2
-      'CS2_092', 'CS2_092', // 왕의 축복 x2
-      'CS2_094', 'CS2_094', // 천벌의 망치 x2
-      'CS2_182', 'CS2_182', // 서리바람 설인 x2
-      'CS2_151', 'CS2_151', // 은빛 성기사단 기사 x2
-      'CS2_088', 'CS2_088', // 왕의 수호자 x2
-      'CS2_222', 'CS2_222', // 스톰윈드 용사 x2
-    ],
-  },
-  {
-    id: 'preset_priest',
-    name: '스톰윈드 빛의 사제',
-    heroClass: 'PRIEST',
-    isPreset: true,
-    cards: [
-      'EX1_621', 'EX1_621', // 치유의 마법진 x2
-      'CS2_235', 'CS2_235', // 북녘골 성직자 x2
-      'CS2_004', 'CS2_004', // 신의 권능: 보호막 x2
-      'CS1_130', 'CS1_130', // 성스러운 일격 x2
-      'CS2_234', 'CS2_234', // 어둠의 권능: 고통 x2
-      'NEW1_020', 'NEW1_020', // 광기의 화염술사 x2
-      'EX1_622', 'EX1_622', // 어둠의 권능: 죽음 x2
-      'EX1_339', 'EX1_339', // 생각 훔치기 x2
-      'CS2_181', 'CS2_181', // 부상당한 검귀 x2
-      'EX1_591', 'EX1_591', // 아키나이 영혼사제 x2
-      'CS2_179', 'CS2_179', // 센진 방패대가 x2
-      'CS1_112', 'CS1_112', // 신성한 폭발 x2
-      'EX1_284', 'EX1_284', // 하늘빛 비룡 x2
-      'EX1_624', 'EX1_624', // 신성한 불꽃 x2
-      'EX1_623', 'CS1_113', // 사원 집행자 + 정신 지배
+      'CS2_087', 'CS2_087',
+      'EX1_360', 'EX1_360',
+      'EX1_008', 'EX1_008',
+      'EX1_619', 'EX1_619',
+      'EX1_362', 'EX1_362',
+      'EX1_019', 'EX1_019',
+      'EX1_382', 'EX1_382',
+      'CS2_093', 'CS2_093',
+      'CS2_097', 'CS2_097',
+      'CS2_092', 'CS2_092',
+      'CS2_094', 'CS2_094',
+      'CS2_182', 'CS2_182',
+      'CS2_151', 'CS2_151',
+      'CS2_088', 'CS2_088',
+      'CS2_222', 'CS2_222',
     ],
   },
   {
     id: 'preset_rogue',
-    name: 'SI:7 템포 암살 도적',
+    name: '언데드종족의 아르투스',
     heroClass: 'ROGUE',
     isPreset: true,
     cards: [
-      'CS2_072', 'CS2_072', // 기습 x2
-      'CS2_074', 'CS2_074', // 맹독 x2
-      'CS2_073', 'CS2_073', // 냉혈 x2
-      'EX1_008', 'EX1_008', // 은빛십자군 종자 x2
-      'EX1_131', 'EX1_131', // 데피아즈단 두목 x2
-      'EX1_124', 'EX1_124', // 절개 x2
-      'EX1_581', 'EX1_581', // 혼절시키기 x2
-      'CS2_233', 'CS2_233', // 폭풍의 칼날 x2
-      'EX1_096', 'EX1_096', // 전리품 수집가 x2
-      'EX1_134', 'EX1_134', // SI:7 요원 x2
-      'EX1_129', 'EX1_129', // 칼날 부채 x2
-      'EX1_556', 'EX1_556', // 허수아비골렘 x2
-      'EX1_046', 'EX1_046', // 검은무쇠 드워프 x2
-      'EX1_284', 'EX1_284', // 하늘빛 비룡 x2
-      'CS2_076', 'CS2_077', // 암살 + 전력 질주
+      'CS2_072', 'CS2_072',
+      'CS2_074', 'CS2_074',
+      'CS2_073', 'CS2_073',
+      'EX1_008', 'EX1_008',
+      'EX1_131', 'EX1_131',
+      'EX1_124', 'EX1_124',
+      'EX1_581', 'EX1_581',
+      'CS2_233', 'CS2_233',
+      'EX1_096', 'EX1_096',
+      'EX1_134', 'EX1_134',
+      'EX1_129', 'EX1_129',
+      'EX1_556', 'EX1_556',
+      'EX1_046', 'EX1_046',
+      'EX1_284', 'EX1_284',
+      'CS2_076', 'CS2_077',
     ],
   },
   {
     id: 'preset_shaman',
-    name: '대지 고리회 토템 주술사',
+    name: '엘프종족의 에일라',
     heroClass: 'SHAMAN',
     isPreset: true,
     cards: [
-      'CS2_045', 'CS2_045', // 대지의 무기 x2
-      'EX1_238', 'EX1_238', // 번개 화살 x2
-      'EX1_245', 'EX1_245', // 대지 충격 x2
-      'EX1_565', 'EX1_565', // 불꽃의 토템 x2
-      'EX1_247', 'EX1_247', // 폭풍으로 벼려낸 도끼 x2
-      'EX1_246', 'EX1_246', // 사술 x2
-      'EX1_248', 'EX1_248', // 야수 정령 x2
-      'EX1_259', 'EX1_259', // 번개 폭풍 x2
-      'EX1_258', 'EX1_258', // 속박 풀린 정령 x2
-      'EX1_575', 'EX1_556', // 마나 해일 토템 + 허수아비골렘
-      'EX1_093', 'EX1_093', // 아르거스의 수호자 x2
-      'CS2_182', 'CS2_182', // 서리바람 설인 x2
-      'CS2_046', 'EX1_284', // 피의 욕망 + 하늘빛 비룡
-      'CS2_042', 'CS2_042', // 불의 정령 x2
-      'EX1_067', 'EX1_067', // 은빛십자군 부대장 x2
+      'CS2_045', 'CS2_045',
+      'EX1_238', 'EX1_238',
+      'EX1_245', 'EX1_245',
+      'EX1_565', 'EX1_565',
+      'EX1_247', 'EX1_247',
+      'EX1_246', 'EX1_246',
+      'EX1_248', 'EX1_248',
+      'EX1_259', 'EX1_259',
+      'EX1_258', 'EX1_258',
+      'EX1_575', 'EX1_556',
+      'EX1_093', 'EX1_093',
+      'CS2_182', 'CS2_182',
+      'CS2_046', 'EX1_284',
+      'CS2_042', 'CS2_042',
+      'EX1_067', 'EX1_067',
     ],
   },
   {
     id: 'preset_warlock',
-    name: '화염과 그림자 위니 흑마법사',
+    name: '드워프종족의 아이언포지',
     heroClass: 'WARLOCK',
     isPreset: true,
     cards: [
-      'EX1_308', 'EX1_308', // 영혼의 불꽃 x2
-      'CS2_065', 'CS2_065', // 공허방랑자 x2
-      'EX1_319', 'EX1_319', // 화염 임프 x2
-      'CS2_188', 'CS2_188', // 가혹한 하사관 x2
-      'EX1_008', 'EX1_008', // 은빛십자군 종자 x2
-      'EX1_302', 'EX1_302', // 필멸의 고리 x2
-      'EX1_004', 'EX1_004', // 젊은 여사제 x2
-      'NEW1_019', 'NEW1_019', // 단검 곡예사 x2
-      'EX1_162', 'EX1_162', // 광포한 늑대 우두머리 x2
-      'EX1_019', 'EX1_019', // 무너진 태양 성직자 x2
-      'EX1_556', 'EX1_556', // 허수아비골렘 x2
-      'EX1_046', 'EX1_046', // 검은무쇠 드워프 x2
-      'EX1_093', 'EX1_093', // 아르거스의 수호자 x2
-      'CS2_182', 'CS2_182', // 서리바람 설인 x2
-      'EX1_310', 'EX1_310', // 파멸수호병 x2
+      'EX1_308', 'EX1_308',
+      'CS2_065', 'CS2_065',
+      'EX1_319', 'EX1_319',
+      'CS2_188', 'CS2_188',
+      'EX1_008', 'EX1_008',
+      'EX1_302', 'EX1_302',
+      'EX1_004', 'EX1_004',
+      'NEW1_019', 'NEW1_019',
+      'EX1_162', 'EX1_162',
+      'EX1_019', 'EX1_019',
+      'EX1_556', 'EX1_556',
+      'EX1_046', 'EX1_046',
+      'EX1_093', 'EX1_093',
+      'CS2_182', 'CS2_182',
+      'EX1_310', 'EX1_310',
     ],
   },
   {
     id: 'preset_druid',
-    name: '자군야포 클래식 램프 드루이드',
+    name: '동물종족의 펜릴',
     heroClass: 'DRUID',
     isPreset: true,
     cards: [
-      'EX1_169', 'EX1_169', // 정신 자극 x2
-      'CS2_005', 'CS2_005', // 할퀴기 x2
-      'CS2_013', 'CS2_013', // 급속 성장 x2
-      'EX1_154', 'EX1_154', // 천벌 x2
-      'CS2_011', 'CS2_011', // 야생의 포효 x2
-      'EX1_556', 'EX1_556', // 허수아비골렘 x2
-      'CS2_012', 'CS2_012', // 휘둘러치기 x2
-      'EX1_166', 'EX1_166', // 숲의 수호자 x2
-      'CS2_182', 'CS2_182', // 서리바람 설인 x2
-      'CS2_179', 'CS2_179', // 센진 방패대가 x2
-      'EX1_165', 'EX1_165', // 발톱의 드루이드 x2
-      'EX1_284', 'EX1_284', // 하늘빛 비룡 x2
-      'EX1_571', 'EX1_571', // 자연의 군대 x2
-      'NEW1_008', 'NEW1_008', // 지식의 고대정령 x2
-      'CS2_232', 'CS2_232', // 무쇠껍질 수호정령 x2
+      'EX1_169', 'EX1_169',
+      'CS2_005', 'CS2_005',
+      'CS2_013', 'CS2_013',
+      'EX1_154', 'EX1_154',
+      'CS2_011', 'CS2_011',
+      'EX1_556', 'EX1_556',
+      'CS2_012', 'CS2_012',
+      'EX1_166', 'EX1_166',
+      'CS2_182', 'CS2_182',
+      'CS2_179', 'CS2_179',
+      'EX1_165', 'EX1_165',
+      'EX1_284', 'EX1_284',
+      'EX1_571', 'EX1_571',
+      'NEW1_008', 'NEW1_008',
+      'CS2_232', 'CS2_232',
     ],
   },
 ];
 
 export const CLASSIC_RANK_NAMES: Record<number, string> = {
-  25: '화난 닭',
-  24: '오염된 노움',
-  23: '은빛십자군 종자',
-  22: '멀록 약탈꾼',
-  21: '남쪽바다 갑판원',
-  20: '방패병',
-  19: '풋내기 기술자',
-  18: '마술사의 수습생',
-  17: '타우렌 전사',
-  16: '퀘스트 중인 모험가',
-  15: '실버문 수호병',
-  14: '공격대장',
-  13: '공포의 해적',
-  12: '전쟁노래 사령관',
-  11: '나 이런 사냥꾼이야',
-  10: '오우거 마법사',
-  9: '은빛 성기사단 기사',
-  8: '서리늑대 전쟁군주',
-  7: '태양길잡이',
-  6: '고대의 전쟁정령',
-  5: '바다 거인',
-  4: '산악 거인',
-  3: '용암 거인',
-  2: '흑기사',
-  1: '여관주인',
-  0: '전설 (LEGEND)',
+  25: '엘윈 마을 수습생',
+  24: '설원 변경 정찰병',
+  23: '라이트헤븐 종자',
+  22: '산호 해역 파수병',
+  21: '흑풍단 갑판원',
+  20: '무쇠 방패 보병',
+  19: '딥포지 수습 기술자',
+  18: '심연 수구 수련생',
+  17: '바람섬 궁수',
+  16: '녹옥회 유랑 모험가',
+  15: '달빛 실반 파수꾼',
+  14: '북방 설원 기병',
+  13: '불꽃 궁정 선봉장',
+  12: '아케 성기사단 정예',
+  11: '안개절벽 사냥꾼',
+  10: '별빛 기록실 마도사',
+  9: '일곱 추적자 계승자',
+  8: '비취 평의회 집행관',
+  7: '하늘 제단 수호자',
+  6: '고대 마공학 지휘관',
+  5: '심연 해구 대장군',
+  4: '대지 성채 거신병',
+  3: '용의 첨탑 수호룡',
+  2: '은빛 단검의 계승자',
+  1: '취선루 대승부사',
+  0: '전설의 눈히어로 (LEGEND)',
 };
 
 export function getStarsNeededForRank(rank: number): number {

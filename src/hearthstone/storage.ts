@@ -21,7 +21,10 @@ const KEYS = {
   DECKS: 'hero_hs_decks',
   QUESTS: 'hero_hs_quests',
   PITY: 'hero_hs_pack_pity',
+  LORE_VER: 'hero_hs_lore_version',
 };
+
+const CURRENT_LORE_VERSION = 'snshero_v1';
 
 export type CollectionMap = Record<string, number>;
 
@@ -29,6 +32,12 @@ export interface OpenedPackCard {
   card: ClassicCardDef;
   isGolden: boolean;
   isNew: boolean;
+}
+
+function emitStateChanged() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('snshero:state-changed'));
+  }
 }
 
 function defaultProfile(): PlayerProfile {
@@ -54,8 +63,8 @@ function defaultQuests(): DailyQuest[] {
   return [
     {
       id: 'q_win_3',
-      title: '여관의 승부사',
-      description: '아무 직업으로 대전 또는 연습에서 2승 달성',
+      title: '취선루의 승부사',
+      description: '아무 종족으로 대전 또는 수련에서 2승 달성',
       progress: 0,
       goal: 2,
       rewardGold: 60,
@@ -63,8 +72,8 @@ function defaultQuests(): DailyQuest[] {
     },
     {
       id: 'q_play_minions',
-      title: '전장의 함성',
-      description: '하수인 15마리 소환하기',
+      title: '성흔 전단 소집',
+      description: '영웅 동료(하수인) 15명 소환하기',
       progress: 0,
       goal: 15,
       rewardGold: 40,
@@ -72,8 +81,8 @@ function defaultQuests(): DailyQuest[] {
     },
     {
       id: 'q_cast_spells',
-      title: '비전 마법의 대가',
-      description: '주문 10회 시전하기',
+      title: '별빛의 호흡 비전 수련',
+      description: '비전 주문 10회 시전하기',
       progress: 0,
       goal: 10,
       rewardGold: 50,
@@ -94,7 +103,6 @@ class HearthstoneStorage {
           col[c.id] = 2;
         }
       }
-      // Ensure starter preset deck cards are also owned so all 9 preset decks are 100% playable immediately
       for (const deck of CLASSIC_PRESET_DECKS) {
         const counts: Record<string, number> = {};
         for (const cid of deck.cards) {
@@ -112,6 +120,36 @@ class HearthstoneStorage {
     if (!localStorage.getItem(KEYS.QUESTS)) {
       this.saveQuests(defaultQuests());
     }
+
+    // Migrate legacy Hearthstone preset deck names & quest texts to SNSHero lore without losing progress
+    if (localStorage.getItem(KEYS.LORE_VER) !== CURRENT_LORE_VERSION) {
+      const presetById = new Map(CLASSIC_PRESET_DECKS.map((d) => [d.id, d]));
+      const existingDecks = this.getDecks();
+      const customOnly = existingDecks.filter((d) => !d.isPreset && !presetById.has(d.id));
+      const migratedPresets = CLASSIC_PRESET_DECKS.map((preset) => {
+        const prev = existingDecks.find((d) => d.id === preset.id);
+        return {
+          ...preset,
+          cards: prev && prev.cards.length === 30 ? [...prev.cards] : [...preset.cards],
+        };
+      });
+      this.saveDecks([...migratedPresets, ...customOnly]);
+
+      const freshQuests = defaultQuests();
+      const prevQuests = this.getQuests();
+      const migratedQuests = freshQuests.map((fq) => {
+        const old = prevQuests.find((pq) => pq.id === fq.id);
+        return old
+          ? {
+              ...fq,
+              progress: Math.min(fq.goal, old.progress || 0),
+              completed: Boolean(old.completed),
+            }
+          : fq;
+      });
+      this.saveQuests(migratedQuests);
+      localStorage.setItem(KEYS.LORE_VER, CURRENT_LORE_VERSION);
+    }
   }
 
   getProfile(): PlayerProfile {
@@ -126,6 +164,7 @@ class HearthstoneStorage {
 
   saveProfile(p: PlayerProfile) {
     localStorage.setItem(KEYS.PROFILE, JSON.stringify(p));
+    emitStateChanged();
   }
 
   getCollection(): CollectionMap {
@@ -140,6 +179,7 @@ class HearthstoneStorage {
 
   saveCollection(col: CollectionMap) {
     localStorage.setItem(KEYS.COLLECTION, JSON.stringify(col));
+    emitStateChanged();
   }
 
   getDecks(): CustomDeck[] {
@@ -157,6 +197,7 @@ class HearthstoneStorage {
 
   saveDecks(decks: CustomDeck[]) {
     localStorage.setItem(KEYS.DECKS, JSON.stringify(decks));
+    emitStateChanged();
   }
 
   getQuests(): DailyQuest[] {
@@ -171,6 +212,7 @@ class HearthstoneStorage {
 
   saveQuests(quests: DailyQuest[]) {
     localStorage.setItem(KEYS.QUESTS, JSON.stringify(quests));
+    emitStateChanged();
   }
 
   buyPacksWithGold(count: number): boolean {
@@ -247,7 +289,7 @@ class HearthstoneStorage {
     const cost = CRAFTING_COST[def.rarity] || 40;
     const p = this.getProfile();
     if (p.arcaneDust < cost) {
-      return { ok: false, reason: `신비한 가루가 부족합니다. (필요: ${cost})` };
+      return { ok: false, reason: `성흔 가루가 부족합니다. (필요: ${cost})` };
     }
     const col = this.getCollection();
     const maxUseful = def.rarity === 'LEGENDARY' ? 1 : 2;
@@ -317,6 +359,17 @@ class HearthstoneStorage {
     p.packs += 10;
     this.saveCollection(col);
     this.saveProfile(p);
+  }
+
+  resetAllData(): void {
+    localStorage.removeItem(KEYS.PROFILE);
+    localStorage.removeItem(KEYS.COLLECTION);
+    localStorage.removeItem(KEYS.DECKS);
+    localStorage.removeItem(KEYS.QUESTS);
+    localStorage.removeItem(KEYS.PITY);
+    localStorage.removeItem(KEYS.LORE_VER);
+    this.ensureInitialized();
+    emitStateChanged();
   }
 
   recordQuestProgress(kind: 'WIN' | 'MINION' | 'SPELL', amount = 1): number {
@@ -398,11 +451,9 @@ class HearthstoneStorage {
     }
 
     this.saveProfile(p);
-    if (didWin) {
-      goldEarned += this.recordQuestProgress('WIN', 1);
-    }
+    const questGold = didWin ? this.recordQuestProgress('WIN', 1) : 0;
     return {
-      goldEarned,
+      goldEarned: goldEarned + questGold,
       prevRank,
       newRank: p.rank,
       newStars: p.stars,

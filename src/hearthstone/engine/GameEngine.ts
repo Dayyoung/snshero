@@ -796,7 +796,7 @@ export function createEngine(rawState: BattleMatchState) {
     const m = f.minion;
     if (m.divineShield) {
       m.divineShield = false;
-      pushVfx('DIVINE_BREAK', m.uid, sourceId, 0, '천상의 보호막 파괴');
+      pushVfx('DIVINE_BREAK', m.uid, sourceId, 0, '성흔 보호막 파괴');
       return { actualDamage: 0, killed: false };
     }
 
@@ -1517,7 +1517,7 @@ export function createEngine(rawState: BattleMatchState) {
           actorSide: side,
           cardId: def.id,
           title: `${def.name} (차단됨!)`,
-          detail: `상대의 [마법 차단] 비밀로 인해 [${def.name}] 주문이 무효화되었습니다!`,
+          detail: `상대의 [${counter.name}] 비밀로 인해 [${def.name}] 주문이 무효화되었습니다!`,
           kind: 'CAST_SPELL',
         });
         recalculateAuras();
@@ -1675,7 +1675,7 @@ export function createEngine(rawState: BattleMatchState) {
       const basicTotems = ['CS2_050', 'CS2_051', 'CS2_052', 'NEW1_009'];
       const missing = basicTotems.filter((tid) => !p.board.some((m) => m.cardId === tid));
       if (missing.length === 0) {
-        return { canUse: false, reason: '모든 기본 토템이 이미 전장에 있습니다!', needsTarget: false, validTargets: [] };
+        return { canUse: false, reason: '모든 기본 정령석이 이미 전장에 있습니다!', needsTarget: false, validTargets: [] };
       }
     }
 

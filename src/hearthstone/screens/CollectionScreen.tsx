@@ -16,6 +16,8 @@ import {
   HsManaGem,
   RACE_KO,
 } from '../components/CardVisual';
+import { CardZoomAction, CardZoomModal } from '../components/CardZoomModal';
+import { SNS_LOCATIONS } from '../components/SnsHeroArtKit';
 import { hsStorage } from '../storage';
 import {
   CLASSIC_HEROES,
@@ -52,7 +54,7 @@ export const CollectionScreen: React.FC<{
   const [decks, setDecks] = useState<CustomDeck[]>(() => hsStorage.getDecks());
   const [profile, setProfile] = useState(() => hsStorage.getProfile());
 
-  const [activeTab, setActiveTab] = useState<CardClass>('MAGE');
+  const [activeTab, setActiveTab] = useState<CardClass>('PRIEST');
   const [manaFilter, setManaFilter] = useState<number | 'ALL'>('ALL');
   const [rarityFilter, setRarityFilter] = useState<'ALL' | CardRarity>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,6 +62,10 @@ export const CollectionScreen: React.FC<{
   const [page, setPage] = useState(0);
 
   const [editingDeckId, setEditingDeckId] = useState<string | null>(null);
+  const [mobilePanel, setMobilePanel] = useState<'TOME' | 'DECKS'>('TOME');
+  const [isCompactMobile, setIsCompactMobile] = useState(
+    () => typeof window !== 'undefined' && window.innerWidth < 640,
+  );
   const [creatingClassPicker, setCreatingClassPicker] = useState(false);
   const [importModalOpen, setImportModalOpen] = useState(false);
   const [importCodeText, setImportCodeText] = useState('');
@@ -69,6 +75,18 @@ export const CollectionScreen: React.FC<{
 
   useEffect(() => {
     hsAudio.playBgm('collection');
+    const onResize = () => setIsCompactMobile(window.innerWidth < 640);
+    const onStateChanged = () => {
+      setCollection(hsStorage.getCollection());
+      setDecks(hsStorage.getDecks());
+      setProfile(hsStorage.getProfile());
+    };
+    window.addEventListener('resize', onResize);
+    window.addEventListener('snshero:state-changed', onStateChanged);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('snshero:state-changed', onStateChanged);
+    };
   }, []);
 
   const syncAll = () => {
@@ -113,7 +131,8 @@ export const CollectionScreen: React.FC<{
         if (q) {
           const raceKo = c.race ? RACE_KO[c.race] || '' : '';
           const rarityKo = RARITY_KO[c.rarity] || '';
-          const hay = `${c.name} ${c.text} ${raceKo} ${rarityKo} ${c.rarity}`.toLowerCase();
+          const charKo = `${c.snsCharName || ''} ${c.snsFactionKo || ''}`;
+          const hay = `${c.name} ${c.text} ${raceKo} ${rarityKo} ${c.rarity} ${charKo}`.toLowerCase();
           if (!hay.includes(q)) return false;
         }
         return true;
@@ -135,7 +154,7 @@ export const CollectionScreen: React.FC<{
     const owned = collection[card.id] || 0;
     if (owned <= 0) {
       setInspectCard(card);
-      showNotice('미보유 카드입니다. 상세 창에서 신비한 가루로 즉시 제작할 수 있습니다.');
+      showNotice('미보유 카드입니다. 상세 창에서 성흔 가루로 즉시 제작할 수 있습니다.');
       return;
     }
     if (editingDeck.cards.length >= 30) {
@@ -219,16 +238,16 @@ export const CollectionScreen: React.FC<{
     try {
       await navigator.clipboard.writeText(code);
       hsAudio.playSfx('menu_select', 0.8);
-      showNotice('클립보드에 하스스톤 덱 공유 코드가 복사되었습니다!');
+      showNotice('클립보드에 눈히어로 덱 공유 코드가 복사되었습니다!');
     } catch {
-      window.prompt('아래 덱 공유 코드를 복사하세요:', code);
+      window.prompt('아래 눈히어로 덱 공유 코드를 복사하세요:', code);
     }
   };
 
   const handleImportDeckCode = () => {
     const parsed = decodeDeckShareCode(importCodeText);
     if (!parsed) {
-      showNotice('유효하지 않은 덱 코드입니다. HSCLASSIC1:... 형식을 확인하세요.');
+      showNotice('유효하지 않은 덱 코드입니다. SNSHERO1:... 형식을 확인하세요.');
       return;
     }
     const validCards: string[] = [];
@@ -264,11 +283,11 @@ export const CollectionScreen: React.FC<{
   };
 
   const handleCreateDeck = (heroClass: HeroClass) => {
-    const className = CLASSIC_HEROES[heroClass].classNameKo;
+    const heroInfo = CLASSIC_HEROES[heroClass];
     const customNum = decks.filter((d) => d.heroClass === heroClass).length + 1;
     const newDeck: CustomDeck = {
       id: `deck_${Date.now()}`,
-      name: `나만의 ${className} #${customNum}`,
+      name: `${heroInfo.classNameKo}의 ${heroInfo.nameKo} #${customNum}`,
       heroClass,
       cards: [],
     };
@@ -315,14 +334,14 @@ export const CollectionScreen: React.FC<{
 
   return (
     <div
-      style={{ backgroundImage: 'url(/hs-assets/ui/box_table_bg.webp)' }}
+      style={{ backgroundImage: `url(${SNS_LOCATIONS.COLLECTION_ARCHIVE})` }}
       className="relative flex h-[100dvh] w-full select-none flex-col overflow-hidden bg-cover bg-center text-amber-100"
     >
-      <div className="pointer-events-none absolute inset-0 bg-black/68" />
+      <div className="pointer-events-none absolute inset-0 bg-black/72" />
 
-      {/* Top Brass & Leather Header Bar */}
-      <header className="relative z-20 flex flex-wrap items-center justify-between gap-2 border-b-[3px] border-[#b7914d] bg-gradient-to-b from-[#432b17] via-[#2b1a0d] to-[#190f07] px-4 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.85)]">
-        <div className="flex items-center gap-3">
+      {/* Top Brass & Leather Header Bar (Clean Commercial Header — No Test Unlock Button) */}
+      <header className="relative z-20 flex shrink-0 flex-wrap items-center justify-between gap-1.5 border-b-[3px] border-[#b7914d] bg-gradient-to-b from-[#432b17] via-[#2b1a0d] to-[#190f07] px-2.5 py-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.85)] sm:gap-2 sm:px-4 sm:py-2">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             type="button"
             onClick={() => {
@@ -330,33 +349,33 @@ export const CollectionScreen: React.FC<{
               hsAudio.playBgm('tavern_hub');
               onBack();
             }}
-            className="hs-brass-btn rounded-xl px-3.5 py-1.5 text-xs font-extrabold text-amber-100 sm:text-sm"
+            className="hs-brass-btn min-h-[38px] rounded-xl px-2.5 py-1 text-xs font-extrabold text-amber-100 sm:px-3.5 sm:py-1.5 sm:text-sm"
           >
-            ← 여관 상자로
+            ← <span className="hidden sm:inline">취선루 </span>상자로
           </button>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <img
               src={CLASS_CREST_URL[activeTab]}
               alt=""
-              className="h-8 w-8 rounded-full border border-amber-300/60 object-cover shadow"
+              className="h-7 w-7 rounded-full border border-amber-300/60 object-cover shadow sm:h-8 sm:w-8"
             />
             <div>
-              <h1 className="hs-title text-base font-extrabold tracking-wide text-amber-100 sm:text-xl">
-                내 카드첩 · 공식 덱 빌더
+              <h1 className="hs-title text-sm font-extrabold tracking-wide text-amber-100 sm:text-xl">
+                별빛 기록실 · 내 카드첩
               </h1>
-              <div className="text-[10.5px] font-bold text-amber-300/85">
-                오리지널 수집 현황: {ownedUniqueCount} / 382종
+              <div className="text-[10px] font-bold text-amber-300/85 sm:text-[10.5px]">
+                수집 현황: {ownedUniqueCount} / 382종
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 rounded-xl border border-sky-400/50 bg-slate-950/85 px-3 py-1.5 text-xs font-extrabold text-sky-200 shadow-inner">
-            <HsArcaneDustVialIcon size={18} />
-            <span>신비한 가루</span>
-            <span className="hs-num ml-0.5 text-sm text-white">{profile.arcaneDust}</span>
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-1 rounded-xl border border-sky-400/50 bg-slate-950/85 px-2.5 py-1 text-[11px] font-extrabold text-sky-200 shadow-inner sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">
+            <HsArcaneDustVialIcon size={16} />
+            <span className="hidden sm:inline">성흔 가루</span>
+            <span className="hs-num ml-0.5 text-xs text-white sm:text-sm">{profile.arcaneDust}</span>
           </div>
 
           <button
@@ -367,56 +386,83 @@ export const CollectionScreen: React.FC<{
                 hsAudio.playSfx('purchase');
                 syncAll();
                 showNotice(
-                  `여분 카드 ${res.count}장을 추출하여 +${res.dustGained} 신비한 가루를 획득했습니다!`,
+                  `여분 카드 ${res.count}장을 정제하여 +${res.dustGained} 성흔 가루를 획득했습니다!`,
                 );
               } else {
-                showNotice('추출할 여분(3장 이상 중복) 카드가 없습니다.');
+                showNotice('정제할 여분(3장 이상 중복) 카드가 없습니다.');
               }
             }}
-            className="hs-brass-btn rounded-xl px-3 py-1.5 text-xs font-extrabold text-sky-200"
+            className="hs-brass-btn min-h-[36px] rounded-xl px-2.5 py-1 text-[11px] font-extrabold text-sky-200 sm:px-3 sm:py-1.5 sm:text-xs"
           >
-            여분 일괄 추출
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              hsStorage.unlockMasterCollection();
-              hsAudio.playSfx('pack_legendary');
-              syncAll();
-              showNotice('오리지널 수집 카드 382종 전체 해금이 완료되었습니다!');
-            }}
-            className="hs-arcane-btn rounded-xl px-3 py-1.5 text-xs font-extrabold text-white"
-          >
-            382종 전체해금
+            여분 정제
           </button>
         </div>
       </header>
 
+      {/* Mobile Portrait Panel Switcher (`< lg`) so Tome & Deckbuilder Each Get 100% Height */}
+      <div className="relative z-20 flex shrink-0 gap-1.5 border-b border-amber-500/30 bg-stone-950/90 px-2.5 py-1.5 lg:hidden">
+        <button
+          type="button"
+          onClick={() => {
+            hsAudio.playSfx('ui_click', 0.6);
+            setMobilePanel('TOME');
+          }}
+          className={`flex min-h-[38px] flex-1 items-center justify-center gap-1.5 rounded-xl border text-xs font-extrabold transition ${
+            mobilePanel === 'TOME'
+              ? 'border-amber-200 bg-gradient-to-b from-amber-500 to-amber-800 text-white shadow'
+              : 'border-amber-500/35 bg-stone-900 text-amber-200/80'
+          }`}
+        >
+          <span>카드첩 보기 ({ownedUniqueCount}/382)</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            hsAudio.playSfx('ui_click', 0.6);
+            setMobilePanel('DECKS');
+          }}
+          className={`flex min-h-[38px] flex-1 items-center justify-center gap-1.5 rounded-xl border text-xs font-extrabold transition ${
+            mobilePanel === 'DECKS'
+              ? 'border-sky-200 bg-gradient-to-b from-sky-500 to-blue-900 text-white shadow'
+              : 'border-amber-500/35 bg-stone-900 text-amber-200/80'
+          }`}
+        >
+          <span>
+            {editingDeck
+              ? `편집 중: ${editingDeck.name} (${editingDeck.cards.length}/30)`
+              : `보유 덱 목록 (${decks.length}개)`}
+          </span>
+        </button>
+      </div>
+
       {toast && (
-        <div className="pointer-events-none fixed left-1/2 top-16 z-[110] -translate-x-1/2 rounded-2xl border-2 border-amber-300 bg-stone-950/95 px-5 py-2 text-xs font-extrabold text-amber-100 shadow-2xl">
+        <div className="pointer-events-none fixed left-1/2 top-16 z-[140] w-[90vw] max-w-md -translate-x-1/2 rounded-2xl border-2 border-amber-300 bg-stone-950/95 px-4 py-2 text-center text-xs font-extrabold text-amber-100 shadow-2xl">
           {toast}
         </div>
       )}
 
-      {/* Floating Deck-Tile Hover Card Preview (Official Blizzard Deckbuilder UX!) */}
-      {hoveredTileCard && (
+      {/* Floating Deck-Tile Hover Card Preview (Desktop >= lg) */}
+      {hoveredTileCard && !inspectCard && (
         <div className="pointer-events-none fixed right-[26.5%] top-1/2 z-[90] hidden -translate-y-1/2 lg:block">
           <HearthstoneCard card={hoveredTileCard} size="MD" />
         </div>
       )}
 
-      {/* Main Split Layout: Leather Tome (Left 9 Cols) + Official Deckbuilder Tray (Right 3 Cols) */}
+      {/* Main Split Layout: Leather Tome (Left 9 Cols) + Deckbuilder Tray (Right 3 Cols) */}
       <div className="relative z-10 grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-12">
         {/* Left 9 Columns: Open Leather Collection Tome */}
-        <section className="flex min-h-0 flex-col px-3 pb-3 pt-2 lg:col-span-9">
-          {/* Stitched Class Bookmark Tabs with Official Class Crests */}
-          <div className="flex flex-wrap gap-1 pl-1">
+        <section
+          className={`${
+            mobilePanel === 'TOME' ? 'flex' : 'hidden'
+          } min-h-0 flex-col px-2 pb-2 pt-1.5 sm:px-3 sm:pb-3 sm:pt-2 lg:col-span-9 lg:flex`}
+        >
+          {/* Stitched Faction Bookmark Tabs (Scrollable on Mobile Portrait!) */}
+          <div className="hs-no-scrollbar flex shrink-0 gap-1 overflow-x-auto pl-1 lg:flex-wrap lg:overflow-visible">
             {([...HERO_CLASS_ORDER, 'NEUTRAL'] as CardClass[]).map((cls) => {
               const disabled =
                 Boolean(editingDeck) && cls !== editingDeck!.heroClass && cls !== 'NEUTRAL';
               const label =
-                cls === 'NEUTRAL' ? '중립' : CLASSIC_HEROES[cls as HeroClass].classNameKo;
+                cls === 'NEUTRAL' ? '다종족 연합' : CLASSIC_HEROES[cls as HeroClass].classNameKo;
               const active = activeTab === cls;
               return (
                 <button
@@ -428,7 +474,7 @@ export const CollectionScreen: React.FC<{
                     setActiveTab(cls);
                     setPage(0);
                   }}
-                  className={`flex items-center gap-1.5 rounded-t-xl border-x-2 border-t-2 px-2.5 py-1 text-xs font-extrabold transition ${
+                  className={`flex shrink-0 items-center gap-1 rounded-t-xl border-x-2 border-t-2 px-2 py-1 text-[11px] font-extrabold transition sm:gap-1.5 sm:px-2.5 sm:text-xs ${
                     active
                       ? 'z-10 -mb-[2px] border-[#cfa85d] bg-[#ead9b7] pb-1.5 text-[#2b190b] shadow'
                       : disabled
@@ -439,7 +485,7 @@ export const CollectionScreen: React.FC<{
                   <img
                     src={CLASS_CREST_URL[cls]}
                     alt=""
-                    className="h-5 w-5 rounded-full object-cover"
+                    className="h-4 w-4 rounded-full object-cover sm:h-5 sm:w-5"
                   />
                   <span>{label}</span>
                 </button>
@@ -447,13 +493,13 @@ export const CollectionScreen: React.FC<{
             })}
           </div>
 
-          {/* Open Parchment Tome Spread (`page_parchment_classic.webp`) */}
+          {/* Open Parchment Tome Spread */}
           <div
             style={{
               backgroundImage:
-                'linear-gradient(90deg, rgba(226,207,168,0.88) 0%, rgba(244,232,204,0.84) 48%, rgba(168,136,88,0.45) 50%, rgba(244,232,204,0.84) 52%, rgba(224,204,164,0.88) 100%), url(/hs-assets/ui/page_parchment_classic.webp)',
+                'linear-gradient(90deg, #dfd0b0 0%, #f5ebd4 47%, #c4a36e 50%, #f5ebd4 53%, #ddcea9 100%)',
             }}
-            className="relative flex min-h-0 flex-1 flex-col justify-between rounded-b-3xl rounded-tr-3xl border-[4px] border-[#c49d56] bg-cover bg-center px-3 pb-2.5 pt-2 text-stone-900 shadow-[0_20px_50px_rgba(0,0,0,0.85),inset_0_0_38px_rgba(82,50,18,0.42)] sm:px-4"
+            className="relative flex min-h-0 flex-1 flex-col justify-between rounded-b-2xl rounded-tr-2xl border-[3px] border-[#c49d56] px-2 pb-2 pt-1.5 text-stone-900 shadow-[0_20px_50px_rgba(0,0,0,0.85),inset_0_0_38px_rgba(82,50,18,0.42)] sm:rounded-b-3xl sm:rounded-tr-3xl sm:border-[4px] sm:px-4 sm:pb-2.5 sm:pt-2"
           >
             {/* Tactile Brass Page Turn Arrows */}
             {safePage > 0 && (
@@ -464,7 +510,7 @@ export const CollectionScreen: React.FC<{
                   setPage((p) => Math.max(0, p - 1));
                 }}
                 title="이전 페이지"
-                className="hs-brass-btn absolute left-1.5 top-1/2 z-30 flex h-14 w-9 -translate-y-1/2 items-center justify-center rounded-full text-lg font-black text-amber-100"
+                className="hs-brass-btn absolute left-1 top-1/2 z-30 flex h-12 w-8 -translate-y-1/2 items-center justify-center rounded-full text-base font-extrabold text-amber-100 sm:left-1.5 sm:h-14 sm:w-9 sm:text-lg"
               >
                 ◀
               </button>
@@ -477,14 +523,14 @@ export const CollectionScreen: React.FC<{
                   setPage((p) => Math.min(totalPages - 1, p + 1));
                 }}
                 title="다음 페이지"
-                className="hs-brass-btn absolute right-1.5 top-1/2 z-30 flex h-14 w-9 -translate-y-1/2 items-center justify-center rounded-full text-lg font-black text-amber-100"
+                className="hs-brass-btn absolute right-1 top-1/2 z-30 flex h-12 w-8 -translate-y-1/2 items-center justify-center rounded-full text-base font-extrabold text-amber-100 sm:right-1.5 sm:h-14 sm:w-9 sm:text-lg"
               >
                 ▶
               </button>
             )}
 
-            {/* 8-Card Spread Grid (2x4 Official koKR Sculpted Renders) */}
-            <div className="grid min-h-0 flex-1 grid-cols-2 place-items-center gap-x-2 gap-y-1.5 overflow-y-auto px-6 py-0.5 sm:grid-cols-4">
+            {/* 8-Card Spread Grid (Tapping ANY Card Selects & Enlarges via CardZoomModal!) */}
+            <div className="grid min-h-0 flex-1 grid-cols-2 place-items-center gap-x-1.5 gap-y-1 overflow-y-auto px-7 py-0.5 sm:grid-cols-4 sm:gap-x-2 sm:gap-y-1.5">
               {pageCards.map((card) => {
                 const owned = collection[card.id] || 0;
                 const inDeck = editingDeck
@@ -506,13 +552,16 @@ export const CollectionScreen: React.FC<{
                     >
                       <HearthstoneCard
                         card={card}
-                        size="SM"
+                        size={isCompactMobile ? 'XS' : 'SM'}
                         enableTilt
-                        onClick={() => handleAddCardToDeck(card)}
+                        onClick={() => {
+                          hsAudio.playSfx('card_hover', 0.7);
+                          setInspectCard(card);
+                        }}
                         className="cursor-pointer"
                       />
                       {editingDeck && inDeck > 0 && (
-                        <span className="hs-num pointer-events-none absolute right-2 top-3 z-30 rounded-full border border-emerald-200 bg-emerald-700 px-2 py-0.5 text-[10px] text-white shadow">
+                        <span className="hs-num pointer-events-none absolute right-1.5 top-2 z-30 rounded-full border border-emerald-200 bg-emerald-700 px-1.5 py-0.5 text-[9.5px] text-white shadow sm:right-2 sm:top-3 sm:px-2 sm:text-[10px]">
                           덱 {inDeck}
                         </span>
                       )}
@@ -521,7 +570,7 @@ export const CollectionScreen: React.FC<{
                     {/* Clean Parchment Ownership Ribbon */}
                     <div className="-mt-1 flex items-center gap-1">
                       <span
-                        className={`rounded-md border px-2 py-0.5 text-[10px] font-extrabold shadow-sm ${
+                        className={`rounded-md border px-1.5 py-0.5 text-[9.5px] font-extrabold shadow-sm sm:px-2 sm:text-[10px] ${
                           owned > 0
                             ? 'border-[#8a6432] bg-[#432913] text-amber-100'
                             : 'border-sky-800/60 bg-sky-950/85 text-sky-200'
@@ -532,12 +581,12 @@ export const CollectionScreen: React.FC<{
                       <button
                         type="button"
                         onClick={() => {
-                          hsAudio.playSfx('ui_click', 0.6);
+                          hsAudio.playSfx('card_hover', 0.65);
                           setInspectCard(card);
                         }}
-                        className="rounded-md border border-[#96703c] bg-[#fbf3df] px-2 py-0.5 text-[10px] font-extrabold text-[#3d2511] shadow-sm hover:bg-[#f2dfb7]"
+                        className="rounded-md border border-[#96703c] bg-[#fbf3df] px-1.5 py-0.5 text-[9.5px] font-extrabold text-[#3d2511] shadow-sm hover:bg-[#f2dfb7] sm:px-2 sm:text-[10px]"
                       >
-                        상세 · 제작
+                        확대
                       </button>
                     </div>
                   </div>
@@ -545,56 +594,56 @@ export const CollectionScreen: React.FC<{
               })}
 
               {pageCards.length === 0 && (
-                <div className="col-span-full py-16 text-center text-sm font-extrabold text-[#5c3d1e]">
+                <div className="col-span-full py-12 text-center text-sm font-extrabold text-[#5c3d1e]">
                   검색 및 마나/등급 필터와 일치하는 카드가 없습니다.
                 </div>
               )}
             </div>
 
-            {/* Bottom Official Deckbuilder Filter Bar: Sapphire Mana Gems + Rarity + Search */}
-            <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2 border-t-2 border-[#8c6633]/35 pt-2">
-              {/* Sapphire Mana Crystal Filter Row */}
-              <div className="flex flex-wrap items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setManaFilter('ALL');
-                    setPage(0);
-                  }}
-                  className={`rounded-lg border px-2.5 py-1 text-[11px] font-extrabold transition ${
-                    manaFilter === 'ALL'
-                      ? 'border-sky-300 bg-sky-800 text-white shadow'
-                      : 'border-[#8f6a38]/50 bg-[#efe0be] text-[#3a2310] hover:bg-[#e5d0a3]'
-                  }`}
-                >
-                  전체
-                </button>
-                {[0, 1, 2, 3, 4, 5, 6, 7].map((m) => {
-                  const active = manaFilter === m;
-                  return (
-                    <button
-                      key={m}
-                      type="button"
-                      onClick={() => {
-                        hsAudio.playSfx('ui_click', 0.5);
-                        setManaFilter(active ? 'ALL' : m);
-                        setPage(0);
-                      }}
-                      className={`transition ${
-                        active
-                          ? 'scale-115 brightness-115'
-                          : 'opacity-80 hover:scale-108 hover:opacity-100'
-                      }`}
-                    >
-                      <HsManaGem value={m === 7 ? '7+' : m} size={27} active={active} />
-                    </button>
-                  );
-                })}
-              </div>
+            {/* Bottom Filter Bar: Sapphire Mana Gems + Rarity + Search */}
+            <div className="mt-1 flex shrink-0 flex-col gap-1.5 border-t-2 border-[#8c6633]/35 pt-1.5 sm:mt-1.5 sm:pt-2">
+              <div className="flex flex-wrap items-center justify-between gap-1.5">
+                {/* Sapphire Mana Crystal Filter Row */}
+                <div className="hs-no-scrollbar flex items-center gap-1 overflow-x-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setManaFilter('ALL');
+                      setPage(0);
+                    }}
+                    className={`shrink-0 rounded-lg border px-2 py-0.5 text-[10.5px] font-extrabold transition sm:px-2.5 sm:py-1 sm:text-[11px] ${
+                      manaFilter === 'ALL'
+                        ? 'border-sky-300 bg-sky-800 text-white shadow'
+                        : 'border-[#8f6a38]/50 bg-[#efe0be] text-[#3a2310] hover:bg-[#e5d0a3]'
+                    }`}
+                  >
+                    전체
+                  </button>
+                  {[0, 1, 2, 3, 4, 5, 6, 7].map((m) => {
+                    const active = manaFilter === m;
+                    return (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => {
+                          hsAudio.playSfx('ui_click', 0.5);
+                          setManaFilter(active ? 'ALL' : m);
+                          setPage(0);
+                        }}
+                        className={`shrink-0 transition ${
+                          active
+                            ? 'scale-112 brightness-115'
+                            : 'opacity-80 hover:scale-108 hover:opacity-100'
+                        }`}
+                      >
+                        <HsManaGem value={m === 7 ? '7+' : m} size={25} active={active} />
+                      </button>
+                    );
+                  })}
+                </div>
 
-              {/* Rarity Gem Filter + Search + Ownership Mode */}
-              <div className="flex flex-wrap items-center gap-1.5">
-                <div className="hidden items-center gap-1 rounded-xl border border-[#8f6a38]/45 bg-[#efe1c0] px-1.5 py-0.5 xl:flex">
+                {/* Rarity Gem Filter */}
+                <div className="hs-no-scrollbar flex items-center gap-1 overflow-x-auto rounded-xl border border-[#8f6a38]/45 bg-[#efe1c0] px-1.5 py-0.5">
                   {RARITY_FILTER_OPTIONS.map((rf) => (
                     <button
                       key={rf.id}
@@ -603,7 +652,7 @@ export const CollectionScreen: React.FC<{
                         setRarityFilter(rf.id);
                         setPage(0);
                       }}
-                      className={`flex items-center gap-1 rounded-lg px-2 py-0.5 text-[10.5px] font-extrabold transition ${
+                      className={`flex shrink-0 items-center gap-1 rounded-lg px-1.5 py-0.5 text-[10px] font-extrabold transition sm:px-2 sm:text-[10.5px] ${
                         rarityFilter === rf.id
                           ? 'bg-[#3e2612] text-amber-100 shadow'
                           : 'text-[#4a2e16] hover:bg-[#e2cfa4]'
@@ -617,7 +666,10 @@ export const CollectionScreen: React.FC<{
                     </button>
                   ))}
                 </div>
+              </div>
 
+              {/* Search + Ownership Toggle + Page Counter */}
+              <div className="flex items-center justify-between gap-1.5">
                 <input
                   type="text"
                   value={searchQuery}
@@ -625,35 +677,41 @@ export const CollectionScreen: React.FC<{
                     setSearchQuery(e.target.value);
                     setPage(0);
                   }}
-                  placeholder="카드명 · 효과 · 종족 검색..."
-                  className="w-36 rounded-xl border border-[#8a6534] bg-[#fdf8ed] px-3 py-1 text-xs font-bold text-stone-900 shadow-inner placeholder:text-stone-400 focus:border-sky-600 focus:outline-none sm:w-48"
+                  placeholder="영웅명 · 카드명 · 효과 · 종족 검색..."
+                  className="min-w-0 flex-1 rounded-xl border border-[#8a6534] bg-[#fdf8ed] px-2.5 py-1 text-xs font-bold text-stone-900 shadow-inner placeholder:text-stone-400 focus:border-sky-600 focus:outline-none sm:max-w-xs sm:px-3"
                 />
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCraftingMode((v) => !v);
-                    setPage(0);
-                  }}
-                  className={`rounded-xl border px-2.5 py-1 text-[11px] font-extrabold transition ${
-                    craftingMode
-                      ? 'border-sky-300 bg-sky-800 text-white shadow'
-                      : 'border-[#8a6534] bg-[#efe1c0] text-[#3a2310]'
-                  }`}
-                >
-                  {craftingMode ? '전체 382종' : '보유 카드만'}
-                </button>
+                <div className="flex shrink-0 items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCraftingMode((v) => !v);
+                      setPage(0);
+                    }}
+                    className={`rounded-xl border px-2 py-1 text-[10.5px] font-extrabold transition sm:px-2.5 sm:text-[11px] ${
+                      craftingMode
+                        ? 'border-sky-300 bg-sky-800 text-white shadow'
+                        : 'border-[#8a6534] bg-[#efe1c0] text-[#3a2310]'
+                    }`}
+                  >
+                    {craftingMode ? '전체 382종' : '보유만'}
+                  </button>
 
-                <span className="hs-num rounded-lg bg-[#422813] px-2.5 py-1 text-xs text-amber-100">
-                  {safePage + 1} / {totalPages}
-                </span>
+                  <span className="hs-num rounded-lg bg-[#422813] px-2 py-1 text-[11px] text-amber-100 sm:px-2.5 sm:text-xs">
+                    {safePage + 1} / {totalPages}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Right 3 Columns: Official Blizzard Oak & Iron Deckbuilder Tray */}
-        <aside className="hs-wood-panel flex min-h-0 flex-col border-l-[3px] border-[#b7914d] p-3 lg:col-span-3">
+        {/* Right 3 Columns: Oak & Iron Deckbuilder Tray */}
+        <aside
+          className={`hs-wood-panel ${
+            mobilePanel === 'DECKS' ? 'flex' : 'hidden'
+          } min-h-0 flex-col border-l-[3px] border-[#b7914d] p-3 lg:col-span-3 lg:flex`}
+        >
           {!editingDeck ? (
             <>
               <div className="mb-2.5 flex items-center justify-between gap-1">
@@ -681,13 +739,13 @@ export const CollectionScreen: React.FC<{
               {importModalOpen && (
                 <div className="mb-2.5 rounded-xl border border-sky-400/50 bg-slate-950/90 p-2.5">
                   <div className="mb-1 text-[11px] font-extrabold text-sky-200">
-                    하스스톤 클래식 덱 코드 불러오기
+                    눈히어로 덱 공유 코드 불러오기
                   </div>
                   <input
                     type="text"
                     value={importCodeText}
                     onChange={(e) => setImportCodeText(e.target.value)}
-                    placeholder="HSCLASSIC1:... 붙여넣기"
+                    placeholder="SNSHERO1:... 붙여넣기"
                     className="w-full rounded-lg border border-sky-500/40 bg-black/70 px-2.5 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none"
                   />
                   <div className="mt-1.5 flex gap-1.5">
@@ -802,7 +860,7 @@ export const CollectionScreen: React.FC<{
               </div>
             </>
           ) : (
-            /* Active 30-Card Official Deckbuilder View */
+            /* Active 30-Card Deckbuilder View */
             <>
               {/* Hero Banner Header */}
               <div className="relative mb-2 overflow-hidden rounded-xl border-2 border-[#d8b36a] bg-stone-950 p-2.5 shadow-lg">
@@ -854,7 +912,7 @@ export const CollectionScreen: React.FC<{
                   </div>
                 </div>
 
-                {/* Official Mana Curve Histogram (0 ~ 7+) */}
+                {/* Mana Curve Histogram (0 ~ 7+) */}
                 <div className="relative z-10 mt-2.5 flex h-14 items-end gap-1 border-t border-amber-600/30 pt-3">
                   {deckGrouped.curve.map((cnt, costBucket) => {
                     const maxBar = Math.max(6, ...deckGrouped.curve);
@@ -879,7 +937,14 @@ export const CollectionScreen: React.FC<{
                 </div>
               </div>
 
-              {/* Official Hearthstone Card Tile Bars */}
+              <button
+                type="button"
+                onClick={() => setMobilePanel('TOME')}
+                className="hs-arcane-btn mb-2 w-full rounded-xl py-1.5 text-xs font-extrabold text-white lg:hidden"
+              >
+                + 카드첩에서 카드 선택·추가하기
+              </button>
+
               <div className="flex-1 space-y-1 overflow-y-auto pr-1">
                 {deckGrouped.entries.map(({ card, count }) => (
                   <button
@@ -887,17 +952,19 @@ export const CollectionScreen: React.FC<{
                     type="button"
                     onMouseEnter={() => setHoveredTileCard(card)}
                     onMouseLeave={() => setHoveredTileCard(null)}
-                    onClick={() => handleRemoveCardFromDeck(card.id)}
-                    title="클릭하여 덱에서 1장 제거"
-                    className="group relative flex h-8 w-full items-center justify-between overflow-hidden rounded-md border border-[#b58e4c]/70 bg-[#18110b] pl-1 pr-1.5 text-left shadow transition hover:border-red-400"
+                    onClick={() => {
+                      hsAudio.playSfx('card_hover', 0.65);
+                      setInspectCard(card);
+                    }}
+                    title="클릭하여 카드 확대 및 덱 편집"
+                    className="group relative flex h-8 w-full items-center justify-between overflow-hidden rounded-md border border-[#b58e4c]/70 bg-[#18110b] pl-1 pr-1.5 text-left shadow transition hover:border-amber-300"
                   >
-                    {/* Right-Side Cropped Card Art Tile */}
+                    {/* Right-Side Cropped Character Portrait Tile */}
                     <img
-                      src={getCardTileUrl(card.artId)}
+                      src={getCardTileUrl(card.id)}
                       alt=""
-                      className="pointer-events-none absolute right-0 top-0 h-full w-32 object-cover opacity-75 transition group-hover:scale-105"
+                      className="pointer-events-none absolute right-0 top-0 h-full w-32 object-cover object-top opacity-75 transition group-hover:scale-105"
                     />
-                    {/* Smooth Dark Fade Mask from Left */}
                     <div
                       style={{
                         background:
@@ -923,7 +990,7 @@ export const CollectionScreen: React.FC<{
 
                 {deckGrouped.entries.length === 0 && (
                   <div className="rounded-xl border border-amber-500/20 bg-black/35 px-3 py-8 text-center text-xs font-semibold text-amber-200/70">
-                    왼쪽 카드첩에서 카드를 클릭하여 30장을 편성하거나 아래 [자동 완성]을 누르세요.
+                    카드첩에서 카드를 클릭해 확대한 뒤 [덱에 넣기]를 누르거나 아래 [자동 완성]을 누르세요.
                   </div>
                 )}
               </div>
@@ -966,106 +1033,162 @@ export const CollectionScreen: React.FC<{
         </aside>
       </div>
 
-      {/* HD 512x Card Detail + Arcane Dust Crafting / Disenchanting Modal */}
-      {inspectCard && (
-        <div
-          onClick={() => setInspectCard(null)}
-          className="fixed inset-0 z-[105] flex items-center justify-center bg-black/82 p-4 backdrop-blur-sm"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="hs-wood-panel flex w-full max-w-2xl flex-col items-center gap-6 rounded-3xl p-6 sm:flex-row"
-          >
-            <div className="shrink-0">
-              <HearthstoneCard
-                card={inspectCard}
-                size="LG"
-                rarityAura={inspectCard.rarity}
-                enableTilt
-              />
-            </div>
+      {/* Unified Card Zoom + Deck Add/Remove + Crafting Modal (Outer Tap Cancels!) */}
+      {inspectCard &&
+        (() => {
+          const owned = collection[inspectCard.id] || 0;
+          const maxCopy = inspectCard.rarity === 'LEGENDARY' ? 1 : 2;
+          const inDeck = editingDeck
+            ? editingDeck.cards.filter((cid) => cid === inspectCard.id).length
+            : 0;
+          const canAddNow =
+            Boolean(editingDeck) &&
+            owned > 0 &&
+            editingDeck!.cards.length < 30 &&
+            inDeck < maxCopy &&
+            inDeck < owned &&
+            (inspectCard.cardClass === editingDeck!.heroClass ||
+              inspectCard.cardClass === 'NEUTRAL');
 
-            <div className="flex flex-1 flex-col justify-between text-amber-100">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-extrabold text-sky-300">
-                  <img
-                    src={CLASS_CREST_URL[inspectCard.cardClass]}
-                    alt=""
-                    className="h-5 w-5 rounded-full object-cover"
-                  />
-                  <span>{RARITY_KO[inspectCard.rarity]} 등급</span>
-                  <span>·</span>
-                  <span className="text-amber-200">
-                    보유 수량: {collection[inspectCard.id] || 0}장
-                  </span>
-                </div>
+          let primaryAction: CardZoomAction | undefined;
+          const secondaryActions: CardZoomAction[] = [];
 
-                <h3 className="hs-title mt-1.5 text-2xl font-extrabold text-white">
-                  {inspectCard.name}
-                </h3>
+          if (editingDeck) {
+            if (canAddNow) {
+              primaryAction = {
+                label: `덱에 카드 넣기 (${editingDeck.cards.length + 1}/30)`,
+                variant: 'emerald',
+                onClick: () => {
+                  handleAddCardToDeck(inspectCard);
+                  showNotice(
+                    `[${inspectCard.name}] 카드를 덱에 넣었습니다 (${editingDeck.cards.length + 1}/30)`,
+                  );
+                  setInspectCard(null);
+                },
+              };
+            } else if (owned === 0 && inspectCard.rarity !== 'FREE') {
+              primaryAction = {
+                label: `성흔 제작 후 보유 (-${CRAFTING_COST[inspectCard.rarity]} 가루)`,
+                variant: 'arcane',
+                onClick: () => {
+                  const res = hsStorage.craftCard(inspectCard.id);
+                  if (res.ok) {
+                    hsAudio.playSfx('purchase');
+                    syncAll();
+                    showNotice(`[${inspectCard.name}] 카드를 제작했습니다!`);
+                  } else {
+                    showNotice(res.reason || '성흔 가루가 부족합니다.');
+                  }
+                },
+              };
+            } else if (inDeck > 0) {
+              primaryAction = {
+                label: `덱에서 1장 빼기 (현재 ${inDeck}장 편성)`,
+                variant: 'crimson',
+                onClick: () => {
+                  handleRemoveCardFromDeck(inspectCard.id);
+                  showNotice(`[${inspectCard.name}] 카드를 덱에서 1장 뺐습니다.`);
+                  setInspectCard(null);
+                },
+              };
+            } else {
+              primaryAction = {
+                label:
+                  editingDeck.cards.length >= 30
+                    ? '덱이 30장으로 가득 찼습니다'
+                    : inDeck >= maxCopy
+                      ? `편성 한도 도달 (${inDeck}/${maxCopy}장)`
+                      : `보유 수량 모두 편성됨 (${owned}장)`,
+                disabled: true,
+                onClick: () => {},
+              };
+            }
 
-                {inspectCard.flavor && (
-                  <p className="mt-3 rounded-xl border-2 border-[#a88246] bg-[#f4e6c5] p-3.5 text-xs font-semibold italic leading-relaxed text-[#38220f] shadow-inner">
-                    “{inspectCard.flavor.replace(/<[^>]+>/g, '')}”
-                  </p>
-                )}
-              </div>
+            if (canAddNow && inDeck > 0) {
+              secondaryActions.push({
+                label: `덱에서 1장 빼기 (${inDeck}/${maxCopy})`,
+                variant: 'crimson',
+                onClick: () => {
+                  handleRemoveCardFromDeck(inspectCard.id);
+                  showNotice(`[${inspectCard.name}] 카드를 덱에서 1장 뺐습니다.`);
+                  setInspectCard(null);
+                },
+              });
+            }
+          } else if (inspectCard.rarity !== 'FREE') {
+            primaryAction = {
+              label: `성흔 카드 제작 (-${CRAFTING_COST[inspectCard.rarity]} 가루)`,
+              variant: 'arcane',
+              onClick: () => {
+                const res = hsStorage.craftCard(inspectCard.id);
+                if (res.ok) {
+                  hsAudio.playSfx('purchase');
+                  syncAll();
+                  showNotice(`[${inspectCard.name}] 카드를 제작했습니다!`);
+                } else {
+                  showNotice(res.reason || '제작할 수 없습니다.');
+                }
+              },
+            };
+          } else {
+            primaryAction = {
+              label: '확인 (닫기)',
+              variant: 'brass',
+              onClick: () => setInspectCard(null),
+            };
+          }
 
-              {inspectCard.rarity !== 'FREE' ? (
-                <div className="mt-5 space-y-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const res = hsStorage.craftCard(inspectCard.id);
-                      if (res.ok) {
-                        hsAudio.playSfx('purchase');
-                        syncAll();
-                        showNotice(`[${inspectCard.name}] 카드를 제작했습니다!`);
-                      } else {
-                        showNotice(res.reason || '제작 실패');
-                      }
-                    }}
-                    className="hs-arcane-btn flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-extrabold text-white"
-                  >
-                    <HsArcaneDustVialIcon size={18} />
-                    <span>카드 제작 (-{CRAFTING_COST[inspectCard.rarity]} 가루)</span>
-                  </button>
+          if (inspectCard.rarity !== 'FREE') {
+            if (editingDeck && owned > 0) {
+              secondaryActions.push({
+                label: `추가 제작 (-${CRAFTING_COST[inspectCard.rarity]})`,
+                variant: 'arcane',
+                onClick: () => {
+                  const res = hsStorage.craftCard(inspectCard.id);
+                  if (res.ok) {
+                    hsAudio.playSfx('purchase');
+                    syncAll();
+                    showNotice(`[${inspectCard.name}] 카드를 제작했습니다!`);
+                  } else {
+                    showNotice(res.reason || '제작 실패');
+                  }
+                },
+              });
+            }
+            if (owned > 0) {
+              secondaryActions.push({
+                label: `성흔 정제 (+${DISENCHANT_VALUE[inspectCard.rarity]} 가루)`,
+                variant: 'brass',
+                onClick: () => {
+                  const res = hsStorage.disenchantCard(inspectCard.id);
+                  if (res.ok) {
+                    hsAudio.playSfx('cm_remove_card');
+                    syncAll();
+                    showNotice(`[${inspectCard.name}] 성흔 정제 완료!`);
+                  } else {
+                    showNotice(res.reason || '정제 실패');
+                  }
+                },
+              });
+            }
+          }
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const res = hsStorage.disenchantCard(inspectCard.id);
-                      if (res.ok) {
-                        hsAudio.playSfx('cm_remove_card');
-                        syncAll();
-                        showNotice(`[${inspectCard.name}] 마력 추출 완료!`);
-                      } else {
-                        showNotice(res.reason || '추출 실패');
-                      }
-                    }}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-400/70 bg-gradient-to-b from-red-900/90 to-red-950 py-2 text-xs font-extrabold text-red-100 shadow hover:brightness-110"
-                  >
-                    <HsArcaneDustVialIcon size={16} />
-                    <span>마력 추출 (+{DISENCHANT_VALUE[inspectCard.rarity]} 가루)</span>
-                  </button>
-                </div>
-              ) : (
-                <div className="mt-4 rounded-xl border border-amber-500/30 bg-black/45 p-3 text-xs font-semibold text-amber-200/85">
-                  영웅 기본(Basic) 카드로 모든 플레이어에게 기본 2장씩 제공됩니다.
-                </div>
-              )}
-
-              <button
-                type="button"
-                onClick={() => setInspectCard(null)}
-                className="hs-brass-btn mt-3 w-full rounded-xl py-2 text-xs font-extrabold text-amber-100"
-              >
-                닫기
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          return (
+            <CardZoomModal
+              card={inspectCard}
+              rarityAura={inspectCard.rarity}
+              subtitleBadge={
+                editingDeck
+                  ? `보유 ×${owned}장 · 덱 편성 ${inDeck}/${maxCopy}장`
+                  : `보유 수량: ${owned}장`
+              }
+              showFlavor
+              primaryAction={primaryAction}
+              secondaryActions={secondaryActions}
+              onCancel={() => setInspectCard(null)}
+            />
+          );
+        })()}
     </div>
   );
 };

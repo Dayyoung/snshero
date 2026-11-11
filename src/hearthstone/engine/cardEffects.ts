@@ -262,8 +262,8 @@ export const CARD_SCRIPTS: Record<string, CardScriptSpec> = {
       },
       {
         optionCardId: 'EX1_160a',
-        title: '표범 소환',
-        description: '3/2 표범을 소환합니다.',
+        title: '설원 표범 소환',
+        description: '3/2 설원 표범을 소환합니다.',
         targetKind: 'NONE',
         run: (ops, side) => {
           ops.summonMinion(side, 'EX1_160t');
@@ -544,7 +544,7 @@ export const CARD_SCRIPTS: Record<string, CardScriptSpec> = {
     chooseOne: [
       {
         optionCardId: 'EX1_573a',
-        title: '반신의 총애',
+        title: '야성왕의 총애',
         description: '내 다른 하수인들에게 +2/+2를 부여합니다.',
         targetKind: 'NONE',
         run: (ops, side, _targetId, selfMinion) => {
@@ -557,8 +557,8 @@ export const CARD_SCRIPTS: Record<string, CardScriptSpec> = {
       },
       {
         optionCardId: 'EX1_573b',
-        title: '샨도의 가르침',
-        description: '도발 능력이 있는 2/2 나무정령을 둘 소환합니다.',
+        title: '고대림의 가호',
+        description: '도발 능력이 있는 2/2 수목정령을 둘 소환합니다.',
         targetKind: 'NONE',
         run: (ops, side) => {
           for (let i = 0; i < 2; i++) {
@@ -1117,7 +1117,7 @@ export const CARD_SCRIPTS: Record<string, CardScriptSpec> = {
       const p = ops.getPlayer(side);
       p.shadowformTier = Math.min(2, p.shadowformTier + 1);
       p.heroPowerId = p.shadowformTier === 1 ? 'EX1_625t' : 'EX1_625t2';
-      p.heroPowerNameKo = p.shadowformTier === 1 ? '정신의 쐐기' : '정신 붕괴';
+      p.heroPowerNameKo = p.shadowformTier === 1 ? '성흔의 쐐기' : '성흔 파열';
       p.heroPowerTextKo = p.shadowformTier === 1 ? '피해를 2 줍니다.' : '피해를 3 줍니다.';
       p.heroPowerNeedsTarget = true;
       p.heroPowerUsedThisTurn = false;
@@ -1788,31 +1788,30 @@ export const CARD_SCRIPTS: Record<string, CardScriptSpec> = {
     // 뒤틀린 황천 (모든 하수인 처치!)
     vfx: 'EXPLOSION',
     onCastSpell: (ops) => {
-      ops.pushVfx('EXPLOSION', 'OPPONENT_HERO', undefined, undefined, '뒤틀린 황천!');
+      ops.pushVfx('EXPLOSION', 'OPPONENT_HERO', undefined, undefined, '심연의 균열!');
       for (const m of [...ops.state.player.board, ...ops.state.opponent.board]) {
         ops.destroyMinion(m.uid);
       }
     },
   },
   EX1_323: {
-    // 군주 자락서스!! (정통 2014 클래식: 내 영웅을 생명력 15 군주 자락서스로 교체 + 3/8 피의 격노 무기 장착 + 6/6 지옥불! 영웅 능력!)
+    // 대장군 아이언포지 (내 영웅을 생명력 15 대장군 아이언포지로 교체 + 3/8 용광로 대검 장착 + 6/6 용광로 거신 소환!)
     onBattlecry: (ops, side, self) => {
       const p = ops.getPlayer(side);
-      // Remove Jaraxxus minion from board and replace Hero!
       p.board = p.board.filter((m) => m.uid !== self.uid);
       p.isJaraxxus = true;
       p.heroId = 'EX1_323h';
-      p.heroNameKo = '군주 자락서스';
+      p.heroNameKo = '대장군 아이언포지';
       p.maxHealth = 15;
       p.health = 15;
       p.armor = 0;
       p.heroPowerId = 'EX1_tk33';
-      p.heroPowerNameKo = '지옥불!';
-      p.heroPowerTextKo = '6/6 지옥불악마를 소환합니다.';
+      p.heroPowerNameKo = '용광로 강림!';
+      p.heroPowerTextKo = '6/6 용광로 거신을 소환합니다.';
       p.heroPowerNeedsTarget = false;
       p.heroPowerUsedThisTurn = false;
       ops.equipWeapon(side, 'EX1_323w');
-      ops.pushVfx('LEGENDARY_SLAM', `${side}_HERO`, undefined, 15, '불타는 군단의 에레다르 군주, 자락서스 님이 상대해 주마!');
+      ops.pushVfx('LEGENDARY_SLAM', `${side}_HERO`, undefined, 15, '딥포지 심연 용광로의 주인, 대장군 아이언포지가 친히 상대해 주마!');
     },
   },
 

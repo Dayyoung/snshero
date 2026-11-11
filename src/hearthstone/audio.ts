@@ -1,4 +1,4 @@
-import { CLASSIC_HEROES, HeroClass } from './types';
+import { HeroClass } from './types';
 
 const SETTINGS_KEY = 'hero_hs_settings';
 
@@ -12,15 +12,22 @@ export interface AudioSettings {
 const DEFAULT_AUDIO: AudioSettings = {
   bgmVolume: 0.36,
   sfxVolume: 0.72,
-  voVolume: 0.92,
+  voVolume: 0.85,
   muted: false,
 };
 
-class HearthstoneAudioEngine {
+const BGM_URL_MAP: Record<'tavern_hub' | 'collection' | 'mulligan' | 'duel_1' | 'duel_2', string> = {
+  tavern_hub: '/bgm/sanctuary-lobby.mp3',
+  collection: '/bgm/whispering-wind.mp3',
+  mulligan: '/bgm/hero-awakening.mp3',
+  duel_1: '/bgm/colosseum-battle.mp3',
+  duel_2: '/bgm/colosseum-battle.mp3',
+};
+
+class SnsHeroCardAudioEngine {
   private settings: AudioSettings = DEFAULT_AUDIO;
   private currentBgm: HTMLAudioElement | null = null;
   private currentBgmKey: string | null = null;
-  private currentVo: HTMLAudioElement | null = null;
   private ctx: AudioContext | null = null;
   private unlocked = false;
 
@@ -73,7 +80,9 @@ class HearthstoneAudioEngine {
   private getAudioCtx(): AudioContext | null {
     if (typeof window === 'undefined') return null;
     if (!this.ctx) {
-      const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const AC =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AC) this.ctx = new AC();
     }
     if (this.ctx && this.ctx.state === 'suspended') {
@@ -83,7 +92,8 @@ class HearthstoneAudioEngine {
   }
 
   playBgm(track: 'tavern_hub' | 'collection' | 'mulligan' | 'duel_1' | 'duel_2') {
-    if (this.currentBgmKey === track && this.currentBgm) {
+    const url = BGM_URL_MAP[track];
+    if (this.currentBgmKey === url && this.currentBgm) {
       if (!this.settings.muted && this.unlocked && this.currentBgm.paused) {
         this.currentBgm.play().catch(() => {});
       }
@@ -94,12 +104,12 @@ class HearthstoneAudioEngine {
       this.currentBgm.src = '';
       this.currentBgm = null;
     }
-    this.currentBgmKey = track;
-    const audio = new Audio(`/hs-assets/audio/bgm/${track}.mp3`);
+    this.currentBgmKey = url;
+    const audio = new Audio(url);
     audio.loop = track !== 'mulligan';
     audio.volume = this.settings.muted ? 0 : this.settings.bgmVolume;
     this.currentBgm = audio;
-    if (!this.settings.muted) {
+    if (!this.settings.muted && this.unlocked) {
       audio.play().catch(() => {});
     }
   }
@@ -109,6 +119,35 @@ class HearthstoneAudioEngine {
       this.currentBgm.pause();
       this.currentBgm = null;
       this.currentBgmKey = null;
+    }
+  }
+
+  private synthNotes(
+    notes: Array<{ f1: number; f2: number; dur: number; type?: OscillatorType; delay?: number }>,
+    volumeScale = 1,
+  ) {
+    if (this.settings.muted || this.settings.sfxVolume <= 0) return;
+    const ctx = this.getAudioCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const master = ctx.createGain();
+    master.gain.value = Math.min(0.65, this.settings.sfxVolume * 0.34 * volumeScale);
+    master.connect(ctx.destination);
+
+    for (const n of notes) {
+      const delay = n.delay || 0;
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = n.type || 'triangle';
+      osc.frequency.setValueAtTime(Math.max(24, n.f1), now + delay);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(24, n.f2), now + delay + n.dur);
+      g.gain.setValueAtTime(0.001, now + delay);
+      g.gain.linearRampToValueAtTime(0.55, now + delay + Math.min(0.025, n.dur * 0.25));
+      g.gain.exponentialRampToValueAtTime(0.001, now + delay + n.dur);
+      osc.connect(g);
+      g.connect(master);
+      osc.start(now + delay);
+      osc.stop(now + delay + n.dur + 0.02);
     }
   }
 
@@ -146,17 +185,145 @@ class HearthstoneAudioEngine {
       | 'whoosh',
     volumeScale = 1,
   ) {
-    if (this.settings.muted || this.settings.sfxVolume <= 0) return;
-    try {
-      const a = new Audio(`/hs-assets/audio/sfx/${name}.mp3`);
-      a.volume = Math.min(1, this.settings.sfxVolume * volumeScale);
-      a.play().catch(() => {});
-    } catch {
-      // ignore
+    switch (name) {
+      case 'box_hover':
+      case 'ui_hover':
+      case 'card_hover':
+        this.synthNotes([{ f1: 680, f2: 860, dur: 0.055, type: 'sine' }], volumeScale * 0.5);
+        break;
+      case 'box_press':
+      case 'ui_click':
+      case 'menu_press':
+      case 'menu_select':
+      case 'open_menu':
+        this.synthNotes(
+          [
+            { f1: 420, f2: 640, dur: 0.09, type: 'triangle' },
+            { f1: 840, f2: 1120, dur: 0.07, type: 'sine', delay: 0.02 },
+          ],
+          volumeScale * 0.75,
+        );
+        break;
+      case 'box_open':
+      case 'box_disk_flip':
+      case 'box_tray_in':
+      case 'cm_select_hero':
+        this.synthNotes(
+          [
+            { f1: 280, f2: 560, dur: 0.22, type: 'triangle' },
+            { f1: 560, f2: 880, dur: 0.24, type: 'sine', delay: 0.06 },
+          ],
+          volumeScale,
+        );
+        break;
+      case 'box_close':
+      case 'box_tray_out':
+      case 'cm_remove_card':
+        this.synthNotes([{ f1: 540, f2: 240, dur: 0.16, type: 'triangle' }], volumeScale * 0.8);
+        break;
+      case 'card_flip':
+      case 'whoosh':
+        this.synthNotes(
+          [
+            { f1: 320, f2: 960, dur: 0.14, type: 'sine' },
+            { f1: 640, f2: 1280, dur: 0.12, type: 'triangle', delay: 0.03 },
+          ],
+          volumeScale * 0.9,
+        );
+        break;
+      case 'card_place':
+        this.synthNotes(
+          [
+            { f1: 220, f2: 92, dur: 0.16, type: 'triangle' },
+            { f1: 520, f2: 780, dur: 0.12, type: 'sine', delay: 0.02 },
+          ],
+          volumeScale,
+        );
+        break;
+      case 'attack':
+        this.synthNotes(
+          [
+            { f1: 240, f2: 64, dur: 0.22, type: 'sawtooth' },
+            { f1: 460, f2: 120, dur: 0.15, type: 'triangle', delay: 0.02 },
+          ],
+          volumeScale,
+        );
+        break;
+      case 'big_attack':
+        this.synthNotes(
+          [
+            { f1: 180, f2: 42, dur: 0.36, type: 'sawtooth' },
+            { f1: 360, f2: 78, dur: 0.28, type: 'square', delay: 0.03 },
+          ],
+          volumeScale * 1.15,
+        );
+        break;
+      case 'end_turn':
+      case 'player_turn':
+        this.synthNotes(
+          [
+            { f1: 523.25, f2: 659.25, dur: 0.16, type: 'triangle' },
+            { f1: 659.25, f2: 783.99, dur: 0.22, type: 'sine', delay: 0.08 },
+          ],
+          volumeScale,
+        );
+        break;
+      case 'hero_power':
+        this.synthNotes(
+          [
+            { f1: 392, f2: 784, dur: 0.24, type: 'triangle' },
+            { f1: 587.33, f2: 1174.66, dur: 0.26, type: 'sine', delay: 0.05 },
+          ],
+          volumeScale,
+        );
+        break;
+      case 'pack_open':
+      case 'purchase':
+        this.synthNotes(
+          [
+            { f1: 330, f2: 660, dur: 0.22, type: 'triangle' },
+            { f1: 494, f2: 988, dur: 0.28, type: 'sine', delay: 0.08 },
+            { f1: 659, f2: 1318, dur: 0.34, type: 'sine', delay: 0.16 },
+          ],
+          volumeScale,
+        );
+        break;
+      case 'pack_rare':
+        this.synthNotes(
+          [
+            { f1: 523.25, f2: 783.99, dur: 0.24, type: 'sine' },
+            { f1: 783.99, f2: 1046.5, dur: 0.28, type: 'triangle', delay: 0.09 },
+          ],
+          volumeScale,
+        );
+        break;
+      case 'pack_epic':
+        this.synthNotes(
+          [
+            { f1: 440, f2: 659.25, dur: 0.24, type: 'triangle' },
+            { f1: 659.25, f2: 880, dur: 0.26, type: 'sine', delay: 0.08 },
+            { f1: 880, f2: 1318.5, dur: 0.34, type: 'sine', delay: 0.16 },
+          ],
+          volumeScale,
+        );
+        break;
+      case 'pack_legendary':
+      case 'victory':
+      case 'crowd':
+        this.synthNotes(
+          [
+            { f1: 523.25, f2: 523.25, dur: 0.18, type: 'triangle' },
+            { f1: 659.25, f2: 659.25, dur: 0.18, type: 'triangle', delay: 0.1 },
+            { f1: 783.99, f2: 783.99, dur: 0.22, type: 'triangle', delay: 0.2 },
+            { f1: 1046.5, f2: 1318.5, dur: 0.52, type: 'sine', delay: 0.3 },
+          ],
+          volumeScale * 1.1,
+        );
+        break;
     }
   }
 
-  /** Procedural WebAudio elemental & mechanical accents layered with Hearthstone SFX */
+  /** Procedural WebAudio elemental & mechanical accents */
   playProceduralVfxSound(
     kind:
       | 'MANA_GAIN'
@@ -172,108 +339,93 @@ class HearthstoneAudioEngine {
       | 'ARMOR'
       | 'FATIGUE',
   ) {
-    if (this.settings.muted || this.settings.sfxVolume <= 0) return;
-    const ctx = this.getAudioCtx();
-    if (!ctx) return;
-    const now = ctx.currentTime;
-    const master = ctx.createGain();
-    master.gain.value = this.settings.sfxVolume * 0.35;
-    master.connect(ctx.destination);
-
-    const tone = (freqStart: number, freqEnd: number, dur: number, type: OscillatorType = 'sine', delay = 0) => {
-      const osc = ctx.createOscillator();
-      const g = ctx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freqStart, now + delay);
-      osc.frequency.exponentialRampToValueAtTime(Math.max(20, freqEnd), now + delay + dur);
-      g.gain.setValueAtTime(0.001, now + delay);
-      g.gain.linearRampToValueAtTime(0.6, now + delay + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
-      osc.connect(g);
-      g.connect(master);
-      osc.start(now + delay);
-      osc.stop(now + delay + dur + 0.02);
-    };
-
     switch (kind) {
       case 'MANA_GAIN':
-        tone(660, 1046, 0.22, 'triangle');
-        tone(880, 1318, 0.25, 'sine', 0.05);
+        this.synthNotes([
+          { f1: 660, f2: 1046, dur: 0.22, type: 'triangle' },
+          { f1: 880, f2: 1318, dur: 0.25, type: 'sine', delay: 0.05 },
+        ]);
         break;
       case 'FIRE':
-        tone(240, 55, 0.45, 'sawtooth');
-        tone(420, 90, 0.32, 'triangle', 0.04);
+        this.synthNotes([
+          { f1: 240, f2: 55, dur: 0.45, type: 'sawtooth' },
+          { f1: 420, f2: 90, dur: 0.32, type: 'triangle', delay: 0.04 },
+        ]);
         break;
       case 'FROST':
-        tone(1400, 2400, 0.18, 'sine');
-        tone(1900, 920, 0.28, 'triangle', 0.07);
+        this.synthNotes([
+          { f1: 1400, f2: 2400, dur: 0.18, type: 'sine' },
+          { f1: 1900, f2: 920, dur: 0.28, type: 'triangle', delay: 0.07 },
+        ]);
         break;
       case 'LIGHTNING':
-        tone(950, 110, 0.24, 'sawtooth');
-        tone(1600, 220, 0.18, 'square', 0.05);
+        this.synthNotes([
+          { f1: 950, f2: 110, dur: 0.24, type: 'sawtooth' },
+          { f1: 1600, f2: 220, dur: 0.18, type: 'square', delay: 0.05 },
+        ]);
         break;
       case 'HOLY':
-        tone(523.25, 783.99, 0.45, 'sine');
-        tone(659.25, 1046.5, 0.5, 'triangle', 0.06);
+        this.synthNotes([
+          { f1: 523.25, f2: 783.99, dur: 0.45, type: 'sine' },
+          { f1: 659.25, f2: 1046.5, dur: 0.5, type: 'triangle', delay: 0.06 },
+        ]);
         break;
       case 'SHADOW':
-        tone(180, 65, 0.5, 'sawtooth');
-        tone(270, 95, 0.45, 'sine', 0.04);
+        this.synthNotes([
+          { f1: 180, f2: 65, dur: 0.5, type: 'sawtooth' },
+          { f1: 270, f2: 95, dur: 0.45, type: 'sine', delay: 0.04 },
+        ]);
         break;
       case 'DIVINE_BREAK':
-        tone(1800, 620, 0.24, 'triangle');
-        tone(2400, 880, 0.2, 'sine', 0.04);
+        this.synthNotes([
+          { f1: 1800, f2: 620, dur: 0.24, type: 'triangle' },
+          { f1: 2400, f2: 880, dur: 0.2, type: 'sine', delay: 0.04 },
+        ]);
         break;
       case 'SECRET_TRIGGER':
-        tone(440, 880, 0.25, 'triangle');
-        tone(660, 1320, 0.35, 'sine', 0.12);
+        this.synthNotes([
+          { f1: 440, f2: 880, dur: 0.25, type: 'triangle' },
+          { f1: 660, f2: 1320, dur: 0.35, type: 'sine', delay: 0.12 },
+        ]);
         break;
       case 'SILENCE':
-        tone(720, 210, 0.34, 'sine');
+        this.synthNotes([{ f1: 720, f2: 210, dur: 0.34, type: 'sine' }]);
         break;
       case 'ROPE_TICK':
-        tone(310, 180, 0.08, 'triangle');
+        this.synthNotes([{ f1: 310, f2: 180, dur: 0.08, type: 'triangle' }]);
         break;
       case 'ARMOR':
-        tone(320, 480, 0.16, 'triangle');
+        this.synthNotes([{ f1: 320, f2: 480, dur: 0.16, type: 'triangle' }]);
         break;
       case 'FATIGUE':
-        tone(150, 52, 0.55, 'sawtooth');
+        this.synthNotes([{ f1: 150, f2: 52, dur: 0.55, type: 'sawtooth' }]);
         break;
     }
-  }
-
-  playVoFile(voKey: string): Promise<void> {
-    if (this.settings.muted || this.settings.voVolume <= 0) return Promise.resolve();
-    return new Promise((resolve) => {
-      try {
-        if (this.currentVo) {
-          this.currentVo.pause();
-        }
-        const a = new Audio(`/hs-assets/audio/vo/${voKey}.mp3`);
-        a.volume = this.settings.voVolume;
-        this.currentVo = a;
-        a.onended = () => resolve();
-        a.onerror = () => resolve();
-        a.play().catch(() => resolve());
-      } catch {
-        resolve();
-      }
-    });
   }
 
   playInnkeeper(
     line: 'welcome' | 'mulligan' | 'coin' | 'collection' | 'rare' | 'epic' | 'legendary' | 'golden_legendary',
   ) {
-    if (line === 'rare' || line === 'epic' || line === 'legendary' || line === 'golden_legendary') {
-      this.playVoFile(`announcer_${line}`);
+    if (this.settings.muted || this.settings.voVolume <= 0) return;
+    if (line === 'legendary' || line === 'golden_legendary') {
+      this.playSfx('pack_legendary', this.settings.voVolume);
+    } else if (line === 'epic') {
+      this.playSfx('pack_epic', this.settings.voVolume);
+    } else if (line === 'rare') {
+      this.playSfx('pack_rare', this.settings.voVolume);
     } else {
-      this.playVoFile(`innkeeper_${line}`);
+      this.synthNotes(
+        [
+          { f1: 440, f2: 554.37, dur: 0.14, type: 'sine' },
+          { f1: 659.25, f2: 880, dur: 0.2, type: 'triangle', delay: 0.08 },
+        ],
+        this.settings.voVolume * 0.65,
+      );
     }
   }
 
   playHeroVo(
-    heroClass: HeroClass,
+    _heroClass: HeroClass,
     kind:
       | 'greetings'
       | 'well_played'
@@ -289,18 +441,31 @@ class HearthstoneAudioEngine {
       | 'error_taunt'
       | 'time',
   ) {
-    const heroVo = CLASSIC_HEROES[heroClass].voKey;
-    this.playVoFile(`hero_${heroVo}_${kind}`);
+    if (this.settings.muted || this.settings.voVolume <= 0) return;
+    if (kind.startsWith('error_')) {
+      this.synthNotes([{ f1: 240, f2: 150, dur: 0.16, type: 'sawtooth' }], 0.65);
+    } else {
+      this.synthNotes(
+        [
+          { f1: 493.88, f2: 659.25, dur: 0.12, type: 'triangle' },
+          { f1: 659.25, f2: 783.99, dur: 0.16, type: 'sine', delay: 0.06 },
+        ],
+        0.55,
+      );
+    }
   }
 
-  async playMatchupAnnouncement(playerClass: HeroClass, opponentClass: HeroClass) {
-    if (this.settings.muted) return;
-    const pVo = CLASSIC_HEROES[playerClass].voKey;
-    const oVo = CLASSIC_HEROES[opponentClass].voKey;
-    await this.playVoFile(`announcer_${pVo}`);
-    await this.playVoFile('announcer_versus');
-    await this.playVoFile(`announcer_${oVo}`);
+  async playMatchupAnnouncement(_playerClass: HeroClass, _opponentClass: HeroClass) {
+    if (this.settings.muted || this.settings.voVolume <= 0) return;
+    this.synthNotes(
+      [
+        { f1: 392, f2: 523.25, dur: 0.22, type: 'triangle' },
+        { f1: 523.25, f2: 659.25, dur: 0.22, type: 'triangle', delay: 0.14 },
+        { f1: 783.99, f2: 1046.5, dur: 0.38, type: 'sine', delay: 0.28 },
+      ],
+      0.85,
+    );
   }
 }
 
-export const hsAudio = new HearthstoneAudioEngine();
+export const hsAudio = new SnsHeroCardAudioEngine();

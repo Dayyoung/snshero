@@ -2,6 +2,37 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 12:42 KST] [/game.html 하스스톤 에셋 전면 제거 및 눈히어로(카단의 여정 · 11종족 110영웅 · 382종 카드 · 9종 기본덱 · 모바일 확대 모달 · 콘솔 테스트 API) 각색 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    1. 하스스톤의 모든 이미지·사운드·폰트·마크를 완전 제거하고 **눈히어로 공식 마크(`/logo-ko.png`, `/icon.png`, `/favicon.png`)** 및 **눈히어로 소설(『카단의 여정』)** 세계관·용어로 전면 각색.
+    2. 기존 382종 수집 가능 카드의 능력치·효과·프로 카드 프레임 디자인·나눔고딕(`Nanum Gothic`) 서체·5장 동시 3D 카드팩 플립·모바일 카드 확대 모달(`CardZoomModal`)을 100% 유지하면서 **눈히어로 11종족 110영웅**으로 매핑:
+       - `물종족` (구 마법사) 25종 (`#001~#010` 순환 배정)
+       - `불종족` (구 전사) 25종 (`#011~#020` 순환 배정)
+       - `바람종족` (구 사냥꾼) 25종 (`#021~#030` 순환 배정)
+       - `땅종족` (구 성기사) 25종 (`#031~#040` 순환 배정)
+       - `인간종족` (구 사제) 25종 (`#041~#050` 순환 배정)
+       - `언데드종족` (구 도적) 25종 (`#051~#060` 순환 배정)
+       - `엘프종족` (구 주술사) 25종 (`#061~#070` 순환 배정)
+       - `드워프종족` (구 흑마법사) 25종 (`#071~#080` 순환 배정)
+       - `동물종족` (구 드루이드) 25종 (`#081~#090` 순환 배정)
+       - 나머지 중립 157종: 110개 전 영웅(`#001~#110`) 골고루 1장씩 배정 + 추가 47장은 `로봇종족`(`#091~#100`, 24장) 및 `용종족`(`#101~#110`, 23장) 활용 구성.
+    3. 보유 9개 기본 덱 이름을 `인간종족의 카단`, `물종족의 포세이돈`, `불종족의 이그니시우스`, `바람종족의 토람`, `땅종족의 콜로서스`, `언데드종족의 아르투스`, `엘프종족의 에일라`, `드워프종족의 아이언포지`, `동물종족의 펜릴`로 변경.
+    4. UI 상의 `REA 검증` / `해금` / `전체해금` 테스트 버튼을 모두 제거하고 브라우저 개발자 도구 콘솔(`window.snshero` / `window.noonhero`)에서 테스트 명령어를 실행할 수 있도록 전환.
+  - **2. 세부 구현 내역**:
+    - **블리자드/하스스톤 에셋 영구 삭제 및 눈히어로 아트워크 치환**:
+      - `public/hs-assets/{ui,audio,cursors,fonts}` 디렉터리 및 `rea-manifest.json`, `vo-manifest.json` 완전 삭제, 외부 `art.hearthstonejson.com` 참조 0건 달성.
+      - [`SnsHeroArtKit.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/SnsHeroArtKit.tsx), [`audio.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/audio.ts): 눈히어로 공식 로고(`/logo-ko.png`), 장소 일러스트(`/anime-character-sheets/locations/art/LOC_*.jpg` — 취선루, 라이트헤븐, 카라드리스 산맥, 비취 평의회 등), 카드 뒷면 4종(`/cardbacks/*.png`), 부스터 팩·성흔 나침반·등급 메달·전설 문장 SVG 및 눈히어로 공식 BGM(`/bgm/*.mp3`) + WebAudio 폴리포닉 효과음 합성기 구축.
+    - **382종 수집 카드 + 123종 토큰 전수 각색 ([`classic-cards.json`](file:///Users/dayyoung/project/snshero/public/hs-assets/data/classic-cards.json), [`types.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/types.ts), [`cardDb.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/cardDb.ts))**:
+      - `version: "2.0.0-SNSHERO-KADAN-koKR"`로 전환하여 382종 수집 카드와 123종 소환 토큰 전수에 눈히어로 캐릭터 초상화(`/anime-character-sheets/busts/*.jpg`, `cutouts/*.png`), 성물 소품(`/anime-character-sheets/props/art/PROP_*.jpg`), 『카단의 여정』 카드명·능력 텍스트·플레이버 텍스트 매핑 완료.
+      - 9대 기본 프리셋 덱 이름 변경 및 [`storage.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/storage.ts) 자동 로컬스토리지 마이그레이션(`hero_hs_lore_version = 'snshero_v1'`), [`GameEngine.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/engine/GameEngine.ts)·[`cardEffects.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/engine/cardEffects.ts)·[`aiController.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/engine/aiController.ts) 내 모든 전투 로그·선택지·전문가 AI 명칭 각색 완료.
+    - **전 화면 UI 업데이트 및 콘솔 전용 테스트 API ([`consoleApi.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/consoleApi.ts), [`HearthstoneApp.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/HearthstoneApp.tsx))**:
+      - [`TavernIntroScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/TavernIntroScreen.tsx), [`BoxHubScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BoxHubScreen.tsx), [`HeroDeckSelectScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/HeroDeckSelectScreen.tsx), [`PackOpeningScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/PackOpeningScreen.tsx), [`CollectionScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/CollectionScreen.tsx), [`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx), [`CardVisual.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/CardVisual.tsx), [`CardZoomModal.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/CardZoomModal.tsx), [`Modals.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/Modals.tsx), [`design.md`](file:///Users/dayyoung/project/snshero/src/hearthstone/design.md) 일괄 정비 및 모든 UI 테스트 버튼(`REA 검증`, `전체해금`) 제거.
+      - `window.snshero` (`window.noonhero`) 콘솔 API 등록 (`help()`, `unlockAll()`, `addGold()`, `addDust()`, `addPacks()`, `setRank()`, `completeQuests()`, `verifyRoster()`, `engineInfo()`, `reset()`).
+  - **3. 검증 및 보고**:
+    - 정적 스캔(24개 파일 하스스톤 잔재 0건), `npx tsc --noEmit` `src/hearthstone` 에러 0건, `npm run build` 무결점 통과, 데스크톱(`1280×800`) 및 모바일 포트레이트(`390×844`) 브라우저 E2E 6대 체크포인트(깨진 이미지 0건, `snshero.verifyRoster()` 382종 정합성 통과, 9개 기본 덱 명칭, 5장 카드팩 플립, 모바일 `CardZoomModal` 사용/취소 동작) 검증 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-11 09:41 KST] [/game.html 하스스톤 웹 복각본 커스터마이징 전 로컬 Git 커밋 및 베이스라인 체크포인트 생성]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

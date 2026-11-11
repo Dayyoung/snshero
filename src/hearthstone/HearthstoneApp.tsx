@@ -3,9 +3,10 @@ import { cardDb } from './cardDb';
 import {
   GameOptionsModal,
   QuestLogModal,
-  ReaEvidenceModal,
   TavernShopModal,
 } from './components/Modals';
+import { SNS_LOGO_URL } from './components/SnsHeroArtKit';
+import { initSnsHeroConsoleApi } from './consoleApi';
 import { BattleScreen } from './screens/BattleScreen';
 import { BoxHubScreen } from './screens/BoxHubScreen';
 import { CollectionScreen } from './screens/CollectionScreen';
@@ -40,7 +41,6 @@ export const HearthstoneApp: React.FC = () => {
   // Global Modals
   const [questLogOpen, setQuestLogOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
-  const [reaModalOpen, setReaModalOpen] = useState(false);
   const [optionsState, setOptionsState] = useState<{
     open: boolean;
     inBattle: boolean;
@@ -49,6 +49,15 @@ export const HearthstoneApp: React.FC = () => {
 
   useEffect(() => {
     let mounted = true;
+    initSnsHeroConsoleApi();
+
+    const syncFromStorage = () => {
+      if (mounted) {
+        setProfile(hsStorage.getProfile());
+      }
+    };
+    window.addEventListener('snshero:state-changed', syncFromStorage);
+
     cardDb
       .init()
       .then(() => {
@@ -63,6 +72,7 @@ export const HearthstoneApp: React.FC = () => {
       });
     return () => {
       mounted = false;
+      window.removeEventListener('snshero:state-changed', syncFromStorage);
     };
   }, []);
 
@@ -73,7 +83,7 @@ export const HearthstoneApp: React.FC = () => {
   if (loadError) {
     return (
       <div className="flex h-[100dvh] w-full flex-col items-center justify-center bg-stone-950 p-6 text-center text-amber-100">
-        <h1 className="text-2xl font-extrabold text-red-400">여관 데이터를 불러오지 못했습니다</h1>
+        <h1 className="text-2xl font-extrabold text-red-400">눈히어로 성흔 데이터를 불러오지 못했습니다</h1>
         <p className="mt-2 text-sm text-amber-200/80">{loadError}</p>
       </div>
     );
@@ -83,12 +93,12 @@ export const HearthstoneApp: React.FC = () => {
     return (
       <div className="flex h-[100dvh] w-full flex-col items-center justify-center bg-stone-950 text-amber-100">
         <img
-          src="/hs-assets/ui/hs_titlelogo.webp"
-          alt="Hearthstone"
-          className="w-72 animate-pulse drop-shadow-2xl"
+          src={SNS_LOGO_URL}
+          alt="눈히어로"
+          className="w-64 animate-pulse drop-shadow-[0_12px_28px_rgba(56,189,248,0.45)]"
         />
-        <div className="mt-4 text-sm font-extrabold tracking-wider text-amber-200">
-          스톤브루의 여관 테이블을 준비하고 있습니다...
+        <div className="mt-4 text-sm font-extrabold tracking-wider text-sky-200">
+          취선루의 성흔 대전석을 준비하고 있습니다...
         </div>
       </div>
     );
@@ -105,13 +115,13 @@ export const HearthstoneApp: React.FC = () => {
           profile={profile}
           onSelectPlayMode={(m) => {
             if (m === 'TUTORIAL') {
-              const mageDeck =
-                hsStorage.getDecks().find((d) => d.heroClass === 'MAGE') ||
+              const kadanDeck =
+                hsStorage.getDecks().find((d) => d.heroClass === 'PRIEST') ||
                 hsStorage.getDecks()[0];
               setActiveBattleParams({
                 mode: 'TUTORIAL',
-                deck: mageDeck,
-                preferredOpponentClass: 'WARRIOR',
+                deck: kadanDeck,
+                preferredOpponentClass: 'ROGUE',
                 boardTheme: 'STORMWIND',
               });
               setScreen('BATTLE');
@@ -125,7 +135,6 @@ export const HearthstoneApp: React.FC = () => {
           onOpenQuestLog={() => setQuestLogOpen(true)}
           onOpenShop={() => setShopOpen(true)}
           onOpenOptions={() => setOptionsState({ open: true, inBattle: false })}
-          onOpenReaModal={() => setReaModalOpen(true)}
         />
       )}
 
@@ -201,13 +210,9 @@ export const HearthstoneApp: React.FC = () => {
         <GameOptionsModal
           inBattle={optionsState.inBattle}
           onConcede={optionsState.concedeFn}
-          onOpenReaModal={() => setReaModalOpen(true)}
-          onProfileChanged={refreshProfile}
           onClose={() => setOptionsState({ open: false, inBattle: false })}
         />
       )}
-
-      {reaModalOpen && <ReaEvidenceModal onClose={() => setReaModalOpen(false)} />}
     </>
   );
 };

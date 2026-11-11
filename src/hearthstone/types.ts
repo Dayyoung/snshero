@@ -1,9 +1,9 @@
 export type HeroClass =
+  | 'PRIEST'
   | 'MAGE'
   | 'WARRIOR'
   | 'HUNTER'
   | 'PALADIN'
-  | 'PRIEST'
   | 'ROGUE'
   | 'SHAMAN'
   | 'WARLOCK'
@@ -36,15 +36,29 @@ export interface ClassicCardDef {
   overload: number;
   collectible: boolean;
   artId: string;
+  snsCharId?: number;
+  snsCharCode?: string;
+  snsCharName?: string;
+  snsFaction?: string;
+  snsFactionKo?: string;
+  artUrl?: string;
+  bustUrl?: string;
+  chibiUrl?: string;
+  propUrl?: string | null;
+  palette?: string[];
 }
 
 export interface HeroDef {
   heroClass: HeroClass;
   heroId: string;
   voKey: string;
+  charId: number;
   nameKo: string;
   titleKo: string;
   classNameKo: string;
+  factionRealmKo: string;
+  heroPortraitUrl: string;
+  heroCutoutUrl: string;
   heroPowerId: string;
   heroPowerNameKo: string;
   heroPowerTextKo: string;
@@ -65,239 +79,275 @@ export interface HeroDef {
 }
 
 export const CLASSIC_HEROES: Record<HeroClass, HeroDef> = {
+  PRIEST: {
+    heroClass: 'PRIEST',
+    heroId: 'HERO_09',
+    voKey: 'priest',
+    charId: 41,
+    nameKo: '카단',
+    titleKo: '라이트헤븐 설원의 성흔 영웅',
+    classNameKo: '인간종족',
+    factionRealmKo: '라이트헤븐',
+    heroPortraitUrl: '/anime-character-sheets/busts/041_bust.jpg',
+    heroCutoutUrl: '/anime-character-sheets/cutouts/041_Kadan.png',
+    heroPowerId: 'HERO_09bp',
+    heroPowerNameKo: '성흔의 치유',
+    heroPowerTextKo: '생명력을 2 회복시킵니다.',
+    heroPowerNeedsTarget: true,
+    accentColor: '#60a5fa',
+    frameGradient: 'linear-gradient(180deg, #2563eb 0%, #1e3a8a 100%)',
+    secretColor: '#e2e8f0',
+    emotesKo: {
+      greetings: '북방 설원의 이름으로 인사드립니다!',
+      well_played: '정말 훌륭한 한 수였어요!',
+      thanks: '고맙습니다, 동료여.',
+      wow: '은빛 단검이 공명할 만큼 놀랍군요!',
+      oops: '앗, 성급한 판단이었네요.',
+      threaten: '눈꽃 방패에 건 맹세로 당신을 넘어서겠습니다!',
+      start: '라이트헤븐의 성흔이여, 길을 밝혀라!',
+      concede: '완패입니다. 당신의 기개를 인정합니다.',
+    },
+  },
   MAGE: {
     heroClass: 'MAGE',
     heroId: 'HERO_08',
     voKey: 'mage',
-    nameKo: '제이나 프라우드무어',
-    titleKo: '키린 토의 대마법사',
-    classNameKo: '마법사',
+    charId: 10,
+    nameKo: '포세이돈',
+    titleKo: '심연 해역의 바다신',
+    classNameKo: '물종족',
+    factionRealmKo: '심연 해역',
+    heroPortraitUrl: '/anime-character-sheets/busts/010_bust.jpg',
+    heroCutoutUrl: '/anime-character-sheets/cutouts/010_Poseidon.png',
     heroPowerId: 'HERO_08bp',
-    heroPowerNameKo: '화염 작렬',
+    heroPowerNameKo: '심해 수압탄',
     heroPowerTextKo: '피해를 1 줍니다.',
     heroPowerNeedsTarget: true,
     accentColor: '#38bdf8',
-    frameGradient: 'linear-gradient(180deg, #2b6cb0 0%, #1a365d 100%)',
-    secretColor: '#f472b6',
+    frameGradient: 'linear-gradient(180deg, #0284c7 0%, #0c4a6e 100%)',
+    secretColor: '#38bdf8',
     emotesKo: {
-      greetings: '안녕하세요.',
-      well_played: '훌륭해요.',
-      thanks: '고마워요.',
-      wow: '놀랍군요!',
-      oops: '이런, 실수했네요.',
-      threaten: '내 마법이 당신을 조각낼 거예요!',
-      start: '당신이 자초한 일이에요!',
-      concede: '이번엔 당신이 이겼어요.',
+      greetings: '태초의 해류가 그대를 맞이한다.',
+      well_played: '심연처럼 깊은 지략이로군.',
+      thanks: '바다의 이름으로 감사하마.',
+      wow: '거대한 해일 같은 일격이군!',
+      oops: '조류가 잠시 어긋났군.',
+      threaten: '심연 해구의 수압으로 산산이 부숴주마!',
+      start: '모든 물의 정령들이여, 내 삼지창에 답하라!',
+      concede: '해류가 물러난다... 이번 승리는 그대의 것이다.',
     },
   },
   WARRIOR: {
     heroClass: 'WARRIOR',
     heroId: 'HERO_01',
     voKey: 'warrior',
-    nameKo: '가로쉬 헬스크림',
-    titleKo: '호드의 대족장',
-    classNameKo: '전사',
+    charId: 20,
+    nameKo: '이그니시우스',
+    titleKo: '불꽃 궁정의 태양황제',
+    classNameKo: '불종족',
+    factionRealmKo: '불꽃 궁정',
+    heroPortraitUrl: '/anime-character-sheets/busts/020_bust.jpg',
+    heroCutoutUrl: '/anime-character-sheets/cutouts/020_Ignisius.png',
     heroPowerId: 'HERO_01bp',
-    heroPowerNameKo: '방어도 증가!',
+    heroPowerNameKo: '태양 갑주!',
     heroPowerTextKo: '방어도를 +2 얻습니다.',
     heroPowerNeedsTarget: false,
     accentColor: '#ef4444',
-    frameGradient: 'linear-gradient(180deg, #9b2c2c 0%, #4a1212 100%)',
+    frameGradient: 'linear-gradient(180deg, #dc2626 0%, #450a0a 100%)',
     secretColor: '#ef4444',
     emotesKo: {
-      greetings: '반갑다.',
-      well_played: '제법이군.',
-      thanks: '고맙군.',
-      wow: '놀랍군!',
-      oops: '실수였다.',
-      threaten: '너를 박살 내주마!',
-      start: '승리가 아니면 죽음을!',
-      concede: '내가 졌다... 이번뿐이다!',
+      greetings: '불꽃 궁정의 열기를 견딜 수 있겠느냐.',
+      well_played: '제법 뜨거운 투지로군.',
+      thanks: '황제의 이름으로 치하하마.',
+      wow: '초신성 같은 위력이군!',
+      oops: '불길이 잠시 빗나갔다.',
+      threaten: '태양신 대검으로 재조차 남기지 않겠다!',
+      start: '최초의 불꽃이여, 전장을 불살라라!',
+      concede: '내 불꽃이 사그라들다니... 기억해 두마!',
     },
   },
   HUNTER: {
     heroClass: 'HUNTER',
     heroId: 'HERO_05',
     voKey: 'hunter',
-    nameKo: '렉사르',
-    titleKo: '호드의 용사',
-    classNameKo: '사냥꾼',
+    charId: 30,
+    nameKo: '바람신 토람',
+    titleKo: '폭풍 바람섬의 천공신',
+    classNameKo: '바람종족',
+    factionRealmKo: '폭풍 바람섬',
+    heroPortraitUrl: '/anime-character-sheets/busts/030_bust.jpg',
+    heroCutoutUrl: '/anime-character-sheets/cutouts/030_Wind_God_Toram.png',
     heroPowerId: 'HERO_05bp',
-    heroPowerNameKo: '고정 사격',
+    heroPowerNameKo: '폭풍 저격',
     heroPowerTextKo: '적 영웅에게 피해를 2 줍니다.',
     heroPowerNeedsTarget: false,
-    accentColor: '#22c55e',
-    frameGradient: 'linear-gradient(180deg, #276749 0%, #143625 100%)',
-    secretColor: '#4ade80',
+    accentColor: '#14b8a6',
+    frameGradient: 'linear-gradient(180deg, #0d9488 0%, #134e4a 100%)',
+    secretColor: '#2dd4bf',
     emotesKo: {
-      greetings: '반갑소, 여행자여.',
-      well_played: '잘 싸웠소.',
-      thanks: '고맙소.',
-      wow: '대단하군!',
-      oops: '조준이 빗나갔군.',
-      threaten: '사냥을 시작하겠다!',
-      start: '사냥을 시작하자!',
-      concede: '잘 싸웠소. 내가 졌군.',
+      greetings: '바람섬의 순풍이 함께하길.',
+      well_played: '바람보다 날렵한 수였소.',
+      thanks: '고맙소, 바람의 벗이여.',
+      wow: '천공을 가르는 번개 같군!',
+      oops: '난기류에 휩쓸렸군.',
+      threaten: '쌍둥이 태풍이 네 숨통을 꿰뚫을 것이다!',
+      start: '천공의 모든 폭풍이여, 사냥을 시작하자!',
+      concede: '바람이 멎었군. 그대의 완승이오.',
     },
   },
   PALADIN: {
     heroClass: 'PALADIN',
     heroId: 'HERO_04',
     voKey: 'paladin',
-    nameKo: '우서 라이트브링어',
-    titleKo: '은빛 성기사단의 수장',
-    classNameKo: '성기사',
+    charId: 40,
+    nameKo: '콜로서스',
+    titleKo: '대지 성채의 태고거신',
+    classNameKo: '땅종족',
+    factionRealmKo: '대지 성채',
+    heroPortraitUrl: '/anime-character-sheets/busts/040_bust.jpg',
+    heroCutoutUrl: '/anime-character-sheets/cutouts/040_Colossus.png',
     heroPowerId: 'HERO_04bp',
-    heroPowerNameKo: '병력 충원',
-    heroPowerTextKo: '1/1 은빛 성기사단 신병을 소환합니다.',
+    heroPowerNameKo: '성채 수호병 소집',
+    heroPowerTextKo: '1/1 대지 성채 수호병을 소환합니다.',
     heroPowerNeedsTarget: false,
-    accentColor: '#facc15',
-    frameGradient: 'linear-gradient(180deg, #b7791f 0%, #5f3dc4 0%, #68440e 100%)',
+    accentColor: '#eab308',
+    frameGradient: 'linear-gradient(180deg, #65a30d 0%, #365314 100%)',
     secretColor: '#fde047',
     emotesKo: {
-      greetings: '반갑네!',
-      well_played: '훌륭하군.',
-      thanks: '고맙네.',
-      wow: '빛이시여!',
-      oops: '실수였군.',
-      threaten: '정의의 심판을 받아라!',
-      start: '명예를 위하여 싸우리라!',
-      concede: '그대의 승리일세, 친구여.',
-    },
-  },
-  PRIEST: {
-    heroClass: 'PRIEST',
-    heroId: 'HERO_09',
-    voKey: 'priest',
-    nameKo: '안두인 린',
-    titleKo: '스톰윈드의 왕자',
-    classNameKo: '사제',
-    heroPowerId: 'HERO_09bp',
-    heroPowerNameKo: '하급 치유',
-    heroPowerTextKo: '생명력을 2 회복시킵니다.',
-    heroPowerNeedsTarget: true,
-    accentColor: '#f8fafc',
-    frameGradient: 'linear-gradient(180deg, #cbd5e1 0%, #475569 100%)',
-    secretColor: '#e2e8f0',
-    emotesKo: {
-      greetings: '안녕하세요.',
-      well_played: '잘하셨어요.',
-      thanks: '감사합니다.',
-      wow: '정말 놀랍군요!',
-      oops: '계획대로 되지 않았네요.',
-      threaten: '빛이 당신을 태워버릴 것입니다!',
-      start: '빛이 승리를 가져다줄 것입니다!',
-      concede: '당신이 저를 압도했군요.',
+      greetings: '대지 성채의 이름으로 문안하노라.',
+      well_played: '반석처럼 단단한 전술이군.',
+      thanks: '대지의 축복이 깃들기를.',
+      wow: '산맥이 울릴 만한 기적이로군!',
+      oops: '지반이 잠시 흔들렸군.',
+      threaten: '대지 심장부의 분노로 심판하리라!',
+      start: '성채의 결계를 펼쳐라, 한 걸음도 물러서지 않는다!',
+      concede: '거신이 무릎을 꿇는다. 경이로운 승리다.',
     },
   },
   ROGUE: {
     heroClass: 'ROGUE',
     heroId: 'HERO_03',
     voKey: 'rogue',
-    nameKo: '발리라 생귀나르',
-    titleKo: '대자객',
-    classNameKo: '도적',
+    charId: 60,
+    nameKo: '아르투스',
+    titleKo: '섀도우렐름의 데스나이트 섭정',
+    classNameKo: '언데드종족',
+    factionRealmKo: '섀도우렐름',
+    heroPortraitUrl: '/anime-character-sheets/busts/060_bust.jpg',
+    heroCutoutUrl: '/anime-character-sheets/cutouts/060_Death_Knight_Arthus.png',
     heroPowerId: 'HERO_03bp',
-    heroPowerNameKo: '단검의 대가',
+    heroPowerNameKo: '섀도우 단검술',
     heroPowerTextKo: '1/2 단검을 장착합니다.',
     heroPowerNeedsTarget: false,
-    accentColor: '#94a3b8',
-    frameGradient: 'linear-gradient(180deg, #334155 0%, #0f172a 100%)',
-    secretColor: '#a855f7',
+    accentColor: '#a855f7',
+    frameGradient: 'linear-gradient(180deg, #7c3aed 0%, #2e1065 100%)',
+    secretColor: '#c084fc',
     emotesKo: {
-      greetings: '기쁨은 제 몫이죠.',
-      well_played: '훌륭하군요.',
-      thanks: '고마워요.',
-      wow: '믿을 수가 없군요!',
-      oops: '실수가 있었네요.',
-      threaten: '네 최후가 눈앞에 있다!',
-      start: '등 뒤를 조심해.',
-      concede: '포기하겠어요.',
+      greetings: '붉은 유리 궁정의 밤안개에 온 걸 환영하지.',
+      well_played: '꽤나 예리한 찌르기였군.',
+      thanks: '기꺼이 받아두지.',
+      wow: '서리 마검조차 떨릴 만한 위력이군!',
+      oops: '그림자가 잠시 흔들렸군.',
+      threaten: '네 영혼마저 얼어붙은 어둠 속에 가둬주마!',
+      start: '섀도우렐름의 어둠이 모든 빛을 삼키리라.',
+      concede: '이번 국면은 물러나지... 끝이라고 생각 마라.',
     },
   },
   SHAMAN: {
     heroClass: 'SHAMAN',
     heroId: 'HERO_02',
     voKey: 'shaman',
-    nameKo: '스랄',
-    titleKo: '대지 고리회의 선견자',
-    classNameKo: '주술사',
+    charId: 70,
+    nameKo: '에일라',
+    titleKo: '달빛 실반의 초승달 대마도사',
+    classNameKo: '엘프종족',
+    factionRealmKo: '달빛 실반',
+    heroPortraitUrl: '/anime-character-sheets/busts/070_bust.jpg',
+    heroCutoutUrl: '/anime-character-sheets/cutouts/070_Ayla.png',
     heroPowerId: 'HERO_02bp',
-    heroPowerNameKo: '토템 소환',
-    heroPowerTextKo: '무작위 기본 토템을 소환합니다.',
+    heroPowerNameKo: '정령석 소환',
+    heroPowerTextKo: '무작위 기본 정령석을 소환합니다.',
     heroPowerNeedsTarget: false,
-    accentColor: '#3b82f6',
-    frameGradient: 'linear-gradient(180deg, #1d4ed8 0%, #172554 100%)',
-    secretColor: '#60a5fa',
+    accentColor: '#22c55e',
+    frameGradient: 'linear-gradient(180deg, #16a34a 0%, #14532d 100%)',
+    secretColor: '#4ade80',
     emotesKo: {
-      greetings: '반갑네, 친구여.',
-      well_played: '잘했네.',
-      thanks: '고맙네.',
-      wow: '믿을 수 없군!',
-      oops: '그건 실수였네.',
-      threaten: '정령들이 너를 파괴할 것이다!',
-      start: '둠해머를 위하여!',
-      concede: '이번 판은 자네가 이겼네, 친구.',
+      greetings: '달빛 실반의 은총이 그대를 비추기를.',
+      well_played: '고대 룬의 이치를 꿰뚫으셨군요.',
+      thanks: '실반의 이름으로 감사드려요.',
+      wow: '별빛이 춤출 만큼 경이로운 마력이네요!',
+      oops: '룬 배열이 한 획 어긋났군요.',
+      threaten: '초승달의 마검과 정령석이 당신을 심판할 거예요!',
+      start: '고대 문자의 비전이여, 실반의 숲을 수호하라!',
+      concede: '아름다운 지략이었어요. 당신의 승리입니다.',
     },
   },
   WARLOCK: {
     heroClass: 'WARLOCK',
     heroId: 'HERO_07',
     voKey: 'warlock',
-    nameKo: '굴단',
-    titleKo: '어둠의 화신',
-    classNameKo: '흑마법사',
+    charId: 80,
+    nameKo: '아이언포지',
+    titleKo: '딥포지 공방의 황금 거신병',
+    classNameKo: '드워프종족',
+    factionRealmKo: '딥포지 공방',
+    heroPortraitUrl: '/anime-character-sheets/busts/080_bust.jpg',
+    heroCutoutUrl: '/anime-character-sheets/cutouts/080_Ironforge.png',
     heroPowerId: 'HERO_07bp',
-    heroPowerNameKo: '생명력 전환',
+    heroPowerNameKo: '용광로 마력 전환',
     heroPowerTextKo: '피해를 2 입는 대신 카드를 뽑습니다.',
     heroPowerNeedsTarget: false,
-    accentColor: '#a855f7',
-    frameGradient: 'linear-gradient(180deg, #6b21a8 0%, #2e1065 100%)',
-    secretColor: '#c084fc',
+    accentColor: '#f59e0b',
+    frameGradient: 'linear-gradient(180deg, #b45309 0%, #451a03 100%)',
+    secretColor: '#fbbf24',
     emotesKo: {
-      greetings: '반갑군.',
-      well_played: '제법이군.',
-      thanks: '고맙군.',
-      wow: '비범하군!',
-      oops: '실수였다.',
-      threaten: '네 영혼은 내 것이다!',
-      start: '네 영혼에 고통을 안겨주마!',
-      concede: '이번엔 네가 이겼다!',
+      greetings: '딥포지 왕국의 대장간 불꽃은 꺼지지 않는다!',
+      well_played: '명장의 망치질처럼 정확한 수로군.',
+      thanks: '고맙다, 강철의 전우여.',
+      wow: '오리하르콘도 꿰뚫을 일격이군!',
+      oops: '용광로 압력이 너무 높았군.',
+      threaten: '별자리 룬 대방패 아래 가루로 빻아주마!',
+      start: '딥포지의 용광로를 최대 출력으로 가동하라!',
+      concede: '장갑이 한계에 달했군... 훌륭한 대결이었다!',
     },
   },
   DRUID: {
     heroClass: 'DRUID',
     heroId: 'HERO_06',
     voKey: 'druid',
-    nameKo: '말퓨리온 스톰레이지',
-    titleKo: '대드루이드',
-    classNameKo: '드루이드',
+    charId: 81,
+    nameKo: '펜릴',
+    titleKo: '야성 설원의 빙결늑대왕',
+    classNameKo: '동물종족',
+    factionRealmKo: '야성의 대지',
+    heroPortraitUrl: '/anime-character-sheets/busts/081_bust.jpg',
+    heroCutoutUrl: '/anime-character-sheets/cutouts/081_Fenrir.png',
     heroPowerId: 'HERO_06bp',
-    heroPowerNameKo: '변신',
+    heroPowerNameKo: '영수 각성',
     heroPowerTextKo: '이번 턴에 공격력 +1, 방어도 +1을 얻습니다.',
     heroPowerNeedsTarget: false,
-    accentColor: '#d97706',
-    frameGradient: 'linear-gradient(180deg, #92400e 0%, #451a03 100%)',
-    secretColor: '#fbbf24',
+    accentColor: '#f43f5e',
+    frameGradient: 'linear-gradient(180deg, #be123c 0%, #4c0519 100%)',
+    secretColor: '#fb7185',
     emotesKo: {
-      greetings: '반갑소.',
-      well_played: '흠, 잘했군.',
-      thanks: '고맙소.',
-      wow: '경이롭군!',
-      oops: '당연한 실수였군.',
-      threaten: '대자연이 그대를 거부하리라!',
-      start: '자연을 수호하리라!',
-      concede: '인정하오. 그대가 이겼소.',
+      greetings: '만년설 황야의 기개를 보여보아라.',
+      well_played: '영수의 왕도 인정할 만한 발톱이군.',
+      thanks: '기억해 두마, 인간의 벗이여.',
+      wow: '대지를 가르는 포효로군!',
+      oops: '사냥감의 발자국을 놓쳤군.',
+      threaten: '서리 룬 발톱으로 네 목줄을 물어뜯어 주마!',
+      start: '야성의 대지여, 늑대왕의 부름에 깨어나라!',
+      concede: '강한 자가 승리하는 것이 야성의 법칙... 네 승리다.',
     },
   },
 };
 
 export const HERO_CLASS_ORDER: HeroClass[] = [
+  'PRIEST',
   'MAGE',
   'WARRIOR',
   'HUNTER',
   'PALADIN',
-  'PRIEST',
   'ROGUE',
   'SHAMAN',
   'WARLOCK',
@@ -319,7 +369,7 @@ export type BoardThemeId = 'STORMWIND' | 'ORGRIMMAR' | 'PANDARIA';
 export interface HandCardInstance {
   uid: string;
   cardId: string;
-  costMod: number; // permanent cost modifier on this hand instance (e.g. Shadowstep -2, Far Sight -3, Freezing Trap +2)
+  costMod: number;
   createdBy?: string;
 }
 
@@ -349,15 +399,14 @@ export interface MinionInstance {
   playOrder: number;
   baseAttack: number;
   baseHealth: number;
-  permAttack: number; // baseAttack + permanent buffs
-  tempAttack: number; // this-turn buffs (Abusive Sergeant, Savage Roar, Bloodlust, etc.)
+  permAttack: number;
+  tempAttack: number;
   maxHealth: number;
   health: number;
-  auraAttack: number; // recalculated continuously
-  auraHealth: number; // recalculated continuously
+  auraAttack: number;
+  auraHealth: number;
   race?: string | null;
   rarity: CardRarity;
-  // Keyword states
   taunt: boolean;
   auraTaunt: boolean;
   divineShield: boolean;
@@ -370,20 +419,18 @@ export interface MinionInstance {
   freezeSkipClearedAtEndTurn: boolean;
   silenced: boolean;
   poisonous: boolean;
-  elusive: boolean; // Cannot be targeted by spells or hero powers
+  elusive: boolean;
   cantAttack: boolean;
   spellDamage: number;
-  // Turn / Attack tracking
-  exhausted: boolean; // Summoning sickness
+  exhausted: boolean;
   attacksMadeThisTurn: number;
   cannotReduceBelow1ThisTurn: boolean;
-  // Enchantments & extra Deathrattles
-  soulOfTheForestCount: number; // summon 2/2 Treant on death
-  ancestralSpiritCount: number; // resummon self on death
-  blessingOfWisdomOwners: PlayerSide[]; // draw card for owner(s) on attack
-  corruptionOwner: PlayerSide | null; // destroy at start of corruptionOwner's turn
-  powerOverwhelmingDieAtEndTurn: boolean; // die at end of turn (Power Overwhelming / Force of Nature)
-  nightmareDestroyOwnerTurn: PlayerSide | null; // Nightmare destroy at start of owner's turn
+  soulOfTheForestCount: number;
+  ancestralSpiritCount: number;
+  blessingOfWisdomOwners: PlayerSide[];
+  corruptionOwner: PlayerSide | null;
+  powerOverwhelmingDieAtEndTurn: boolean;
+  nightmareDestroyOwnerTurn: PlayerSide | null;
 }
 
 export interface PlayerBattleState {
@@ -397,12 +444,12 @@ export interface PlayerBattleState {
   heroPowerNameKo: string;
   heroPowerTextKo: string;
   heroPowerNeedsTarget: boolean;
-  shadowformTier: number; // 0 = normal, 1 = Mind Spike (2 dmg), 2 = Mind Shatter (3 dmg)
+  shadowformTier: number;
   heroPowerUsedThisTurn: boolean;
   health: number;
   maxHealth: number;
   armor: number;
-  tempAttack: number; // Heroic Strike, Claw, Bite, Shapeshift, Savage Roar
+  tempAttack: number;
   attacksMadeThisTurn: number;
   frozen: boolean;
   freezeSkipClearedAtEndTurn: boolean;
@@ -410,16 +457,16 @@ export interface PlayerBattleState {
   weapon: WeaponInstance | null;
   mana: number;
   maxMana: number;
-  overloadedMana: number; // locked RIGHT NOW this turn
-  pendingOverload: number; // locked NEXT turn
+  overloadedMana: number;
+  pendingOverload: number;
   fatigueCounter: number;
   cardsPlayedThisTurn: number;
   minionsPlayedThisTurn: number;
-  nextSecretZeroThisTurn: boolean; // Kirin Tor Mage
-  nextSpellDiscountThisTurn: number; // Preparation (-3)
-  spellsZeroThisTurn: boolean; // Millhouse Manastorm
+  nextSecretZeroThisTurn: boolean;
+  nextSpellDiscountThisTurn: number;
+  spellsZeroThisTurn: boolean;
   commandingShoutThisTurn: boolean;
-  deck: string[]; // cardIds from top [0] to bottom
+  deck: string[];
   hand: HandCardInstance[];
   board: MinionInstance[];
   secrets: SecretInstance[];
@@ -464,7 +511,7 @@ export type VfxKind =
 export interface VfxEvent {
   id: string;
   kind: VfxKind;
-  sourceId?: string; // 'PLAYER_HERO' | 'OPPONENT_HERO' | minion uid
+  sourceId?: string;
   targetId?: string;
   value?: number;
   label?: string;
@@ -488,7 +535,7 @@ export interface ChooseOnePrompt {
 }
 
 export interface TrackingPrompt {
-  cards: string[]; // up to 3 top cardIds
+  cards: string[];
 }
 
 export interface BattleMatchState {
@@ -519,7 +566,7 @@ export interface CustomDeck {
   id: string;
   name: string;
   heroClass: HeroClass;
-  cards: string[]; // 30 cardIds
+  cards: string[];
   isPreset?: boolean;
 }
 
@@ -538,7 +585,7 @@ export interface PlayerProfile {
   gold: number;
   arcaneDust: number;
   packs: number;
-  rank: number; // 25 down to 1, 0 = Legend
+  rank: number;
   stars: number;
   winStreak: number;
   totalWins: number;
