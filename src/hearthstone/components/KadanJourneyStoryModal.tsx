@@ -108,9 +108,16 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
             <h2 className="hs-title truncate text-base font-extrabold text-amber-100 sm:text-xl">
               {epDef.titleKo}
             </h2>
-            <span className="hidden rounded-full border border-amber-400/40 bg-amber-950/70 px-2.5 py-0.5 text-[11px] font-bold text-amber-200 md:inline-block">
-              보스: {epDef.bossNameKo} (승리 +{diffSpec.expectedWinGold}G
-              {diffSpec.isBossMilestone ? ' +1팩' : ''})
+            <span className="hidden items-center gap-1.5 rounded-full border border-red-400/50 bg-red-950/75 py-0.5 pl-1 pr-2.5 text-[11px] font-bold text-amber-100 md:inline-flex">
+              <img
+                src={epDef.bossHeroSpec.portraitUrl}
+                alt=""
+                className="h-5 w-5 rounded-full border border-amber-300/80 bg-stone-900 object-cover object-top"
+              />
+              <span>
+                대결 적장: <strong className="text-red-200">{epDef.bossNameKo}</strong> (승리 +{diffSpec.expectedWinGold}G
+                {diffSpec.isBossMilestone ? ' +1팩' : ''})
+              </span>
             </span>
           </div>
 

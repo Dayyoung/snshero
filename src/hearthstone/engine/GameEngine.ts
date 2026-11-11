@@ -5,6 +5,7 @@ import {
   BoardThemeId,
   CLASSIC_HEROES,
   ChooseOnePrompt,
+  CustomBattleHeroSpec,
   GameMode,
   HandCardInstance,
   HeroClass,
@@ -36,6 +37,7 @@ function makeEmptyPlayerState(
   name: string,
   heroClass: HeroClass,
   deckCards: string[],
+  customHero?: CustomBattleHeroSpec,
 ): PlayerBattleState {
   const hero = CLASSIC_HEROES[heroClass];
   return {
@@ -43,11 +45,12 @@ function makeEmptyPlayerState(
     name,
     heroClass,
     heroId: hero.heroId,
-    heroNameKo: hero.nameKo,
+    heroNameKo: customHero?.heroNameKo || hero.nameKo,
+    customHero,
     isJaraxxus: false,
     heroPowerId: hero.heroPowerId,
-    heroPowerNameKo: hero.heroPowerNameKo,
-    heroPowerTextKo: hero.heroPowerTextKo,
+    heroPowerNameKo: customHero?.heroPowerNameKo || hero.heroPowerNameKo,
+    heroPowerTextKo: customHero?.heroPowerTextKo || hero.heroPowerTextKo,
     heroPowerNeedsTarget: hero.heroPowerNeedsTarget,
     shadowformTier: 0,
     heroPowerUsedThisTurn: false,
@@ -112,9 +115,11 @@ export function createBattleMatch(opts: {
   playerName: string;
   playerClass: HeroClass;
   playerDeck: string[];
+  playerCustomHero?: CustomBattleHeroSpec;
   opponentName: string;
   opponentClass: HeroClass;
   opponentDeck: string[];
+  opponentCustomHero?: CustomBattleHeroSpec;
   boardTheme?: BoardThemeId;
   journeyMeta?: JourneyBattleMeta;
 }): BattleMatchState {
@@ -122,8 +127,20 @@ export function createBattleMatch(opts: {
   const boardTheme = opts.boardTheme || themes[Math.floor(Math.random() * themes.length)];
   const firstPlayer: PlayerSide = opts.mode === 'TUTORIAL' ? 'PLAYER' : Math.random() < 0.5 ? 'PLAYER' : 'OPPONENT';
 
-  const player = makeEmptyPlayerState('PLAYER', opts.playerName, opts.playerClass, opts.playerDeck);
-  const opponent = makeEmptyPlayerState('OPPONENT', opts.opponentName, opts.opponentClass, opts.opponentDeck);
+  const player = makeEmptyPlayerState(
+    'PLAYER',
+    opts.playerName,
+    opts.playerClass,
+    opts.playerDeck,
+    opts.playerCustomHero,
+  );
+  const opponent = makeEmptyPlayerState(
+    'OPPONENT',
+    opts.opponentName,
+    opts.opponentClass,
+    opts.opponentDeck,
+    opts.opponentCustomHero,
+  );
 
   if (opts.mode === 'TUTORIAL' && opts.journeyMeta) {
     opponent.health = opts.journeyMeta.enemyHeroHealth;

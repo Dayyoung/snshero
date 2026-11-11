@@ -20,14 +20,15 @@ export interface SnsHeroConsoleApi {
   completeQuests: () => { goldEarned: number };
   verifyRoster: () => {
     totalCollectible: number;
+    uniqueArtUrls: number;
+    uniqueCharacters: number;
     classBreakdown: Record<
       string,
-      { factionKo: string; heroKo: string; cardCount: number; uniqueChars: number }
+      { factionKo: string; heroKo: string; cardCount: number; uniqueChars: number; uniqueArts: number }
     >;
     neutralTotal: number;
     neutralUniqueChars: number;
-    neutralExtraRobot: number;
-    neutralExtraDragon: number;
+    neutralUniqueArts: number;
     presetDecks: string[];
   };
   engineInfo: () => Record<string, unknown>;
@@ -59,7 +60,7 @@ export function initSnsHeroConsoleApi(): void {
         '  snshero.addCardCopies("CS2_189", 2): 특정 카드 보유 장수 추가 및 카단의 여정 배율(3장=3배) 확인',
         '  snshero.setRank(0, 1)            : 등급 변경 (25~1등급, 0 = 전설의 눈히어로)',
         '  snshero.completeQuests()         : 오늘의 의뢰 전체 완료 및 보상 지급',
-        '  snshero.verifyRoster()           : 382종 카드 ↔ 110종족/로봇/용 배정 및 9개 기본 덱 무결성 검증',
+        '  snshero.verifyRoster()           : 382종 카드 전수 고유 캐릭터·아트워크(종족별 25명 + 중립 157종) 무결성 검증',
         '  snshero.engineInfo()             : 전투 엔진 상수 및 로컬스토리지 상태 조회',
         '  snshero.reset()                  : 프로필·도감·덱·의뢰 데이터 초기화 (초기 3팩 & 첫 방문 가이드 복원)',
         '=========================================================================================',
@@ -169,53 +170,49 @@ export function initSnsHeroConsoleApi(): void {
       const all = cardDb.getAllCollectible();
       const classBreakdown: Record<
         string,
-        { factionKo: string; heroKo: string; cardCount: number; uniqueChars: number }
+        { factionKo: string; heroKo: string; cardCount: number; uniqueChars: number; uniqueArts: number }
       > = {};
 
       for (const cls of HERO_CLASS_ORDER) {
         const hero = CLASSIC_HEROES[cls as HeroClass];
         const cards = all.filter((c) => c.cardClass === cls);
         const uniq = new Set(cards.map((c) => c.snsCharId)).size;
+        const uniqArts = new Set(cards.map((c) => c.artUrl)).size;
         classBreakdown[cls] = {
           factionKo: hero.classNameKo,
           heroKo: hero.nameKo,
           cardCount: cards.length,
           uniqueChars: uniq,
+          uniqueArts: uniqArts,
         };
       }
 
       const neutral = all.filter((c) => c.cardClass === 'NEUTRAL');
-      const charCounts = new Map<number, number>();
-      for (const c of neutral) {
-        const cid = c.snsCharId || 0;
-        charCounts.set(cid, (charCounts.get(cid) || 0) + 1);
-      }
-      let extraRobot = 0;
-      let extraDragon = 0;
-      for (let cid = 91; cid <= 100; cid += 1) {
-        extraRobot += Math.max(0, (charCounts.get(cid) || 0) - 1);
-      }
-      for (let cid = 101; cid <= 110; cid += 1) {
-        extraDragon += Math.max(0, (charCounts.get(cid) || 0) - 1);
-      }
+      const neutralUniqueChars = new Set(neutral.map((c) => c.snsCharId)).size;
+      const neutralUniqueArts = new Set(neutral.map((c) => c.artUrl)).size;
+      const uniqueArtUrls = new Set(all.map((c) => c.artUrl)).size;
+      const uniqueCharacters = new Set(all.map((c) => c.snsCharId)).size;
 
       const presetDecks = hsStorage.getDecks().map((d) => d.name);
       console.table(classBreakdown);
-      console.info('[눈히어로 콘솔] 중립 카드 배정:', {
+      console.info('[눈히어로 콘솔] 382종 전수 고유 로스터 & 아트워크 배정:', {
+        totalCollectible: all.length,
+        uniqueArtUrls,
+        uniqueCharacters,
         neutralTotal: neutral.length,
-        neutralUniqueChars: charCounts.size,
-        neutralExtraRobot: extraRobot,
-        neutralExtraDragon: extraDragon,
+        neutralUniqueChars,
+        neutralUniqueArts,
         presetDecks,
       });
 
       return {
         totalCollectible: all.length,
+        uniqueArtUrls,
+        uniqueCharacters,
         classBreakdown,
         neutralTotal: neutral.length,
-        neutralUniqueChars: charCounts.size,
-        neutralExtraRobot: extraRobot,
-        neutralExtraDragon: extraDragon,
+        neutralUniqueChars,
+        neutralUniqueArts,
         presetDecks,
       };
     },

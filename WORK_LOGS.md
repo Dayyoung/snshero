@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 18:13 KST] [/game.html 오리지널 하스스톤 물리 돌진·충돌·반동 공격 애니메이션, 382장 카드 전수 고유 캐릭터·신규 일러스트 생성(9종족×25명+중립 157종, 중복 0건), 카단의 여정 40화 스토리 적장 1:1 보스 영웅 적용 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항 (3대 핵심 항목 전수 반영)**:
+    1. **오리지널 하스스톤 물리 카드 돌진·타격 애니메이션**: 공격 시 데미지 수치만 뜨던 기존 방식에서, 공격하는 하수인/영웅이 슬롯에서 공중 부양한 뒤 대상 좌표로 직접 이동해 정면 충돌·타격하고 제자리로 복귀하는 하스스톤 정통 물리 타격 연출 적용.
+    2. **382장 카드 전수 고유 캐릭터 & 신규 이미지 생성 적용 (중복 0건)**: 기존 110명 캐릭터 중복 배정을 완전히 해소하기 위해 9개 종족별 기존 10명 + **신규 15명씩 충원(종족당 25명 = 225명)**하고, **중립 카드 157장 전수 신규 일러스트 생성·적용**(`225 + 157 = 382장` 100% 1:1 고유 캐릭터·아트워크).
+    3. **『카단의 여정』 1~40화 에피소드별 실제 스토리 적장 보스 영웅 제작·등장**: 에피소드 줄거리 속 적과 실제 대전 영웅이 불일치하던 문제를 해결하여, 40화 각각에 어울리는 적장·시련 보스 영웅(`CustomBattleHeroSpec`, 신규 보스 일러스트 8종 포함)을 VS 인트로·상단 보스 아치·영웅 능력·개전/감정표현/항복 대사에 1:1 적용.
+  - **2. 세부 구현 내역**:
+    - **오리지널 하스스톤 물리 돌진·충돌·반동 공격 애니메이션 ([`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx), [`CardVisual.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/CardVisual.tsx), [`BoardVfxCanvas.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/vfx/BoardVfxCanvas.tsx))**:
+      - 아군 수동 공격·아군 자동플레이 공격·적군 AI 공격 전 경로에 [`triggerPhysicalAttack`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx#L676-L809) 안무 엔진 적용: `WINDUP(부양·기 모으기)` ➔ `LUNGE(대상 좌표 고속 돌진)` ➔ `IMPACT_RETURN(정면 충돌 십자 참격 파열 + 붉은 성형 데미지 스플랫 -X / 반격 피해 동시 표시 + 전장 셰이크 + 타격음 + 탄성 복귀)` 구현.
+      - 하수인 사망 프레임에서도 이펙트가 중앙으로 튀지 않고 정확한 전장 위치에서 터지도록 [`BoardVfxCanvas.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/vfx/BoardVfxCanvas.tsx#L49-L70) 엔티티 좌표 캐싱 추가.
+    - **382장 전수 고유 캐릭터 충원 및 신규 일러스트 292종 + 보스 8종 생성 ([`build_382_unique_cards_and_bosses.py`](file:///Users/dayyoung/project/snshero/scripts/build_382_unique_cards_and_bosses.py), [`classic-cards.json`](file:///Users/dayyoung/project/snshero/public/hs-assets/data/classic-cards.json))**:
+      - 9개 종족별 신규 영웅 135종(`public/hs-assets/cards/class/*.webp`, `NO.111~245`) + 중립 하수인 신규 일러스트 157종(`public/hs-assets/cards/neutral/*.webp`, `NO.301~457`)을 생성·적용하여 `382 / 382` 고유 `artUrl` 및 고유 `snsCharId` 달성 (`snshero.verifyRoster()` 무결성 확인).
+    - **『카단의 여정』 40화 전체 스토리 적장 보스 영웅 1:1 매칭 ([`generate_kadan_journey_data.py`](file:///Users/dayyoung/project/snshero/scripts/generate_kadan_journey_data.py), [`kadanJourneyData.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/kadanJourneyData.ts), [`GameEngine.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/engine/GameEngine.ts))**:
+      - 신규 제작 보스 초상화 8종(`public/hs-assets/bosses/boss_karg.webp`, `boss_bolton.webp`, `boss_zephyr.webp`, `boss_krakenlord.webp`, `boss_malakai.webp`, `boss_balthazar.webp`, `boss_morgana.webp`, `boss_abyss_lucian.webp`)과 공식 악역/스승 컷아웃(`야심가 루시안`, `대장장이 그림리`, `결정술사 벨페고르`, `메두사 고르고`, `대현자 말퓨온`, `데스나이트 아르투스`, `귀공자 이그니스`, `공성거신 아이언포지`, `노장 레오나르`, `수적두목 아쿠아로드`, `독거미 아라크네`, `국왕 에올루스`, `심연룡 리바이어던`, `흑술사 간다르`, `성기사 헤르쿨`)을 결합하여 1~40화 전 회차 보스 영웅 완성(프롤로그 1~3화 아군 `성기사 알렉산다르`·`순례 성기사 헤르쿨`·`수장 가웨인` 참전 포함).
+  - **3. 검증 및 보고**:
+    - `src/hearthstone` TypeScript 에러 **0건**, 프로덕션 빌드(`npm run build`) 성공, 382장 카드 및 40화 보스 에셋 `public/`·`dist/` 실파일 검증 100% 통과, 브라우저 E2E(`snshero.verifyRoster()`, 내 카드첩 신규 일러스트 렌더링, 카단의 여정 보스 영웅 & 물리 돌진 타격 애니메이션) 무결점 확인, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-11 16:54 KST] [110종 캐릭터 투명 배경(RGBA) 추출 시 머릿결·흰색 의상·하얀 날개·빛나는 구슬이 투명하게 구멍 나던 현상 근본 해결 및 전신/상반신/시트/아틀라스 전수 재빌드 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

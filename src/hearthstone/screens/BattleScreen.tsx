@@ -4,6 +4,7 @@ import {
   CLASSIC_RANK_NAMES,
   CLASS_CREST_URL,
   cardDb,
+  getCardArtUrl,
   getCardTileUrl,
   getHeroArtUrl,
 } from '../cardDb';
@@ -54,8 +55,10 @@ import {
   HeroClass,
   MatchRewardBreakdown,
   MinionInstance,
+  PlayerBattleState,
+  PlayerSide,
 } from '../types';
-import { BoardVfxCanvas } from '../vfx/BoardVfxCanvas';
+import { BoardVfxCanvas, recordEntityStagePosition } from '../vfx/BoardVfxCanvas';
 
 export interface BattleScreenProps {
   mode: GameMode;
@@ -107,6 +110,31 @@ type BattleZoomState =
   | { kind: 'TRACKING_CARD'; cardId: string }
   | { kind: 'BOARD_MINION'; minion: MinionInstance; isFriendly: boolean }
   | { kind: 'HISTORY_ITEM'; item: ActionHistoryItem };
+
+interface ActiveAttackAnim {
+  id: number;
+  side: PlayerSide;
+  attackerId: string;
+  defenderId: string;
+  isHeroAttacker: boolean;
+  artUrl: string;
+  nameKo: string;
+  attackVal: number;
+  healthVal: number;
+  armorVal: number;
+  taunt: boolean;
+  divineShield: boolean;
+  rarity?: string;
+  frameGradient: string;
+  startX: number;
+  startY: number;
+  targetX: number;
+  targetY: number;
+  defenderDamage: number;
+  attackerCounterDamage: number;
+  attackerWillDie: boolean;
+  phase: 'WINDUP' | 'LUNGE' | 'IMPACT_RETURN';
+}
 
 const BOARD_BG_URL: Record<BoardThemeId, string> = {
   STORMWIND: SNS_LOCATIONS.BOARD_LIGHTHAVEN,
@@ -206,19 +234,21 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
         return createBattleMatch({
           mode: 'TUTORIAL',
-          playerName: '엘윈의 방패 카단',
+          playerName: epDef.playerHeroSpec.heroNameKo,
           playerClass: 'PRIEST',
           playerDeck: playerJourney.deckCards,
+          playerCustomHero: epDef.playerHeroSpec,
           opponentName: epDef.bossNameKo,
           opponentClass: epDef.bossHeroClass,
           opponentDeck: bossDeck,
+          opponentCustomHero: epDef.bossHeroSpec,
           boardTheme: diffSpec.boardTheme,
           journeyMeta: {
             episode: epDef.episode,
             reincarnation: reinc,
             episodeTitle: epDef.titleKo,
             actTitle: epDef.actTitle,
-            opponentTitle: epDef.bossNameKo,
+            opponentTitle: epDef.bossHeroSpec.titleKo,
             enemyHeroHealth: diffSpec.enemyHeroHealth,
             enemyStatScale: diffSpec.enemyStatScale,
             playerCardMultipliers: playerJourney.playerCardMultipliers,
@@ -285,12 +315,46 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     flipped: boolean;
   } | null>(null);
   const [drawRetryRemainingMs, setDrawRetryRemainingMs] = useState<number>(3000);
+  const [attackAnim, setAttackAnim] = useState<ActiveAttackAnim | null>(null);
 
   const friendlyRowRef = useRef<HTMLDivElement | null>(null);
   const recordedResultRef = useRef(false);
   const postGameFiredRef = useRef(false);
   const drawRetryFiredRef = useRef(false);
+  const matchStateRef = useRef<BattleMatchState>(matchState);
+  matchStateRef.current = matchState;
+  const attackLockRef = useRef(false);
+  const attackSeqRef = useRef(0);
+  const attackTimersRef = useRef<number[]>([]);
   const profile = liveProfile;
+
+  useEffect(() => {
+    return () => {
+      for (const tid of attackTimersRef.current) window.clearTimeout(tid);
+      attackTimersRef.current = [];
+      attackLockRef.current = false;
+    };
+  }, []);
+
+  const resolveHeroPortraitUrl = useCallback((p: PlayerBattleState): string => {
+    if (p.isJaraxxus) return '/anime-character-sheets/cutouts/080_Ironforge.png';
+    if (p.customHero?.portraitUrl) return p.customHero.portraitUrl;
+    return getHeroArtUrl(CLASSIC_HEROES[p.heroClass].heroId);
+  }, []);
+
+  const resolveHistoryIconUrl = useCallback(
+    (item: ActionHistoryItem): string => {
+      const p = item.actorSide === 'PLAYER' ? matchState.player : matchState.opponent;
+      if (
+        p.customHero &&
+        (item.cardId === p.heroId || item.cardId === p.heroPowerId || item.kind === 'HERO_POWER')
+      ) {
+        return p.customHero.portraitUrl;
+      }
+      return getCardTileUrl(item.cardId);
+    },
+    [matchState.player, matchState.opponent],
+  );
 
   useEffect(() => {
     const syncProfile = () => setLiveProfile(hsStorage.getProfile());
@@ -324,15 +388,19 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     ? 2
     : 1;
 
-  // Opening VS Clash + Matchup Fanfare (runs immediately for non-TUTORIAL, or right after Story Theater closes in TUTORIAL)
+  // Opening VS Clash + Matchup Fanfare (runs immediately for non-TUTORIAL or skipStoryIntro retry, or right after Story Theater closes in TUTORIAL)
   useEffect(() => {
     hsAudio.playBgm('mulligan');
-    if (mode === 'TUTORIAL') return;
+    if (mode === 'TUTORIAL' && !skipStoryIntro) return;
     hsAudio.playMatchupAnnouncement(matchState.player.heroClass, matchState.opponent.heroClass);
     const t1 = window.setTimeout(() => {
       setVsIntroActive(false);
       hsAudio.playHeroVo(matchState.opponent.heroClass, 'start');
-    }, 2200);
+      if (matchState.opponent.customHero?.emotesKo.start) {
+        setOpponentEmoteText(matchState.opponent.customHero.emotesKo.start);
+        window.setTimeout(() => setOpponentEmoteText(null), 2900);
+      }
+    }, skipStoryIntro ? 1450 : 2200);
     return () => clearTimeout(t1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -359,6 +427,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       window.setTimeout(() => {
         setVsIntroActive(false);
         hsAudio.playHeroVo(activeMatch.opponent.heroClass, 'start');
+        if (activeMatch.opponent.customHero?.emotesKo.start) {
+          setOpponentEmoteText(activeMatch.opponent.customHero.emotesKo.start);
+          window.setTimeout(() => setOpponentEmoteText(null), 2900);
+        }
       }, 1650);
     },
     [mode, matchState, buildBattleMatchState],
@@ -408,8 +480,14 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       const didWin = matchState.winner === 'PLAYER';
       if (didWin) {
         hsAudio.playHeroVo(matchState.opponent.heroClass, 'concede');
+        if (matchState.opponent.customHero?.emotesKo.concede) {
+          setOpponentEmoteText(matchState.opponent.customHero.emotesKo.concede);
+        }
       } else {
         hsAudio.playHeroVo(matchState.player.heroClass, 'concede');
+        if (matchState.player.customHero?.emotesKo.concede) {
+          setPlayerEmoteText(matchState.player.customHero.emotesKo.concede);
+        }
       }
       const summary = hsStorage.recordMatchOutcome(
         matchState.player.heroClass,
@@ -583,10 +661,152 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     return () => clearInterval(iv);
   }, [storyPhase, matchState.phase, matchState.activeSide, matchState.turnNumber]);
 
+  const triggerShake = useCallback((intensity: 'LIGHT' | 'HEAVY') => {
+    setScreenShake(intensity);
+    window.setTimeout(() => setScreenShake('NONE'), 380);
+  }, []);
+
+  /**
+   * 오리지널 하스스톤 물리 돌진·충돌·반동 타격 애니메이션 (Physical Card Lunge -> Impact -> Recoil)
+   * - 아군 수동 공격 / 아군 자동플레이 공격 / 적군 AI 공격 모두 동일하게 실제 카드 토큰·영웅 초상화가
+   *   공중으로 부양(WINDUP) -> 대상에게 고속 돌진(LUNGE) -> 정면 충돌 파열 & 피해 반영(IMPACT) -> 제자리 복귀(RETURN) 수행!
+   */
+  const triggerPhysicalAttack = useCallback(
+    (side: PlayerSide, attackerId: string, defenderId: string) => {
+      if (attackLockRef.current) return;
+      const cur = matchStateRef.current;
+      if (cur.phase !== 'PLAYING') return;
+
+      const enemySide: PlayerSide = side === 'PLAYER' ? 'OPPONENT' : 'PLAYER';
+      const atkPlayer = side === 'PLAYER' ? cur.player : cur.opponent;
+      const defPlayer = enemySide === 'PLAYER' ? cur.player : cur.opponent;
+      const isHeroAttacker = attackerId === `${side}_HERO`;
+      const isHeroDefender = defenderId === 'PLAYER_HERO' || defenderId === 'OPPONENT_HERO';
+
+      const atkMinion = isHeroAttacker
+        ? null
+        : atkPlayer.board.find((m) => m.uid === attackerId) || null;
+      if (!isHeroAttacker && !atkMinion) return;
+
+      const defMinion = isHeroDefender
+        ? null
+        : defPlayer.board.find((m) => m.uid === defenderId) || null;
+      if (!isHeroDefender && !defMinion) return;
+
+      const { width: stageW, height: stageH } = getStageSize();
+      const atkEl = document.querySelector(`[data-hs-entity="${attackerId}"]`);
+      const defEl = document.querySelector(`[data-hs-entity="${defenderId}"]`);
+
+      const startPos = atkEl
+        ? elementCenterInStage(atkEl)
+        : {
+            x: stageW * 0.5,
+            y: side === 'PLAYER' ? stageH * 0.62 : stageH * 0.34,
+          };
+      const targetPos = defEl
+        ? elementCenterInStage(defEl)
+        : {
+            x: stageW * 0.5,
+            y: enemySide === 'PLAYER' ? stageH * 0.77 : stageH * 0.17,
+          };
+
+      recordEntityStagePosition(attackerId, startPos);
+      recordEntityStagePosition(defenderId, targetPos);
+
+      const attackVal = isHeroAttacker
+        ? getHeroAttack(atkPlayer, true)
+        : getMinionAttack(atkMinion!);
+      const healthVal = isHeroAttacker ? atkPlayer.health : getMinionHealth(atkMinion!);
+      const armorVal = isHeroAttacker ? atkPlayer.armor : 0;
+      const counterDmg = isHeroDefender ? 0 : getMinionAttack(defMinion!);
+      const attackerWillDie =
+        !isHeroAttacker &&
+        !atkMinion!.divineShield &&
+        counterDmg >= healthVal;
+
+      const minionDef = atkMinion ? cardDb.mustGetCard(atkMinion.cardId) : null;
+      const artUrl = isHeroAttacker
+        ? resolveHeroPortraitUrl(atkPlayer)
+        : getCardArtUrl(minionDef!);
+      const nameKo = isHeroAttacker ? atkPlayer.heroNameKo : atkMinion!.name;
+      const defNameKo = isHeroDefender ? defPlayer.heroNameKo : defMinion!.name;
+      const frameGradient =
+        atkPlayer.customHero?.frameGradient || CLASSIC_HEROES[atkPlayer.heroClass].frameGradient;
+
+      attackLockRef.current = true;
+      attackSeqRef.current += 1;
+      const animId = attackSeqRef.current;
+
+      hsAudio.playSfx('whoosh', 0.85);
+      setAiHighlightText(
+        `${side === 'PLAYER' ? '⚔ 아군 타격' : '💥 적군 타격'}: [${nameKo}](${attackVal}) ➔ [${defNameKo}]!`,
+      );
+
+      setAttackAnim({
+        id: animId,
+        side,
+        attackerId,
+        defenderId,
+        isHeroAttacker,
+        artUrl,
+        nameKo,
+        attackVal,
+        healthVal,
+        armorVal,
+        taunt: atkMinion ? hasMinionTaunt(atkMinion) : false,
+        divineShield: atkMinion ? atkMinion.divineShield : false,
+        rarity: minionDef?.rarity,
+        frameGradient,
+        startX: startPos.x,
+        startY: startPos.y,
+        targetX: targetPos.x,
+        targetY: targetPos.y,
+        defenderDamage: attackVal,
+        attackerCounterDamage: counterDmg,
+        attackerWillDie,
+        phase: 'WINDUP',
+      });
+
+      const tLunge = window.setTimeout(() => {
+        setAttackAnim((prev) =>
+          prev && prev.id === animId ? { ...prev, phase: 'LUNGE' } : prev,
+        );
+      }, 115);
+
+      const tImpact = window.setTimeout(() => {
+        const latest = matchStateRef.current;
+        if (latest.phase === 'PLAYING') {
+          const sim = createEngine(latest);
+          const next = sim.performAttack(side, attackerId, defenderId);
+          setMatchState(next);
+        }
+        hsAudio.playSfx(attackVal >= 5 ? 'big_attack' : 'attack', 0.95);
+        triggerShake(attackVal >= 5 || isHeroDefender ? 'HEAVY' : 'LIGHT');
+        setAttackAnim((prev) =>
+          prev && prev.id === animId ? { ...prev, phase: 'IMPACT_RETURN' } : prev,
+        );
+      }, 270);
+
+      const tDone = window.setTimeout(() => {
+        setAttackAnim((prev) => (prev && prev.id === animId ? null : prev));
+        attackLockRef.current = false;
+      }, 500);
+
+      attackTimersRef.current = [
+        ...attackTimersRef.current.slice(-12),
+        tLunge,
+        tImpact,
+        tDone,
+      ];
+    },
+    [resolveHeroPortraitUrl, triggerShake],
+  );
+
   // ==================== PLAYER AUTO-PLAY ENGINE (카단의 여정 기본 ON, 수동 전환 즉시 해제) ====================
   useEffect(() => {
     if (!autoPlay || storyPhase !== 'CLOSED' || vsIntroActive) return;
     if (matchState.phase === 'GAME_OVER') return;
+    if (attackAnim || attackLockRef.current) return;
 
     // 1. Auto-Mulligan: swap cards costing >= 4 and start duel!
     if (matchState.phase === 'MULLIGAN') {
@@ -611,6 +831,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     if (selection) setSelection(null);
 
     const timer = window.setTimeout(() => {
+      if (attackLockRef.current) return;
       const sim = createEngine(matchState);
 
       // Handle Choose-One prompt automatically
@@ -657,17 +878,25 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         setAiHighlightText(`⚡ 자동 전투: 영웅 능력 [${matchState.player.heroPowerNameKo}]!`);
         setMatchState(sim.useHeroPower('PLAYER', action.targetId));
       } else if (action.kind === 'ATTACK') {
-        hsAudio.playSfx('whoosh', 0.75);
-        setMatchState(sim.performAttack('PLAYER', action.attackerId, action.defenderId));
+        triggerPhysicalAttack('PLAYER', action.attackerId, action.defenderId);
       } else {
         hsAudio.playSfx('end_turn', 0.85);
         setAiHighlightText(null);
         setMatchState(sim.endTurn());
       }
-    }, 620);
+    }, 560);
 
     return () => window.clearTimeout(timer);
-  }, [autoPlay, storyPhase, vsIntroActive, matchState, selection, zoomState]);
+  }, [
+    autoPlay,
+    storyPhase,
+    vsIntroActive,
+    matchState,
+    selection,
+    zoomState,
+    attackAnim,
+    triggerPhysicalAttack,
+  ]);
 
   // Step-by-Step Opponent AI Turn Execution Loop
   useEffect(() => {
@@ -676,9 +905,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       matchState.phase !== 'PLAYING' ||
       matchState.activeSide !== 'OPPONENT'
     ) {
-      if (matchState.activeSide !== 'PLAYER') setAiHighlightText(null);
+      if (matchState.activeSide !== 'PLAYER' && !attackAnim) setAiHighlightText(null);
       return;
     }
+    if (attackAnim || attackLockRef.current) return;
 
     const journeyHard =
       mode === 'TUTORIAL' &&
@@ -690,6 +920,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         : 'EXPERT';
 
     const timer = window.setTimeout(() => {
+      if (attackLockRef.current) return;
       const action: AiAction = computeNextAiAction(matchState, difficulty, 'OPPONENT');
       const sim = createEngine(matchState);
 
@@ -711,17 +942,16 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         );
         setMatchState(sim.useHeroPower('OPPONENT', action.targetId));
       } else if (action.kind === 'ATTACK') {
-        hsAudio.playSfx('whoosh', 0.75);
-        setMatchState(sim.performAttack('OPPONENT', action.attackerId, action.defenderId));
+        triggerPhysicalAttack('OPPONENT', action.attackerId, action.defenderId);
       } else {
         hsAudio.playSfx('end_turn', 0.85);
         setAiHighlightText(null);
         setMatchState(sim.endTurn());
       }
-    }, 680);
+    }, 620);
 
     return () => clearTimeout(timer);
-  }, [storyPhase, matchState, mode]);
+  }, [storyPhase, matchState, mode, attackAnim, triggerPhysicalAttack]);
 
   // Pointer Move & Escape Cancel
   useEffect(() => {
@@ -754,11 +984,6 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('keydown', onKey);
     };
-  }, []);
-
-  const triggerShake = useCallback((intensity: 'LIGHT' | 'HEAVY') => {
-    setScreenShake(intensity);
-    window.setTimeout(() => setScreenShake('NONE'), 380);
   }, []);
 
   const handleConcede = useCallback(() => {
@@ -813,7 +1038,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
   // Click a card in Player's Hand -> Select & Enlarge Card first (never play immediately!)
   const handleHandCardClick = (handUid: string) => {
-    if (matchState.phase !== 'PLAYING') return;
+    if (matchState.phase !== 'PLAYING' || attackAnim) return;
     const hc = matchState.player.hand.find((h) => h.uid === handUid);
     if (!hc) return;
 
@@ -824,7 +1049,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
   // Resolve clicking a target entity (`PLAYER_HERO`, `OPPONENT_HERO`, or minion `uid`)
   const handleEntityClick = (entityId: string, isFriendlyMinionOrHero: boolean) => {
-    if (matchState.phase !== 'PLAYING') return;
+    if (matchState.phase !== 'PLAYING' || attackAnim) return;
 
     // 1. Complete active targeting selection!
     if (selection && matchState.activeSide === 'PLAYER') {
@@ -874,9 +1099,9 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           if (selection.attackerId === 'PLAYER_HERO') {
             hsAudio.playHeroVo(matchState.player.heroClass, 'attack');
           }
-          const eng = createEngine(matchState);
+          const atkId = selection.attackerId;
           setSelection(null);
-          setMatchState(eng.performAttack('PLAYER', selection.attackerId, entityId));
+          triggerPhysicalAttack('PLAYER', atkId, entityId);
         } else {
           const enemyHasTaunt = matchState.opponent.board.some(
             (m) => !m.stealth && (m.taunt || m.auraTaunt),
@@ -989,8 +1214,9 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     emoteKey: 'greetings' | 'well_played' | 'thanks' | 'wow' | 'oops' | 'threaten',
   ) => {
     setEmoteMenuOpen(false);
-    const pHero = CLASSIC_HEROES[matchState.player.heroClass];
-    setPlayerEmoteText(pHero.emotesKo[emoteKey]);
+    const pEmotes =
+      matchState.player.customHero?.emotesKo || CLASSIC_HEROES[matchState.player.heroClass].emotesKo;
+    setPlayerEmoteText(pEmotes[emoteKey]);
     hsAudio.playHeroVo(matchState.player.heroClass, emoteKey);
     window.setTimeout(() => setPlayerEmoteText(null), 2800);
 
@@ -1003,8 +1229,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             : emoteKey === 'well_played'
               ? 'thanks'
               : 'wow';
-      const oHero = CLASSIC_HEROES[matchState.opponent.heroClass];
-      setOpponentEmoteText(oHero.emotesKo[replyKey]);
+      const oEmotes =
+        matchState.opponent.customHero?.emotesKo ||
+        CLASSIC_HEROES[matchState.opponent.heroClass].emotesKo;
+      setOpponentEmoteText(oEmotes[replyKey]);
       hsAudio.playHeroVo(matchState.opponent.heroClass, replyKey);
       window.setTimeout(() => setOpponentEmoteText(null), 2800);
     }, 1500);
@@ -1400,7 +1628,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* Curved Red Targeting Bezier Arrow + Crosshair Reticle */}
       {targetingArrow && (
-        <svg className="pointer-events-none fixed inset-0 z-[75] h-full w-full">
+        <svg className="pointer-events-none absolute inset-0 z-[75] h-full w-full">
           <defs>
             <filter id="hsArrowGlow">
               <feGaussianBlur stdDeviation="3.5" result="blur" />
@@ -1445,6 +1673,204 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           />
         </svg>
       )}
+
+      {/* ==================== ORIGINAL HEARTHSTONE PHYSICAL CARD LUNGE / SLAM COMBAT LAYER ==================== */}
+      {attackAnim &&
+        (() => {
+          const dx = attackAnim.targetX - attackAnim.startX;
+          const dy = attackAnim.targetY - attackAnim.startY;
+          const dist = Math.max(1, Math.hypot(dx, dy));
+          const ux = dx / dist;
+          const uy = dy / dist;
+          const tiltDeg = Math.max(-18, Math.min(18, (dx / 300) * 15));
+          const isCutout = attackAnim.artUrl.includes('/cutouts/');
+          const isPlayerSide = attackAnim.side === 'PLAYER';
+
+          let cx = attackAnim.startX;
+          let cy = attackAnim.startY;
+          let scale = 1;
+          let rot = 0;
+          let opacity = 1;
+          let transitionCss = 'transform 110ms cubic-bezier(0.2, 0.9, 0.3, 1)';
+
+          if (attackAnim.phase === 'WINDUP') {
+            cx = attackAnim.startX - ux * 16;
+            cy = attackAnim.startY - uy * 16;
+            scale = 1.22;
+            rot = -tiltDeg * 0.35;
+            transitionCss = 'transform 110ms cubic-bezier(0.2, 0.9, 0.3, 1)';
+          } else if (attackAnim.phase === 'LUNGE') {
+            cx = attackAnim.targetX - ux * 14;
+            cy = attackAnim.targetY - uy * 14;
+            scale = 1.28;
+            rot = tiltDeg;
+            transitionCss = 'transform 155ms cubic-bezier(0.62, 0.04, 0.96, 0.36)';
+          } else {
+            // IMPACT_RETURN
+            if (attackAnim.attackerWillDie) {
+              cx = attackAnim.startX + dx * 0.48;
+              cy = attackAnim.startY + dy * 0.48;
+              scale = 0.78;
+              rot = tiltDeg * 0.5;
+              opacity = 0;
+            } else {
+              cx = attackAnim.startX;
+              cy = attackAnim.startY;
+              scale = 1.0;
+              rot = 0;
+              opacity = 1;
+            }
+            transitionCss =
+              'transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 215ms ease-out';
+          }
+
+          return (
+            <div className="pointer-events-none absolute inset-0 z-[84] overflow-hidden">
+              {/* Directional Attack Wake Line + Target Lock Ring */}
+              <svg className="absolute inset-0 h-full w-full">
+                {(attackAnim.phase === 'WINDUP' || attackAnim.phase === 'LUNGE') && (
+                  <>
+                    <line
+                      x1={attackAnim.startX}
+                      y1={attackAnim.startY}
+                      x2={attackAnim.targetX}
+                      y2={attackAnim.targetY}
+                      stroke={isPlayerSide ? 'rgba(56,189,248,0.72)' : 'rgba(248,113,113,0.78)'}
+                      strokeWidth={6}
+                      strokeDasharray="14 10"
+                      strokeLinecap="round"
+                    />
+                    <circle
+                      cx={attackAnim.targetX}
+                      cy={attackAnim.targetY}
+                      r={38}
+                      fill="rgba(239,68,68,0.16)"
+                      stroke="#fca5a5"
+                      strokeWidth={3.5}
+                      strokeDasharray="10 6"
+                    />
+                  </>
+                )}
+
+                {attackAnim.phase === 'IMPACT_RETURN' && (
+                  <g transform={`translate(${attackAnim.targetX}, ${attackAnim.targetY})`}>
+                    <circle
+                      r={58}
+                      fill="rgba(251,191,36,0.22)"
+                      stroke="#fde047"
+                      strokeWidth={4}
+                    />
+                    <line
+                      x1={-46}
+                      y1={-36}
+                      x2={46}
+                      y2={36}
+                      stroke="#fef08a"
+                      strokeWidth={6}
+                      strokeLinecap="round"
+                    />
+                    <line
+                      x1={46}
+                      y1={-36}
+                      x2={-46}
+                      y2={36}
+                      stroke="#f87171"
+                      strokeWidth={5}
+                      strokeLinecap="round"
+                    />
+                  </g>
+                )}
+              </svg>
+
+              {/* Physical Flying Attacker Token (Minion Oval or Hero Arch Portrait) */}
+              <div
+                style={{
+                  left: 0,
+                  top: 0,
+                  transform: `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%) scale(${scale}) rotate(${rot}deg)`,
+                  opacity,
+                  transition: transitionCss,
+                  willChange: 'transform, opacity',
+                }}
+                className="absolute"
+              >
+                <div
+                  style={{
+                    background: attackAnim.isHeroAttacker
+                      ? attackAnim.frameGradient
+                      : 'radial-gradient(circle at 50% 35%, #475569 0%, #0f172a 100%)',
+                    boxShadow: isPlayerSide
+                      ? '0 24px 36px rgba(0,0,0,0.92), 0 0 24px rgba(56,189,248,0.95)'
+                      : '0 24px 36px rgba(0,0,0,0.92), 0 0 24px rgba(248,113,113,0.95)',
+                  }}
+                  className={`relative overflow-hidden border-[3.5px] ${
+                    attackAnim.isHeroAttacker
+                      ? 'h-[82px] w-[72px] rounded-t-[40px] rounded-b-xl border-[#f5d98e] sm:h-[116px] sm:w-[100px] sm:rounded-t-[52px]'
+                      : `h-[74px] w-[58px] rounded-[50%] sm:h-[112px] sm:w-[88px] ${
+                          isPlayerSide ? 'border-sky-300' : 'border-red-400'
+                        }`
+                  }`}
+                >
+                  <img
+                    src={attackAnim.artUrl}
+                    alt={attackAnim.nameKo}
+                    draggable={false}
+                    className={
+                      isCutout
+                        ? 'pointer-events-none absolute left-1/2 top-[3%] h-[156%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top'
+                        : 'pointer-events-none absolute inset-0 h-full w-full scale-[1.06] object-cover object-center'
+                    }
+                  />
+                  {attackAnim.divineShield && (
+                    <div className="pointer-events-none absolute inset-0 rounded-[50%] border-2 border-yellow-200 bg-yellow-300/25" />
+                  )}
+                </div>
+
+                {/* Attacker Nameplate + Live Attack / Health Badges */}
+                <div className="hs-outline-sm absolute left-1/2 top-[60%] z-20 -translate-x-1/2 whitespace-nowrap rounded-md border border-amber-300/70 bg-stone-950/90 px-1.5 py-0.2 text-[9.5px] font-extrabold text-amber-100 shadow sm:text-[10.5px]">
+                  {attackAnim.nameKo}
+                </div>
+                <div className="hs-num absolute -bottom-1.5 -left-2 z-30 flex h-7 w-7 items-center justify-center rounded-full border-2 border-amber-100 bg-gradient-to-b from-yellow-300 via-amber-500 to-amber-800 text-xs font-black text-white shadow-lg sm:h-8 sm:w-8 sm:text-sm">
+                  ⚔{attackAnim.attackVal}
+                </div>
+                <div className="hs-num absolute -bottom-1.5 -right-2 z-30 flex h-7 w-7 items-center justify-center rounded-full border-2 border-rose-100 bg-gradient-to-b from-red-400 via-red-600 to-red-950 text-xs font-black text-white shadow-lg sm:h-8 sm:w-8 sm:text-sm">
+                  {attackAnim.healthVal}
+                </div>
+              </div>
+
+              {/* Crisp Hearthstone Red Starburst Impact Damage Splats right at Collision Point! */}
+              {attackAnim.phase === 'IMPACT_RETURN' && attackAnim.defenderDamage > 0 && (
+                <div
+                  style={{
+                    left: attackAnim.targetX,
+                    top: attackAnim.targetY,
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                  className="absolute z-40 flex h-16 w-16 animate-[hsCardPop_0.22s_ease-out] items-center justify-center rounded-full border-[3px] border-yellow-200 bg-gradient-to-b from-red-500 via-red-700 to-rose-950 shadow-[0_0_26px_rgba(239,68,68,0.98)] sm:h-20 sm:w-20"
+                >
+                  <span className="hs-num hs-outline text-2xl font-black text-white sm:text-3xl">
+                    -{attackAnim.defenderDamage}
+                  </span>
+                </div>
+              )}
+
+              {attackAnim.phase === 'IMPACT_RETURN' && attackAnim.attackerCounterDamage > 0 && (
+                <div
+                  style={{
+                    left: attackAnim.targetX - ux * 58,
+                    top: attackAnim.targetY - uy * 58,
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                  className="absolute z-40 flex h-13 w-13 animate-[hsCardPop_0.22s_ease-out] items-center justify-center rounded-full border-2 border-amber-200 bg-gradient-to-b from-orange-500 via-red-700 to-stone-950 shadow-[0_0_20px_rgba(249,115,22,0.95)] sm:h-15 sm:w-15"
+                >
+                  <span className="hs-num hs-outline text-lg font-black text-white sm:text-2xl">
+                    -{attackAnim.attackerCounterDamage}
+                  </span>
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
       {/* 4 Interactive Battlefield Corner Toys! */}
       {cornerToys.map((toy) => {
@@ -1495,7 +1921,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             }`}
           >
             <img
-              src={getCardTileUrl(item.cardId)}
+              src={resolveHistoryIconUrl(item)}
               alt={item.title}
               className="h-full w-full object-cover object-top"
             />
@@ -1602,10 +2028,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         {/* 3-State Stone & Brass End Turn Lever */}
         <button
           type="button"
-          disabled={!isPlayerTurn}
+          disabled={!isPlayerTurn || Boolean(attackAnim)}
           onClick={(e) => {
             e.stopPropagation();
-            if (!isPlayerTurn) return;
+            if (!isPlayerTurn || attackAnim) return;
             setSelection(null);
             hsAudio.playSfx('end_turn');
             const eng = createEngine(matchState);
@@ -1741,6 +2167,8 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             canHeroAttack={false}
             isHeroSelectedAttacker={false}
             isHeroValidTarget={activeValidTargetSet.has('OPPONENT_HERO')}
+            isAttackingHidden={attackAnim?.attackerId === 'OPPONENT_HERO'}
+            isIncomingAttackTarget={attackAnim?.defenderId === 'OPPONENT_HERO'}
             canUseHeroPower={false}
             isHeroPowerSelected={false}
             emoteBubbleText={opponentEmoteText}
@@ -1783,6 +2211,8 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               canAttack={false}
               isSelectedAttacker={false}
               isValidTarget={activeValidTargetSet.has(m.uid)}
+              isAttackingHidden={attackAnim?.attackerId === m.uid}
+              isIncomingAttackTarget={attackAnim?.defenderId === m.uid}
               onSelect={() => handleEntityClick(m.uid, false)}
               onHoverChange={(hov) => setHoveredBoardMinion(hov ? m : null)}
             />
@@ -1867,9 +2297,9 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
             <button
               type="button"
-              disabled={!isPlayerTurn}
+              disabled={!isPlayerTurn || Boolean(attackAnim)}
               onClick={() => {
-                if (!isPlayerTurn) return;
+                if (!isPlayerTurn || attackAnim) return;
                 setSelection(null);
                 hsAudio.playSfx('end_turn');
                 const eng = createEngine(matchState);
@@ -1911,11 +2341,13 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 )}
               <BoardMinionToken
                 minion={m}
-                canAttack={isPlayerTurn && engine.canAttackerSwing('PLAYER', m.uid).ok}
+                canAttack={isPlayerTurn && !attackAnim && engine.canAttackerSwing('PLAYER', m.uid).ok}
                 isSelectedAttacker={
                   selection?.kind === 'ATTACKER' && selection.attackerId === m.uid
                 }
                 isValidTarget={activeValidTargetSet.has(m.uid)}
+                isAttackingHidden={attackAnim?.attackerId === m.uid}
+                isIncomingAttackTarget={attackAnim?.defenderId === m.uid}
                 onSelect={() => handleEntityClick(m.uid, true)}
                 onHoverChange={(hov) => setHoveredBoardMinion(hov ? m : null)}
               />
@@ -1973,12 +2405,16 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               player={matchState.player}
               isFriendly
               isActiveTurn={isPlayerTurn}
-              canHeroAttack={isPlayerTurn && engine.canAttackerSwing('PLAYER', 'PLAYER_HERO').ok}
+              canHeroAttack={
+                isPlayerTurn && !attackAnim && engine.canAttackerSwing('PLAYER', 'PLAYER_HERO').ok
+              }
               isHeroSelectedAttacker={
                 selection?.kind === 'ATTACKER' && selection.attackerId === 'PLAYER_HERO'
               }
               isHeroValidTarget={activeValidTargetSet.has('PLAYER_HERO')}
-              canUseHeroPower={isPlayerTurn && engine.inspectHeroPower('PLAYER').canUse}
+              isAttackingHidden={attackAnim?.attackerId === 'PLAYER_HERO'}
+              isIncomingAttackTarget={attackAnim?.defenderId === 'PLAYER_HERO'}
+              canUseHeroPower={isPlayerTurn && !attackAnim && engine.inspectHeroPower('PLAYER').canUse}
               isHeroPowerSelected={selection?.kind === 'HERO_POWER'}
               emoteBubbleText={playerEmoteText}
               onClickHero={() => handleEntityClick('PLAYER_HERO', true)}
@@ -2151,7 +2587,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                     className="flex w-full items-center gap-2.5 rounded-2xl border border-amber-400/35 bg-stone-950/85 p-2 text-left transition active:scale-[0.99]"
                   >
                     <img
-                      src={getCardTileUrl(item.cardId)}
+                      src={resolveHistoryIconUrl(item)}
                       alt={item.title}
                       className={`h-10 w-10 shrink-0 rounded-lg border-2 object-cover object-top ${
                         item.actorSide === 'PLAYER' ? 'border-sky-400' : 'border-red-500'
@@ -2209,66 +2645,93 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       )}
 
       {/* 1. VS Clash Intro Overlay with Sculpted Hero Arch Portraits */}
-      {vsIntroActive && (
-        <div className="absolute inset-0 z-[92] flex flex-col items-center justify-center bg-black/84 px-3 backdrop-blur-sm">
-          <div className="flex items-center gap-3 sm:gap-14">
-            <div className="flex flex-col items-center text-center">
-              <div
-                style={{ background: CLASSIC_HEROES[matchState.player.heroClass].frameGradient }}
-                className="relative mb-2.5 h-32 w-24 overflow-hidden rounded-t-[48px] rounded-b-xl border-[3.5px] border-[#e7c57c] shadow-[0_14px_30px_rgba(0,0,0,0.95)] sm:mb-3 sm:h-44 sm:w-36 sm:rounded-t-[58px] sm:border-[4px]"
-              >
-                <img
-                  src={getHeroArtUrl(CLASSIC_HEROES[matchState.player.heroClass].heroId)}
-                  alt=""
-                  className="absolute left-1/2 top-[3%] h-[155%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top"
-                />
-                <img
-                  src={CLASS_CREST_URL[matchState.player.heroClass]}
-                  alt=""
-                  className="absolute bottom-1.5 right-1.5 h-7 w-7 rounded-full border border-amber-200 object-cover shadow sm:h-8 sm:w-8"
-                />
-              </div>
-              <div className="hs-title hs-outline text-lg font-extrabold text-sky-300 sm:text-3xl">
-                {matchState.player.heroNameKo}
-              </div>
-              <div className="mt-0.5 text-xs font-bold text-amber-200">
-                {CLASSIC_HEROES[matchState.player.heroClass].classNameKo}
-              </div>
-            </div>
+      {vsIntroActive &&
+        (() => {
+          const pPortrait = resolveHeroPortraitUrl(matchState.player);
+          const oPortrait = resolveHeroPortraitUrl(matchState.opponent);
+          const pIsCutout = pPortrait.includes('/cutouts/');
+          const oIsCutout = oPortrait.includes('/cutouts/');
+          const pGrad =
+            matchState.player.customHero?.frameGradient ||
+            CLASSIC_HEROES[matchState.player.heroClass].frameGradient;
+          const oGrad =
+            matchState.opponent.customHero?.frameGradient ||
+            CLASSIC_HEROES[matchState.opponent.heroClass].frameGradient;
+          const pSubTitle =
+            matchState.player.customHero?.titleKo ||
+            CLASSIC_HEROES[matchState.player.heroClass].classNameKo;
+          const oSubTitle =
+            matchState.opponent.customHero?.titleKo || matchState.opponent.name;
 
-            {/* Sculpted Gold & Sapphire VS Crest */}
-            <div className="flex h-20 w-20 shrink-0 animate-[hsCardPop_0.5s_ease-out] items-center justify-center rounded-full border-4 border-amber-300 bg-radial from-amber-300 via-amber-700 to-stone-950 shadow-[0_0_32px_rgba(250,204,21,0.9)] sm:h-32 sm:w-32">
-              <span className="hs-title hs-outline text-2xl font-black tracking-tighter text-white sm:text-5xl">
-                VS
-              </span>
-            </div>
+          return (
+            <div className="absolute inset-0 z-[92] flex flex-col items-center justify-center bg-black/84 px-3 backdrop-blur-sm">
+              <div className="flex items-center gap-3 sm:gap-14">
+                <div className="flex flex-col items-center text-center">
+                  <div
+                    style={{ background: pGrad }}
+                    className="relative mb-2.5 h-32 w-24 overflow-hidden rounded-t-[48px] rounded-b-xl border-[3.5px] border-[#e7c57c] shadow-[0_14px_30px_rgba(0,0,0,0.95)] sm:mb-3 sm:h-44 sm:w-36 sm:rounded-t-[58px] sm:border-[4px]"
+                  >
+                    <img
+                      src={pPortrait}
+                      alt=""
+                      className={
+                        pIsCutout
+                          ? 'absolute left-1/2 top-[3%] h-[155%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top'
+                          : 'absolute inset-0 h-full w-full scale-[1.04] object-cover object-center'
+                      }
+                    />
+                    <img
+                      src={CLASS_CREST_URL[matchState.player.heroClass]}
+                      alt=""
+                      className="absolute bottom-1.5 right-1.5 h-7 w-7 rounded-full border border-amber-200 object-cover shadow sm:h-8 sm:w-8"
+                    />
+                  </div>
+                  <div className="hs-title hs-outline text-lg font-extrabold text-sky-300 sm:text-3xl">
+                    {matchState.player.heroNameKo}
+                  </div>
+                  <div className="mt-0.5 max-w-[160px] truncate text-xs font-bold text-amber-200 sm:max-w-[240px]">
+                    {pSubTitle}
+                  </div>
+                </div>
 
-            <div className="flex flex-col items-center text-center">
-              <div
-                style={{ background: CLASSIC_HEROES[matchState.opponent.heroClass].frameGradient }}
-                className="relative mb-2.5 h-32 w-24 overflow-hidden rounded-t-[48px] rounded-b-xl border-[3.5px] border-[#e7c57c] shadow-[0_14px_30px_rgba(0,0,0,0.95)] sm:mb-3 sm:h-44 sm:w-36 sm:rounded-t-[58px] sm:border-[4px]"
-              >
-                <img
-                  src={getHeroArtUrl(CLASSIC_HEROES[matchState.opponent.heroClass].heroId)}
-                  alt=""
-                  className="absolute left-1/2 top-[3%] h-[155%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top"
-                />
-                <img
-                  src={CLASS_CREST_URL[matchState.opponent.heroClass]}
-                  alt=""
-                  className="absolute bottom-1.5 right-1.5 h-7 w-7 rounded-full border border-amber-200 object-cover shadow sm:h-8 sm:w-8"
-                />
-              </div>
-              <div className="hs-title hs-outline text-lg font-extrabold text-red-300 sm:text-3xl">
-                {matchState.opponent.heroNameKo}
-              </div>
-              <div className="mt-0.5 text-xs font-bold text-amber-200">
-                {matchState.opponent.name}
+                {/* Sculpted Gold & Sapphire VS Crest */}
+                <div className="flex h-20 w-20 shrink-0 animate-[hsCardPop_0.5s_ease-out] items-center justify-center rounded-full border-4 border-amber-300 bg-radial from-amber-300 via-amber-700 to-stone-950 shadow-[0_0_32px_rgba(250,204,21,0.9)] sm:h-32 sm:w-32">
+                  <span className="hs-title hs-outline text-2xl font-black tracking-tighter text-white sm:text-5xl">
+                    VS
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-center text-center">
+                  <div
+                    style={{ background: oGrad }}
+                    className="relative mb-2.5 h-32 w-24 overflow-hidden rounded-t-[48px] rounded-b-xl border-[3.5px] border-[#e7c57c] shadow-[0_14px_30px_rgba(0,0,0,0.95)] sm:mb-3 sm:h-44 sm:w-36 sm:rounded-t-[58px] sm:border-[4px]"
+                  >
+                    <img
+                      src={oPortrait}
+                      alt=""
+                      className={
+                        oIsCutout
+                          ? 'absolute left-1/2 top-[3%] h-[155%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top'
+                          : 'absolute inset-0 h-full w-full scale-[1.04] object-cover object-center'
+                      }
+                    />
+                    <img
+                      src={CLASS_CREST_URL[matchState.opponent.heroClass]}
+                      alt=""
+                      className="absolute bottom-1.5 right-1.5 h-7 w-7 rounded-full border border-amber-200 object-cover shadow sm:h-8 sm:w-8"
+                    />
+                  </div>
+                  <div className="hs-title hs-outline text-lg font-extrabold text-red-300 sm:text-3xl">
+                    {matchState.opponent.heroNameKo}
+                  </div>
+                  <div className="mt-0.5 max-w-[160px] truncate text-xs font-bold text-amber-200 sm:max-w-[240px]">
+                    {oSubTitle}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          );
+        })()}
 
       {/* 2. Mulligan (시작 손패 교체) Overlay — Tap Card to Enlarge & Toggle Replace! */}
       {storyPhase === 'CLOSED' && !vsIntroActive && matchState.phase === 'MULLIGAN' && (

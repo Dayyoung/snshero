@@ -614,8 +614,9 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
   const isSpell = card.type === 'SPELL';
   const gemCol = RARITY_GEM_COLORS[card.rarity];
 
-  // Always prefer RGBA transparent hero cutout (`getCardArtUrl`) so there is ZERO white background!
+  // Prefer RGBA transparent hero cutout (`getCardArtUrl`) or full-frame bespoke card illustration!
   const portraitSrc = useBustFallback ? getCardBustUrl(card) : getCardArtUrl(card);
+  const isCutoutArt = portraitSrc.includes('/cutouts/');
   const bottomTribeText =
     (card.race && RACE_KO[card.race]) || card.snsFactionKo || '';
 
@@ -702,7 +703,7 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
             />
           )}
 
-          {/* High-Res RGBA Character Cutout (Zoomed onto Heroic Upper Torso & Face) */}
+          {/* High-Res Character Cutout or Bespoke Full-Frame Card Illustration */}
           <img
             src={portraitSrc}
             alt={card.name}
@@ -710,7 +711,11 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
             onError={() => {
               if (!useBustFallback) setUseBustFallback(true);
             }}
-            className="absolute left-1/2 top-[3%] h-[156%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top drop-shadow-[0_8px_12px_rgba(0,0,0,0.82)]"
+            className={
+              isCutoutArt
+                ? 'absolute left-1/2 top-[3%] h-[156%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top drop-shadow-[0_8px_12px_rgba(0,0,0,0.82)]'
+                : 'absolute inset-0 h-full w-full scale-[1.04] object-cover object-center'
+            }
           />
 
           {/* Weapon Signature Relic Medallion Overlay */}
@@ -1244,6 +1249,8 @@ export interface BoardMinionTokenProps {
   canAttack: boolean;
   isSelectedAttacker: boolean;
   isValidTarget: boolean;
+  isAttackingHidden?: boolean;
+  isIncomingAttackTarget?: boolean;
   onSelect: () => void;
   onHoverChange?: (hovering: boolean) => void;
 }
@@ -1253,6 +1260,8 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
   canAttack,
   isSelectedAttacker,
   isValidTarget,
+  isAttackingHidden = false,
+  isIncomingAttackTarget = false,
   onSelect,
   onHoverChange,
 }) => {
@@ -1264,6 +1273,8 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
 
   const cardDef = cardDb.getCard(minion.cardId);
   const pal = CLASS_PALETTES[cardDef?.cardClass || 'NEUTRAL'] || CLASS_PALETTES.NEUTRAL;
+  const artSrc = getCardArtUrl(minion.cardId);
+  const isCutoutArt = artSrc.includes('/cutouts/');
 
   const hpState: 'normal' | 'damaged' | 'buffed' =
     hp < maxHp ? 'damaged' : maxHp > minion.baseHealth ? 'buffed' : 'normal';
@@ -1298,9 +1309,13 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}
       className={`group relative flex h-[66px] w-[48px] shrink-0 cursor-pointer select-none items-center justify-center transition-transform duration-150 sm:h-[120px] sm:w-[96px] ${
+        isAttackingHidden ? 'pointer-events-none opacity-0' : ''
+      } ${
         isSelectedAttacker
           ? 'z-30 -translate-y-2 scale-110 sm:-translate-y-3 sm:scale-112'
-          : 'hover:z-20 hover:scale-106'
+          : isIncomingAttackTarget
+            ? 'z-25 scale-108'
+            : 'hover:z-20 hover:scale-106'
       }`}
     >
       {/* Sculpted Taunt Shield Frame */}
@@ -1308,15 +1323,17 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
         <SnsTauntShieldSvg className="absolute -inset-1.5 z-0 h-[calc(100%+12px)] w-[calc(100%+12px)] drop-shadow-[0_6px_12px_rgba(0,0,0,0.92)] sm:-inset-2.5 sm:h-[calc(100%+20px)] sm:w-[calc(100%+20px)]" />
       )}
 
-      {/* Ready-to-Attack / Valid Target Organic Aura */}
-      {(canAttack || isValidTarget || isSelectedAttacker) && (
+      {/* Ready-to-Attack / Valid Target / Incoming Attack Lock Aura */}
+      {(canAttack || isValidTarget || isSelectedAttacker || isIncomingAttackTarget) && (
         <div
           className={`pointer-events-none absolute -inset-0.5 z-0 rounded-[50%] transition-all sm:-inset-1 ${
-            isSelectedAttacker
-              ? 'shadow-[0_0_0_3px_#fde047,0_0_18px_5px_rgba(250,204,21,0.95)] sm:shadow-[0_0_0_4px_#fde047,0_0_26px_8px_rgba(250,204,21,0.95)]'
-              : isValidTarget
-                ? 'animate-pulse shadow-[0_0_0_3px_#ef4444,0_0_18px_5px_rgba(239,68,68,0.92)] sm:shadow-[0_0_0_4px_#ef4444,0_0_24px_7px_rgba(239,68,68,0.92)]'
-                : 'shadow-[0_0_0_2.5px_#4ade80,0_0_14px_4px_rgba(34,197,94,0.88)] sm:shadow-[0_0_0_3.5px_#4ade80,0_0_20px_6px_rgba(34,197,94,0.88)]'
+            isIncomingAttackTarget
+              ? 'shadow-[0_0_0_3.5px_#f97316,0_0_24px_8px_rgba(239,68,68,0.98)] sm:shadow-[0_0_0_4.5px_#f97316,0_0_30px_10px_rgba(239,68,68,0.98)]'
+              : isSelectedAttacker
+                ? 'shadow-[0_0_0_3px_#fde047,0_0_18px_5px_rgba(250,204,21,0.95)] sm:shadow-[0_0_0_4px_#fde047,0_0_26px_8px_rgba(250,204,21,0.95)]'
+                : isValidTarget
+                  ? 'animate-pulse shadow-[0_0_0_3px_#ef4444,0_0_18px_5px_rgba(239,68,68,0.92)] sm:shadow-[0_0_0_4px_#ef4444,0_0_24px_7px_rgba(239,68,68,0.92)]'
+                  : 'shadow-[0_0_0_2.5px_#4ade80,0_0_14px_4px_rgba(34,197,94,0.88)] sm:shadow-[0_0_0_3.5px_#4ade80,0_0_20px_6px_rgba(34,197,94,0.88)]'
           }`}
         />
       )}
@@ -1326,7 +1343,7 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
         <SnsLegendaryCrestSvg className="absolute -top-2.5 left-1/2 z-30 w-[108%] -translate-x-1/2 drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] sm:-top-4" />
       )}
 
-      {/* Oval Portrait + Atmospheric Faction Sky + RGBA Cutout */}
+      {/* Oval Portrait + Atmospheric Faction Sky + Character Portrait */}
       <div
         style={{
           background: `radial-gradient(circle at 50% 35%, ${pal.halo} 0%, ${pal.skyMid} 55%, ${pal.skyBot} 100%)`,
@@ -1341,12 +1358,14 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
       >
         {!imgErr ? (
           <img
-            src={getCardArtUrl(minion.cardId)}
+            src={artSrc}
             alt={minion.name}
             onError={() => setImgErr(true)}
-            className={`absolute left-1/2 top-[3%] h-[155%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top drop-shadow-[0_4px_6px_rgba(0,0,0,0.75)] ${
-              minion.stealth ? 'brightness-50 contrast-125 saturate-50' : ''
-            }`}
+            className={`${
+              isCutoutArt
+                ? 'absolute left-1/2 top-[3%] h-[155%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top drop-shadow-[0_4px_6px_rgba(0,0,0,0.75)]'
+                : 'absolute inset-0 h-full w-full scale-[1.06] object-cover object-center'
+            } ${minion.stealth ? 'brightness-50 contrast-125 saturate-50' : ''}`}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-stone-900 px-0.5 text-center text-[8px] font-bold text-amber-200 sm:px-1 sm:text-[11px]">
@@ -1436,6 +1455,8 @@ export interface HeroZoneProps {
   canHeroAttack: boolean;
   isHeroSelectedAttacker: boolean;
   isHeroValidTarget: boolean;
+  isAttackingHidden?: boolean;
+  isIncomingAttackTarget?: boolean;
   canUseHeroPower: boolean;
   isHeroPowerSelected: boolean;
   emoteBubbleText?: string | null;
@@ -1450,6 +1471,8 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
   canHeroAttack,
   isHeroSelectedAttacker,
   isHeroValidTarget,
+  isAttackingHidden = false,
+  isIncomingAttackTarget = false,
   canUseHeroPower,
   isHeroPowerSelected,
   emoteBubbleText,
@@ -1459,7 +1482,27 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
   const entityId = isFriendly ? 'PLAYER_HERO' : 'OPPONENT_HERO';
   const heroAtk = getHeroAttack(player, isActiveTurn);
   const heroMeta = CLASSIC_HEROES[player.heroClass];
-  const pal = CLASS_PALETTES[player.heroClass] || CLASS_PALETTES.PRIEST;
+  const basePal = CLASS_PALETTES[player.heroClass] || CLASS_PALETTES.PRIEST;
+  const customHero = !player.isJaraxxus ? player.customHero : undefined;
+  const pal = customHero
+    ? {
+        ...basePal,
+        halo: customHero.halo || basePal.halo,
+        skyMid: customHero.skyMid || basePal.skyMid,
+        skyBot: customHero.skyBot || basePal.skyBot,
+      }
+    : basePal;
+  const heroPortraitSrc = player.isJaraxxus
+    ? getHeroArtUrl('EX1_323h')
+    : customHero?.portraitUrl || getHeroArtUrl(player.heroId);
+  const isHeroCutout = heroPortraitSrc.includes('/cutouts/');
+  const heroPowerArtSrc =
+    customHero?.heroPowerIconUrl ||
+    customHero?.portraitUrl ||
+    getCardTileUrl(player.heroPowerId);
+  const isHeroPowerCutout = heroPowerArtSrc.includes('/cutouts/');
+  const weaponArtSrc = player.weapon ? getCardArtUrl(player.weapon.cardId) : '';
+  const isWeaponCutout = weaponArtSrc.includes('/cutouts/');
   const weaponOpen = isActiveTurn && Boolean(player.weapon);
 
   return (
@@ -1477,9 +1520,13 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
           >
             {weaponOpen ? (
               <img
-                src={getCardArtUrl(player.weapon.cardId)}
+                src={weaponArtSrc}
                 alt={player.weapon.name}
-                className="h-[145%] w-[120%] max-w-none object-cover object-top"
+                className={
+                  isWeaponCutout
+                    ? 'h-[145%] w-[120%] max-w-none object-cover object-top'
+                    : 'h-full w-full scale-[1.06] object-cover object-center'
+                }
               />
             ) : (
               <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-gradient-to-b from-slate-600 via-slate-800 to-slate-950">
@@ -1501,12 +1548,23 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
       {/* Center: Sculpted Stone & Brass Hero Arch */}
       <div
         data-hs-entity={entityId}
+        title={
+          customHero
+            ? `${player.heroNameKo} — ${customHero.titleKo}`
+            : `${player.heroNameKo} — ${heroMeta.titleKo}`
+        }
         onClick={(e) => {
           e.stopPropagation();
           onClickHero();
         }}
         className={`relative flex h-[82px] w-[74px] cursor-pointer items-center justify-center transition-transform sm:h-[120px] sm:w-[108px] ${
-          isHeroSelectedAttacker ? '-translate-y-1.5 scale-106 sm:-translate-y-2' : 'hover:scale-[1.03]'
+          isAttackingHidden ? 'pointer-events-none opacity-0' : ''
+        } ${
+          isHeroSelectedAttacker
+            ? '-translate-y-1.5 scale-106 sm:-translate-y-2'
+            : isIncomingAttackTarget
+              ? 'z-25 scale-106'
+              : 'hover:scale-[1.03]'
         }`}
       >
         {/* Active Secrets Crown Medallions */}
@@ -1528,15 +1586,17 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
           </div>
         )}
 
-        {/* Attack / Target Glow Ring */}
-        {(canHeroAttack || isHeroValidTarget || isHeroSelectedAttacker) && (
+        {/* Attack / Target / Incoming Lunge Lock Glow Ring */}
+        {(canHeroAttack || isHeroValidTarget || isHeroSelectedAttacker || isIncomingAttackTarget) && (
           <div
             className={`pointer-events-none absolute -inset-1 rounded-t-[44px] rounded-b-[10px] sm:-inset-1.5 sm:rounded-t-[58px] sm:rounded-b-[14px] ${
-              isHeroSelectedAttacker
-                ? 'shadow-[0_0_0_3px_#fde047,0_0_20px_5px_rgba(250,204,21,0.92)] sm:shadow-[0_0_0_4px_#fde047,0_0_26px_7px_rgba(250,204,21,0.92)]'
-                : isHeroValidTarget
-                  ? 'animate-pulse shadow-[0_0_0_3px_#ef4444,0_0_20px_5px_rgba(239,68,68,0.92)] sm:shadow-[0_0_0_4px_#ef4444,0_0_24px_7px_rgba(239,68,68,0.92)]'
-                  : 'shadow-[0_0_0_3px_#4ade80,0_0_16px_4px_rgba(34,197,94,0.88)] sm:shadow-[0_0_0_3.5px_#4ade80,0_0_18px_5px_rgba(34,197,94,0.88)]'
+              isIncomingAttackTarget
+                ? 'shadow-[0_0_0_3.5px_#f97316,0_0_24px_8px_rgba(239,68,68,0.98)] sm:shadow-[0_0_0_4.5px_#f97316,0_0_30px_10px_rgba(239,68,68,0.98)]'
+                : isHeroSelectedAttacker
+                  ? 'shadow-[0_0_0_3px_#fde047,0_0_20px_5px_rgba(250,204,21,0.92)] sm:shadow-[0_0_0_4px_#fde047,0_0_26px_7px_rgba(250,204,21,0.92)]'
+                  : isHeroValidTarget
+                    ? 'animate-pulse shadow-[0_0_0_3px_#ef4444,0_0_20px_5px_rgba(239,68,68,0.92)] sm:shadow-[0_0_0_4px_#ef4444,0_0_24px_7px_rgba(239,68,68,0.92)]'
+                    : 'shadow-[0_0_0_3px_#4ade80,0_0_16px_4px_rgba(34,197,94,0.88)] sm:shadow-[0_0_0_3.5px_#4ade80,0_0_18px_5px_rgba(34,197,94,0.88)]'
             }`}
           />
         )}
@@ -1544,7 +1604,9 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
         {/* Chiseled Gold-Trimmed Hero Arch + Atmospheric Faction Sky */}
         <div
           style={{
-            background: `radial-gradient(circle at 50% 34%, ${pal.halo} 0%, ${pal.skyMid} 58%, ${pal.skyBot} 100%)`,
+            background: customHero?.frameGradient
+              ? customHero.frameGradient
+              : `radial-gradient(circle at 50% 34%, ${pal.halo} 0%, ${pal.skyMid} 58%, ${pal.skyBot} 100%)`,
           }}
           className={`relative h-full w-full overflow-hidden rounded-t-[44px] rounded-b-[10px] border-[3px] shadow-[0_10px_24px_rgba(0,0,0,0.92),inset_0_0_14px_rgba(0,0,0,0.85)] sm:rounded-t-[58px] sm:rounded-b-[14px] sm:border-[4.5px] ${
             player.immuneThisTurn
@@ -1555,9 +1617,13 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
           }`}
         >
           <img
-            src={getHeroArtUrl(player.isJaraxxus ? 'EX1_323h' : player.heroId)}
+            src={heroPortraitSrc}
             alt={player.heroNameKo}
-            className="absolute left-1/2 top-[2%] h-[154%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top drop-shadow-[0_6px_10px_rgba(0,0,0,0.8)]"
+            className={
+              isHeroCutout
+                ? 'absolute left-1/2 top-[2%] h-[154%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top drop-shadow-[0_6px_10px_rgba(0,0,0,0.8)]'
+                : 'absolute inset-0 h-full w-full scale-[1.05] object-cover object-center'
+            }
           />
           <img
             src={CLASS_CREST_URL[player.heroClass]}
@@ -1572,9 +1638,9 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
               면역
             </div>
           )}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/92 via-black/60 to-transparent pl-1 pr-4 pb-0.5 pt-3 text-center sm:pl-1.5 sm:pr-5 sm:pb-1 sm:pt-4">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/94 via-black/68 to-transparent pl-1 pr-4 pb-0.5 pt-3 text-center sm:pl-1.5 sm:pr-5 sm:pb-1 sm:pt-4">
             <div className="hs-outline-sm truncate text-[8px] font-extrabold text-amber-100 sm:text-[10px]">
-              {player.name}
+              {player.heroNameKo}
             </div>
           </div>
         </div>
@@ -1651,12 +1717,16 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
             <>
               <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-full">
                 <img
-                  src={getCardTileUrl(player.heroPowerId)}
+                  src={heroPowerArtSrc}
                   alt={player.heroPowerNameKo}
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).src = getHeroArtUrl(heroMeta.heroId);
                   }}
-                  className="absolute left-1/2 top-[4%] h-[150%] w-[120%] max-w-none -translate-x-1/2 object-cover object-top"
+                  className={
+                    isHeroPowerCutout
+                      ? 'absolute left-1/2 top-[4%] h-[150%] w-[120%] max-w-none -translate-x-1/2 object-cover object-top'
+                      : 'h-full w-full scale-[1.06] object-cover object-center'
+                  }
                 />
               </div>
               <div className="pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 scale-[0.82] sm:-top-2.5 sm:scale-100">

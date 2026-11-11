@@ -433,12 +433,39 @@ export interface MinionInstance {
   nightmareDestroyOwnerTurn: PlayerSide | null;
 }
 
+export interface CustomBattleHeroSpec {
+  heroNameKo: string;
+  titleKo: string;
+  factionLabelKo: string;
+  portraitUrl: string;
+  heroPowerNameKo: string;
+  heroPowerTextKo: string;
+  heroPowerIconUrl?: string;
+  accentColor: string;
+  frameGradient: string;
+  skyTop?: string;
+  skyMid?: string;
+  skyBot?: string;
+  halo?: string;
+  emotesKo: {
+    greetings: string;
+    well_played: string;
+    thanks: string;
+    wow: string;
+    oops: string;
+    threaten: string;
+    start: string;
+    concede: string;
+  };
+}
+
 export interface PlayerBattleState {
   side: PlayerSide;
   name: string;
   heroClass: HeroClass;
   heroId: string;
   heroNameKo: string;
+  customHero?: CustomBattleHeroSpec;
   isJaraxxus: boolean;
   heroPowerId: string;
   heroPowerNameKo: string;

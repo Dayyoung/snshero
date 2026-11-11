@@ -46,13 +46,23 @@ interface FloatingBadge {
   maxLife: number;
 }
 
+const lastKnownEntityCenters = new Map<string, { x: number; y: number }>();
+
+export function recordEntityStagePosition(entityId: string, pos: { x: number; y: number }): void {
+  lastKnownEntityCenters.set(entityId, pos);
+}
+
 function getEntityCenter(entityId?: string): { x: number; y: number } {
   const { width: w, height: h } = getStageSize();
   if (!entityId) return { x: w * 0.5, y: h * 0.46 };
   const el = document.querySelector(`[data-hs-entity="${entityId}"]`);
   if (el) {
-    return elementCenterInStage(el);
+    const pos = elementCenterInStage(el);
+    lastKnownEntityCenters.set(entityId, pos);
+    return pos;
   }
+  const cached = lastKnownEntityCenters.get(entityId);
+  if (cached) return cached;
   if (entityId === 'PLAYER_HERO') return { x: w * 0.5, y: h * 0.77 };
   if (entityId === 'OPPONENT_HERO') return { x: w * 0.5, y: h * 0.17 };
   return { x: w * 0.5, y: h * 0.46 };
@@ -436,7 +446,23 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
     window.addEventListener('resize', syncSize);
 
     let rafId = 0;
+    let frameTick = 0;
     const render = () => {
+      frameTick += 1;
+      if (frameTick % 6 === 1) {
+        const nodes = document.querySelectorAll('[data-hs-entity]');
+        nodes.forEach((node) => {
+          const id = node.getAttribute('data-hs-entity');
+          if (id) {
+            lastKnownEntityCenters.set(id, elementCenterInStage(node));
+          }
+        });
+        if (lastKnownEntityCenters.size > 160) {
+          const entries = Array.from(lastKnownEntityCenters.entries()).slice(-80);
+          lastKnownEntityCenters.clear();
+          for (const [k, v] of entries) lastKnownEntityCenters.set(k, v);
+        }
+      }
       const { width, height } = getStageSize();
       if (
         Math.abs(canvas.width - Math.floor(width * Math.min(2, window.devicePixelRatio || 1))) > 4 ||
@@ -636,7 +662,7 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none fixed inset-0 z-[70] h-full w-full"
+      className="pointer-events-none absolute inset-0 z-[70] h-full w-full"
     />
   );
 };
