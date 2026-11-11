@@ -2,6 +2,15 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 09:41 KST] [/game.html 하스스톤 웹 복각본 커스터마이징 전 로컬 Git 커밋 및 베이스라인 체크포인트 생성]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**: "이제 해당 게임을 커스톰 할 예정이니 그전에 git commit"
+  - **2. 작업 및 검증 내역**:
+    - [`game.html`](file:///Users/dayyoung/project/snshero/game.html), [`src/hearthstone/`](file:///Users/dayyoung/project/snshero/src/hearthstone/HearthstoneApp.tsx), [`public/hs-assets/`](file:///Users/dayyoung/project/snshero/public/hs-assets/data/rea-manifest.json), [`scripts/post-build.js`](file:///Users/dayyoung/project/snshero/scripts/post-build.js), [`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts) 전체 파일 무결성 및 워킹 트리 클린 상태 확인 (`1f183a89c`, 220개 파일 반영 완료).
+    - 향후 커스터마이징 작업 중 언제든 원형 복원이 가능하도록 베이스라인 체크포인트 커밋 및 로컬 태그(`hearthstone-classic-baseline`) 생성 완료 (`git push` 미실행 원칙 준수).
+    - 구글 폼 작업 완료 보고서 제출 완료.
+
 ## [2026-11-11 09:27 KST] [캐릭터 시트 8종 상반신 머리 잘림 무결점 보정 및 #034 이셀라·#048 로비냐드(남성)·#107 알렉스타(알렉스트라자 오마쥬) 리네이밍·원화 전면 재생성 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
