@@ -223,6 +223,8 @@ class SnsHeroCardAudioEngine {
       done?.();
     }
 
+    this.cancelTts();
+
     if (this.ctx && this.ctx.state === 'running') {
       this.ctx.suspend().catch(() => {});
     }
@@ -679,15 +681,103 @@ class SnsHeroCardAudioEngine {
     this.playVoFile(`hero_${heroVo}_${kind}`);
   }
 
-  async playMatchupAnnouncement(playerClass: HeroClass, opponentClass: HeroClass) {
+  /**
+   * Web Speech API (TTS) 발화 유틸리티
+   * - 한국어 영웅명/에피소드 요약 나레이션을 또렷하고 박진감 있게 낭독합니다.
+   */
+  speakTts(text: string, rate = 1.05, pitch = 0.95): Promise<void> {
+    if (
+      typeof window === 'undefined' ||
+      !('speechSynthesis' in window) ||
+      !this.isWindowActive ||
+      this.settings.muted ||
+      this.settings.voVolume <= 0
+    ) {
+      return Promise.resolve();
+    }
+    return new Promise((resolve) => {
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'ko-KR';
+        u.rate = rate;
+        u.pitch = pitch;
+        u.volume = Math.min(1, this.settings.voVolume);
+
+        const voices = window.speechSynthesis.getVoices();
+        const koVoice = voices.find(
+          (v) => v.lang.startsWith('ko') || v.lang.includes('KR') || v.lang.includes('Korean'),
+        );
+        if (koVoice) {
+          u.voice = koVoice;
+        }
+
+        let finished = false;
+        const done = () => {
+          if (finished) return;
+          finished = true;
+          resolve();
+        };
+
+        u.onend = done;
+        u.onerror = done;
+        // 최대 안전 타임아웃
+        window.setTimeout(done, Math.max(2500, text.length * 130));
+        window.speechSynthesis.speak(u);
+      } catch {
+        resolve();
+      }
+    });
+  }
+
+  cancelTts() {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  async playMatchupAnnouncement(
+    playerClass: HeroClass,
+    opponentClass: HeroClass,
+    playerName?: string,
+    opponentName?: string,
+    isPlayerCustom = false,
+    isOpponentCustom = false,
+  ) {
     if (!this.isWindowActive || this.settings.muted) return;
-    const pVo = CLASSIC_HEROES[playerClass].voKey;
-    const oVo = CLASSIC_HEROES[opponentClass].voKey;
-    await this.playVoFile(`announcer_${pVo}`);
+
+    // 1. 플레이어 영웅 아나운서 발화
+    const pVo = CLASSIC_HEROES[playerClass]?.voKey || 'priest';
+    if (isPlayerCustom && playerName) {
+      await this.speakTts(playerName, 1.05, 1.0);
+    } else {
+      await this.playVoFile(`announcer_${pVo}`);
+    }
+
     if (!this.isWindowActive) return;
+
+    // 2. "대!" (Versus) 아나운서
     await this.playVoFile('announcer_versus');
+
     if (!this.isWindowActive) return;
-    await this.playVoFile(`announcer_${oVo}`);
+
+    // 3. 상대방 영웅 발화
+    // 스토리 모드 보스(isOpponentCustom)이거나 화면에 표시된 영웅 이름이 원작 클래스 기본명과 다르면
+    // 실제 상대 영웅 이름(opponentName)을 또렷하게 낭독합니다!
+    const oVo = CLASSIC_HEROES[opponentClass]?.voKey || 'warrior';
+    const classicOpponentVoName = CLASSIC_HEROES[opponentClass]?.nameKo;
+    const shouldReadCustomName =
+      isOpponentCustom || (opponentName && opponentName !== classicOpponentVoName);
+
+    if (shouldReadCustomName && opponentName) {
+      await this.speakTts(opponentName, 1.05, 0.95);
+    } else {
+      await this.playVoFile(`announcer_${oVo}`);
+    }
   }
 }
 

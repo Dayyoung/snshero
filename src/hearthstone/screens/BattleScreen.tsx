@@ -446,7 +446,14 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   useEffect(() => {
     hsAudio.playBgm('mulligan');
     if (mode === 'TUTORIAL' && !skipStoryIntro) return;
-    hsAudio.playMatchupAnnouncement(matchState.player.heroClass, matchState.opponent.heroClass);
+    hsAudio.playMatchupAnnouncement(
+      matchState.player.heroClass,
+      matchState.opponent.heroClass,
+      matchState.player.heroNameKo || matchState.player.name,
+      matchState.opponent.heroNameKo || matchState.opponent.name,
+      Boolean(matchState.player.customHero),
+      Boolean(matchState.opponent.customHero || matchState.journeyMeta),
+    );
     const t1 = window.setTimeout(() => {
       setVsIntroActive(false);
       hsAudio.playHeroVo(matchState.opponent.heroClass, 'start');
@@ -477,6 +484,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       hsAudio.playMatchupAnnouncement(
         activeMatch.player.heroClass,
         activeMatch.opponent.heroClass,
+        activeMatch.player.heroNameKo || activeMatch.player.name,
+        activeMatch.opponent.heroNameKo || activeMatch.opponent.name,
+        Boolean(activeMatch.player.customHero),
+        Boolean(activeMatch.opponent.customHero || activeMatch.journeyMeta),
       );
       window.setTimeout(() => {
         setVsIntroActive(false);
@@ -624,7 +635,17 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 onExitBattle();
               }
             } else if (mode === 'TUTORIAL') {
-              triggerDefeatSingleCardDraw();
+              if (onStartJourneyEpisode) {
+                hsAudio.playSfx('box_press');
+                onStartJourneyEpisode(
+                  matchState.journeyMeta?.episode || profile.journeyEpisode,
+                  true,
+                );
+              } else {
+                hsAudio.playSfx('menu_select');
+                hsAudio.playBgm('tavern_hub');
+                onExitBattle();
+              }
             } else {
               hsAudio.playSfx('menu_select');
               hsAudio.playBgm('tavern_hub');
@@ -3355,89 +3376,28 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                   </button>
                 </div>
               ) : (
-                <div className="relative z-10 flex w-full flex-col gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      postGameFiredRef.current = true;
-                      triggerDefeatSingleCardDraw();
-                    }}
-                    className="hs-arcane-btn hs-title hs-outline-sm flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-extrabold text-white sm:text-base"
-                  >
-                    <span>
-                      🃏 카드 1장 뽑고 제
-                      {matchState.journeyMeta?.episode || profile.journeyEpisode}화 다시 자동플레이
-                      {autoPlay && !postGameAutoPaused
-                        ? ` (${Math.max(1, Math.ceil(postGameRemainingMs / 1000))}초)`
-                        : ' ▶'}
-                    </span>
-                  </button>
-
-                  {profile.packs > 0 && onGoOpenPacksFromBattle && (
+                <div className="relative z-10 flex w-full flex-col gap-2.5">
+                  {onStartJourneyEpisode && (
                     <button
                       type="button"
                       onClick={() => {
                         postGameFiredRef.current = true;
-                        setPostGameAutoPaused(true);
-                        hsAudio.playSfx('pack_open', 0.8);
-                        onGoOpenPacksFromBattle();
+                        hsAudio.playSfx('box_press');
+                        onStartJourneyEpisode(
+                          matchState.journeyMeta?.episode || profile.journeyEpisode,
+                          true,
+                        );
                       }}
-                      className="hs-brass-btn flex min-h-[42px] w-full items-center justify-center gap-2 rounded-xl border-sky-300/70 py-2 text-xs font-extrabold text-sky-100 sm:text-sm"
+                      className="hs-arcane-btn hs-title hs-outline-sm flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl py-3 text-base font-extrabold text-white shadow-[0_4px_16px_rgba(220,38,38,0.4)] sm:text-lg"
                     >
-                      <div className="h-5 w-3.5 shrink-0">
-                        <SnsBoosterPackArt />
-                      </div>
-                      <span>보유 5장 카드팩 개봉하러 가기 ({profile.packs}팩 보유)</span>
+                      <span>
+                        ⚔ 제{matchState.journeyMeta?.episode || profile.journeyEpisode}화 다시 도전하기
+                        {autoPlay && !postGameAutoPaused
+                          ? ` (${Math.max(1, Math.ceil(postGameRemainingMs / 1000))}초)`
+                          : ' ▶'}
+                      </span>
                     </button>
                   )}
-
-                  {onOpenShopFromBattle && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setPostGameAutoPaused(true);
-                        hsAudio.playSfx('ui_click');
-                        onOpenShopFromBattle();
-                      }}
-                      className="hs-brass-btn flex min-h-[42px] w-full items-center justify-center gap-1.5 rounded-xl border-yellow-300/80 py-2 text-xs font-extrabold text-yellow-200 sm:text-sm"
-                    >
-                      <HsGoldCoinIcon size={16} />
-                      <span>눈히어로 보급소에서 카드팩 구매 (골드 {profile.gold}G / $1·$4)</span>
-                    </button>
-                  )}
-
-                  <div className="grid grid-cols-2 gap-2">
-                    {onGoCollectionFromBattle && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          postGameFiredRef.current = true;
-                          setPostGameAutoPaused(true);
-                          hsAudio.playSfx('ui_click');
-                          onGoCollectionFromBattle();
-                        }}
-                        className="hs-brass-btn min-h-[40px] rounded-xl py-2 text-xs font-extrabold text-sky-200"
-                      >
-                        내 카드첩 · 3배 확인
-                      </button>
-                    )}
-                    {onStartJourneyEpisode && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          postGameFiredRef.current = true;
-                          hsAudio.playSfx('box_press');
-                          onStartJourneyEpisode(
-                            matchState.journeyMeta?.episode || profile.journeyEpisode,
-                            true,
-                          );
-                        }}
-                        className="hs-brass-btn min-h-[40px] rounded-xl border-emerald-300/70 py-2 text-xs font-extrabold text-emerald-200"
-                      >
-                        제{matchState.journeyMeta?.episode || profile.journeyEpisode}화 즉시 재도전
-                      </button>
-                    )}
-                  </div>
 
                   <button
                     type="button"
@@ -3447,7 +3407,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                       hsAudio.playBgm('tavern_hub');
                       onExitBattle();
                     }}
-                    className="mt-0.5 text-xs font-bold text-amber-200/75 underline hover:text-white"
+                    className="hs-brass-btn w-full rounded-xl py-2.5 text-xs font-extrabold text-amber-100 sm:text-sm"
                   >
                     엘윈마을 로비로 돌아가기
                   </button>
