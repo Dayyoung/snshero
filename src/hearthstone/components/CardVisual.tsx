@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import {
   CLASS_CREST_URL,
   cardDb,
@@ -1266,6 +1266,26 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
   onHoverChange,
 }) => {
   const [imgErr, setImgErr] = useState(false);
+  const isHoveredRef = useRef(false);
+  const onHoverChangeRef = useRef(onHoverChange);
+  onHoverChangeRef.current = onHoverChange;
+
+  useEffect(() => {
+    if (isAttackingHidden && isHoveredRef.current) {
+      isHoveredRef.current = false;
+      onHoverChangeRef.current?.(false);
+    }
+  }, [isAttackingHidden]);
+
+  useEffect(() => {
+    return () => {
+      if (isHoveredRef.current) {
+        isHoveredRef.current = false;
+        onHoverChangeRef.current?.(false);
+      }
+    };
+  }, []);
+
   const atk = getMinionAttack(minion);
   const hp = getMinionHealth(minion);
   const maxHp = getMinionMaxHealth(minion);
@@ -1306,8 +1326,18 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
         e.stopPropagation();
         onSelect();
       }}
-      onMouseEnter={() => onHoverChange?.(true)}
-      onMouseLeave={() => onHoverChange?.(false)}
+      onPointerEnter={(e) => {
+        if (e.pointerType !== 'mouse' || isAttackingHidden) return;
+        isHoveredRef.current = true;
+        onHoverChange?.(true);
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType !== 'mouse') return;
+        if (isHoveredRef.current) {
+          isHoveredRef.current = false;
+          onHoverChange?.(false);
+        }
+      }}
       className={`group relative flex h-[66px] w-[48px] shrink-0 cursor-pointer select-none items-center justify-center transition-transform duration-150 sm:h-[120px] sm:w-[96px] ${
         isAttackingHidden ? 'pointer-events-none opacity-0' : ''
       } ${

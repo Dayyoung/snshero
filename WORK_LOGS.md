@@ -21315,3 +21315,13 @@
      - 슬롯머신 창을 명시적 다크 아케인 오크 배경(`#160d06`, `linear-gradient(180deg, #100904 0%, #26160b 50%, #100904 100%)`)과 황금 보더(`#d4a857`)로 통일하고, 중앙 칭호는 선명한 순백색(`text-white` + `hs-outline-sm`, 매칭 확정 시 황금색 `text-[#fef08a]`), 위·아래 대기 칭호는 밝은 크림 앰버(`text-amber-100/75`), 상단 타이틀(`text-[#fffbeb]`/`text-[#fef08a]`)과 하단 안내 문구(`text-amber-50/95`) 및 취소 버튼(`text-white`)까지 전 구간 고대비 밝은 글자색으로 개선.
      - 고속 회전 시 잔상 번짐을 막기 위해 `transition-all`을 `transition-transform duration-150`으로 최적화.
 - **검증 결과**: `src/hearthstone` TypeScript 에러 0건, `npm run build` 프로덕션 빌드 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+
+### 2026-11-12 07:38 KST | `/game.html` 제거된 하수인 카드가 턴 종료 옆에 잔류하는 버그 수정 완료
+- **작업 내역**:
+  1. **전장 생존 실시간 검증 및 Stale Hover State 즉시 해제 (`src/hearthstone/screens/BattleScreen.tsx`)**:
+     - 기존 `hoveredBoardMinion`이 스냅샷 객체를 그대로 참조하여, 마우스를 올린 하수인이 공격/주문에 의해 파괴·소멸·변이·귀환되어 DOM에서 언마운트될 때 `onMouseLeave`가 발화되지 않아 `턴 종료` 레버 바로 옆(`right-24 top-1/2`)에 제거된 카드가 계속 떠 있던 버그 해결.
+     - `liveHoveredBoardMinion` (`useMemo`)으로 현재 `matchState.player.board` 및 `matchState.opponent.board`에 해당 `uid`가 실제 존재하는지 실시간 검증하고, 전장에서 제거되거나 페이즈 변경·턴 종료·공격 애니메이션·확대 모달 진입 시 즉시 숨김 및 `setHoveredBoardMinion(null)` 클린업 수행 (`hoveredHistoryItem`도 동일하게 상위 7개 기록 생존 검증 적용).
+  2. **`BoardMinionToken` 언마운트 클린업 및 마우스 전용 포인터 가드 (`src/hearthstone/components/CardVisual.tsx`)**:
+     - `BoardMinionToken`이 호버 상태에서 언마운트되거나 물리 공격 숨김(`isAttackingHidden`) 상태로 전환될 때 `useEffect` cleanup으로 `onHoverChange(false)`를 보장 호출하고, 터치 기기의 합성 호버 고착을 막기 위해 `e.pointerType === 'mouse'`일 때만 동작하도록 개선.
+- **검증 결과**: `src/hearthstone` TypeScript 에러 0건, `npm run build` 프로덕션 빌드 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.

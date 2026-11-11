@@ -304,7 +304,23 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   const [playerEmoteText, setPlayerEmoteText] = useState<string | null>(null);
   const [opponentEmoteText, setOpponentEmoteText] = useState<string | null>(null);
   const [toyToast, setToyToast] = useState<string | null>(null);
-  const [screenShake, setScreenShake] = useState<'NONE' | 'LIGHT' | 'HEAVY'>('NONE');
+  const [shakeState, setShakeState] = useState<{
+    active: boolean;
+    seq: number;
+    damage: number;
+    ampX: number;
+    ampY: number;
+    rotDeg: number;
+    durationMs: number;
+  }>({
+    active: false,
+    seq: 0,
+    damage: 0,
+    ampX: 0,
+    ampY: 0,
+    rotDeg: 0,
+    durationMs: 240,
+  });
   const [aiHighlightText, setAiHighlightText] = useState<string | null>(null);
   const [outcomeSummary, setOutcomeSummary] = useState<MatchRewardBreakdown | null>(null);
   const [postGameAutoPaused, setPostGameAutoPaused] = useState<boolean>(false);
@@ -326,12 +342,15 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   const attackLockRef = useRef(false);
   const attackSeqRef = useRef(0);
   const attackTimersRef = useRef<number[]>([]);
+  const shakeTimerRef = useRef<number | null>(null);
+  const activeShakeRef = useRef<{ until: number; strength: number }>({ until: 0, strength: 0 });
   const profile = liveProfile;
 
   useEffect(() => {
     return () => {
       for (const tid of attackTimersRef.current) window.clearTimeout(tid);
       attackTimersRef.current = [];
+      if (shakeTimerRef.current !== null) window.clearTimeout(shakeTimerRef.current);
       attackLockRef.current = false;
     };
   }, []);
@@ -387,6 +406,33 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   )
     ? 2
     : 1;
+
+  // Ensure removed/destroyed/returned minions or evicted history entries NEVER linger beside End Turn
+  const liveHoveredBoardMinion = useMemo(() => {
+    if (!hoveredBoardMinion || matchState.phase !== 'PLAYING') return null;
+    return (
+      matchState.player.board.find((m) => m.uid === hoveredBoardMinion.uid) ||
+      matchState.opponent.board.find((m) => m.uid === hoveredBoardMinion.uid) ||
+      null
+    );
+  }, [hoveredBoardMinion, matchState.phase, matchState.player.board, matchState.opponent.board]);
+
+  const liveHoveredHistoryItem = useMemo(() => {
+    if (!hoveredHistoryItem) return null;
+    return matchState.history.slice(0, 7).find((it) => it.id === hoveredHistoryItem.id) || null;
+  }, [hoveredHistoryItem, matchState.history]);
+
+  useEffect(() => {
+    if (hoveredBoardMinion && !liveHoveredBoardMinion) {
+      setHoveredBoardMinion(null);
+    }
+  }, [hoveredBoardMinion, liveHoveredBoardMinion]);
+
+  useEffect(() => {
+    if (hoveredHistoryItem && !liveHoveredHistoryItem) {
+      setHoveredHistoryItem(null);
+    }
+  }, [hoveredHistoryItem, liveHoveredHistoryItem]);
 
   // Opening VS Clash + Matchup Fanfare (runs immediately for non-TUTORIAL or skipStoryIntro retry, or right after Story Theater closes in TUTORIAL)
   useEffect(() => {
@@ -661,10 +707,72 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     return () => clearInterval(iv);
   }, [storyPhase, matchState.phase, matchState.activeSide, matchState.turnNumber]);
 
-  const triggerShake = useCallback((intensity: 'LIGHT' | 'HEAVY') => {
-    setScreenShake(intensity);
-    window.setTimeout(() => setScreenShake('NONE'), 380);
-  }, []);
+  /**
+   * 카드가 주고받는 데미지(공격 피해 + 반격 피해, 또는 주문 피해량)에 비례한 정밀 화면 흔들림 엔진
+   * - 1~2 경미한 진동(±2px, 195ms) ➔ 4~6 일반 타격(±5.5px, 285ms) ➔ 8~11 강타(±10.5px, 385ms) ➔ 12+ 대격돌(±15~22px, 490~560ms)
+   */
+  const triggerDamageImpact = useCallback(
+    (rawDamage: number, opts?: { isFinisher?: boolean }) => {
+      const dmg = Math.max(1, Math.round(rawDamage || 1));
+      const isFinisher = Boolean(opts?.isFinisher);
+      const strength = isFinisher ? 120 : dmg;
+      const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+      if (now < activeShakeRef.current.until && strength < activeShakeRef.current.strength) {
+        return;
+      }
+
+      let ampX: number;
+      let rotDeg: number;
+      let durationMs: number;
+
+      if (isFinisher) {
+        ampX = 22;
+        rotDeg = 1.45;
+        durationMs = 560;
+      } else if (dmg <= 2) {
+        ampX = Number((1.6 + dmg * 0.85).toFixed(2));
+        rotDeg = 0.16;
+        durationMs = 195;
+      } else if (dmg <= 4) {
+        ampX = Number((2.2 + dmg * 0.95).toFixed(2));
+        rotDeg = 0.34;
+        durationMs = 265;
+      } else if (dmg <= 7) {
+        ampX = Number((3.5 + dmg * 0.95).toFixed(2));
+        rotDeg = 0.58;
+        durationMs = 345;
+      } else if (dmg <= 11) {
+        ampX = Number((4.8 + dmg * 0.88).toFixed(2));
+        rotDeg = 0.88;
+        durationMs = 425;
+      } else {
+        ampX = Number(Math.min(21, 14 + (dmg - 12) * 0.65).toFixed(2));
+        rotDeg = 1.25;
+        durationMs = 510;
+      }
+
+      const ampY = Number((ampX * 0.72).toFixed(2));
+      activeShakeRef.current = { until: now + durationMs * 0.85, strength };
+
+      setShakeState((prev) => ({
+        active: true,
+        seq: prev.seq + 1,
+        damage: dmg,
+        ampX,
+        ampY,
+        rotDeg,
+        durationMs,
+      }));
+
+      if (shakeTimerRef.current !== null) {
+        window.clearTimeout(shakeTimerRef.current);
+      }
+      shakeTimerRef.current = window.setTimeout(() => {
+        setShakeState((prev) => ({ ...prev, active: false }));
+      }, durationMs + 25);
+    },
+    [],
+  );
 
   /**
    * 오리지널 하스스톤 물리 돌진·충돌·반동 타격 애니메이션 (Physical Card Lunge -> Impact -> Recoil)
@@ -774,21 +882,20 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       }, 115);
 
       const tImpact = window.setTimeout(() => {
-        if (attackVal >= 5) {
-          hsAudio.vibrateAttack('HEAVY_ATTACK');
-        } else if (isHeroDefender) {
-          hsAudio.vibrateAttack('HERO_HIT');
-        } else {
-          hsAudio.vibrateAttack('NORMAL_ATTACK');
-        }
+        // 주고받는 총 데미지 (공격 피해 + 반격으로 받은 피해) 비례 화면 흔들림 & 안드로이드 진동 강도 차등 적용
+        const exchangedDamage = Math.max(1, attackVal + counterDmg);
+        hsAudio.vibrateByDamage(exchangedDamage);
         const latest = matchStateRef.current;
         if (latest.phase === 'PLAYING') {
           const sim = createEngine(latest);
           const next = sim.performAttack(side, attackerId, defenderId);
           setMatchState(next);
         }
-        hsAudio.playSfx(attackVal >= 5 ? 'big_attack' : 'attack', 0.95);
-        triggerShake(attackVal >= 5 || isHeroDefender ? 'HEAVY' : 'LIGHT');
+        hsAudio.playSfx(
+          exchangedDamage >= 7 || attackVal >= 5 ? 'big_attack' : 'attack',
+          Math.min(1, 0.72 + Math.min(12, exchangedDamage) * 0.024),
+        );
+        triggerDamageImpact(exchangedDamage);
         setAttackAnim((prev) =>
           prev && prev.id === animId ? { ...prev, phase: 'IMPACT_RETURN' } : prev,
         );
@@ -806,7 +913,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         tDone,
       ];
     },
-    [resolveHeroPortraitUrl, triggerShake],
+    [resolveHeroPortraitUrl, triggerDamageImpact],
   );
 
   // ==================== PLAYER AUTO-PLAY ENGINE (카단의 여정 기본 ON, 수동 전환 즉시 해제) ====================
@@ -1398,7 +1505,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           playableGlow={
             !canPlayNow ? 'NONE' : check.isComboReady ? 'COMBO' : 'GREEN'
           }
-          subtitleBadge={`내 손패 · 보유 마나 ${matchState.player.mana}/${matchState.player.maxMana}${cardMult > 1 ? ` · 카단의 여정 ×${cardMult}배` : ''}`}
+          subtitleBadge={`내 손패 · 보유 마나 ${matchState.player.mana}/${matchState.player.maxMana}${cardMult > 1 ? ` · 스토리모드 ×${cardMult}배` : ''}`}
           primaryAction={primaryAction}
           secondaryActions={secondaryActions}
           onCancel={() => setZoomState(null)}
@@ -1567,6 +1674,8 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
   return (
     <div
+      data-testid="battle-stage-root"
+      data-shake-damage={shakeState.active ? shakeState.damage : 0}
       onContextMenu={(e) => {
         e.preventDefault();
         if (selection) setSelection(null);
@@ -1575,20 +1684,28 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         if (emoteMenuOpen) setEmoteMenuOpen(false);
         if (selection) setSelection(null);
       }}
-      style={{ backgroundImage: `url(${BOARD_BG_URL[matchState.boardTheme]})` }}
+      style={
+        {
+          backgroundImage: `url(${BOARD_BG_URL[matchState.boardTheme]})`,
+          '--hs-shake-x': `${shakeState.ampX}px`,
+          '--hs-shake-y': `${shakeState.ampY}px`,
+          '--hs-shake-rot': `${shakeState.rotDeg}deg`,
+          '--hs-shake-dur': `${shakeState.durationMs}ms`,
+        } as React.CSSProperties
+      }
       className={`relative flex h-full w-full select-none flex-col justify-between overflow-hidden bg-cover bg-center ${
-        screenShake === 'HEAVY'
-          ? 'animate-[hsShakeHeavy_0.36s_ease-in-out]'
-          : screenShake === 'LIGHT'
-            ? 'animate-[hsShakeLight_0.26s_ease-in-out]'
-            : ''
+        shakeState.active
+          ? shakeState.seq % 2 === 0
+            ? 'hs-damage-shake-a'
+            : 'hs-damage-shake-b'
+          : ''
       }`}
     >
       {/* Subtle Board Vignette (Light Center so Original Arena Art Shines Clearly!) */}
       <div className="pointer-events-none absolute inset-0 bg-radial from-transparent via-black/18 to-black/68" />
 
       {/* 60fps Particle & Spell Projectile Canvas */}
-      <BoardVfxCanvas events={matchState.vfxQueue} onScreenShake={triggerShake} />
+      <BoardVfxCanvas events={matchState.vfxQueue} onDamageImpact={triggerDamageImpact} />
 
       {/* Active Targeting / Placement Helper Bar (Cancelable & Inspectable on Mobile!) */}
       {selection && (
@@ -1922,8 +2039,14 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               hsAudio.playSfx('card_hover', 0.65);
               setZoomState({ kind: 'HISTORY_ITEM', item });
             }}
-            onMouseEnter={() => setHoveredHistoryItem(item)}
-            onMouseLeave={() => setHoveredHistoryItem(null)}
+            onPointerEnter={(e) => {
+              if (e.pointerType !== 'mouse') return;
+              setHoveredHistoryItem(item);
+            }}
+            onPointerLeave={(e) => {
+              if (e.pointerType !== 'mouse') return;
+              setHoveredHistoryItem((prev) => (prev?.id === item.id ? null : prev));
+            }}
             className={`relative h-9 w-9 cursor-pointer overflow-hidden rounded-lg border-2 shadow transition hover:scale-110 ${
               item.actorSide === 'PLAYER' ? 'border-sky-400' : 'border-red-500'
             }`}
@@ -1941,31 +2064,40 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       </aside>
 
       {/* History Hover Card Tooltip */}
-      {hoveredHistoryItem && (
+      {liveHoveredHistoryItem && !zoomState && (
         <div className="pointer-events-none absolute left-16 top-1/2 z-[80] hidden -translate-y-1/2 items-center gap-3 rounded-2xl border-2 border-amber-300 bg-stone-950/95 p-3 text-amber-100 shadow-2xl sm:flex">
-          <HearthstoneCard card={cardDb.mustGetCard(hoveredHistoryItem.cardId)} size="SM" />
+          <HearthstoneCard card={cardDb.mustGetCard(liveHoveredHistoryItem.cardId)} size="SM" />
           <div className="max-w-[200px]">
             <div className="text-xs font-extrabold text-yellow-300">
-              {hoveredHistoryItem.turn}턴 ·{' '}
-              {hoveredHistoryItem.actorSide === 'PLAYER' ? '아군 행동' : '상대 행동'}
+              {liveHoveredHistoryItem.turn}턴 ·{' '}
+              {liveHoveredHistoryItem.actorSide === 'PLAYER' ? '아군 행동' : '상대 행동'}
             </div>
             <div className="mt-1 text-sm font-extrabold text-white">
-              {hoveredHistoryItem.title}
+              {liveHoveredHistoryItem.title}
             </div>
-            <p className="mt-1 text-xs text-amber-200/85">{hoveredHistoryItem.detail}</p>
+            <p className="mt-1 text-xs text-amber-200/85">{liveHoveredHistoryItem.detail}</p>
           </div>
         </div>
       )}
 
       {/* Board Minion Hover Full-Card Inspector (Desktop XL) */}
-      {hoveredBoardMinion && !selection && (
-        <div className="pointer-events-none absolute right-24 top-1/2 z-[80] hidden -translate-y-1/2 xl:block">
-          <HearthstoneCard
-            card={cardDb.mustGetCard(hoveredBoardMinion.cardId)}
-            size="MD"
-          />
-        </div>
-      )}
+      {liveHoveredBoardMinion &&
+        !selection &&
+        !attackAnim &&
+        !zoomState &&
+        matchState.phase === 'PLAYING' && (
+          <div className="pointer-events-none absolute right-24 top-1/2 z-[80] hidden -translate-y-1/2 xl:block">
+            <HearthstoneCard
+              card={cardDb.mustGetCard(liveHoveredBoardMinion.cardId)}
+              journeyMultiplier={
+                matchState.player.board.some((m) => m.uid === liveHoveredBoardMinion.uid)
+                  ? getPlayerCardMult(liveHoveredBoardMinion.cardId)
+                  : 1
+              }
+              size="MD"
+            />
+          </div>
+        )}
 
       {/* Right-Middle Controls: Deck Stacks, Spinning Auto-Play Button & 3-State End Turn Button (Desktop / Tablet >= sm) */}
       <aside className="absolute right-2.5 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-center gap-3 sm:flex">
@@ -2041,6 +2173,8 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             e.stopPropagation();
             if (!isPlayerTurn || attackAnim) return;
             setSelection(null);
+            setHoveredBoardMinion(null);
+            setHoveredHistoryItem(null);
             hsAudio.playSfx('end_turn');
             const eng = createEngine(matchState);
             setMatchState(eng.endTurn());
@@ -2222,7 +2356,9 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               isAttackingHidden={attackAnim?.attackerId === m.uid}
               isIncomingAttackTarget={attackAnim?.defenderId === m.uid}
               onSelect={() => handleEntityClick(m.uid, false)}
-              onHoverChange={(hov) => setHoveredBoardMinion(hov ? m : null)}
+              onHoverChange={(hov) =>
+                setHoveredBoardMinion((prev) => (hov ? m : prev?.uid === m.uid ? null : prev))
+              }
             />
           ))}
           {matchState.opponent.board.length === 0 && (
@@ -2357,7 +2493,9 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 isAttackingHidden={attackAnim?.attackerId === m.uid}
                 isIncomingAttackTarget={attackAnim?.defenderId === m.uid}
                 onSelect={() => handleEntityClick(m.uid, true)}
-                onHoverChange={(hov) => setHoveredBoardMinion(hov ? m : null)}
+                onHoverChange={(hov) =>
+                setHoveredBoardMinion((prev) => (hov ? m : prev?.uid === m.uid ? null : prev))
+              }
               />
             </React.Fragment>
           ))}
@@ -2956,12 +3094,12 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 </div>
                 {defeatDrawResult.drawn.newJourneyMultiplier > 1 ? (
                   <div className="mt-1 text-emerald-300">
-                    ⚡ 카단의 여정 전용 공격력·생명력 ×
+                    ⚡ 스토리모드 전용 공격력·생명력 ×
                     {defeatDrawResult.drawn.newJourneyMultiplier}배 각성 적용!
                   </div>
                 ) : (
                   <div className="mt-1 text-amber-200/80">
-                    동일 하수인·무기 3장 달성 시 공격력·생명력 ×3배 각성!
+                    스토리모드에서 동일 하수인·무기 3장 달성 시 공격력·생명력 ×3배 각성!
                   </div>
                 )}
               </div>
@@ -3153,11 +3291,11 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 ) : mode === 'TUTORIAL' ? (
                   <div className="space-y-1.5 text-center leading-relaxed text-amber-100">
                     <div className="font-extrabold text-emerald-300">
-                      ⚡ 『카단의 여정』 돌파 비결: 동일 카드 3장 = 능력치 3배!
+                      ⚡ 『스토리모드』 전용 돌파 비결: 동일 카드 3장 = 능력치 3배!
                     </div>
                     <p className="text-[11.5px] font-semibold text-amber-100/90">
                       보급소에서 골드(100G) 또는 결제로 <b className="text-yellow-300">눈히어로 팩을 구매·개봉</b>하여 동일 하수인·무기 카드를{' '}
-                      <b className="text-emerald-300">3장 이상 모으면 공격력·생명력이 3배(N장=N배)</b>로 강화되어 다음 도전을 압도할 수 있습니다!
+                      <b className="text-emerald-300">3장 이상 모으면 스토리모드 한정으로 공격력·생명력이 3배(N장=N배)</b>로 강화됩니다!
                     </p>
                   </div>
                 ) : (
