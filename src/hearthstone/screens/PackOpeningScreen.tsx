@@ -864,44 +864,76 @@ export const PackOpeningScreen: React.FC<{
             </div>
 
             <div className="space-y-3.5 text-xs leading-relaxed">
-              {/* 1. Pack Drop Rates, Pity Timer & Duplicate Protection */}
+              {/* 1. Official Hearthstone Pack Drop Rates, Independent Pity Timers & Duplicate Protection */}
               <div className="rounded-2xl border border-sky-400/40 bg-stone-950/85 p-3.5">
                 <div className="mb-1.5 text-sm font-extrabold text-sky-300">
-                  1. 공식 카드 팩 확률 · 천장(Pity Timer) · 중복 방지 (382장 기준)
+                  1. 일반 팩 기준 공식 획득 확률 · 독립 천장 · 중복 방지 (382장 기준)
                 </div>
-                <ul className="space-y-1 font-semibold text-amber-100/95">
-                  <li>
-                    • <b>팩 구성:</b> 1팩당 <b>{PACK_DROP_RATES_SPEC.cardsPerPack}장</b> 등장 (기본 무료 카드 129장 제외, 클래식 전문가 카드 <b>253장</b> 풀에서 등장 · <b>최소 희귀 이상 1장 100% 확정</b>)
-                  </li>
-                  <li>
-                    • <b>전설(주황):</b> 팩당 평균 <b>{PACK_DROP_RATES_SPEC.avgPackLegendaryPct}%</b> (약 20팩당 1장) ·{' '}
-                    <span className="text-yellow-300">
-                      최초 {PACK_DROP_RATES_SPEC.firstLegendaryGuaranteePacks}팩 이내 첫 전설 1장 확정, 이후 최대 {PACK_DROP_RATES_SPEC.legendaryPityPacks}번째 팩 전설 100% 확정
-                    </span>
-                  </li>
-                  <li>
-                    • <b>특급(보라):</b> 팩당 평균 <b>{PACK_DROP_RATES_SPEC.avgPackEpicPct}%</b> (약 5팩당 1장) ·{' '}
-                    <span className="text-purple-300">
-                      최대 {PACK_DROP_RATES_SPEC.epicPityPacks}번째 팩 이내 특급 1장 이상 100% 확정
-                    </span>
-                  </li>
-                  <li>
-                    • <b>황금 카드 & 천장:</b> 카드당 황금 일반 {PACK_DROP_RATES_SPEC.perCardGoldenCommonPct}% (천장 {PACK_DROP_RATES_SPEC.goldenCommonPityPacks}팩) · 황금 희귀 {PACK_DROP_RATES_SPEC.perCardGoldenRarePct}% (천장 {PACK_DROP_RATES_SPEC.goldenRarePityPacks}팩) · 황금 특급 {PACK_DROP_RATES_SPEC.perCardGoldenEpicPct}% (천장 {PACK_DROP_RATES_SPEC.goldenEpicPityPacks}팩) · 황금 전설 {PACK_DROP_RATES_SPEC.perCardGoldenLegendaryPct}% (천장 {PACK_DROP_RATES_SPEC.goldenLegendaryPityPacks}팩)
-                  </li>
-                  <li>
-                    • <b>전 등급 중복 방지:</b> 전설(36종)은 제작·분해 이력까지 기억해 미수집 전설이 100% 먼저 등장하며, 일반·희귀·특급도 전 종류 2장 수집 전까지 미수집 카드가 우선 등장합니다. (한 팩 내 동일 카드 3장 동시 등장 없음)
-                  </li>
-                </ul>
-                <div className="mt-2 flex flex-wrap gap-2 rounded-xl border border-amber-400/30 bg-black/50 px-3 py-1.5 text-[11px] font-extrabold text-amber-200">
+                <div className="mb-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <div className="rounded-xl border border-yellow-400/35 bg-black/45 p-2.5">
+                    <div className="mb-1 text-xs font-extrabold text-yellow-300">
+                      ✦ 황금 카드 (팩당 확률 · 독립 천장)
+                    </div>
+                    <ul className="space-y-0.5 text-[11px] font-semibold text-amber-100/95">
+                      <li>
+                        • <b>황금 전설:</b> {PACK_DROP_RATES_SPEC.packGoldenLegendaryPct}% (
+                        {PACK_DROP_RATES_SPEC.goldenLegendaryPityPacks}번째 이내 확정)
+                      </li>
+                      <li>
+                        • <b>황금 특급:</b> {PACK_DROP_RATES_SPEC.packGoldenEpicPct}% (
+                        {PACK_DROP_RATES_SPEC.goldenEpicPityPacks}번째 이내 확정)
+                      </li>
+                      <li>
+                        • <b>황금 희귀:</b> {PACK_DROP_RATES_SPEC.packGoldenRarePct}% (
+                        {PACK_DROP_RATES_SPEC.goldenRarePityPacks}번째 이내 확정)
+                      </li>
+                      <li>
+                        • <b>황금 일반:</b> {PACK_DROP_RATES_SPEC.packGoldenCommonPct}% (
+                        {PACK_DROP_RATES_SPEC.goldenCommonPityPacks}번째 이내 확정)
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="rounded-xl border border-sky-400/35 bg-black/45 p-2.5">
+                    <div className="mb-1 text-xs font-extrabold text-sky-300">
+                      ◆ 일반 카드 (팩당 확률 · 독립 천장)
+                    </div>
+                    <ul className="space-y-0.5 text-[11px] font-semibold text-amber-100/95">
+                      <li>
+                        • <b>일반 전설:</b> {PACK_DROP_RATES_SPEC.packNormalLegendaryPct}% (첫{' '}
+                        {PACK_DROP_RATES_SPEC.firstLegendaryGuaranteePacks}팩 / 이후{' '}
+                        {PACK_DROP_RATES_SPEC.legendaryPityPacks}번째 이내 확정)
+                      </li>
+                      <li>
+                        • <b>일반 특급:</b> {PACK_DROP_RATES_SPEC.packNormalEpicPct}% (
+                        {PACK_DROP_RATES_SPEC.epicPityPacks}번째 이내 확정)
+                      </li>
+                      <li>
+                        • <b>일반 희귀:</b> 팩당 최소 희귀 이상 등급 카드 1장 100% 포함
+                      </li>
+                      <li>
+                        • <b>일반 등급:</b> 위 조건·확률 외 모든 슬롯 (기본 129장 제외 · 고급 253장 풀)
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="text-[11px] font-semibold text-amber-200/85">
+                  ※ 전 등급 중복 방지(미보유 전설·2장 미만 카드 우선 등장) 적용 · 간판 전설(0.6% / 361팩)은 간판 포함 확장팩 전용으로 초기 382장 클래식 풀에는 미포함됩니다.
+                </div>
+                <div className="mt-2 flex flex-wrap gap-x-2.5 gap-y-1 rounded-xl border border-amber-400/30 bg-black/50 px-3 py-1.5 text-[11px] font-extrabold text-amber-200">
                   <span>누적 개봉: {pityState.totalPacksOpened}팩</span>
                   <span>·</span>
                   <span>
                     {!pityState.firstTenLegendaryClaimed
-                      ? `첫 10팩 전설 천장: ${pityState.packsSinceLegendary}/10`
-                      : `전설 천장: ${pityState.packsSinceLegendary}/40`}
+                      ? `첫 전설 천장: ${pityState.packsSinceLegendary}/10`
+                      : `일반 전설 천장: ${pityState.packsSinceLegendary}/40`}
                   </span>
                   <span>·</span>
-                  <span>특급 천장: {pityState.packsSinceEpic}/10</span>
+                  <span>일반 특급 천장: {pityState.packsSinceEpic}/10</span>
+                  <span>·</span>
+                  <span className="text-yellow-300">
+                    황금 천장(일 {pityState.packsSinceGoldenCommon}/25 · 희 {pityState.packsSinceGoldenRare}/29 · 특{' '}
+                    {pityState.packsSinceGoldenEpic}/142 · 전 {pityState.packsSinceGoldenLegendary}/361)
+                  </span>
                 </div>
               </div>
 

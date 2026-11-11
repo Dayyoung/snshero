@@ -50,12 +50,12 @@ export const PACK_DROP_RATES_SPEC = {
   goldenRarePityPacks: 29,
   goldenEpicPityPacks: 142,
   goldenLegendaryPityPacks: 361,
-  avgPackLegendaryPct: 5.0,
-  avgPackEpicPct: 21.0,
-  perCardGoldenCommonPct: 1.47,
-  perCardGoldenRarePct: 1.37,
-  perCardGoldenEpicPct: 0.31,
-  perCardGoldenLegendaryPct: 0.11,
+  packNormalLegendaryPct: 5.0,
+  packNormalEpicPct: 21.0,
+  packGoldenCommonPct: 8.1,
+  packGoldenRarePct: 7.1,
+  packGoldenEpicPct: 1.4,
+  packGoldenLegendaryPct: 0.6,
 };
 
 const CURRENT_LORE_VERSION = 'snshero_v3';
@@ -517,122 +517,156 @@ class HearthstoneStorage {
       LEGENDARY: expertPool.filter((c) => c.rarity === 'LEGENDARY'),
     };
 
-    const nextLegStreak = pity.packsSinceLegendary + 1;
-    const nextEpicStreak = pity.packsSinceEpic + 1;
-    const legCap = pity.firstTenLegendaryClaimed
+    type PackSlotTier =
+      | 'GOLDEN_LEGENDARY'
+      | 'GOLDEN_EPIC'
+      | 'GOLDEN_RARE'
+      | 'GOLDEN_COMMON'
+      | 'NORMAL_LEGENDARY'
+      | 'NORMAL_EPIC'
+      | 'NORMAL_RARE'
+      | 'NORMAL_COMMON';
+
+    const nextNormalLeg = pity.packsSinceLegendary + 1;
+    const nextNormalEpic = pity.packsSinceEpic + 1;
+    const nextGoldLeg = pity.packsSinceGoldenLegendary + 1;
+    const nextGoldEpic = pity.packsSinceGoldenEpic + 1;
+    const nextGoldRare = pity.packsSinceGoldenRare + 1;
+    const nextGoldCommon = pity.packsSinceGoldenCommon + 1;
+
+    const normalLegCap = pity.firstTenLegendaryClaimed
       ? PACK_DROP_RATES_SPEC.legendaryPityPacks
       : PACK_DROP_RATES_SPEC.firstLegendaryGuaranteePacks;
 
-    const forceLegendaryInPack = nextLegStreak >= legCap;
-    const forceEpicInPack = nextEpicStreak >= PACK_DROP_RATES_SPEC.epicPityPacks;
+    // Exact per-slot probabilities calibrated WITH their independent pity ceilings (361 / 142 / 29 / 25 / 40 / 10)
+    // so empirical pack rates match Blizzard's official disclosure:
+    // - 황금 전설: 0.6% (361팩 천장) / 황금 특급: 1.4% (142팩 천장) / 황금 희귀: 7.1% (29팩 천장) / 황금 일반: 8.1% (25팩 천장)
+    // - 일반 전설: 5.0% (첫 10팩 / 이후 40팩 천장) / 일반 특급: 21.0% (10팩 천장) / 최소 일반 희귀 이상 1장 확정
+    const pGoldLeg = 0.00102;
+    const pGoldEpic = 0.00224;
+    const pGoldRare = 0.01208;
+    const pGoldCommon = 0.01358;
+    const pNormalLeg = !pity.firstTenLegendaryClaimed ? 0.022 : 0.00818;
+    const pNormalEpic = 0.0391;
+    const pNormalRare = 0.214;
 
-    // Soft-pity ramped per-slot probabilities calibrated to ~5.0% pack Legendary & ~21.0% pack Epic
-    const slotLegProb = !pity.firstTenLegendaryClaimed
-      ? nextLegStreak >= 8
-        ? 0.085
-        : 0.022
-      : nextLegStreak >= 31
-        ? 0.0085 + (nextLegStreak - 30) * 0.028
-        : 0.0085;
-    const slotEpicProb =
-      nextEpicStreak >= 8 ? 0.032 + (nextEpicStreak - 7) * 0.055 : 0.032;
-    const slotRareProb = 0.228;
-
-    const rarities: Exclude<CardRarity, 'FREE'>[] = Array.from({ length: 5 }, () => {
+    const slotTiers: PackSlotTier[] = Array.from({ length: 5 }, () => {
       const r = Math.random();
-      if (r < slotLegProb) return 'LEGENDARY';
-      if (r < slotLegProb + slotEpicProb) return 'EPIC';
-      if (r < slotLegProb + slotEpicProb + slotRareProb) return 'RARE';
+      let acc = 0;
+      if (r < (acc += pGoldLeg)) return 'GOLDEN_LEGENDARY';
+      if (r < (acc += pGoldEpic)) return 'GOLDEN_EPIC';
+      if (r < (acc += pGoldRare)) return 'GOLDEN_RARE';
+      if (r < (acc += pGoldCommon)) return 'GOLDEN_COMMON';
+      if (r < (acc += pNormalLeg)) return 'NORMAL_LEGENDARY';
+      if (r < (acc += pNormalEpic)) return 'NORMAL_EPIC';
+      if (r < (acc += pNormalRare)) return 'NORMAL_RARE';
+      return 'NORMAL_COMMON';
+    });
+
+    const injectPityTier = (target: PackSlotTier, protectedTiers: Set<PackSlotTier>) => {
+      const commonIdxs = slotTiers
+        .map((t, i) => (t === 'NORMAL_COMMON' ? i : -1))
+        .filter((i) => i >= 0);
+      if (commonIdxs.length > 0) {
+        slotTiers[commonIdxs[Math.floor(Math.random() * commonIdxs.length)]] = target;
+        return;
+      }
+      const availIdxs = slotTiers
+        .map((t, i) => (!protectedTiers.has(t) ? i : -1))
+        .filter((i) => i >= 0);
+      if (availIdxs.length > 0) {
+        slotTiers[availIdxs[0]] = target;
+      }
+    };
+
+    // Enforce All 6 Independent Official Hearthstone Pity Timers
+    if (
+      nextGoldLeg >= PACK_DROP_RATES_SPEC.goldenLegendaryPityPacks &&
+      !slotTiers.includes('GOLDEN_LEGENDARY')
+    ) {
+      injectPityTier('GOLDEN_LEGENDARY', new Set(['GOLDEN_LEGENDARY']));
+    }
+    if (
+      nextGoldEpic >= PACK_DROP_RATES_SPEC.goldenEpicPityPacks &&
+      !slotTiers.includes('GOLDEN_EPIC')
+    ) {
+      injectPityTier('GOLDEN_EPIC', new Set(['GOLDEN_LEGENDARY', 'GOLDEN_EPIC']));
+    }
+    if (nextNormalLeg >= normalLegCap && !slotTiers.includes('NORMAL_LEGENDARY')) {
+      injectPityTier(
+        'NORMAL_LEGENDARY',
+        new Set(['GOLDEN_LEGENDARY', 'GOLDEN_EPIC', 'NORMAL_LEGENDARY']),
+      );
+    }
+    if (
+      nextNormalEpic >= PACK_DROP_RATES_SPEC.epicPityPacks &&
+      !slotTiers.includes('NORMAL_EPIC')
+    ) {
+      injectPityTier(
+        'NORMAL_EPIC',
+        new Set(['GOLDEN_LEGENDARY', 'GOLDEN_EPIC', 'NORMAL_LEGENDARY', 'NORMAL_EPIC']),
+      );
+    }
+    if (
+      nextGoldRare >= PACK_DROP_RATES_SPEC.goldenRarePityPacks &&
+      !slotTiers.includes('GOLDEN_RARE')
+    ) {
+      injectPityTier(
+        'GOLDEN_RARE',
+        new Set([
+          'GOLDEN_LEGENDARY',
+          'GOLDEN_EPIC',
+          'NORMAL_LEGENDARY',
+          'NORMAL_EPIC',
+          'GOLDEN_RARE',
+        ]),
+      );
+    }
+    if (
+      nextGoldCommon >= PACK_DROP_RATES_SPEC.goldenCommonPityPacks &&
+      !slotTiers.includes('GOLDEN_COMMON')
+    ) {
+      injectPityTier(
+        'GOLDEN_COMMON',
+        new Set([
+          'GOLDEN_LEGENDARY',
+          'GOLDEN_EPIC',
+          'NORMAL_LEGENDARY',
+          'NORMAL_EPIC',
+          'GOLDEN_RARE',
+          'GOLDEN_COMMON',
+        ]),
+      );
+    }
+
+    // Enforce Guaranteed At Least 1 Rare or Better per Pack (Upgrades a Common slot to Normal Rare)
+    const hasRareOrBetter = slotTiers.some(
+      (t) => t !== 'NORMAL_COMMON' && t !== 'GOLDEN_COMMON',
+    );
+    if (!hasRareOrBetter) {
+      const ncIdx = slotTiers.indexOf('NORMAL_COMMON');
+      slotTiers[ncIdx >= 0 ? ncIdx : 0] = 'NORMAL_RARE';
+    }
+
+    // Update All 6 Independent Pack-Level Pity Counters
+    pity.totalPacksOpened += 1;
+    if (slotTiers.includes('NORMAL_LEGENDARY') || slotTiers.includes('GOLDEN_LEGENDARY')) {
+      pity.firstTenLegendaryClaimed = true;
+    }
+    pity.packsSinceLegendary = slotTiers.includes('NORMAL_LEGENDARY') ? 0 : nextNormalLeg;
+    pity.packsSinceEpic = slotTiers.includes('NORMAL_EPIC') ? 0 : nextNormalEpic;
+    pity.packsSinceGoldenLegendary = slotTiers.includes('GOLDEN_LEGENDARY') ? 0 : nextGoldLeg;
+    pity.packsSinceGoldenEpic = slotTiers.includes('GOLDEN_EPIC') ? 0 : nextGoldEpic;
+    pity.packsSinceGoldenRare = slotTiers.includes('GOLDEN_RARE') ? 0 : nextGoldRare;
+    pity.packsSinceGoldenCommon = slotTiers.includes('GOLDEN_COMMON') ? 0 : nextGoldCommon;
+
+    const rarities: Exclude<CardRarity, 'FREE'>[] = slotTiers.map((t) => {
+      if (t === 'GOLDEN_LEGENDARY' || t === 'NORMAL_LEGENDARY') return 'LEGENDARY';
+      if (t === 'GOLDEN_EPIC' || t === 'NORMAL_EPIC') return 'EPIC';
+      if (t === 'GOLDEN_RARE' || t === 'NORMAL_RARE') return 'RARE';
       return 'COMMON';
     });
-
-    // Enforce Legendary Pity (10th pack first-time OR 40th pack standard)
-    if (forceLegendaryInPack && !rarities.includes('LEGENDARY')) {
-      const candidateIdxs = rarities
-        .map((rar, i) => (rar === 'COMMON' ? i : -1))
-        .filter((i) => i >= 0);
-      const targetIdx =
-        candidateIdxs.length > 0
-          ? candidateIdxs[Math.floor(Math.random() * candidateIdxs.length)]
-          : 0;
-      rarities[targetIdx] = 'LEGENDARY';
-    }
-
-    // Enforce Epic Pity (10th pack) without overwriting a Legendary
-    if (forceEpicInPack && !rarities.includes('EPIC')) {
-      const nonLegIdxs = rarities
-        .map((rar, i) => (rar !== 'LEGENDARY' ? i : -1))
-        .filter((i) => i >= 0);
-      if (nonLegIdxs.length > 0) {
-        const commonNonLeg = nonLegIdxs.filter((i) => rarities[i] === 'COMMON');
-        const poolIdxs = commonNonLeg.length > 0 ? commonNonLeg : nonLegIdxs;
-        rarities[poolIdxs[Math.floor(Math.random() * poolIdxs.length)]] = 'EPIC';
-      }
-    }
-
-    // Enforce Guaranteed At Least 1 Rare or Better per Pack
-    if (!rarities.some((rar) => rar !== 'COMMON')) {
-      const idx = Math.floor(Math.random() * 5);
-      rarities[idx] = 'RARE';
-    }
-
-    // Update Pack-Level Rarity Pity Counters
-    pity.totalPacksOpened += 1;
-    if (rarities.includes('LEGENDARY')) {
-      pity.packsSinceLegendary = 0;
-      pity.firstTenLegendaryClaimed = true;
-    } else {
-      pity.packsSinceLegendary = nextLegStreak;
-    }
-    if (rarities.includes('EPIC')) {
-      pity.packsSinceEpic = 0;
-    } else {
-      pity.packsSinceEpic = nextEpicStreak;
-    }
-
-    // Golden Card Roll + Golden Pity Timers (25 / 29 / 142 / 361 packs)
-    let hitGoldenCommon = false;
-    let hitGoldenRare = false;
-    let hitGoldenEpic = false;
-    let hitGoldenLegendary = false;
-
-    const goldenFlags: boolean[] = rarities.map((rar) => {
-      if (rar === 'LEGENDARY') {
-        const forceGold =
-          !hitGoldenLegendary &&
-          pity.packsSinceGoldenLegendary + 1 >= PACK_DROP_RATES_SPEC.goldenLegendaryPityPacks;
-        const g = forceGold || Math.random() < 0.091;
-        if (g) hitGoldenLegendary = true;
-        return g;
-      }
-      if (rar === 'EPIC') {
-        const forceGold =
-          !hitGoldenEpic &&
-          pity.packsSinceGoldenEpic + 1 >= PACK_DROP_RATES_SPEC.goldenEpicPityPacks;
-        const g = forceGold || Math.random() < 0.072;
-        if (g) hitGoldenEpic = true;
-        return g;
-      }
-      if (rar === 'RARE') {
-        const forceGold =
-          !hitGoldenRare &&
-          pity.packsSinceGoldenRare + 1 >= PACK_DROP_RATES_SPEC.goldenRarePityPacks;
-        const g = forceGold || Math.random() < 0.06;
-        if (g) hitGoldenRare = true;
-        return g;
-      }
-      const forceGold =
-        !hitGoldenCommon &&
-        pity.packsSinceGoldenCommon + 1 >= PACK_DROP_RATES_SPEC.goldenCommonPityPacks;
-      const g = forceGold || Math.random() < 0.0205;
-      if (g) hitGoldenCommon = true;
-      return g;
-    });
-
-    pity.packsSinceGoldenCommon = hitGoldenCommon ? 0 : pity.packsSinceGoldenCommon + 1;
-    pity.packsSinceGoldenRare = hitGoldenRare ? 0 : pity.packsSinceGoldenRare + 1;
-    pity.packsSinceGoldenEpic = hitGoldenEpic ? 0 : pity.packsSinceGoldenEpic + 1;
-    pity.packsSinceGoldenLegendary = hitGoldenLegendary ? 0 : pity.packsSinceGoldenLegendary + 1;
+    const goldenFlags: boolean[] = slotTiers.map((t) => t.startsWith('GOLDEN_'));
 
     // Select Specific Cards with Full Duplicate Protection & Per-Pack Copy Cap
     const inPackCounts: Record<string, number> = {};
@@ -735,7 +769,7 @@ class HearthstoneStorage {
       }
     }
 
-    const isGolden = Math.random() < 0.06;
+    const isGolden = Math.random() < 0.034;
     const prevCount = col[picked.id] || 0;
     const nextCount = prevCount + 1;
     col[picked.id] = nextCount;
