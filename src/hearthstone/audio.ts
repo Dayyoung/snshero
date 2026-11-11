@@ -124,6 +124,10 @@ class SnsHeroCardAudioEngine {
   private currentBgmKey: string | null = null;
   private currentVo: HTMLAudioElement | null = null;
   private currentVoResolve: (() => void) | null = null;
+  private currentStoryAudio: HTMLAudioElement | null = null;
+  private currentStoryCleanup: (() => void) | null = null;
+  private storyManuallyPaused = false;
+  private heroNameVoMapPromise: Promise<Record<string, string>> | null = null;
   private activeSfx = new Set<HTMLAudioElement>();
   private ctx: AudioContext | null = null;
   private unlocked = false;
@@ -223,6 +227,10 @@ class SnsHeroCardAudioEngine {
       done?.();
     }
 
+    if (typeof document !== 'undefined' && document.hidden && this.currentStoryAudio && !this.currentStoryAudio.paused) {
+      this.currentStoryAudio.pause();
+    }
+
     this.cancelTts();
 
     if (this.ctx && this.ctx.state === 'running') {
@@ -255,8 +263,21 @@ class SnsHeroCardAudioEngine {
       this.currentBgm.paused &&
       (this.currentBgm.loop || !this.currentBgm.ended)
     ) {
-      this.currentBgm.volume = this.settings.bgmVolume;
+      this.currentBgm.volume = this.currentStoryAudio
+        ? this.settings.bgmVolume * 0.42
+        : this.settings.bgmVolume;
       this.currentBgm.play().catch(() => {});
+    }
+
+    if (
+      this.currentStoryAudio &&
+      !this.storyManuallyPaused &&
+      this.settings.voVolume > 0 &&
+      this.currentStoryAudio.paused &&
+      !this.currentStoryAudio.ended
+    ) {
+      this.currentStoryAudio.volume = Math.min(1, this.settings.voVolume);
+      this.currentStoryAudio.play().catch(() => {});
     }
   }
 
@@ -317,6 +338,16 @@ class SnsHeroCardAudioEngine {
         (this.currentBgm.loop || !this.currentBgm.ended)
       ) {
         this.currentBgm.play().catch(() => {});
+      }
+    }
+    if (this.currentStoryAudio) {
+      this.currentStoryAudio.volume = this.settings.muted
+        ? 0
+        : Math.min(1, this.settings.voVolume);
+      if (this.settings.muted || this.settings.voVolume <= 0) {
+        this.currentStoryAudio.pause();
+      } else if (!this.storyManuallyPaused && this.currentStoryAudio.paused && !this.currentStoryAudio.ended) {
+        this.currentStoryAudio.play().catch(() => {});
       }
     }
     if (this.settings.muted) {
@@ -682,10 +713,217 @@ class SnsHeroCardAudioEngine {
   }
 
   /**
-   * Web Speech API (TTS) 발화 유틸리티
-   * - 한국어 영웅명/에피소드 요약 나레이션을 또렷하고 박진감 있게 낭독합니다.
+   * 스토리모드 5컷 남성 성우(Neural Male Narrator) 전용 오디오 재생기
+   * - 브라우저 기본 기계음 여성 TTS(speechSynthesis)를 완전히 배제하고 스튜디오 마스터링된 남성 성우 MP3를 재생합니다.
+   * - 문장을 읽는 도중 절대 끊고 넘어가지 않도록 실제 오디오 `ended` 이벤트 도달 시에만 `onEnded`를 호출합니다.
    */
-  speakTts(text: string, rate = 1.05, pitch = 0.95): Promise<void> {
+  playStoryNarration(
+    audioUrl: string,
+    callbacks?: {
+      onProgress?: (progress01: number, remainingSec: number, durationSec: number) => void;
+      onEnded?: () => void;
+      onFallbackTimer?: () => void;
+    },
+  ): () => void {
+    this.stopStoryNarration();
+    this.cancelTts();
+    this.storyManuallyPaused = false;
+
+    if (
+      typeof window === 'undefined' ||
+      this.settings.muted ||
+      this.settings.voVolume <= 0
+    ) {
+      callbacks?.onFallbackTimer?.();
+      return () => {};
+    }
+
+    let disposed = false;
+    let settled = false;
+    const audio = new Audio(audioUrl);
+    audio.preload = 'auto';
+    audio.volume = Math.min(1, this.settings.voVolume);
+    this.currentStoryAudio = audio;
+
+    if (this.currentBgm && !this.settings.muted) {
+      this.currentBgm.volume = this.settings.bgmVolume * 0.42;
+    }
+
+    const restoreBgm = () => {
+      if (this.currentBgm && !this.settings.muted) {
+        this.currentBgm.volume = this.settings.bgmVolume;
+      }
+    };
+
+    const emitProgress = () => {
+      if (disposed || !callbacks?.onProgress) return;
+      const dur = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 0;
+      if (dur > 0) {
+        const cur = Math.min(dur, Math.max(0, audio.currentTime || 0));
+        callbacks.onProgress(cur / dur, Math.max(0, dur - cur), dur);
+      }
+    };
+
+    const pollId = window.setInterval(emitProgress, 45);
+
+    const cleanup = () => {
+      if (disposed) return;
+      disposed = true;
+      window.clearInterval(pollId);
+      audio.onloadedmetadata = null;
+      audio.ontimeupdate = null;
+      audio.onended = null;
+      audio.onerror = null;
+      try {
+        audio.pause();
+        audio.src = '';
+      } catch {
+        // ignore
+      }
+      if (this.currentStoryAudio === audio) {
+        this.currentStoryAudio = null;
+        this.currentStoryCleanup = null;
+        restoreBgm();
+      }
+    };
+
+    this.currentStoryCleanup = cleanup;
+
+    audio.onloadedmetadata = emitProgress;
+    audio.ontimeupdate = emitProgress;
+    audio.onended = () => {
+      if (disposed || settled) return;
+      settled = true;
+      const dur = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 5;
+      callbacks?.onProgress?.(1, 0, dur);
+      cleanup();
+      callbacks?.onEnded?.();
+    };
+    audio.onerror = () => {
+      if (disposed || settled) return;
+      settled = true;
+      cleanup();
+      callbacks?.onFallbackTimer?.();
+    };
+
+    audio.play().catch(() => {
+      if (disposed || settled) return;
+      settled = true;
+      cleanup();
+      callbacks?.onFallbackTimer?.();
+    });
+
+    return cleanup;
+  }
+
+  pauseStoryNarration() {
+    this.storyManuallyPaused = true;
+    if (this.currentStoryAudio && !this.currentStoryAudio.paused) {
+      try {
+        this.currentStoryAudio.pause();
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  resumeStoryNarration() {
+    this.storyManuallyPaused = false;
+    if (
+      this.currentStoryAudio &&
+      !this.settings.muted &&
+      this.settings.voVolume > 0 &&
+      this.currentStoryAudio.paused &&
+      !this.currentStoryAudio.ended
+    ) {
+      this.currentStoryAudio.volume = Math.min(1, this.settings.voVolume);
+      this.currentStoryAudio.play().catch(() => {});
+    }
+  }
+
+  stopStoryNarration() {
+    this.storyManuallyPaused = false;
+    const fn = this.currentStoryCleanup;
+    this.currentStoryCleanup = null;
+    if (fn) {
+      fn();
+    } else if (this.currentStoryAudio) {
+      try {
+        this.currentStoryAudio.pause();
+        this.currentStoryAudio.src = '';
+      } catch {
+        // ignore
+      }
+      this.currentStoryAudio = null;
+    }
+  }
+
+  private loadHeroNameVoMap(): Promise<Record<string, string>> {
+    if (!this.heroNameVoMapPromise) {
+      this.heroNameVoMapPromise = fetch('/hs-assets/snshero-audio/story/hero_name_vo_map.json')
+        .then((r) => (r.ok ? r.json() : {}))
+        .catch(() => ({}));
+    }
+    return this.heroNameVoMapPromise;
+  }
+
+  private playCustomVoUrl(url: string): Promise<void> {
+    if (!this.isWindowActive || this.settings.muted || this.settings.voVolume <= 0) {
+      return Promise.resolve();
+    }
+    if (this.currentVo) {
+      try {
+        this.currentVo.pause();
+        this.currentVo.src = '';
+      } catch {
+        // ignore
+      }
+      const prevResolve = this.currentVoResolve;
+      this.currentVo = null;
+      this.currentVoResolve = null;
+      prevResolve?.();
+    }
+    return new Promise((resolve) => {
+      try {
+        const a = new Audio(url);
+        a.volume = Math.min(1, this.settings.voVolume);
+        this.currentVo = a;
+        let settled = false;
+        const finish = () => {
+          if (settled) return;
+          settled = true;
+          if (this.currentVo === a) {
+            this.currentVo = null;
+            this.currentVoResolve = null;
+          }
+          resolve();
+        };
+        this.currentVoResolve = finish;
+        a.onended = finish;
+        a.onerror = finish;
+        a.play().catch(finish);
+      } catch {
+        resolve();
+      }
+    });
+  }
+
+  private async announceHeroName(nameKo: string): Promise<void> {
+    const trimmed = nameKo.trim();
+    if (!trimmed) return;
+    const map = await this.loadHeroNameVoMap();
+    const studioUrl = map[trimmed];
+    if (studioUrl) {
+      await this.playCustomVoUrl(studioUrl);
+      return;
+    }
+    await this.speakTts(trimmed, 1.0, 0.82);
+  }
+
+  /**
+   * Web Speech API 폴백 (스튜디오 MP3가 없는 동적 텍스트 전용 — 남성 음색 우선 선택)
+   */
+  speakTts(text: string, rate = 1.0, pitch = 0.82): Promise<void> {
     if (
       typeof window === 'undefined' ||
       !('speechSynthesis' in window) ||
@@ -705,11 +943,19 @@ class SnsHeroCardAudioEngine {
         u.volume = Math.min(1, this.settings.voVolume);
 
         const voices = window.speechSynthesis.getVoices();
-        const koVoice = voices.find(
+        const koVoices = voices.filter(
           (v) => v.lang.startsWith('ko') || v.lang.includes('KR') || v.lang.includes('Korean'),
         );
-        if (koVoice) {
-          u.voice = koVoice;
+        const maleKoVoice =
+          koVoices.find((v) =>
+            /InJoon|Hyunsu|BongJin|GookMin|Male|Eddy|Reed|Rocko|Grandpa|Minsu|Jinho/i.test(
+              v.name,
+            ),
+          ) ||
+          koVoices.find((v) => !/Yuna|Sora|SunHi|Heami|Female/i.test(v.name)) ||
+          koVoices[0];
+        if (maleKoVoice) {
+          u.voice = maleKoVoice;
         }
 
         let finished = false;
@@ -721,8 +967,7 @@ class SnsHeroCardAudioEngine {
 
         u.onend = done;
         u.onerror = done;
-        // 최대 안전 타임아웃
-        window.setTimeout(done, Math.max(2500, text.length * 130));
+        window.setTimeout(done, Math.max(9000, text.length * 280));
         window.speechSynthesis.speak(u);
       } catch {
         resolve();
@@ -750,10 +995,10 @@ class SnsHeroCardAudioEngine {
   ) {
     if (!this.isWindowActive || this.settings.muted) return;
 
-    // 1. 플레이어 영웅 아나운서 발화
+    // 1. 플레이어 영웅 아나운서 발화 (스튜디오 남성 아나운서 MP3 사용)
     const pVo = CLASSIC_HEROES[playerClass]?.voKey || 'priest';
     if (isPlayerCustom && playerName) {
-      await this.speakTts(playerName, 1.05, 1.0);
+      await this.announceHeroName(playerName);
     } else {
       await this.playVoFile(`announcer_${pVo}`);
     }
@@ -765,16 +1010,14 @@ class SnsHeroCardAudioEngine {
 
     if (!this.isWindowActive) return;
 
-    // 3. 상대방 영웅 발화
-    // 스토리 모드 보스(isOpponentCustom)이거나 화면에 표시된 영웅 이름이 원작 클래스 기본명과 다르면
-    // 실제 상대 영웅 이름(opponentName)을 또렷하게 낭독합니다!
+    // 3. 상대방 영웅 발화 (스튜디오 남성 아나운서 MP3 사용)
     const oVo = CLASSIC_HEROES[opponentClass]?.voKey || 'warrior';
     const classicOpponentVoName = CLASSIC_HEROES[opponentClass]?.nameKo;
     const shouldReadCustomName =
       isOpponentCustom || (opponentName && opponentName !== classicOpponentVoName);
 
     if (shouldReadCustomName && opponentName) {
-      await this.speakTts(opponentName, 1.05, 0.95);
+      await this.announceHeroName(opponentName);
     } else {
       await this.playVoFile(`announcer_${oVo}`);
     }

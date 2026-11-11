@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-12 08:49 KST] [/game.html 스토리모드 40화 전체 5컷 기승전결 요약 전면 재작성 · 문장 낭독 도중 화면 전환 차단(오디오 완료 동기화) · 스튜디오 한국어 남성 성우(243종 MP3) 전면 교체 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"해당 에피소드를 5개 문구/5개 이미지 로 요약해서 읽어주고 있어. 문제는 해당 5개 문장이 전체 에피소드를 잘 요약하지 못하고 있어. 그리고 문장을 읽다가 끊고 다음화면으로 이동하지 않게해줘. 읽어주는 여성 목소리가 너무 이상하다. 성우 교체."`
+  - **2. 세부 개선 내역**:
+    1. **40화 전 회차(1~40화 × 5컷 = 200문장) 기승전결 핵심 요약 전면 재작성 ([`generate_kadan_journey_data.py`](file:///Users/dayyoung/project/snshero/scripts/generate_kadan_journey_data.py), [`kadanJourneyData.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/kadanJourneyData.ts))**:
+       - 기존 본문 단편 발췌·64자 말줄임(`…`)·무관한 대사 합성을 폐기하고, 1~40화 각각의 전체 줄거리와 해당 회차 보스 결전 이유를 한눈에 이해할 수 있도록 기승전결(`1컷 발단 ➔ 2컷 전개 ➔ 3컷 전환 ➔ 4컷 위기 ➔ 5컷 결전`) 완결형 200문장을 새로 작성·적용.
+    2. **기계음 여성 TTS(`speechSynthesis`) 완전 퇴출 & 스튜디오 한국어 남성 성우 MP3 243종 제작·교체 ([`generate_story_narration_audio.py`](file:///Users/dayyoung/project/snshero/scripts/generate_story_narration_audio.py), [`audio.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/audio.ts))**:
+       - 브라우저 기본 여성 기계음(`Yuna` 등 `window.speechSynthesis`) 대신 중후하고 자연스러운 한국어 남성 내레이터(`ko-KR-HyunsuMultilingualNeural`, `ffmpeg` 무음 정밀 트림·저음역 보강·라우드니스 정규화)로 **40화×5컷 = 200종 내레이션 MP3**(`public/hs-assets/snshero-audio/story/ep01_cut1.mp3`~`ep40_cut5.mp3`) 및 전투 시작 VS 호명용 **커스텀 영웅/보스 남성 아나운서 MP3 43종** 생성·연동.
+    3. **문장 낭독 도중 끊김 원천 차단 — 오디오 `ended` 이벤트 동기화 전환 ([`KadanJourneyStoryModal.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/KadanJourneyStoryModal.tsx))**:
+       - 고정 타이머(`setInterval`)가 성우 음성을 도중에 끊고 넘기던 구조를 완전히 제거하고, 실제 오디오 재생 완료(`audio.onended`) 후 0.42초의 자연스러운 여운을 거친 뒤에만 다음 컷(및 5컷 종료 후 전투)으로 이동하도록 구현(진행 바도 실제 오디오 재생률 `currentTime / duration`과 1:1 동기화, 일시정지/이어듣기 지원).
+  - **3. 검증 및 보고**:
+    - 243개 MP3 에셋 생성 및 `npm run build` 검증, 브라우저 E2E 검증, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-12 08:22 KST] [/game.html 상대 히어로 이름 호명 오류 수정·에피소드 5컷 5문구 한국어 TTS 음성 낭독 및 슬라이드 종료 시 자동 결투 시작·승리/패배 결과창 버튼 미니멀리즘 정리 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
