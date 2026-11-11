@@ -917,14 +917,15 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     }
     if (attackAnim || attackLockRef.current) return;
 
-    const journeyHard =
-      mode === 'TUTORIAL' &&
-      ((matchState.journeyMeta?.episode || 1) >= 3 ||
-        (matchState.journeyMeta?.reincarnation || 0) > 0);
     const difficulty =
-      mode === 'PRACTICE_NORMAL' || (mode === 'TUTORIAL' && !journeyHard)
-        ? 'NORMAL'
-        : 'EXPERT';
+      mode === 'TUTORIAL'
+        ? getJourneyDifficultySpec(
+            matchState.journeyMeta?.episode || 1,
+            matchState.journeyMeta?.reincarnation || 0,
+          ).aiDifficulty
+        : mode === 'PRACTICE_NORMAL'
+          ? 'NORMAL'
+          : 'EXPERT';
 
     const timer = window.setTimeout(() => {
       if (attackLockRef.current) return;

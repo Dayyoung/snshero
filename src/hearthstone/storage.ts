@@ -489,12 +489,18 @@ class HearthstoneStorage {
     let picked = pool[Math.floor(Math.random() * pool.length)];
 
     // Help players reach exciting 3-copy (×3배) awakenings smoothly on Journey retries
-    if (Math.random() < 0.48) {
-      const candidates = pool.filter(
-        (c) => hasCombatStatsForJourney(c) && (col[c.id] || 0) >= 2 && (col[c.id] || 0) < 6,
+    if (Math.random() < 0.78) {
+      const twoCopyCandidates = allCollectible.filter(
+        (c) => hasCombatStatsForJourney(c) && (col[c.id] || 0) === 2,
       );
-      if (candidates.length > 0) {
-        picked = candidates[Math.floor(Math.random() * candidates.length)];
+      const furtherUpgradeCandidates = allCollectible.filter(
+        (c) => hasCombatStatsForJourney(c) && (col[c.id] || 0) >= 3 && (col[c.id] || 0) < 8,
+      );
+      if (twoCopyCandidates.length > 0) {
+        picked = twoCopyCandidates[Math.floor(Math.random() * twoCopyCandidates.length)];
+      } else if (furtherUpgradeCandidates.length > 0) {
+        picked =
+          furtherUpgradeCandidates[Math.floor(Math.random() * furtherUpgradeCandidates.length)];
       }
     }
 

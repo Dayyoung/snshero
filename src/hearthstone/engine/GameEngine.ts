@@ -143,6 +143,12 @@ export function createBattleMatch(opts: {
   );
 
   if (opts.mode === 'TUTORIAL' && opts.journeyMeta) {
+    const playerJourneyHp =
+      30 +
+      Math.floor(Math.max(0, (opts.journeyMeta.episode || 1) - 1) * 0.75) +
+      (opts.journeyMeta.reincarnation || 0) * 15;
+    player.health = playerJourneyHp;
+    player.maxHealth = playerJourneyHp;
     opponent.health = opts.journeyMeta.enemyHeroHealth;
     opponent.maxHealth = opts.journeyMeta.enemyHeroHealth;
   }

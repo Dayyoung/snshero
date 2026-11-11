@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 20:20 KST] [/game.html 『카단의 여정』 초반(1~8화) 자동플레이 난이도 완화·중후반 점진 곡선 리밸런싱 및 원격 푸시 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"자동플레이시 4화를 넘지못한다 . 난이도 조정해둬 /git-push"`
+  - **2. 원인 분석 및 리밸런싱 내역**:
+    - **기존 원인**:
+      1. 3~4화부터 적 영웅 생명력(`43 HP`)과 전체 30장 스탯 배율(`×1.87배`) 및 `EXPERT` AI가 급격히 상승해 1배 기본 컬렉션 상태에서는 4화 승률이 사실상 0%에 수렴함.
+      2. 플레이어 여정 자동 편성 덱이 36장(4코스트 이상 과밀 56%)으로 구성되고 무기/토템 전용 조건부 주문이 섞여 초반 패 말림이 빈발했으며, `×3배` 각성 카드가 전체 130여 장 풀에 희석되어 등장 빈도가 낮았음.
+    - **개선 적용 ([`generate_kadan_journey_data.py`](file:///Users/dayyoung/project/snshero/scripts/generate_kadan_journey_data.py), [`kadanJourneyData.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/kadanJourneyData.ts), [`GameEngine.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/engine/GameEngine.ts), [`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx), [`storage.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/storage.ts))**:
+      1. **제1막(1~8화) 자동플레이 쾌속 돌파 곡선 적용**: 1~6화 보스 체력 `15~21 HP` · 스탯 배율 `×0.62~0.77배`(4화: `19 HP`, `×0.71배`, `NORMAL` AI)로 완화하여 무개봉 기본 덱 자동플레이 기준 **1~6화 승률 83~100% (4화 승률 95%)** 달성.
+      2. **중·후반(9~40화) 및 환생 점진 성장 곡선 유지**: 9~12화(`×0.98~1.19배`)에서 자연스럽게 초기 3팩·5화 보상팩 개봉을 유도하고, 13~40화(`×1.27~3.45배`, 13화부터 `EXPERT` AI) 및 환생(`+1.25배/회`)에서는 카드 `×3배` 이상 업그레이드 없이는 돌파할 수 없도록 정밀 설계.
+      3. **여정 30장 황금 템포 덱 & 각성 체감 강화**: 발동 불가 조건부 함정 주문 제외, `1~3코스트 17장 / 4~5코스트 9장 / 6+코스트 4장` 30장 정예 구성, 전 종족 순환 유지 + `×3배` 각성 카드 우선 편성 적용.
+      4. **카단 회차별 체력 성장 & 패배 보강 뽑기 각성 보정**: 회차·환생에 비례해 아군 영웅 기본 생명력도 성장(`30 + floor((ep-1)*0.75) + reinc*15`)하고, 패배 시 1장 뽑기(`drawSingleReinforcementCard`)가 78% 확률로 2장 보유 전투 카드를 `3장(×3배 각성!)`으로 즉시 승격하도록 개선.
+  - **3. 검증 및 보고**:
+    - 실제 전투 엔진 헤드리스 몬테카를로 시뮬레이션(`N=40/회차`) 검증 통과(무개봉 연속 자동플레이 시 1~7화 무패 직행 및 패배 보강 뽑기 연동 12화 연속 돌파 확인), 프로덕션 빌드 성공, 로컬 커밋·`origin main` 원격 푸시 및 구글 폼 보고 완료.
+
 ## [2026-11-11 18:29 KST] [/game.html 안드로이드 웹 공격 타격 진동(Web Vibration API) 지원 및 환경 설정 ON/OFF 토글 적용 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

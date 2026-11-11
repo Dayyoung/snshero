@@ -1335,10 +1335,9 @@ export interface JourneyDifficultySpec {{
 
 /**
  * 회차(1~40화) 및 환생(0, 1, 2...) 진행에 따른 상대 덱 난이도 곡선:
- * - 1~2화: 입문자가 기본 1배 덱으로도 첫 자동플레이 승리를 맛볼 수 있는 완만한 시작
- * - 3~5화부터: 적 생명력과 하수인/무기 공격력·체력 배율이 본격 상승하여,
- *   카드팩 개봉 및 골드/보급소 구매를 통한 3장(×3배) 중첩 업그레이드 없이는 돌파가 불가능해짐!
- * - 환생 반복 시: 매 환생마다 적 생명력과 스탯 배율이 비약적으로 상승.
+ * - 제1막(1~8화): 신규 유저가 기본 컬렉션 자동플레이로 막힘 없이 스토리에 몰입하며 4~8화를 쾌적하게 돌파하도록 완만한 성장 곡선 제공
+ * - 제2막(9~16화): 적 체력과 스탯 배율이 점진 상승하여 초기 지급 3팩·5화 보상팩·골드팩 및 패배 보강 뽑기를 통한 3장(×3배) 각성이 자연스럽게 빛을 발함
+ * - 제3~5막(17~40화) 및 환생 반복 시: 다수의 3배·4배 이상 카드 업그레이드 없이는 돌파할 수 없도록 단계적 상승
  */
 export function getJourneyDifficultySpec(
   episode: number,
@@ -1347,40 +1346,40 @@ export function getJourneyDifficultySpec(
   const ep = Math.max(1, Math.min(40, Math.floor(episode || 1)));
   const reinc = Math.max(0, Math.floor(reincarnation || 0));
 
-  let baseHp = 20;
-  let baseScale = 0.85;
+  let baseHp = 15;
+  let baseScale = 0.62;
 
-  if (ep === 1) {{
-    baseHp = 20;
-    baseScale = 0.85;
-  }} else if (ep === 2) {{
-    baseHp = 26;
-    baseScale = 1.05;
-  }} else if (ep === 3) {{
-    baseHp = 38;
-    baseScale = 1.65;
-  }} else if (ep <= 10) {{
-    baseHp = 38 + (ep - 3) * 5; // 38 -> 73
-    baseScale = 1.65 + (ep - 3) * 0.22; // 1.65 -> 3.19
-  }} else if (ep <= 25) {{
-    baseHp = 73 + (ep - 10) * 4; // 73 -> 133
-    baseScale = 3.2 + (ep - 10) * 0.16; // 3.2 -> 5.6
+  if (ep <= 6) {{
+    // 초반 입문 구간 (1~6화): 15HP(×0.62) -> 21HP(×0.77), 기본 덱 자동플레이로 4~6화 막힘 없는 쾌속 돌파 보장
+    baseHp = Math.round(15 + (ep - 1) * 1.2);
+    baseScale = 0.62 + (ep - 1) * 0.03;
+  }} else if (ep <= 12) {{
+    // 제1막 후반~제2막 초입 (7~12화): 23HP(×0.84) -> 34HP(×1.19), 초기 3팩·5화 보상팩 개봉 유도 구간
+    baseHp = Math.round(21 + (ep - 6) * 2.15);
+    baseScale = 0.77 + (ep - 6) * 0.07;
+  }} else if (ep <= 26) {{
+    // 중반 성장 구간 (13~26화): 37HP(×1.27) -> 70HP(×2.32), 다수 카드 ×3배 각성 필수 구간
+    baseHp = Math.round(34 + (ep - 12) * 2.55);
+    baseScale = 1.19 + (ep - 12) * 0.081;
   }} else {{
-    baseHp = 133 + (ep - 25) * 5; // 133 -> 208
-    baseScale = 5.6 + (ep - 25) * 0.22; // 5.6 -> 8.9
+    // 후반~최종 결전 구간 (27~40화): 74HP(×2.41) -> 118HP(×3.45)
+    baseHp = Math.round(70 + (ep - 26) * 3.45);
+    baseScale = 2.32 + (ep - 26) * 0.081;
   }}
 
   if (ep % 5 === 0) {{
-    baseHp = Math.round(baseHp * 1.15);
-    baseScale = Number((baseScale * 1.12).toFixed(2));
+    const hpBump = ep <= 5 ? 1.05 : 1.09;
+    const scaleBump = ep <= 5 ? 1.02 : 1.05;
+    baseHp = Math.round(baseHp * hpBump);
+    baseScale = Number((baseScale * scaleBump).toFixed(2));
   }}
 
-  const reincHpFactor = 1 + reinc * 0.9;
-  const reincScaleAdd = reinc * 2.6;
+  const reincHpFactor = 1 + reinc * 0.55;
+  const reincScaleAdd = reinc * 1.25;
 
   const enemyHeroHealth = Math.round(baseHp * reincHpFactor);
   const enemyStatScale = Number((baseScale + reincScaleAdd).toFixed(2));
-  const recommendedMultiplier = Math.max(1, Math.ceil(enemyStatScale * 0.9));
+  const recommendedMultiplier = Math.max(1, Math.ceil(enemyStatScale * 0.92));
 
   const themes: BoardThemeId[] = ['STORMWIND', 'ORGRIMMAR', 'PANDARIA'];
   const boardTheme = themes[(ep - 1) % themes.length];
@@ -1390,17 +1389,33 @@ export function getJourneyDifficultySpec(
     enemyHeroHealth,
     enemyStatScale,
     recommendedMultiplier,
-    aiDifficulty: ep >= 3 || reinc > 0 ? 'EXPERT' : 'NORMAL',
+    aiDifficulty: ep >= 13 || reinc > 0 ? 'EXPERT' : 'NORMAL',
     boardTheme,
     expectedWinGold,
     isBossMilestone: ep % 5 === 0,
   }};
 }}
 
+const JOURNEY_SITUATIONAL_SPELLS = new Set([
+  'CS2_074', // 맹독 (무기 필수)
+  'CS2_233', // 폭풍의 칼날 (무기 필수)
+  'EX1_410', // 방패 밀쳐내기 (방어도 필수)
+  'EX1_244', // 토템의 힘 (토템 필수)
+  'NEW1_003', // 희생의 서약 (악마 필수)
+  'EX1_144', // 그림자 밟기
+  'EX1_145', // 마음가짐
+  'EX1_332', // 침묵
+  'CS2_236', // 천상의 정신
+  'CS1_129', // 내면의 열정
+  'EX1_549', // 야수의 격노 (야수 필수)
+]);
+
 /**
- * 카단의 여정 전용 플레이어 덱 자동 구성:
- * - 보유한 모든 카드(종족 제한 없음)가 골고루 등장하도록 보유 카드 전체 풀에서 균등 셔플 편성
- * - 3장 이상 보유한 하수인·무기 카드는 보유 장수 배수(3장=3배, N장=N배)를 메타데이터에 기록
+ * 카단의 여정 전용 플레이어 덱 자동 구성 (표준 30장 템포 커브 + 보유 전 종족 균등 출현 + 3배 각성 카드 체감 보장):
+ * - 보유한 모든 카드(9종족 + 중립)가 골고루 등장하도록 매 전투 셔플 편성
+ * - 무기/특정 종족 토큰 없이는 발동 불가한 함정 주문은 자동 제외하고 전투 하수인·무기 위주로 구성
+ * - 초반 패 말림 방지를 위해 저코스트(1~3코스트 17장) · 중코스트(4~5코스트 9장) · 고코스트(6+코스트 4장) 황금 템포 비율 유지
+ * - 3장 이상 보유해 ×3배 각성된 카드는 우선 슬롯에 반영(보유 각성 카드가 적을 때는 2장까지 편성)하여 업그레이드 체감을 즉시 제공
  */
 export function buildJourneyPlayerDeckAndMultipliers(col: CollectionMap): {{
   deckCards: string[];
@@ -1425,38 +1440,78 @@ export function buildJourneyPlayerDeckAndMultipliers(col: CollectionMap): {{
     }}
   }}
 
-  const poolIds = ownedCards.map((c) => c.id);
-  for (let i = poolIds.length - 1; i > 0; i -= 1) {{
-    const j = Math.floor(Math.random() * (i + 1));
-    [poolIds[i], poolIds[j]] = [poolIds[j], poolIds[i]];
-  }}
-
-  const lowCurve = poolIds.filter((id) => (cardDb.getCard(id)?.cost ?? 3) <= 3);
-  const midCurve = poolIds.filter((id) => {{
-    const cost = cardDb.getCard(id)?.cost ?? 3;
-    return cost >= 4 && cost <= 5;
-  }});
-  const highCurve = poolIds.filter((id) => (cardDb.getCard(id)?.cost ?? 3) >= 6);
-
-  const deckCards: string[] = [];
-  const takeEvenly = (arr: string[], target: number) => {{
-    for (let i = 0; i < arr.length && deckCards.length < target; i += 1) {{
-      deckCards.push(arr[i]);
+  const shuffleIds = (arr: string[]): string[] => {{
+    const copy = [...arr];
+    for (let i = copy.length - 1; i > 0; i -= 1) {{
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
     }}
+    return copy;
   }};
 
-  takeEvenly(lowCurve, 16);
-  takeEvenly(midCurve, 28);
-  takeEvenly(highCurve, 36);
+  const usableOwned = ownedCards.filter(
+    (c) =>
+      !JOURNEY_SITUATIONAL_SPELLS.has(c.id) &&
+      !(c.type === 'MINION' && (c.attack || 0) === 0 && (c.cost || 0) <= 2),
+  );
+  const activePool = usableOwned.length >= 25 ? usableOwned : ownedCards;
 
+  const boostedPool: string[] = [];
+  const combatBasePool: string[] = [];
+  const spellBasePool: string[] = [];
+  for (const c of activePool) {{
+    if ((playerCardMultipliers[c.id] || 1) > 1) {{
+      boostedPool.push(c.id);
+      if (boostedCardCount <= 12 && c.rarity !== 'LEGENDARY') {{
+        boostedPool.push(c.id);
+      }}
+    }} else if (hasCombatStatsForJourney(c)) {{
+      combatBasePool.push(c.id);
+    }} else {{
+      spellBasePool.push(c.id);
+    }}
+  }}
+
+  const shuffledBoosted = shuffleIds(boostedPool);
+  // 하수인·무기 비중을 80%+ 유지하면서 전 종족 주문도 적정량 혼합
+  const shuffledBase = [
+    ...shuffleIds(combatBasePool),
+    ...shuffleIds(spellBasePool).slice(0, 6),
+  ];
+  const mixedBase = shuffleIds(shuffledBase);
+
+  const pickBucket = (
+    pred: (cost: number) => boolean,
+    quota: number,
+  ): string[] => {{
+    const bMatch = shuffledBoosted.filter((id) => pred(cardDb.getCard(id)?.cost ?? 3));
+    const nMatch = mixedBase.filter((id) => pred(cardDb.getCard(id)?.cost ?? 3));
+    const maxBoostedTake = Math.min(bMatch.length, Math.ceil(quota * 0.7));
+    const chosen = bMatch.slice(0, maxBoostedTake);
+    for (let i = 0; i < nMatch.length && chosen.length < quota; i += 1) {{
+      chosen.push(nMatch[i]);
+    }}
+    for (let i = maxBoostedTake; i < bMatch.length && chosen.length < quota; i += 1) {{
+      chosen.push(bMatch[i]);
+    }}
+    return chosen;
+  }};
+
+  const deckCards: string[] = [
+    ...pickBucket((cost) => cost >= 1 && cost <= 3, 17),
+    ...pickBucket((cost) => cost >= 4 && cost <= 5, 9),
+    ...pickBucket((cost) => cost >= 6, 4),
+  ];
+
+  const fallbackAll = shuffleIds(ownedCards.map((c) => c.id));
   let safetyIdx = 0;
-  while (deckCards.length < 30 && poolIds.length > 0) {{
-    deckCards.push(poolIds[safetyIdx % poolIds.length]);
+  while (deckCards.length < 30 && fallbackAll.length > 0) {{
+    deckCards.push(fallbackAll[safetyIdx % fallbackAll.length]);
     safetyIdx += 1;
   }}
 
   return {{
-    deckCards,
+    deckCards: shuffleIds(deckCards.slice(0, 30)),
     playerCardMultipliers,
     boostedCardCount,
     maxMultiplier,
@@ -1475,7 +1530,8 @@ export function buildJourneyBossDeck(
   const preset = CLASSIC_PRESET_DECKS.find((d) => d.heroClass === bossClass);
   const baseDeck = preset ? [...preset.cards] : [...CLASSIC_PRESET_DECKS[0].cards];
 
-  if (episode <= 2 && reincarnation === 0) {{
+  // 제1막 초반(1~6화, 환생 0)은 무리한 고등급 치환 없이 정통 기본 덱으로 공정하게 대결
+  if (episode <= 6 && reincarnation === 0) {{
     return baseDeck;
   }}
 
@@ -1489,15 +1545,15 @@ export function buildJourneyBossDeck(
     (c) =>
       c.cardClass === 'NEUTRAL' &&
       hasCombatStatsForJourney(c) &&
-      (episode >= 12 || reincarnation > 0
+      (episode >= 16 || reincarnation > 0
         ? c.rarity === 'RARE' || c.rarity === 'EPIC' || c.rarity === 'LEGENDARY'
-        : c.rarity === 'COMMON' || c.rarity === 'RARE' || c.rarity === 'EPIC'),
+        : c.rarity === 'COMMON' || c.rarity === 'RARE'),
   );
   const elitePool = [...classElite, ...classElite, ...neutralElite];
 
   if (elitePool.length === 0) return baseDeck;
 
-  const replaceCount = Math.min(22, Math.floor((episode - 1) * 0.55) + reincarnation * 8);
+  const replaceCount = Math.min(20, Math.floor(Math.max(0, episode - 6) * 0.5) + reincarnation * 7);
   const upgraded = [...baseDeck];
   for (let i = 0; i < replaceCount; i += 1) {{
     const pick = elitePool[(episode * 7 + i * 13 + reincarnation * 19) % elitePool.length];
