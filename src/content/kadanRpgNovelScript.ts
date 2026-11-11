@@ -230,7 +230,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -678,7 +678,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -794,7 +794,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -930,7 +930,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -1056,7 +1056,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -10752,7 +10752,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -10896,7 +10896,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -11292,7 +11292,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -11408,7 +11408,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -11534,7 +11534,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -11886,7 +11886,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -12760,7 +12760,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -12986,7 +12986,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -13075,7 +13075,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": true
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -13334,7 +13334,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -13721,7 +13721,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",
@@ -25408,7 +25408,7 @@ export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgNovelScriptLine[]> 
           "isSpeaker": false
         },
         {
-          "cardId": 107,
+          "cardId": 34,
           "nameKo": "이셀라",
           "nameEn": "Ysela",
           "roleKo": "이그니스의 어머니 · 발리안의 아내 · 루시안에게 납치되어 불꽃 궁정에 갇힌 비운의 여인",

@@ -215,7 +215,7 @@ const encounter = (
 });
 
 export const KADAN_RPG_ENCOUNTERS: KadanRpgEncounter[] = [
-  encounter('enc-ch01', 'kadan_rpg_opp_ch01', [50, 42, 43, 107, 49], 'easy', 'reward-ch01', false),
+  encounter('enc-ch01', 'kadan_rpg_opp_ch01', [50, 42, 43, 34, 49], 'easy', 'reward-ch01', false),
   encounter('enc-ch02', 'kadan_rpg_opp_ch02', [49, 50, 42, 45, 46], 'easy', 'reward-ch02', false),
   encounter('enc-ch03', 'kadan_rpg_opp_ch03', [63, 45, 46, 44, 74], 'easy', 'reward-ch03', false),
   encounter('enc-ch04', 'kadan_rpg_opp_ch04', [50, 42, 47, 81, 45], 'easy', 'reward-ch04', false),
@@ -226,7 +226,7 @@ export const KADAN_RPG_ENCOUNTERS: KadanRpgEncounter[] = [
   encounter('enc-ch09', 'kadan_rpg_opp_ch09', [11, 50, 62, 89, 51], 'normal', 'reward-story', false),
   encounter('enc-ch10', 'kadan_rpg_opp_ch10', [62, 43, 61, 11, 50], 'normal', 'reward-ally', false),
   encounter('enc-ch11', 'kadan_rpg_opp_ch11', [62, 43, 50, 11, 42], 'normal', 'reward-story', false),
-  encounter('enc-ch12', 'kadan_rpg_opp_ch12', [43, 89, 11, 107, 49], 'hard', 'reward-ally', false),
+  encounter('enc-ch12', 'kadan_rpg_opp_ch12', [43, 89, 11, 34, 49], 'hard', 'reward-ally', false),
   encounter('enc-ch13', 'kadan_rpg_opp_ch13', [62, 61, 86, 50, 11], 'normal', 'reward-story', false),
   encounter('enc-ch14', 'kadan_rpg_opp_ch14', [62, 86, 46, 23, 50], 'normal', 'reward-story', false),
   encounter('enc-ch15', 'kadan_rpg_opp_ch15', [62, 61, 86, 89, 50], 'hard', 'reward-ally', false),
@@ -372,7 +372,7 @@ export const getDynamicKadanEncounter = (
 
   const cards = baseEncounter?.opponentCardIds
     ? [...baseEncounter.opponentCardIds.slice(0, 5)]
-    : [event.speakerCardId || 50, 42, 43, 107, 49];
+    : [event.speakerCardId || 50, 42, 43, 34, 49];
 
   return {
     id: encId,

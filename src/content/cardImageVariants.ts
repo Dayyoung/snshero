@@ -310,7 +310,7 @@ const ANIME_CUTOUT_FILENAME_BY_ID: Record<number, string> = {
   31: '031_Gaia.png',
   32: '032_Gnome.png',
   33: '033_Terra.png',
-  34: '034_Gorgon.png',
+  34: '034_Ysela.png',
   35: '035_Obelisk.png',
   36: '036_Grandrock.png',
   37: '037_Rokta.png',
@@ -383,7 +383,7 @@ const ANIME_CUTOUT_FILENAME_BY_ID: Record<number, string> = {
   104: '104_Bahamut.png',
   105: '105_Spikedragon.png',
   106: '106_Earth_Dragon_Terra.png',
-  107: '107_Ysela.png',
+  107: '107_Alexsta.png',
   108: '108_Alexstra.png',
   109: '109_Malygon.png',
   110: '110_Dreadwing.png',
@@ -408,18 +408,18 @@ export function getCardDisplayModeImageCandidates(
   if (mode === 'full7') {
     return cutoutFile
       ? [
-          `/anime-character-sheets/cutouts/${cutoutFile}?v=20261110v2`,
-          `/anime-character-sheets/busts/${pad3}_bust.png?v=20261110v2`,
+          `/anime-character-sheets/cutouts/${cutoutFile}?v=20261111v1`,
+          `/anime-character-sheets/busts/${pad3}_bust.png?v=20261111v1`,
         ]
       : [];
   }
 
   const candidates = [
-    `/anime-character-sheets/busts/${pad3}_bust.png?v=20261110v2`,
-    `/anime-character-sheets/busts/${pad3}_bust.jpg?v=20261110v2`,
+    `/anime-character-sheets/busts/${pad3}_bust.png?v=20261111v1`,
+    `/anime-character-sheets/busts/${pad3}_bust.jpg?v=20261111v1`,
   ];
   if (cutoutFile) {
-    candidates.push(`/anime-character-sheets/cutouts/${cutoutFile}?v=20261110v2`);
+    candidates.push(`/anime-character-sheets/cutouts/${cutoutFile}?v=20261111v1`);
   }
   return candidates;
 }

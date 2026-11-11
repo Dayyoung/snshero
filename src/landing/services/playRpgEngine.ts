@@ -1869,7 +1869,7 @@ export function getCardCombatStats(
     const rawCardSum = Math.max(4, rawTop + rawRight + rawBottom + rawLeft);
 
     const epDeck = getEpisodeActualOpponentDeck(chapter);
-    const oppIds = epDeck.cardIds.length === 5 ? epDeck.cardIds : [50, 42, 43, 107, 49];
+    const oppIds = epDeck.cardIds.length === 5 ? epDeck.cardIds : [50, 42, 43, 34, 49];
     const rawDeckSum = Math.max(
       20,
       oppIds.reduce((sum, cid) => {

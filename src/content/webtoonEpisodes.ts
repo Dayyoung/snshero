@@ -34,7 +34,7 @@ export interface WebtoonSeason {
 }
 
 const EPISODE_HERO_MAP: Record<number, { focusCardId: number; characterIds: number[] }> = {
-  1: { focusCardId: 41, characterIds: [41, 50, 43, 49, 42, 61, 107, 11] }, // Kadan, Aleksandar, Balian, Hercul, Elwin, Lucian, Ysela, Ignis
+  1: { focusCardId: 41, characterIds: [41, 50, 43, 49, 42, 61, 34, 11] }, // Kadan, Aleksandar, Balian, Hercul, Elwin, Lucian, Ysela, Ignis
   2: { focusCardId: 49, characterIds: [49, 50, 43, 45, 44, 46, 70, 74] }, // Hercul, Aleksandar, Balian, Gawain, Kaze, Rondol, Aila, Grimli
   3: { focusCardId: 41, characterIds: [41, 48, 13, 74, 45, 63, 89] }, // Kadan, Robinyard, Belphegor, Grimli, Gawain, Eliana, Medusa Gorgo
   4: { focusCardId: 41, characterIds: [41, 47, 50, 42, 81, 64, 13] }, // Kadan, Gilgamesh, Aleksandar, Elwin, Fenrir, Titania, Belphegor
@@ -42,14 +42,14 @@ const EPISODE_HERO_MAP: Record<number, { focusCardId: number; characterIds: numb
   6: { focusCardId: 41, characterIds: [41, 66, 74, 43, 11, 84, 64] }, // Kadan, Malfuon, Grimli, Balian, Ignis, Griffon, Titania
   7: { focusCardId: 41, characterIds: [41, 81, 87, 66, 88, 61, 64] }, // Kadan, Fenrir, Barghest, Malfuon, Ursoc, Lucian, Titania
   8: { focusCardId: 41, characterIds: [41, 62, 11, 63, 71, 90] }, // Kadan, Celia, Ignis, Eliana, Balbo, Pegasus
-  9: { focusCardId: 41, characterIds: [41, 11, 62, 51, 25, 61, 107] }, // Kadan, Ignis, Celia, Walker, Aeolus, Lucian, Ysela
-  10: { focusCardId: 41, characterIds: [41, 11, 43, 61, 62, 107, 51] }, // Kadan, Ignis, Balian, Lucian, Celia, Ysela, Walker
+  9: { focusCardId: 41, characterIds: [41, 11, 62, 51, 25, 61, 34] }, // Kadan, Ignis, Celia, Walker, Aeolus, Lucian, Ysela
+  10: { focusCardId: 41, characterIds: [41, 11, 43, 61, 62, 34, 51] }, // Kadan, Ignis, Balian, Lucian, Celia, Ysela, Walker
   11: { focusCardId: 41, characterIds: [41, 43, 11, 62, 13, 89, 74] }, // Kadan, Balian, Ignis, Celia, Belphegor, Medusa Gorgo, Grimli
-  12: { focusCardId: 41, characterIds: [41, 43, 11, 49, 61, 99, 107] }, // Kadan, Balian, Ignis, Hercul, Lucian, Magitech Golem, Ysela
+  12: { focusCardId: 41, characterIds: [41, 43, 11, 49, 61, 99, 34] }, // Kadan, Balian, Ignis, Hercul, Lucian, Magitech Golem, Ysela
   13: { focusCardId: 41, characterIds: [41, 86, 62, 11, 25, 90] }, // Kadan, Leonar, Celia, Ignis, Aeolus, Pegasus
   14: { focusCardId: 41, characterIds: [41, 46, 11, 62, 13, 61, 89] }, // Kadan, Rondol, Ignis, Celia, Belphegor, Lucian, Medusa Gorgo
   15: { focusCardId: 41, characterIds: [41, 86, 62, 11, 38, 13, 46] }, // Kadan, Leonar, Celia, Ignis, Orihalcon, Belphegor, Rondol
-  16: { focusCardId: 41, characterIds: [41, 11, 43, 62, 23, 46, 107] }, // Kadan, Ignis, Balian, Celia, Sylphid, Rondol, Ysela
+  16: { focusCardId: 41, characterIds: [41, 11, 43, 62, 23, 46, 34] }, // Kadan, Ignis, Balian, Celia, Sylphid, Rondol, Ysela
   17: { focusCardId: 41, characterIds: [41, 62, 46, 11, 84, 64, 81] }, // Kadan, Celia, Rondol, Ignis, Griffon, Titania, Fenrir
   18: { focusCardId: 41, characterIds: [41, 62, 11, 69, 99, 64] }, // Kadan, Celia, Ignis, Gandar, Magitech Golem, Titania
   19: { focusCardId: 41, characterIds: [41, 25, 62, 11, 45, 13, 69] }, // Kadan, Aeolus, Celia, Ignis, Gawain, Belphegor, Gandar
@@ -73,7 +73,7 @@ const EPISODE_HERO_MAP: Record<number, { focusCardId: number; characterIds: numb
   37: { focusCardId: 41, characterIds: [41, 62, 81, 61, 47, 11, 60] }, // Kadan, Celia, Fenrir, Lucian, Gilgamesh, Ignis, Death Knight Artus
   38: { focusCardId: 41, characterIds: [41, 61, 62, 47, 80, 70, 45] }, // Kadan, Lucian, Celia, Gilgamesh, Ironforge, Aila, Gawain
   39: { focusCardId: 41, characterIds: [41, 61, 62, 11, 5, 60, 90] }, // Kadan, Lucian, Celia, Ignis, Aqualord, Death Knight Artus, Pegasus
-  40: { focusCardId: 41, characterIds: [41, 62, 11, 50, 43, 47, 69, 107] }, // Kadan, Celia, Ignis, Aleksandar, Balian, Gilgamesh, Gandar, Ysela
+  40: { focusCardId: 41, characterIds: [41, 62, 11, 50, 43, 47, 69, 34] }, // Kadan, Celia, Ignis, Aleksandar, Balian, Gilgamesh, Gandar, Ysela
 };
 
 const buildSeasonEpisodes = (): WebtoonEpisode[] => {

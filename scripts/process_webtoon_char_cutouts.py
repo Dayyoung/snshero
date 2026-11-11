@@ -109,10 +109,10 @@ WEBTOON_GLAMOUR_OVERRIDES: dict[int, str] = {
         "cradling a glowing emerald life-seed orb between her hands"
     ),
     34: (
-        "Gorgon (고르곤), alluring 21-year-old female Venom Serpent Sorceress in Demon Slayer (ufotable Upper-Moon aesthetic) style; "
-        "hair of living emerald-green vipers, hypnotic golden-green eyes, seductive smirk; "
-        "voluptuous hourglass S-line figure standing on two human legs in an emerald-and-gold serpent-scale bikini bra top, bare midriff, and high-slit green silk skirt showing long bare legs; "
-        "holding a golden winged mirror staff"
+        "Ysela (이셀라), alluring 22-year-old pale-skinned horned priestess woman from the webtoon in Demon Slayer (ufotable) anime style; "
+        "snow-white porcelain skin, long straight silver-white hair, curved pearl-white dragon horns rising from her brow, luminous violet eyes; "
+        "voluptuous hourglass S-line figure in an ivory-white and gold halterneck high-slit gown showing her long bare legs; "
+        "cradling a glowing white lotus crystal orb between her palms"
     ),
     41: (
         "Kadan (카단), 18-year-old male dark-fantasy anime protagonist in Demon Slayer: Kimetsu no Yaiba (ufotable) style; "
@@ -145,10 +145,10 @@ WEBTOON_GLAMOUR_OVERRIDES: dict[int, str] = {
         "carrying an enormous dark-oak boat oar-staff banded with bronze rings in his right hand and a heavy golden-crested tower shield on his left arm"
     ),
     48: (
-        "Robinyard (로비냐드), glamorous and agile 20-year-old female Crimson Hood Forest Ranger in Demon Slayer (ufotable) anime style; "
-        "auburn-red hair beneath a stylish crimson-red ranger hood, sharp amber eyes, confident wink; "
-        "curvy hourglass S-line figure in a form-fitting forest-green and brown leather corset vest, short ranger skirt, and thigh-high leather boots showing bare thighs (zettai ryouiki); "
-        "holding an ornate golden-carved recurve longbow"
+        "Robinyard (로비냐드), handsome boyish 18-year-old male acrobat-scout archer from the webtoon in Demon Slayer (ufotable) anime style; "
+        "short messy spiky midnight-black hair, bright golden-amber eyes, confident boyish grin; "
+        "lean athletic male build in a sleeveless dark-navy stealth leather vest, black fingerless gloves, leather belt with silver bells and twin daggers, and dark combat boots; "
+        "holding a sleek black recurve scout bow"
     ),
     54: (
         "Arachne (아라크네), seductive 21-year-old female Spider-Demon Queen in Demon Slayer (ufotable Upper-Moon Daki aesthetic) style; "
@@ -216,10 +216,9 @@ WEBTOON_GLAMOUR_OVERRIDES: dict[int, str] = {
         "holding a twin-serpent amethyst staff"
     ),
     107: (
-        "Ysela (이셀라), glamorous 22-year-old female Starlight Dragon Priestess Queen in Demon Slayer (ufotable) anime style; "
-        "flowing royal-sapphire blue hair with curved golden dragon horns rising from her crown, luminous golden-violet eyes, majestic starry-blue dragon wings spread gracefully behind her back; "
-        "voluptuous hourglass S-line figure in a plunging royal-blue and gold dragon-scale corset gown with a high thigh slit revealing her long bare legs; "
-        "radiating regal draconic charisma"
+        "Alexsta (알렉스타), majestic and glamorous 24-year-old female Red Dragon Queen in Demon Slayer (ufotable) anime style (unmistakable homage to World of Warcraft's Alexstrasza the Life-Binder); "
+        "large sweeping curved dark-crimson dragon horns adorned with ornate golden rings rising from her temples, golden ruby tiara on forehead, flowing crimson-scarlet hair, glowing golden-amber dragon eyes; "
+        "voluptuous hourglass S-line figure in ornate crimson-red and gold dragon-scale bikini battle armor, bare toned midriff, golden dragon belt with scarlet front tabard, gold-trimmed crimson armored greaves, and regal gold-trimmed scarlet cape"
     ),
 }
 

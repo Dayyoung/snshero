@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 09:27 KST] [캐릭터 시트 8종 상반신 머리 잘림 무결점 보정 및 #034 이셀라·#048 로비냐드(남성)·#107 알렉스타(알렉스트라자 오마쥬) 리네이밍·원화 전면 재생성 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항 (8대 항목 전수 해결)**:
+    1. `#007 가르간티아` (`007_Gargantia_sheet.jpg`): 상반신 이미지 머리/주둥이 잘림 수정
+    2. `#016 무스펠` (`016_Muspel_sheet.jpg`): 상반신 이미지 화염 갈기/하악 잘림 수정
+    3. `#034 고르곤` ➔ **`#034 이셀라 (Ysela)`**: `#089 메두사 고르고`와의 혼동을 없애기 위해 `이셀라 (Ysela)`로 작명 변경 및 웹툰 속 매력적인 뿔난 순백의 여성 원화(전신·상반신·3등신 SD)로 신규 생성
+    4. `#048 로비냐드` (`048_Robinyard_sheet.jpg`): 웹툰 설정에 부합하는 보이쉬한 소년 곡예사 겸 척후 명궁 남성 캐릭터 원화(전신·상반신·3등신 SD)로 전면 재생성
+    5. `#077 무라디` (`077_Muradi_sheet.jpg`): 상반신 우측 날개 투구·머리 잘림 수정
+    6. `#082 미노타우로스` (`082_Minotaur_sheet.jpg`): 상반신 우측 뿔·머리 잘림 수정
+    7. `#085 바이라` (`085_Byra_sheet.jpg`): 상반신 좌측 아가리·화염 갈기 잘림 수정
+    8. `#107 이셀라` ➔ **`#107 알렉스타 (Alexsta)`**: 이름을 `알렉스타 (Alexsta)`로 변경하고 월드 오브 워크래프트 알렉스트라자(Alexstrasza) 오마쥬 외형(황금 링 거대 흑적색 곡선 용각, 루비 티아라, 진홍 장발, 진홍·황금 용비늘 배틀아머·망토)으로 원화(전신·상반신·3등신 SD) 전면 재생성
+  - **2. 세부 구현 및 에셋 동기화 내역**:
+    - [`scripts/build_110_anime_character_sheets.py`](file:///Users/dayyoung/project/snshero/scripts/build_110_anime_character_sheets.py): `CUSTOM_BUST_BOXES` 정밀 1:1 정방형 바운딩 박스를 도입하여 비대칭 포즈·사족 마수·광폭 뿔 캐릭터(`#007`, `#016`, `#034`, `#048`, `#077`, `#082`, `#085`, `#107`)의 상반신 크롭 시 뿔·투구·주둥이 잘림을 0%로 원천 차단하고, 패널 03(`3등신 CUTE SD & ACTION`)에 순정 3등신 SD 스프라이트 및 신규 3종(`034`, `048`, `107`) 전용 3등신 SD 원화를 매칭하여 110종 캐릭터 시트·진영 시트·통합 포스터·매니페스트·CSV 전수 재빌드 완료(구 URL 호환을 위해 `034_Gorgon_sheet.jpg`, `107_Ysela_sheet.jpg` 별칭도 동시 갱신).
+    - [`src/cardDatabase.ts`](file:///Users/dayyoung/project/snshero/src/cardDatabase.ts), [`src/landing/services/assetCatalog.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/assetCatalog.ts), [`src/content/cardImageVariants.ts`](file:///Users/dayyoung/project/snshero/src/content/cardImageVariants.ts): `#034 이셀라 (Ysela)` 및 `#107 알렉스타 (Alexsta)` DB·카탈로그·컷아웃 매핑 갱신, `public/seat/*.png`, `public/seat_attack/*.png`, `public/anime-character-sheets/sd/*.png`, `public/cards1.png`, `public/cards2.png` 전수 동기화 및 캐시 버전 `?v=20261111v1` 일괄 갱신.
+    - [`src/content/webtoonEpisodes.ts`](file:///Users/dayyoung/project/snshero/src/content/webtoonEpisodes.ts), [`src/content/webtoonEpisodeManifest.json`](file:///Users/dayyoung/project/snshero/src/content/webtoonEpisodeManifest.json), [`src/content/kadanRpgNovelScript.ts`](file:///Users/dayyoung/project/snshero/src/content/kadanRpgNovelScript.ts), [`src/content/kadanRpgStory.ts`](file:///Users/dayyoung/project/snshero/src/content/kadanRpgStory.ts), [`src/landing/services/playRpgEngine.ts`](file:///Users/dayyoung/project/snshero/src/landing/services/playRpgEngine.ts): 웹툰·소설 내 이셀라 화자 및 에피소드 등장 카드 ID를 `107` ➔ `34`로 정합성 있게 매핑.
+    - `src/lib/translations/{ko,en,gb,ja,zh-CN,zh-TW,de,es,fr,id,ru,th,vi}.ts`: 12개 다국어 언어팩 전수에서 `ip_card_34_*`, `ip_card_48_*`, `ip_card_107_*` 설정·대사·웹툰 훅 번역 업데이트 완료.
+  - **3. 검증 및 보고**:
+    - 8종 캐릭터 시트(`007`, `016`, `034`, `048`, `077`, `082`, `085`, `107`) 육안 검수 완료, `npm run build` 프로덕션 빌드 무결점 통과, `localhost:3000` 서빙 HTTP 200 검증, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-11 08:23 KST] [REA 역설계 기반 블리자드 하스스톤 오리지널 클래식(1.0.0.4944) 1:1 웹게임 복각 완료 (/game.html)]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

@@ -11,8 +11,10 @@ Builds the Complete 110-Character Animation Production Character Sheet Suite for
 """
 
 from collections import deque
+import io
 import json
 import math
+import subprocess
 import sys
 import textwrap
 from pathlib import Path
@@ -672,14 +674,43 @@ CUSTOM_BUST_SPECS: dict[int, tuple[float, float, float]] = {
 }
 
 
+CUSTOM_BUST_BOXES: dict[int, tuple[float, float, float, float]] = {
+    7:   (-0.02, -0.01, 0.94, 0.68),  # Gargantia: full turtle head/snout on left + pink crystal top + upper shell
+    16:  ( 0.14, -0.01, 0.93, 0.80),  # Muspel: full top magma spikes + full roaring head, eyes, fangs & lower jaw
+    34:  (-0.06, -0.01, 1.02, 0.47),  # Ysela: full pearl-white dragon horns + face + lotus orb + silver hair
+    48:  (-0.03, -0.01, 0.88, 0.46),  # Robinyard: full spiky black hair + boyish male face + quiver + vest
+    77:  ( 0.25, -0.01, 0.97, 0.61),  # Muradi: full right winged helmet + fiery beard + muscular chest + inner axe
+    82:  ( 0.23, -0.01, 1.01, 0.61),  # Minotaur: 100% of both bull horns + roaring nose-ring face + muscular chest
+    85:  (-0.02, -0.01, 0.71, 0.62),  # Byra: 100% of left snout/fangs + black horns + flame mane + chest
+    107: ( 0.12, -0.01, 0.92, 0.54),  # Alexsta: 100% of sweeping gold-ringed dragon horns + ruby tiara + armor
+}
+
+
 def extract_head_hair_bust(anime_cutout: Image.Image, cid: int) -> Image.Image:
     """
     Standardized Head, Hair & Chest Bust Extractor with Zero-Clip Crown Margin:
-    - Extracts 100% of the top hair/crown/tiara/horns (`y0 = 0`) down to the chest/upper torso (~48% height).
-    - Uses robust percentile trimming (p12..p88) on the head/shoulders zone (4%~32% height) to eliminate
-      stray weapon tips, magic sparks, or wide wing outliers while centering the character's head/face axis.
+    - Uses explicit zero-clip square bounding boxes for asymmetric/horned/quadruped characters in CUSTOM_BUST_BOXES.
+    - Otherwise extracts 100% of the top hair/crown/tiara/horns (`y0 = 0`) down to the chest/upper torso (~48% height).
     """
     aw, ah = anime_cutout.size
+    if cid in CUSTOM_BUST_BOXES:
+        fx0, fy0, fx1, fy1 = CUSTOM_BUST_BOXES[cid]
+        bx0, by0 = int(round(aw * fx0)), int(round(ah * fy0))
+        bx1, by1 = int(round(aw * fx1)), int(round(ah * fy1))
+        side = max(40, bx1 - bx0, by1 - by0)
+        cx = (bx0 + bx1) / 2.0
+        sx0 = int(round(cx - side / 2.0))
+        sx1 = sx0 + side
+        sy1 = by1
+        sy0 = sy1 - side
+        crop_canvas = Image.new("RGBA", (side, side), (0, 0, 0, 0))
+        cx0, cy0 = max(0, sx0), max(0, sy0)
+        cx1, cy1 = min(aw, sx1), min(ah, sy1)
+        if cx1 > cx0 and cy1 > cy0:
+            sub = anime_cutout.crop((cx0, cy0, cx1, cy1))
+            crop_canvas.paste(sub, (cx0 - sx0, cy0 - sy0), sub)
+        return crop_canvas
+
     cut_arr = np.array(anime_cutout)
     fg = cut_arr[:, :, 3] > 20
     ys, xs = np.where(fg)
@@ -1232,14 +1263,31 @@ def main() -> None:
         for cid_pad in range(1, 111):
             anime_cutouts[cid_pad] = clean_cutout_specks(anime_cutouts[cid_pad], keep_only_main=False)
 
-    # Load all 110 original 3-head chibi idle & attack sprites (read-only!)
-    cards1_atlas = Image.open(PROJECT_ROOT / "public" / "cards1.png").convert("RGBA")
+    # Load all 110 authentic 3-head chibi idle & attack sprites for Panel 03!
+    def _load_git_rgba(git_rel: str, fallback_path: Path) -> Image.Image:
+        try:
+            raw = subprocess.check_output(
+                ["git", "show", f"3d02cca57~1:{git_rel}"],
+                cwd=str(PROJECT_ROOT),
+                stderr=subprocess.DEVNULL,
+            )
+            return Image.open(io.BytesIO(raw)).convert("RGBA")
+        except Exception:
+            return Image.open(fallback_path).convert("RGBA")
+
+    cards1_atlas = _load_git_rgba("public/cards1.png", PROJECT_ROOT / "public" / "cards1.png")
+    new_chibi_dir = OUT_ROOT / "chibi_3head_new"
     chibi_idles: dict[int, Image.Image] = {}
     chibi_attacks: dict[int, Image.Image] = {}
     for cid in range(1, 111):
         sf = cards[cid]["seat_filename"]
-        if cid == 70:
-            # #070 Aila: read her canonical starry-blue 3-head chibi tile from public/cards1.png (row 7, col 10)
+        new_idle_p = new_chibi_dir / f"{cid:03d}_idle.png"
+        new_atk_p = new_chibi_dir / f"{cid:03d}_attack.png"
+        if new_idle_p.exists() and new_atk_p.exists():
+            chibi_idles[cid] = Image.open(new_idle_p).convert("RGBA")
+            chibi_attacks[cid] = Image.open(new_atk_p).convert("RGBA")
+        elif cid == 70:
+            # #070 Aila: read her canonical starry-blue 3-head chibi tile from cards1.png (row 7, col 10)
             aila_tile = cards1_atlas.crop((900, 600, 1000, 700)).resize((240, 240), Image.Resampling.LANCZOS)
             idle_70 = Image.new("RGBA", (256, 296), (0, 0, 0, 0))
             idle_70.paste(aila_tile, (8, 28), aila_tile)
@@ -1256,8 +1304,8 @@ def main() -> None:
             atk_70.alpha_composite(rot_aila, (12, 20))
             chibi_attacks[70] = atk_70
         else:
-            chibi_idles[cid] = Image.open(PROJECT_ROOT / "public" / "seat" / sf).convert("RGBA")
-            chibi_attacks[cid] = Image.open(PROJECT_ROOT / "public" / "seat_attack" / sf).convert("RGBA")
+            chibi_idles[cid] = _load_git_rgba(f"public/seat/{sf}", PROJECT_ROOT / "public" / "seat" / sf)
+            chibi_attacks[cid] = _load_git_rgba(f"public/seat_attack/{sf}", PROJECT_ROOT / "public" / "seat_attack" / sf)
 
     # 7. Save all 110 high-res cutouts & 110 individual 1600x1000 Studio Character Sheets + manifest
     manifest_entries = []
