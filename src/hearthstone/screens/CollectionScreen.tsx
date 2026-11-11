@@ -1226,7 +1226,7 @@ export const CollectionScreen: React.FC<{
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="hs-wood-panel relative max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-3xl p-5 text-amber-100 shadow-2xl sm:p-6"
+            className="hs-wood-panel relative max-h-[92%] w-full max-w-lg overflow-y-auto rounded-3xl p-5 text-amber-100 shadow-2xl sm:p-6"
           >
             <div className="mb-3 flex items-center justify-between border-b border-amber-500/35 pb-2.5">
               <div className="flex items-center gap-2">

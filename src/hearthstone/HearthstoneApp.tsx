@@ -49,6 +49,7 @@ export const HearthstoneApp: React.FC = () => {
     preferredOpponentClass?: HeroClass;
     boardTheme?: BoardThemeId;
     journeyEpisodeOverride?: number;
+    skipStoryIntro?: boolean;
   } | null>(null);
 
   // Popup checkout bridge state (only active inside window.open popup)
@@ -163,7 +164,7 @@ export const HearthstoneApp: React.FC = () => {
   }, [ready, popupBridge, popupReturnDone]);
 
   const launchJourneyBattle = useCallback(
-    (episodeOverride?: number) => {
+    (episodeOverride?: number, skipStoryIntro = false) => {
       hsStorage.markJourneyGuideDone();
       const decks = hsStorage.getDecks();
       const kadanDeck = decks.find((d) => d.heroClass === 'PRIEST') || decks[0];
@@ -175,6 +176,7 @@ export const HearthstoneApp: React.FC = () => {
         preferredOpponentClass: 'ROGUE',
         boardTheme: 'STORMWIND',
         journeyEpisodeOverride: episodeOverride,
+        skipStoryIntro,
       });
       refreshProfile();
       setScreen('BATTLE');
@@ -367,6 +369,7 @@ export const HearthstoneApp: React.FC = () => {
           preferredOpponentClass={activeBattleParams.preferredOpponentClass}
           preferredBoardTheme={activeBattleParams.boardTheme}
           journeyEpisodeOverride={activeBattleParams.journeyEpisodeOverride}
+          skipStoryIntro={activeBattleParams.skipStoryIntro}
           onOpenOptions={(concedeFn) =>
             setOptionsState({ open: true, inBattle: true, concedeFn })
           }
@@ -383,9 +386,9 @@ export const HearthstoneApp: React.FC = () => {
             setActiveBattleParams(null);
             setScreen('COLLECTION');
           }}
-          onStartJourneyEpisode={(ep) => {
+          onStartJourneyEpisode={(ep, skipStory) => {
             hsStorage.setJourneyProgress(ep, hsStorage.getProfile().journeyReincarnation);
-            launchJourneyBattle(ep);
+            launchJourneyBattle(ep, Boolean(skipStory));
           }}
           onExitBattle={() => {
             setReturnToJourneyActive(false);

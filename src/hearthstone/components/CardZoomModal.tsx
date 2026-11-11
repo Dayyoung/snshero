@@ -154,7 +154,7 @@ export const CardZoomModal: React.FC<CardZoomModalProps> = ({
       {/* Inner Card Inspection & Action Container (Stops propagation so only outer click cancels) */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="hs-wood-panel relative flex max-h-[94dvh] w-full max-w-[332px] flex-col items-center overflow-y-auto rounded-3xl px-3.5 pb-3.5 pt-2.5 text-amber-100 shadow-[0_26px_70px_rgba(0,0,0,0.95)] sm:max-w-[408px] sm:px-5 sm:pb-4 sm:pt-3.5"
+        className="hs-wood-panel relative flex max-h-[94%] w-full max-w-[332px] flex-col items-center overflow-y-auto rounded-3xl px-3.5 pb-3.5 pt-2.5 text-amber-100 shadow-[0_26px_70px_rgba(0,0,0,0.95)] sm:max-w-[408px] sm:px-5 sm:pb-4 sm:pt-3.5"
       >
         {/* Top Close Pill */}
         <button

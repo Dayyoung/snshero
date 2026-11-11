@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { hsAudio } from '../audio';
 import {
   KADAN_JOURNEY_EPISODES,
@@ -18,27 +18,60 @@ export interface KadanJourneyStoryModalProps {
   onCloseReview?: () => void;
 }
 
+const AUTO_START_MS = 3000;
+
 /**
  * 간결한 네컷 웹툰 에피소드 요약 + 해당 회차 공식 웹툰/소설 바로가기 모달
- * - 복잡한 장문/탭을 제거하고, 4컷 공식 웹툰 이미지와 핵심 한 줄 요약만 직관적으로 표시
- * - 하단에 해당 회차(1~40화)의 실제 웹툰(`/webtoon?ep=N`) 및 소설(`/book?ep=N`) 바로가기 링크 제공
+ * - 자동플레이(autoPlayEnabled) 활성 시 3초 카운트다운 후 자동으로 결투 시작
  */
 export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
   episode,
   reincarnation,
   maxClearedEpisode,
+  autoPlayEnabled,
   isMidBattleReview = false,
   onStartBattle,
   onCloseReview,
 }) => {
   const [viewingEpisode, setViewingEpisode] = useState<number>(episode);
   const [zoomedCutIdx, setZoomedCutIdx] = useState<number | null>(null);
+  const [autoPaused, setAutoPaused] = useState<boolean>(false);
+  const [remainingMs, setRemainingMs] = useState<number>(AUTO_START_MS);
+  const firedRef = useRef(false);
 
   const epDef = getJourneyEpisodeDef(viewingEpisode);
   const diffSpec = getJourneyDifficultySpec(viewingEpisode, reincarnation);
   const unlockedMax = Math.max(episode, maxClearedEpisode + 1, 1);
 
+  const isAutoTimerRunning =
+    autoPlayEnabled && !isMidBattleReview && !autoPaused && zoomedCutIdx === null;
+
+  useEffect(() => {
+    firedRef.current = false;
+    setRemainingMs(AUTO_START_MS);
+  }, [viewingEpisode]);
+
+  useEffect(() => {
+    if (!isAutoTimerRunning) return;
+    const tickMs = 100;
+    const id = window.setInterval(() => {
+      setRemainingMs((prev) => {
+        const next = Math.max(0, prev - tickMs);
+        if (next === 0 && !firedRef.current) {
+          firedRef.current = true;
+          window.setTimeout(() => {
+            hsAudio.playSfx('ui_click', 0.75);
+            onStartBattle(viewingEpisode !== episode ? viewingEpisode : undefined);
+          }, 0);
+        }
+        return next;
+      });
+    }, tickMs);
+    return () => window.clearInterval(id);
+  }, [isAutoTimerRunning, onStartBattle, viewingEpisode, episode]);
+
   const handleCloseOrStart = () => {
+    firedRef.current = true;
     hsAudio.playSfx('ui_click');
     if (isMidBattleReview && viewingEpisode === episode && onCloseReview) {
       onCloseReview();
@@ -47,12 +80,25 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
     onStartBattle(viewingEpisode !== episode ? viewingEpisode : undefined);
   };
 
+  const secsLeft = Math.max(1, Math.ceil(remainingMs / 1000));
+  const progressPct = Math.max(0, Math.min(100, ((AUTO_START_MS - remainingMs) / AUTO_START_MS) * 100));
+
   return (
     <div
       onClick={(e) => e.stopPropagation()}
       className="fixed inset-0 z-[120] flex items-center justify-center bg-black/82 p-2 backdrop-blur-sm sm:p-4"
     >
       <div className="hs-wood-panel relative flex max-h-[96%] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border-2 border-[#e2be75] shadow-[0_24px_70px_rgba(0,0,0,0.95)] sm:rounded-3xl">
+        {/* Auto-Advance 3s Top Progress Bar */}
+        {isAutoTimerRunning && (
+          <div className="h-1.5 w-full bg-stone-900">
+            <div
+              style={{ width: `${progressPct}%` }}
+              className="h-full bg-gradient-to-r from-emerald-400 via-sky-400 to-amber-300 transition-all duration-100"
+            />
+          </div>
+        )}
+
         {/* Compact Top Header */}
         <header className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-500/30 bg-stone-950/85 px-3.5 py-2.5 sm:px-5 sm:py-3">
           <div className="flex min-w-0 items-center gap-2.5">
@@ -69,11 +115,26 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
+            {autoPlayEnabled && !isMidBattleReview && (
+              <button
+                type="button"
+                onClick={() => setAutoPaused((p) => !p)}
+                className={`rounded-lg border px-2.5 py-1 text-xs font-extrabold transition ${
+                  !autoPaused
+                    ? 'border-emerald-300/70 bg-emerald-950/90 text-emerald-200'
+                    : 'border-amber-400/50 bg-stone-900 text-amber-200'
+                }`}
+              >
+                {!autoPaused ? `⏱ 자동 진행 ${secsLeft}초 (정지)` : '▶ 자동 진행 재개'}
+              </button>
+            )}
+
             <select
               aria-label="에피소드 선택"
               value={viewingEpisode}
               onChange={(e) => {
                 hsAudio.playSfx('card_flip', 0.7);
+                setAutoPaused(true);
                 setZoomedCutIdx(null);
                 setViewingEpisode(Number(e.target.value));
               }}
@@ -106,7 +167,10 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
             {epDef.scenes.slice(0, 4).map((cut, idx) => (
               <div
                 key={cut.stageLabel}
-                onClick={() => setZoomedCutIdx(zoomedCutIdx === idx ? null : idx)}
+                onClick={() => {
+                  setAutoPaused(true);
+                  setZoomedCutIdx(zoomedCutIdx === idx ? null : idx);
+                }}
                 className="group relative flex cursor-pointer flex-col overflow-hidden rounded-xl border-2 border-[#c8a158]/75 bg-stone-950 shadow-lg transition hover:border-amber-300"
               >
                 {/* 16:9 Official Webtoon Artwork */}
@@ -150,7 +214,10 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
               href={epDef.webtoonEpisodeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => hsAudio.playSfx('ui_click', 0.7)}
+              onClick={() => {
+                setAutoPaused(true);
+                hsAudio.playSfx('ui_click', 0.7);
+              }}
               className="hs-brass-btn inline-flex min-h-[40px] items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-extrabold text-amber-100 sm:text-sm"
             >
               <span>🎨</span>
@@ -161,7 +228,10 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
               href={epDef.novelEpisodeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => hsAudio.playSfx('ui_click', 0.7)}
+              onClick={() => {
+                setAutoPaused(true);
+                hsAudio.playSfx('ui_click', 0.7);
+              }}
               className="hs-brass-btn inline-flex min-h-[40px] items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-extrabold text-amber-100 sm:text-sm"
             >
               <span>📖</span>
@@ -176,7 +246,9 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
           >
             {isMidBattleReview && viewingEpisode === episode
               ? '⚔ 전장으로 돌아가기'
-              : `⚔ 제${epDef.episode}화 결투 시작`}
+              : isAutoTimerRunning
+                ? `⚔ 제${epDef.episode}화 결투 시작 (${secsLeft}초)`
+                : `⚔ 제${epDef.episode}화 결투 시작`}
           </button>
         </footer>
 

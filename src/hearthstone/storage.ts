@@ -452,6 +452,69 @@ class HearthstoneStorage {
     return results;
   }
 
+  /**
+   * 『카단의 여정』 패배 시 단일 카드 1장 즉시 뽑기 (보유 골드 20G 이상이면 20G 사용, 부족 시 성소 무상 구호 보급)
+   * 뽑은 카드는 즉시 로컬스토리지 도감에 영구 합산되며 3장 이상 달성 시 ×3배(N장=N배) 각성이 즉시 반영됩니다.
+   */
+  drawSingleReinforcementCard(): {
+    drawn: OpenedPackCard;
+    goldSpent: number;
+  } {
+    const p = this.getProfile();
+    const SINGLE_DRAW_COST = 20;
+    let goldSpent = 0;
+    if (p.gold >= SINGLE_DRAW_COST) {
+      p.gold -= SINGLE_DRAW_COST;
+      goldSpent = SINGLE_DRAW_COST;
+      this.saveProfile(p);
+    }
+
+    const col = this.getCollection();
+    const allCollectible = cardDb.getAllCollectible();
+    const byRarity: Record<CardRarity, ClassicCardDef[]> = {
+      FREE: allCollectible.filter((c) => c.rarity === 'FREE'),
+      COMMON: allCollectible.filter((c) => c.rarity === 'COMMON' || c.rarity === 'FREE'),
+      RARE: allCollectible.filter((c) => c.rarity === 'RARE'),
+      EPIC: allCollectible.filter((c) => c.rarity === 'EPIC'),
+      LEGENDARY: allCollectible.filter((c) => c.rarity === 'LEGENDARY'),
+    };
+
+    const r = Math.random();
+    let rar: CardRarity = 'COMMON';
+    if (r < 0.04) rar = 'LEGENDARY';
+    else if (r < 0.15) rar = 'EPIC';
+    else if (r < 0.4) rar = 'RARE';
+
+    const pool = byRarity[rar].length > 0 ? byRarity[rar] : byRarity.COMMON;
+    let picked = pool[Math.floor(Math.random() * pool.length)];
+
+    // Help players reach exciting 3-copy (×3배) awakenings smoothly on Journey retries
+    if (Math.random() < 0.48) {
+      const candidates = pool.filter(
+        (c) => hasCombatStatsForJourney(c) && (col[c.id] || 0) >= 2 && (col[c.id] || 0) < 6,
+      );
+      if (candidates.length > 0) {
+        picked = candidates[Math.floor(Math.random() * candidates.length)];
+      }
+    }
+
+    const prevCount = col[picked.id] || 0;
+    const nextCount = prevCount + 1;
+    col[picked.id] = nextCount;
+    this.saveCollection(col);
+
+    return {
+      drawn: {
+        card: picked,
+        isGolden: Math.random() < 0.08,
+        isNew: prevCount === 0,
+        newOwnedCount: nextCount,
+        newJourneyMultiplier: getJourneyCardMultiplier(picked, nextCount),
+      },
+      goldSpent,
+    };
+  }
+
   craftCard(cardId: string): { ok: boolean; reason?: string } {
     const def = cardDb.getCard(cardId);
     if (!def) {

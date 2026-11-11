@@ -21211,3 +21211,15 @@
   6. **모바일 랜드스케이프 단일 화면 균등 스케일링 및 다크 골드 레터박스 (`GameAdSenseLayout.tsx`, `hearthstone.css`, `stageCoords.ts`, `BoardVfxCanvas.tsx`)**:
      - 모바일 가로 모드(`844×390`, `667×375` 등)에서 UI가 잘리지 않고 한 화면에 100% 표시되도록 `ResizeObserver` 기반 균등 축소(`transform: scale`) 및 다크 골드 레터박스/필러박스와 스테이지 좌표 정규화 적용.
 - **검증 결과**: `npx tsc --noEmit` (`src/hearthstone`, `src/stone`) 0 에러, `npm run build` 성공, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+
+### 2026-11-11 16:49 KST | `/game.html` 『카단의 여정』 자동플레이 전 구간 3초 자동이동 & 패배 시 카드 1장 소환 후 해당 에피소드 자동 재도전 루프 구현 완료
+- **작업 내역**:
+  1. **에피소드 4컷 웹툰 팝업 3초 자동 진행 (`src/hearthstone/components/KadanJourneyStoryModal.tsx`)**:
+     - 자동플레이(`autoPlayEnabled`) 시 상단 진행 바 및 3초 카운트다운(`⏱ 자동 진행 3초...`) 후 자동으로 결투 시작(일시정지 토글 및 컷 확대/외부 링크 클릭 시 자동 정지 보호 포함).
+  2. **승리/패배 결과창 3초 자동 이동 및 패배 시 영웅 카드 1장 뽑기 → 동일 에피소드 즉시 자동플레이 재도전 (`src/hearthstone/storage.ts`, `src/hearthstone/screens/BattleScreen.tsx`, `src/hearthstone/HearthstoneApp.tsx`)**:
+     - 승리 팝업: 자동플레이 활성 시 3초 카운트다운 후 다음 에피소드(`제M화`)로 자동 이동.
+     - 패배 팝업: 자동플레이 활성 시 3초 후 `drawSingleReinforcementCard()`를 통해 영웅 카드 1장을 즉시 뽑아 3D 회전 오픈 연출 및 `×3배(N장=N배)` 각성 여부를 표시하고, 다시 3초 후 강화된 덱으로 **해당 에피소드를 즉시 자동플레이로 재도전**(`skipStoryIntro = true`)하도록 완비.
+  3. **스케일 스테이지 내부 모달 높이 단위 정규화 (`BattleScreen.tsx`, `CollectionScreen.tsx`, `CardZoomModal.tsx`)**:
+     - 모바일 랜드스케이프 스테이지 스케일링 시 모달 높이가 잘리지 않도록 `dvh`를 스테이지 상대 `%` 단위로 통일.
+- **검증 결과**: `npx tsc --noEmit` 0 에러, `npm run build` 성공, 로컬 Git 커밋 및 구글 폼 보고 완료.
