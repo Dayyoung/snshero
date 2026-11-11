@@ -87,7 +87,7 @@
 
 ### 4.4 영웅·덱 선택 ([`HeroDeckSelectScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/HeroDeckSelectScreen.tsx)), 팩 개봉 제단 ([`PackOpeningScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/PackOpeningScreen.tsx)), 7v7 전장 ([`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx))
 - **영웅 선택**: 3×3 영웅/덱 초상화 액자(`crest_*.webp` 직업 문장 부착) + 우측 영웅 대형 아치 쇼케이스 + 등급 메달(`medal_classic.webp` / `medal_legend.webp`) + 석조 소용돌이 **`대전 시작` (`play_swirl_medallion.webp`)** 원형 버튼.
-- **팩 개봉 제단**: 고대 석조 룬 제단 + 드래그 슬롯 + 개봉 시 `512x` 공식 한국어 카드 렌더 5장 3D 플립 및 등급별 실루엣 광채.
+- **팩 개봉 제단**: 고대 석조 룬 제단 + 마력 떨림(`hsPackTremble`) 및 충격파 섬광 개봉 연출 → 중앙에서 5각 오각형(Pentagon) 대형으로 방사형 사출 → 비동기 사인파 부유(`hsPackCardFloat`, 공중 부양 그림자 동반) + 양면 3D 원근 회전(`preserve-3d` `rotateY(0deg → 180deg)` + `hsCardFlipLift` 도약 + `hsFlipBurstRing` 등급 충격파) 및 `5장 한 번에 뒤집기` 순차 연쇄 개봉 지원.
 - **7v7 전장**:
   - 우측 중앙 공식 석조 턴 종료 버튼: 플레이 가능한 행동이 남아 있으면 노란색 **`턴 종료` (`endturn_yellow.webp`)**, 행동이 모두 끝났으면 초록색 **`할 일 없음` (`endturn_green.webp`)**, 상대 턴에는 석판 **`상대 턴` (`endturn_stone.webp`)**으로 자동 전환.
   - 영웅 방어도 `armor_shield.webp`, 직업별 비밀 구체 `secret_mage/hunter/paladin.webp`, 부채꼴 알파 PNG 손패 및 실루엣 발광 일관 적용.
