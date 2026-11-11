@@ -9,6 +9,7 @@ export interface AudioSettings {
   voVolume: number;
   muted: boolean;
   vibrateEnabled: boolean;
+  ttsEnabled: boolean;
 }
 
 export type AttackVibrationKind =
@@ -30,6 +31,7 @@ const DEFAULT_AUDIO: AudioSettings = {
   voVolume: 0.88,
   muted: false,
   vibrateEnabled: true,
+  ttsEnabled: true,
 };
 
 export interface DamageVibrationSpec {
@@ -315,6 +317,10 @@ class SnsHeroCardAudioEngine {
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(this.settings));
     } catch {
       // ignore
+    }
+    if (patch.ttsEnabled === false) {
+      this.stopStoryNarration();
+      this.cancelTts();
     }
     if (patch.vibrateEnabled === false) {
       this.activeVibrateUntil = 0;
@@ -730,6 +736,7 @@ class SnsHeroCardAudioEngine {
     this.storyManuallyPaused = false;
 
     if (
+      !this.settings.ttsEnabled ||
       typeof window === 'undefined' ||
       this.settings.muted ||
       this.settings.voVolume <= 0
@@ -909,6 +916,7 @@ class SnsHeroCardAudioEngine {
   }
 
   private async announceHeroName(nameKo: string): Promise<void> {
+    if (!this.settings.ttsEnabled) return;
     const trimmed = nameKo.trim();
     if (!trimmed) return;
     const map = await this.loadHeroNameVoMap();
@@ -925,6 +933,7 @@ class SnsHeroCardAudioEngine {
    */
   speakTts(text: string, rate = 1.0, pitch = 0.82): Promise<void> {
     if (
+      !this.settings.ttsEnabled ||
       typeof window === 'undefined' ||
       !('speechSynthesis' in window) ||
       !this.isWindowActive ||

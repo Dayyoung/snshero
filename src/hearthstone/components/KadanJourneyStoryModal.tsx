@@ -43,6 +43,7 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
   const [autoPaused, setAutoPaused] = useState<boolean>(isMidBattleReview);
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [useSilentFallbackTimer, setUseSilentFallbackTimer] = useState<boolean>(false);
+  const [ttsEnabled, setTtsEnabled] = useState<boolean>(() => hsAudio.getSettings().ttsEnabled);
 
   const firedRef = useRef(false);
   const nextStepTimeoutRef = useRef<number | null>(null);
@@ -314,20 +315,44 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
 
           <div className="flex items-center gap-1.5 sm:gap-2">
             {!isMidBattleReview && (
-              <button
-                type="button"
-                data-testid="story-pause-toggle"
-                onClick={handleTogglePause}
-                className={`min-h-[32px] rounded-lg border px-2.5 py-1 text-[11px] font-extrabold transition sm:text-xs ${
-                  !autoPaused
-                    ? 'border-emerald-300/70 bg-emerald-950/90 text-emerald-200'
-                    : 'border-amber-400/60 bg-stone-900 text-amber-200'
-                }`}
-              >
-                {!autoPaused
-                  ? `⏸ ${activeCutIdx + 1}/${totalCuts}컷 (일시정지)`
-                  : '▶ 이어 듣기'}
-              </button>
+              <>
+                <button
+                  type="button"
+                  data-testid="story-tts-toggle"
+                  onClick={() => {
+                    const next = !ttsEnabled;
+                    hsAudio.playSfx('ui_click', 0.7);
+                    hsAudio.updateSettings({ ttsEnabled: next });
+                    setTtsEnabled(next);
+                    if (!next) {
+                      setIsSpeaking(false);
+                      setUseSilentFallbackTimer(true);
+                    }
+                  }}
+                  className={`min-h-[32px] rounded-lg border px-2.5 py-1 text-[11px] font-extrabold transition sm:text-xs ${
+                    ttsEnabled
+                      ? 'border-sky-300/70 bg-sky-950/90 text-sky-200'
+                      : 'border-stone-500/60 bg-stone-900 text-stone-300'
+                  }`}
+                >
+                  {ttsEnabled ? '🔊 낭독 ON' : '🔇 낭독 OFF'}
+                </button>
+
+                <button
+                  type="button"
+                  data-testid="story-pause-toggle"
+                  onClick={handleTogglePause}
+                  className={`min-h-[32px] rounded-lg border px-2.5 py-1 text-[11px] font-extrabold transition sm:text-xs ${
+                    !autoPaused
+                      ? 'border-emerald-300/70 bg-emerald-950/90 text-emerald-200'
+                      : 'border-amber-400/60 bg-stone-900 text-amber-200'
+                  }`}
+                >
+                  {!autoPaused
+                    ? `⏸ ${activeCutIdx + 1}/${totalCuts}컷 (일시정지)`
+                    : '▶ 이어 듣기'}
+                </button>
+              </>
             )}
 
             <select
@@ -377,7 +402,7 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/45" />
 
-                {/* Cut Stage Badge + Step Counter + Studio Male Voiceover Pill */}
+                {/* Cut Stage Badge + Step Counter + Voice Status Pill */}
                 <div className="absolute left-3 top-2.5 flex flex-wrap items-center gap-2">
                   <span
                     data-testid="story-cut-stage-label"
@@ -388,7 +413,15 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
                   <span className="rounded-md border border-amber-400/50 bg-amber-950/85 px-2 py-0.5 text-[11px] font-extrabold text-amber-200">
                     {activeCutIdx + 1} / {totalCuts}
                   </span>
-                  {isSpeaking && (
+                  {!ttsEnabled ? (
+                    <span
+                      data-testid="story-silent-reading-badge"
+                      className="inline-flex items-center gap-1 rounded-md border border-stone-500/70 bg-stone-900/90 px-2 py-0.5 text-[11px] font-bold text-stone-300 shadow"
+                    >
+                      <span>📖</span>
+                      <span>자막 독서 모드 (TTS 꺼짐)</span>
+                    </span>
+                  ) : isSpeaking ? (
                     <span
                       data-testid="story-voice-playing-badge"
                       className="inline-flex animate-pulse items-center gap-1 rounded-md border border-emerald-400/70 bg-emerald-950/90 px-2 py-0.5 text-[11px] font-extrabold text-emerald-300 shadow"
@@ -396,7 +429,7 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
                       <span>🎙</span>
                       <span>성우 내레이션 낭독 중</span>
                     </span>
-                  )}
+                  ) : null}
                 </div>
 
                 {/* Subtle Location & Matchup Tag in Bottom-Right Corner */}

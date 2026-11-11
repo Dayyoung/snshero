@@ -2,6 +2,27 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-12 08:58 KST] [/game.html 설정창 내 TTS 및 스토리 음성 낭독 ON/OFF 토글 스위치 및 스토리 모달 즉시 전환 기능 구현 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"TTS읽어주기를 싫어하는 사람도 있을것 같아. 설정창에 TTS 읽기 끌수있게 해줘."`
+  - **2. 세부 구현 내역**:
+    1. **오디오 설정 엔진 확장 ([`audio.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/audio.ts))**:
+       - `AudioSettings` 인터페이스에 `ttsEnabled: boolean` 필드를 신설하고, 기본값 `true`로 설정 및 로컬스토리지(`hero_hs_settings`) 영구 저장/복원 연동.
+       - `updateSettings({ ttsEnabled: false })` 호출 시 진행 중이던 스토리 성우 오디오 낭독 및 Web Speech API TTS 발화를 즉시 정지(`stopStoryNarration()`, `cancelTts()`)하도록 보호.
+       - `speakTts()`, `announceHeroName()`, `playStoryNarration()`에 `!this.settings.ttsEnabled` 즉시 차단 가드를 적용하여, TTS 비활성화 시 소리 없이 편안한 자막 독서 타이머 모드로 자동 전환되도록 구현.
+    2. **환경 설정 팝업 내 전용 토글 UI 구현 ([`Modals.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/Modals.tsx))**:
+       - `GameOptionsModal` 환경 설정 모달에 `스토리 낭독 & TTS 읽어주기` 전용 항목을 신설.
+       - `[TTS 켜짐 (에메랄드)]` ↔ `[TTS 꺼짐 (스톤 그레이)]` 상태를 직관적인 원클릭 토글 버튼으로 제공하여 음성 듣기를 원치 않는 사용자가 언제든 끌 수 있도록 지원.
+    3. **에피소드 스토리 모달 빠른 ON/OFF 편의 기능 ([`KadanJourneyStoryModal.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/KadanJourneyStoryModal.tsx))**:
+       - 스토리 화면 상단 헤더에 `[🔊 낭독 ON]` / `[🔇 낭독 OFF]` 미니 토글 버튼을 추가하여 설정창을 열지 않고도 스토리 감상 중 즉시 낭독을 끄거나 켤 수 있도록 UX 편의 극대화.
+       - TTS가 꺼져 있을 때는 상단 뱃지가 `📖 자막 독서 모드 (TTS 꺼짐)`으로 전환되어 자막에 온전히 집중할 수 있도록 안내.
+  - **3. 검증 및 빌드**:
+    - `npx tsc --noEmit -p tsconfig.json 2>&1 | grep "src/hearthstone"` 결과 0 에러 무결점 확인.
+    - `npm run build` 프로덕션 전체 빌드 59초 만에 정상 성공.
+    - 구글 폼 보고서 제출 및 로컬 Git 커밋 완료 (`git push` 미실행 원칙 준수).
+
 ## [2026-11-12 08:49 KST] [/game.html 스토리모드 40화 전체 5컷 기승전결 요약 전면 재작성 · 문장 낭독 도중 화면 전환 차단(오디오 완료 동기화) · 스튜디오 한국어 남성 성우(243종 MP3) 전면 교체 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

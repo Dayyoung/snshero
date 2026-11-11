@@ -1356,6 +1356,33 @@ export const GameOptionsModal: React.FC<{
           <div className="flex items-center justify-between gap-2 border-t border-amber-500/20 pt-3">
             <div className="min-w-0">
               <div className="text-sm font-extrabold text-amber-100">
+                스토리 낭독 & TTS 읽어주기
+              </div>
+              <div className="mt-0.5 text-[11px] font-semibold text-amber-200/75">
+                에피소드 5컷 요약 문구 및 영웅명 음성 낭독 (끄면 자막만 표시)
+              </div>
+            </div>
+            <button
+              type="button"
+              data-testid="toggle-tts-reading"
+              onClick={() => {
+                const nextEnabled = !settings.ttsEnabled;
+                hsAudio.playSfx('ui_click', 0.75);
+                update({ ttsEnabled: nextEnabled });
+              }}
+              className={`min-h-[38px] shrink-0 rounded-lg border px-3.5 py-1.5 text-xs font-extrabold transition ${
+                settings.ttsEnabled
+                  ? 'border-emerald-300/60 bg-emerald-800 text-white'
+                  : 'border-stone-400/50 bg-stone-800 text-stone-200'
+              }`}
+            >
+              {settings.ttsEnabled ? 'TTS 켜짐' : 'TTS 꺼짐'}
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between gap-2 border-t border-amber-500/20 pt-3">
+            <div className="min-w-0">
+              <div className="text-sm font-extrabold text-amber-100">
                 공격 시 진동 (Android)
               </div>
               <div className="mt-0.5 text-[11px] font-semibold text-amber-200/75">
