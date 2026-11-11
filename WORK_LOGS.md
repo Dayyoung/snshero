@@ -21325,3 +21325,11 @@
   2. **`BoardMinionToken` 언마운트 클린업 및 마우스 전용 포인터 가드 (`src/hearthstone/components/CardVisual.tsx`)**:
      - `BoardMinionToken`이 호버 상태에서 언마운트되거나 물리 공격 숨김(`isAttackingHidden`) 상태로 전환될 때 `useEffect` cleanup으로 `onHoverChange(false)`를 보장 호출하고, 터치 기기의 합성 호버 고착을 막기 위해 `e.pointerType === 'mouse'`일 때만 동작하도록 개선.
 - **검증 결과**: `src/hearthstone` TypeScript 에러 0건, `npm run build` 프로덕션 빌드 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+
+### 2026-11-12 07:43 KST | `/game.html` 창 포커스 이탈 시 오디오 자동 일시중지 및 초점 복귀 시 자동 재개 구현 완료
+- **작업 내역**:
+  1. **창 포커스·가시성 상태 연동 전 채널 오디오 제어 (`src/hearthstone/audio.ts`)**:
+     - `window`의 `blur` / `focus` / `pagehide` / `pageshow` 및 `document`의 `visibilitychange` 이벤트를 연동하여 게임 창이 초점을 잃거나 탭 전환·최소화·백그라운드로 전환되면(`suspendForFocusLoss`) 재생 중인 BGM(`currentBgm.pause()`), 효과음(`activeSfx` 일괄 정지), 성우 음성(`currentVo`), WebAudio 컨텍스트(`ctx.suspend()`), 햅틱 진동(`navigator.vibrate(0)`)을 즉시 중지하고 비활성 중 신규 사운드 재생을 차단.
+     - 게임 창에 다시 초점이 맞춰지면(`resumeForFocusGain`) 음소거(`muted`)가 아닌 경우 `AudioContext`를 `resume()`하고 진행 중이던(또는 비활성 중 새로 전환된) BGM을 자동으로 이어서 재생 시작하도록 구현.
+- **검증 결과**: `src/hearthstone` TypeScript 에러 0건, `npm run build` 프로덕션 빌드 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.

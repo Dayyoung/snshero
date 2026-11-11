@@ -32,15 +32,90 @@ const DEFAULT_AUDIO: AudioSettings = {
   vibrateEnabled: true,
 };
 
-const VIBRATION_SPECS: Record<
-  AttackVibrationKind,
-  { strength: number; pattern: number | number[]; durationMs: number }
-> = {
-  LIGHT_HIT: { strength: 1, pattern: 26, durationMs: 32 },
-  NORMAL_ATTACK: { strength: 2, pattern: 42, durationMs: 52 },
-  HERO_HIT: { strength: 3, pattern: [36, 22, 48], durationMs: 115 },
-  HEAVY_ATTACK: { strength: 4, pattern: [52, 28, 78], durationMs: 170 },
-  HERO_FINISHER: { strength: 5, pattern: [65, 35, 95, 40, 125], durationMs: 375 },
+export interface DamageVibrationSpec {
+  tier: 'MICRO' | 'LIGHT' | 'MEDIUM' | 'HEAVY' | 'COLOSSAL' | 'FINISHER';
+  strength: number;
+  pattern: number | number[];
+  durationMs: number;
+}
+
+/**
+ * 카드가 주고받는 데미지(dealt + counterReceived 또는 주문 피해량)에 비례한 6단계 정밀 햅틱 진동 스펙 계산
+ */
+export function computeDamageVibrationSpec(
+  rawDamage: number,
+  isFinisher = false,
+): DamageVibrationSpec {
+  const dmg = Math.max(1, Math.round(rawDamage || 1));
+  if (isFinisher) {
+    return {
+      tier: 'FINISHER',
+      strength: 120,
+      pattern: [85, 28, 120, 28, 165],
+      durationMs: 435,
+    };
+  }
+  if (dmg <= 2) {
+    // 1~2 데미지: 짧고 가벼운 미세 톡 진동 (18ms ~ 24ms)
+    const ms = 12 + dmg * 6;
+    return {
+      tier: 'MICRO',
+      strength: dmg,
+      pattern: ms,
+      durationMs: ms + 10,
+    };
+  }
+  if (dmg <= 4) {
+    // 3~4 데미지: 선명한 단타 진동 (34ms ~ 42ms)
+    const ms = 10 + dmg * 8;
+    return {
+      tier: 'LIGHT',
+      strength: dmg,
+      pattern: ms,
+      durationMs: ms + 12,
+    };
+  }
+  if (dmg <= 7) {
+    // 5~7 데미지: 2단 중타 충돌 진동
+    const p1 = Math.round(26 + dmg * 3.2);
+    const p2 = Math.round(36 + dmg * 4.2);
+    return {
+      tier: 'MEDIUM',
+      strength: dmg,
+      pattern: [p1, 22, p2],
+      durationMs: p1 + 22 + p2 + 12,
+    };
+  }
+  if (dmg <= 11) {
+    // 8~11 데미지: 묵직한 2단 강타 충돌 진동
+    const p1 = Math.round(38 + dmg * 2.8);
+    const p2 = Math.round(54 + dmg * 3.8);
+    return {
+      tier: 'HEAVY',
+      strength: dmg,
+      pattern: [p1, 24, p2],
+      durationMs: p1 + 24 + p2 + 14,
+    };
+  }
+  // 12+ 데미지 (거대 전설 하수인 또는 스토리모드 배수 격돌): 3단 대격돌 파열 진동
+  const capped = Math.min(28, dmg);
+  const p1 = Math.min(96, Math.round(52 + capped * 1.6));
+  const p2 = Math.min(132, Math.round(70 + capped * 2.1));
+  const p3 = Math.min(168, Math.round(90 + capped * 2.6));
+  return {
+    tier: 'COLOSSAL',
+    strength: Math.min(110, dmg),
+    pattern: [p1, 26, p2, 26, p3],
+    durationMs: p1 + 26 + p2 + 26 + p3 + 16,
+  };
+}
+
+const KIND_TO_DAMAGE: Record<AttackVibrationKind, { dmg: number; finisher?: boolean }> = {
+  LIGHT_HIT: { dmg: 2 },
+  NORMAL_ATTACK: { dmg: 4 },
+  HERO_HIT: { dmg: 6 },
+  HEAVY_ATTACK: { dmg: 9 },
+  HERO_FINISHER: { dmg: 20, finisher: true },
 };
 
 class SnsHeroCardAudioEngine {
@@ -48,8 +123,11 @@ class SnsHeroCardAudioEngine {
   private currentBgm: HTMLAudioElement | null = null;
   private currentBgmKey: string | null = null;
   private currentVo: HTMLAudioElement | null = null;
+  private currentVoResolve: (() => void) | null = null;
+  private activeSfx = new Set<HTMLAudioElement>();
   private ctx: AudioContext | null = null;
   private unlocked = false;
+  private isWindowActive = true;
   private activeVibrateUntil = 0;
   private activeVibrateStrength = 0;
 
@@ -69,18 +147,114 @@ class SnsHeroCardAudioEngine {
     }
 
     if (typeof window !== 'undefined') {
-      const unlock = () => {
-        this.unlocked = true;
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume().catch(() => {});
-        }
-        if (this.currentBgm && !this.settings.muted && this.currentBgm.paused) {
-          this.currentBgm.play().catch(() => {});
+      if (typeof document !== 'undefined') {
+        this.isWindowActive =
+          !document.hidden &&
+          (typeof document.hasFocus !== 'function' || document.hasFocus());
+      }
+
+      const handleBlur = () => {
+        this.suspendForFocusLoss();
+      };
+
+      const handleFocus = () => {
+        this.resumeForFocusGain();
+      };
+
+      const handleVisibilityChange = () => {
+        if (typeof document === 'undefined') return;
+        if (document.hidden) {
+          this.suspendForFocusLoss();
+        } else if (typeof document.hasFocus !== 'function' || document.hasFocus()) {
+          this.resumeForFocusGain();
         }
       };
+
+      const unlock = () => {
+        this.unlocked = true;
+        if (typeof document === 'undefined' || !document.hidden) {
+          this.resumeForFocusGain();
+        }
+      };
+
+      window.addEventListener('blur', handleBlur);
+      window.addEventListener('focus', handleFocus);
+      window.addEventListener('pagehide', handleBlur);
+      window.addEventListener('pageshow', handleFocus);
+      if (typeof document !== 'undefined') {
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+      }
+
       window.addEventListener('pointerdown', unlock, { passive: true });
       window.addEventListener('touchstart', unlock, { passive: true });
       window.addEventListener('keydown', unlock, { passive: true });
+    }
+  }
+
+  private suspendForFocusLoss() {
+    this.isWindowActive = false;
+
+    if (this.currentBgm && !this.currentBgm.paused) {
+      this.currentBgm.pause();
+    }
+
+    if (this.activeSfx.size > 0) {
+      for (const sfx of this.activeSfx) {
+        try {
+          sfx.pause();
+          sfx.src = '';
+        } catch {
+          // ignore
+        }
+      }
+      this.activeSfx.clear();
+    }
+
+    if (this.currentVo) {
+      try {
+        this.currentVo.pause();
+        this.currentVo.src = '';
+      } catch {
+        // ignore
+      }
+      this.currentVo = null;
+      const done = this.currentVoResolve;
+      this.currentVoResolve = null;
+      done?.();
+    }
+
+    if (this.ctx && this.ctx.state === 'running') {
+      this.ctx.suspend().catch(() => {});
+    }
+
+    this.activeVibrateUntil = 0;
+    this.activeVibrateStrength = 0;
+    try {
+      if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+        navigator.vibrate(0);
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  private resumeForFocusGain() {
+    if (typeof document !== 'undefined' && document.hidden) return;
+    this.isWindowActive = true;
+    if (this.settings.muted) return;
+
+    if (this.unlocked && this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume().catch(() => {});
+    }
+
+    if (
+      this.currentBgm &&
+      this.settings.bgmVolume > 0 &&
+      this.currentBgm.paused &&
+      (this.currentBgm.loop || !this.currentBgm.ended)
+    ) {
+      this.currentBgm.volume = this.settings.bgmVolume;
+      this.currentBgm.play().catch(() => {});
     }
   }
 
@@ -132,14 +306,31 @@ class SnsHeroCardAudioEngine {
     }
     if (this.currentBgm) {
       this.currentBgm.volume = this.settings.muted ? 0 : this.settings.bgmVolume;
-      if (this.settings.muted) {
+      if (this.settings.muted || !this.isWindowActive) {
         this.currentBgm.pause();
-      } else if (this.unlocked && this.currentBgm.paused) {
+      } else if (
+        this.unlocked &&
+        this.settings.bgmVolume > 0 &&
+        this.currentBgm.paused &&
+        (this.currentBgm.loop || !this.currentBgm.ended)
+      ) {
         this.currentBgm.play().catch(() => {});
       }
     }
-    if (this.currentVo && this.settings.muted) {
-      this.currentVo.pause();
+    if (this.settings.muted) {
+      if (this.currentVo) {
+        this.currentVo.pause();
+        this.currentVo = null;
+        const done = this.currentVoResolve;
+        this.currentVoResolve = null;
+        done?.();
+      }
+      if (this.activeSfx.size > 0) {
+        for (const sfx of this.activeSfx) {
+          sfx.pause();
+        }
+        this.activeSfx.clear();
+      }
     }
   }
 
@@ -155,17 +346,17 @@ class SnsHeroCardAudioEngine {
   }
 
   /**
-   * Android Web Vibration API (navigator.vibrate) attack haptic feedback
-   * - Active only when `vibrateEnabled` is true in Settings and running on an Android browser supporting Web Vibration.
-   * - Priority arbiter prevents weak secondary damage ticks from interrupting a heavier attack rumble.
+   * 카드가 주고받는 실제 데미지(공격 피해 + 반격 피해, 또는 주문 피해량)에 비례한 안드로이드 웹 진동 실행
+   * - 환경설정 `vibrateEnabled`가 켜져 있고 안드로이드 Web Vibration 지원 기기일 때 작동
+   * - 우선순위 중재기(Priority Arbiter): 더 강한 충돌 진동 도중 약한 보조 틱이 진동을 덮어쓰지 않도록 보호
    */
-  vibrateAttack(kind: AttackVibrationKind): boolean {
-    if (!this.settings.vibrateEnabled) return false;
+  vibrateByDamage(damage: number, opts?: { isFinisher?: boolean }): boolean {
+    if (!this.isWindowActive || !this.settings.vibrateEnabled) return false;
     const support = this.getVibrationSupportInfo();
     if (!support.supportedOnDevice) return false;
     if (!this.hasStickyUserActivation()) return false;
 
-    const spec = VIBRATION_SPECS[kind];
+    const spec = computeDamageVibrationSpec(damage, Boolean(opts?.isFinisher));
     const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
     if (now < this.activeVibrateUntil && spec.strength <= this.activeVibrateStrength) {
       return false;
@@ -183,8 +374,13 @@ class SnsHeroCardAudioEngine {
     }
   }
 
+  vibrateAttack(kind: AttackVibrationKind): boolean {
+    const mapped = KIND_TO_DAMAGE[kind];
+    return this.vibrateByDamage(mapped.dmg, { isFinisher: mapped.finisher });
+  }
+
   previewVibration(): boolean {
-    if (!this.settings.vibrateEnabled) return false;
+    if (!this.isWindowActive || !this.settings.vibrateEnabled) return false;
     const support = this.getVibrationSupportInfo();
     if (!support.supportedOnDevice || !this.hasStickyUserActivation()) return false;
     try {
@@ -195,7 +391,7 @@ class SnsHeroCardAudioEngine {
   }
 
   private getAudioCtx(): AudioContext | null {
-    if (typeof window === 'undefined') return null;
+    if (typeof window === 'undefined' || !this.isWindowActive) return null;
     if (!this.ctx) {
       const AC =
         window.AudioContext ||
@@ -210,7 +406,13 @@ class SnsHeroCardAudioEngine {
 
   playBgm(track: 'tavern_hub' | 'collection' | 'mulligan' | 'duel_1' | 'duel_2') {
     if (this.currentBgmKey === track && this.currentBgm) {
-      if (!this.settings.muted && this.currentBgm.paused) {
+      if (
+        this.isWindowActive &&
+        !this.settings.muted &&
+        this.settings.bgmVolume > 0 &&
+        this.currentBgm.paused &&
+        (this.currentBgm.loop || !this.currentBgm.ended)
+      ) {
         this.currentBgm.play().catch(() => {});
       }
       return;
@@ -225,7 +427,7 @@ class SnsHeroCardAudioEngine {
     audio.loop = track !== 'mulligan';
     audio.volume = this.settings.muted ? 0 : this.settings.bgmVolume;
     this.currentBgm = audio;
-    if (!this.settings.muted) {
+    if (this.isWindowActive && !this.settings.muted && this.settings.bgmVolume > 0) {
       audio.play().catch(() => {});
     }
   }
@@ -233,6 +435,7 @@ class SnsHeroCardAudioEngine {
   stopBgm() {
     if (this.currentBgm) {
       this.currentBgm.pause();
+      this.currentBgm.src = '';
       this.currentBgm = null;
       this.currentBgmKey = null;
     }
@@ -272,11 +475,17 @@ class SnsHeroCardAudioEngine {
       | 'whoosh',
     volumeScale = 1,
   ) {
-    if (this.settings.muted || this.settings.sfxVolume <= 0) return;
+    if (!this.isWindowActive || this.settings.muted || this.settings.sfxVolume <= 0) return;
     try {
       const a = new Audio(`/hs-assets/snshero-audio/sfx/${name}.mp3`);
       a.volume = Math.min(1, this.settings.sfxVolume * volumeScale);
-      a.play().catch(() => {});
+      this.activeSfx.add(a);
+      const cleanup = () => {
+        this.activeSfx.delete(a);
+      };
+      a.onended = cleanup;
+      a.onerror = cleanup;
+      a.play().catch(cleanup);
     } catch {
       // ignore
     }
@@ -298,7 +507,7 @@ class SnsHeroCardAudioEngine {
       | 'ARMOR'
       | 'FATIGUE',
   ) {
-    if (this.settings.muted || this.settings.sfxVolume <= 0) return;
+    if (!this.isWindowActive || this.settings.muted || this.settings.sfxVolume <= 0) return;
     const ctx = this.getAudioCtx();
     if (!ctx) return;
     const now = ctx.currentTime;
@@ -376,18 +585,35 @@ class SnsHeroCardAudioEngine {
   }
 
   playVoFile(voKey: string): Promise<void> {
-    if (this.settings.muted || this.settings.voVolume <= 0) return Promise.resolve();
+    if (!this.isWindowActive || this.settings.muted || this.settings.voVolume <= 0) {
+      return Promise.resolve();
+    }
     return new Promise((resolve) => {
       try {
         if (this.currentVo) {
           this.currentVo.pause();
+          this.currentVo = null;
+          const prevResolve = this.currentVoResolve;
+          this.currentVoResolve = null;
+          prevResolve?.();
         }
         const a = new Audio(`/hs-assets/snshero-audio/vo/${voKey}.mp3`);
         a.volume = this.settings.voVolume;
         this.currentVo = a;
-        a.onended = () => resolve();
-        a.onerror = () => resolve();
-        a.play().catch(() => resolve());
+        let settled = false;
+        const finish = () => {
+          if (settled) return;
+          settled = true;
+          if (this.currentVo === a) {
+            this.currentVo = null;
+            this.currentVoResolve = null;
+          }
+          resolve();
+        };
+        this.currentVoResolve = finish;
+        a.onended = finish;
+        a.onerror = finish;
+        a.play().catch(finish);
       } catch {
         resolve();
       }
@@ -439,11 +665,13 @@ class SnsHeroCardAudioEngine {
   }
 
   async playMatchupAnnouncement(playerClass: HeroClass, opponentClass: HeroClass) {
-    if (this.settings.muted) return;
+    if (!this.isWindowActive || this.settings.muted) return;
     const pVo = CLASSIC_HEROES[playerClass].voKey;
     const oVo = CLASSIC_HEROES[opponentClass].voKey;
     await this.playVoFile(`announcer_${pVo}`);
+    if (!this.isWindowActive) return;
     await this.playVoFile('announcer_versus');
+    if (!this.isWindowActive) return;
     await this.playVoFile(`announcer_${oVo}`);
   }
 }
