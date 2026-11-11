@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { hsAudio } from '../audio';
 
 export const TavernIntroScreen: React.FC<{ onEnterHub: () => void }> = ({ onEnterHub }) => {
   const [opening, setOpening] = useState(false);
+
+  const embers = useMemo(
+    () =>
+      Array.from({ length: 24 }).map((_, i) => ({
+        id: i,
+        left: `${8 + ((i * 37) % 84)}%`,
+        size: 3 + (i % 4) * 1.5,
+        delay: `${(i * 0.31).toFixed(2)}s`,
+        duration: `${(4.2 + (i % 5) * 0.85).toFixed(2)}s`,
+        dx: `${(i % 2 === 0 ? 1 : -1) * (14 + (i % 4) * 9)}px`,
+      })),
+    [],
+  );
 
   const handleEnter = () => {
     if (opening) return;
@@ -12,92 +25,204 @@ export const TavernIntroScreen: React.FC<{ onEnterHub: () => void }> = ({ onEnte
     hsAudio.playInnkeeper('welcome');
     window.setTimeout(() => {
       onEnterHub();
-    }, 920);
+    }, 980);
   };
 
   return (
     <div
       onClick={handleEnter}
-      className="relative flex h-[100dvh] w-full cursor-pointer select-none items-center justify-center overflow-hidden bg-stone-950"
+      className="relative flex h-[100dvh] w-full cursor-pointer select-none flex-col items-center justify-between overflow-hidden bg-[#0a0503]"
     >
-      {/* Warm Tavern Background Behind Doors */}
+      {/* Layer 0: Warm Interior Tavern Table & Hearth Revealed As Doors Swing Open */}
+      <div
+        style={{
+          backgroundImage: 'url(/hs-assets/ui/box_table_bg.webp)',
+          transform: opening ? 'scale(1.06)' : 'scale(0.96)',
+          transition: 'transform 1s cubic-bezier(0.22, 1, 0.36, 1)',
+        }}
+        className="absolute inset-0 bg-cover bg-center"
+      />
       <div
         style={{ backgroundImage: 'url(/hs-assets/ui/tavern_bg.webp)' }}
-        className="absolute inset-0 bg-cover bg-center brightness-95"
+        className={`absolute inset-0 bg-cover bg-center mix-blend-lighten transition-opacity duration-700 ${
+          opening ? 'opacity-35' : 'opacity-75'
+        }`}
       />
-      <div className="absolute inset-0 bg-radial from-amber-500/25 via-transparent to-black/80" />
 
-      {/* Left Oak Tavern Door */}
+      {/* Warm Hearth Amber Glow Burst When Doors Open */}
+      <div
+        className={`pointer-events-none absolute inset-0 transition-opacity duration-700 ${
+          opening
+            ? 'bg-radial from-amber-300/65 via-amber-600/20 to-black/65 opacity-100'
+            : 'bg-radial from-amber-500/35 via-[#1a0d05]/65 to-[#070402]/95 opacity-100'
+        }`}
+      />
+
+      {/* Layer 1: Authentic Blizzard Tavern Saloon Archway & 3D Swinging Double Doors */}
       <div
         style={{
-          transformOrigin: 'left center',
-          transform: opening ? 'perspective(1400px) rotateY(-88deg)' : 'perspective(1400px) rotateY(0deg)',
-          transition: 'transform 0.92s cubic-bezier(0.32, 0.04, 0.24, 1)',
+          transform: opening ? 'scale(1.22)' : 'scale(1)',
+          opacity: opening ? 0 : 1,
+          transition: 'transform 0.96s cubic-bezier(0.32, 0.04, 0.24, 1), opacity 0.45s ease 0.52s',
         }}
-        className="absolute inset-y-0 left-0 z-20 w-1/2 border-r-[5px] border-[#d2aa5c] bg-gradient-to-br from-[#4d321c] via-[#342010] to-[#1b0f07] shadow-[18px_0_40px_rgba(0,0,0,0.9)]"
+        className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
       >
-        <div className="m-6 h-[calc(100%-3rem)] rounded-2xl border-[3px] border-[#8b6334]/60 bg-gradient-to-b from-[#3d2614]/80 to-[#211309]/90 p-6 shadow-inner">
-          <div className="h-full w-full rounded-xl border border-amber-500/20" />
+        {/* Left Stone & Timber Tavern Wall */}
+        <div
+          style={{ backgroundImage: 'url(/hs-assets/ui/intro_wall_left.webp)' }}
+          className="h-full w-[24%] bg-cover bg-right shadow-[20px_0_45px_rgba(0,0,0,0.9)]"
+        />
+
+        {/* Central Saloon Door Frame + Warm Top Hearth Spill */}
+        <div className="relative flex h-full flex-1 items-end justify-center overflow-hidden">
+          {/* Warm Amber Tavern Ceiling Glow Above Saloon Doors */}
+          <div className="absolute inset-x-0 top-0 h-[34%] bg-gradient-to-b from-[#ffb43b]/45 via-[#d97706]/25 to-transparent" />
+
+          {/* Left Saloon Door */}
+          <div
+            style={{
+              backgroundImage: 'url(/hs-assets/ui/intro_door_left.webp)',
+              transformOrigin: 'left center',
+              transform: opening
+                ? 'perspective(1600px) rotateY(-96deg)'
+                : 'perspective(1600px) rotateY(0deg)',
+              transition: 'transform 0.92s cubic-bezier(0.32, 0.04, 0.24, 1)',
+            }}
+            className="h-[84%] w-1/2 bg-cover bg-right shadow-[10px_0_32px_rgba(0,0,0,0.88)]"
+          />
+
+          {/* Center Glowing Hearth Light Seam Between Doors */}
+          <div
+            className={`z-20 h-[82%] w-[4px] bg-gradient-to-b from-amber-200 via-amber-400 to-amber-600 shadow-[0_0_24px_8px_rgba(251,191,36,0.85)] transition-opacity duration-300 ${
+              opening ? 'opacity-0' : 'opacity-95'
+            }`}
+          />
+
+          {/* Right Saloon Door */}
+          <div
+            style={{
+              backgroundImage: 'url(/hs-assets/ui/intro_door_right.webp)',
+              transformOrigin: 'right center',
+              transform: opening
+                ? 'perspective(1600px) rotateY(96deg)'
+                : 'perspective(1600px) rotateY(0deg)',
+              transition: 'transform 0.92s cubic-bezier(0.32, 0.04, 0.24, 1)',
+            }}
+            className="h-[84%] w-1/2 bg-cover bg-left shadow-[-10px_0_32px_rgba(0,0,0,0.88)]"
+          />
+
+          {/* Warm Tavern Floorboards Spilling Under Doors */}
+          <div className="absolute inset-x-0 bottom-0 h-[6%] bg-gradient-to-t from-[#090503] via-[#5c2d0c]/60 to-amber-400/35" />
+        </div>
+
+        {/* Right Stone & Timber Tavern Wall */}
+        <div
+          style={{ backgroundImage: 'url(/hs-assets/ui/intro_wall_right.webp)' }}
+          className="h-full w-[24%] bg-cover bg-left shadow-[-20px_0_45px_rgba(0,0,0,0.9)]"
+        />
+      </div>
+
+      {/* Layer 2: Floating Hearth Ember Particles */}
+      <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden">
+        {embers.map((em) => (
+          <span
+            key={em.id}
+            style={
+              {
+                left: em.left,
+                bottom: '-12px',
+                width: `${em.size}px`,
+                height: `${em.size}px`,
+                animation: `hsEmberRise ${em.duration} ease-in ${em.delay} infinite`,
+                '--ember-dx': em.dx,
+              } as React.CSSProperties
+            }
+            className="absolute rounded-full bg-amber-300 shadow-[0_0_10px_3px_rgba(251,146,60,0.9)]"
+          />
+        ))}
+      </div>
+
+      {/* Top Subtle Studio Header */}
+      <div
+        className={`relative z-30 pt-4 text-center transition-all duration-500 ${
+          opening ? '-translate-y-6 opacity-0' : 'opacity-100'
+        }`}
+      >
+        <div className="inline-flex items-center gap-2 rounded-full border border-[#c89d51]/45 bg-[#120a05]/80 px-4 py-1 text-[11px] font-bold tracking-[0.18em] text-[#efd7a3] shadow-lg">
+          <span>STONEBREW&apos;S TAVERN</span>
+          <span className="text-amber-500">•</span>
+          <span>CLASSIC PATCH 1.0.0.4944</span>
         </div>
       </div>
 
-      {/* Right Oak Tavern Door */}
+      {/* Layer 3: Master Sculpted Stone & Gold HEARTHSTONE Logo + Compass Swirl Latch */}
       <div
-        style={{
-          transformOrigin: 'right center',
-          transform: opening ? 'perspective(1400px) rotateY(88deg)' : 'perspective(1400px) rotateY(0deg)',
-          transition: 'transform 0.92s cubic-bezier(0.32, 0.04, 0.24, 1)',
-        }}
-        className="absolute inset-y-0 right-0 z-20 w-1/2 border-l-[5px] border-[#d2aa5c] bg-gradient-to-bl from-[#4d321c] via-[#342010] to-[#1b0f07] shadow-[-18px_0_40px_rgba(0,0,0,0.9)]"
-      >
-        <div className="m-6 h-[calc(100%-3rem)] rounded-2xl border-[3px] border-[#8b6334]/60 bg-gradient-to-b from-[#3d2614]/80 to-[#211309]/90 p-6 shadow-inner">
-          <div className="h-full w-full rounded-xl border border-amber-500/20" />
-        </div>
-      </div>
-
-      {/* Center Hearthstone Medallion & Extracted Official Title Logo */}
-      <div
-        className={`relative z-30 flex flex-col items-center px-4 text-center transition-all duration-700 ${
+        className={`relative z-30 my-auto flex flex-col items-center px-4 text-center transition-all duration-700 ${
           opening ? 'scale-125 opacity-0' : 'scale-100 opacity-100'
         }`}
       >
-        {/* Glowing Blue Swirl Seal */}
-        <div className="relative mb-3 flex h-36 w-36 items-center justify-center rounded-full border-[5px] border-[#e7c57a] bg-gradient-to-b from-[#49311c] to-[#1f130a] shadow-[0_0_50px_rgba(56,189,248,0.75)]">
+        {/* Ultra-Crisp 926x390 Master Hearthstone Logo */}
+        <div className="relative flex flex-col items-center">
+          <div className="pointer-events-none absolute -inset-6 rounded-full bg-radial from-amber-400/25 via-sky-400/10 to-transparent blur-xl" />
           <img
-            src="/hs-assets/ui/hs_thebox_glowring.webp"
-            alt=""
-            className="pointer-events-none absolute -inset-4 h-44 w-44 animate-pulse object-contain opacity-90"
+            src="/hs-assets/ui/hs_logo_master.webp"
+            alt="Hearthstone"
+            draggable={false}
+            className="relative w-[360px] max-w-[90vw] drop-shadow-[0_18px_32px_rgba(0,0,0,0.95)] sm:w-[540px]"
           />
-          <div className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-sky-200 bg-radial from-sky-300 via-blue-500 to-indigo-950 text-5xl shadow-[0_0_28px_#38bdf8]">
-            🌀
+          <div className="hs-title -mt-2 tracking-[0.26em] text-xs font-extrabold text-[#f7dfb0] sm:text-sm">
+            워크래프트의 영웅들
           </div>
         </div>
 
-        <img
-          src="/hs-assets/ui/hs_titlelogo.webp"
-          alt="Hearthstone"
-          className="w-[340px] max-w-[86vw] drop-shadow-[0_12px_26px_rgba(0,0,0,0.95)] sm:w-[440px]"
-        />
-
-        <div className="mt-2 rounded-full border border-amber-400/50 bg-black/65 px-5 py-1.5 text-xs font-bold tracking-wider text-amber-200 shadow-lg">
-          워크래프트의 영웅들 · 2014 오리지널 클래식 (382종 전수 복원)
+        {/* Authentic 8-Point Golden Compass-Star + Glowing Blue Swirl Seal */}
+        <div className="relative my-4 flex items-center justify-center sm:my-6">
+          <img
+            src="/hs-assets/ui/hs_thebox_glowring.webp"
+            alt=""
+            style={{ animation: 'hsSlowSpin 26s linear infinite' }}
+            className="pointer-events-none absolute -inset-7 h-[calc(100%+56px)] w-[calc(100%+56px)] rounded-full object-contain opacity-90 mix-blend-screen"
+          />
+          <div className="pointer-events-none absolute inset-3 rounded-full bg-sky-400/35 blur-xl" />
+          <img
+            src="/hs-assets/ui/box_compass_medallion.webp"
+            alt="여관 인장"
+            draggable={false}
+            className="relative h-32 w-32 object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.95)] transition-transform duration-300 hover:scale-108 sm:h-40 sm:w-40"
+          />
         </div>
 
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleEnter();
-          }}
-          className="mt-7 animate-pulse rounded-2xl border-[3px] border-[#f6dc99] bg-gradient-to-b from-[#38bdf8] via-[#0284c7] to-[#1e3a8a] px-10 py-3.5 text-lg font-extrabold tracking-wide text-white shadow-[0_0_32px_rgba(56,189,248,0.8)] transition hover:scale-105 hover:brightness-110"
-        >
-          여관 문 열기 (클릭하여 입장)
-        </button>
+        {/* Carved Arcane & Brass Tavern Entry Plaque */}
+        <div className="relative flex flex-col items-center">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEnter();
+            }}
+            className="hs-arcane-btn hs-title hs-outline rounded-2xl px-11 py-3.5 text-lg tracking-widest sm:px-14 sm:py-4 sm:text-xl"
+          >
+            여관 문 열기
+          </button>
 
-        <p className="mt-4 text-[11px] text-amber-200/75">
-          스톤브루의 여관 · 한국어 음성/효과음 활성화 · 100% 브라우저 즉시 실행
-        </p>
+          <div className="mt-3 flex items-center gap-2.5 rounded-xl border border-[#8d6732]/60 bg-[#130b05]/85 px-4 py-1.5 text-xs font-bold text-[#e7cda0] shadow-xl">
+            <span>오리지널 9대 직업</span>
+            <span className="text-amber-500">·</span>
+            <span>수집 카드 382종 완비</span>
+            <span className="text-amber-500">·</span>
+            <span className="text-sky-300">공식 한국어 음성</span>
+          </div>
+        </div>
       </div>
+
+      {/* Bottom Vignette & Hint */}
+      <footer
+        className={`relative z-30 pb-4 text-center text-[11px] font-semibold tracking-wider text-[#d4b684]/80 transition-opacity duration-500 ${
+          opening ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        화면을 클릭하면 스톤브루의 여관이 열리고 사운드가 활성화됩니다
+      </footer>
     </div>
   );
 };

@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { AudioSettings, hsAudio } from '../audio';
 import {
   CLASSIC_RANK_NAMES,
+  CLASS_CREST_URL,
   cardDb,
   getStarsNeededForRank,
 } from '../cardDb';
+import { HsArcaneDustVialIcon, HsGoldCoinIcon } from './CardVisual';
 import { hsStorage } from '../storage';
 import {
   CLASSIC_HEROES,
@@ -31,29 +33,31 @@ export const QuestLogModal: React.FC<{
   const quests = hsStorage.getQuests();
   const rankTitle = CLASSIC_RANK_NAMES[profile.rank] || '여관 손님';
   const starsNeeded = getStarsNeededForRank(profile.rank);
+  const rankMedalImg =
+    profile.rank === 0 ? '/hs-assets/ui/medal_legend.webp' : '/hs-assets/ui/medal_bronze.webp';
 
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/78 p-4 backdrop-blur-sm"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-3xl overflow-hidden rounded-3xl border-[4px] border-[#c8a35f] bg-gradient-to-b from-[#3d2918] via-[#2b1c10] to-[#1a1009] p-6 text-amber-100 shadow-[0_24px_60px_rgba(0,0,0,0.95)]"
+        className="hs-wood-panel relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl p-6 text-amber-100"
       >
-        <div className="mb-4 flex items-center justify-between border-b border-amber-700/40 pb-3">
+        <div className="mb-4 flex items-center justify-between border-b border-amber-600/35 pb-3">
           <div className="flex items-center gap-3">
             <img
               src="/hs-assets/ui/hs_questlog.webp"
               alt="퀘스트 일지"
-              className="h-11 w-11 rounded-xl border border-amber-400/50 object-cover"
+              className="h-12 w-12 rounded-xl border-2 border-[#d4af63] object-cover shadow"
             />
             <div>
-              <h2 className="hs-title text-2xl font-extrabold text-amber-200">
+              <h2 className="hs-title text-2xl font-extrabold text-amber-100">
                 모험가의 퀘스트 일지
               </h2>
-              <p className="text-xs text-amber-300/80">
-                오리지널 등급전 전적 · 일일 퀘스트 · 직업별 승리 기록
+              <p className="text-xs font-semibold text-amber-300/85">
+                오리지널 등급전 전적 · 일일 퀘스트 · 9대 직업 승리 기록
               </p>
             </div>
           </div>
@@ -63,25 +67,31 @@ export const QuestLogModal: React.FC<{
               hsAudio.playSfx('box_close');
               onClose();
             }}
-            className="rounded-xl border-2 border-amber-400/70 bg-red-900/80 px-3.5 py-1.5 text-sm font-extrabold text-amber-100 hover:bg-red-800"
+            className="hs-brass-btn rounded-xl px-3.5 py-1.5 text-sm font-extrabold text-amber-100"
           >
             닫기 ✕
           </button>
         </div>
 
-        {/* Top Row: Rank Medal + Currencies */}
+        {/* Top Row: Rank Medallion + Sculpted Currencies */}
         <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex items-center gap-4 rounded-2xl border-2 border-amber-500/40 bg-black/35 p-4">
-            <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full border-[3px] border-amber-300 bg-gradient-to-b from-amber-500 via-amber-700 to-stone-900 shadow-lg">
-              <span className="text-[10px] font-bold text-amber-100">
-                {profile.rank === 0 ? 'LEGEND' : `${profile.rank}등급`}
-              </span>
-              <span className="hs-num text-2xl text-white">
-                {profile.rank === 0 ? '★' : profile.rank}
-              </span>
+          <div className="flex items-center gap-4 rounded-2xl border-2 border-[#c8a158]/50 bg-black/40 p-4">
+            <div className="relative flex h-20 w-20 shrink-0 items-center justify-center">
+              <img
+                src={rankMedalImg}
+                alt="등급 메달"
+                className="h-full w-full object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.9)]"
+              />
+              {profile.rank > 0 && (
+                <span className="hs-num absolute bottom-0 right-0 rounded-full border border-amber-200 bg-stone-950/95 px-2 py-0.5 text-xs text-amber-200">
+                  {profile.rank}
+                </span>
+              )}
             </div>
             <div>
-              <div className="text-lg font-extrabold text-amber-200">{rankTitle}</div>
+              <div className="hs-title text-lg font-extrabold text-amber-100">
+                {profile.rank === 0 ? '전설 (LEGEND)' : `${profile.rank}등급 · ${rankTitle}`}
+              </div>
               {profile.rank > 0 ? (
                 <div className="mt-1 flex items-center gap-1 text-base">
                   {Array.from({ length: starsNeeded }).map((_, idx) => (
@@ -92,7 +102,7 @@ export const QuestLogModal: React.FC<{
                       ★
                     </span>
                   ))}
-                  <span className="ml-2 text-xs text-amber-300/80">
+                  <span className="ml-2 text-xs font-bold text-amber-300/80">
                     ({profile.stars} / {starsNeeded})
                   </span>
                 </div>
@@ -101,34 +111,38 @@ export const QuestLogModal: React.FC<{
                   최고 등급 전설 달성!
                 </div>
               )}
-              <div className="mt-1.5 text-xs text-amber-200/75">
-                통산 {profile.totalWins}승 / {profile.totalGames}전 · 연승 {profile.winStreak}회
+              <div className="mt-1.5 text-xs font-semibold text-amber-200/75">
+                통산 {profile.totalWins}승 / {profile.totalGames}전 · 현재 {profile.winStreak}연승
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 rounded-2xl border-2 border-amber-500/40 bg-black/35 p-4 text-center">
-            <div className="flex flex-col items-center justify-center rounded-xl bg-amber-950/50 p-2">
-              <span className="text-xl">🪙</span>
-              <span className="hs-num mt-0.5 text-lg text-yellow-300">{profile.gold}</span>
-              <span className="text-[11px] text-amber-200/80">보유 골드</span>
+          <div className="grid grid-cols-3 gap-2 rounded-2xl border-2 border-[#c8a158]/50 bg-black/40 p-4 text-center">
+            <div className="flex flex-col items-center justify-center rounded-xl border border-amber-500/25 bg-stone-950/75 p-2">
+              <HsGoldCoinIcon size={26} />
+              <span className="hs-num mt-1 text-lg text-yellow-300">{profile.gold}</span>
+              <span className="text-[11px] font-bold text-amber-200/80">보유 골드</span>
             </div>
-            <div className="flex flex-col items-center justify-center rounded-xl bg-sky-950/50 p-2">
-              <span className="text-xl">🧪</span>
-              <span className="hs-num mt-0.5 text-lg text-sky-300">{profile.arcaneDust}</span>
-              <span className="text-[11px] text-sky-200/80">신비한 가루</span>
+            <div className="flex flex-col items-center justify-center rounded-xl border border-sky-400/25 bg-stone-950/75 p-2">
+              <HsArcaneDustVialIcon size={26} />
+              <span className="hs-num mt-1 text-lg text-sky-300">{profile.arcaneDust}</span>
+              <span className="text-[11px] font-bold text-sky-200/80">신비한 가루</span>
             </div>
-            <div className="flex flex-col items-center justify-center rounded-xl bg-purple-950/50 p-2">
-              <span className="text-xl">📦</span>
-              <span className="hs-num mt-0.5 text-lg text-amber-200">{profile.packs}</span>
-              <span className="text-[11px] text-amber-200/80">미개봉 팩</span>
+            <div className="flex flex-col items-center justify-center rounded-xl border border-amber-400/25 bg-stone-950/75 p-2">
+              <img
+                src="/hs-assets/ui/classic_pack.webp"
+                alt=""
+                className="h-7 w-6 object-contain"
+              />
+              <span className="hs-num mt-1 text-lg text-amber-200">{profile.packs}</span>
+              <span className="text-[11px] font-bold text-amber-200/80">미개봉 팩</span>
             </div>
           </div>
         </div>
 
-        {/* Daily Quests */}
-        <h3 className="mb-2 text-sm font-extrabold tracking-wide text-amber-300">
-          📜 오늘의 퀘스트
+        {/* Daily Quests on Parchment Cards */}
+        <h3 className="hs-title mb-2 text-sm font-extrabold tracking-wide text-amber-200">
+          오늘의 여관 퀘스트
         </h3>
         <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-3">
           {quests.map((q) => {
@@ -136,42 +150,43 @@ export const QuestLogModal: React.FC<{
             return (
               <div
                 key={q.id}
-                className={`rounded-2xl border-2 p-3.5 ${
+                className={`rounded-2xl border-2 p-3.5 shadow ${
                   q.completed
-                    ? 'border-emerald-400/70 bg-emerald-950/40'
-                    : 'border-amber-600/50 bg-[#f4e7c8] text-stone-900'
+                    ? 'border-emerald-400/70 bg-emerald-950/55 text-emerald-100'
+                    : 'border-[#a88246] bg-[#f3e5c3] text-stone-900'
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-extrabold">{q.title}</span>
-                  <span className="rounded-full bg-amber-500 px-2 py-0.5 text-xs font-black text-stone-950">
-                    🪙 {q.rewardGold}
+                <div className="flex items-center justify-between gap-1">
+                  <span className="hs-title text-sm font-extrabold">{q.title}</span>
+                  <span className="flex items-center gap-1 rounded-full border border-amber-900/40 bg-amber-400/90 px-2 py-0.5 text-xs font-black text-stone-950">
+                    <HsGoldCoinIcon size={14} />
+                    <span>{q.rewardGold}</span>
                   </span>
                 </div>
                 <p
-                  className={`mt-1.5 text-xs ${
+                  className={`mt-1.5 text-xs font-semibold ${
                     q.completed ? 'text-emerald-200' : 'text-stone-700'
                   }`}
                 >
                   {q.description}
                 </p>
-                <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-stone-800/35">
+                <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-stone-800/35">
                   <div
                     style={{ width: `${pct}%` }}
                     className="h-full bg-gradient-to-r from-amber-500 to-emerald-500"
                   />
                 </div>
-                <div className="mt-1 text-right text-[11px] font-bold">
-                  {q.completed ? '✔ 완료됨!' : `${q.progress} / ${q.goal}`}
+                <div className="mt-1 text-right text-[11px] font-extrabold">
+                  {q.completed ? '완료됨' : `${q.progress} / ${q.goal}`}
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* 9 Classic Heroes Win Counts */}
-        <h3 className="mb-2 text-sm font-extrabold tracking-wide text-amber-300">
-          🏆 9대 오리지널 직업 승리 기록
+        {/* 9 Classic Heroes Win Counts with Official Class Crests */}
+        <h3 className="hs-title mb-2 text-sm font-extrabold tracking-wide text-amber-200">
+          9대 오리지널 직업 승리 기록
         </h3>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-9">
           {HERO_CLASS_ORDER.map((hc) => {
@@ -179,15 +194,20 @@ export const QuestLogModal: React.FC<{
             return (
               <div
                 key={hc}
-                className="flex flex-col items-center rounded-xl border border-amber-500/30 bg-black/35 px-1.5 py-2"
+                className="flex flex-col items-center rounded-xl border border-[#c8a158]/35 bg-black/40 px-1.5 py-2.5"
               >
+                <img
+                  src={CLASS_CREST_URL[hc]}
+                  alt={h.classNameKo}
+                  className="mb-1 h-8 w-8 rounded-full border border-amber-200/70 object-cover shadow"
+                />
                 <span
                   style={{ color: h.accentColor }}
-                  className="text-[11px] font-extrabold"
+                  className="text-[10.5px] font-extrabold"
                 >
                   {h.classNameKo}
                 </span>
-                <span className="hs-num mt-0.5 text-base text-white">
+                <span className="hs-num mt-0.5 text-sm text-white">
                   {profile.classWins[hc] || 0}승
                 </span>
               </div>
@@ -219,7 +239,7 @@ export const TavernShopModal: React.FC<{
       refresh();
     } else {
       hsAudio.playInnkeeper('collection');
-      setToast(`골드가 부족합니다! (필요: ${count * 100} 골드)`);
+      setToast(`골드가 부족합니다. (필요: ${count * 100} 골드)`);
     }
   };
 
@@ -243,22 +263,27 @@ export const TavernShopModal: React.FC<{
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/78 p-4 backdrop-blur-sm"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-3xl rounded-3xl border-[4px] border-[#d6b36a] bg-gradient-to-b from-[#3b2615] via-[#26180d] to-[#150d07] p-6 text-amber-100 shadow-[0_24px_60px_rgba(0,0,0,0.95)]"
+        className="hs-wood-panel relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl p-6 text-amber-100"
       >
-        <div className="mb-4 flex items-center justify-between border-b border-amber-700/40 pb-3">
-          <div>
-            <h2 className="hs-title text-2xl font-extrabold text-amber-200">
-              🪙 스톤브루 여관 상점
-            </h2>
-            <p className="text-xs text-amber-300/80">
-              보유 골드: <b className="text-yellow-300">{profile.gold} G</b> · 보유 팩:{' '}
-              <b className="text-amber-200">{profile.packs}개</b> · 신비한 가루:{' '}
-              <b className="text-sky-300">{profile.arcaneDust}</b>
-            </p>
+        <div className="mb-4 flex items-center justify-between border-b border-amber-600/35 pb-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#dfc07b] bg-stone-950/80">
+              <HsGoldCoinIcon size={28} />
+            </div>
+            <div>
+              <h2 className="hs-title text-2xl font-extrabold text-amber-100">
+                스톤브루 여관 상점
+              </h2>
+              <p className="text-xs font-semibold text-amber-300/85">
+                보유 골드 <b className="text-yellow-300">{profile.gold}</b> · 미개봉 팩{' '}
+                <b className="text-amber-100">{profile.packs}개</b> · 신비한 가루{' '}
+                <b className="text-sky-300">{profile.arcaneDust}</b>
+              </p>
+            </div>
           </div>
           <button
             type="button"
@@ -266,48 +291,50 @@ export const TavernShopModal: React.FC<{
               hsAudio.playSfx('box_close');
               onClose();
             }}
-            className="rounded-xl border-2 border-amber-400/70 bg-red-900/80 px-3.5 py-1.5 text-sm font-extrabold text-amber-100 hover:bg-red-800"
+            className="hs-brass-btn rounded-xl px-3.5 py-1.5 text-sm font-extrabold text-amber-100"
           >
             닫기 ✕
           </button>
         </div>
 
         {toast && (
-          <div className="mb-4 rounded-xl border border-amber-300 bg-amber-950/80 px-4 py-2 text-center text-xs font-bold text-yellow-200">
+          <div className="mb-4 rounded-xl border border-amber-300 bg-amber-950/90 px-4 py-2 text-center text-xs font-extrabold text-yellow-200">
             {toast}
           </div>
         )}
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Pack Purchase Box */}
-          <div className="flex flex-col items-center justify-between rounded-2xl border-2 border-amber-500/40 bg-black/35 p-4">
+          <div className="flex flex-col items-center justify-between rounded-2xl border-2 border-[#c8a158]/50 bg-black/40 p-4">
             <img
               src="/hs-assets/ui/classic_pack.webp"
               alt="오리지널 팩"
-              className="h-36 w-28 rounded-xl object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.85)]"
+              className="h-36 w-28 object-contain drop-shadow-[0_12px_22px_rgba(0,0,0,0.9)]"
             />
             <div className="mt-2 text-center">
-              <div className="text-base font-extrabold text-amber-200">
+              <div className="hs-title text-base font-extrabold text-amber-100">
                 오리지널 클래식 카드 팩
               </div>
-              <div className="text-xs text-amber-200/75">
-                카드 5장 포함 · 최소 1장 이상 희귀(Rare) 등급 이상 확정!
+              <div className="mt-0.5 text-xs font-semibold text-amber-200/75">
+                공식 한국어 카드 5장 포함 · 최소 1장 희귀(Rare) 등급 이상 확정
               </div>
             </div>
             <div className="mt-4 flex w-full gap-2">
               <button
                 type="button"
                 onClick={() => handleBuy(1)}
-                className="flex-1 rounded-xl border-2 border-amber-300 bg-gradient-to-b from-amber-500 to-amber-800 py-2.5 text-sm font-extrabold text-white shadow hover:brightness-110"
+                className="hs-brass-btn flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-extrabold text-amber-100 sm:text-sm"
               >
-                1팩 구매 (🪙 100)
+                <HsGoldCoinIcon size={17} />
+                <span>1팩 구매 (100)</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleBuy(5)}
-                className="flex-1 rounded-xl border-2 border-yellow-200 bg-gradient-to-b from-yellow-500 to-amber-700 py-2.5 text-sm font-extrabold text-stone-950 shadow hover:brightness-110"
+                className="hs-arcane-btn flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-extrabold text-white sm:text-sm"
               >
-                5팩 구매 (🪙 500)
+                <HsGoldCoinIcon size={17} />
+                <span>5팩 구매 (500)</span>
               </button>
             </div>
             {profile.packs > 0 && (
@@ -317,7 +344,7 @@ export const TavernShopModal: React.FC<{
                   onClose();
                   onGoOpenPacks();
                 }}
-                className="mt-2 w-full rounded-xl border border-sky-300 bg-sky-800/80 py-2 text-xs font-extrabold text-sky-100 hover:bg-sky-700"
+                className="hs-brass-btn mt-2 w-full rounded-xl py-2 text-xs font-extrabold text-sky-200"
               >
                 지금 팩 개봉 제단으로 이동 ({profile.packs}개 보유) →
               </button>
@@ -325,10 +352,10 @@ export const TavernShopModal: React.FC<{
           </div>
 
           {/* Card Back Selector + Master Sandbox Unlock */}
-          <div className="flex flex-col justify-between rounded-2xl border-2 border-amber-500/40 bg-black/35 p-4">
+          <div className="flex flex-col justify-between rounded-2xl border-2 border-[#c8a158]/50 bg-black/40 p-4">
             <div>
-              <h3 className="mb-2 text-sm font-extrabold text-amber-200">
-                🎴 카드 뒷면 선택
+              <h3 className="hs-title mb-2 text-sm font-extrabold text-amber-100">
+                공식 카드 뒷면 선택
               </h3>
               <div className="grid grid-cols-4 gap-2">
                 {CARD_BACK_ITEMS.map((cb) => {
@@ -358,19 +385,19 @@ export const TavernShopModal: React.FC<{
               </div>
             </div>
 
-            <div className="mt-4 rounded-xl border-2 border-yellow-400/70 bg-gradient-to-r from-amber-950/90 via-purple-950/80 to-amber-950/90 p-3">
-              <div className="text-xs font-extrabold text-yellow-300">
-                👑 여관 마스터 샌드박스 모드
+            <div className="mt-4 rounded-xl border-2 border-[#e2bf76]/75 bg-gradient-to-r from-[#2e1c0e] via-[#1f182e] to-[#2e1c0e] p-3.5">
+              <div className="hs-title text-xs font-extrabold text-yellow-300">
+                여관 마스터 샌드박스 모드
               </div>
-              <p className="mt-0.5 text-[11px] text-amber-100/85">
-                오리지널 수집 가능 카드 382종(전설 1장·일반~특급 각 2장) 전체와 1,000골드, 1,600가루, 10팩을 즉시 해금합니다.
+              <p className="mt-1 text-[11px] font-semibold text-amber-100/85">
+                오리지널 수집 가능 카드 382종(전설 1장 · 일반~특급 각 2장) 전체와 1,000골드, 1,600가루, 10팩을 즉시 해금합니다.
               </p>
               <button
                 type="button"
                 onClick={handleUnlockMaster}
-                className="mt-2 w-full rounded-xl border-2 border-yellow-200 bg-gradient-to-b from-yellow-400 via-amber-500 to-orange-700 py-2 text-xs font-black text-stone-950 shadow-lg hover:brightness-110"
+                className="hs-arcane-btn mt-2.5 w-full rounded-xl py-2 text-xs font-extrabold text-white"
               >
-                ✨ 여관 마스터 전체 카드 1클릭 해금
+                여관 마스터 전체 카드 1클릭 해금
               </button>
             </div>
           </div>
@@ -398,14 +425,14 @@ export const GameOptionsModal: React.FC<{
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-[95] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[95] flex items-center justify-center bg-black/78 p-4 backdrop-blur-sm"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-3xl border-[4px] border-[#c8a35f] bg-gradient-to-b from-[#3d2918] via-[#281a0f] to-[#160d07] p-6 text-amber-100 shadow-2xl"
+        className="hs-wood-panel w-full max-w-md rounded-3xl p-6 text-amber-100"
       >
-        <h2 className="hs-title mb-4 text-center text-2xl font-extrabold text-amber-200">
-          ⚙ 게임 메뉴
+        <h2 className="hs-title mb-4 text-center text-2xl font-extrabold text-amber-100">
+          게임 메뉴
         </h2>
 
         {inBattle && onConcede && (
@@ -416,29 +443,31 @@ export const GameOptionsModal: React.FC<{
               onClose();
               onConcede();
             }}
-            className="mb-4 w-full rounded-2xl border-2 border-red-300 bg-gradient-to-b from-red-600 to-red-900 py-3 text-base font-extrabold text-white shadow-lg hover:brightness-110"
+            className="mb-4 w-full rounded-2xl border-2 border-red-300 bg-gradient-to-b from-red-600 to-red-950 py-3 text-base font-extrabold text-white shadow-lg hover:brightness-110"
           >
-            🏳 항복하기 (Concede)
+            항복하기
           </button>
         )}
 
-        <div className="space-y-3 rounded-2xl border border-amber-500/35 bg-black/35 p-4">
+        <div className="space-y-3 rounded-2xl border border-[#c8a158]/40 bg-black/40 p-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-bold">전체 음소거</span>
+            <span className="text-sm font-extrabold">사운드 출력</span>
             <button
               type="button"
               onClick={() => update({ muted: !settings.muted })}
-              className={`rounded-lg px-3 py-1 text-xs font-extrabold ${
-                settings.muted ? 'bg-red-700 text-white' : 'bg-emerald-700 text-white'
+              className={`rounded-lg border px-3 py-1 text-xs font-extrabold ${
+                settings.muted
+                  ? 'border-red-300/60 bg-red-800 text-white'
+                  : 'border-emerald-300/60 bg-emerald-800 text-white'
               }`}
             >
-              {settings.muted ? '음소거 켜짐 🔇' : '사운드 켜짐 🔊'}
+              {settings.muted ? '음소거 켜짐' : '사운드 켜짐'}
             </button>
           </div>
 
           <div>
             <div className="flex justify-between text-xs font-bold text-amber-200">
-              <span>여관/전장 배경음악 (BGM)</span>
+              <span>여관 · 전장 배경음악 (BGM)</span>
               <span>{Math.round(settings.bgmVolume * 100)}%</span>
             </div>
             <input
@@ -453,7 +482,7 @@ export const GameOptionsModal: React.FC<{
 
           <div>
             <div className="flex justify-between text-xs font-bold text-amber-200">
-              <span>타격/주문 효과음 (SFX)</span>
+              <span>타격 · 주문 효과음 (SFX)</span>
               <span>{Math.round(settings.sfxVolume * 100)}%</span>
             </div>
             <input
@@ -491,13 +520,13 @@ export const GameOptionsModal: React.FC<{
               setUnlockedMsg(true);
               onProfileChanged?.();
             }}
-            className="w-full rounded-xl border-2 border-yellow-300 bg-gradient-to-b from-amber-500 to-amber-800 py-2.5 text-xs font-extrabold text-white shadow hover:brightness-110"
+            className="hs-arcane-btn w-full rounded-xl py-2.5 text-xs font-extrabold text-white"
           >
-            👑 여관 마스터 전체 해금 (382종 전체 카드 + 재화)
+            여관 마스터 전체 해금 (382종 카드 + 재화)
           </button>
           {unlockedMsg && (
             <div className="text-center text-xs font-bold text-emerald-300">
-              ✔ 382종 모든 오리지널 카드가 내 카드첩에 지급되었습니다!
+              382종 모든 오리지널 카드가 내 카드첩에 지급되었습니다!
             </div>
           )}
 
@@ -508,9 +537,9 @@ export const GameOptionsModal: React.FC<{
                 onClose();
                 onOpenReaModal();
               }}
-              className="w-full rounded-xl border border-sky-400/70 bg-sky-950/80 py-2 text-xs font-bold text-sky-200 hover:bg-sky-900"
+              className="hs-brass-btn w-full rounded-xl py-2 text-xs font-extrabold text-sky-200"
             >
-              🔬 REA 역설계 증거 및 원본 바이너리 검증 보기
+              REA 역설계 증거 및 원본 바이너리 검증 보기
             </button>
           )}
 
@@ -520,7 +549,7 @@ export const GameOptionsModal: React.FC<{
               hsAudio.playSfx('box_close');
               onClose();
             }}
-            className="w-full rounded-xl border-2 border-amber-400/70 bg-stone-800 py-2.5 text-sm font-extrabold text-amber-100 hover:bg-stone-700"
+            className="hs-brass-btn w-full rounded-xl py-2.5 text-sm font-extrabold text-amber-100"
           >
             게임으로 돌아가기
           </button>
@@ -537,25 +566,32 @@ export const ReaEvidenceModal: React.FC<{ onClose: () => void }> = ({ onClose })
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-[95] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[95] flex items-center justify-center bg-black/82 p-4 backdrop-blur-sm"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-3xl border-[4px] border-[#c8a35f] bg-gradient-to-b from-[#231912] to-[#120c08] p-6 text-amber-100 shadow-2xl"
+        className="hs-wood-panel max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-3xl p-6 text-amber-100"
       >
-        <div className="mb-4 flex items-center justify-between border-b border-amber-700/40 pb-3">
-          <div>
-            <h2 className="hs-title text-xl font-extrabold text-amber-200">
-              🔬 REA (`morluto/rea@6.7.0`) 역설계 증명 리포트
-            </h2>
-            <p className="text-xs text-amber-300/80">
-              로컬 설치본 `{manifest?.sourceInstallation || '/Applications/Hearthstone'}` 직접 추출 아티팩트 검증
-            </p>
+        <div className="mb-4 flex items-center justify-between border-b border-amber-600/35 pb-3">
+          <div className="flex items-center gap-2.5">
+            <img
+              src="/hs-assets/ui/box_compass_medallion.webp"
+              alt=""
+              className="h-9 w-9 object-contain"
+            />
+            <div>
+              <h2 className="hs-title text-xl font-extrabold text-amber-100">
+                REA (`morluto/rea@6.7.0`) 역설계 증명 리포트
+              </h2>
+              <p className="text-xs font-semibold text-amber-300/80">
+                로컬 설치본 `{manifest?.sourceInstallation || '/Applications/Hearthstone'}` 직접 추출 아티팩트 및 `src/hearthstone/design.md` 검증
+              </p>
+            </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-amber-400 bg-red-900/80 px-3 py-1 text-xs font-bold"
+            className="hs-brass-btn rounded-xl px-3 py-1.5 text-xs font-extrabold text-amber-100"
           >
             닫기 ✕
           </button>
@@ -563,7 +599,7 @@ export const ReaEvidenceModal: React.FC<{ onClose: () => void }> = ({ onClose })
 
         {manifest && (
           <div className="space-y-3 text-xs">
-            <div className="rounded-xl border border-amber-500/30 bg-black/45 p-3">
+            <div className="rounded-xl border border-[#c8a158]/40 bg-black/45 p-3.5">
               <div className="font-extrabold text-yellow-300">
                 1. Assembly-CSharp.dll (Unity 6000.3.11f1 Mono CIL Assembly)
               </div>
@@ -578,29 +614,29 @@ export const ReaEvidenceModal: React.FC<{ onClose: () => void }> = ({ onClose })
               </div>
             </div>
 
-            <div className="rounded-xl border border-amber-500/30 bg-black/45 p-3">
+            <div className="rounded-xl border border-[#c8a158]/40 bg-black/45 p-3.5">
               <div className="font-extrabold text-sky-300">
-                2. Blizzard.T5.Game.dll & Rymedy/hearthstone-web Baseline 비교
+                2. Blizzard.T5.Game.dll & 상용 프로 디자인 시스템 (`src/hearthstone/design.md`)
               </div>
               <div className="mt-1 font-mono text-[11px] text-amber-100/90">
                 <div>Blizzard.T5.Game Evidence: {manifest.evidence.blizzardT5Game.evidenceId}</div>
                 <div>Rymedy Baseline Evidence: {manifest.evidence.rymedyBaseline.evidenceId}</div>
               </div>
-              <div className="mt-2 grid grid-cols-2 gap-2 text-[11px]">
-                <div className="rounded-lg bg-stone-900/80 p-2">
-                  <b className="text-red-300">기존 Rymedy 웹 복제본 한계:</b>
+              <div className="mt-2.5 grid grid-cols-1 gap-2 text-[11px] sm:grid-cols-2">
+                <div className="rounded-lg border border-red-400/25 bg-stone-900/80 p-2.5">
+                  <b className="text-red-300">기존 웹 복제본 한계:</b>
                   <ul className="mt-1 list-disc pl-4 text-stone-300">
-                    <li>더미 카드 소수만 하드코딩, 주문/비전투효과 미작동</li>
-                    <li>영웅 2종 고정, 덱 편집기/팩 개봉/멀리건 부재</li>
-                    <li>영어 정적 UI, 무기 개폐/비밀/선택/과부하 미구현</li>
+                    <li>단순 사각형 CSS 카드 · 이모지 의존 · 원작 재질 부재</li>
+                    <li>영웅 2종 고정, 덱 빌더 · 덱 코드 · 팩 개봉 부재</li>
+                    <li>주문/비밀/선택/과부하 미구현</li>
                   </ul>
                 </div>
-                <div className="rounded-lg bg-emerald-950/60 p-2">
-                  <b className="text-emerald-300">현재 /game.html REA 완전 복제본:</b>
+                <div className="rounded-lg border border-emerald-400/25 bg-emerald-950/55 p-2.5">
+                  <b className="text-emerald-300">현재 /game.html 상용 프로 에디션:</b>
                   <ul className="mt-1 list-disc pl-4 text-emerald-100">
-                    <li>오리지널 9직업 + 수집 카드 {totalCollectible}종 + 토큰 123종 100% 동작</li>
-                    <li>로컬 Unity 번들 추출 한국어 성우 음성 135종 + 공식 텍스트</li>
-                    <li>더 박스 회전 허브 · 내 카드첩 덱빌더 · 5장 팩 개봉 · AI 등급전</li>
+                    <li>공식 `koKR` 1:1 알파 실루엣 카드 렌더 ({totalCollectible}종 + 토큰 123종)</li>
+                    <li>원본 번들 추출 여관 스윙 도어 · 더 박스 · 양피지 카드첩 · 석조 턴종료 레버</li>
+                    <li>공식 덱 빌더 마나 커브 · 타일 바 · 덱 코드 공유 완비</li>
                   </ul>
                 </div>
               </div>

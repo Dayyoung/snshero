@@ -21074,3 +21074,20 @@
   - `scripts/process_webtoon_char_cutouts.py` 및 `scripts/build_110_anime_character_sheets.py`를 통해 7등신 투명 컷아웃(`public/anime-character-sheets/cutouts/001..110_*.png`), 상반신(`public/anime-character-sheets/busts/001..110_bust.png/.jpg`), 스튜디오 캐릭터시트 110종(`public/anime-character-sheets/sheets/001..110_*_sheet.jpg`), 종족 마스터 시트 11종(`factions/`), 통합 캐스트 포스터(`all_110_cast_poster.jpg`) 일괄 갱신.
   - 카드 캐릭터 110종(`public/seat/*.png`, `public/anime-character-sheets/sd/*.png`, `public/cards1.png`, `public/cards2.png`, `src/content/cardImageVariants.ts`, `src/landing/services/assetCatalog.ts`) 전원 웹툰 캐릭터로 교체 및 캐시 버스팅(`?v=20261110v2`) 적용.
 - **검증 결과**: `npm run build` 프로덕션 빌드 무결성 검증 통과 및 구글 폼 보고 완료.
+
+
+### 2026-11-11 10:36 KST | `/game.html` 하스스톤 웹 에디션 상용 프로 디자인 시스템(`src/hearthstone/design.md`) 수립 및 전 화면 AAA UI 리디자인 완료
+- **작업 내역**:
+  1. **원본 하스스톤 피지컬리티 및 공식 레퍼런스 분석 기반 디자인 명세서(`src/hearthstone/design.md`, `public/hs-assets/design.md`) 작성**:
+     - Behance 공식 Hearthstone UI(Derek Sakamoto · "The Box" 나무 상자/황동 경첩/가죽 책장/석조 전장 피지컬리티), 공식 한국어 카드 라이브러리(`/ko-kr/cards`), 공식 덱 빌더(`/ko-kr/deckbuilder`)의 재질·조형·타이포그래피·알파 실루엣 셰이더 규칙을 체계화.
+  2. **로컬 `/Applications/Hearthstone/Data/OSX/*.unity3d` 원본 프로 UI 텍스처 36종 추가 추출 (`public/hs-assets/ui/`)**:
+     - 초고해상도 석조·황금 로고(`hs_logo_master.webp`), 스톤브루 여관 양개형 스윙 살룬 도어 및 석벽(`intro_door_left/right.webp`, `intro_wall_left/right.webp`), 오크 여관 테이블 및 왕실 청색 벨벳 식탁보(`box_table_bg.webp`), 더 박스 나무 상자·회전 턴테이블·황금 나침반 인장(`box_chest_full.webp`, `box_menu_disk.webp`, `box_compass_medallion.webp`), 고서 양피지 페이지(`page_parchment_classic.webp`), 9직업+중립 공식 문장(`crest_*.webp`), 3단계 석조/황동 턴종료 레버(`endturn_yellow/green/stone.webp`), 방어도·비밀·등급 메달 등 추출 및 RGBA 알파 채널 정제.
+  3. **카드 비주얼 1:1 공식 한국어(`koKR`) 투명 알파 실루엣 렌더 전면 교체 (`src/hearthstone/components/CardVisual.tsx`)**:
+     - 사각형 CSS 박스 카드를 폐기하고 공식 `koKR` 알파 렌더(`VAN_*` 오리지널 무너프 스탯 우선 → 기본 ID 폴백 → 조각 SVG 폴백) 및 알파 윤곽선 기반 `filter: drop-shadow(...)` 발광 셰이더(초록 시전 가능 / 노랑 연계 / 희귀·특급·전설 아우라) 적용.
+     - 이모지(`🪙`, `🧪`, `⚔` 등) 전면 퇴출 및 조각 사파이어 마나 수정(`HsManaGem`), 대검 공격력 구체(`HsAttackBadge`), 루비 생명력 물방울(`HsHealthBadge`), 골드 주화(`HsGoldCoinIcon`), 신비한 가루 약병(`HsArcaneDustVialIcon`) 벡터 주얼 적용.
+  4. **전 화면(`TavernIntroScreen`, `BoxHubScreen`, `CollectionScreen`, `HeroDeckSelectScreen`, `PackOpeningScreen`, `BattleScreen`, `Modals`) `design.md` 일관성 100% 적용**:
+     - 인트로: 양쪽 석벽 사이 입체 3D 여관 양개형 스윙 도어 개방 연출 + 벽난로 빛줄기 + 불씨 파티클 + 마스터 로고 및 황금 나침반 인장.
+     - 더 박스 허브: 여관 테이블 위 조각 나무 상자 + 회전 황동 턴테이블 + 상아 음각 메뉴 명판 3종(`대전`, `연습`, `입문 튜토리얼`) + 하단 황동 서랍 트레이.
+     - 내 카드첩 & 공식 덱 빌더: 양피지 고서 2×4 스프레드 + 마나 수정/등급 필터 + 우측 공식 덱 빌더(마나 커브 히스토그램 `0~7+`, 크롭 일러스트 타일 바, 덱 코드 복사/불러오기, 512px 상세 제작 모달).
+     - 실전 전장: 공식 `koKR` 곡선 손패(하단 검/물방울 보석 잘림 0%), 10칸 육각 사파이어 마나 트레이, 3상태 석조 턴종료 레버(`턴 종료` / `할 일 없음` / `상대 턴`), 영웅 아치 VS 격돌 연출.
+- **검증 결과**: `npx tsc --noEmit` 0 에러, `npm run build` 성공, 로컬 프리뷰(`http://127.0.0.1:4173/game.html`) 브라우저 전 화면 시각 검수(깨진 이미지 0건, 콘솔 에러 0건, 카드 하단 젬 클리핑 0건) 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.

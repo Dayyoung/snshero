@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  CLASS_CREST_URL,
   formatCardHtmlText,
   getCardArtUrl,
   getCardTileUrl,
   getHeroArtUrl,
+  getOfficialCardRenderFallbackUrl,
+  getOfficialCardRenderUrl,
 } from '../cardDb';
 import {
   getHeroAttack,
@@ -30,69 +33,282 @@ export const RACE_KO: Record<string, string> = {
   TOTEM: '토템',
 };
 
-const CLASS_FRAME_COLORS: Record<CardClass, { bg: string; border: string; trim: string }> = {
-  MAGE: {
-    bg: 'linear-gradient(180deg, #3b82f6 0%, #1e3a8a 100%)',
-    border: '#93c5fd',
-    trim: '#1d4ed8',
-  },
-  WARRIOR: {
-    bg: 'linear-gradient(180deg, #b91c1c 0%, #450a0a 100%)',
-    border: '#fca5a5',
-    trim: '#7f1d1d',
-  },
-  HUNTER: {
-    bg: 'linear-gradient(180deg, #15803d 0%, #052e16 100%)',
-    border: '#86efac',
-    trim: '#14532d',
-  },
-  PALADIN: {
-    bg: 'linear-gradient(180deg, #d97706 0%, #713f12 100%)',
-    border: '#fde047',
-    trim: '#a16207',
-  },
-  PRIEST: {
-    bg: 'linear-gradient(180deg, #e2e8f0 0%, #64748b 100%)',
-    border: '#f8fafc',
-    trim: '#94a3b8',
-  },
-  ROGUE: {
-    bg: 'linear-gradient(180deg, #334155 0%, #090d16 100%)',
-    border: '#94a3b8',
-    trim: '#1e293b',
-  },
-  SHAMAN: {
-    bg: 'linear-gradient(180deg, #1d4ed8 0%, #172554 100%)',
-    border: '#60a5fa',
-    trim: '#1e40af',
-  },
-  WARLOCK: {
-    bg: 'linear-gradient(180deg, #7e22ce 0%, #2e1065 100%)',
-    border: '#d8b4fe',
-    trim: '#581c87',
-  },
-  DRUID: {
-    bg: 'linear-gradient(180deg, #92400e 0%, #3b1704 100%)',
-    border: '#fdba74',
-    trim: '#78350f',
-  },
-  NEUTRAL: {
-    bg: 'linear-gradient(180deg, #78716c 0%, #292524 100%)',
-    border: '#d6d3d1',
-    trim: '#57534e',
-  },
-  DREAM: {
-    bg: 'linear-gradient(180deg, #10b981 0%, #064e3b 100%)',
-    border: '#6ee7b7',
-    trim: '#047857',
-  },
+/* ============================================================================
+ * 1. Bespoke Sculpted Hearthstone Jewels & Currency Icons (Zero Emoji Policy)
+ * ============================================================================ */
+
+export const HsManaGem: React.FC<{
+  value: number | string;
+  state?: 'normal' | 'buffed' | 'nerfed';
+  size?: number;
+  active?: boolean;
+  className?: string;
+}> = ({ value, state = 'normal', size = 34, active = false, className = '' }) => {
+  const numColor =
+    state === 'buffed' ? '#4ade80' : state === 'nerfed' ? '#ff5555' : '#ffffff';
+  return (
+    <div
+      style={{ width: size, height: size }}
+      className={`relative inline-flex shrink-0 select-none items-center justify-center ${className}`}
+    >
+      <svg
+        viewBox="0 0 64 64"
+        className={`h-full w-full ${
+          active
+            ? 'drop-shadow-[0_0_8px_rgba(56,189,248,0.95)]'
+            : 'drop-shadow-[0_3px_5px_rgba(0,0,0,0.85)]'
+        }`}
+      >
+        <defs>
+          <linearGradient id="hsSapphireBody" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#93c5fd" />
+            <stop offset="38%" stopColor="#2563eb" />
+            <stop offset="78%" stopColor="#1d4ed8" />
+            <stop offset="100%" stopColor="#0f172a" />
+          </linearGradient>
+          <linearGradient id="hsSapphireRim" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#e0f2fe" />
+            <stop offset="50%" stopColor="#60a5fa" />
+            <stop offset="100%" stopColor="#1e3a8a" />
+          </linearGradient>
+        </defs>
+        {/* Outer Chiseled Rim */}
+        <polygon
+          points="32,3 58,18 58,46 32,61 6,46 6,18"
+          fill="url(#hsSapphireRim)"
+          stroke="#091128"
+          strokeWidth="2.6"
+        />
+        {/* Inner Faceted Sapphire */}
+        <polygon
+          points="32,8 53,20 53,44 32,56 11,44 11,20"
+          fill="url(#hsSapphireBody)"
+        />
+        {/* Top Specular Facets */}
+        <polygon points="32,8 53,20 32,30 11,20" fill="rgba(186,230,253,0.45)" />
+        <polygon points="11,20 32,30 20,47 11,44" fill="rgba(96,165,250,0.28)" />
+        <polygon points="53,20 53,44 32,56 32,30" fill="rgba(15,23,42,0.42)" />
+      </svg>
+      <span
+        style={{
+          color: numColor,
+          fontSize: Math.max(11, Math.round(size * 0.54)),
+        }}
+        className="hs-num pointer-events-none absolute inset-0 flex items-center justify-center pb-[1px]"
+      >
+        {value}
+      </span>
+    </div>
+  );
 };
 
-const RARITY_GEM_COLORS: Record<CardRarity, string | null> = {
+export const HsAttackBadge: React.FC<{
+  value: number;
+  buffed?: boolean;
+  isWeapon?: boolean;
+  size?: number;
+  className?: string;
+}> = ({ value, buffed = false, isWeapon = false, size = 36, className = '' }) => {
+  return (
+    <div
+      style={{ width: size, height: size }}
+      className={`relative inline-flex shrink-0 select-none items-center justify-center ${className}`}
+    >
+      <svg
+        viewBox="0 0 68 68"
+        className="h-full w-full drop-shadow-[0_4px_6px_rgba(0,0,0,0.9)]"
+      >
+        <defs>
+          <radialGradient id="hsAtkGold" cx="38%" cy="32%" r="65%">
+            <stop offset="0%" stopColor="#fef08a" />
+            <stop offset="45%" stopColor="#f59e0b" />
+            <stop offset="85%" stopColor="#92400e" />
+            <stop offset="100%" stopColor="#451a03" />
+          </radialGradient>
+          <radialGradient id="hsAtkSteel" cx="38%" cy="32%" r="65%">
+            <stop offset="0%" stopColor="#e2e8f0" />
+            <stop offset="50%" stopColor="#64748b" />
+            <stop offset="100%" stopColor="#0f172a" />
+          </radialGradient>
+        </defs>
+        {/* Diagonal Broadsword Behind Sphere (Hilt Top-Left -> Tip Bottom-Right) */}
+        <g stroke="#140c06" strokeWidth="2.2" strokeLinejoin="round">
+          <polygon points="8,8 15,6 24,15 15,24 6,15" fill="#78716c" />
+          <polygon points="9,24 24,9 28,13 13,28" fill="#d6b36a" />
+          <polygon points="48,44 63,56 56,63 44,48" fill="#cbd5e1" />
+        </g>
+        {/* Sculpted Attack Sphere */}
+        <circle
+          cx="35"
+          cy="37"
+          r="22"
+          fill={isWeapon ? 'url(#hsAtkSteel)' : 'url(#hsAtkGold)'}
+          stroke={isWeapon ? '#cbd5e1' : '#fde68a'}
+          strokeWidth="2.8"
+        />
+        <circle
+          cx="35"
+          cy="37"
+          r="24.2"
+          fill="none"
+          stroke="#180d05"
+          strokeWidth="2"
+        />
+        <ellipse
+          cx="29"
+          cy="28"
+          rx="9"
+          ry="5"
+          fill="rgba(255,255,255,0.34)"
+          transform="rotate(-22 29 28)"
+        />
+      </svg>
+      <span
+        style={{
+          color: buffed ? '#4ade80' : '#ffffff',
+          fontSize: Math.max(13, Math.round(size * 0.54)),
+        }}
+        className="hs-num pointer-events-none absolute inset-0 flex items-center justify-center pl-[1px] pt-[3px]"
+      >
+        {value}
+      </span>
+    </div>
+  );
+};
+
+export const HsHealthBadge: React.FC<{
+  value: number;
+  state?: 'normal' | 'damaged' | 'buffed';
+  size?: number;
+  className?: string;
+}> = ({ value, state = 'normal', size = 36, className = '' }) => {
+  const color =
+    state === 'damaged' ? '#ff6b6b' : state === 'buffed' ? '#4ade80' : '#ffffff';
+  return (
+    <div
+      style={{ width: size, height: size * 1.12 }}
+      className={`relative inline-flex shrink-0 select-none items-center justify-center ${className}`}
+    >
+      <svg
+        viewBox="0 0 60 68"
+        className="h-full w-full drop-shadow-[0_4px_6px_rgba(0,0,0,0.9)]"
+      >
+        <defs>
+          <radialGradient id="hsBloodRuby" cx="36%" cy="55%" r="60%">
+            <stop offset="0%" stopColor="#fca5a5" />
+            <stop offset="35%" stopColor="#ef4444" />
+            <stop offset="78%" stopColor="#991b1b" />
+            <stop offset="100%" stopColor="#450a0a" />
+          </radialGradient>
+        </defs>
+        {/* Sculpted Crimson Blood-Drop */}
+        <path
+          d="M30 4 C30 4 54 30 54 45 C54 58 43.5 65 30 65 C16.5 65 6 58 6 45 C6 30 30 4 30 4 Z"
+          fill="url(#hsBloodRuby)"
+          stroke="#cbd5e1"
+          strokeWidth="2.8"
+        />
+        <path
+          d="M30 2 C30 2 56 29 56 45 C56 59.5 44.5 67 30 67 C15.5 67 4 59.5 4 45 C4 29 30 2 30 2 Z"
+          fill="none"
+          stroke="#1c0908"
+          strokeWidth="2"
+        />
+        {/* Specular Glass Highlight */}
+        <path
+          d="M24 18 C18 28 14 37 15 45 C16 49 19 49 20 44 C21 36 24 27 27 19 Z"
+          fill="rgba(255,255,255,0.38)"
+        />
+      </svg>
+      <span
+        style={{
+          color,
+          fontSize: Math.max(13, Math.round(size * 0.54)),
+        }}
+        className="hs-num pointer-events-none absolute inset-0 flex items-center justify-center pt-[7px]"
+      >
+        {value}
+      </span>
+    </div>
+  );
+};
+
+export const HsGoldCoinIcon: React.FC<{ size?: number }> = ({ size = 22 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 40 40"
+    className="shrink-0 drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)]"
+  >
+    <defs>
+      <radialGradient id="hsCoinGrad" cx="35%" cy="30%" r="70%">
+        <stop offset="0%" stopColor="#fef9c3" />
+        <stop offset="45%" stopColor="#facc15" />
+        <stop offset="85%" stopColor="#b45309" />
+        <stop offset="100%" stopColor="#713f12" />
+      </radialGradient>
+    </defs>
+    <circle cx="20" cy="20" r="17" fill="url(#hsCoinGrad)" stroke="#422006" strokeWidth="2.5" />
+    <circle cx="20" cy="20" r="12.5" fill="none" stroke="#fef08a" strokeWidth="1.4" opacity="0.75" />
+    <path
+      d="M20 12 C25 12 28 16 26 21 C24 25 18 25 17 21 C16 18 19 17 21 18"
+      fill="none"
+      stroke="#78350f"
+      strokeWidth="2.6"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const HsArcaneDustVialIcon: React.FC<{ size?: number }> = ({ size = 22 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 40 40"
+    className="shrink-0 drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)]"
+  >
+    <defs>
+      <linearGradient id="hsDustGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#e0f2fe" />
+        <stop offset="45%" stopColor="#38bdf8" />
+        <stop offset="100%" stopColor="#1d4ed8" />
+      </linearGradient>
+    </defs>
+    <rect x="15" y="4" width="10" height="5" rx="2" fill="#b45309" stroke="#291507" strokeWidth="1.8" />
+    <path
+      d="M16 9 L24 9 L26 15 L33 27 C35 31 32 36 27 36 L13 36 C8 36 5 31 7 27 L14 15 Z"
+      fill="url(#hsDustGrad)"
+      stroke="#bae6fd"
+      strokeWidth="2"
+    />
+    <circle cx="17" cy="26" r="2.2" fill="#ffffff" opacity="0.85" />
+    <circle cx="24" cy="29" r="1.6" fill="#ffffff" opacity="0.7" />
+  </svg>
+);
+
+/* ============================================================================
+ * 2. Commercial 1:1 Hearthstone Card Component (Official koKR Alpha Render)
+ * ============================================================================ */
+
+const FALLBACK_CLASS_TINT: Record<CardClass, string> = {
+  MAGE: 'from-[#3b82f6] via-[#1d4ed8] to-[#172554]',
+  WARRIOR: 'from-[#dc2626] via-[#991b1b] to-[#450a0a]',
+  HUNTER: 'from-[#16a34a] via-[#166534] to-[#052e16]',
+  PALADIN: 'from-[#f59e0b] via-[#b45309] to-[#451a03]',
+  PRIEST: 'from-[#f1f5f9] via-[#94a3b8] to-[#334155]',
+  ROGUE: 'from-[#475569] via-[#1e293b] to-[#090d16]',
+  SHAMAN: 'from-[#2563eb] via-[#1e40af] to-[#0f172a]',
+  WARLOCK: 'from-[#9333ea] via-[#6b21a8] to-[#2e1065]',
+  DRUID: 'from-[#b45309] via-[#78350f] to-[#291205]',
+  NEUTRAL: 'from-[#78716c] via-[#44403c] to-[#1c1917]',
+  DREAM: 'from-[#10b981] via-[#047857] to-[#022c22]',
+};
+
+const RARITY_GEM_STYLE: Record<CardRarity, string | null> = {
   FREE: null,
-  COMMON: 'radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 65%, #64748b 100%)',
+  COMMON: 'radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 65%, #475569 100%)',
   RARE: 'radial-gradient(circle at 35% 35%, #93c5fd 0%, #2563eb 65%, #1e3a8a 100%)',
-  EPIC: 'radial-gradient(circle at 35% 35%, #e9d5ff 0%, #9333ea 65%, #4c1d95 100%)',
+  EPIC: 'radial-gradient(circle at 35% 35%, #f5d0fe 0%, #9333ea 65%, #4c1d95 100%)',
   LEGENDARY: 'radial-gradient(circle at 35% 35%, #fef08a 0%, #f97316 65%, #9a3412 100%)',
 };
 
@@ -102,6 +318,7 @@ export interface HearthstoneCardProps {
   spellPowerBonus?: number;
   velenMultiplier?: number;
   playableGlow?: 'NONE' | 'GREEN' | 'COMBO';
+  rarityAura?: CardRarity;
   isGolden?: boolean;
   size?: 'SM' | 'MD' | 'LG';
   enableTilt?: boolean;
@@ -115,6 +332,7 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
   spellPowerBonus = 0,
   velenMultiplier = 1,
   playableGlow = 'NONE',
+  rarityAura,
   isGolden = false,
   size = 'MD',
   enableTilt = false,
@@ -122,36 +340,55 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
   className = '',
 }) => {
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
-  const [imgErr, setImgErr] = useState(false);
+  // 0 = primary VAN_* koKR render, 1 = fallback clean ID koKR render, 2 = offline sculpted SVG card
+  const [renderStage, setRenderStage] = useState<0 | 1 | 2>(0);
+  const [artErr, setArtErr] = useState(false);
+
+  useEffect(() => {
+    setRenderStage(0);
+    setArtErr(false);
+  }, [card.id, card.vanId]);
+
+  const cachedPreviewSrc =
+    renderStage === 0
+      ? getOfficialCardRenderUrl(card, '256x')
+      : getOfficialCardRenderFallbackUrl(card, '256x');
+  const hdSrc =
+    renderStage === 0
+      ? getOfficialCardRenderUrl(card, '512x')
+      : getOfficialCardRenderFallbackUrl(card, '512x');
+  const renderSrc = size === 'LG' ? hdSrc : cachedPreviewSrc;
 
   const shownCost = effectiveCost !== undefined ? effectiveCost : card.cost;
-  const costColor =
-    shownCost < card.cost ? '#4ade80' : shownCost > card.cost ? '#f87171' : '#ffffff';
+  const costModified = shownCost !== card.cost;
+  const costState: 'normal' | 'buffed' | 'nerfed' =
+    shownCost < card.cost ? 'buffed' : shownCost > card.cost ? 'nerfed' : 'normal';
 
-  const frame = isGolden
-    ? {
-        bg: 'linear-gradient(180deg, #facc15 0%, #b45309 55%, #78350f 100%)',
-        border: '#fef08a',
-        trim: '#d97706',
-      }
-    : CLASS_FRAME_COLORS[card.cardClass] || CLASS_FRAME_COLORS.NEUTRAL;
+  const hasDynamicSpellAmplify =
+    card.type === 'SPELL' &&
+    (spellPowerBonus > 0 || velenMultiplier > 1) &&
+    /[$#]\d+/.test(card.text || '');
 
+  // Official Blizzard render canvas aspect ratio is 256 x 388
   const dims =
     size === 'SM'
-      ? { w: 124, h: 176, fontTitle: 'text-[10.5px]', fontBody: 'text-[8.5px]', statSize: 'w-7 h-7 text-sm' }
+      ? { w: 138, h: 209, manaGem: 30, titleCls: 'text-[10.5px]', bodyCls: 'text-[8.5px]' }
       : size === 'LG'
-        ? { w: 224, h: 314, fontTitle: 'text-[15px]', fontBody: 'text-[11.5px]', statSize: 'w-11 h-11 text-2xl' }
-        : { w: 164, h: 232, fontTitle: 'text-[12px]', fontBody: 'text-[9.5px]', statSize: 'w-8 h-8 text-lg' };
+        ? { w: 252, h: 382, manaGem: 52, titleCls: 'text-[15px]', bodyCls: 'text-[11.5px]' }
+        : { w: 180, h: 273, manaGem: 39, titleCls: 'text-[12px]', bodyCls: 'text-[9.5px]' };
 
-  const glowStyle =
+  const silhouetteFilterClass =
     playableGlow === 'COMBO'
-      ? '0 0 0 3px #facc15, 0 0 22px 6px rgba(250, 204, 21, 0.85)'
+      ? 'hs-card-glow-combo'
       : playableGlow === 'GREEN'
-        ? '0 0 0 3px #4ade80, 0 0 20px 5px rgba(34, 197, 94, 0.82)'
-        : '0 10px 24px rgba(0,0,0,0.65)';
-
-  const gemBg = RARITY_GEM_COLORS[card.rarity];
-  const formattedText = formatCardHtmlText(card.text, spellPowerBonus, velenMultiplier);
+        ? 'hs-card-glow-green'
+        : rarityAura === 'LEGENDARY'
+          ? 'hs-card-glow-legendary'
+          : rarityAura === 'EPIC'
+            ? 'hs-card-glow-epic'
+            : rarityAura === 'RARE'
+              ? 'hs-card-glow-rare'
+              : 'hs-card-shadow-base';
 
   return (
     <div
@@ -161,143 +398,170 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
         const r = e.currentTarget.getBoundingClientRect();
         const nx = (e.clientX - r.left) / r.width - 0.5;
         const ny = (e.clientY - r.top) / r.height - 0.5;
-        setTilt({ rx: -ny * 15, ry: nx * 15 });
+        setTilt({ rx: -ny * 14, ry: nx * 14 });
       }}
       onMouseLeave={() => enableTilt && setTilt({ rx: 0, ry: 0 })}
       style={{
         width: dims.w,
         height: dims.h,
-        background: frame.bg,
-        borderColor: isGolden ? '#fef08a' : frame.border,
-        boxShadow: glowStyle,
         transform:
           enableTilt && (tilt.rx !== 0 || tilt.ry !== 0)
-            ? `perspective(700px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`
+            ? `perspective(800px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`
             : undefined,
       }}
-      className={`relative select-none rounded-[14px] border-[2.5px] p-1.5 transition-transform duration-150 ${className}`}
+      className={`relative select-none transition-transform duration-150 ${silhouetteFilterClass} ${className}`}
     >
-      {/* Legendary Dragon Crest */}
-      {card.rarity === 'LEGENDARY' && (
-        <div className="pointer-events-none absolute -top-3.5 left-1/2 z-20 flex -translate-x-1/2 items-center justify-center">
-          <div className="rounded-full border border-amber-200 bg-gradient-to-b from-amber-300 via-amber-500 to-amber-800 px-2.5 py-0.5 text-[9px] font-black tracking-wider text-amber-950 shadow-lg">
-            ★ 전설 ★
-          </div>
-        </div>
-      )}
-
-      {/* Mana Crystal (Top Left) */}
-      <div
-        className={`hs-num absolute -left-2 -top-2 z-30 flex items-center justify-center rounded-full border-2 border-sky-200 bg-gradient-to-b from-sky-400 via-blue-600 to-indigo-950 shadow-[0_3px_10px_rgba(0,0,0,0.8)] ${dims.statSize}`}
-        style={{
-          clipPath: 'polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%)',
-          color: costColor,
-        }}
-      >
-        {shownCost}
-      </div>
-
-      {/* Card Art Window */}
-      <div
-        className={`relative mx-auto mt-1 overflow-hidden border-2 border-amber-200/60 bg-stone-950 shadow-inner ${
-          card.type === 'MINION'
-            ? 'h-[46%] w-[78%] rounded-[50%]'
-            : card.type === 'WEAPON'
-              ? 'h-[45%] w-[76%] rounded-full border-slate-300/80'
-              : 'h-[45%] w-[88%] rounded-t-[18px] rounded-b-[6px]'
-        }`}
-      >
-        {!imgErr ? (
+      {renderStage < 2 ? (
+        <>
+          {size === 'LG' && (
+            <img
+              src={cachedPreviewSrc}
+              alt=""
+              draggable={false}
+              className={`pointer-events-none absolute inset-0 h-full w-full object-contain ${
+                isGolden
+                  ? 'sepia-[0.28] saturate-[1.45] brightness-[1.06] contrast-[1.05]'
+                  : ''
+              }`}
+            />
+          )}
           <img
-            src={getCardArtUrl(card.artId)}
+            src={renderSrc}
             alt={card.name}
-            loading="lazy"
-            onError={() => setImgErr(true)}
-            className="h-full w-full scale-110 object-cover object-center"
+            draggable={false}
+            onError={() => {
+              setRenderStage((prev) => (prev === 0 ? 1 : 2));
+            }}
+            className={`pointer-events-none relative z-10 h-full w-full object-contain ${
+              isGolden
+                ? 'sepia-[0.28] saturate-[1.45] brightness-[1.06] contrast-[1.05]'
+                : ''
+            }`}
           />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-b from-amber-900 to-stone-950 text-xs font-bold text-amber-200">
-            {card.name.slice(0, 4)}
-          </div>
-        )}
-        {isGolden && (
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-amber-400/10 via-transparent to-yellow-200/25 mix-blend-screen" />
-        )}
-      </div>
 
-      {/* Curved Parchment Name Ribbon */}
-      <div className="relative z-20 -mt-2.5 mx-0.5 flex items-center justify-center rounded-[8px] border border-amber-900/80 bg-gradient-to-b from-[#f6e7c1] via-[#e6cfa0] to-[#caa971] px-1.5 py-0.5 shadow-md">
-        <span
-          className={`hs-outline-sm truncate font-extrabold tracking-tight text-white ${dims.fontTitle}`}
-        >
-          {card.name}
-        </span>
-      </div>
+          {/* Golden Foil Specular Shimmer */}
+          {isGolden && (
+            <div
+              style={{
+                background:
+                  'linear-gradient(115deg, transparent 30%, rgba(254,240,138,0.42) 48%, rgba(255,255,255,0.65) 50%, rgba(250,204,21,0.35) 54%, transparent 70%)',
+                backgroundSize: '240% 100%',
+                animation: 'hsGoldenFoil 3.4s linear infinite',
+                WebkitMaskImage: `url(${renderSrc})`,
+                maskImage: `url(${renderSrc})`,
+                WebkitMaskSize: 'contain',
+                maskSize: 'contain',
+                WebkitMaskRepeat: 'no-repeat',
+                maskRepeat: 'no-repeat',
+                WebkitMaskPosition: 'center',
+                maskPosition: 'center',
+              }}
+              className="pointer-events-none absolute inset-0 z-20 mix-blend-screen"
+            />
+          )}
 
-      {/* Rarity Gem */}
-      {gemBg && (
-        <div className="relative z-20 -mt-1 flex justify-center">
+          {/* Live Dynamic Mana Cost Overlay (Only shown when cost is modified in battle!) */}
+          {costModified && (
+            <div
+              style={{
+                left: '16.8%',
+                top: '17.2%',
+                transform: 'translate(-50%, -50%)',
+              }}
+              className="pointer-events-none absolute z-30"
+            >
+              <HsManaGem value={shownCost} state={costState} size={dims.manaGem} active />
+            </div>
+          )}
+
+          {/* Live Dynamic Spell Damage Amplification Tag */}
+          {hasDynamicSpellAmplify && (
+            <div className="pointer-events-none absolute bottom-[6%] left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-full border border-sky-300 bg-sky-950/95 px-2 py-[1px] text-[9px] font-extrabold text-sky-200 shadow-lg">
+              ✦ 주문 증폭 {velenMultiplier > 1 ? `×${velenMultiplier}` : `+${spellPowerBonus}`}
+            </div>
+          )}
+        </>
+      ) : (
+        /* Offline / Custom Token Sculpted Fallback Frame */
+        <div className="relative mx-auto mt-[8%] flex h-[84%] w-[86%] flex-col justify-between rounded-[16px] border-[3px] border-[#d6b36a] bg-gradient-to-b p-1.5 shadow-2xl">
           <div
-            className="h-3 w-2.5 rounded-full border border-stone-900 shadow"
-            style={{ background: gemBg }}
+            className={`absolute inset-0 rounded-[13px] bg-gradient-to-b opacity-95 ${
+              FALLBACK_CLASS_TINT[card.cardClass] || FALLBACK_CLASS_TINT.NEUTRAL
+            }`}
           />
-        </div>
-      )}
+          {card.rarity === 'LEGENDARY' && (
+            <img
+              src="/hs-assets/ui/legendary_dragon.webp"
+              alt=""
+              className="pointer-events-none absolute -right-3 -top-5 z-20 w-[78%] object-contain"
+            />
+          )}
+          <div className="pointer-events-none absolute -left-2.5 -top-2.5 z-30">
+            <HsManaGem value={shownCost} state={costState} size={dims.manaGem} />
+          </div>
 
-      {/* Parchment Description Box */}
-      <div
-        className={`${
-          gemBg ? 'mt-0.5' : 'mt-1.5'
-        } flex h-[32%] w-full items-center justify-center overflow-hidden rounded-[7px] border border-stone-800/60 px-2 py-1 text-center shadow-inner ${
-          card.type === 'WEAPON'
-            ? 'bg-gradient-to-b from-slate-800 to-slate-950 text-slate-100'
-            : 'bg-gradient-to-b from-[#f5ebd4] to-[#dfd0b0] text-[#241a10]'
-        }`}
-      >
-        <div
-          className={`leading-[1.22] font-semibold ${dims.fontBody}`}
-          dangerouslySetInnerHTML={{ __html: formattedText }}
-        />
-      </div>
+          <div className="relative z-10 mx-auto mt-1 h-[48%] w-[82%] overflow-hidden rounded-[50%] border-[2.5px] border-[#e7c985] bg-stone-950 shadow-inner">
+            {!artErr ? (
+              <img
+                src={getCardArtUrl(card.artId)}
+                alt={card.name}
+                onError={() => setArtErr(true)}
+                className="h-full w-full scale-110 object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-xs font-extrabold text-amber-200">
+                {card.name}
+              </div>
+            )}
+          </div>
 
-      {/* Tribe Tag */}
-      {card.race && RACE_KO[card.race] && (
-        <div className="absolute bottom-1 left-1/2 z-20 -translate-x-1/2 rounded border border-amber-900 bg-[#3a2614] px-2 py-[1px] text-[8.5px] font-bold text-amber-200 shadow">
-          {RACE_KO[card.race]}
-        </div>
-      )}
+          <div className="relative z-20 -mt-2 rounded-[10px] border-[1.5px] border-[#593818] bg-gradient-to-b from-[#faf0d7] via-[#e7d1a7] to-[#c7a56e] px-1.5 py-0.5 text-center shadow">
+            <span className={`hs-outline-sm block truncate font-extrabold text-white ${dims.titleCls}`}>
+              {card.name}
+            </span>
+          </div>
 
-      {/* Attack Badge (Minion / Weapon) */}
-      {(card.type === 'MINION' || card.type === 'WEAPON') && (
-        <div
-          className={`hs-num absolute -bottom-2 -left-2 z-30 flex items-center justify-center rounded-full border-2 shadow-[0_3px_10px_rgba(0,0,0,0.85)] ${
-            card.type === 'WEAPON'
-              ? 'border-slate-300 bg-gradient-to-b from-slate-400 via-slate-600 to-slate-900 text-white'
-              : 'border-amber-200 bg-gradient-to-b from-yellow-300 via-amber-500 to-amber-800 text-white'
-          } ${dims.statSize}`}
-        >
-          {card.attack ?? 0}
-        </div>
-      )}
+          {RARITY_GEM_STYLE[card.rarity] && (
+            <div className="relative z-20 -mt-1 flex justify-center">
+              <div
+                style={{ background: RARITY_GEM_STYLE[card.rarity]! }}
+                className="h-3 w-2.5 rounded-full border border-stone-900 shadow"
+              />
+            </div>
+          )}
 
-      {/* Health / Durability Badge */}
-      {card.type === 'MINION' && (
-        <div
-          className={`hs-num absolute -bottom-2 -right-2 z-30 flex items-center justify-center rounded-full border-2 border-red-200 bg-gradient-to-b from-red-400 via-red-600 to-red-950 text-white shadow-[0_3px_10px_rgba(0,0,0,0.85)] ${dims.statSize}`}
-        >
-          {card.health ?? 1}
-        </div>
-      )}
-      {card.type === 'WEAPON' && (
-        <div
-          className={`hs-num absolute -bottom-2 -right-2 z-30 flex items-center justify-center rounded-md border-2 border-slate-200 bg-gradient-to-b from-slate-400 via-slate-600 to-slate-900 text-white shadow-[0_3px_10px_rgba(0,0,0,0.85)] ${dims.statSize}`}
-        >
-          {card.durability ?? 1}
+          <div className="relative z-10 flex h-[33%] items-center justify-center overflow-hidden rounded-[8px] border border-[#5e4122] bg-gradient-to-b from-[#f4e8cd] to-[#dcc7a0] px-2 py-1 text-center text-[#24180d] shadow-inner">
+            <div
+              className={`leading-[1.2] font-bold ${dims.bodyCls}`}
+              dangerouslySetInnerHTML={{
+                __html: formatCardHtmlText(card.text, spellPowerBonus, velenMultiplier),
+              }}
+            />
+          </div>
+
+          {(card.type === 'MINION' || card.type === 'WEAPON') && (
+            <div className="pointer-events-none absolute -bottom-2.5 -left-2.5 z-30">
+              <HsAttackBadge
+                value={card.attack ?? 0}
+                isWeapon={card.type === 'WEAPON'}
+                size={dims.manaGem}
+              />
+            </div>
+          )}
+          {card.type === 'MINION' && (
+            <div className="pointer-events-none absolute -bottom-3 -right-2.5 z-30">
+              <HsHealthBadge value={card.health ?? 1} size={dims.manaGem} />
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 };
+
+/* ============================================================================
+ * 3. Commercial Battlefield Oval Minion Token
+ * ============================================================================ */
 
 export interface BoardMinionTokenProps {
   minion: MinionInstance;
@@ -322,9 +586,8 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
   const maxHp = getMinionMaxHealth(minion);
   const isTaunt = hasMinionTaunt(minion);
 
-  const atkColor = atk > minion.baseAttack ? '#4ade80' : '#ffffff';
-  const hpColor =
-    hp < maxHp ? '#fca5a5' : maxHp > minion.baseHealth ? '#4ade80' : '#ffffff';
+  const hpState: 'normal' | 'damaged' | 'buffed' =
+    hp < maxHp ? 'damaged' : maxHp > minion.baseHealth ? 'buffed' : 'normal';
 
   const hasDeathrattle =
     !minion.silenced &&
@@ -343,7 +606,8 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
         'EX1_383',
       ].includes(minion.cardId));
 
-  const showSleepZzz = minion.exhausted && !minion.charge && !minion.auraCharge && !minion.cantAttack;
+  const showSleepZzz =
+    minion.exhausted && !minion.charge && !minion.auraCharge && !minion.cantAttack;
 
   return (
     <div
@@ -354,49 +618,49 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
       }}
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}
-      className={`group relative flex h-[116px] w-[92px] cursor-pointer select-none items-center justify-center transition-transform duration-150 ${
-        isSelectedAttacker ? '-translate-y-3 scale-110 z-30' : 'hover:scale-105 hover:z-20'
+      className={`group relative flex h-[122px] w-[98px] cursor-pointer select-none items-center justify-center transition-transform duration-150 ${
+        isSelectedAttacker ? 'z-30 -translate-y-3 scale-112' : 'hover:z-20 hover:scale-106'
       }`}
     >
-      {/* Taunt Shield Silhouette Behind Oval */}
+      {/* Authentic Taunt Iron-Bound Shield Frame */}
       {isTaunt && (
-        <div
-          className="pointer-events-none absolute -inset-2 z-0 border-[4px] border-[#d6b370] bg-gradient-to-b from-[#6e5638] via-[#3c2d1d] to-[#1e150c] shadow-[0_6px_18px_rgba(0,0,0,0.88)]"
-          style={{
-            clipPath:
-              'polygon(50% 0%, 92% 14%, 100% 56%, 82% 88%, 50% 100%, 18% 88%, 0% 56%, 8% 14%)',
-          }}
+        <img
+          src="/hs-assets/ui/taunt_shield.webp"
+          alt="도발"
+          className="pointer-events-none absolute -inset-3 z-0 h-[calc(100%+24px)] w-[calc(100%+24px)] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.92)]"
         />
       )}
 
-      {/* Ready-to-Attack or Valid Target Glow */}
+      {/* Ready-to-Attack / Valid Target Organic Aura */}
       {(canAttack || isValidTarget || isSelectedAttacker) && (
         <div
-          className={`pointer-events-none absolute -inset-1.5 z-0 rounded-[50%] transition-all ${
+          className={`pointer-events-none absolute -inset-1 z-0 rounded-[50%] transition-all ${
             isSelectedAttacker
-              ? 'shadow-[0_0_0_4px_#facc15,0_0_24px_8px_rgba(250,204,21,0.9)]'
+              ? 'shadow-[0_0_0_4px_#fde047,0_0_26px_8px_rgba(250,204,21,0.95)]'
               : isValidTarget
-                ? 'animate-pulse shadow-[0_0_0_4px_#ef4444,0_0_22px_6px_rgba(239,68,68,0.9)]'
-                : 'shadow-[0_0_0_3.5px_#4ade80,0_0_18px_5px_rgba(74,222,128,0.85)]'
+                ? 'animate-pulse shadow-[0_0_0_4px_#ef4444,0_0_24px_7px_rgba(239,68,68,0.92)]'
+                : 'shadow-[0_0_0_3.5px_#4ade80,0_0_20px_6px_rgba(34,197,94,0.88)]'
           }`}
         />
       )}
 
-      {/* Legendary Dragon Top Crest */}
+      {/* Sculpted Legendary Dragon Crest */}
       {minion.rarity === 'LEGENDARY' && (
-        <div className="pointer-events-none absolute -top-3.5 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-full border border-amber-200 bg-gradient-to-b from-amber-300 to-amber-700 px-2 py-[1px] text-[9px] font-black text-amber-950 shadow">
-          ★ 전설
-        </div>
+        <img
+          src="/hs-assets/ui/legendary_dragon.webp"
+          alt="전설"
+          className="pointer-events-none absolute -right-4 -top-5 z-30 h-16 w-24 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]"
+        />
       )}
 
-      {/* Oval Portrait Frame */}
+      {/* Oval Portrait + Chiseled Stone Bezel */}
       <div
-        className={`relative z-10 h-[104px] w-[82px] overflow-hidden rounded-[50%] border-[3.5px] bg-stone-900 shadow-[0_8px_18px_rgba(0,0,0,0.75)] ${
+        className={`relative z-10 h-[108px] w-[85px] overflow-hidden rounded-[50%] border-[4px] bg-stone-950 shadow-[0_10px_20px_rgba(0,0,0,0.88),inset_0_0_12px_rgba(0,0,0,0.85)] ${
           minion.frozen
-            ? 'border-cyan-300 ring-4 ring-sky-400/70'
+            ? 'border-cyan-200 ring-4 ring-sky-400/75'
             : isTaunt
-              ? 'border-[#e7c98a]'
-              : 'border-[#c8a568]'
+              ? 'border-[#ebd094]'
+              : 'border-[#b9965b]'
         }`}
       >
         {!imgErr ? (
@@ -409,90 +673,103 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
             }`}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-stone-800 px-1 text-center text-[11px] font-bold text-amber-200">
+          <div className="flex h-full w-full items-center justify-center bg-stone-900 px-1 text-center text-[11px] font-bold text-amber-200">
             {minion.name}
           </div>
         )}
 
-        {/* Stealth Mist */}
+        {/* Inner Vignette Rim */}
+        <div className="pointer-events-none absolute inset-0 rounded-[50%] shadow-[inset_0_0_14px_rgba(0,0,0,0.75)]" />
+
+        {/* Stealth Shadow Fog */}
         {minion.stealth && (
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-950/45">
-            <span className="rounded bg-slate-900/80 px-1.5 py-0.5 text-[9px] font-bold text-slate-200">
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-gradient-to-b from-slate-950/60 via-slate-900/35 to-slate-950/75">
+            <span className="hs-outline-sm rounded border border-slate-400/50 bg-slate-950/85 px-1.5 py-0.5 text-[9px] font-extrabold tracking-wider text-slate-200">
               은신
             </span>
           </div>
         )}
 
-        {/* Frozen Ice Overlay */}
+        {/* Frozen Ice Glaze */}
         {minion.frozen && (
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-cyan-200/45 via-sky-400/25 to-blue-600/45" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-cyan-100/55 via-sky-400/25 to-blue-700/50" />
         )}
 
-        {/* Windfury Streaks */}
+        {/* Windfury Swirl */}
         {minion.windfury && !minion.silenced && (
           <div className="pointer-events-none absolute inset-x-0 top-2 flex justify-center">
-            <span className="rounded-full bg-sky-900/80 px-1.5 text-[8.5px] font-bold text-cyan-200">
-              질풍 ×2
+            <span className="hs-outline-sm rounded-full border border-cyan-300/60 bg-sky-950/85 px-1.5 text-[8.5px] font-extrabold text-cyan-200">
+              질풍
             </span>
           </div>
         )}
 
-        {/* Silenced Chains X */}
+        {/* Silenced Arcane Seal */}
         {minion.silenced && (
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <span className="text-3xl font-black text-purple-300/85 drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">
-              ✕
-            </span>
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-purple-950/25">
+            <svg viewBox="0 0 48 48" className="h-12 w-12 drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)]">
+              <circle cx="24" cy="24" r="18" fill="none" stroke="#e879f9" strokeWidth="3.2" strokeDasharray="5 3" />
+              <line x1="11" y1="11" x2="37" y2="37" stroke="#f0abfc" strokeWidth="4" strokeLinecap="round" />
+              <line x1="37" y1="11" x2="11" y2="37" stroke="#f0abfc" strokeWidth="4" strokeLinecap="round" />
+            </svg>
           </div>
         )}
       </div>
 
       {/* Divine Shield Golden Dome */}
       {minion.divineShield && (
-        <div className="pointer-events-none absolute -inset-1 z-20 rounded-[50%] border-[3px] border-yellow-200 bg-gradient-to-tr from-amber-300/25 via-yellow-100/35 to-amber-200/30 shadow-[0_0_18px_rgba(250,204,21,0.85)]" />
+        <img
+          src="/hs-assets/ui/divine_shield.webp"
+          alt="천상의 보호막"
+          className="pointer-events-none absolute -inset-2 z-20 h-[calc(100%+16px)] w-[calc(100%+16px)] rounded-[50%] object-cover opacity-85 mix-blend-screen drop-shadow-[0_0_16px_rgba(250,204,21,0.9)]"
+        />
       )}
 
-      {/* Floating Zzz Exhaustion Indicator */}
+      {/* Summoning Sickness Zzz */}
       {showSleepZzz && (
-        <div className="pointer-events-none absolute -right-1 -top-2 z-30 animate-bounce text-xs font-black text-sky-200 drop-shadow-[0_2px_3px_rgba(0,0,0,0.95)]">
+        <div className="hs-num pointer-events-none absolute -right-1 -top-2 z-30 animate-bounce text-xs text-sky-200">
           Zzz
         </div>
       )}
 
-      {/* Bottom Keyword Trigger / Deathrattle / Poison / SpellPower Emblem */}
+      {/* Deathrattle / Poison / Spell Power Pedestal Emblem */}
       {(hasDeathrattle || (!minion.silenced && (minion.poisonous || minion.spellDamage > 0))) && (
-        <div className="pointer-events-none absolute -bottom-2 left-1/2 z-30 flex -translate-x-1/2 items-center gap-0.5 rounded-full border border-amber-300/80 bg-stone-950 px-1.5 py-[1px] text-[10px] shadow">
-          {hasDeathrattle && <span title="죽음의 메아리">💀</span>}
-          {!minion.silenced && minion.poisonous && <span title="독성">🧪</span>}
+        <div className="pointer-events-none absolute -bottom-2.5 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1 rounded-full border border-[#d8b267] bg-stone-950/95 px-2 py-[1.5px] text-[9.5px] font-extrabold text-amber-200 shadow-lg">
+          {hasDeathrattle && (
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-stone-200" aria-label="죽음의 메아리">
+              <path d="M12 2C7.5 2 4 5.4 4 9.7c0 2.8 1.5 5.2 3.8 6.5V19c0 .6.4 1 1 1h6.4c.6 0 1-.4 1-1v-2.8c2.3-1.3 3.8-3.7 3.8-6.5C20 5.4 16.5 2 12 2zm-3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+            </svg>
+          )}
+          {!minion.silenced && minion.poisonous && (
+            <span className="text-emerald-400">독성</span>
+          )}
           {!minion.silenced && minion.spellDamage > 0 && (
-            <span className="font-bold text-sky-300" title="주문 공격력">
-              ✦+{minion.spellDamage}
-            </span>
+            <span className="text-sky-300">✦+{minion.spellDamage}</span>
           )}
         </div>
       )}
 
-      {/* Attack Sword Orb (Bottom Left) */}
-      <div
-        style={{ color: atkColor }}
-        className="hs-num pointer-events-none absolute -bottom-1 -left-1.5 z-30 flex h-8 w-8 items-center justify-center rounded-full border-2 border-amber-200 bg-gradient-to-b from-yellow-300 via-amber-500 to-amber-900 text-lg shadow-[0_3px_8px_rgba(0,0,0,0.9)]"
-      >
-        {atk}
+      {/* Sculpted Crossed-Sword Attack Badge (Bottom Left) */}
+      <div className="pointer-events-none absolute -bottom-2 -left-2.5 z-30">
+        <HsAttackBadge value={atk} buffed={atk > minion.baseAttack} size={36} />
       </div>
 
-      {/* Health Blood Drop Orb (Bottom Right) */}
-      <div
-        style={{ color: hpColor }}
-        className={`hs-num pointer-events-none absolute -bottom-1 -right-1.5 z-30 flex h-8 w-8 items-center justify-center rounded-full border-2 text-lg shadow-[0_3px_8px_rgba(0,0,0,0.9)] ${
-          hp < maxHp
-            ? 'border-red-300 bg-gradient-to-b from-red-500 via-red-700 to-red-950'
-            : 'border-red-200 bg-gradient-to-b from-red-400 via-red-600 to-red-900'
-        }`}
-      >
-        {hp}
+      {/* Sculpted Crimson Blood-Drop Health Badge (Bottom Right) */}
+      <div className="pointer-events-none absolute -bottom-2.5 -right-2.5 z-30">
+        <HsHealthBadge value={hp} state={hpState} size={35} />
       </div>
     </div>
   );
+};
+
+/* ============================================================================
+ * 4. Commercial Hero Arch Portrait + Weapon Sheathe + Hero Power Coin
+ * ============================================================================ */
+
+const SECRET_MEDALLION_URL: Record<string, string> = {
+  MAGE: '/hs-assets/ui/secret_mage.webp',
+  HUNTER: '/hs-assets/ui/secret_hunter.webp',
+  PALADIN: '/hs-assets/ui/secret_paladin.webp',
 };
 
 export interface HeroZoneProps {
@@ -528,16 +805,16 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
   const weaponOpen = isActiveTurn && Boolean(player.weapon);
 
   return (
-    <div className="relative flex items-center justify-center gap-3 select-none">
+    <div className="relative flex select-none items-center justify-center gap-3.5">
       {/* Left: Equipped Weapon Medallion */}
-      <div className="relative flex h-[78px] w-[78px] items-center justify-center">
+      <div className="relative flex h-[80px] w-[80px] items-center justify-center">
         {player.weapon ? (
           <div
             title={`${player.weapon.name} (${player.weapon.attack}/${player.weapon.durability})`}
-            className={`relative flex h-[74px] w-[74px] items-center justify-center rounded-full border-[3px] shadow-[0_6px_16px_rgba(0,0,0,0.85)] transition-all ${
+            className={`relative flex h-[76px] w-[76px] items-center justify-center rounded-full border-[3.5px] shadow-[0_8px_20px_rgba(0,0,0,0.9)] transition-all ${
               weaponOpen
-                ? 'border-amber-300 bg-stone-900 ring-2 ring-emerald-400/60'
-                : 'border-slate-500 bg-slate-900 brightness-75'
+                ? 'border-[#ebd08c] bg-stone-950 ring-2 ring-emerald-400/70'
+                : 'border-slate-500 bg-slate-900 brightness-80'
             }`}
           >
             {weaponOpen ? (
@@ -547,129 +824,148 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
                 className="h-full w-full rounded-full object-cover"
               />
             ) : (
-              /* Closed Weapon Steel Shutter on Opponent's Turn! */
-              <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-gradient-to-b from-slate-600 via-slate-800 to-slate-950 text-[10px] font-bold text-slate-300">
-                <span>⚔</span>
-                <span>닫힘</span>
+              /* Closed Steel Weapon Shutter on Opponent's Turn */
+              <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-gradient-to-b from-slate-600 via-slate-800 to-slate-950">
+                <img
+                  src="/hs-assets/ui/play_swirl_medallion.webp"
+                  alt=""
+                  className="h-11 w-11 opacity-65"
+                />
               </div>
             )}
-            <div className="hs-num absolute -bottom-1 -left-1 flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-slate-800 text-sm text-white">
-              {player.weapon.attack}
+            <div className="pointer-events-none absolute -bottom-2 -left-2 z-20">
+              <HsAttackBadge value={player.weapon.attack} isWeapon size={30} />
             </div>
-            <div className="hs-num absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-slate-700 text-sm text-white">
+            <div className="hs-num pointer-events-none absolute -bottom-1.5 -right-1.5 z-20 flex h-7 w-7 items-center justify-center rounded-md border-2 border-slate-200 bg-gradient-to-b from-slate-500 to-slate-900 text-sm text-white shadow-lg">
               {player.weapon.durability}
             </div>
           </div>
         ) : (
-          <div className="h-[68px] w-[68px] rounded-full border border-amber-900/30 bg-black/20" />
+          <div className="h-[68px] w-[68px] rounded-full border-2 border-[#543a1f]/45 bg-black/25 shadow-inner" />
         )}
       </div>
 
-      {/* Center: Arch Hero Portrait */}
+      {/* Center: Sculpted Stone & Brass Hero Arch */}
       <div
         data-hs-entity={entityId}
         onClick={(e) => {
           e.stopPropagation();
           onClickHero();
         }}
-        className={`relative flex h-[116px] w-[104px] cursor-pointer items-center justify-center transition-transform ${
-          isHeroSelectedAttacker ? '-translate-y-2 scale-105' : 'hover:scale-[1.03]'
+        className={`relative flex h-[120px] w-[108px] cursor-pointer items-center justify-center transition-transform ${
+          isHeroSelectedAttacker ? '-translate-y-2 scale-106' : 'hover:scale-[1.03]'
         }`}
       >
-        {/* Active Secrets Crown Orbs */}
+        {/* Active Secrets Crown Medallions */}
         {player.secrets.length > 0 && (
           <div className="absolute -top-4 left-1/2 z-40 flex -translate-x-1/2 gap-1">
             {player.secrets.map((sec) => {
-              const secColor = CLASSIC_HEROES[sec.heroClass]?.secretColor || '#f472b6';
+              const secImg = SECRET_MEDALLION_URL[sec.heroClass];
               return (
                 <div
                   key={sec.uid}
                   title={
                     isFriendly
                       ? `내 비밀: ${sec.name}`
-                      : `${CLASSIC_HEROES[sec.heroClass].classNameKo} 비밀: 조건이 충족되면 밝혀집니다!`
+                      : `${CLASSIC_HEROES[sec.heroClass].classNameKo} 비밀: 조건이 충족되면 발동합니다!`
                   }
-                  style={{ background: secColor }}
-                  className="hs-num flex h-6 w-6 items-center justify-center rounded-full border-2 border-amber-100 text-xs text-stone-950 shadow-lg"
+                  className="relative flex h-7 w-7 items-center justify-center rounded-full border-2 border-amber-100 bg-stone-950 shadow-[0_3px_8px_rgba(0,0,0,0.9)]"
                 >
-                  ?
+                  {secImg ? (
+                    <img src={secImg} alt="비밀" className="h-full w-full rounded-full object-cover" />
+                  ) : (
+                    <span className="hs-num text-xs text-amber-200">?</span>
+                  )}
                 </div>
               );
             })}
           </div>
         )}
 
-        {/* Glow Ring */}
+        {/* Attack / Target Glow Ring */}
         {(canHeroAttack || isHeroValidTarget || isHeroSelectedAttacker) && (
           <div
-            className={`pointer-events-none absolute -inset-1.5 rounded-t-[54px] rounded-b-[14px] ${
+            className={`pointer-events-none absolute -inset-1.5 rounded-t-[58px] rounded-b-[14px] ${
               isHeroSelectedAttacker
-                ? 'shadow-[0_0_0_4px_#facc15,0_0_24px_6px_rgba(250,204,21,0.9)]'
+                ? 'shadow-[0_0_0_4px_#fde047,0_0_26px_7px_rgba(250,204,21,0.92)]'
                 : isHeroValidTarget
-                  ? 'animate-pulse shadow-[0_0_0_4px_#ef4444,0_0_24px_6px_rgba(239,68,68,0.9)]'
-                  : 'shadow-[0_0_0_3.5px_#4ade80,0_0_18px_5px_rgba(74,222,128,0.85)]'
+                  ? 'animate-pulse shadow-[0_0_0_4px_#ef4444,0_0_24px_7px_rgba(239,68,68,0.92)]'
+                  : 'shadow-[0_0_0_3.5px_#4ade80,0_0_18px_5px_rgba(34,197,94,0.88)]'
             }`}
           />
         )}
 
-        {/* Arch Frame */}
+        {/* Chiseled Gold-Trimmed Hero Arch */}
         <div
-          className={`relative h-full w-full overflow-hidden rounded-t-[54px] rounded-b-[14px] border-[4px] bg-stone-900 shadow-[0_10px_24px_rgba(0,0,0,0.88)] ${
+          className={`relative h-full w-full overflow-hidden rounded-t-[58px] rounded-b-[14px] border-[4.5px] bg-stone-950 shadow-[0_12px_28px_rgba(0,0,0,0.92),inset_0_0_18px_rgba(0,0,0,0.85)] ${
             player.immuneThisTurn
               ? 'border-yellow-200 ring-4 ring-amber-300'
               : player.frozen
-                ? 'border-cyan-300 ring-4 ring-sky-400/70'
-                : 'border-[#d4b06a]'
+                ? 'border-cyan-200 ring-4 ring-sky-400/75'
+                : 'border-[#deb96e]'
           }`}
         >
           <img
             src={getHeroArtUrl(player.isJaraxxus ? 'EX1_323h' : player.heroId)}
             alt={player.heroNameKo}
-            className="h-full w-full scale-110 object-cover object-top"
+            className="h-full w-full scale-112 object-cover object-top"
+          />
+          {/* Small Class Crest Pin Top-Left */}
+          <img
+            src={CLASS_CREST_URL[player.heroClass]}
+            alt=""
+            className="pointer-events-none absolute left-1.5 top-1.5 h-5 w-5 rounded-full opacity-90 drop-shadow"
           />
           {player.frozen && (
-            <div className="pointer-events-none absolute inset-0 bg-cyan-300/35" />
+            <div className="pointer-events-none absolute inset-0 bg-cyan-200/35" />
           )}
           {player.immuneThisTurn && (
-            <div className="pointer-events-none absolute inset-x-0 top-2 text-center text-[10px] font-black text-yellow-200 drop-shadow">
-              ★ 면역 ★
+            <div className="hs-outline-sm pointer-events-none absolute inset-x-0 top-2 text-center text-[10px] font-black text-yellow-200">
+              면역
             </div>
           )}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent px-1 pb-1 pt-3 text-center">
-            <div className="truncate text-[10px] font-bold text-amber-100">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent px-1.5 pb-1 pt-4 text-center">
+            <div className="hs-outline-sm truncate text-[10.5px] font-extrabold text-amber-100">
               {player.name}
             </div>
           </div>
         </div>
 
-        {/* Hero Attack Badge (Only shown when > 0) */}
+        {/* Hero Attack Sword Orb */}
         {heroAtk > 0 && (
-          <div className="hs-num pointer-events-none absolute -bottom-2 -left-2.5 z-30 flex h-9 w-9 items-center justify-center rounded-full border-2 border-amber-200 bg-gradient-to-b from-yellow-300 via-amber-500 to-amber-900 text-xl text-white shadow-lg">
-            {heroAtk}
+          <div className="pointer-events-none absolute -bottom-2.5 -left-3 z-30">
+            <HsAttackBadge value={heroAtk} size={40} />
           </div>
         )}
 
-        {/* Armor Shield Badge */}
+        {/* Official Extracted Silver Armor Shield */}
         {player.armor > 0 && (
-          <div className="hs-num pointer-events-none absolute -right-2.5 bottom-7 z-30 flex h-8 w-8 items-center justify-center rounded-t-md rounded-b-xl border-2 border-slate-100 bg-gradient-to-b from-slate-300 via-slate-500 to-slate-800 text-base text-white shadow-lg">
-            {player.armor}
+          <div className="pointer-events-none absolute -right-3 bottom-8 z-30 flex h-10 w-9 items-center justify-center">
+            <img
+              src="/hs-assets/ui/armor_shield.webp"
+              alt="방어도"
+              className="h-full w-full object-contain drop-shadow-[0_3px_6px_rgba(0,0,0,0.9)]"
+            />
+            <span className="hs-num absolute inset-0 flex items-center justify-center pb-0.5 text-base text-white">
+              {player.armor}
+            </span>
           </div>
         )}
 
-        {/* Health Blood Drop Badge */}
-        <div
-          className={`hs-num pointer-events-none absolute -bottom-2 -right-2.5 z-30 flex h-9 w-9 items-center justify-center rounded-full border-2 border-red-200 bg-gradient-to-b from-red-400 via-red-600 to-red-950 text-xl shadow-lg ${
-            player.health < player.maxHealth ? 'text-red-200' : 'text-white'
-          }`}
-        >
-          {player.health}
+        {/* Hero Health Crimson Blood-Drop */}
+        <div className="pointer-events-none absolute -bottom-3 -right-3 z-30">
+          <HsHealthBadge
+            value={player.health}
+            state={player.health < player.maxHealth ? 'damaged' : 'normal'}
+            size={39}
+          />
         </div>
 
-        {/* Speech Bubble for Korean Emotes */}
+        {/* Parchment Emote Speech Bubble */}
         {emoteBubbleText && (
           <div
-            className={`pointer-events-none absolute z-50 w-44 rounded-2xl border-2 border-stone-700 bg-[#fdf8ec] px-3 py-2 text-center text-xs font-extrabold text-stone-900 shadow-2xl ${
-              isFriendly ? '-top-14 -left-32' : '-bottom-14 -left-32'
+            className={`pointer-events-none absolute z-50 w-48 rounded-2xl border-2 border-[#6e4c23] bg-gradient-to-b from-[#fcf6e6] to-[#e6d3ad] px-3.5 py-2 text-center text-xs font-extrabold text-[#24170b] shadow-[0_12px_28px_rgba(0,0,0,0.9)] ${
+              isFriendly ? '-left-36 -top-14' : '-bottom-14 -left-36'
             }`}
           >
             “{emoteBubbleText}”
@@ -677,8 +973,8 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
         )}
       </div>
 
-      {/* Right: Flipping Hero Power Coin */}
-      <div className="relative flex h-[78px] w-[78px] items-center justify-center">
+      {/* Right: Flipping Carved Brass Hero Power Coin */}
+      <div className="relative flex h-[80px] w-[80px] items-center justify-center">
         <button
           type="button"
           onClick={(e) => {
@@ -686,21 +982,24 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
             onClickHeroPower();
           }}
           title={`${player.heroPowerNameKo} (비용 2): ${player.heroPowerTextKo}`}
-          className={`relative flex h-[74px] w-[74px] items-center justify-center rounded-full border-[3.5px] transition-all duration-300 ${
+          className={`relative flex h-[76px] w-[76px] items-center justify-center rounded-full border-[3.5px] transition-all duration-300 ${
             player.heroPowerUsedThisTurn
-              ? 'rotate-y-180 border-stone-700 bg-gradient-to-b from-[#5c4028] to-[#2c1d11] opacity-80'
+              ? 'border-stone-600 bg-stone-900 opacity-85'
               : isHeroPowerSelected
-                ? 'scale-110 border-yellow-300 shadow-[0_0_0_3px_#facc15,0_0_20px_rgba(250,204,21,0.9)]'
+                ? 'scale-110 border-yellow-200 shadow-[0_0_0_3.5px_#fde047,0_0_22px_rgba(250,204,21,0.95)]'
                 : canUseHeroPower
-                  ? 'cursor-pointer border-[#e5c178] shadow-[0_0_0_3px_#4ade80,0_0_16px_rgba(74,222,128,0.8)] hover:scale-105'
-                  : 'border-[#b69252] bg-stone-900'
+                  ? 'cursor-pointer border-[#edd189] shadow-[0_0_0_3px_#4ade80,0_0_18px_rgba(34,197,94,0.85)] hover:scale-106'
+                  : 'border-[#b99554] bg-stone-950 shadow-[0_6px_16px_rgba(0,0,0,0.85)]'
           }`}
         >
           {player.heroPowerUsedThisTurn ? (
-            /* Flipped Wooden Hearthstone Swirl Back */
-            <div className="flex flex-col items-center justify-center text-amber-300/60">
-              <span className="text-xl">🌀</span>
-              <span className="text-[9px] font-bold">사용됨</span>
+            /* Flipped Carved Hearthstone Swirl Back (No Emoji!) */
+            <div className="relative flex h-full w-full items-center justify-center rounded-full overflow-hidden">
+              <img
+                src="/hs-assets/ui/play_swirl_medallion.webp"
+                alt="사용됨"
+                className="h-full w-full object-cover brightness-75"
+              />
             </div>
           ) : (
             <>
@@ -712,10 +1011,10 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
                 }}
                 className="h-full w-full rounded-full object-cover"
               />
-              <div className="hs-num absolute -top-2 left-1/2 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full border border-sky-200 bg-gradient-to-b from-sky-400 to-blue-900 text-xs text-white shadow">
-                2
+              <div className="pointer-events-none absolute -top-2.5 left-1/2 -translate-x-1/2">
+                <HsManaGem value={2} size={26} />
               </div>
-              <div className="absolute inset-x-0 bottom-0 rounded-b-full bg-black/75 py-0.5 text-center text-[8.5px] font-bold text-amber-100">
+              <div className="hs-outline-sm absolute inset-x-0 bottom-0 rounded-b-full bg-gradient-to-t from-black/90 via-black/65 to-transparent py-1 text-center text-[8.5px] font-extrabold text-amber-100">
                 {player.heroPowerNameKo}
               </div>
             </>

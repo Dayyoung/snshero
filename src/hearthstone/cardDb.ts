@@ -1,4 +1,4 @@
-import { ClassicCardDef, CustomDeck, HeroClass } from './types';
+import { CardClass, ClassicCardDef, CustomDeck, HERO_CLASS_ORDER, HeroClass } from './types';
 
 export interface ReaManifestData {
   generator: string;
@@ -125,6 +125,94 @@ export function getCardTileUrl(artId: string): string {
 
 export function getHeroArtUrl(heroId: string): string {
   return `https://art.hearthstonejson.com/v1/256x/${heroId}.jpg`;
+}
+
+/**
+ * Official Blizzard Korean (`koKR`) transparent-alpha card render URL.
+ * Prefers 2014 Classic `VAN_*` IDs so un-nerfed stats, swirl watermarks,
+ * Legendary dragon crests, sword/blood-drop gems, and S-curved scrolls match 1:1.
+ */
+export function getOfficialCardRenderUrl(
+  card: ClassicCardDef,
+  res: '256x' | '512x' = '256x',
+): string {
+  const primaryId = card.vanId || card.id || card.artId;
+  return `https://art.hearthstonejson.com/v1/render/latest/koKR/${res}/${primaryId}.png`;
+}
+
+export function getOfficialCardRenderFallbackUrl(
+  card: ClassicCardDef,
+  res: '256x' | '512x' = '256x',
+): string {
+  const cleanId = card.id.startsWith('VAN_') ? card.id.slice(4) : card.id;
+  return `https://art.hearthstonejson.com/v1/render/latest/koKR/${res}/${cleanId}.png`;
+}
+
+export const CLASS_CREST_URL: Record<CardClass, string> = {
+  MAGE: '/hs-assets/ui/crest_mage.webp',
+  PALADIN: '/hs-assets/ui/crest_paladin.webp',
+  PRIEST: '/hs-assets/ui/crest_priest.webp',
+  ROGUE: '/hs-assets/ui/crest_rogue.webp',
+  SHAMAN: '/hs-assets/ui/crest_shaman.webp',
+  WARLOCK: '/hs-assets/ui/crest_warlock.webp',
+  WARRIOR: '/hs-assets/ui/crest_warrior.webp',
+  DRUID: '/hs-assets/ui/crest_druid.webp',
+  HUNTER: '/hs-assets/ui/crest_hunter.webp',
+  NEUTRAL: '/hs-assets/ui/crest_neutral.webp',
+  DREAM: '/hs-assets/ui/crest_druid.webp',
+};
+
+export function encodeDeckShareCode(deck: CustomDeck): string {
+  const counts = new Map<string, number>();
+  for (const cid of deck.cards) {
+    counts.set(cid, (counts.get(cid) || 0) + 1);
+  }
+  const pairs = Array.from(counts.entries())
+    .map(([cid, n]) => `${cid}:${n}`)
+    .join(',');
+  const payload = JSON.stringify({
+    v: 1,
+    c: deck.heroClass,
+    n: deck.name,
+    d: pairs,
+  });
+  return `HSCLASSIC1:${btoa(encodeURIComponent(payload))}`;
+}
+
+export function decodeDeckShareCode(
+  rawCode: string,
+): { name: string; heroClass: HeroClass; cards: string[] } | null {
+  try {
+    const trimmed = rawCode.trim();
+    const b64 = trimmed.startsWith('HSCLASSIC1:') ? trimmed.slice('HSCLASSIC1:'.length) : trimmed;
+    const parsed = JSON.parse(decodeURIComponent(atob(b64))) as {
+      c?: string;
+      n?: string;
+      d?: string;
+    };
+    if (!parsed.c || !HERO_CLASS_ORDER.includes(parsed.c as HeroClass) || !parsed.d) {
+      return null;
+    }
+    const cards: string[] = [];
+    for (const seg of parsed.d.split(',')) {
+      const [cid, cntStr] = seg.split(':');
+      const card = cardDb.getCard(cid);
+      const cnt = Math.min(card?.rarity === 'LEGENDARY' ? 1 : 2, Math.max(1, Number(cntStr) || 1));
+      if (card && card.collectible) {
+        for (let i = 0; i < cnt && cards.length < 30; i += 1) {
+          cards.push(card.id);
+        }
+      }
+    }
+    if (cards.length === 0) return null;
+    return {
+      name: (parsed.n || `${parsed.c} 공유 덱`).slice(0, 28),
+      heroClass: parsed.c as HeroClass,
+      cards,
+    };
+  } catch {
+    return null;
+  }
 }
 
 /**

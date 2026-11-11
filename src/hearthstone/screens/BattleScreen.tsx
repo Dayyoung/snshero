@@ -2,13 +2,17 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { hsAudio } from '../audio';
 import {
   CLASSIC_RANK_NAMES,
+  CLASS_CREST_URL,
   cardDb,
   getCardTileUrl,
+  getHeroArtUrl,
 } from '../cardDb';
 import {
   BoardMinionToken,
   HearthstoneCard,
   HeroPortraitZone,
+  HsGoldCoinIcon,
+  HsManaGem,
 } from '../components/CardVisual';
 import { AiAction, buildAiOpponentSetup, computeNextAiAction } from '../engine/aiController';
 import {
@@ -771,7 +775,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         </div>
       )}
 
-      {/* Right Deck Stacks & 3D End Turn Flip Button */}
+      {/* Right Deck Stacks & Authentic 3-State Sculpted End Turn Button */}
       <aside className="fixed right-2.5 top-1/2 z-40 flex -translate-y-1/2 flex-col items-center gap-4">
         {/* Opponent Remaining Deck Stack */}
         <div
@@ -780,13 +784,22 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               ? `상대 남은 덱: ${matchState.opponent.deck.length}장`
               : `상대 덱 소진! (다음 탈진 피해: ${matchState.opponent.fatigueCounter + 1})`
           }
-          className="flex flex-col items-center rounded-xl border border-amber-600/40 bg-stone-950/80 px-2 py-1.5 text-center shadow-lg"
+          className="relative flex h-14 w-11 flex-col items-center justify-center overflow-hidden rounded-lg border-2 border-[#c8a158]/80 bg-stone-950/90 shadow-xl"
         >
-          <span className="text-[9.5px] font-bold text-red-300">상대 덱</span>
-          <span className="hs-num text-sm text-white">{matchState.opponent.deck.length}</span>
+          <img
+            src={backImg}
+            alt=""
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-55"
+          />
+          <span className="hs-outline-sm relative z-10 text-[9px] font-extrabold text-red-200">
+            상대 덱
+          </span>
+          <span className="hs-num relative z-10 text-sm text-white">
+            {matchState.opponent.deck.length}
+          </span>
         </div>
 
-        {/* 3D End Turn Lever */}
+        {/* Authentic Extracted 3-State Stone & Brass End Turn Lever */}
         <button
           type="button"
           disabled={!isPlayerTurn}
@@ -797,15 +810,32 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             const eng = createEngine(matchState);
             setMatchState(eng.endTurn());
           }}
-          className={`hs-outline-sm rounded-2xl border-[3px] px-3.5 py-3 text-xs font-extrabold tracking-wider shadow-[0_8px_20px_rgba(0,0,0,0.85)] transition sm:px-5 sm:text-sm ${
+          className={`group relative flex h-[54px] w-[104px] items-center justify-center transition sm:h-[62px] sm:w-[118px] ${
             !isPlayerTurn
-              ? 'cursor-not-allowed border-stone-600 bg-gradient-to-b from-stone-600 to-stone-800 text-stone-300'
+              ? 'cursor-not-allowed opacity-90'
               : noMovesLeft
-                ? 'animate-pulse border-emerald-200 bg-gradient-to-b from-emerald-400 via-emerald-600 to-emerald-900 text-white shadow-[0_0_24px_rgba(52,211,153,0.95)] hover:scale-105'
-                : 'border-amber-200 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-900 text-white hover:scale-105 hover:brightness-110'
+                ? 'cursor-pointer drop-shadow-[0_0_18px_rgba(52,211,153,0.95)] hover:scale-105'
+                : 'cursor-pointer drop-shadow-[0_8px_16px_rgba(0,0,0,0.88)] hover:scale-105 hover:brightness-110'
           }`}
         >
-          {!isPlayerTurn ? '상대 턴' : noMovesLeft ? '턴 종료 ✔' : '턴 종료'}
+          <img
+            src={
+              !isPlayerTurn
+                ? '/hs-assets/ui/endturn_stone.webp'
+                : noMovesLeft
+                  ? '/hs-assets/ui/endturn_green.webp'
+                  : '/hs-assets/ui/endturn_yellow.webp'
+            }
+            alt="턴 종료"
+            className="pointer-events-none absolute inset-0 h-full w-full object-contain"
+          />
+          <span
+            className={`hs-title hs-outline-sm relative z-10 text-[11px] font-extrabold tracking-wide sm:text-xs ${
+              !isPlayerTurn ? 'text-stone-300' : 'text-white'
+            }`}
+          >
+            {!isPlayerTurn ? '상대 턴' : noMovesLeft ? '할 일 없음' : '턴 종료'}
+          </span>
         </button>
 
         {/* Player Remaining Deck Stack */}
@@ -815,10 +845,19 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               ? `내 남은 덱: ${matchState.player.deck.length}장`
               : `내 덱 소진! (다음 탈진 피해: ${matchState.player.fatigueCounter + 1})`
           }
-          className="flex flex-col items-center rounded-xl border border-amber-600/40 bg-stone-950/80 px-2 py-1.5 text-center shadow-lg"
+          className="relative flex h-14 w-11 flex-col items-center justify-center overflow-hidden rounded-lg border-2 border-[#c8a158]/80 bg-stone-950/90 shadow-xl"
         >
-          <span className="text-[9.5px] font-bold text-sky-300">내 덱</span>
-          <span className="hs-num text-sm text-white">{matchState.player.deck.length}</span>
+          <img
+            src={backImg}
+            alt=""
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-55"
+          />
+          <span className="hs-outline-sm relative z-10 text-[9px] font-extrabold text-sky-200">
+            내 덱
+          </span>
+          <span className="hs-num relative z-10 text-sm text-white">
+            {matchState.player.deck.length}
+          </span>
         </div>
       </aside>
 
@@ -826,14 +865,21 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       <header className="relative z-20 flex flex-col items-center pt-1">
         {/* Top Utility Strip: Opponent Mana + Options Gear */}
         <div className="flex w-full items-center justify-between px-3">
-          <div className="flex items-center gap-2 rounded-xl border border-amber-500/35 bg-stone-950/80 px-3 py-1 text-xs text-amber-100 shadow">
-            <span className="font-bold text-red-300">{matchState.opponent.name}</span>
-            <span>·</span>
-            <span className="font-bold text-sky-300">
+          <div className="flex items-center gap-2 rounded-xl border-2 border-[#b8924d]/75 bg-stone-950/88 px-3 py-1 text-xs text-amber-100 shadow-lg">
+            <img
+              src={CLASS_CREST_URL[matchState.opponent.heroClass]}
+              alt=""
+              className="h-4 w-4 rounded-full object-cover"
+            />
+            <span className="font-extrabold text-red-200">{matchState.opponent.name}</span>
+            <span className="text-stone-500">·</span>
+            <span className="font-extrabold text-sky-300">
               마나 {matchState.opponent.mana}/{matchState.opponent.maxMana}
             </span>
-            <span>·</span>
-            <span className="text-amber-200/80">손패 {matchState.opponent.hand.length}장</span>
+            <span className="text-stone-500">·</span>
+            <span className="font-semibold text-amber-200/80">
+              손패 {matchState.opponent.hand.length}장
+            </span>
           </div>
 
           {/* Opponent Face-Down Curved Hand */}
@@ -858,9 +904,9 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               hsAudio.playSfx('open_menu');
               onOpenOptions(handleConcede);
             }}
-            className="rounded-xl border-2 border-[#cfa85e] bg-stone-950/85 px-3 py-1 text-xs font-extrabold text-amber-100 shadow hover:bg-stone-800"
+            className="hs-brass-btn rounded-xl px-3 py-1 text-xs font-extrabold text-amber-100"
           >
-            ⚙ 메뉴 / 항복
+            메뉴 · 항복
           </button>
         </div>
 
@@ -992,8 +1038,8 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       </main>
 
       {/* ==================== BOTTOM ZONE: PLAYER HERO + MANA TRAY + CURVED HAND ==================== */}
-      <footer className="relative z-30 flex flex-col items-center pb-3.5">
-        {/* Player Hero + Emote Trigger + 10 Mana Crystal Tray */}
+      <footer className="relative z-30 flex flex-col items-center pb-1.5">
+        {/* Player Hero + Emote Trigger + 10 Sapphire Mana Crystal Tray */}
         <div className="flex w-full max-w-5xl flex-wrap items-center justify-center gap-4 px-4">
           <div className="relative">
             <HeroPortraitZone
@@ -1012,39 +1058,39 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               onClickHeroPower={handlePlayerHeroPower}
             />
 
-            {/* Emote Menu Button */}
+            {/* Emote Menu Brass Trigger */}
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setEmoteMenuOpen((v) => !v);
               }}
-              className="absolute -left-11 bottom-1 rounded-xl border border-amber-400/60 bg-stone-950/90 px-2 py-1 text-[11px] font-bold text-amber-200 shadow hover:bg-stone-800"
+              className="hs-brass-btn absolute -left-14 bottom-1 rounded-xl px-2 py-1 text-[10.5px] font-extrabold text-amber-100"
             >
-              💬
+              감정표현
             </button>
 
             {/* 6-Petal Korean Emote Radial Menu */}
             {emoteMenuOpen && (
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="absolute -top-32 left-1/2 z-50 grid w-64 -translate-x-1/2 grid-cols-3 gap-1.5 rounded-2xl border-2 border-[#d4af63] bg-stone-950/95 p-2.5 shadow-2xl"
+                className="hs-wood-panel absolute -top-32 left-1/2 z-50 grid w-64 -translate-x-1/2 grid-cols-3 gap-1.5 rounded-2xl p-2.5"
               >
                 {(
                   [
-                    { key: 'greetings', label: '👋 인사' },
-                    { key: 'well_played', label: '👏 칭찬' },
-                    { key: 'thanks', label: '🙏 감사' },
-                    { key: 'wow', label: '😮 감탄' },
-                    { key: 'oops', label: '😅 실수' },
-                    { key: 'threaten', label: '🔥 위협' },
+                    { key: 'greetings', label: '인사' },
+                    { key: 'well_played', label: '칭찬' },
+                    { key: 'thanks', label: '감사' },
+                    { key: 'wow', label: '감탄' },
+                    { key: 'oops', label: '실수' },
+                    { key: 'threaten', label: '위협' },
                   ] as const
                 ).map((em) => (
                   <button
                     key={em.key}
                     type="button"
                     onClick={() => triggerPlayerEmote(em.key)}
-                    className="rounded-xl border border-amber-500/40 bg-amber-950/60 py-1.5 text-xs font-extrabold text-amber-100 hover:bg-amber-700"
+                    className="hs-ivory-plate rounded-xl py-1.5 text-xs font-extrabold text-[#2b180a]"
                   >
                     {em.label}
                   </button>
@@ -1053,11 +1099,13 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             )}
           </div>
 
-          {/* Authentic 10-Crystal Mana Tray (Filled / Spent / Overloaded Locks!) */}
-          <div className="flex items-center gap-2 rounded-2xl border-2 border-[#b8924d] bg-stone-950/85 px-3.5 py-2 shadow-xl">
-            <span className="hs-num min-w-[46px] text-center text-base text-sky-300">
-              {matchState.player.mana}/{matchState.player.maxMana}
-            </span>
+          {/* Authentic 10-Crystal Faceted Sapphire Mana Tray */}
+          <div className="flex items-center gap-2.5 rounded-2xl border-2 border-[#c8a158] bg-stone-950/90 px-3 py-1.5 shadow-[0_10px_24px_rgba(0,0,0,0.88)]">
+            <HsManaGem
+              value={`${matchState.player.mana}/${matchState.player.maxMana}`}
+              size={30}
+              active={matchState.player.mana > 0}
+            />
             <div className="flex items-center gap-1">
               {Array.from({ length: 10 }).map((_, idx) => {
                 const isUnlocked = idx < matchState.player.maxMana;
@@ -1069,38 +1117,42 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                   <div
                     key={idx}
                     title={isOverloadedNow ? '과부하로 잠긴 마나 수정' : undefined}
-                    className={`h-4 w-4 rounded-sm border transition ${
+                    style={{
+                      clipPath:
+                        'polygon(50% 4%, 94% 26%, 94% 74%, 50% 96%, 6% 74%, 6% 26%)',
+                    }}
+                    className={`h-5 w-4 transition ${
                       isOverloadedNow
-                        ? 'border-red-300 bg-red-700 shadow-[0_0_6px_#ef4444]'
+                        ? 'bg-gradient-to-b from-red-400 to-red-800 shadow-[0_0_8px_#ef4444]'
                         : isFilled
-                          ? 'border-sky-100 bg-gradient-to-b from-sky-300 to-blue-700 shadow-[0_0_8px_#38bdf8]'
+                          ? 'bg-gradient-to-b from-sky-200 via-blue-500 to-indigo-900 shadow-[0_0_8px_#38bdf8]'
                           : isUnlocked
-                            ? 'border-sky-700 bg-sky-950/70'
-                            : 'border-stone-800 bg-stone-900/40'
+                            ? 'bg-sky-950/85 opacity-70'
+                            : 'bg-stone-800/45 opacity-45'
                     }`}
                   />
                 );
               })}
             </div>
             {matchState.player.pendingOverload > 0 && (
-              <span className="ml-1 rounded bg-red-950 px-1.5 py-0.5 text-[10px] font-bold text-red-300">
-                다음 턴 🔒{matchState.player.pendingOverload}
+              <span className="ml-1 rounded-md border border-red-400/50 bg-red-950 px-1.5 py-0.5 text-[10px] font-extrabold text-red-200">
+                과부하 {matchState.player.pendingOverload}
               </span>
             )}
           </div>
         </div>
 
-        {/* Player Curved Hand Fan */}
-        <div className="mt-1 flex min-h-[168px] w-full items-end justify-center overflow-x-visible px-4 pb-2 pt-1">
-          <div className="flex items-end justify-center -space-x-6 sm:-space-x-4">
+        {/* Player Curved Hand Fan (1:1 koKR Sculpted Card Renders with Unclipped Gems) */}
+        <div className="mt-0.5 flex min-h-[192px] w-full items-end justify-center overflow-x-visible px-4 pb-1">
+          <div className="flex items-end justify-center -space-x-7 sm:-space-x-5">
             {matchState.player.hand.map((hc, idx) => {
               const def = cardDb.mustGetCard(hc.cardId);
               const check = engine.inspectPlayability('PLAYER', hc);
               const isSelectedCard =
                 selection?.kind === 'HAND_CARD' && selection.handUid === hc.uid;
               const mid = (matchState.player.hand.length - 1) / 2;
-              const angle = (idx - mid) * 2.6;
-              const liftY = Math.min(6, Math.abs(idx - mid) * 1.6);
+              const angle = (idx - mid) * 2.4;
+              const liftY = Math.min(8, Math.abs(idx - mid) * 1.5);
 
               return (
                 <div
@@ -1108,13 +1160,13 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                   data-hand-uid={hc.uid}
                   style={{
                     transform: isSelectedCard
-                      ? 'translateY(-36px) scale(1.12)'
+                      ? 'translateY(-32px) scale(1.12)'
                       : `translateY(${liftY}px) rotate(${angle}deg)`,
                   }}
                   className={`transition-all duration-150 ${
                     isSelectedCard
                       ? 'z-50'
-                      : 'hover:z-50 hover:-translate-y-10 hover:rotate-0 hover:scale-115'
+                      : 'hover:z-50 hover:-translate-y-9 hover:rotate-0 hover:scale-115'
                   }`}
                 >
                   <HearthstoneCard
@@ -1144,7 +1196,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* Turn Change Banner ("내 턴!" / "상대 턴") */}
       {matchState.bannerMessage && !vsIntroActive && (
-        <div className="pointer-events-none fixed left-1/2 top-1/2 z-[82] -translate-x-1/2 -translate-y-1/2 animate-[hsCardPop_0.3s_ease-out] rounded-3xl border-[4px] border-[#f4d793] bg-gradient-to-b from-[#51341b] to-[#23150a] px-12 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.95)]">
+        <div className="hs-wood-panel pointer-events-none fixed left-1/2 top-1/2 z-[82] -translate-x-1/2 -translate-y-1/2 animate-[hsCardPop_0.3s_ease-out] rounded-3xl px-12 py-4">
           <div className="hs-title hs-outline text-3xl font-extrabold tracking-widest text-amber-200">
             {matchState.bannerMessage}
           </div>
@@ -1153,31 +1205,43 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* AI Action Callout Pill */}
       {aiHighlightText && (
-        <div className="pointer-events-none fixed left-1/2 top-28 z-[78] -translate-x-1/2 rounded-full border-2 border-red-300 bg-stone-950/90 px-5 py-1.5 text-xs font-extrabold text-amber-100 shadow-xl">
-          ⚔ {aiHighlightText}
+        <div className="pointer-events-none fixed left-1/2 top-28 z-[78] -translate-x-1/2 rounded-full border-2 border-red-300 bg-stone-950/92 px-5 py-1.5 text-xs font-extrabold text-amber-100 shadow-xl">
+          {aiHighlightText}
         </div>
       )}
 
       {/* Play Error Banner */}
       {matchState.errorBanner && (
-        <div className="pointer-events-none fixed bottom-44 left-1/2 z-[85] -translate-x-1/2 rounded-2xl border-2 border-red-300 bg-red-950/95 px-6 py-2 text-sm font-extrabold text-red-100 shadow-2xl">
-          ⚠ {matchState.errorBanner}
+        <div className="pointer-events-none fixed bottom-48 left-1/2 z-[85] -translate-x-1/2 rounded-2xl border-2 border-red-300 bg-red-950/95 px-6 py-2 text-sm font-extrabold text-red-100 shadow-2xl">
+          {matchState.errorBanner}
         </div>
       )}
 
       {/* Corner Toy Reaction Toast */}
       {toyToast && (
-        <div className="pointer-events-none fixed left-1/2 top-16 z-[85] -translate-x-1/2 rounded-2xl border border-amber-300 bg-stone-950/90 px-5 py-1.5 text-xs font-bold text-amber-200 shadow-xl">
+        <div className="pointer-events-none fixed left-1/2 top-16 z-[85] -translate-x-1/2 rounded-2xl border border-amber-300 bg-stone-950/92 px-5 py-1.5 text-xs font-bold text-amber-200 shadow-xl">
           {toyToast}
         </div>
       )}
 
-      {/* 1. VS Clash Intro Overlay */}
+      {/* 1. VS Clash Intro Overlay with Sculpted Hero Arch Portraits */}
       {vsIntroActive && (
-        <div className="fixed inset-0 z-[92] flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[92] flex flex-col items-center justify-center bg-black/84 backdrop-blur-sm">
           <div className="flex items-center gap-6 sm:gap-14">
-            <div className="text-center">
-              <div className="hs-title text-xl font-extrabold text-sky-300 sm:text-3xl">
+            <div className="flex flex-col items-center text-center">
+              <div className="relative mb-3 h-36 w-28 overflow-hidden rounded-t-[58px] rounded-b-xl border-[4px] border-[#e7c57c] bg-stone-950 shadow-[0_14px_30px_rgba(0,0,0,0.95)] sm:h-44 sm:w-36">
+                <img
+                  src={getHeroArtUrl(CLASSIC_HEROES[matchState.player.heroClass].heroId)}
+                  alt=""
+                  className="h-full w-full scale-110 object-cover object-top"
+                />
+                <img
+                  src={CLASS_CREST_URL[matchState.player.heroClass]}
+                  alt=""
+                  className="absolute bottom-1.5 right-1.5 h-8 w-8 rounded-full border border-amber-200 object-cover shadow"
+                />
+              </div>
+              <div className="hs-title hs-outline text-xl font-extrabold text-sky-300 sm:text-3xl">
                 {matchState.player.heroNameKo}
               </div>
               <div className="mt-1 text-xs font-bold text-amber-200">
@@ -1188,11 +1252,23 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             <img
               src="/hs-assets/ui/vs_emblem.webp"
               alt="VS"
-              className="h-28 w-28 animate-bounce object-contain drop-shadow-[0_0_30px_rgba(250,204,21,0.85)]"
+              className="h-28 w-28 animate-[hsCardPop_0.5s_ease-out] object-contain drop-shadow-[0_0_32px_rgba(250,204,21,0.9)] sm:h-36 sm:w-36"
             />
 
-            <div className="text-center">
-              <div className="hs-title text-xl font-extrabold text-red-300 sm:text-3xl">
+            <div className="flex flex-col items-center text-center">
+              <div className="relative mb-3 h-36 w-28 overflow-hidden rounded-t-[58px] rounded-b-xl border-[4px] border-[#e7c57c] bg-stone-950 shadow-[0_14px_30px_rgba(0,0,0,0.95)] sm:h-44 sm:w-36">
+                <img
+                  src={getHeroArtUrl(CLASSIC_HEROES[matchState.opponent.heroClass].heroId)}
+                  alt=""
+                  className="h-full w-full scale-110 object-cover object-top"
+                />
+                <img
+                  src={CLASS_CREST_URL[matchState.opponent.heroClass]}
+                  alt=""
+                  className="absolute bottom-1.5 right-1.5 h-8 w-8 rounded-full border border-amber-200 object-cover shadow"
+                />
+              </div>
+              <div className="hs-title hs-outline text-xl font-extrabold text-red-300 sm:text-3xl">
                 {matchState.opponent.heroNameKo}
               </div>
               <div className="mt-1 text-xs font-bold text-amber-200">
@@ -1205,12 +1281,12 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* 2. Mulligan (시작 손패 교체) Overlay */}
       {!vsIntroActive && matchState.phase === 'MULLIGAN' && (
-        <div className="fixed inset-0 z-[88] flex flex-col items-center justify-center bg-black/78 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[88] flex flex-col items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
           <h2 className="hs-title hs-outline text-2xl font-extrabold text-amber-200 sm:text-3xl">
             시작 카드 선택 ({matchState.firstPlayer === 'PLAYER' ? '선공 · 3장' : '후공 · 4장 + 동전 한 닢'})
           </h2>
-          <p className="mt-1 text-xs text-amber-200/85">
-            교체할 카드를 클릭해 표시(✕)한 뒤 [확인]을 누르세요. 비용이 높은 카드는 교체하는 것이 유리합니다!
+          <p className="mt-1 text-xs font-semibold text-amber-200/85">
+            교체할 카드를 클릭하여 표시(✕)한 뒤 [확인]을 누르세요. 마나 비용이 높은 카드는 교체하는 것이 유리합니다.
           </p>
 
           <div className="my-6 flex flex-wrap items-center justify-center gap-4">
@@ -1225,9 +1301,9 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 >
                   <HearthstoneCard card={def} size="MD" />
                   {marked && (
-                    <div className="absolute inset-0 z-40 flex flex-col items-center justify-center rounded-[14px] bg-red-950/65">
-                      <span className="text-6xl font-black text-red-400 drop-shadow">✕</span>
-                      <span className="rounded bg-red-900 px-2 py-0.5 text-xs font-extrabold text-white">
+                    <div className="absolute inset-x-3 inset-y-4 z-40 flex flex-col items-center justify-center rounded-2xl border-2 border-red-400/70 bg-red-950/70 backdrop-blur-[1px]">
+                      <span className="hs-outline text-6xl font-black text-red-400">✕</span>
+                      <span className="mt-1 rounded-md border border-red-300/60 bg-red-900 px-2.5 py-0.5 text-xs font-extrabold text-white">
                         교체 예정
                       </span>
                     </div>
@@ -1240,18 +1316,18 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           <button
             type="button"
             onClick={confirmMulliganNow}
-            className="hs-outline-sm rounded-2xl border-[3px] border-[#f6dc99] bg-gradient-to-b from-[#38bdf8] via-[#0284c7] to-[#1e3a8a] px-12 py-3 text-xl font-extrabold text-white shadow-[0_0_28px_rgba(56,189,248,0.85)] hover:scale-105"
+            className="hs-arcane-btn hs-title hs-outline-sm rounded-2xl px-12 py-3 text-xl font-extrabold tracking-wider text-white"
           >
-            확인 (전투 개시!)
+            확인 (전투 개시)
           </button>
         </div>
       )}
 
       {/* 3. Druid Choose One (선택) Modal */}
       {matchState.chooseOnePrompt && (
-        <div className="fixed inset-0 z-[90] flex flex-col items-center justify-center bg-black/78 p-4 backdrop-blur-sm">
-          <h3 className="hs-title mb-4 text-2xl font-extrabold text-amber-200">
-            🌿 운명의 선택 — 두 효과 중 하나를 고르세요
+        <div className="fixed inset-0 z-[90] flex flex-col items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+          <h3 className="hs-title hs-outline mb-4 text-2xl font-extrabold text-amber-200">
+            운명의 선택 — 두 효과 중 하나를 고르세요
           </h3>
           <div className="flex flex-wrap items-center justify-center gap-6">
             {matchState.chooseOnePrompt.options.map((opt) => {
@@ -1279,11 +1355,15 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                       });
                     }
                   }}
-                  className="flex flex-col items-center rounded-2xl border-2 border-amber-300 bg-stone-900/90 p-4 transition hover:scale-105 hover:border-emerald-300"
+                  className="hs-wood-panel flex flex-col items-center rounded-2xl p-4 transition hover:scale-105 hover:border-emerald-300"
                 >
                   <HearthstoneCard card={optCard} size="MD" />
-                  <div className="mt-2 text-sm font-extrabold text-amber-200">{opt.title}</div>
-                  <div className="text-xs text-amber-100/80">{opt.description}</div>
+                  <div className="hs-title mt-2 text-sm font-extrabold text-amber-200">
+                    {opt.title}
+                  </div>
+                  <div className="text-xs font-semibold text-amber-100/80">
+                    {opt.description}
+                  </div>
                 </button>
               );
             })}
@@ -1293,11 +1373,11 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* 4. Hunter Tracking (추적) 3-Card Picker Modal */}
       {matchState.trackingPrompt && (
-        <div className="fixed inset-0 z-[90] flex flex-col items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <h3 className="hs-title mb-2 text-2xl font-extrabold text-emerald-300">
-            🏹 추적 — 손으로 가져올 카드 1장을 선택하세요
+        <div className="fixed inset-0 z-[90] flex flex-col items-center justify-center bg-black/82 p-4 backdrop-blur-sm">
+          <h3 className="hs-title hs-outline mb-2 text-2xl font-extrabold text-emerald-300">
+            추적 — 손으로 가져올 카드 1장을 선택하세요
           </h3>
-          <p className="mb-5 text-xs text-amber-200/80">
+          <p className="mb-5 text-xs font-semibold text-amber-200/80">
             선택하지 않은 나머지 카드는 버려집니다.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-5">
@@ -1318,31 +1398,49 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         </div>
       )}
 
-      {/* 5. Victory / Defeat Explosion Banner & Ranked Star / Gold Reward Overlay */}
+      {/* 5. Victory / Defeat Heraldry Banner & Ranked Star / Gold Reward Overlay */}
       {matchState.phase === 'GAME_OVER' && (
-        <div className="fixed inset-0 z-[94] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-          <div className="flex w-full max-w-md flex-col items-center rounded-3xl border-[5px] border-[#e4c075] bg-gradient-to-b from-[#462d18] via-[#28180c] to-[#140b05] p-7 text-center text-amber-100 shadow-[0_28px_75px_rgba(0,0,0,0.95)]">
-            <div className="text-6xl">
-              {matchState.winner === 'PLAYER' ? '🏆' : '💥'}
-            </div>
+        <div className="fixed inset-0 z-[94] flex items-center justify-center bg-black/82 p-4 backdrop-blur-md">
+          <div className="hs-wood-panel relative flex w-full max-w-md flex-col items-center overflow-hidden rounded-3xl p-7 text-center text-amber-100">
+            {matchState.winner === 'PLAYER' && (
+              <img
+                src="/hs-assets/ui/hs_godrays1.webp"
+                alt=""
+                className="pointer-events-none absolute -top-16 h-80 w-80 animate-[hsSlowSpin_24s_linear_infinite] object-contain opacity-45 mix-blend-screen"
+              />
+            )}
+
+            <img
+              src={
+                matchState.winner === 'PLAYER'
+                  ? '/hs-assets/ui/medal_legend.webp'
+                  : '/hs-assets/ui/medal_bronze.webp'
+              }
+              alt=""
+              className={`relative z-10 h-24 w-24 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.9)] ${
+                matchState.winner === 'PLAYER' ? '' : 'grayscale opacity-75'
+              }`}
+            />
+
             <h2
-              className={`hs-title hs-outline mt-2 text-4xl font-extrabold ${
+              className={`hs-title hs-outline relative z-10 mt-2 text-4xl font-extrabold ${
                 matchState.winner === 'PLAYER' ? 'text-yellow-300' : 'text-slate-300'
               }`}
             >
               {matchState.winner === 'PLAYER' ? '승리!' : '패배'}
             </h2>
-            <p className="mt-1 text-xs text-amber-200/85">
+            <p className="relative z-10 mt-1 text-xs font-semibold text-amber-200/85">
               {matchState.winner === 'PLAYER'
                 ? `${matchState.opponent.name}의 초상화가 산산조각 나며 승리를 거두었습니다!`
                 : '아군 영웅이 쓰러졌습니다. 덱을 가다듬고 다시 도전해 보세요!'}
             </p>
 
             {outcomeSummary && (
-              <div className="my-5 w-full space-y-2 rounded-2xl border-2 border-amber-400/50 bg-black/45 p-4 text-sm">
+              <div className="relative z-10 my-5 w-full space-y-2 rounded-2xl border-2 border-[#c8a158]/55 bg-black/45 p-4 text-sm">
                 {outcomeSummary.goldEarned > 0 && (
-                  <div className="font-extrabold text-yellow-300">
-                    🪙 승리/퀘스트 보상: +{outcomeSummary.goldEarned} 골드 획득!
+                  <div className="flex items-center justify-center gap-1.5 font-extrabold text-yellow-300">
+                    <HsGoldCoinIcon size={20} />
+                    <span>승리 · 퀘스트 보상: +{outcomeSummary.goldEarned} 골드 획득!</span>
                   </div>
                 )}
                 {mode === 'RANKED' && (
@@ -1350,7 +1448,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                     등급 현황:{' '}
                     <span className="text-sky-300">
                       {outcomeSummary.newRank === 0
-                        ? '★ 전설 등급!'
+                        ? '전설 등급!'
                         : `${outcomeSummary.newRank}등급 (${CLASSIC_RANK_NAMES[outcomeSummary.newRank]}) · ★${outcomeSummary.newStars}`}
                     </span>
                     {outcomeSummary.streakBonus && (
@@ -1370,7 +1468,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 hsAudio.playBgm('tavern_hub');
                 onExitBattle();
               }}
-              className="hs-outline-sm w-full rounded-2xl border-[3px] border-[#f6dc99] bg-gradient-to-b from-amber-400 via-amber-600 to-amber-900 py-3 text-lg font-extrabold text-white shadow-xl hover:brightness-110"
+              className="hs-arcane-btn hs-title hs-outline-sm relative z-10 w-full rounded-2xl py-3 text-lg font-extrabold text-white"
             >
               여관으로 돌아가기
             </button>

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { hsAudio } from '../audio';
-import { HearthstoneCard } from '../components/CardVisual';
+import { HearthstoneCard, HsGoldCoinIcon } from '../components/CardVisual';
 import { OpenedPackCard, hsStorage } from '../storage';
 import { CardRarity } from '../types';
 
-const HOVER_RARITY_SHADOW: Record<CardRarity, string> = {
-  FREE: '0 0 18px rgba(255,255,255,0.45)',
-  COMMON: '0 0 22px 4px rgba(226,232,240,0.65)',
-  RARE: '0 0 28px 8px rgba(59,130,246,0.95)',
-  EPIC: '0 0 32px 10px rgba(168,85,247,0.98)',
-  LEGENDARY: '0 0 38px 14px rgba(249,115,22,1)',
+const HOVER_RARITY_FILTER: Record<CardRarity, string> = {
+  FREE: 'drop-shadow(0 0 12px rgba(255,255,255,0.5))',
+  COMMON: 'drop-shadow(0 0 14px rgba(226,232,240,0.75))',
+  RARE: 'drop-shadow(0 0 18px rgba(59,130,246,0.98)) drop-shadow(0 0 32px rgba(37,99,235,0.85))',
+  EPIC: 'drop-shadow(0 0 20px rgba(168,85,247,1)) drop-shadow(0 0 36px rgba(147,51,234,0.9))',
+  LEGENDARY:
+    'drop-shadow(0 0 22px rgba(251,191,36,1)) drop-shadow(0 0 42px rgba(245,158,11,0.95))',
 };
 
 const CARD_BACK_MAP: Record<string, string> = {
@@ -52,7 +53,6 @@ export const PackOpeningScreen: React.FC<{
     }, 520);
   };
 
-  // Spacebar shortcut just like Blizzard's Hearthstone client!
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.code !== 'Space') return;
@@ -104,9 +104,9 @@ export const PackOpeningScreen: React.FC<{
       style={{ backgroundImage: 'url(/hs-assets/ui/pack_altar_bg.webp)' }}
       className="relative flex h-[100dvh] w-full select-none flex-col justify-between overflow-hidden bg-cover bg-center p-4 text-amber-100"
     >
-      <div className="pointer-events-none absolute inset-0 bg-radial from-sky-500/10 via-black/45 to-black/85" />
+      <div className="pointer-events-none absolute inset-0 bg-radial from-sky-500/12 via-black/48 to-black/88" />
 
-      {/* Top Bar */}
+      {/* Top Brass Header */}
       <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between">
         <button
           type="button"
@@ -114,14 +114,16 @@ export const PackOpeningScreen: React.FC<{
             hsAudio.playSfx('box_close');
             onBack();
           }}
-          className="rounded-2xl border-2 border-[#d4af63] bg-gradient-to-b from-[#49301b] to-[#24160b] px-4 py-2 text-sm font-extrabold text-amber-100 shadow-lg hover:brightness-110"
+          className="hs-brass-btn rounded-xl px-4 py-2 text-xs font-extrabold text-amber-100 sm:text-sm"
         >
           ← 여관 상자로 돌아가기
         </button>
 
-        <div className="flex items-center gap-3">
-          <div className="rounded-2xl border-2 border-amber-400/60 bg-stone-950/85 px-4 py-1.5 text-xs font-extrabold">
-            🪙 보유 골드: <span className="hs-num text-sm text-yellow-300">{profile.gold}</span>
+        <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 rounded-xl border-2 border-[#c8a158] bg-stone-950/90 px-3.5 py-1.5 text-xs font-extrabold shadow-lg">
+            <HsGoldCoinIcon size={20} />
+            <span>보유 골드</span>
+            <span className="hs-num text-sm text-yellow-300">{profile.gold}</span>
           </div>
           <button
             type="button"
@@ -131,21 +133,22 @@ export const PackOpeningScreen: React.FC<{
                 sync();
               }
             }}
-            className="rounded-2xl border-2 border-yellow-300 bg-gradient-to-b from-amber-500 to-amber-800 px-3.5 py-1.5 text-xs font-extrabold text-white shadow hover:brightness-110"
+            className="hs-arcane-btn flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-extrabold text-white"
           >
-            + 1팩 즉시 구매 (100G)
+            <HsGoldCoinIcon size={16} />
+            <span>+ 1팩 즉시 구매 (100)</span>
           </button>
         </div>
       </header>
 
-      {/* Main Split: Left Pack Stack + Right Glowing Altar */}
+      {/* Main Split: Left Pack Stack + Right Arcane Rune Altar */}
       <main className="relative z-20 mx-auto my-auto grid w-full max-w-6xl grid-cols-1 items-center gap-6 md:grid-cols-12">
         {/* Left: Unopened Pack Tray */}
-        <aside className="flex flex-col items-center justify-center rounded-3xl border-[4px] border-[#b78f49] bg-gradient-to-b from-[#342112]/90 to-[#1a1008]/95 p-5 shadow-2xl md:col-span-3">
-          <div className="mb-2 text-sm font-extrabold text-amber-200">
+        <aside className="hs-wood-panel flex flex-col items-center justify-center rounded-3xl p-5 md:col-span-3">
+          <div className="hs-title mb-2 text-sm font-extrabold text-amber-100">
             미개봉 오리지널 팩
           </div>
-          <div className="hs-num mb-3 rounded-full border-2 border-amber-300 bg-amber-950 px-4 py-1 text-xl text-yellow-300">
+          <div className="hs-num mb-3 rounded-full border-2 border-[#e0bc72] bg-stone-950/85 px-4 py-1 text-xl text-yellow-300 shadow-inner">
             {profile.packs}개
           </div>
 
@@ -162,25 +165,25 @@ export const PackOpeningScreen: React.FC<{
               <img
                 src="/hs-assets/ui/classic_pack.webp"
                 alt="오리지널 카드 팩"
-                className="h-44 w-32 object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.9)]"
+                className="h-44 w-32 object-contain drop-shadow-[0_16px_26px_rgba(0,0,0,0.92)]"
               />
             </div>
           ) : (
-            <div className="py-10 text-center text-xs text-amber-200/70">
-              보유한 팩이 없습니다.
+            <div className="py-10 text-center text-xs font-semibold text-amber-200/70">
+              보유한 카드 팩이 없습니다.
               <br />
-              상단 버튼으로 100골드에 구매하세요!
+              상단 버튼으로 100골드에 구매하세요.
             </div>
           )}
 
-          <p className="mt-3 text-center text-[11px] text-amber-200/80">
+          <p className="mt-3 text-center text-[11px] font-semibold text-amber-200/80">
             팩을 제단으로 드래그하거나
             <br />
-            <b>클릭 / 스페이스바</b>로 개봉!
+            <b className="text-amber-100">클릭 / 스페이스바</b>로 개봉
           </p>
         </aside>
 
-        {/* Right: Glowing Rune Altar OR 5-Card Pentagon Reveal */}
+        {/* Right: Glowing Rune Altar OR 5-Card Reveal Spread */}
         <section
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => {
@@ -188,17 +191,24 @@ export const PackOpeningScreen: React.FC<{
             setDraggingPack(false);
             triggerOpenPack();
           }}
-          className="relative flex min-h-[470px] flex-col items-center justify-center rounded-[36px] border-[4px] border-[#c8a35c]/70 bg-radial from-sky-500/20 via-stone-950/65 to-stone-950/90 p-5 shadow-[0_24px_60px_rgba(0,0,0,0.9)] md:col-span-9"
+          className="relative flex min-h-[480px] flex-col items-center justify-center overflow-hidden rounded-[36px] border-[4px] border-[#cfa85d]/75 bg-radial from-sky-500/20 via-stone-950/70 to-stone-950/92 p-5 shadow-[0_24px_60px_rgba(0,0,0,0.92)] md:col-span-9"
         >
+          {/* Ambient Rotating Godrays on Altar */}
+          <img
+            src="/hs-assets/ui/hs_godrays1.webp"
+            alt=""
+            className="pointer-events-none absolute h-[420px] w-[420px] animate-[hsSlowSpin_36s_linear_infinite] object-contain opacity-30 mix-blend-screen"
+          />
+
           {!openedCards ? (
             <div
               onClick={triggerOpenPack}
-              className={`flex cursor-pointer flex-col items-center justify-center rounded-full border-[4px] p-10 transition-all ${
+              className={`relative z-10 flex cursor-pointer flex-col items-center justify-center rounded-full border-[4px] p-10 transition-all ${
                 packBursting
                   ? 'scale-125 border-yellow-200 bg-yellow-300/40 shadow-[0_0_90px_30px_rgba(250,204,21,0.95)]'
                   : draggingPack
                     ? 'scale-110 border-sky-300 bg-sky-500/25 shadow-[0_0_60px_rgba(56,189,248,0.85)]'
-                    : 'border-sky-400/50 bg-sky-950/35 shadow-[0_0_45px_rgba(56,189,248,0.45)] hover:scale-105'
+                    : 'border-sky-400/50 bg-sky-950/40 shadow-[0_0_45px_rgba(56,189,248,0.45)] hover:scale-105'
               }`}
             >
               <img
@@ -206,27 +216,27 @@ export const PackOpeningScreen: React.FC<{
                 alt="제단"
                 className={`h-44 w-32 object-contain transition ${
                   profile.packs > 0 ? 'opacity-95' : 'opacity-25 grayscale'
-                } ${packBursting ? 'animate-bounce' : ''}`}
+                } ${packBursting ? 'scale-110 brightness-125' : ''}`}
               />
-              <span className="hs-title mt-3 text-lg font-extrabold text-sky-200">
+              <span className="hs-title hs-outline-sm mt-3 text-lg font-extrabold text-sky-200">
                 {packBursting
-                  ? '✨ 봉인 해제 중!! ✨'
+                  ? '비전 봉인 해제 중...'
                   : profile.packs > 0
-                    ? '클릭하여 오리지널 팩 개봉!'
+                    ? '클릭하여 오리지널 팩 개봉'
                     : '개봉할 카드 팩이 없습니다'}
               </span>
             </div>
           ) : (
-            /* 5-Card Pentagon Reveal Spread */
-            <div className="flex w-full flex-col items-center">
+            /* 5-Card Reveal Spread with Alpha-Contour Rarity Auras */
+            <div className="relative z-10 flex w-full flex-col items-center">
               <div className="mb-3 flex items-center gap-3">
                 {!allRevealed ? (
                   <button
                     type="button"
                     onClick={revealAll}
-                    className="rounded-xl border border-sky-300 bg-sky-800/85 px-4 py-1.5 text-xs font-extrabold text-white shadow hover:bg-sky-700"
+                    className="hs-arcane-btn rounded-xl px-5 py-1.5 text-xs font-extrabold text-white"
                   >
-                    ✨ 5장 한 번에 뒤집기
+                    5장 한 번에 뒤집기
                   </button>
                 ) : (
                   <button
@@ -235,17 +245,19 @@ export const PackOpeningScreen: React.FC<{
                       hsAudio.playSfx('menu_select');
                       setOpenedCards(null);
                     }}
-                    className="animate-pulse rounded-2xl border-2 border-yellow-200 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-800 px-8 py-2 text-base font-black text-stone-950 shadow-[0_0_24px_rgba(250,204,21,0.85)] hover:scale-105"
+                    className="hs-brass-btn rounded-2xl border-yellow-200 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-800 px-8 py-2 text-base font-black text-stone-950 shadow-[0_0_24px_rgba(250,204,21,0.85)]"
                   >
-                    확인 완료 (스페이스바) ✔
+                    확인 완료 (스페이스바)
                   </button>
                 )}
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-4">
+              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
                 {openedCards.map((item, idx) => {
                   const isUp = revealed[idx];
                   const isHovered = hoveredIdx === idx;
+                  const isHighTier =
+                    item.card.rarity === 'LEGENDARY' || item.card.rarity === 'EPIC';
                   return (
                     <div
                       key={`${item.card.id}_${idx}`}
@@ -257,11 +269,11 @@ export const PackOpeningScreen: React.FC<{
                       {!isUp ? (
                         <div
                           style={{
-                            boxShadow: isHovered
-                              ? HOVER_RARITY_SHADOW[item.card.rarity]
-                              : '0 12px 26px rgba(0,0,0,0.85)',
+                            filter: isHovered
+                              ? HOVER_RARITY_FILTER[item.card.rarity]
+                              : 'drop-shadow(0 12px 20px rgba(0,0,0,0.85))',
                           }}
-                          className="h-[232px] w-[164px] cursor-pointer overflow-hidden rounded-[14px] border-2 border-amber-300/70 transition-all duration-200 hover:-translate-y-2 hover:scale-105"
+                          className="h-[248px] w-[166px] cursor-pointer overflow-hidden rounded-[16px] border-2 border-[#dfc07b]/80 transition-all duration-200 hover:-translate-y-2 hover:scale-105"
                         >
                           <img
                             src={backImg}
@@ -271,20 +283,30 @@ export const PackOpeningScreen: React.FC<{
                         </div>
                       ) : (
                         <div className="relative animate-[hsCardPop_0.32s_ease-out]">
-                          <HearthstoneCard
-                            card={item.card}
-                            isGolden={item.isGolden}
-                            enableTilt
-                            size="MD"
-                          />
+                          {isHighTier && (
+                            <img
+                              src="/hs-assets/ui/hs_godrays1.webp"
+                              alt=""
+                              className="pointer-events-none absolute -inset-6 z-0 h-[calc(100%+48px)] w-[calc(100%+48px)] animate-[hsSlowSpin_18s_linear_infinite] object-contain opacity-65 mix-blend-screen"
+                            />
+                          )}
+                          <div className="relative z-10">
+                            <HearthstoneCard
+                              card={item.card}
+                              isGolden={item.isGolden}
+                              rarityAura={item.card.rarity}
+                              enableTilt
+                              size="MD"
+                            />
+                          </div>
                           {item.isNew && (
-                            <span className="absolute -right-2 -top-2 z-40 rounded-full border border-yellow-100 bg-gradient-to-r from-amber-400 to-orange-600 px-2 py-0.5 text-[10px] font-black text-stone-950 shadow-lg">
+                            <span className="hs-outline-sm absolute right-1 top-2 z-40 rounded-md border border-yellow-200 bg-gradient-to-b from-amber-400 to-amber-700 px-2 py-0.5 text-[10px] font-black text-white shadow-lg">
                               신규!
                             </span>
                           )}
                           {item.isGolden && (
-                            <span className="absolute -bottom-2 left-1/2 z-40 -translate-x-1/2 rounded-full border border-yellow-200 bg-yellow-400 px-2 py-0.5 text-[9.5px] font-black text-stone-950 shadow">
-                              ★ 황금 카드
+                            <span className="hs-outline-sm absolute -bottom-1 left-1/2 z-40 -translate-x-1/2 whitespace-nowrap rounded-md border border-yellow-200 bg-gradient-to-b from-yellow-400 to-amber-700 px-2 py-0.5 text-[9.5px] font-black text-white shadow">
+                              황금 카드
                             </span>
                           )}
                         </div>
@@ -298,8 +320,8 @@ export const PackOpeningScreen: React.FC<{
         </section>
       </main>
 
-      <footer className="relative z-20 text-center text-[11px] text-amber-200/70">
-        마우스를 뒷면 카드 위에 올리면 등급별 광채(파랑: 희귀 / 보라: 영웅 / 주황: 전설)를 미리 느낄 수 있습니다!
+      <footer className="relative z-20 text-center text-[11px] font-semibold text-amber-200/75">
+        뒷면 카드에 마우스를 올리면 등급별 마력 광채(희귀: 사파이어 / 특급: 자수정 / 전설: 태양빛)가 깨어납니다
       </footer>
     </div>
   );
