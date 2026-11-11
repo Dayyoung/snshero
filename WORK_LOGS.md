@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 18:29 KST] [/game.html 안드로이드 웹 공격 타격 진동(Web Vibration API) 지원 및 환경 설정 ON/OFF 토글 적용 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"안드로이드에서는 웹에서 진동도 지원한데. 안드로이드는 공격 시 진동 지원해주고 설정에서 끌수있게해줘"`
+  - **2. 세부 구현 내역**:
+    - **안드로이드 웹 타격 햅틱 엔진 구현 ([`audio.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/audio.ts))**:
+      - `AudioSettings`에 `vibrateEnabled: boolean` (기본값 `true`) 추가 및 `localStorage`(`hero_hs_settings`) 영구 동기화.
+      - 안드로이드 웹 브라우저(Chrome, 삼성 인터넷, Android WebView 및 안드로이드 '데스크톱 사이트' 멀티터치 모드) 감지(`getVibrationSupportInfo`) + 브라우저 User Activation 가드로 `[Intervention]` 경고 원천 방지.
+      - 타격 강도별 차등 햅틱 패턴(`LIGHT_HIT`: `26ms`, `NORMAL_ATTACK`: `42ms`, `HERO_HIT`: `[36, 22, 48]`, `HEAVY_ATTACK`: `[52, 28, 78]`, `HERO_FINISHER`: `[65, 35, 95, 40, 125]`) 및 **우선순위 중재기(Priority Arbiter)**를 적용해 동시 프레임의 약한 부수 데미지 팝업이 강한 타격 진동을 덮어쓰지 않도록 보호.
+      - 설정에서 진동 해제(`vibrateEnabled: false`) 시 즉시 `navigator.vibrate(0)` 호출로 진행 중인 진동 즉시 중지.
+    - **전투 공격·주문 충돌 진동 연동 ([`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx), [`BoardVfxCanvas.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/vfx/BoardVfxCanvas.tsx))**:
+      - 아군 수동/자동플레이 및 적군 AI 물리 돌진 공격(`triggerPhysicalAttack`)의 정면 충돌 프레임(`270ms`)에 공격력 및 영웅 피격 여부에 맞춰 즉시 진동 발생.
+      - 화염구·어둠의 화살 등 투사체 적중 시점, 불기둥·신성화·폭발·전설 등장 슬램 등 광역/강타 이펙트 및 영웅 최후의 일격(`HERO_EXPLODE`)에 햅틱 연동.
+    - **환경 설정 ON/OFF 제어 UI 추가 ([`Modals.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/Modals.tsx) — [`GameOptionsModal`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/Modals.tsx#L1211-L1358))**:
+      - 홈 허브 `메뉴` 및 전투 중 `메뉴`에서 열 수 있는 `환경 설정` 모달에 **`공격 시 진동 (Android)`** (`진동 켜짐` / `진동 꺼짐`) 토글 버튼 추가(켜기 전환 시 안드로이드 기기에서 28ms 확인 진동 피드백 제공).
+  - **3. 검증 및 보고**:
+    - `src/hearthstone` TypeScript 에러 0건, 프로덕션 빌드(`npm run build`) 성공, 브라우저 E2E(`http://localhost:3000/game.html` 환경 설정 `진동 켜짐`/`진동 꺼짐` 전환·유지 및 자동전투 타격 검증) 완료, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-11 18:13 KST] [/game.html 오리지널 하스스톤 물리 돌진·충돌·반동 공격 애니메이션, 382장 카드 전수 고유 캐릭터·신규 일러스트 생성(9종족×25명+중립 157종, 중복 0건), 카단의 여정 40화 스토리 적장 1:1 보스 영웅 적용 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

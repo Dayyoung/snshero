@@ -774,6 +774,13 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       }, 115);
 
       const tImpact = window.setTimeout(() => {
+        if (attackVal >= 5) {
+          hsAudio.vibrateAttack('HEAVY_ATTACK');
+        } else if (isHeroDefender) {
+          hsAudio.vibrateAttack('HERO_HIT');
+        } else {
+          hsAudio.vibrateAttack('NORMAL_ATTACK');
+        }
         const latest = matchStateRef.current;
         if (latest.phase === 'PLAYING') {
           const sim = createEngine(latest);

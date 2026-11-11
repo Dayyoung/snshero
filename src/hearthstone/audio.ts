@@ -8,6 +8,20 @@ export interface AudioSettings {
   sfxVolume: number;
   voVolume: number;
   muted: boolean;
+  vibrateEnabled: boolean;
+}
+
+export type AttackVibrationKind =
+  | 'LIGHT_HIT'
+  | 'NORMAL_ATTACK'
+  | 'HERO_HIT'
+  | 'HEAVY_ATTACK'
+  | 'HERO_FINISHER';
+
+export interface VibrationSupportInfo {
+  isAndroid: boolean;
+  webVibrationApi: boolean;
+  supportedOnDevice: boolean;
 }
 
 const DEFAULT_AUDIO: AudioSettings = {
@@ -15,6 +29,18 @@ const DEFAULT_AUDIO: AudioSettings = {
   sfxVolume: 0.72,
   voVolume: 0.88,
   muted: false,
+  vibrateEnabled: true,
+};
+
+const VIBRATION_SPECS: Record<
+  AttackVibrationKind,
+  { strength: number; pattern: number | number[]; durationMs: number }
+> = {
+  LIGHT_HIT: { strength: 1, pattern: 26, durationMs: 32 },
+  NORMAL_ATTACK: { strength: 2, pattern: 42, durationMs: 52 },
+  HERO_HIT: { strength: 3, pattern: [36, 22, 48], durationMs: 115 },
+  HEAVY_ATTACK: { strength: 4, pattern: [52, 28, 78], durationMs: 170 },
+  HERO_FINISHER: { strength: 5, pattern: [65, 35, 95, 40, 125], durationMs: 375 },
 };
 
 class SnsHeroCardAudioEngine {
@@ -24,6 +50,8 @@ class SnsHeroCardAudioEngine {
   private currentVo: HTMLAudioElement | null = null;
   private ctx: AudioContext | null = null;
   private unlocked = false;
+  private activeVibrateUntil = 0;
+  private activeVibrateStrength = 0;
 
   constructor() {
     try {
@@ -51,6 +79,7 @@ class SnsHeroCardAudioEngine {
         }
       };
       window.addEventListener('pointerdown', unlock, { passive: true });
+      window.addEventListener('touchstart', unlock, { passive: true });
       window.addEventListener('keydown', unlock, { passive: true });
     }
   }
@@ -59,12 +88,47 @@ class SnsHeroCardAudioEngine {
     return { ...this.settings };
   }
 
+  getVibrationSupportInfo(): VibrationSupportInfo {
+    if (typeof navigator === 'undefined') {
+      return { isAndroid: false, webVibrationApi: false, supportedOnDevice: false };
+    }
+    const ua = navigator.userAgent || '';
+    const uaPlatform =
+      (
+        navigator as Navigator & {
+          userAgentData?: { platform?: string };
+        }
+      ).userAgentData?.platform?.toLowerCase() || '';
+    // Covers Android Chrome/Samsung Internet/WebView + Android Chrome "Request Desktop Site" (Linux + multi-touch)
+    const isAndroid =
+      /Android/i.test(ua) ||
+      uaPlatform === 'android' ||
+      (/Linux/i.test(ua) && (navigator.maxTouchPoints || 0) > 0);
+    const webVibrationApi = typeof navigator.vibrate === 'function';
+    return {
+      isAndroid,
+      webVibrationApi,
+      supportedOnDevice: isAndroid && webVibrationApi,
+    };
+  }
+
   updateSettings(patch: Partial<AudioSettings>) {
     this.settings = { ...this.settings, ...patch };
     try {
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(this.settings));
     } catch {
       // ignore
+    }
+    if (patch.vibrateEnabled === false) {
+      this.activeVibrateUntil = 0;
+      this.activeVibrateStrength = 0;
+      try {
+        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+          navigator.vibrate(0);
+        }
+      } catch {
+        // ignore
+      }
     }
     if (this.currentBgm) {
       this.currentBgm.volume = this.settings.muted ? 0 : this.settings.bgmVolume;
@@ -76,6 +140,57 @@ class SnsHeroCardAudioEngine {
     }
     if (this.currentVo && this.settings.muted) {
       this.currentVo.pause();
+    }
+  }
+
+  private hasStickyUserActivation(): boolean {
+    if (typeof navigator === 'undefined') return false;
+    const navWithActivation = navigator as Navigator & {
+      userActivation?: { hasBeenActive: boolean };
+    };
+    if (navWithActivation.userActivation) {
+      return Boolean(navWithActivation.userActivation.hasBeenActive);
+    }
+    return this.unlocked;
+  }
+
+  /**
+   * Android Web Vibration API (navigator.vibrate) attack haptic feedback
+   * - Active only when `vibrateEnabled` is true in Settings and running on an Android browser supporting Web Vibration.
+   * - Priority arbiter prevents weak secondary damage ticks from interrupting a heavier attack rumble.
+   */
+  vibrateAttack(kind: AttackVibrationKind): boolean {
+    if (!this.settings.vibrateEnabled) return false;
+    const support = this.getVibrationSupportInfo();
+    if (!support.supportedOnDevice) return false;
+    if (!this.hasStickyUserActivation()) return false;
+
+    const spec = VIBRATION_SPECS[kind];
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    if (now < this.activeVibrateUntil && spec.strength <= this.activeVibrateStrength) {
+      return false;
+    }
+
+    try {
+      const ok = navigator.vibrate(spec.pattern);
+      if (ok) {
+        this.activeVibrateStrength = spec.strength;
+        this.activeVibrateUntil = now + spec.durationMs;
+      }
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+
+  previewVibration(): boolean {
+    if (!this.settings.vibrateEnabled) return false;
+    const support = this.getVibrationSupportInfo();
+    if (!support.supportedOnDevice || !this.hasStickyUserActivation()) return false;
+    try {
+      return navigator.vibrate(28);
+    } catch {
+      return false;
     }
   }
 

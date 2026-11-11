@@ -1214,6 +1214,7 @@ export const GameOptionsModal: React.FC<{
   onClose: () => void;
 }> = ({ inBattle = false, onConcede, onClose }) => {
   const [settings, setSettings] = useState<AudioSettings>(() => hsAudio.getSettings());
+  const vibSupport = useMemo(() => hsAudio.getVibrationSupportInfo(), []);
 
   const update = (patch: Partial<AudioSettings>) => {
     hsAudio.updateSettings(patch);
@@ -1248,18 +1249,50 @@ export const GameOptionsModal: React.FC<{
         )}
 
         <div className="space-y-3 rounded-2xl border border-[#c8a158]/40 bg-black/40 p-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-sm font-extrabold">사운드 출력</span>
             <button
               type="button"
               onClick={() => update({ muted: !settings.muted })}
-              className={`rounded-lg border px-3 py-1 text-xs font-extrabold ${
+              className={`min-h-[38px] rounded-lg border px-3.5 py-1.5 text-xs font-extrabold ${
                 settings.muted
                   ? 'border-red-300/60 bg-red-800 text-white'
                   : 'border-emerald-300/60 bg-emerald-800 text-white'
               }`}
             >
               {settings.muted ? '음소거 켜짐' : '사운드 켜짐'}
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between gap-2 border-t border-amber-500/20 pt-3">
+            <div className="min-w-0">
+              <div className="text-sm font-extrabold text-amber-100">
+                공격 시 진동 (Android)
+              </div>
+              <div className="mt-0.5 text-[11px] font-semibold text-amber-200/75">
+                {vibSupport.supportedOnDevice
+                  ? '현재 안드로이드 기기에서 타격 햅틱 진동 지원됨'
+                  : '안드로이드 웹 접속 시 카드·주문 공격 타격 진동 작동'}
+              </div>
+            </div>
+            <button
+              type="button"
+              data-testid="toggle-attack-vibration"
+              onClick={() => {
+                const nextEnabled = !settings.vibrateEnabled;
+                hsAudio.playSfx('ui_click', 0.75);
+                update({ vibrateEnabled: nextEnabled });
+                if (nextEnabled) {
+                  hsAudio.previewVibration();
+                }
+              }}
+              className={`min-h-[38px] shrink-0 rounded-lg border px-3.5 py-1.5 text-xs font-extrabold transition ${
+                settings.vibrateEnabled
+                  ? 'border-emerald-300/60 bg-emerald-800 text-white'
+                  : 'border-stone-400/50 bg-stone-800 text-stone-200'
+              }`}
+            >
+              {settings.vibrateEnabled ? '진동 켜짐' : '진동 꺼짐'}
             </button>
           </div>
 

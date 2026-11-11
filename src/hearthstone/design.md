@@ -68,6 +68,10 @@
   3. `mulligan.mp3`: 잔잔한 현악 패드와 소프트 차임의 결투 준비 테마
   4. `duel_1.mp3` / `duel_2.mp3`: 귀가 피로하지 않고 몰입감을 높이는 서정적 피아노·현악 배틀 테마
 - **한국어 캐릭터 성우 풀보이스 (135종) & 물리 효과음 (30종)** 완비
+- **안드로이드 웹 타격 햅틱 진동 (`navigator.vibrate`) & 환경 설정 ON/OFF 제어**:
+  - 안드로이드 웹 브라우저(Chrome, 삼성 인터넷, Android WebView 및 안드로이드 데스크톱 사이트 모드)에서 하수인·영웅 물리 돌진 충돌, 공격 주문 적중, 광역기 폭발, 영웅 최후의 일격 시 타격 강도별 차등 햅틱 진동(`LIGHT_HIT`, `NORMAL_ATTACK`, `HERO_HIT`, `HEAVY_ATTACK`, `HERO_FINISHER`)을 발동한다.
+  - 우선순위 중재기(Priority Arbiter)로 동시 프레임의 약한 부수 데미지가 강한 타격 진동 패턴을 덮어쓰지 않도록 보호한다.
+  - 홈 허브 및 전투 중 열 수 있는 **환경 설정 (`GameOptionsModal`)**에서 **`공격 시 진동 (Android)`** 토글(`진동 켜짐` / `진동 꺼짐`)을 통해 언제든 켜고 끌 수 있으며 `localStorage`(`hero_hs_settings.vibrateEnabled`)에 영구 보존된다.
 
 ---
 

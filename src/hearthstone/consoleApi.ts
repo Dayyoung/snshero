@@ -1,3 +1,4 @@
+import { hsAudio } from './audio';
 import { CLASSIC_PRESET_DECKS, CLASSIC_RANK_NAMES, cardDb } from './cardDb';
 import { getJourneyCardMultiplier, hsStorage } from './storage';
 import { CLASSIC_HEROES, HERO_CLASS_ORDER, HeroClass } from './types';
@@ -233,6 +234,8 @@ export function initSnsHeroConsoleApi(): void {
         maxBoardMinions: 7,
         maxManaCrystals: 10,
         deckSize: 30,
+        vibrateEnabled: hsAudio.getSettings().vibrateEnabled,
+        vibrationSupport: hsAudio.getVibrationSupportInfo(),
         profile,
       };
       console.info('[눈히어로 콘솔] 엔진 및 저장소 상태:', info);
