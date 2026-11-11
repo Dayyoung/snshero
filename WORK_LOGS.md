@@ -21306,3 +21306,12 @@
   3. **스케일 스테이지 내부 모달 높이 단위 정규화 (`BattleScreen.tsx`, `CollectionScreen.tsx`, `CardZoomModal.tsx`)**:
      - 모바일 랜드스케이프 스테이지 스케일링 시 모달 높이가 잘리지 않도록 `dvh`를 스테이지 상대 `%` 단위로 통일.
 - **검증 결과**: `npx tsc --noEmit` 0 에러, `npm run build` 성공, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+
+### 2026-11-12 07:32 KST | `/game.html` 맞수 탐색 중 슬롯머신 모달 가독성(고대비 밝은 글자색) 개선 완료
+- **작업 내역**:
+  1. **`맞수 탐색 중...` 매칭 모달 어두운 글자색 제거 및 고대비 밝은 텍스트 전환 (`src/hearthstone/screens/HeroDeckSelectScreen.tsx`)**:
+     - 기존 슬롯머신 창의 어두운 흑갈색 글자(`text-[#241509]`, `text-[#2b180a]`)와 `.hs-title` 검은색 외곽선/블러 그림자 중첩, 위·아래 진한 회색 글자(`text-stone-500 opacity-65`)로 인해 글자가 너무 진하고 어둡게 뭉개져 잘 보이지 않던 문제를 해결.
+     - 슬롯머신 창을 명시적 다크 아케인 오크 배경(`#160d06`, `linear-gradient(180deg, #100904 0%, #26160b 50%, #100904 100%)`)과 황금 보더(`#d4a857`)로 통일하고, 중앙 칭호는 선명한 순백색(`text-white` + `hs-outline-sm`, 매칭 확정 시 황금색 `text-[#fef08a]`), 위·아래 대기 칭호는 밝은 크림 앰버(`text-amber-100/75`), 상단 타이틀(`text-[#fffbeb]`/`text-[#fef08a]`)과 하단 안내 문구(`text-amber-50/95`) 및 취소 버튼(`text-white`)까지 전 구간 고대비 밝은 글자색으로 개선.
+     - 고속 회전 시 잔상 번짐을 막기 위해 `transition-all`을 `transition-transform duration-150`으로 최적화.
+- **검증 결과**: `src/hearthstone` TypeScript 에러 0건, `npm run build` 프로덕션 빌드 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.

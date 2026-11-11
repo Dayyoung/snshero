@@ -165,7 +165,7 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
                 }`}
               >
                 <SnsRankMedallion rank={profile.rank} size={15} />
-                <span>등급전</span>
+                <span>랭킹대전 · 등급전</span>
               </button>
               <button
                 type="button"
@@ -180,7 +180,7 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
                 }`}
               >
                 <SnsSnowCompassSeal size={15} />
-                <span>일반전</span>
+                <span>랭킹대전 · 일반전</span>
               </button>
             </>
           ) : isPractice ? (
@@ -197,7 +197,7 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
                     : 'text-amber-200/75 hover:text-white'
                 }`}
               >
-                일반 수련 상대
+                AI대전 · 일반 AI
               </button>
               <button
                 type="button"
@@ -211,12 +211,12 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
                     : 'text-amber-200/75 hover:text-white'
                 }`}
               >
-                숙련 수련 상대
+                AI대전 · 숙련 AI
               </button>
             </>
           ) : (
             <span className="px-3 py-1 text-xs font-extrabold text-emerald-300">
-              카단의 여정 · 소설 스토리 RPG
+              스토리모드 · 카단의 여정
             </span>
           )}
         </div>
@@ -521,30 +521,41 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
               spinning={!wheelLocked}
               className="mb-2 drop-shadow"
             />
-            <div className="hs-title mb-2 text-base font-extrabold tracking-widest text-amber-200">
+            <div
+              className={`hs-title hs-outline-sm mb-2 text-lg font-extrabold tracking-widest ${
+                wheelLocked ? 'text-[#fef08a]' : 'text-[#fffbeb]'
+              }`}
+            >
               {wheelLocked ? '맞수를 찾았습니다!' : '맞수 탐색 중...'}
             </div>
 
-            {/* Parchment Slot Machine Window */}
-            <div className="relative my-3 flex h-36 w-full flex-col items-center justify-center overflow-hidden rounded-2xl border-[4px] border-[#8b6532] bg-gradient-to-b from-[#d8c398] via-[#f7ecd2] to-[#d5be90] px-4 shadow-[inset_0_8px_18px_rgba(40,22,8,0.55)]">
-              <div className="text-xs font-bold text-stone-500 opacity-65">
+            {/* High-Contrast Dark Arcane Oak Slot Machine Window */}
+            <div
+              style={{
+                backgroundColor: '#160d06',
+                backgroundImage:
+                  'linear-gradient(180deg, #100904 0%, #26160b 50%, #100904 100%)',
+              }}
+              className="relative my-3 flex h-36 w-full flex-col items-center justify-center overflow-hidden rounded-2xl border-[3.5px] border-[#d4a857] px-4 shadow-[inset_0_8px_20px_rgba(0,0,0,0.85),0_0_18px_rgba(212,168,87,0.22)]"
+            >
+              <div className="hs-outline-sm text-xs font-bold text-amber-100/75">
                 {SNS_SPINNER_TITLES[(wheelIndex + SNS_SPINNER_TITLES.length - 1) % SNS_SPINNER_TITLES.length]}
               </div>
               <div
-                className={`hs-title my-2 w-full rounded-xl border-y-2 border-amber-800/40 px-4 py-2 text-xl font-black tracking-tight transition-all ${
+                className={`hs-title hs-outline-sm my-2 w-full rounded-xl border-y-2 px-4 py-2 text-xl font-black tracking-tight transition-transform duration-150 ${
                   wheelLocked
-                    ? 'scale-105 bg-amber-300/70 text-[#2b180a] shadow'
-                    : 'text-[#241509]'
+                    ? 'scale-105 border-yellow-300 bg-amber-400/30 text-[#fef08a] shadow-[0_0_20px_rgba(250,204,21,0.45)]'
+                    : 'border-amber-300/55 bg-amber-400/15 text-white'
                 }`}
               >
                 {SNS_SPINNER_TITLES[wheelIndex]}
               </div>
-              <div className="text-xs font-bold text-stone-500 opacity-65">
+              <div className="hs-outline-sm text-xs font-bold text-amber-100/75">
                 {SNS_SPINNER_TITLES[(wheelIndex + 1) % SNS_SPINNER_TITLES.length]}
               </div>
             </div>
 
-            <p className="mt-2 text-xs font-semibold text-amber-200/80">
+            <p className="hs-outline-sm mt-2 text-xs font-bold text-amber-50/95">
               엘윈마을 대결 광장에서 실력이 비슷한 맞수를 탐색하고 있습니다...
             </p>
 
@@ -555,7 +566,7 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
                   hsAudio.playSfx('box_close');
                   setMatching(false);
                 }}
-                className="hs-brass-btn mt-4 rounded-xl px-6 py-1.5 text-xs font-extrabold text-amber-100"
+                className="hs-brass-btn mt-4 min-h-[40px] rounded-xl px-6 py-2 text-xs font-extrabold text-white"
               >
                 탐색 취소
               </button>
