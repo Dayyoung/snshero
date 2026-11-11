@@ -132,7 +132,7 @@ function makeCrestDataUri(bgTop: string, bgBot: string, rim: string, glyphPath: 
     <circle cx="32" cy="32" r="24.5" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1"/>
     <path d="${glyphPath}" fill="#fff8e1" stroke="rgba(0,0,0,0.55)" stroke-width="1.2" stroke-linejoin="round"/>
   </svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
 export const CLASS_CREST_URL: Record<CardClass, string> = {

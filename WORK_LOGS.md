@@ -2,6 +2,17 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 13:33 KST] [/game.html 허브 '카단의 첫걸음' 버튼 및 영웅 컷아웃 이미지 깨짐(070_Aila.png / 060_Death_Knight_Artus.png 경로 오타) 완벽 수정]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - 허브(`BoxHubScreen`)의 **`카단의 첫걸음`** 포털 버튼 내 `<img src="/anime-character-sheets/cutouts/070_Ayla.png">` 이미지 깨짐 수정.
+  - **2. 원인 분석 및 전수 감사 내역**:
+    - 실제 디스크(`public/anime-character-sheets/cutouts/`)의 파일명은 `070_Aila.png` 및 `060_Death_Knight_Artus.png`인데, [`src/hearthstone/types.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/types.ts)의 `CLASSIC_HEROES.SHAMAN.heroCutoutUrl`(`070_Ayla.png`)과 `CLASSIC_HEROES.ROGUE.heroCutoutUrl`(`060_Death_Knight_Arthus.png`) 2건에 영문 철자 오타가 존재하여 404가 발생하던 문제를 확인.
+    - [`src/hearthstone/`](file:///Users/dayyoung/project/snshero/src/hearthstone/types.ts) 전 파일 및 [`public/hs-assets/data/classic-cards.json`](file:///Users/dayyoung/project/snshero/public/hs-assets/data/classic-cards.json) (382종 카드 + 123종 토큰)의 모든 미디어/이미지 경로를 전수 정적 스캔하여 누락 경로 0건 달성 및 [`src/hearthstone/cardDb.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/cardDb.ts)의 종족 문장 SVG Data URI MIME 헤더를 표준 `data:image/svg+xml;charset=utf-8,`로 정규화.
+  - **3. 검증 및 보고**:
+    - 전체 미디어 경로 정합성 검사 미해결 경로 **0건**, 프로덕션 빌드(`npm run build`) 완료, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-11 13:22 KST] [/game.html 하스스톤 배경·흔적 100% 제거, 오리지널 눈히어로 전장·배경 6종 생성, 공식 SNS HERO.com 카드 뒷면 3종 적용, 상용 조각형 카드 프레임 리디자인 및 엘윈마을·눈히어로 용어·인트로 소설/웹툰 바로가기 완성]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
