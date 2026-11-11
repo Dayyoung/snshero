@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { hsAudio } from '../audio';
+import { useModalDismiss } from '../useModalDismiss';
 import {
   CLASS_CREST_URL,
   CRAFTING_COST,
@@ -90,16 +91,10 @@ export const CardZoomModal: React.FC<CardZoomModalProps> = ({
   secondaryActions = [],
   onCancel,
 }) => {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation();
-        onCancel();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onCancel]);
+  useModalDismiss(true, () => {
+    hsAudio.playSfx('ui_click', 0.45);
+    onCancel();
+  });
 
   const shownCost = effectiveCost !== undefined ? effectiveCost : card.cost;
   const costState: 'normal' | 'buffed' | 'nerfed' =

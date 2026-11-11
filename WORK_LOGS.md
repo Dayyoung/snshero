@@ -21352,3 +21352,16 @@
      - `window`의 `blur` / `focus` / `pagehide` / `pageshow` 및 `document`의 `visibilitychange` 이벤트를 연동하여 게임 창이 초점을 잃거나 탭 전환·최소화·백그라운드로 전환되면(`suspendForFocusLoss`) 재생 중인 BGM(`currentBgm.pause()`), 효과음(`activeSfx` 일괄 정지), 성우 음성(`currentVo`), WebAudio 컨텍스트(`ctx.suspend()`), 햅틱 진동(`navigator.vibrate(0)`)을 즉시 중지하고 비활성 중 신규 사운드 재생을 차단.
      - 게임 창에 다시 초점이 맞춰지면(`resumeForFocusGain`) 음소거(`muted`)가 아닌 경우 `AudioContext`를 `resume()`하고 진행 중이던(또는 비활성 중 새로 전환된) BGM을 자동으로 이어서 재생 시작하도록 구현.
 - **검증 결과**: `src/hearthstone` TypeScript 에러 0건, `npm run build` 프로덕션 빌드 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+
+### 2026-11-12 08:13 KST | `/game.html` 팝업 ESC·우클릭 닫기 및 내 카드첩 방향키/WASD 페이지 넘기기 구현 완료
+- **작업 내역**:
+  1. **LIFO 계층형 모달 디스미스 훅 구현 및 전역 팝업 연결 (`src/hearthstone/useModalDismiss.ts`)**:
+     - `Escape` 키 및 마우스 우클릭(`contextmenu`) 캡처 단계 이벤트 리스너를 연동하여 모달/팝업이 활성화되었을 때 최상위 팝업을 즉시 닫고 브라우저 기본 우클릭 메뉴를 방지(`preventDefault()`, `stopPropagation()`)하도록 구현.
+     - 텍스트 입력창(`<input>`, `<textarea>`, `contentEditable`) 내부에서의 우클릭은 브라우저 복사/붙여넣기 메뉴를 정상 허용하도록 예외 처리.
+     - 연동 모달: `QuestLogModal`(의뢰 일지), `TavernShopModal`(보급소), `PaymentSuccessModal`(결제 완료), `GameOptionsModal`(환경 설정), `CardZoomModal`(카드 상세 확대), `KadanJourneyStoryModal`(스토리 극장), `PackOpeningScreen`의 `showOddsModal`(확률 안내), `HeroDeckSelectScreen`의 `matching`(매칭 모달), `BattleScreen`의 `selection`(타겟팅 취소)·`emoteMenuOpen`(감정표현)·`mobileHistoryOpen`(모바일 기록), `CollectionScreen`의 `importModalOpen`·`disenchantModalPreview`·`creatingClassPicker`.
+  2. **내 카드첩 키보드 방향키 및 WASD 페이지 넘기기 구현 (`src/hearthstone/screens/CollectionScreen.tsx`)**:
+     - `ArrowLeft`, `A`, `ArrowUp`, `W` 입력 시 이전 페이지(`turnPrevPage`), `ArrowRight`, `D`, `ArrowDown`, `S` 입력 시 다음 페이지(`turnNextPage`)로 넘김 구현.
+     - 페이지 전환 시 `hsAudio.playSfx('card_flip', 0.8)` 사운드 연동 및 첫/마지막 페이지 경계값 보호.
+     - 텍스트 검색창·덱 이름 수정·모달 오픈 중에는 키 입력을 가로채지 않도록 보호.
+- **검증 결과**: `src/hearthstone` TypeScript 에러 0건, `npm run build` 프로덕션 빌드 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.

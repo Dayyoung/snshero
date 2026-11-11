@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { hsAudio } from '../audio';
+import { useModalDismiss } from '../useModalDismiss';
 import {
   KADAN_JOURNEY_EPISODES,
   getJourneyDifficultySpec,
@@ -104,6 +105,15 @@ export const KadanJourneyStoryModal: React.FC<KadanJourneyStoryModalProps> = ({
     }
     onStartBattle(viewingEpisode !== episode ? viewingEpisode : undefined);
   };
+
+  useModalDismiss(true, () => {
+    if (isMidBattleReview && onCloseReview) {
+      hsAudio.playSfx('box_close');
+      onCloseReview();
+    } else {
+      handleCloseOrStart();
+    }
+  });
 
   const remainingTotalMs = Math.max(
     0,

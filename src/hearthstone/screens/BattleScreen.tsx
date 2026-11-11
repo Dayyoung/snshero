@@ -17,6 +17,7 @@ import {
 } from '../components/CardVisual';
 import { CardZoomAction, CardZoomModal } from '../components/CardZoomModal';
 import { KadanJourneyStoryModal } from '../components/KadanJourneyStoryModal';
+import { useModalDismiss } from '../useModalDismiss';
 import {
   SNS_LOCATIONS,
   SnsBoosterPackArt,
@@ -289,6 +290,14 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   const [selection, setSelection] = useState<PendingSelection | null>(null);
   const [zoomState, setZoomState] = useState<BattleZoomState | null>(null);
   const [mobileHistoryOpen, setMobileHistoryOpen] = useState(false);
+  const [emoteMenuOpen, setEmoteMenuOpen] = useState(false);
+
+  useModalDismiss(Boolean(selection), () => {
+    hsAudio.playSfx('ui_click', 0.45);
+    setSelection(null);
+  });
+  useModalDismiss(emoteMenuOpen, () => setEmoteMenuOpen(false));
+  useModalDismiss(mobileHistoryOpen, () => setMobileHistoryOpen(false));
   const [isCompactMobile, setIsCompactMobile] = useState(
     () =>
       typeof window !== 'undefined' &&
@@ -300,7 +309,6 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
   const [hoveredBoardMinion, setHoveredBoardMinion] = useState<MinionInstance | null>(null);
   const [hoveredHistoryItem, setHoveredHistoryItem] = useState<ActionHistoryItem | null>(null);
-  const [emoteMenuOpen, setEmoteMenuOpen] = useState(false);
   const [playerEmoteText, setPlayerEmoteText] = useState<string | null>(null);
   const [opponentEmoteText, setOpponentEmoteText] = useState<string | null>(null);
   const [toyToast, setToyToast] = useState<string | null>(null);

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { hsAudio } from '../audio';
+import { useModalDismiss } from '../useModalDismiss';
 import {
   CLASSIC_RANK_NAMES,
   CLASS_CREST_URL,
@@ -74,6 +75,11 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
   const [matching, setMatching] = useState(false);
   const [wheelIndex, setWheelIndex] = useState(0);
   const [wheelLocked, setWheelLocked] = useState(false);
+
+  useModalDismiss(matching && !wheelLocked, () => {
+    hsAudio.playSfx('box_close');
+    setMatching(false);
+  });
 
   const selectedDeck = useMemo(
     () => decks.find((d) => d.id === selectedDeckId) || decks[0],

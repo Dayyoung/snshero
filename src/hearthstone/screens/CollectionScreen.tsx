@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { hsAudio } from '../audio';
 import {
   CLASS_CREST_URL,
@@ -20,6 +20,7 @@ import {
 } from '../components/CardVisual';
 import { CardZoomAction, CardZoomModal } from '../components/CardZoomModal';
 import { SNS_LOCATIONS } from '../components/SnsHeroArtKit';
+import { useModalDismiss } from '../useModalDismiss';
 import {
   MassDisenchantPreview,
   hsStorage,
@@ -87,6 +88,10 @@ export const CollectionScreen: React.FC<{
   const [disenchantModalPreview, setDisenchantModalPreview] =
     useState<MassDisenchantPreview | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+
+  useModalDismiss(importModalOpen, () => setImportModalOpen(false));
+  useModalDismiss(Boolean(disenchantModalPreview), () => setDisenchantModalPreview(null));
+  useModalDismiss(creatingClassPicker, () => setCreatingClassPicker(false));
 
   useEffect(() => {
     hsAudio.playBgm('collection');
@@ -173,6 +178,59 @@ export const CollectionScreen: React.FC<{
   const totalPages = Math.max(1, Math.ceil(filteredCards.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages - 1);
   const pageCards = filteredCards.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
+
+  const turnPrevPage = useCallback(() => {
+    setPage((p) => {
+      const curSafe = Math.min(p, totalPages - 1);
+      if (curSafe > 0) {
+        hsAudio.playSfx('card_flip', 0.8);
+        return curSafe - 1;
+      }
+      return curSafe;
+    });
+  }, [totalPages]);
+
+  const turnNextPage = useCallback(() => {
+    setPage((p) => {
+      const curSafe = Math.min(p, totalPages - 1);
+      if (curSafe < totalPages - 1) {
+        hsAudio.playSfx('card_flip', 0.8);
+        return curSafe + 1;
+      }
+      return curSafe;
+    });
+  }, [totalPages]);
+
+  // 키보드 방향키(좌/우, 상/하) 및 WASD 키로 페이지 넘기기
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target;
+      if (
+        target &&
+        target instanceof HTMLElement &&
+        (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
+      ) {
+        return;
+      }
+      // 팝업/모달 활성 중에는 페이지 넘기기 비활성화
+      if (inspectCard || importModalOpen || disenchantModalPreview || creatingClassPicker) {
+        return;
+      }
+      if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+      const k = e.key.toLowerCase();
+      if (k === 'arrowleft' || k === 'a' || k === 'arrowup' || k === 'w') {
+        e.preventDefault();
+        turnPrevPage();
+      } else if (k === 'arrowright' || k === 'd' || k === 'arrowdown' || k === 's') {
+        e.preventDefault();
+        turnNextPage();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [inspectCard, importModalOpen, disenchantModalPreview, creatingClassPicker, turnPrevPage, turnNextPage]);
 
   const handleAddCardToDeck = (card: ClassicCardDef) => {
     if (!editingDeck) {
@@ -539,11 +597,8 @@ export const CollectionScreen: React.FC<{
             {safePage > 0 && (
               <button
                 type="button"
-                onClick={() => {
-                  hsAudio.playSfx('card_flip', 0.8);
-                  setPage((p) => Math.max(0, p - 1));
-                }}
-                title="이전 페이지"
+                onClick={turnPrevPage}
+                title="이전 페이지 (단축키: ← 또는 A)"
                 className="hs-brass-btn absolute left-1 top-1/2 z-30 flex h-12 w-8 -translate-y-1/2 items-center justify-center rounded-full text-base font-extrabold text-amber-100 sm:left-1.5 sm:h-14 sm:w-9 sm:text-lg"
               >
                 ◀
@@ -552,11 +607,8 @@ export const CollectionScreen: React.FC<{
             {safePage < totalPages - 1 && (
               <button
                 type="button"
-                onClick={() => {
-                  hsAudio.playSfx('card_flip', 0.8);
-                  setPage((p) => Math.min(totalPages - 1, p + 1));
-                }}
-                title="다음 페이지"
+                onClick={turnNextPage}
+                title="다음 페이지 (단축키: → 또는 D)"
                 className="hs-brass-btn absolute right-1 top-1/2 z-30 flex h-12 w-8 -translate-y-1/2 items-center justify-center rounded-full text-base font-extrabold text-amber-100 sm:right-1.5 sm:h-14 sm:w-9 sm:text-lg"
               >
                 ▶

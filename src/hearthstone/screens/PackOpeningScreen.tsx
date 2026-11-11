@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { hsAudio } from '../audio';
 import { HearthstoneCard, HsGoldCoinIcon } from '../components/CardVisual';
 import { CardZoomModal } from '../components/CardZoomModal';
+import { useModalDismiss } from '../useModalDismiss';
 import {
   SNS_LOCATIONS,
   SnsBoosterPackArt,
@@ -80,6 +81,7 @@ export const PackOpeningScreen: React.FC<{
   const [profile, setProfile] = useState(() => hsStorage.getProfile());
   const [pityState, setPityState] = useState(() => hsStorage.getPackPityState());
   const [showOddsModal, setShowOddsModal] = useState(false);
+  useModalDismiss(showOddsModal, () => setShowOddsModal(false));
   const [innkeeperCallout, setInnkeeperCallout] = useState<{
     text: string;
     borderCls: string;

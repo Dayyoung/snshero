@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { isAdRemoved } from '../../landing/services/adsenseManager';
 import { AudioSettings, hsAudio } from '../audio';
+import { useModalDismiss } from '../useModalDismiss';
 import {
   CLASSIC_RANK_NAMES,
   CLASS_CREST_URL,
@@ -60,6 +61,11 @@ export const QuestLogModal: React.FC<{
   onClose: () => void;
   onProfileChanged: () => void;
 }> = ({ onClose }) => {
+  useModalDismiss(true, () => {
+    hsAudio.playSfx('box_close');
+    onClose();
+  });
+
   const [, setTick] = useState(0);
   useEffect(() => {
     const sync = () => setTick((n) => n + 1);
@@ -296,6 +302,11 @@ export const TavernShopModal: React.FC<{
   onProfileChanged: () => void;
   onGoOpenPacks: () => void;
 }> = ({ onClose, onProfileChanged, onGoOpenPacks }) => {
+  useModalDismiss(true, () => {
+    hsAudio.playSfx('box_close');
+    onClose();
+  });
+
   const [profile, setProfile] = useState<PlayerProfile>(() => hsStorage.getProfile());
   const [vipAdRemoved, setVipAdRemoved] = useState<boolean>(() => isAdRemoved());
   const [step, setStep] = useState<ShopCheckoutStep>('quantity');
@@ -1171,6 +1182,8 @@ export const PaymentSuccessModal: React.FC<{
   onOpenPacks: () => void;
   onClose: () => void;
 }> = ({ info, onOpenPacks, onClose }) => {
+  useModalDismiss(true, onClose);
+
   return (
     <div
       onClick={onClose}
@@ -1222,6 +1235,8 @@ export const GameOptionsModal: React.FC<{
   onConcede?: () => void;
   onClose: () => void;
 }> = ({ inBattle = false, onConcede, onClose }) => {
+  useModalDismiss(true, onClose);
+
   const [settings, setSettings] = useState<AudioSettings>(() => hsAudio.getSettings());
   const [, setPwaTick] = useState(0);
   const vibSupport = useMemo(() => hsAudio.getVibrationSupportInfo(), []);
