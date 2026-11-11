@@ -1,5 +1,23 @@
 @import "tailwindcss";
 
+@custom-variant sm {
+  @media (min-width: 640px), (orientation: landscape) {
+    @slot;
+  }
+}
+
+@custom-variant md {
+  @media (min-width: 768px), (orientation: landscape) {
+    @slot;
+  }
+}
+
+@custom-variant lg {
+  @media (min-width: 1024px), (orientation: landscape) {
+    @slot;
+  }
+}
+
 /* ============================================================================
  * 눈히어로: 카단의 여정 (SNSHero Stigma Card Battle) Commercial UI Material System
  * Specification: src/hearthstone/design.md

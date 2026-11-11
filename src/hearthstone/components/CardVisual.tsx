@@ -548,6 +548,7 @@ export interface HearthstoneCardProps {
   rarityAura?: CardRarity;
   isGolden?: boolean;
   size?: 'XS' | 'SM' | 'MD' | 'LG';
+  journeyMultiplier?: number;
   enableTilt?: boolean;
   onClick?: () => void;
   className?: string;
@@ -562,6 +563,7 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
   rarityAura,
   isGolden = false,
   size = 'MD',
+  journeyMultiplier = 1,
   enableTilt = false,
   onClick,
   className = '',
@@ -1173,7 +1175,14 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
         {(card.type === 'MINION' || card.type === 'WEAPON') && (
           <div className="absolute bottom-[4px] left-[0px] z-[30]">
             <HsAttackBadge
-              value={card.attack ?? 0}
+              value={
+                journeyMultiplier > 1
+                  ? isWeapon
+                    ? Math.max(1, (card.attack ?? 1) * journeyMultiplier)
+                    : (card.attack ?? 0) * journeyMultiplier
+                  : (card.attack ?? 0)
+              }
+              buffed={journeyMultiplier > 1 && (card.attack ?? 0) > 0}
               isWeapon={isWeapon}
               size={74}
             />
@@ -1182,17 +1191,36 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
 
         {card.type === 'MINION' && (
           <div className="absolute bottom-[2px] right-[4px] z-[30]">
-            <HsHealthBadge value={card.health ?? 1} size={70} />
+            <HsHealthBadge
+              value={
+                journeyMultiplier > 1
+                  ? Math.max(1, (card.health ?? 1) * journeyMultiplier)
+                  : (card.health ?? 1)
+              }
+              state={journeyMultiplier > 1 ? 'buffed' : 'normal'}
+              size={70}
+            />
           </div>
         )}
 
         {isWeapon && (
           <div className="absolute bottom-[4px] right-[4px] z-[30]">
             <HsHealthBadge
-              value={card.durability ?? 1}
+              value={
+                journeyMultiplier > 1
+                  ? Math.max(1, (card.durability ?? 1) * journeyMultiplier)
+                  : (card.durability ?? 1)
+              }
+              state={journeyMultiplier > 1 ? 'buffed' : 'normal'}
               isWeaponDurability
               size={68}
             />
+          </div>
+        )}
+
+        {journeyMultiplier > 1 && (card.type === 'MINION' || card.type === 'WEAPON') && (
+          <div className="pointer-events-none absolute right-[12px] top-[18px] z-[32] rounded-full border-2 border-emerald-200 bg-gradient-to-b from-emerald-600 via-emerald-800 to-stone-950 px-3 py-1 text-[16px] font-black text-emerald-100 shadow-[0_6px_14px_rgba(0,0,0,0.9)]">
+            ×{journeyMultiplier}배
           </div>
         )}
 

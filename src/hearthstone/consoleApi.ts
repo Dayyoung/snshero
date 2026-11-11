@@ -1,5 +1,5 @@
 import { CLASSIC_PRESET_DECKS, CLASSIC_RANK_NAMES, cardDb } from './cardDb';
-import { hsStorage } from './storage';
+import { getJourneyCardMultiplier, hsStorage } from './storage';
 import { CLASSIC_HEROES, HERO_CLASS_ORDER, HeroClass } from './types';
 
 export interface SnsHeroConsoleApi {
@@ -9,10 +9,21 @@ export interface SnsHeroConsoleApi {
   addDust: (amount?: number) => number;
   addPacks: (count?: number) => number;
   setRank: (rank?: number, stars?: number) => { rank: number; rankTitle: string; stars: number };
+  setJourney: (
+    episode?: number,
+    reincarnation?: number,
+  ) => { journeyEpisode: number; journeyReincarnation: number };
+  addCardCopies: (
+    cardId: string,
+    copies?: number,
+  ) => { cardId: string; cardName: string; owned: number; journeyMultiplier: number };
   completeQuests: () => { goldEarned: number };
   verifyRoster: () => {
     totalCollectible: number;
-    classBreakdown: Record<string, { factionKo: string; heroKo: string; cardCount: number; uniqueChars: number }>;
+    classBreakdown: Record<
+      string,
+      { factionKo: string; heroKo: string; cardCount: number; uniqueChars: number }
+    >;
     neutralTotal: number;
     neutralUniqueChars: number;
     neutralExtraRobot: number;
@@ -40,15 +51,17 @@ export function initSnsHeroConsoleApi(): void {
     help() {
       const guide = [
         '================ [눈히어로: 카단의 여정 — DevTools Console 테스트 명령어] ================',
-        '  snshero.unlockAll()         : 382종 전체 카드 해금 + 1,000골드 + 1,600가루 + 10팩 지급',
-        '  snshero.addGold(1000)       : 골드 지급 (기본 1,000)',
-        '  snshero.addDust(1600)       : 영웅 가루 지급 (기본 1,600)',
-        '  snshero.addPacks(10)        : 눈히어로 카드 팩 지급 (기본 10팩)',
-        '  snshero.setRank(0, 1)       : 등급 변경 (25~1등급, 0 = 전설의 눈히어로)',
-        '  snshero.completeQuests()    : 오늘의 의뢰 전체 완료 및 보상 지급',
-        '  snshero.verifyRoster()      : 382종 카드 ↔ 110종족/로봇/용 배정 및 9개 기본 덱 무결성 검증',
-        '  snshero.engineInfo()        : 전투 엔진 상수 및 로컬스토리지 상태 조회',
-        '  snshero.reset()             : 프로필·도감·덱·의뢰 데이터 초기화',
+        '  snshero.unlockAll()              : 382종 전체 카드 각 3장(3배 각성) 해금 + 1,000G + 1,600가루 + 10팩',
+        '  snshero.addGold(1000)            : 골드 지급 (기본 1,000G)',
+        '  snshero.addDust(1600)            : 영웅 가루 지급 (기본 1,600)',
+        '  snshero.addPacks(10)             : 눈히어로 카드 팩 지급 (기본 10팩)',
+        '  snshero.setJourney(15, 1)        : 카단의 여정 에피소드(1~40화) 및 환생 회차(0~) 즉시 이동',
+        '  snshero.addCardCopies("CS2_189", 2): 특정 카드 보유 장수 추가 및 카단의 여정 배율(3장=3배) 확인',
+        '  snshero.setRank(0, 1)            : 등급 변경 (25~1등급, 0 = 전설의 눈히어로)',
+        '  snshero.completeQuests()         : 오늘의 의뢰 전체 완료 및 보상 지급',
+        '  snshero.verifyRoster()           : 382종 카드 ↔ 110종족/로봇/용 배정 및 9개 기본 덱 무결성 검증',
+        '  snshero.engineInfo()             : 전투 엔진 상수 및 로컬스토리지 상태 조회',
+        '  snshero.reset()                  : 프로필·도감·덱·의뢰 데이터 초기화 (초기 3팩 & 첫 방문 가이드 복원)',
         '=========================================================================================',
       ].join('\n');
       console.info(`%c${guide}`, 'color:#38bdf8;font-weight:bold;line-height:1.5;');
@@ -60,7 +73,7 @@ export function initSnsHeroConsoleApi(): void {
       const p = hsStorage.getProfile();
       const total = cardDb.getAllCollectible().length;
       console.info(
-        `%c[눈히어로 콘솔] 382종 전체 카드 해금 완료! (보유 골드: ${p.gold}, 가루: ${p.arcaneDust}, 개봉 대기 팩: ${p.packs})`,
+        `%c[눈히어로 콘솔] 382종 전체 카드(각 3장·여정 3배 각성) 해금 완료! (보유 골드: ${p.gold}, 가루: ${p.arcaneDust}, 개봉 대기 팩: ${p.packs})`,
         'color:#fbbf24;font-weight:bold;',
       );
       return {
@@ -107,6 +120,40 @@ export function initSnsHeroConsoleApi(): void {
         'color:#4ade80;font-weight:bold;',
       );
       return { rank: clampedRank, rankTitle, stars: p.stars };
+    },
+
+    setJourney(episode = 1, reincarnation = 0) {
+      hsStorage.setJourneyProgress(episode, reincarnation);
+      const p = hsStorage.getProfile();
+      console.info(
+        `%c[눈히어로 콘솔] 카단의 여정 진행도 변경 -> 환생 ${p.journeyReincarnation}회차 · 제${p.journeyEpisode}화`,
+        'color:#34d399;font-weight:bold;',
+      );
+      return {
+        journeyEpisode: p.journeyEpisode,
+        journeyReincarnation: p.journeyReincarnation,
+      };
+    },
+
+    addCardCopies(cardId: string, copies = 1) {
+      const def = cardDb.getCard(cardId);
+      if (!def) {
+        console.warn(`[눈히어로 콘솔] 존재하지 않는 카드 ID입니다: ${cardId}`);
+        return { cardId, cardName: '알 수 없음', owned: 0, journeyMultiplier: 1 };
+      }
+      hsStorage.addCardCopies(cardId, copies);
+      const owned = hsStorage.getCollection()[cardId] || 0;
+      const journeyMultiplier = getJourneyCardMultiplier(def, owned);
+      console.info(
+        `%c[눈히어로 콘솔] [${def.name}] 보유 장수 -> ${owned}장 (카단의 여정 전용 배율: ×${journeyMultiplier}배)`,
+        'color:#34d399;font-weight:bold;',
+      );
+      return {
+        cardId,
+        cardName: def.name,
+        owned,
+        journeyMultiplier,
+      };
     },
 
     completeQuests() {
@@ -179,7 +226,7 @@ export function initSnsHeroConsoleApi(): void {
         (k) => (hsStorage.getCollection()[k] || 0) > 0,
       ).length;
       const info = {
-        edition: '2.0.0-SNSHERO-KADAN-koKR',
+        edition: '2.1.0-SNSHERO-KADAN-JOURNEY-koKR',
         collectibleCards: cardDb.getAllCollectible().length,
         ownedUniqueCards: ownedUnique,
         presetDeckCount: CLASSIC_PRESET_DECKS.length,
@@ -197,7 +244,10 @@ export function initSnsHeroConsoleApi(): void {
 
     reset() {
       hsStorage.resetAllData();
-      console.info('%c[눈히어로 콘솔] 로컬스토리지 데이터가 초기 상태로 리셋되었습니다.', 'color:#f87171;font-weight:bold;');
+      console.info(
+        '%c[눈히어로 콘솔] 로컬스토리지 데이터가 초기 상태(초기 3팩, 첫 방문 카단의 여정 손가락 가이드)로 리셋되었습니다.',
+        'color:#f87171;font-weight:bold;',
+      );
       return '초기화 완료';
     },
   };

@@ -75,7 +75,8 @@ export const PackOpeningScreen: React.FC<{
   onBack: () => void;
   onOpenShop: () => void;
   onProfileChanged: () => void;
-}> = ({ onBack, onOpenShop, onProfileChanged }) => {
+  onReturnToJourney?: () => void;
+}> = ({ onBack, onOpenShop, onProfileChanged, onReturnToJourney }) => {
   const [profile, setProfile] = useState(() => hsStorage.getProfile());
   const [packBursting, setPackBursting] = useState(false);
   const [burstFlash, setBurstFlash] = useState(false);
@@ -97,11 +98,17 @@ export const PackOpeningScreen: React.FC<{
   const [altarShake, setAltarShake] = useState(false);
   const [zoomedPackCard, setZoomedPackCard] = useState<OpenedPackCard | null>(null);
   const [isDesktopStage, setIsDesktopStage] = useState(
-    () => typeof window === 'undefined' || window.innerWidth >= 768,
+    () =>
+      typeof window === 'undefined' ||
+      window.innerWidth >= 768 ||
+      window.innerWidth > window.innerHeight,
   );
 
   useEffect(() => {
-    const onResize = () => setIsDesktopStage(window.innerWidth >= 768);
+    const onResize = () =>
+      setIsDesktopStage(
+        window.innerWidth >= 768 || window.innerWidth > window.innerHeight,
+      );
     const onState = () => setProfile(hsStorage.getProfile());
     window.addEventListener('resize', onResize);
     window.addEventListener('snshero:state-changed', onState);
@@ -318,7 +325,19 @@ export const PackOpeningScreen: React.FC<{
           ← <span className="hidden sm:inline">엘윈마을 </span>로비로
         </button>
 
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          {onReturnToJourney && (
+            <button
+              type="button"
+              onClick={() => {
+                hsAudio.playSfx('box_press');
+                onReturnToJourney();
+              }}
+              className="hs-brass-btn min-h-[40px] rounded-xl border-emerald-300/75 bg-gradient-to-b from-emerald-600 to-emerald-900 px-2.5 py-1.5 text-[11px] font-extrabold text-white sm:px-3.5 sm:text-xs"
+            >
+              ⚔ 카단의 여정 출진
+            </button>
+          )}
           <div className="flex min-h-[40px] items-center gap-1.5 rounded-xl border-2 border-[#c8a158] bg-stone-950/90 px-2.5 py-1 text-xs font-extrabold shadow-lg sm:gap-2 sm:px-3.5 sm:py-1.5">
             <HsGoldCoinIcon size={18} />
             <span className="hidden sm:inline">보유 골드</span>
@@ -333,7 +352,7 @@ export const PackOpeningScreen: React.FC<{
             className="hs-arcane-btn flex min-h-[40px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-[11px] font-extrabold text-white sm:gap-1.5 sm:px-3.5 sm:text-xs"
           >
             <HsGoldCoinIcon size={15} />
-            <span>카드팩 구매 ($1 / $4)</span>
+            <span>보급소 · 팩 구매 (골드 / $1·$4)</span>
           </button>
         </div>
       </header>
@@ -512,7 +531,7 @@ export const PackOpeningScreen: React.FC<{
             /* ==================== 5-CARD FLOATING PENTAGON + 3D FLIP STAGE ==================== */
             <div className="relative z-20 flex h-full w-full flex-col items-center justify-between">
               {/* Top Floating Action Control (`5장 한 번에 뒤집기` -> `확인 완료`) */}
-              <div className="relative z-50 flex shrink-0 items-center gap-3">
+              <div className="relative z-50 flex shrink-0 flex-wrap items-center justify-center gap-2 sm:gap-3">
                 {!allRevealed ? (
                   <button
                     type="button"
@@ -522,13 +541,27 @@ export const PackOpeningScreen: React.FC<{
                     5장 한 번에 뒤집기
                   </button>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={finishPackSession}
-                    className="hs-brass-btn min-h-[44px] rounded-2xl border-yellow-200 bg-gradient-to-b from-amber-300 via-amber-500 to-amber-800 px-7 py-2 text-sm font-extrabold text-stone-950 shadow-[0_0_28px_rgba(250,204,21,0.9)] sm:px-9 sm:text-base"
-                  >
-                    확인 완료
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      onClick={finishPackSession}
+                      className="hs-brass-btn min-h-[44px] rounded-2xl border-yellow-200 bg-gradient-to-b from-amber-300 via-amber-500 to-amber-800 px-6 py-2 text-sm font-extrabold text-stone-950 shadow-[0_0_28px_rgba(250,204,21,0.9)] sm:px-8 sm:text-base"
+                    >
+                      확인 완료 {profile.packs > 0 ? `(남은 팩 ${profile.packs}개)` : ''}
+                    </button>
+                    {onReturnToJourney && profile.packs === 0 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          hsAudio.playSfx('box_press');
+                          onReturnToJourney();
+                        }}
+                        className="hs-arcane-btn min-h-[44px] rounded-2xl px-5 py-2 text-sm font-extrabold text-white sm:text-base"
+                      >
+                        ⚔ 업그레이드 완료 · 카단의 여정 도전
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
 
@@ -688,6 +721,7 @@ export const PackOpeningScreen: React.FC<{
                                     card={item.card}
                                     isGolden={item.isGolden}
                                     rarityAura={item.card.rarity}
+                                    journeyMultiplier={item.newJourneyMultiplier}
                                     size="MD"
                                   />
                                 </div>
@@ -695,6 +729,11 @@ export const PackOpeningScreen: React.FC<{
                                 {item.isNew && (
                                   <span className="hs-outline-sm pointer-events-none absolute right-0 top-0.5 z-40 rounded border border-yellow-200 bg-gradient-to-b from-amber-400 to-amber-700 px-1.5 py-0.5 text-[8.5px] font-extrabold text-white shadow-lg md:top-1 md:rounded-md md:px-2 md:text-[10px]">
                                     신규!
+                                  </span>
+                                )}
+                                {item.newJourneyMultiplier > 1 && (
+                                  <span className="hs-outline-sm pointer-events-none absolute -top-2.5 left-1/2 z-40 -translate-x-1/2 whitespace-nowrap rounded-full border border-emerald-200 bg-gradient-to-r from-emerald-600 to-teal-800 px-2 py-0.5 text-[8px] font-extrabold text-white shadow-lg md:-top-3 md:px-2.5 md:text-[10px]">
+                                    ⚡여정 ×{item.newJourneyMultiplier}배 ({item.newOwnedCount}장)
                                   </span>
                                 )}
                                 {item.isGolden && (
@@ -717,7 +756,7 @@ export const PackOpeningScreen: React.FC<{
       </main>
 
       <footer className="relative z-30 shrink-0 text-center text-[10.5px] font-bold text-amber-200/80 sm:text-[11px]">
-        카드를 터치하면 입체 회전 개봉되며, 뒤집힌 카드를 다시 터치하면 크게 확대해 읽을 수 있습니다
+        카드를 터치하면 입체 회전 개봉되며 · 동일 하수인·무기 3장 이상 누적 시 『카단의 여정』에서 능력치가 3배(N장=N배) 증폭됩니다
       </footer>
 
       {/* Card Zoom Modal for Inspecting Any Flipped Pack Card */}
@@ -726,12 +765,15 @@ export const PackOpeningScreen: React.FC<{
           card={zoomedPackCard.card}
           isGolden={zoomedPackCard.isGolden}
           rarityAura={zoomedPackCard.card.rarity}
+          journeyMultiplier={zoomedPackCard.newJourneyMultiplier}
           subtitleBadge={
-            zoomedPackCard.isNew
-              ? '신규 영웅 카드 획득!'
-              : zoomedPackCard.isGolden
-                ? '황금 영웅 카드 획득!'
-                : '눈히어로 팩 개봉 획득'
+            zoomedPackCard.newJourneyMultiplier > 1
+              ? `보유 ${zoomedPackCard.newOwnedCount}장 달성! · 카단의 여정 ×${zoomedPackCard.newJourneyMultiplier}배 각성`
+              : zoomedPackCard.isNew
+                ? '신규 영웅 카드 획득!'
+                : zoomedPackCard.isGolden
+                  ? '황금 영웅 카드 획득!'
+                  : `눈히어로 팩 개봉 획득 (보유 ${zoomedPackCard.newOwnedCount}장)`
           }
           showFlavor
           primaryAction={{

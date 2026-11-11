@@ -10,6 +10,8 @@ import {
   SnsRankMedallion,
   SnsSnowCompassSeal,
 } from '../components/SnsHeroArtKit';
+import { getJourneyEpisodeDef } from '../kadanJourneyData';
+import { hsStorage } from '../storage';
 import { GameMode, PlayerProfile } from '../types';
 
 export interface BoxHubScreenProps {
@@ -32,6 +34,8 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
   onOpenOptions,
 }) => {
   const [diskSpinning, setDiskSpinning] = useState(false);
+  const isFirstVisitGuide = !profile.journeyGuideDone;
+  const currentEp = getJourneyEpisodeDef(profile.journeyEpisode || 1);
 
   useEffect(() => {
     hsAudio.playBgm('tavern_hub');
@@ -39,6 +43,10 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
 
   const triggerModeTransition = (mode: GameMode) => {
     if (diskSpinning) return;
+    if (isFirstVisitGuide && mode !== 'TUTORIAL') return;
+    if (mode === 'TUTORIAL' && isFirstVisitGuide) {
+      hsStorage.markJourneyGuideDone();
+    }
     hsAudio.playSfx('box_press');
     hsAudio.playSfx('box_disk_flip', 0.85);
     setDiskSpinning(true);
@@ -49,6 +57,9 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
   };
 
   const rankTitle = CLASSIC_RANK_NAMES[profile.rank] || '엘윈 마을 수습생';
+  const lockedBtnStyle = isFirstVisitGuide
+    ? 'pointer-events-none cursor-not-allowed opacity-40 saturate-[0.35]'
+    : '';
 
   return (
     <div
@@ -64,22 +75,24 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
         className="pointer-events-none absolute inset-0"
       />
 
-      {/* Top Brass HUD Bar (Benchmarked 1:1 to Hearthstone Mobile & Desktop HUD) */}
+      {/* Top Brass HUD Bar */}
       <header className="relative z-20 flex w-full max-w-6xl flex-wrap items-center justify-between gap-1.5 sm:gap-2">
         <div className="flex items-center gap-1.5 sm:gap-2.5">
           <button
             type="button"
+            disabled={isFirstVisitGuide}
             onClick={() => {
+              if (isFirstVisitGuide) return;
               hsAudio.playSfx('box_open');
               onOpenQuestLog();
             }}
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
-            className="hs-brass-btn flex min-h-[42px] items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-amber-100 sm:gap-2.5 sm:px-3.5 sm:py-2"
+            onMouseEnter={() => !isFirstVisitGuide && hsAudio.playSfx('box_hover', 0.5)}
+            className={`hs-brass-btn flex min-h-[42px] items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-amber-100 sm:gap-2.5 sm:px-3.5 sm:py-2 ${lockedBtnStyle}`}
           >
             <SnsQuestScrollIcon size={30} className="shrink-0 drop-shadow" />
             <div className="text-left">
               <div className="hs-title text-[11px] font-extrabold tracking-wide text-amber-100 sm:text-xs">
-                의뢰 · 전적
+                의뢰 · 보상표
               </div>
               <div className="mt-0.5 flex items-center gap-1 text-[10px] font-bold text-amber-300/90 sm:gap-1.5 sm:text-[10.5px]">
                 <SnsRankMedallion rank={profile.rank} size={16} />
@@ -95,12 +108,14 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
         <div className="flex items-center gap-1.5 sm:gap-2.5">
           <button
             type="button"
+            disabled={isFirstVisitGuide}
             onClick={() => {
+              if (isFirstVisitGuide) return;
               hsAudio.playSfx('ui_click');
               onOpenShop();
             }}
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
-            className="hs-brass-btn flex min-h-[42px] items-center gap-2 rounded-xl px-2.5 py-1.5 sm:gap-3 sm:px-3.5 sm:py-2"
+            onMouseEnter={() => !isFirstVisitGuide && hsAudio.playSfx('box_hover', 0.5)}
+            className={`hs-brass-btn flex min-h-[42px] items-center gap-2 rounded-xl px-2.5 py-1.5 sm:gap-3 sm:px-3.5 sm:py-2 ${lockedBtnStyle}`}
           >
             <span className="flex items-center gap-1">
               <HsGoldCoinIcon size={18} />
@@ -115,12 +130,14 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
 
           <button
             type="button"
+            disabled={isFirstVisitGuide}
             onClick={() => {
+              if (isFirstVisitGuide) return;
               hsAudio.playSfx('open_menu');
               onOpenOptions();
             }}
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
-            className="hs-brass-btn flex min-h-[42px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-extrabold text-amber-100 sm:gap-1.5 sm:px-3.5 sm:py-2.5 sm:text-sm"
+            onMouseEnter={() => !isFirstVisitGuide && hsAudio.playSfx('box_hover', 0.5)}
+            className={`hs-brass-btn flex min-h-[42px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-extrabold text-amber-100 sm:gap-1.5 sm:px-3.5 sm:py-2.5 sm:text-sm ${lockedBtnStyle}`}
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="text-amber-300">
               <path
@@ -129,7 +146,7 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
                 strokeWidth="2.2"
               />
               <path
-                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1.51 1 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
                 stroke="currentColor"
                 strokeWidth="1.9"
               />
@@ -139,8 +156,14 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
         </div>
       </header>
 
-      {/* Centerpiece: THE SNSHERO BOX (Benchmarked 1:1 to Hearthstone's Carved Hinged Wooden Box) */}
-      <main className="relative z-20 my-auto flex w-full max-w-[820px] flex-col items-center pt-4 sm:pt-0">
+      {/* Centerpiece: THE SNSHERO BOX */}
+      <main className="relative z-20 my-auto flex w-full max-w-[820px] flex-col items-center pt-3 sm:pt-0">
+        {isFirstVisitGuide && (
+          <div className="mb-2 rounded-full border-2 border-emerald-300 bg-gradient-to-r from-emerald-950/95 via-teal-900/95 to-emerald-950/95 px-4 py-1.5 text-center text-xs font-extrabold text-emerald-100 shadow-[0_0_24px_rgba(16,185,129,0.55)] sm:text-sm">
+            ✨ 첫 방문 가이드: 아래 손가락이 가리키는 <b className="text-yellow-300">「카단의 여정」</b>을 눌러 첫 모험을 시작하세요!
+          </div>
+        )}
+
         <div className="hs-wood-panel relative flex w-full flex-col items-center rounded-[28px] px-3.5 pb-4 pt-2 sm:rounded-[34px] sm:px-10 sm:pb-7 sm:pt-3">
           {/* Carved Wooden Chest Relief Grain & Brass Corner Inlay */}
           <div
@@ -151,7 +174,6 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
             className="pointer-events-none absolute inset-2 rounded-[22px] sm:rounded-[26px]"
           />
 
-          {/* Inner Recessed Brass Filigree Frame */}
           <div className="pointer-events-none absolute inset-2.5 rounded-[20px] border-2 border-[#e2be75]/40 shadow-[inset_0_0_28px_rgba(0,0,0,0.8)] sm:inset-3 sm:rounded-[24px]" />
 
           {/* 4 Forged Brass Corner Rivets */}
@@ -165,7 +187,7 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
             src={SNS_LOGO_URL}
             alt="눈히어로"
             draggable={false}
-            className="relative z-10 -mt-6 w-[206px] drop-shadow-[0_14px_22px_rgba(0,0,0,0.94)] sm:-mt-11 sm:w-[318px]"
+            className="relative z-10 -mt-6 w-[196px] drop-shadow-[0_14px_22px_rgba(0,0,0,0.94)] sm:-mt-11 sm:w-[308px]"
           />
 
           {/* Center 3D Rotating Brass & Ivory Medallion ("The Box" Turntable) */}
@@ -176,7 +198,7 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
                 : 'perspective(950px) rotateY(0deg) scale(1)',
               transition: 'transform 0.34s cubic-bezier(0.22, 1, 0.36, 1)',
             }}
-            className="relative z-10 my-1 flex h-[262px] w-[262px] flex-col items-center justify-center rounded-full border-[5px] border-[#dfb96c] bg-radial from-[#f5e7c4] via-[#c7a467] to-[#5e4120] p-4 shadow-[0_18px_44px_rgba(0,0,0,0.9),inset_0_0_30px_rgba(44,26,10,0.85)] sm:h-[338px] sm:w-[338px] sm:border-[6px] sm:p-6"
+            className="relative z-10 my-1 flex h-[284px] w-[284px] flex-col items-center justify-center rounded-full border-[5px] border-[#dfb96c] bg-radial from-[#f5e7c4] via-[#c7a467] to-[#5e4120] p-4 shadow-[0_18px_44px_rgba(0,0,0,0.9),inset_0_0_30px_rgba(44,26,10,0.85)] sm:h-[360px] sm:w-[360px] sm:border-[6px] sm:p-6"
           >
             {/* Engraved Concentric Brass & Oak Turntable Rings */}
             <div
@@ -214,66 +236,90 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
 
             {/* Top Sculpted Snow-Compass Seal */}
             <SnsSnowCompassSeal
-              size={42}
-              className="relative z-10 -mt-1.5 mb-1 drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] sm:-mt-2 sm:mb-1.5 sm:h-13 sm:w-13"
+              size={38}
+              className="relative z-10 -mt-1.5 mb-1 drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] sm:-mt-2 sm:mb-1.5 sm:h-12 sm:w-12"
             />
 
-            {/* 3 Authentic Beveled Ivory/Parchment Menu Plates */}
-            <div className="relative z-10 flex w-full max-w-[205px] flex-col gap-1.5 sm:max-w-[232px] sm:gap-2.5">
+            {/* 3 Identical-Height Beveled Ivory/Parchment Menu Plates */}
+            <div className="relative z-10 flex w-full max-w-[218px] flex-col gap-2 sm:max-w-[248px] sm:gap-2.5">
+              {/* 1. 대전 */}
               <button
                 type="button"
-                onMouseEnter={() => hsAudio.playSfx('box_hover', 0.55)}
+                disabled={isFirstVisitGuide}
+                onMouseEnter={() => !isFirstVisitGuide && hsAudio.playSfx('box_hover', 0.55)}
                 onClick={() => triggerModeTransition('RANKED')}
-                className="hs-ivory-plate group flex flex-col items-center rounded-2xl px-3 py-1.5 sm:px-4 sm:py-2.5"
+                className={`hs-ivory-plate group flex h-[52px] w-full flex-col items-center justify-center rounded-2xl px-3 sm:h-[60px] sm:px-4 ${lockedBtnStyle}`}
               >
-                <span className="hs-title text-base font-extrabold tracking-wider text-[#2d1a0b] group-hover:text-[#0c4a6e] sm:text-xl">
+                <span className="hs-title text-[15px] font-extrabold leading-tight tracking-wider text-[#2d1a0b] group-hover:text-[#0c4a6e] sm:text-lg">
                   대전
                 </span>
-                <span className="text-[9.5px] font-extrabold tracking-tight text-[#6b4826] sm:text-[10px]">
-                  눈히어로 등급전 · 일반전
+                <span className="mt-0.5 truncate text-[9.5px] font-extrabold tracking-tight text-[#6b4826] sm:text-[10.5px]">
+                  승리 +25G · 3승 +30G · 등급 별(★)
                 </span>
               </button>
 
+              {/* 2. 엘윈마을 수련 */}
               <button
                 type="button"
-                onMouseEnter={() => hsAudio.playSfx('box_hover', 0.55)}
+                disabled={isFirstVisitGuide}
+                onMouseEnter={() => !isFirstVisitGuide && hsAudio.playSfx('box_hover', 0.55)}
                 onClick={() => triggerModeTransition('PRACTICE_NORMAL')}
-                className="hs-ivory-plate group flex flex-col items-center rounded-2xl px-3 py-1.5 sm:px-4 sm:py-2"
+                className={`hs-ivory-plate group flex h-[52px] w-full flex-col items-center justify-center rounded-2xl px-3 sm:h-[60px] sm:px-4 ${lockedBtnStyle}`}
               >
-                <span className="hs-title text-sm font-extrabold tracking-wider text-[#2d1a0b] group-hover:text-[#7c2d12] sm:text-lg">
+                <span className="hs-title text-[15px] font-extrabold leading-tight tracking-wider text-[#2d1a0b] group-hover:text-[#7c2d12] sm:text-lg">
                   엘윈마을 수련
                 </span>
-                <span className="text-[9.5px] font-extrabold tracking-tight text-[#6b4826] sm:text-[10px]">
-                  9종족 대표 AI 대결 (일반 · 숙련)
+                <span className="mt-0.5 truncate text-[9.5px] font-extrabold tracking-tight text-[#6b4826] sm:text-[10.5px]">
+                  종족 초회 +25~50G · 올클리어 +2팩
                 </span>
               </button>
 
-              <button
-                type="button"
-                onMouseEnter={() => hsAudio.playSfx('box_hover', 0.55)}
-                onClick={() => triggerModeTransition('TUTORIAL')}
-                className="hs-ivory-plate group flex flex-col items-center rounded-2xl px-3 py-1 sm:px-4 sm:py-1.5"
-              >
-                <span className="hs-title text-xs font-extrabold tracking-wider text-[#2d1a0b] group-hover:text-[#14532d] sm:text-base">
-                  카단의 첫걸음
-                </span>
-                <span className="text-[9px] font-bold text-[#6b4826] sm:text-[9.5px]">
-                  실전 코칭 입문 튜토리얼
-                </span>
-              </button>
+              {/* 3. 카단의 여정 (Equal Height + First-Visit Pointing Hand Indicator) */}
+              <div className="relative w-full">
+                {isFirstVisitGuide && (
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -right-4 -top-5 z-30 flex animate-bounce items-center gap-1 rounded-full border-2 border-yellow-200 bg-gradient-to-b from-amber-400 to-amber-700 px-2.5 py-0.5 text-xs font-black text-stone-950 shadow-[0_6px_18px_rgba(0,0,0,0.9)] sm:-right-7 sm:-top-6 sm:px-3 sm:py-1 sm:text-sm"
+                  >
+                    <span className="text-base leading-none sm:text-lg">👈</span>
+                    <span>클릭!</span>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onMouseEnter={() => hsAudio.playSfx('box_hover', 0.55)}
+                  onClick={() => triggerModeTransition('TUTORIAL')}
+                  className={`hs-ivory-plate group relative flex h-[52px] w-full flex-col items-center justify-center rounded-2xl px-3 sm:h-[60px] sm:px-4 ${
+                    isFirstVisitGuide
+                      ? 'ring-4 ring-emerald-400 shadow-[0_0_26px_rgba(52,211,153,0.95)]'
+                      : ''
+                  }`}
+                >
+                  <span className="hs-title text-[15px] font-extrabold leading-tight tracking-wider text-[#14532d] group-hover:text-[#064e3b] sm:text-lg">
+                    카단의 여정
+                  </span>
+                  <span className="mt-0.5 max-w-full truncate text-[9.5px] font-extrabold tracking-tight text-[#5c3d1e] sm:text-[10.5px]">
+                    {profile.journeyReincarnation > 0 ? `${profile.journeyReincarnation}환생 · ` : ''}
+                    제{profile.journeyEpisode}화 {currentEp.titleKo} · 보스팩 보상
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Bottom Recessed Brass Drawer Tray: 눈히어로 팩 개봉 · 내 카드첩 · 의뢰 일지 · 눈히어로 보급소 */}
+          {/* Bottom Recessed Brass Drawer Tray */}
           <div className="relative z-10 mt-2.5 grid w-full max-w-2xl grid-cols-2 gap-2 rounded-2xl border-[2.5px] border-[#a88246] bg-gradient-to-b from-[#231409] to-[#120a04] p-2.5 shadow-[inset_0_4px_14px_rgba(0,0,0,0.9)] sm:mt-3 sm:grid-cols-4 sm:gap-2.5 sm:border-[3px] sm:p-3">
             <button
               type="button"
-              onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+              disabled={isFirstVisitGuide}
+              onMouseEnter={() => !isFirstVisitGuide && hsAudio.playSfx('box_hover', 0.5)}
               onClick={() => {
+                if (isFirstVisitGuide) return;
                 hsAudio.playSfx('box_press');
                 onOpenPacks();
               }}
-              className="hs-brass-btn relative flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2"
+              className={`hs-brass-btn relative flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2 ${lockedBtnStyle}`}
             >
               {profile.packs > 0 && (
                 <span className="hs-num absolute -right-1.5 -top-1.5 z-20 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-red-200 bg-gradient-to-b from-red-500 to-red-800 px-1 text-[11px] text-white shadow-[0_3px_10px_rgba(220,38,38,0.85)] sm:-right-2 sm:-top-2 sm:h-6 sm:min-w-6 sm:px-1.5 sm:text-xs">
@@ -295,12 +341,14 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
 
             <button
               type="button"
-              onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+              disabled={isFirstVisitGuide}
+              onMouseEnter={() => !isFirstVisitGuide && hsAudio.playSfx('box_hover', 0.5)}
               onClick={() => {
+                if (isFirstVisitGuide) return;
                 hsAudio.playSfx('box_press');
                 onOpenCollection();
               }}
-              className="hs-brass-btn flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2"
+              className={`hs-brass-btn flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2 ${lockedBtnStyle}`}
             >
               <img
                 src={CLASS_CREST_URL.PRIEST}
@@ -312,19 +360,21 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
                   내 카드첩
                 </div>
                 <div className="text-[10px] font-bold text-amber-300/85">
-                  덱 빌더 · 382종
+                  3장=3배 강화 · 382종
                 </div>
               </div>
             </button>
 
             <button
               type="button"
-              onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+              disabled={isFirstVisitGuide}
+              onMouseEnter={() => !isFirstVisitGuide && hsAudio.playSfx('box_hover', 0.5)}
               onClick={() => {
+                if (isFirstVisitGuide) return;
                 hsAudio.playSfx('box_open');
                 onOpenQuestLog();
               }}
-              className="hs-brass-btn flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2"
+              className={`hs-brass-btn flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2 ${lockedBtnStyle}`}
             >
               <SnsQuestScrollIcon size={32} className="shrink-0 drop-shadow" />
               <div className="min-w-0">
@@ -332,19 +382,21 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
                   의뢰 일지
                 </div>
                 <div className="text-[10px] font-bold text-amber-300/85">
-                  일일 보상 · 등급
+                  모드별 보상 · 의뢰
                 </div>
               </div>
             </button>
 
             <button
               type="button"
-              onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+              disabled={isFirstVisitGuide}
+              onMouseEnter={() => !isFirstVisitGuide && hsAudio.playSfx('box_hover', 0.5)}
               onClick={() => {
+                if (isFirstVisitGuide) return;
                 hsAudio.playSfx('box_press');
                 onOpenShop();
               }}
-              className="hs-brass-btn flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2"
+              className={`hs-brass-btn flex min-h-[48px] items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-amber-100 sm:gap-2.5 sm:px-3 sm:py-2 ${lockedBtnStyle}`}
             >
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-amber-300/50 bg-stone-950/60 sm:h-9 sm:w-9">
                 <HsGoldCoinIcon size={22} />
@@ -354,7 +406,7 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
                   눈히어로 보급소
                 </div>
                 <div className="text-[10px] font-bold text-amber-300/85">
-                  팩 구매 · 뒷면 변경
+                  골드·현금 팩 구매
                 </div>
               </div>
             </button>
@@ -364,7 +416,7 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
 
       {/* Subtle Footer Plaque */}
       <footer className="relative z-20 pt-1 text-center text-[10.5px] font-bold tracking-wide text-amber-200/80 sm:text-[11px]">
-        눈히어로 11종족 110영웅 · 수집 카드 382종 완비 · 모든 진행 데이터 로컬 자동 보존
+        눈히어로 11종족 110영웅 · 수집 카드 382종 완비 · 배경음 기본 15% · 로컬 자동 보존
       </footer>
     </div>
   );

@@ -538,6 +538,17 @@ export interface TrackingPrompt {
   cards: string[];
 }
 
+export interface JourneyBattleMeta {
+  episode: number;
+  reincarnation: number;
+  episodeTitle: string;
+  actTitle: string;
+  opponentTitle: string;
+  enemyHeroHealth: number;
+  enemyStatScale: number;
+  playerCardMultipliers: Record<string, number>;
+}
+
 export interface BattleMatchState {
   matchId: string;
   mode: GameMode;
@@ -560,6 +571,7 @@ export interface BattleMatchState {
   bannerMessage: string | null;
   errorBanner: string | null;
   tutorialStep: number;
+  journeyMeta?: JourneyBattleMeta;
 }
 
 export interface CustomDeck {
@@ -583,6 +595,27 @@ export interface DailyQuest {
 
 export type SnsCardBackId = 'gold' | 'silver' | 'bronze';
 
+export interface MatchRewardBreakdown {
+  mode: GameMode;
+  didWin: boolean;
+  goldEarned: number;
+  baseWinGold: number;
+  bonusGold: number;
+  bonusLabel: string | null;
+  questGold: number;
+  packsEarned: number;
+  packReason: string | null;
+  prevRank: number;
+  newRank: number;
+  newStars: number;
+  streakBonus: boolean;
+  threeWinProgress: number;
+  clearedEpisode?: number;
+  nextEpisode?: number;
+  nextReincarnation?: number;
+  reincarnatedNow?: boolean;
+}
+
 export interface PlayerProfile {
   gold: number;
   arcaneDust: number;
@@ -596,4 +629,10 @@ export interface PlayerProfile {
   selectedCardBack: SnsCardBackId;
   masterUnlocked: boolean;
   threeWinCounter: number;
+  journeyGuideDone: boolean;
+  journeyEpisode: number;
+  journeyReincarnation: number;
+  journeyMaxStageCleared: number;
+  practiceNormalCleared: HeroClass[];
+  practiceExpertCleared: HeroClass[];
 }

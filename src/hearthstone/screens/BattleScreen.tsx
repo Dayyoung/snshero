@@ -15,8 +15,10 @@ import {
   HsManaGem,
 } from '../components/CardVisual';
 import { CardZoomAction, CardZoomModal } from '../components/CardZoomModal';
+import { KadanJourneyStoryModal } from '../components/KadanJourneyStoryModal';
 import {
   SNS_LOCATIONS,
+  SnsBoosterPackArt,
   SnsCardBackArt,
   SnsRankMedallion,
 } from '../components/SnsHeroArtKit';
@@ -30,7 +32,18 @@ import {
   getMinionMaxHealth,
   hasMinionTaunt,
 } from '../engine/GameEngine';
+import {
+  buildJourneyBossDeck,
+  buildJourneyPlayerDeckAndMultipliers,
+  getJourneyDifficultySpec,
+  getJourneyEpisodeDef,
+} from '../kadanJourneyData';
 import { hsStorage } from '../storage';
+import {
+  clientToStagePoint,
+  elementCenterInStage,
+  getStageSize,
+} from '../stageCoords';
 import {
   ActionHistoryItem,
   BattleMatchState,
@@ -39,6 +52,7 @@ import {
   CustomDeck,
   GameMode,
   HeroClass,
+  MatchRewardBreakdown,
   MinionInstance,
 } from '../types';
 import { BoardVfxCanvas } from '../vfx/BoardVfxCanvas';
@@ -48,8 +62,13 @@ export interface BattleScreenProps {
   playerDeck: CustomDeck;
   preferredOpponentClass?: HeroClass;
   preferredBoardTheme?: BoardThemeId;
+  journeyEpisodeOverride?: number;
   onOpenOptions: (concedeHandler: () => void) => void;
   onExitBattle: () => void;
+  onOpenShopFromBattle?: () => void;
+  onGoOpenPacksFromBattle?: () => void;
+  onGoCollectionFromBattle?: () => void;
+  onStartJourneyEpisode?: (episode: number) => void;
 }
 
 type PendingSelection =
@@ -162,29 +181,85 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   playerDeck,
   preferredOpponentClass,
   preferredBoardTheme,
+  journeyEpisodeOverride,
   onOpenOptions,
   onExitBattle,
+  onOpenShopFromBattle,
+  onGoOpenPacksFromBattle,
+  onGoCollectionFromBattle,
+  onStartJourneyEpisode,
 }) => {
-  const [matchState, setMatchState] = useState<BattleMatchState>(() => {
-    const opp = buildAiOpponentSetup(mode, preferredOpponentClass);
-    return createBattleMatch({
-      mode,
-      playerName: '엘윈마을 모험가',
-      playerClass: playerDeck.heroClass,
-      playerDeck: playerDeck.cards,
-      opponentName: opp.opponentName,
-      opponentClass: opp.opponentClass,
-      opponentDeck: opp.opponentDeck,
-      boardTheme: preferredBoardTheme,
-    });
-  });
+  const buildBattleMatchState = useCallback(
+    (targetEpisode?: number): BattleMatchState => {
+      if (mode === 'TUTORIAL') {
+        hsStorage.markJourneyGuideDone();
+        const curProfile = hsStorage.getProfile();
+        const ep = targetEpisode ?? journeyEpisodeOverride ?? curProfile.journeyEpisode;
+        const reinc = curProfile.journeyReincarnation;
+        const epDef = getJourneyEpisodeDef(ep);
+        const diffSpec = getJourneyDifficultySpec(ep, reinc);
+        const col = hsStorage.getCollection();
+        const playerJourney = buildJourneyPlayerDeckAndMultipliers(col);
+        const bossDeck = buildJourneyBossDeck(epDef.bossHeroClass, ep, reinc);
 
-  const [vsIntroActive, setVsIntroActive] = useState(true);
+        return createBattleMatch({
+          mode: 'TUTORIAL',
+          playerName: '엘윈의 방패 카단',
+          playerClass: 'PRIEST',
+          playerDeck: playerJourney.deckCards,
+          opponentName: epDef.bossNameKo,
+          opponentClass: epDef.bossHeroClass,
+          opponentDeck: bossDeck,
+          boardTheme: diffSpec.boardTheme,
+          journeyMeta: {
+            episode: epDef.episode,
+            reincarnation: reinc,
+            episodeTitle: epDef.titleKo,
+            actTitle: epDef.actTitle,
+            opponentTitle: epDef.bossNameKo,
+            enemyHeroHealth: diffSpec.enemyHeroHealth,
+            enemyStatScale: diffSpec.enemyStatScale,
+            playerCardMultipliers: playerJourney.playerCardMultipliers,
+          },
+        });
+      }
+
+      const opp = buildAiOpponentSetup(mode, preferredOpponentClass);
+      return createBattleMatch({
+        mode,
+        playerName: '엘윈마을 모험가',
+        playerClass: playerDeck.heroClass,
+        playerDeck: playerDeck.cards,
+        opponentName: opp.opponentName,
+        opponentClass: opp.opponentClass,
+        opponentDeck: opp.opponentDeck,
+        boardTheme: preferredBoardTheme,
+      });
+    },
+    [mode, playerDeck, preferredOpponentClass, preferredBoardTheme, journeyEpisodeOverride],
+  );
+
+  const [matchState, setMatchState] = useState<BattleMatchState>(() =>
+    buildBattleMatchState(),
+  );
+  const [liveProfile, setLiveProfile] = useState(() => hsStorage.getProfile());
+
+  // 카단의 여정 = 에피소드 스토리 극장 먼저 오픈 + 자동 플레이 기본 ON
+  // 나머지 모드(대전/수련) = 스토리 없이 즉시 대결 + 수동 플레이 기본
+  const [storyPhase, setStoryPhase] = useState<'PRE_BATTLE' | 'CLOSED' | 'REVIEW'>(() =>
+    mode === 'TUTORIAL' ? 'PRE_BATTLE' : 'CLOSED',
+  );
+  const [autoPlay, setAutoPlay] = useState<boolean>(() => mode === 'TUTORIAL');
+
+  const [vsIntroActive, setVsIntroActive] = useState(() => mode !== 'TUTORIAL');
   const [selection, setSelection] = useState<PendingSelection | null>(null);
   const [zoomState, setZoomState] = useState<BattleZoomState | null>(null);
   const [mobileHistoryOpen, setMobileHistoryOpen] = useState(false);
   const [isCompactMobile, setIsCompactMobile] = useState(
-    () => typeof window !== 'undefined' && window.innerWidth < 640,
+    () =>
+      typeof window !== 'undefined' &&
+      window.innerWidth < 640 &&
+      window.innerHeight >= window.innerWidth,
   );
   const [pointerPos, setPointerPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [insertPreviewIdx, setInsertPreviewIdx] = useState<number>(0);
@@ -197,17 +272,35 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   const [toyToast, setToyToast] = useState<string | null>(null);
   const [screenShake, setScreenShake] = useState<'NONE' | 'LIGHT' | 'HEAVY'>('NONE');
   const [aiHighlightText, setAiHighlightText] = useState<string | null>(null);
-  const [outcomeSummary, setOutcomeSummary] = useState<{
-    goldEarned: number;
-    prevRank: number;
-    newRank: number;
-    newStars: number;
-    streakBonus: boolean;
-  } | null>(null);
+  const [outcomeSummary, setOutcomeSummary] = useState<MatchRewardBreakdown | null>(null);
 
   const friendlyRowRef = useRef<HTMLDivElement | null>(null);
   const recordedResultRef = useRef(false);
-  const profile = useMemo(() => hsStorage.getProfile(), []);
+  const profile = liveProfile;
+
+  useEffect(() => {
+    const syncProfile = () => setLiveProfile(hsStorage.getProfile());
+    window.addEventListener('snshero:state-changed', syncProfile);
+    return () => window.removeEventListener('snshero:state-changed', syncProfile);
+  }, []);
+
+  const journeyDeckStats = useMemo(() => {
+    const multMap: Record<string, number> =
+      matchState.journeyMeta?.playerCardMultipliers || {};
+    const vals: number[] = Object.values(multMap);
+    return {
+      boostedCount: vals.filter((v) => v > 1).length,
+      maxMultiplier: vals.length > 0 ? Math.max(1, ...vals) : 1,
+    };
+  }, [matchState.journeyMeta]);
+
+  const getPlayerCardMult = useCallback(
+    (cardId: string): number => {
+      if (mode !== 'TUTORIAL') return 1;
+      return matchState.journeyMeta?.playerCardMultipliers[cardId] || 1;
+    },
+    [mode, matchState.journeyMeta],
+  );
 
   const engine = useMemo(() => createEngine(matchState), [matchState]);
   const playerSpellPower = engine.getTotalSpellPower('PLAYER');
@@ -217,17 +310,45 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     ? 2
     : 1;
 
-  // Opening VS Clash + Matchup Fanfare
+  // Opening VS Clash + Matchup Fanfare (runs immediately for non-TUTORIAL, or right after Story Theater closes in TUTORIAL)
   useEffect(() => {
     hsAudio.playBgm('mulligan');
+    if (mode === 'TUTORIAL') return;
     hsAudio.playMatchupAnnouncement(matchState.player.heroClass, matchState.opponent.heroClass);
     const t1 = window.setTimeout(() => {
       setVsIntroActive(false);
       hsAudio.playHeroVo(matchState.opponent.heroClass, 'start');
-    }, 2450);
+    }, 2200);
     return () => clearTimeout(t1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleCompletePreBattleStory = useCallback(
+    (selectedEpisode?: number) => {
+      const curP = hsStorage.getProfile();
+      let activeMatch = matchState;
+      if (
+        mode === 'TUTORIAL' &&
+        selectedEpisode &&
+        selectedEpisode !== matchState.journeyMeta?.episode
+      ) {
+        hsStorage.setJourneyProgress(selectedEpisode, curP.journeyReincarnation);
+        activeMatch = buildBattleMatchState(selectedEpisode);
+        setMatchState(activeMatch);
+      }
+      setStoryPhase('CLOSED');
+      setVsIntroActive(true);
+      hsAudio.playMatchupAnnouncement(
+        activeMatch.player.heroClass,
+        activeMatch.opponent.heroClass,
+      );
+      window.setTimeout(() => {
+        setVsIntroActive(false);
+        hsAudio.playHeroVo(activeMatch.opponent.heroClass, 'start');
+      }, 1650);
+    },
+    [mode, matchState, buildBattleMatchState],
+  );
 
   // Clear banner / error messages smoothly
   useEffect(() => {
@@ -251,9 +372,16 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   }, [matchState.errorBanner]);
 
   useEffect(() => {
-    const onResize = () => setIsCompactMobile(window.innerWidth < 640);
+    const onResize = () =>
+      setIsCompactMobile(
+        window.innerWidth < 640 && window.innerHeight >= window.innerWidth,
+      );
     window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
+    };
   }, []);
 
   // Record match outcome & rewards once when GAME_OVER triggers
@@ -262,6 +390,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       recordedResultRef.current = true;
       setSelection(null);
       setZoomState(null);
+      setAiHighlightText(null);
       const didWin = matchState.winner === 'PLAYER';
       if (didWin) {
         hsAudio.playHeroVo(matchState.opponent.heroClass, 'concede');
@@ -271,15 +400,29 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       const summary = hsStorage.recordMatchOutcome(
         matchState.player.heroClass,
         didWin,
-        mode === 'RANKED',
+        mode,
+        matchState.opponent.heroClass,
       );
       setOutcomeSummary(summary);
+      setLiveProfile(hsStorage.getProfile());
     }
-  }, [matchState.phase, matchState.winner, matchState.player.heroClass, matchState.opponent.heroClass, mode]);
+  }, [
+    matchState.phase,
+    matchState.winner,
+    matchState.player.heroClass,
+    matchState.opponent.heroClass,
+    mode,
+  ]);
 
   // 75-second Turn Timer + 15-second Burning Rope Fuse!
   useEffect(() => {
-    if (matchState.phase !== 'PLAYING' || matchState.activeSide !== 'PLAYER') return;
+    if (
+      storyPhase !== 'CLOSED' ||
+      matchState.phase !== 'PLAYING' ||
+      matchState.activeSide !== 'PLAYER'
+    ) {
+      return;
+    }
     const iv = window.setInterval(() => {
       setMatchState((prev) => {
         if (prev.phase !== 'PLAYING' || prev.activeSide !== 'PLAYER') return prev;
@@ -300,18 +443,116 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       });
     }, 1000);
     return () => clearInterval(iv);
-  }, [matchState.phase, matchState.activeSide, matchState.turnNumber]);
+  }, [storyPhase, matchState.phase, matchState.activeSide, matchState.turnNumber]);
 
-  // Step-by-Step AI Turn Execution Loop
+  // ==================== PLAYER AUTO-PLAY ENGINE (카단의 여정 기본 ON, 수동 전환 즉시 해제) ====================
   useEffect(() => {
-    if (matchState.phase !== 'PLAYING' || matchState.activeSide !== 'OPPONENT') {
-      setAiHighlightText(null);
+    if (!autoPlay || storyPhase !== 'CLOSED' || vsIntroActive) return;
+    if (matchState.phase === 'GAME_OVER') return;
+
+    // 1. Auto-Mulligan: swap cards costing >= 4 and start duel!
+    if (matchState.phase === 'MULLIGAN') {
+      const t = window.setTimeout(() => {
+        const replaceUids = matchState.player.hand
+          .filter((hc) => cardDb.mustGetCard(hc.cardId).cost >= 4)
+          .map((hc) => hc.uid);
+        hsAudio.playSfx('box_press', 0.8);
+        hsAudio.playBgm(Math.random() < 0.5 ? 'duel_1' : 'duel_2');
+        const eng = createEngine(matchState);
+        setMatchState(eng.confirmMulligan(replaceUids));
+      }, 750);
+      return () => window.clearTimeout(t);
+    }
+
+    if (matchState.phase !== 'PLAYING' || matchState.activeSide !== 'PLAYER') {
       return;
     }
 
-    const difficulty = mode === 'PRACTICE_NORMAL' || mode === 'TUTORIAL' ? 'NORMAL' : 'EXPERT';
+    // Pause auto-play tick while player is inspecting an enlarged card
+    if (zoomState) return;
+    if (selection) setSelection(null);
+
     const timer = window.setTimeout(() => {
-      const action: AiAction = computeNextAiAction(matchState, difficulty);
+      const sim = createEngine(matchState);
+
+      // Handle Choose-One prompt automatically
+      if (matchState.chooseOnePrompt) {
+        const prompt = matchState.chooseOnePrompt;
+        const opt = prompt.options[0];
+        const targetId = opt.needsTarget ? opt.validTargets[0] : undefined;
+        hsAudio.playSfx('card_place', 0.8);
+        setMatchState(
+          sim.playCardFromHand('PLAYER', prompt.sourceHandUid, {
+            chooseOptionIndex: opt.index,
+            insertIndex: prompt.insertIndex,
+            targetId,
+          }),
+        );
+        return;
+      }
+
+      // Handle Tracking prompt automatically
+      if (matchState.trackingPrompt) {
+        const pickId = matchState.trackingPrompt.cards[0];
+        hsAudio.playSfx('card_place', 0.8);
+        setMatchState(sim.resolveTrackingChoice(pickId));
+        return;
+      }
+
+      const action: AiAction = computeNextAiAction(matchState, 'EXPERT', 'PLAYER');
+      if (action.kind === 'PLAY_CARD') {
+        const def = cardDb.mustGetCard(action.cardId);
+        hsAudio.playSfx('card_place', 0.85);
+        setAiHighlightText(`⚡ 자동 전투: [${def.name}] 사용!`);
+        const next = sim.playCardFromHand('PLAYER', action.handUid, {
+          targetId: action.targetId,
+          insertIndex: action.insertIndex,
+          chooseOptionIndex: action.chooseOptionIndex,
+        });
+        if (next.chooseOnePrompt === null) {
+          if (def.type === 'MINION') hsStorage.recordQuestProgress('MINION', 1);
+          else if (def.type === 'SPELL') hsStorage.recordQuestProgress('SPELL', 1);
+        }
+        setMatchState(next);
+      } else if (action.kind === 'HERO_POWER') {
+        hsAudio.playSfx('hero_power', 0.85);
+        setAiHighlightText(`⚡ 자동 전투: 영웅 능력 [${matchState.player.heroPowerNameKo}]!`);
+        setMatchState(sim.useHeroPower('PLAYER', action.targetId));
+      } else if (action.kind === 'ATTACK') {
+        hsAudio.playSfx('whoosh', 0.75);
+        setMatchState(sim.performAttack('PLAYER', action.attackerId, action.defenderId));
+      } else {
+        hsAudio.playSfx('end_turn', 0.85);
+        setAiHighlightText(null);
+        setMatchState(sim.endTurn());
+      }
+    }, 620);
+
+    return () => window.clearTimeout(timer);
+  }, [autoPlay, storyPhase, vsIntroActive, matchState, selection, zoomState]);
+
+  // Step-by-Step Opponent AI Turn Execution Loop
+  useEffect(() => {
+    if (
+      storyPhase !== 'CLOSED' ||
+      matchState.phase !== 'PLAYING' ||
+      matchState.activeSide !== 'OPPONENT'
+    ) {
+      if (matchState.activeSide !== 'PLAYER') setAiHighlightText(null);
+      return;
+    }
+
+    const journeyHard =
+      mode === 'TUTORIAL' &&
+      ((matchState.journeyMeta?.episode || 1) >= 3 ||
+        (matchState.journeyMeta?.reincarnation || 0) > 0);
+    const difficulty =
+      mode === 'PRACTICE_NORMAL' || (mode === 'TUTORIAL' && !journeyHard)
+        ? 'NORMAL'
+        : 'EXPERT';
+
+    const timer = window.setTimeout(() => {
+      const action: AiAction = computeNextAiAction(matchState, difficulty, 'OPPONENT');
       const sim = createEngine(matchState);
 
       if (action.kind === 'PLAY_CARD') {
@@ -339,15 +580,15 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         setAiHighlightText(null);
         setMatchState(sim.endTurn());
       }
-    }, 760);
+    }, 680);
 
     return () => clearTimeout(timer);
-  }, [matchState, mode]);
+  }, [storyPhase, matchState, mode]);
 
   // Pointer Move & Escape Cancel
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
-      setPointerPos({ x: e.clientX, y: e.clientY });
+      setPointerPos(clientToStagePoint(e.clientX, e.clientY));
       if (friendlyRowRef.current) {
         const children = Array.from(
           friendlyRowRef.current.querySelectorAll('[data-hs-entity]'),
@@ -641,24 +882,26 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       selection.kind === 'ATTACKER';
     if (!needsArrow) return null;
 
-    let sx = window.innerWidth * 0.5;
-    let sy = window.innerHeight * 0.82;
+    const { width: stageW, height: stageH } = getStageSize();
+    let sx = stageW * 0.5;
+    let sy = stageH * 0.82;
     if (selection.kind === 'ATTACKER') {
       const el = document.querySelector(`[data-hs-entity="${selection.attackerId}"]`);
       if (el) {
-        const r = el.getBoundingClientRect();
-        sx = r.left + r.width / 2;
-        sy = r.top + r.height / 2;
+        const c = elementCenterInStage(el);
+        sx = c.x;
+        sy = c.y;
       }
     } else if (selection.kind === 'HERO_POWER') {
-      sx = window.innerWidth * 0.58;
-      sy = window.innerHeight * 0.77;
+      sx = stageW * 0.58;
+      sy = stageH * 0.77;
     } else if (selection.kind === 'HAND_CARD') {
       const el = document.querySelector(`[data-hand-uid="${selection.handUid}"]`);
       if (el) {
         const r = el.getBoundingClientRect();
-        sx = r.left + r.width / 2;
-        sy = r.top + 24;
+        const pt = clientToStagePoint(r.left + r.width / 2, r.top + 24);
+        sx = pt.x;
+        sy = pt.y;
       }
     }
     return { sx, sy, ex: pointerPos.x, ey: pointerPos.y };
@@ -770,16 +1013,18 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             ]
           : [];
 
+      const cardMult = getPlayerCardMult(def.id);
       return (
         <CardZoomModal
           card={def}
           effectiveCost={check.cost}
           spellPowerBonus={playerSpellPower}
           velenMultiplier={playerVelenMult}
+          journeyMultiplier={cardMult}
           playableGlow={
             !canPlayNow ? 'NONE' : check.isComboReady ? 'COMBO' : 'GREEN'
           }
-          subtitleBadge={`내 손패 · 보유 마나 ${matchState.player.mana}/${matchState.player.maxMana}`}
+          subtitleBadge={`내 손패 · 보유 마나 ${matchState.player.mana}/${matchState.player.maxMana}${cardMult > 1 ? ` · 카단의 여정 ×${cardMult}배` : ''}`}
           primaryAction={primaryAction}
           secondaryActions={secondaryActions}
           onCancel={() => setZoomState(null)}
@@ -792,9 +1037,11 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       if (!hc) return null;
       const def = cardDb.mustGetCard(hc.cardId);
       const marked = matchState.mulliganSelectedUids.includes(hc.uid);
+      const cardMult = getPlayerCardMult(def.id);
       return (
         <CardZoomModal
           card={def}
+          journeyMultiplier={cardMult}
           subtitleBadge={
             marked
               ? '시작 손패 교체 · 현재 [교체 예정 ✕]'
@@ -1148,8 +1395,8 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         </div>
       )}
 
-      {/* Right Deck Stacks & 3-State Sculpted End Turn Button (Desktop / Tablet >= sm) */}
-      <aside className="absolute right-2.5 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-center gap-4 sm:flex">
+      {/* Right-Middle Controls: Deck Stacks, Spinning Auto-Play Button & 3-State End Turn Button (Desktop / Tablet >= sm) */}
+      <aside className="absolute right-2.5 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-center gap-3 sm:flex">
         {/* Opponent Remaining Deck Stack */}
         <div
           title={
@@ -1169,6 +1416,50 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             {matchState.opponent.deck.length}
           </span>
         </div>
+
+        {/* Right-Middle Spinning Auto-Play Toggle Button */}
+        <button
+          type="button"
+          data-testid="autoplay-toggle-desktop"
+          onClick={(e) => {
+            e.stopPropagation();
+            hsAudio.playSfx('ui_click', 0.85);
+            setAutoPlay((prev) => !prev);
+          }}
+          className={`group relative flex w-[114px] flex-col items-center justify-center gap-0.5 rounded-2xl border-[2.5px] px-2 py-2 shadow-xl transition hover:scale-105 ${
+            autoPlay
+              ? 'border-emerald-300 bg-gradient-to-b from-emerald-600 via-teal-800 to-emerald-950 text-white shadow-[0_0_22px_rgba(52,211,153,0.85)]'
+              : 'border-[#c8a158]/80 bg-gradient-to-b from-stone-800 to-stone-950 text-amber-200 hover:border-amber-300'
+          }`}
+        >
+          <div className="flex items-center gap-1.5">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              className={`h-4 w-4 shrink-0 ${
+                autoPlay ? 'animate-spin text-yellow-200' : 'text-amber-300'
+              }`}
+            >
+              <path
+                d="M12 2v3m0 14v3M4.93 4.93l2.12 2.12m9.9 9.9 2.12 2.12M2 12h3m14 0h3M4.93 19.07l2.12-2.12m9.9-9.9 2.12-2.12"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+              />
+              <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="2.2" />
+            </svg>
+            <span className="hs-title hs-outline-sm text-[11px] font-extrabold">
+              {autoPlay ? '자동 플레이' : '수동 플레이'}
+            </span>
+          </div>
+          <span
+            className={`text-[9.5px] font-extrabold ${
+              autoPlay ? 'text-emerald-100' : 'text-amber-300/75'
+            }`}
+          >
+            {autoPlay ? '진행 중 · 클릭 시 수동' : '클릭 시 자동 진행'}
+          </span>
+        </button>
 
         {/* 3-State Stone & Brass End Turn Lever */}
         <button
@@ -1260,6 +1551,20 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           </div>
 
           <div className="flex shrink-0 items-center gap-1">
+            {mode === 'TUTORIAL' && matchState.journeyMeta && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  hsAudio.playSfx('open_menu', 0.75);
+                  setStoryPhase('REVIEW');
+                }}
+                className="rounded-xl border border-emerald-300/70 bg-emerald-950/90 px-2 py-1 text-[10px] font-extrabold text-emerald-200 shadow sm:px-2.5 sm:text-xs"
+              >
+                📖 제{matchState.journeyMeta.episode}화 줄거리
+              </button>
+            )}
+
             {/* Mobile Corner Toy Interaction Button (< md) */}
             <button
               type="button"
@@ -1309,10 +1614,25 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* ==================== CENTER ZONE: 7v7 BATTLEFIELD ARENA ==================== */}
       <main className="relative z-20 mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center gap-1 px-1.5 sm:gap-2 sm:px-12">
-        {/* Tutorial Step Coach Banner */}
-        {mode === 'TUTORIAL' && isPlayerTurn && matchState.turnNumber <= 6 && (
-          <div className="mx-auto rounded-2xl border-2 border-emerald-300 bg-emerald-950/90 px-3 py-1 text-center text-[11px] font-extrabold text-emerald-100 shadow-lg sm:px-4 sm:py-1.5 sm:text-xs">
-            💡 카단의 첫걸음: 초록색 테두리 카드를 터치해 확대한 뒤 [카드 사용]을 누르고, 다음 턴 깨어난 동료로 적을 공격하세요!
+        {/* Kadan's Journey Stage Status Strip */}
+        {mode === 'TUTORIAL' && matchState.journeyMeta && (
+          <div className="mx-auto flex flex-wrap items-center justify-center gap-1.5 rounded-2xl border border-emerald-400/55 bg-stone-950/88 px-3 py-1 text-[10.5px] font-extrabold text-emerald-100 shadow-lg sm:px-4 sm:text-xs">
+            <span className="text-yellow-300">
+              {matchState.journeyMeta.reincarnation > 0
+                ? `환생 ${matchState.journeyMeta.reincarnation}회차 · `
+                : ''}
+              제{matchState.journeyMeta.episode}화 「{matchState.journeyMeta.episodeTitle}」
+            </span>
+            <span className="text-stone-500">|</span>
+            <span>적 스탯 ×{matchState.journeyMeta.enemyStatScale}배</span>
+            {journeyDeckStats.boostedCount > 0 && (
+              <>
+                <span className="text-stone-500">|</span>
+                <span className="text-emerald-300">
+                  내 3장+ 배수 강화 {journeyDeckStats.boostedCount}종 (최대 ×{journeyDeckStats.maxMultiplier}배)
+                </span>
+              </>
+            )}
           </div>
         )}
 
@@ -1349,10 +1669,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           )}
         </div>
 
-        {/* Mobile Portrait Center Tactical Divider Bar (< sm: History + Decks + Rope + End Turn!) */}
+        {/* Mobile Portrait Center Tactical Divider Bar (< sm: History + Decks + Spinning Auto-Play + End Turn!) */}
         <div
           onClick={(e) => e.stopPropagation()}
-          className="mx-auto flex w-full items-center justify-between gap-1.5 rounded-2xl border border-[#b8924d]/70 bg-stone-950/88 px-2 py-1 shadow-lg sm:hidden"
+          className="mx-auto flex w-full items-center justify-between gap-1 rounded-2xl border border-[#b8924d]/70 bg-stone-950/88 px-1.5 py-1 shadow-lg sm:hidden"
         >
           <button
             type="button"
@@ -1360,41 +1680,70 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               hsAudio.playSfx('ui_click', 0.75);
               setMobileHistoryOpen(true);
             }}
-            className="hs-brass-btn rounded-xl px-2.5 py-1 text-[10.5px] font-extrabold text-amber-100"
+            className="hs-brass-btn rounded-xl px-2 py-1 text-[10px] font-extrabold text-amber-100"
           >
             기록 ({matchState.history.length})
           </button>
 
-          <div className="flex items-center gap-1.5 text-[10.5px] font-extrabold">
-            <span className="rounded-lg border border-red-400/45 bg-stone-900/95 px-2 py-0.5 text-red-200">
-              상대덱 {matchState.opponent.deck.length}
+          <div className="flex items-center gap-1 text-[10px] font-extrabold">
+            <span className="rounded-lg border border-red-400/45 bg-stone-900/95 px-1.5 py-0.5 text-red-200">
+              적{matchState.opponent.deck.length}
             </span>
-            <span className="rounded-lg border border-sky-400/45 bg-stone-900/95 px-2 py-0.5 text-sky-200">
-              내덱 {matchState.player.deck.length}
+            <span className="rounded-lg border border-sky-400/45 bg-stone-900/95 px-1.5 py-0.5 text-sky-200">
+              덱{matchState.player.deck.length}
             </span>
-            {isPlayerTurn && matchState.turnSecondsLeft <= 15 && (
-              <span className="rounded-lg bg-red-900 px-1.5 py-0.5 text-[10px] text-yellow-200">
-                🔥{matchState.turnSecondsLeft}초
-              </span>
-            )}
           </div>
 
-          <button
-            type="button"
-            disabled={!isPlayerTurn}
-            onClick={() => {
-              if (!isPlayerTurn) return;
-              setSelection(null);
-              hsAudio.playSfx('end_turn');
-              const eng = createEngine(matchState);
-              setMatchState(eng.endTurn());
-            }}
-            className={`relative flex h-[34px] w-[86px] shrink-0 items-center justify-center transition ${
-              !isPlayerTurn ? 'cursor-not-allowed opacity-90' : 'active:scale-95'
-            }`}
-          >
-            <EndTurnLeverPlate isPlayerTurn={isPlayerTurn} noMovesLeft={noMovesLeft} compact />
-          </button>
+          <div className="flex items-center gap-1">
+            {/* Mobile Right-Middle Spinning Auto-Play Button */}
+            <button
+              type="button"
+              data-testid="autoplay-toggle-mobile"
+              onClick={() => {
+                hsAudio.playSfx('ui_click', 0.85);
+                setAutoPlay((prev) => !prev);
+              }}
+              className={`flex h-[34px] items-center gap-1 rounded-xl border px-2 text-[10px] font-extrabold transition ${
+                autoPlay
+                  ? 'border-emerald-300 bg-gradient-to-b from-emerald-600 to-emerald-900 text-white shadow-[0_0_12px_rgba(52,211,153,0.85)]'
+                  : 'border-amber-400/50 bg-stone-900 text-amber-200'
+              }`}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                className={`h-3.5 w-3.5 shrink-0 ${
+                  autoPlay ? 'animate-spin text-yellow-200' : 'text-amber-300'
+                }`}
+              >
+                <path
+                  d="M12 2v3m0 14v3M4.93 4.93l2.12 2.12m9.9 9.9 2.12 2.12M2 12h3m14 0h3M4.93 19.07l2.12-2.12m9.9-9.9 2.12-2.12"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                />
+                <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="2.2" />
+              </svg>
+              <span>{autoPlay ? '자동ON' : '수동'}</span>
+            </button>
+
+            <button
+              type="button"
+              disabled={!isPlayerTurn}
+              onClick={() => {
+                if (!isPlayerTurn) return;
+                setSelection(null);
+                hsAudio.playSfx('end_turn');
+                const eng = createEngine(matchState);
+                setMatchState(eng.endTurn());
+              }}
+              className={`relative flex h-[34px] w-[76px] shrink-0 items-center justify-center transition ${
+                !isPlayerTurn ? 'cursor-not-allowed opacity-90' : 'active:scale-95'
+              }`}
+            >
+              <EndTurnLeverPlate isPlayerTurn={isPlayerTurn} noMovesLeft={noMovesLeft} compact />
+            </button>
+          </div>
         </div>
 
         {/* Friendly Minion Row (Max 7 + Positional Drop Slot Preview!) */}
@@ -1607,6 +1956,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                     effectiveCost={check.cost}
                     spellPowerBonus={playerSpellPower}
                     velenMultiplier={playerVelenMult}
+                    journeyMultiplier={getPlayerCardMult(def.id)}
                     playableGlow={
                       !isPlayerTurn || !check.canPlay
                         ? 'NONE'
@@ -1783,13 +2133,15 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       )}
 
       {/* 2. Mulligan (시작 손패 교체) Overlay — Tap Card to Enlarge & Toggle Replace! */}
-      {!vsIntroActive && matchState.phase === 'MULLIGAN' && (
+      {storyPhase === 'CLOSED' && !vsIntroActive && matchState.phase === 'MULLIGAN' && (
         <div className="absolute inset-0 z-[88] flex flex-col items-center justify-center overflow-y-auto bg-black/82 p-3 text-center backdrop-blur-sm sm:p-4">
           <h2 className="hs-title hs-outline text-xl font-extrabold text-amber-200 sm:text-3xl">
             시작 카드 선택 ({matchState.firstPlayer === 'PLAYER' ? '선공 · 3장' : '후공 · 4장 + 엘윈의 은화'})
           </h2>
           <p className="mt-1 max-w-md text-xs font-bold text-amber-200/90">
-            카드를 터치해 크게 확대하고 하단 버튼으로 교체(✕) 여부를 선택한 뒤 [확인]을 누르세요.
+            {autoPlay
+              ? '⚡ 자동 플레이가 시작 손패를 최적화하여 곧 전투를 개시합니다...'
+              : '카드를 터치해 크게 확대하고 하단 버튼으로 교체(✕) 여부를 선택한 뒤 [확인]을 누르세요.'}
           </p>
 
           <div
@@ -1812,7 +2164,11 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                   }}
                   className="relative cursor-pointer transition hover:scale-105"
                 >
-                  <HearthstoneCard card={def} size={isCompactMobile ? 'XS' : 'MD'} />
+                  <HearthstoneCard
+                    card={def}
+                    journeyMultiplier={getPlayerCardMult(def.id)}
+                    size={isCompactMobile ? 'XS' : 'MD'}
+                  />
                   {marked && (
                     <div className="absolute inset-x-2 inset-y-2.5 z-40 flex flex-col items-center justify-center rounded-2xl border-2 border-red-400/75 bg-red-950/75 backdrop-blur-[1px]">
                       <span className="hs-outline text-4xl font-black text-red-400 sm:text-6xl">✕</span>
@@ -1897,10 +2253,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         </div>
       )}
 
-      {/* 5. Victory / Defeat Heraldry Banner & Ranked Star / Gold Reward Overlay */}
+      {/* 5. Victory / Defeat Heraldry Banner, Itemized Reward Receipt & Journey Upgrade Loop */}
       {matchState.phase === 'GAME_OVER' && (
-        <div className="absolute inset-0 z-[94] flex items-center justify-center bg-black/82 p-4 backdrop-blur-md">
-          <div className="hs-wood-panel relative flex w-full max-w-md flex-col items-center overflow-hidden rounded-3xl p-6 text-center text-amber-100 sm:p-7">
+        <div className="absolute inset-0 z-[94] flex items-center justify-center overflow-y-auto bg-black/84 p-3 backdrop-blur-md sm:p-4">
+          <div className="hs-wood-panel relative flex max-h-[94dvh] w-full max-w-lg flex-col items-center overflow-y-auto rounded-3xl p-5 text-center text-amber-100 sm:p-6">
             {matchState.winner === 'PLAYER' && (
               <div
                 style={{
@@ -1915,63 +2271,264 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             <div className={`relative z-10 ${matchState.winner === 'PLAYER' ? '' : 'grayscale opacity-75'}`}>
               <SnsRankMedallion
                 rank={matchState.winner === 'PLAYER' ? 0 : profile.rank}
-                size={84}
+                size={76}
                 className="drop-shadow-[0_10px_20px_rgba(0,0,0,0.9)]"
               />
             </div>
 
             <h2
-              className={`hs-title hs-outline relative z-10 mt-2 text-3xl font-extrabold sm:text-4xl ${
-                matchState.winner === 'PLAYER' ? 'text-yellow-300' : 'text-slate-300'
+              className={`hs-title hs-outline relative z-10 mt-1.5 text-2xl font-extrabold sm:text-4xl ${
+                matchState.winner === 'PLAYER' ? 'text-yellow-300' : 'text-slate-200'
               }`}
             >
-              {matchState.winner === 'PLAYER' ? '승리!' : '패배'}
+              {matchState.winner === 'PLAYER'
+                ? mode === 'TUTORIAL' && matchState.journeyMeta
+                  ? `제${matchState.journeyMeta.episode}화 돌파 승리!`
+                  : '승리!'
+                : mode === 'TUTORIAL' && matchState.journeyMeta
+                  ? `제${matchState.journeyMeta.episode}화 결투 패배`
+                  : '패배'}
             </h2>
             <p className="relative z-10 mt-1 text-xs font-bold text-amber-200/90">
               {matchState.winner === 'PLAYER'
-                ? `${matchState.opponent.name}을(를) 제압하고 빛나는 눈히어로의 승리를 거두었습니다!`
-                : '아군 영웅이 쓰러졌습니다. 종족 덱을 가다듬고 다시 도전해 보세요!'}
+                ? `${matchState.opponent.name}을(를) 제압하고 확정 보상을 수령했습니다!`
+                : mode === 'TUTORIAL' && matchState.journeyMeta
+                  ? `회차·환생이 높아질수록 적 보스(체력 ${matchState.journeyMeta.enemyHeroHealth} · 스탯 ×${matchState.journeyMeta.enemyStatScale}배)가 강력해집니다!`
+                  : '아군 영웅이 쓰러졌습니다. 덱을 정비하고 다시 도전해 보세요!'}
             </p>
 
+            {/* Itemized Victory / Match Reward Receipt */}
             {outcomeSummary && (
-              <div className="relative z-10 my-4 w-full space-y-2 rounded-2xl border-2 border-[#c8a158]/55 bg-black/45 p-3.5 text-sm sm:my-5 sm:p-4">
-                {outcomeSummary.goldEarned > 0 && (
-                  <div className="flex items-center justify-center gap-1.5 font-extrabold text-yellow-300">
-                    <HsGoldCoinIcon size={20} />
-                    <span>승리 · 의뢰 보상: +{outcomeSummary.goldEarned} 골드 획득!</span>
-                  </div>
-                )}
-                {mode === 'RANKED' && (
-                  <div className="text-xs font-bold text-amber-100">
-                    등급 현황:{' '}
-                    <span className="text-sky-300">
-                      {outcomeSummary.newRank === 0
-                        ? '전설의 눈히어로!'
-                        : `${outcomeSummary.newRank}등급 (${CLASSIC_RANK_NAMES[outcomeSummary.newRank]}) · ★${outcomeSummary.newStars}`}
-                    </span>
-                    {outcomeSummary.streakBonus && (
-                      <span className="ml-1.5 rounded bg-amber-600 px-1.5 py-0.5 text-[10px] text-white">
-                        연승 별 ×2!
+              <div className="relative z-10 my-3.5 w-full space-y-1.5 rounded-2xl border-2 border-[#c8a158]/60 bg-black/50 p-3.5 text-left text-xs sm:p-4">
+                <div className="mb-1 border-b border-amber-500/25 pb-1 text-center font-extrabold text-amber-200">
+                  {outcomeSummary.didWin ? '🏆 확정 승리 보상 지급 명세' : '📋 대결 결과 안내'}
+                </div>
+
+                {outcomeSummary.didWin ? (
+                  <>
+                    <div className="flex items-center justify-between font-bold text-amber-100">
+                      <span>• 기본 승리 골드</span>
+                      <span className="font-extrabold text-yellow-300">
+                        +{outcomeSummary.baseWinGold} 골드
                       </span>
+                    </div>
+
+                    {outcomeSummary.bonusGold > 0 && outcomeSummary.bonusLabel && (
+                      <div className="flex items-center justify-between font-bold text-emerald-200">
+                        <span>• {outcomeSummary.bonusLabel}</span>
+                        <span className="font-extrabold text-emerald-300">
+                          +{outcomeSummary.bonusGold} 골드
+                        </span>
+                      </div>
                     )}
+
+                    {outcomeSummary.questGold > 0 && (
+                      <div className="flex items-center justify-between font-bold text-sky-200">
+                        <span>• 일일 의뢰 달성 보상</span>
+                        <span className="font-extrabold text-sky-300">
+                          +{outcomeSummary.questGold} 골드
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="mt-1 flex items-center justify-between border-t border-amber-500/30 pt-1.5 text-sm font-extrabold">
+                      <span className="text-amber-100">총 획득 골드 (보유 {profile.gold}G)</span>
+                      <span className="flex items-center gap-1 text-yellow-300">
+                        <HsGoldCoinIcon size={18} />
+                        <span>+{outcomeSummary.goldEarned}G</span>
+                      </span>
+                    </div>
+
+                    {outcomeSummary.packsEarned > 0 && (
+                      <div className="mt-1.5 flex items-center justify-between rounded-xl border border-yellow-300/60 bg-amber-950/70 px-3 py-2 font-extrabold text-yellow-200">
+                        <span className="truncate pr-2">
+                          🎁 {outcomeSummary.packReason || '특전 눈히어로 팩 보상'}
+                        </span>
+                        <span className="shrink-0 text-yellow-300">
+                          +{outcomeSummary.packsEarned}팩!
+                        </span>
+                      </div>
+                    )}
+
+                    {outcomeSummary.reincarnatedNow && (
+                      <div className="mt-1.5 rounded-xl border border-purple-300/70 bg-purple-950/80 px-3 py-2 text-center font-extrabold text-purple-200">
+                        ✦ 40화 대단원 완주! [환생 {outcomeSummary.nextReincarnation}회차]가 개방되었습니다!
+                      </div>
+                    )}
+
+                    {(mode === 'RANKED' || mode === 'CASUAL') && (
+                      <div className="mt-1 flex items-center justify-between text-[11px] font-bold text-amber-200/85">
+                        <span>3승 달성 추가 보너스 진행도</span>
+                        <span className="text-yellow-300">{outcomeSummary.threeWinProgress} / 3승</span>
+                      </div>
+                    )}
+
+                    {mode === 'RANKED' && (
+                      <div className="mt-1 flex items-center justify-between text-[11px] font-bold text-sky-200">
+                        <span>현재 눈히어로 등급</span>
+                        <span>
+                          {outcomeSummary.newRank === 0
+                            ? '전설의 눈히어로!'
+                            : `${outcomeSummary.newRank}등급 (${CLASSIC_RANK_NAMES[outcomeSummary.newRank]}) · ★${outcomeSummary.newStars}`}
+                          {outcomeSummary.streakBonus ? ' (연승 ×2!)' : ''}
+                        </span>
+                      </div>
+                    )}
+                  </>
+                ) : mode === 'TUTORIAL' ? (
+                  <div className="space-y-1.5 text-center leading-relaxed text-amber-100">
+                    <div className="font-extrabold text-emerald-300">
+                      ⚡ 『카단의 여정』 돌파 비결: 동일 카드 3장 = 능력치 3배!
+                    </div>
+                    <p className="text-[11.5px] font-semibold text-amber-100/90">
+                      보급소에서 골드(100G) 또는 결제로 <b className="text-yellow-300">눈히어로 팩을 구매·개봉</b>하여 동일 하수인·무기 카드를{' '}
+                      <b className="text-emerald-300">3장 이상 모으면 공격력·생명력이 3배(N장=N배)</b>로 강화되어 다음 도전을 압도할 수 있습니다!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-center text-[11.5px] font-semibold text-amber-200/85">
+                    승리 시 확정 골드와 일일 의뢰 보상이 지급됩니다. 덱 구성을 점검하고 다시 도전해 보세요!
                   </div>
                 )}
               </div>
             )}
 
-            <button
-              type="button"
-              onClick={() => {
-                hsAudio.playSfx('menu_select');
-                hsAudio.playBgm('tavern_hub');
-                onExitBattle();
-              }}
-              className="hs-arcane-btn hs-title hs-outline-sm relative z-10 w-full rounded-2xl py-3 text-lg font-extrabold text-white"
-            >
-              엘윈마을로 돌아가기
-            </button>
+            {/* Action Buttons: Journey Progression / Upgrade Loop vs Standard Return */}
+            {mode === 'TUTORIAL' ? (
+              matchState.winner === 'PLAYER' ? (
+                <div className="relative z-10 flex w-full flex-col gap-2">
+                  {onStartJourneyEpisode && outcomeSummary?.nextEpisode && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        hsAudio.playSfx('box_press');
+                        onStartJourneyEpisode(outcomeSummary.nextEpisode!);
+                      }}
+                      className="hs-arcane-btn hs-title hs-outline-sm w-full rounded-2xl py-3 text-base font-extrabold text-white sm:text-lg"
+                    >
+                      ⚔ 다음 여정 진행 (
+                      {outcomeSummary.nextReincarnation && outcomeSummary.nextReincarnation > 0
+                        ? `환생 ${outcomeSummary.nextReincarnation} · `
+                        : ''}
+                      제{outcomeSummary.nextEpisode}화) ▶
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      hsAudio.playSfx('menu_select');
+                      hsAudio.playBgm('tavern_hub');
+                      onExitBattle();
+                    }}
+                    className="hs-brass-btn w-full rounded-xl py-2.5 text-xs font-extrabold text-amber-100 sm:text-sm"
+                  >
+                    엘윈마을 로비로 돌아가기
+                  </button>
+                </div>
+              ) : (
+                <div className="relative z-10 flex w-full flex-col gap-2">
+                  {profile.packs > 0 && onGoOpenPacksFromBattle && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        hsAudio.playSfx('pack_open', 0.8);
+                        onGoOpenPacksFromBattle();
+                      }}
+                      className="hs-arcane-btn flex min-h-[46px] w-full items-center justify-center gap-2 rounded-2xl py-2.5 text-sm font-extrabold text-white"
+                    >
+                      <div className="h-6 w-4 shrink-0">
+                        <SnsBoosterPackArt />
+                      </div>
+                      <span>보유 눈히어로 팩 개봉하여 덱 강화 ({profile.packs}팩 보유) →</span>
+                    </button>
+                  )}
+
+                  {onOpenShopFromBattle && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        hsAudio.playSfx('ui_click');
+                        onOpenShopFromBattle();
+                      }}
+                      className="hs-brass-btn flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl border-yellow-300/80 py-2 text-xs font-extrabold text-yellow-200 sm:text-sm"
+                    >
+                      <HsGoldCoinIcon size={16} />
+                      <span>눈히어로 보급소에서 카드팩 구매 (골드 {profile.gold}G / $1·$4)</span>
+                    </button>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-2">
+                    {onGoCollectionFromBattle && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          hsAudio.playSfx('ui_click');
+                          onGoCollectionFromBattle();
+                        }}
+                        className="hs-brass-btn min-h-[42px] rounded-xl py-2 text-xs font-extrabold text-sky-200"
+                      >
+                        내 카드첩 · 3배 확인
+                      </button>
+                    )}
+                    {onStartJourneyEpisode && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          hsAudio.playSfx('box_press');
+                          onStartJourneyEpisode(matchState.journeyMeta?.episode || profile.journeyEpisode);
+                        }}
+                        className="hs-brass-btn min-h-[42px] rounded-xl border-emerald-300/70 py-2 text-xs font-extrabold text-emerald-200"
+                      >
+                        제{matchState.journeyMeta?.episode || profile.journeyEpisode}화 다시 도전
+                      </button>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      hsAudio.playSfx('menu_select');
+                      hsAudio.playBgm('tavern_hub');
+                      onExitBattle();
+                    }}
+                    className="mt-0.5 text-xs font-bold text-amber-200/75 underline hover:text-white"
+                  >
+                    엘윈마을 로비로 돌아가기
+                  </button>
+                </div>
+              )
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  hsAudio.playSfx('menu_select');
+                  hsAudio.playBgm('tavern_hub');
+                  onExitBattle();
+                }}
+                className="hs-arcane-btn hs-title hs-outline-sm relative z-10 w-full rounded-2xl py-3 text-lg font-extrabold text-white"
+              >
+                엘윈마을로 돌아가기
+              </button>
+            )}
           </div>
         </div>
+      )}
+
+      {/* Episode Novel Storyboard Theater (Pre-Battle & Mid-Battle Review in 카단의 여정) */}
+      {mode === 'TUTORIAL' && storyPhase !== 'CLOSED' && matchState.journeyMeta && (
+        <KadanJourneyStoryModal
+          episode={matchState.journeyMeta.episode}
+          reincarnation={matchState.journeyMeta.reincarnation}
+          maxClearedEpisode={
+            matchState.journeyMeta.reincarnation > 0 ? 40 : profile.journeyMaxStageCleared
+          }
+          playerBoostedCount={journeyDeckStats.boostedCount}
+          playerMaxMultiplier={journeyDeckStats.maxMultiplier}
+          autoPlayEnabled={autoPlay}
+          isMidBattleReview={storyPhase === 'REVIEW'}
+          onStartBattle={handleCompletePreBattleStory}
+          onCloseReview={() => setStoryPhase('CLOSED')}
+        />
       )}
 
       {/* Universal Enlarged Card Inspection & Bottom Action Modal */}

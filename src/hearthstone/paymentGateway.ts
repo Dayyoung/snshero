@@ -2,15 +2,15 @@
  * src/hearthstone/paymentGateway.ts
  *
  * Official Real-Payment Gateway Integration for /game.html (눈히어로 보급소).
- * Mirrors http://localhost:3000/#shop (ShopSection.tsx & paymentService.ts) 100%:
  * - 눈히어로 카드 1팩: $1.00 USD (1,500 KRW)
  * - 눈히어로 카드 5팩 묶음: $4.00 USD (5,600 KRW, 20% SAVE)
  * - 광고 영구 제거 패키지: $2.99 USD (4,000 KRW)
  *
- * Payment Methods:
- * - PayPal Express Checkout (USD)
- * - PayApp Lite: 신용/체크카드, 카카오페이, 네이버페이, Apple Pay
- * - Web3 Crypto Checkout: USDT, BTC, ETH, SOL, USDC, TRX, DOGE, XRP (QR + Address Copy)
+ * Popup Checkout Architecture:
+ * - Main /game.html screen NEVER navigates away during payment.
+ * - External PG (PayPal / PayApp) runs inside a dedicated popup window (`window.open`)
+ *   and upon return (`?payapp_success=...`), credits packs to localStorage, notifies
+ *   `window.opener` via `postMessage` + storage event, and closes the popup automatically.
  */
 
 import {
@@ -24,6 +24,13 @@ import { hsStorage } from './storage';
 
 export { CRYPTO_COINS_CATALOG, CRYPTO_QUICK_CHIPS, resolveCryptoDepositDetails };
 export type { CryptoCoinOption, CryptoDepositDetails };
+
+export type CheckoutPopupMethod =
+  | 'paypal'
+  | 'card'
+  | 'kakaopay'
+  | 'naverpay'
+  | 'applepay';
 
 export interface GameShopPackage {
   id: 'pack_1' | 'pack_5' | 'ad_removal';
@@ -41,8 +48,9 @@ export interface GameShopPackage {
 export interface CheckoutCountryOption {
   code: string;
   name: string;
+  subLabel: string;
   flag: string;
-  currency: string;
+  currency: 'KRW' | 'USD';
 }
 
 export const GAME_SHOP_PACKAGES: GameShopPackage[] = [
@@ -50,7 +58,7 @@ export const GAME_SHOP_PACKAGES: GameShopPackage[] = [
     id: 'pack_1',
     returnParam: 'hs_pack_1',
     name: '눈히어로 카드 1팩',
-    badge: 'STANDARD',
+    badge: '1팩 기본',
     packs: 1,
     priceUsd: 1.0,
     priceKrw: 1500,
@@ -62,13 +70,13 @@ export const GAME_SHOP_PACKAGES: GameShopPackage[] = [
     id: 'pack_5',
     returnParam: 'hs_pack_5',
     name: '눈히어로 카드 5팩 묶음',
-    badge: '20% SAVE · BEST',
+    badge: '20% 할인 · 인기',
     packs: 5,
     priceUsd: 4.0,
     priceKrw: 5600,
     description:
-      '단품 대비 20% 할인된 가격으로 눈히어로 카드 5팩(총 25장)을 일괄 수령합니다.',
-    shortSpec: '총 25장(5팩) 소환 · 각 팩 희귀 이상 1장 확정',
+      '단품 대비 20% 할인된 가격으로 눈히어로 카드 5팩(총 25장)을 수령해 3장=3배 여정 강화를 빠르게 달성합니다.',
+    shortSpec: '총 25장(5팩) 소환 · 20% 할인 특가',
   },
   {
     id: 'ad_removal',
@@ -86,19 +94,54 @@ export const GAME_SHOP_PACKAGES: GameShopPackage[] = [
 ];
 
 export const CHECKOUT_COUNTRIES: CheckoutCountryOption[] = [
-  { code: 'ko', name: '대한민국 (KRW)', flag: '🇰🇷', currency: 'KRW' },
-  { code: 'en', name: 'United States (USD)', flag: '🇺🇸', currency: 'USD' },
-  { code: 'ja', name: '日本 (JPY)', flag: '🇯🇵', currency: 'USD' },
-  { code: 'zh', name: '中国 (CNY)', flag: '🇨🇳', currency: 'USD' },
-  { code: 'gb', name: 'United Kingdom (GBP)', flag: '🇬🇧', currency: 'USD' },
-  { code: 'eu', name: 'Europe (EUR)', flag: '🇪🇺', currency: 'USD' },
+  {
+    code: 'ko',
+    name: '대한민국 (South Korea)',
+    subLabel: '원화(KRW) · 국내 카드 / 카카오페이 / 네이버페이 / PayPal',
+    flag: '🇰🇷',
+    currency: 'KRW',
+  },
+  {
+    code: 'en',
+    name: '미국 · 북미 (United States)',
+    subLabel: '달러(USD) · PayPal / 해외 신용카드 / Apple Pay / 암호화폐',
+    flag: '🇺🇸',
+    currency: 'USD',
+  },
+  {
+    code: 'ja',
+    name: '일본 (Japan)',
+    subLabel: '글로벌 USD 결제 · PayPal / 해외 카드 / 암호화폐',
+    flag: '🇯🇵',
+    currency: 'USD',
+  },
+  {
+    code: 'eu',
+    name: '유럽 · 영국 (Europe / UK)',
+    subLabel: '글로벌 USD 결제 · PayPal / 해외 카드 / 암호화폐',
+    flag: '🇪🇺',
+    currency: 'USD',
+  },
+  {
+    code: 'global',
+    name: '기타 국가 (Global International)',
+    subLabel: '글로벌 USD 결제 · PayPal / 해외 카드 / 암호화폐',
+    flag: '🌏',
+    currency: 'USD',
+  },
 ];
+
+export const POPUP_PAYMENT_EVENT_KEY = 'hero_hs_last_popup_payment';
 
 const PAYAPP_SCRIPT_ID = 'payapp-lite-script';
 const PAYAPP_SCRIPT_URL = 'https://lite.payapp.kr/public/api/v2/payapp-lite.js';
 const PAYAPP_USERID = 'dryudryu';
 const PAYAPP_SHOPNAME = 'Applet Store';
 const PAYPAL_BUSINESS = 'dryudryu@gmail.com';
+
+export function getShopPackageById(id: string | null): GameShopPackage {
+  return GAME_SHOP_PACKAGES.find((p) => p.id === id) || GAME_SHOP_PACKAGES[0];
+}
 
 export function loadPayAppSdk(): Promise<boolean> {
   if (typeof window === 'undefined') return Promise.resolve(false);
@@ -126,26 +169,82 @@ export function loadPayAppSdk(): Promise<boolean> {
   });
 }
 
-function buildReturnUrl(returnParam: string): string {
+function buildReturnUrl(returnParam: string, fromPopup = false): string {
   const url = new URL(window.location.origin + window.location.pathname);
   url.searchParams.set('payapp_success', returnParam);
+  if (fromPopup) {
+    url.searchParams.set('from_popup', '1');
+  }
   return url.toString();
 }
 
-export function launchPayPalCheckout(pkg: GameShopPackage): void {
-  if (typeof window === 'undefined') return;
-  const returnUrl = encodeURIComponent(buildReturnUrl(pkg.returnParam));
-  const paypalUrl =
+export function buildPayPalCheckoutUrl(pkg: GameShopPackage, fromPopup = true): string {
+  const returnUrl = encodeURIComponent(buildReturnUrl(pkg.returnParam, fromPopup));
+  return (
     `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick` +
     `&business=${encodeURIComponent(PAYPAL_BUSINESS)}` +
     `&item_name=${encodeURIComponent(pkg.name)}` +
     `&amount=${pkg.priceUsd.toFixed(2)}` +
     `&currency_code=USD` +
-    `&return=${returnUrl}`;
-  window.location.href = paypalUrl;
+    `&return=${returnUrl}`
+  );
 }
 
-export async function launchPayAppCheckout(
+/**
+ * Opens a dedicated popup window so the main `/game.html` screen NEVER navigates away!
+ */
+export function openGameCheckoutPopup(
+  pkg: GameShopPackage,
+  method: CheckoutPopupMethod,
+): Window | null {
+  if (typeof window === 'undefined') return null;
+
+  const w = 540;
+  const h = 740;
+  const left = Math.max(0, Math.round(window.screenX + (window.outerWidth - w) / 2));
+  const top = Math.max(0, Math.round(window.screenY + (window.outerHeight - h) / 2));
+  const features = `width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=yes,status=no,resizable=yes,scrollbars=yes`;
+
+  if (method === 'paypal') {
+    const paypalUrl = buildPayPalCheckoutUrl(pkg, true);
+    return window.open(paypalUrl, 'snshero_checkout_popup', features);
+  }
+
+  const bridgeUrl = new URL(window.location.origin + window.location.pathname);
+  bridgeUrl.searchParams.set('pay_popup_bridge', '1');
+  bridgeUrl.searchParams.set('pkg', pkg.id);
+  bridgeUrl.searchParams.set('method', method);
+  return window.open(bridgeUrl.toString(), 'snshero_checkout_popup', features);
+}
+
+export function getPaymentPopupBridgeParams(): {
+  isBridge: boolean;
+  pkg: GameShopPackage;
+  method: CheckoutPopupMethod;
+} {
+  if (typeof window === 'undefined') {
+    return { isBridge: false, pkg: GAME_SHOP_PACKAGES[0], method: 'card' };
+  }
+  const sp = new URLSearchParams(window.location.search);
+  const isBridge = sp.get('pay_popup_bridge') === '1';
+  const pkg = getShopPackageById(sp.get('pkg'));
+  const rawMethod = sp.get('method') as CheckoutPopupMethod | null;
+  const validMethods: CheckoutPopupMethod[] = [
+    'paypal',
+    'card',
+    'kakaopay',
+    'naverpay',
+    'applepay',
+  ];
+  const method: CheckoutPopupMethod =
+    rawMethod && validMethods.includes(rawMethod) ? rawMethod : 'card';
+  return { isBridge, pkg, method };
+}
+
+/**
+ * Called ONLY inside the popup window (`?pay_popup_bridge=1`) to invoke PayApp or PayPal.
+ */
+export async function launchPayAppCheckoutInCurrentWindow(
   pkg: GameShopPackage,
   method: 'card' | 'kakaopay' | 'naverpay' | 'applepay',
 ): Promise<boolean> {
@@ -160,11 +259,10 @@ export async function launchPayAppCheckout(
   };
 
   if (!win.PayApp) {
-    alert('결제 모듈(PayApp)을 불러오지 못했습니다. 네트워크 연결을 확인해 주세요.');
     return false;
   }
 
-  const returnUrl = buildReturnUrl(pkg.returnParam);
+  const returnUrl = buildReturnUrl(pkg.returnParam, true);
 
   try {
     win.PayApp.setDefault('userid', PAYAPP_USERID);
@@ -181,14 +279,14 @@ export async function launchPayAppCheckout(
     win.PayApp.setParam('returnurl', returnUrl);
     win.PayApp.payrequest();
     return true;
-  } catch (err) {
-    alert('결제창 호출 중 오류가 발생했습니다: ' + String(err));
+  } catch {
     return false;
   }
 }
 
 export interface GamePaymentReturnResult {
   handled: boolean;
+  closedPopup?: boolean;
   packsGranted?: number;
   isAdRemoval?: boolean;
   label?: string;
@@ -240,12 +338,42 @@ export function checkAndProcessGamePaymentReturn(): GamePaymentReturnResult {
     try {
       const cleanUrl = new URL(window.location.href);
       cleanUrl.searchParams.delete('payapp_success');
+      cleanUrl.searchParams.delete('from_popup');
       if (cleanUrl.hash.includes('payapp_success=')) {
         cleanUrl.hash = cleanUrl.hash.split('?')[0];
       }
       window.history.replaceState({}, '', cleanUrl.toString());
     } catch {
       // ignore URL cleanup error
+    }
+
+    // If this return happened inside the payment popup window, notify main opener & close popup!
+    const hasOpener = Boolean(window.opener && !window.opener.closed);
+    if (hasOpener) {
+      try {
+        localStorage.setItem(
+          POPUP_PAYMENT_EVENT_KEY,
+          JSON.stringify({ ...result, ts: Date.now() }),
+        );
+      } catch {
+        // ignore storage error
+      }
+      try {
+        window.opener.postMessage(
+          { type: 'SNSHERO_GAME_PAYMENT_COMPLETE', result },
+          window.location.origin,
+        );
+      } catch {
+        // ignore postMessage error
+      }
+      result.closedPopup = true;
+      window.setTimeout(() => {
+        try {
+          window.close();
+        } catch {
+          // ignore
+        }
+      }, 300);
     }
   }
 

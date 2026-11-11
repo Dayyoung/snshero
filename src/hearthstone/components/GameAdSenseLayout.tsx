@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   initAdSenseContainmentObserver,
   isAdRemoved,
@@ -12,12 +12,79 @@ export interface GameAdSenseLayoutProps {
   children: React.ReactNode;
 }
 
+interface StageMetrics {
+  stageW: number;
+  stageH: number;
+  scale: number;
+  letterboxed: boolean;
+}
+
 /**
- * Responsive Google AdSense Layout Shell for /game.html
- * Matches Google AdSense Policy while blending seamlessly with the Elwin Village Dark-Gold Fantasy Theme:
+ * Computes uniform stage dimensions & scale so 100% of every game screen fits inside a single
+ * viewport without clipping — especially in Mobile Landscape (e.g. 844×390, 667×375, 932×430)
+ * or compact laptop screens, adding clean dark-gold letterbox/pillarbox bars when needed.
+ */
+function computeStageMetrics(availW: number, availH: number): StageMetrics {
+  const w = Math.max(240, availW);
+  const h = Math.max(200, availH);
+  const isLandscape = w > h;
+
+  if (isLandscape) {
+    const MIN_STAGE_W = 1220;
+    const MAX_STAGE_W = 1520;
+    const MIN_STAGE_H = 840;
+    const MAX_STAGE_H = 1060;
+
+    const rawScale = Math.min(1, w / MIN_STAGE_W, h / MIN_STAGE_H);
+    if (rawScale >= 0.999) {
+      return { stageW: w, stageH: h, scale: 1, letterboxed: false };
+    }
+
+    const stageW = Math.min(
+      MAX_STAGE_W,
+      Math.max(MIN_STAGE_W, Math.round(w / rawScale)),
+    );
+    const stageH = Math.min(
+      MAX_STAGE_H,
+      Math.max(MIN_STAGE_H, Math.round(h / rawScale)),
+    );
+    const fitScale = Math.min(1, w / stageW, h / stageH);
+    const usedW = stageW * fitScale;
+    const usedH = stageH * fitScale;
+    const letterboxed = Math.abs(w - usedW) > 6 || Math.abs(h - usedH) > 6;
+
+    return {
+      stageW,
+      stageH,
+      scale: fitScale,
+      letterboxed,
+    };
+  }
+
+  // Portrait mode: native responsive layout down to 360×660; uniform scale only if ultra-short
+  const MIN_PORTRAIT_W = 360;
+  const MIN_PORTRAIT_H = 660;
+  const rawScale = Math.min(1, w / MIN_PORTRAIT_W, h / MIN_PORTRAIT_H);
+  if (rawScale >= 0.999) {
+    return { stageW: w, stageH: h, scale: 1, letterboxed: false };
+  }
+
+  const stageW = Math.max(MIN_PORTRAIT_W, Math.round(w / rawScale));
+  const stageH = Math.max(MIN_PORTRAIT_H, Math.round(h / rawScale));
+  const fitScale = Math.min(1, w / stageW, h / stageH);
+  return {
+    stageW,
+    stageH,
+    scale: fitScale,
+    letterboxed: Math.abs(w - stageW * fitScale) > 6 || Math.abs(h - stageH * fitScale) > 6,
+  };
+}
+
+/**
+ * Responsive Google AdSense + Uniform Stage Fit/Letterbox Shell for /game.html
  * - PC Wide Landscape (>=1280x650, W > H): Left & Right 160x600 Skyscraper Gutters
  * - Tablet & Smartphone (<1280px or Portrait): Slim 320x50 Top Ribbon Banner (52px)
- * - Automatically suppressed when VIP Ad Removal (`hero_ad_removed === 'true'`) is active
+ * - Mobile Landscape & Compact Screens: Uniform Stage Scaling + Ornate Dark-Gold Letterbox
  */
 export const GameAdSenseLayout: React.FC<GameAdSenseLayoutProps> = ({
   screenKey,
@@ -28,6 +95,23 @@ export const GameAdSenseLayout: React.FC<GameAdSenseLayoutProps> = ({
   const leftGutterRef = useRef<HTMLElement | null>(null);
   const rightGutterRef = useRef<HTMLElement | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const viewportRef = useRef<HTMLElement | null>(null);
+
+  const [stageMetrics, setStageMetrics] = useState<StageMetrics>(() => {
+    if (typeof window === 'undefined') {
+      return { stageW: 1280, stageH: 840, scale: 1, letterboxed: false };
+    }
+    return computeStageMetrics(window.innerWidth, window.innerHeight);
+  });
+
+  const measureViewport = useCallback(() => {
+    const vp = viewportRef.current;
+    if (!vp) return;
+    const rect = vp.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0) {
+      setStageMetrics(computeStageMetrics(rect.width, rect.height));
+    }
+  }, []);
 
   useEffect(() => {
     if (mobileTopRef.current && !mobileTopRef.current.style.display) {
@@ -43,19 +127,36 @@ export const GameAdSenseLayout: React.FC<GameAdSenseLayoutProps> = ({
     initAdSenseContainmentObserver();
     syncAdSenseRatioLayout('game');
     pushAdSenseTags('game');
+    measureViewport();
 
     const handleAdRemovalChange = () => {
       setVipAdRemoved(isAdRemoved());
       syncAdSenseRatioLayout('game');
+      window.requestAnimationFrame(measureViewport);
     };
 
+    const handleResize = () => {
+      measureViewport();
+    };
+
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && viewportRef.current) {
+      ro = new ResizeObserver(() => measureViewport());
+      ro.observe(viewportRef.current);
+    }
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
     window.addEventListener('storage', handleAdRemovalChange);
     window.addEventListener('snshero_ad_removed_updated', handleAdRemovalChange);
     return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
       window.removeEventListener('storage', handleAdRemovalChange);
       window.removeEventListener('snshero_ad_removed_updated', handleAdRemovalChange);
     };
-  }, []);
+  }, [measureViewport]);
 
   useEffect(() => {
     if (rootRef.current) {
@@ -63,12 +164,16 @@ export const GameAdSenseLayout: React.FC<GameAdSenseLayoutProps> = ({
     }
     syncAdSenseRatioLayout('game');
     pushAdSenseTags('game');
-  }, [screenKey, vipAdRemoved]);
+    window.requestAnimationFrame(measureViewport);
+  }, [screenKey, vipAdRemoved, measureViewport]);
+
+  const frameW = Math.floor(stageMetrics.stageW * stageMetrics.scale);
+  const frameH = Math.floor(stageMetrics.stageH * stageMetrics.scale);
 
   return (
     <div
       ref={rootRef}
-      className="flex h-[100dvh] w-full flex-col overflow-hidden bg-[#090604] text-[#f8ebd2]"
+      className="flex h-[100dvh] w-full flex-col overflow-hidden bg-[#070402] text-[#f8ebd2]"
     >
       {/* Tablet & Smartphone Top Ribbon Banner (320x50 inside 52px safe bar) */}
       {!vipAdRemoved && (
@@ -88,7 +193,7 @@ export const GameAdSenseLayout: React.FC<GameAdSenseLayoutProps> = ({
         </div>
       )}
 
-      {/* Central Row: PC Left Gutter + Game Viewport + PC Right Gutter */}
+      {/* Central Row: PC Left Gutter + Scaled/Letterboxed Game Viewport + PC Right Gutter */}
       <div className="relative flex min-h-0 w-full flex-1 flex-row justify-center overflow-hidden">
         {!vipAdRemoved && (
           <aside
@@ -109,9 +214,38 @@ export const GameAdSenseLayout: React.FC<GameAdSenseLayoutProps> = ({
 
         <main
           id="hs-game-viewport"
-          className="relative h-full min-h-0 min-w-0 flex-1 overflow-hidden bg-[#090604]"
+          ref={viewportRef}
+          style={{
+            background:
+              'radial-gradient(ellipse at 50% 50%, #160d07 0%, #090503 65%, #040201 100%)',
+          }}
+          className="relative flex h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden"
         >
-          {children}
+          <div
+            id="hs-stage-frame"
+            style={{ width: frameW, height: frameH }}
+            className={`relative shrink-0 overflow-hidden bg-[#090604] ${
+              stageMetrics.letterboxed
+                ? 'border-x border-[#c8a158]/35 shadow-[0_0_50px_rgba(0,0,0,0.95)]'
+                : ''
+            }`}
+          >
+            <div
+              id="hs-stage-canvas"
+              style={{
+                width: stageMetrics.stageW,
+                height: stageMetrics.stageH,
+                transform:
+                  stageMetrics.scale < 0.999
+                    ? `scale(${stageMetrics.scale})`
+                    : 'translateZ(0)',
+                transformOrigin: 'top left',
+              }}
+              className="relative overflow-hidden"
+            >
+              {children}
+            </div>
+          </div>
         </main>
 
         {!vipAdRemoved && (

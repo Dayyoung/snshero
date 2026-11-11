@@ -18,7 +18,11 @@ import {
 } from '../components/CardVisual';
 import { CardZoomAction, CardZoomModal } from '../components/CardZoomModal';
 import { SNS_LOCATIONS } from '../components/SnsHeroArtKit';
-import { hsStorage } from '../storage';
+import {
+  MassDisenchantPreview,
+  getJourneyCardMultiplier,
+  hsStorage,
+} from '../storage';
 import {
   CLASSIC_HEROES,
   CardClass,
@@ -49,7 +53,8 @@ const RARITY_FILTER_OPTIONS: { id: 'ALL' | CardRarity; label: string; dotColor: 
 export const CollectionScreen: React.FC<{
   onBack: () => void;
   onProfileChanged: () => void;
-}> = ({ onBack, onProfileChanged }) => {
+  onReturnToJourney?: () => void;
+}> = ({ onBack, onProfileChanged, onReturnToJourney }) => {
   const [collection, setCollection] = useState(() => hsStorage.getCollection());
   const [decks, setDecks] = useState<CustomDeck[]>(() => hsStorage.getDecks());
   const [profile, setProfile] = useState(() => hsStorage.getProfile());
@@ -64,18 +69,26 @@ export const CollectionScreen: React.FC<{
   const [editingDeckId, setEditingDeckId] = useState<string | null>(null);
   const [mobilePanel, setMobilePanel] = useState<'TOME' | 'DECKS'>('TOME');
   const [isCompactMobile, setIsCompactMobile] = useState(
-    () => typeof window !== 'undefined' && window.innerWidth < 640,
+    () =>
+      typeof window !== 'undefined' &&
+      window.innerWidth < 640 &&
+      window.innerHeight >= window.innerWidth,
   );
   const [creatingClassPicker, setCreatingClassPicker] = useState(false);
   const [importModalOpen, setImportModalOpen] = useState(false);
   const [importCodeText, setImportCodeText] = useState('');
   const [hoveredTileCard, setHoveredTileCard] = useState<ClassicCardDef | null>(null);
   const [inspectCard, setInspectCard] = useState<ClassicCardDef | null>(null);
+  const [disenchantModalPreview, setDisenchantModalPreview] =
+    useState<MassDisenchantPreview | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     hsAudio.playBgm('collection');
-    const onResize = () => setIsCompactMobile(window.innerWidth < 640);
+    const onResize = () =>
+      setIsCompactMobile(
+        window.innerWidth < 640 && window.innerHeight >= window.innerWidth,
+      );
     const onStateChanged = () => {
       setCollection(hsStorage.getCollection());
       setDecks(hsStorage.getDecks());
@@ -372,6 +385,19 @@ export const CollectionScreen: React.FC<{
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          {onReturnToJourney && (
+            <button
+              type="button"
+              onClick={() => {
+                hsAudio.playSfx('box_press');
+                onReturnToJourney();
+              }}
+              className="hs-arcane-btn min-h-[36px] rounded-xl px-2.5 py-1 text-[11px] font-extrabold text-white sm:px-3.5 sm:py-1.5 sm:text-xs"
+            >
+              ⚔ 카단의 여정 출진
+            </button>
+          )}
+
           <div className="flex items-center gap-1 rounded-xl border border-sky-400/50 bg-slate-950/85 px-2.5 py-1 text-[11px] font-extrabold text-sky-200 shadow-inner sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">
             <HsArcaneDustVialIcon size={16} />
             <span className="hidden sm:inline">영웅 가루</span>
@@ -381,16 +407,8 @@ export const CollectionScreen: React.FC<{
           <button
             type="button"
             onClick={() => {
-              const res = hsStorage.massDisenchantExtras();
-              if (res.count > 0) {
-                hsAudio.playSfx('purchase');
-                syncAll();
-                showNotice(
-                  `여분 카드 ${res.count}장을 분해하여 +${res.dustGained} 영웅 가루를 획득했습니다!`,
-                );
-              } else {
-                showNotice('분해할 여분(3장 이상 중복) 카드가 없습니다.');
-              }
+              hsAudio.playSfx('open_menu', 0.8);
+              setDisenchantModalPreview(hsStorage.previewMassDisenchant());
             }}
             className="hs-brass-btn min-h-[36px] rounded-xl px-2.5 py-1 text-[11px] font-extrabold text-sky-200 sm:px-3 sm:py-1.5 sm:text-xs"
           >
@@ -533,6 +551,7 @@ export const CollectionScreen: React.FC<{
             <div className="grid min-h-0 flex-1 grid-cols-2 place-items-center gap-x-1.5 gap-y-1 overflow-y-auto px-7 py-0.5 sm:grid-cols-4 sm:gap-x-2 sm:gap-y-1.5">
               {pageCards.map((card) => {
                 const owned = collection[card.id] || 0;
+                const journeyMult = getJourneyCardMultiplier(card, owned);
                 const inDeck = editingDeck
                   ? editingDeck.cards.filter((cid) => cid === card.id).length
                   : 0;
@@ -552,6 +571,7 @@ export const CollectionScreen: React.FC<{
                     >
                       <HearthstoneCard
                         card={card}
+                        journeyMultiplier={journeyMult}
                         size={isCompactMobile ? 'XS' : 'SM'}
                         enableTilt
                         onClick={() => {
@@ -567,8 +587,8 @@ export const CollectionScreen: React.FC<{
                       )}
                     </div>
 
-                    {/* Clean Parchment Ownership Ribbon */}
-                    <div className="-mt-1 flex items-center gap-1">
+                    {/* Clean Parchment Ownership Ribbon + Journey Multiplier Pill */}
+                    <div className="-mt-1 flex flex-wrap items-center justify-center gap-1">
                       <span
                         className={`rounded-md border px-1.5 py-0.5 text-[9.5px] font-extrabold shadow-sm sm:px-2 sm:text-[10px] ${
                           owned > 0
@@ -578,6 +598,11 @@ export const CollectionScreen: React.FC<{
                       >
                         {owned > 0 ? `보유 ×${owned}` : '미보유'}
                       </span>
+                      {journeyMult > 1 && (
+                        <span className="rounded-md border border-emerald-300 bg-emerald-800 px-1.5 py-0.5 text-[9px] font-extrabold text-emerald-100 shadow-sm sm:text-[9.5px]">
+                          여정 ×{journeyMult}배
+                        </span>
+                      )}
                       <button
                         type="button"
                         onClick={() => {
@@ -1173,14 +1198,17 @@ export const CollectionScreen: React.FC<{
             }
           }
 
+          const inspectJourneyMult = getJourneyCardMultiplier(inspectCard, owned);
+
           return (
             <CardZoomModal
               card={inspectCard}
               rarityAura={inspectCard.rarity}
+              journeyMultiplier={inspectJourneyMult}
               subtitleBadge={
                 editingDeck
-                  ? `보유 ×${owned}장 · 덱 편성 ${inDeck}/${maxCopy}장`
-                  : `보유 수량: ${owned}장`
+                  ? `보유 ×${owned}장 · 덱 편성 ${inDeck}/${maxCopy}장${inspectJourneyMult > 1 ? ` · 카단의 여정 ×${inspectJourneyMult}배` : ''}`
+                  : `보유 수량: ${owned}장${inspectJourneyMult > 1 ? ` · 카단의 여정 ×${inspectJourneyMult}배 강화!` : ''}`
               }
               showFlavor
               primaryAction={primaryAction}
@@ -1189,6 +1217,136 @@ export const CollectionScreen: React.FC<{
             />
           );
         })()}
+
+      {/* ==================== 여분 분해 & 카단의 여정 3배 강화 메커니즘 설명 모달 ==================== */}
+      {disenchantModalPreview && (
+        <div
+          onClick={() => setDisenchantModalPreview(null)}
+          className="fixed inset-0 z-[130] flex items-center justify-center bg-black/82 p-4 backdrop-blur-sm"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="hs-wood-panel relative max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-3xl p-5 text-amber-100 shadow-2xl sm:p-6"
+          >
+            <div className="mb-3 flex items-center justify-between border-b border-amber-500/35 pb-2.5">
+              <div className="flex items-center gap-2">
+                <HsArcaneDustVialIcon size={24} />
+                <h2 className="hs-title text-lg font-extrabold text-amber-100 sm:text-xl">
+                  여분 분해 전 『카단의 여정』 3배 법칙 안내
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDisenchantModalPreview(null)}
+                className="hs-brass-btn rounded-xl px-2.5 py-1 text-xs font-extrabold text-amber-100"
+              >
+                닫기 ✕
+              </button>
+            </div>
+
+            {/* Mechanism Explanation Card */}
+            <div className="space-y-2.5 rounded-2xl border-2 border-emerald-400/60 bg-gradient-to-b from-emerald-950/75 to-stone-950/90 p-3.5 text-xs leading-relaxed">
+              <div className="flex items-center gap-1.5 text-sm font-extrabold text-emerald-300">
+                <span>⚡</span>
+                <span>『카단의 여정』 전용 중복 카드 배수 강화 메커니즘</span>
+              </div>
+              <p className="font-semibold text-amber-100/95">
+                일반 <b className="text-sky-300">대전(등급전·일반전)</b> 및{' '}
+                <b className="text-sky-300">엘윈마을 수련</b> 모드에서는 정통 규칙대로 덱당 최대 2장(전설 1장)만 사용되며 스탯 배수가 적용되지 않습니다.
+              </p>
+              <p className="font-semibold text-emerald-100">
+                하지만 오직 <b className="text-yellow-300">『카단의 여정』 스토리 모드</b>에서는 공격력·체력(내구도)을 지닌 하수인·무기 카드를{' '}
+                <b className="text-emerald-300 underline">3장 이상 보유하면 공격력과 생명력이 보유 장수만큼 배수로 증폭(3장 = 3배, 4장 = 4배, N장 = N배 · 전설은 2장부터 2배)</b>
+                됩니다!
+              </p>
+              <div className="rounded-xl border border-amber-400/40 bg-black/45 px-3 py-2 text-[11px] font-bold text-amber-200">
+                💡 회차(1~40화)와 환생이 거듭될수록 적 영웅과 보스 하수인이 점점 강력해지므로,{' '}
+                <b className="text-yellow-300">여분 카드를 분해하지 않고 모아두면 카단의 여정 돌파력이 비약적으로 상승</b>합니다.
+              </div>
+            </div>
+
+            {/* Disenchant Impact Summary */}
+            <div className="my-3.5 rounded-2xl border border-[#c8a158]/50 bg-black/45 p-3.5 text-xs">
+              {disenchantModalPreview.extraCardCount > 0 ? (
+                <>
+                  <div className="flex items-center justify-between font-extrabold">
+                    <span className="text-amber-200">
+                      분해 대상 여분 카드 ({disenchantModalPreview.affectedUniqueCards}종)
+                    </span>
+                    <span className="text-red-300">
+                      총 {disenchantModalPreview.extraCardCount}장 분해 (일반 2장 / 전설 1장만 유지)
+                    </span>
+                  </div>
+                  <div className="mt-1.5 flex items-center justify-between border-t border-amber-500/20 pt-1.5 font-extrabold">
+                    <span className="text-sky-200">분해 시 획득 영웅 가루</span>
+                    <span className="hs-num text-base text-sky-300">
+                      +{disenchantModalPreview.dustGained} 가루
+                    </span>
+                  </div>
+                  {disenchantModalPreview.sampleAffectedCards.length > 0 && (
+                    <div className="mt-2 space-y-1 rounded-xl bg-stone-950/80 p-2.5 text-[11px]">
+                      <div className="font-bold text-amber-300/85">
+                        여정 배수가 해제되는 주요 보유 카드:
+                      </div>
+                      {disenchantModalPreview.sampleAffectedCards.map((sc) => (
+                        <div key={sc.id} className="flex items-center justify-between text-amber-100/90">
+                          <span className="truncate font-bold">{sc.name}</span>
+                          <span className="shrink-0 font-extrabold text-amber-300">
+                            {sc.owned}장 (×{sc.owned}배) → {sc.afterCount}장 (×1배)
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="py-2 text-center font-bold text-amber-200/90">
+                  현재 분해할 여분 카드(일반 3장 이상 / 전설 2장 이상)가 없습니다.
+                  <br />
+                  <span className="text-[11px] text-emerald-300">
+                    눈히어로 팩을 개봉해 동일 카드를 3장 이상 모으면 『카단의 여정』에서 3배 강화됩니다!
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => {
+                  hsAudio.playSfx('ui_click');
+                  setDisenchantModalPreview(null);
+                }}
+                className="hs-arcane-btn flex-1 rounded-xl py-2.5 text-xs font-extrabold text-white sm:text-sm"
+              >
+                {disenchantModalPreview.extraCardCount > 0
+                  ? '취소 · 카단의 여정 배수 강화 유지 (권장)'
+                  : '확인 (닫기)'}
+              </button>
+
+              {disenchantModalPreview.extraCardCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const res = hsStorage.massDisenchantExtras();
+                    setDisenchantModalPreview(null);
+                    if (res.count > 0) {
+                      hsAudio.playSfx('purchase');
+                      syncAll();
+                      showNotice(
+                        `여분 카드 ${res.count}장을 분해하여 +${res.dustGained} 영웅 가루를 획득했습니다.`,
+                      );
+                    }
+                  }}
+                  className="hs-brass-btn rounded-xl px-4 py-2.5 text-xs font-extrabold text-amber-200 sm:text-sm"
+                >
+                  그래도 여분 분해 (+{disenchantModalPreview.dustGained} 가루)
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

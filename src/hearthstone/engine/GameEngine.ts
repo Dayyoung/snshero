@@ -8,6 +8,7 @@ import {
   GameMode,
   HandCardInstance,
   HeroClass,
+  JourneyBattleMeta,
   MinionInstance,
   PlayerBattleState,
   PlayerSide,
@@ -115,6 +116,7 @@ export function createBattleMatch(opts: {
   opponentClass: HeroClass;
   opponentDeck: string[];
   boardTheme?: BoardThemeId;
+  journeyMeta?: JourneyBattleMeta;
 }): BattleMatchState {
   const themes: BoardThemeId[] = ['STORMWIND', 'ORGRIMMAR', 'PANDARIA'];
   const boardTheme = opts.boardTheme || themes[Math.floor(Math.random() * themes.length)];
@@ -122,6 +124,11 @@ export function createBattleMatch(opts: {
 
   const player = makeEmptyPlayerState('PLAYER', opts.playerName, opts.playerClass, opts.playerDeck);
   const opponent = makeEmptyPlayerState('OPPONENT', opts.opponentName, opts.opponentClass, opts.opponentDeck);
+
+  if (opts.mode === 'TUTORIAL' && opts.journeyMeta) {
+    opponent.health = opts.journeyMeta.enemyHeroHealth;
+    opponent.maxHealth = opts.journeyMeta.enemyHeroHealth;
+  }
 
   // Deal initial Mulligan hands (3 for first player, 4 for second player)
   const pInitial = firstPlayer === 'PLAYER' ? 3 : 4;
@@ -157,6 +164,7 @@ export function createBattleMatch(opts: {
     bannerMessage: null,
     errorBanner: null,
     tutorialStep: opts.mode === 'TUTORIAL' ? 1 : 0,
+    journeyMeta: opts.mode === 'TUTORIAL' ? opts.journeyMeta : undefined,
   };
 }
 
@@ -458,14 +466,32 @@ export function createEngine(rawState: BattleMatchState) {
   const equipWeapon = (side: PlayerSide, cardId: string) => {
     const def = cardDb.mustGetCard(cardId);
     const p = getPlayer(side);
+    const rawAtk = def.attack || 1;
+    const rawDur = def.durability || def.health || 2;
+    let effectiveAtk = rawAtk;
+    let effectiveDur = rawDur;
+
+    // Strictly isolated to 카단의 여정 (mode === 'TUTORIAL')
+    if (state.mode === 'TUTORIAL' && state.journeyMeta) {
+      if (side === 'PLAYER') {
+        const mult = state.journeyMeta.playerCardMultipliers[def.id] || 1;
+        effectiveAtk = Math.max(1, rawAtk * mult);
+        effectiveDur = Math.max(1, rawDur * mult);
+      } else {
+        const scale = state.journeyMeta.enemyStatScale || 1;
+        effectiveAtk = Math.max(1, Math.round(rawAtk * scale));
+        effectiveDur = Math.max(1, Math.round(rawDur * Math.max(1, Math.sqrt(scale))));
+      }
+    }
+
     p.weapon = {
       uid: nextUid('wpn'),
       cardId: def.id,
       name: def.name,
-      baseAttack: def.attack || 1,
-      attack: def.attack || 1,
-      durability: def.durability || def.health || 2,
-      maxDurability: def.durability || def.health || 2,
+      baseAttack: rawAtk,
+      attack: effectiveAtk,
+      durability: effectiveDur,
+      maxDurability: effectiveDur,
       windfury: def.mechanics.includes('WINDFURY'),
     };
     recalculateAuras();
@@ -489,18 +515,37 @@ export function createEngine(rawState: BattleMatchState) {
     const cantAttack =
       def.mechanics.includes('CANT_ATTACK') || def.id === 'EX1_045' || def.id === 'EX1_298';
     state.playOrderSeq += 1;
+
+    const rawAtk = def.attack || 0;
+    const rawHp = def.health || 1;
+    let effectiveAtk = rawAtk;
+    let effectiveHp = rawHp;
+
+    // Strictly isolated to 카단의 여정 (mode === 'TUTORIAL')
+    if (state.mode === 'TUTORIAL' && state.journeyMeta) {
+      if (side === 'PLAYER') {
+        const mult = state.journeyMeta.playerCardMultipliers[def.id] || 1;
+        effectiveAtk = rawAtk * mult;
+        effectiveHp = Math.max(1, rawHp * mult);
+      } else {
+        const scale = state.journeyMeta.enemyStatScale || 1;
+        effectiveAtk = rawAtk > 0 ? Math.max(1, Math.round(rawAtk * scale)) : 0;
+        effectiveHp = Math.max(1, Math.round(rawHp * scale));
+      }
+    }
+
     return {
       uid: nextUid('min'),
       cardId: def.id,
       name: def.name,
       owner: side,
       playOrder: state.playOrderSeq,
-      baseAttack: def.attack || 0,
-      baseHealth: def.health || 1,
-      permAttack: def.attack || 0,
+      baseAttack: rawAtk,
+      baseHealth: rawHp,
+      permAttack: effectiveAtk,
       tempAttack: 0,
-      maxHealth: def.health || 1,
-      health: def.health || 1,
+      maxHealth: effectiveHp,
+      health: effectiveHp,
       auraAttack: 0,
       auraHealth: 0,
       race: def.race || null,

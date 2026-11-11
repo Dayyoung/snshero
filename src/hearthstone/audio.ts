@@ -1,6 +1,7 @@
 import { CLASSIC_HEROES, HeroClass } from './types';
 
 const SETTINGS_KEY = 'hero_hs_settings';
+const CALM_BGM_MIGRATION_KEY = 'hero_hs_calm_bgm_15_v1';
 
 export interface AudioSettings {
   bgmVolume: number;
@@ -10,9 +11,9 @@ export interface AudioSettings {
 }
 
 const DEFAULT_AUDIO: AudioSettings = {
-  bgmVolume: 0.38,
-  sfxVolume: 0.76,
-  voVolume: 0.92,
+  bgmVolume: 0.15,
+  sfxVolume: 0.72,
+  voVolume: 0.88,
   muted: false,
 };
 
@@ -29,6 +30,11 @@ class SnsHeroCardAudioEngine {
       const raw = localStorage.getItem(SETTINGS_KEY);
       if (raw) {
         this.settings = { ...DEFAULT_AUDIO, ...JSON.parse(raw) };
+      }
+      if (!localStorage.getItem(CALM_BGM_MIGRATION_KEY)) {
+        this.settings.bgmVolume = 0.15;
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(this.settings));
+        localStorage.setItem(CALM_BGM_MIGRATION_KEY, '1');
       }
     } catch {
       // ignore storage errors
@@ -100,7 +106,7 @@ class SnsHeroCardAudioEngine {
       this.currentBgm = null;
     }
     this.currentBgmKey = track;
-    const audio = new Audio(`/hs-assets/snshero-audio/bgm/${track}.mp3`);
+    const audio = new Audio(`/hs-assets/snshero-audio/bgm/${track}.mp3?v=calm1`);
     audio.loop = track !== 'mulligan';
     audio.volume = this.settings.muted ? 0 : this.settings.bgmVolume;
     this.currentBgm = audio;

@@ -53,6 +53,7 @@ export interface CardZoomModalProps {
   isGolden?: boolean;
   playableGlow?: 'NONE' | 'GREEN' | 'COMBO';
   rarityAura?: CardRarity;
+  journeyMultiplier?: number;
   subtitleBadge?: string;
   liveStats?: {
     attack: number;
@@ -74,6 +75,7 @@ export const CardZoomModal: React.FC<CardZoomModalProps> = ({
   isGolden = false,
   playableGlow = 'NONE',
   rarityAura,
+  journeyMultiplier = 1,
   subtitleBadge,
   liveStats,
   showFlavor = false,
@@ -96,13 +98,29 @@ export const CardZoomModal: React.FC<CardZoomModalProps> = ({
   const costState: 'normal' | 'buffed' | 'nerfed' =
     shownCost < card.cost ? 'buffed' : shownCost > card.cost ? 'nerfed' : 'normal';
 
-  const shownAttack = liveStats ? liveStats.attack : card.attack;
+  const multActive =
+    !liveStats &&
+    journeyMultiplier > 1 &&
+    (card.type === 'MINION' || card.type === 'WEAPON');
+
+  const shownAttack = liveStats
+    ? liveStats.attack
+    : multActive
+      ? card.type === 'WEAPON'
+        ? Math.max(1, (card.attack ?? 1) * journeyMultiplier)
+        : (card.attack ?? 0) * journeyMultiplier
+      : card.attack;
+
   const shownHealth =
     liveStats !== undefined
       ? liveStats.health
-      : card.type === 'WEAPON'
-        ? card.durability
-        : card.health;
+      : multActive
+        ? card.type === 'WEAPON'
+          ? Math.max(1, (card.durability ?? 1) * journeyMultiplier)
+          : Math.max(1, (card.health ?? 1) * journeyMultiplier)
+        : card.type === 'WEAPON'
+          ? card.durability
+          : card.health;
 
   const cleanHtml = formatCardHtmlText(card.text || '', spellPowerBonus, velenMultiplier).trim();
 
@@ -167,6 +185,7 @@ export const CardZoomModal: React.FC<CardZoomModalProps> = ({
             isGolden={isGolden}
             playableGlow={playableGlow}
             rarityAura={rarityAura || card.rarity}
+            journeyMultiplier={journeyMultiplier}
             size="LG"
             enableTilt
           />
@@ -189,30 +208,40 @@ export const CardZoomModal: React.FC<CardZoomModalProps> = ({
             {/* Crisp Stat Summary Badges */}
             <div className="flex shrink-0 items-center gap-1">
               <HsManaGem value={shownCost} state={costState} size={25} active />
-              {(card.type === 'MINION' || card.type === 'WEAPON') && shownAttack !== undefined && (
-                <HsAttackBadge
-                  value={shownAttack}
-                  buffed={liveStats ? liveStats.attack > (card.attack ?? 0) : false}
-                  isWeapon={card.type === 'WEAPON'}
-                  size={25}
-                />
-              )}
-              {(card.type === 'MINION' || card.type === 'WEAPON') && shownHealth !== undefined && (
-                <HsHealthBadge
-                  value={shownHealth}
-                  isWeaponDurability={card.type === 'WEAPON'}
-                  state={
-                    liveStats
-                      ? liveStats.health < liveStats.maxHealth
-                        ? 'damaged'
-                        : liveStats.maxHealth > (card.health ?? 1)
+              {(card.type === 'MINION' || card.type === 'WEAPON') &&
+                shownAttack !== undefined &&
+                shownAttack !== null && (
+                  <HsAttackBadge
+                    value={shownAttack}
+                    buffed={
+                      liveStats
+                        ? liveStats.attack > (card.attack ?? 0)
+                        : multActive && (card.attack ?? 0) > 0
+                    }
+                    isWeapon={card.type === 'WEAPON'}
+                    size={25}
+                  />
+                )}
+              {(card.type === 'MINION' || card.type === 'WEAPON') &&
+                shownHealth !== undefined &&
+                shownHealth !== null && (
+                  <HsHealthBadge
+                    value={shownHealth}
+                    isWeaponDurability={card.type === 'WEAPON'}
+                    state={
+                      liveStats
+                        ? liveStats.health < liveStats.maxHealth
+                          ? 'damaged'
+                          : liveStats.maxHealth > (card.health ?? 1)
+                            ? 'buffed'
+                            : 'normal'
+                        : multActive
                           ? 'buffed'
                           : 'normal'
-                      : 'normal'
-                  }
-                  size={24}
-                />
-              )}
+                    }
+                    size={24}
+                  />
+                )}
             </div>
           </div>
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { hsAudio } from '../audio';
+import { elementCenterInStage, getStageSize } from '../stageCoords';
 import { VfxEvent } from '../types';
 
 interface BoardVfxCanvasProps {
@@ -46,13 +47,11 @@ interface FloatingBadge {
 }
 
 function getEntityCenter(entityId?: string): { x: number; y: number } {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+  const { width: w, height: h } = getStageSize();
   if (!entityId) return { x: w * 0.5, y: h * 0.46 };
   const el = document.querySelector(`[data-hs-entity="${entityId}"]`);
   if (el) {
-    const r = el.getBoundingClientRect();
-    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    return elementCenterInStage(el);
   }
   if (entityId === 'PLAYER_HERO') return { x: w * 0.5, y: h * 0.77 };
   if (entityId === 'OPPONENT_HERO') return { x: w * 0.5, y: h * 0.17 };
@@ -122,10 +121,11 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
         seenIdsRef.current = new Set(arr);
       }
 
+      const { width: stageW, height: stageH } = getStageSize();
       const targetPos = getEntityCenter(ev.targetId);
       const sourcePos = ev.sourceId
         ? getEntityCenter(ev.sourceId)
-        : { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 };
+        : { x: stageW * 0.5, y: stageH * 0.5 };
 
       switch (ev.kind) {
         case 'FIREBALL':
@@ -220,10 +220,10 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
 
         case 'HOLY_NOVA':
           hsAudio.playProceduralVfxSound('HOLY');
-          spawnRing(window.innerWidth * 0.5, window.innerHeight * 0.45, '#fde047', 420);
+          spawnRing(stageW * 0.5, stageH * 0.45, '#fde047', 420);
           spawnBurst(
-            window.innerWidth * 0.5,
-            window.innerHeight * 0.45,
+            stageW * 0.5,
+            stageH * 0.45,
             45,
             ['#fef08a', '#facc15', '#ffffff'],
             11,
@@ -237,9 +237,9 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
           hsAudio.playProceduralVfxSound('FIRE');
           hsAudio.playSfx('big_attack', 0.85);
           shakeCbRef.current?.('HEAVY');
-          const yBand = ev.targetId === 'PLAYER_HERO' ? window.innerHeight * 0.56 : window.innerHeight * 0.34;
+          const yBand = ev.targetId === 'PLAYER_HERO' ? stageH * 0.56 : stageH * 0.34;
           for (let i = 0; i < 5; i++) {
-            const px = window.innerWidth * (0.26 + i * 0.12);
+            const px = stageW * (0.26 + i * 0.12);
             spawnBurst(px, yBand, 28, ['#fef08a', '#fb923c', '#ef4444'], 9, 12, 'CIRCLE', -0.12);
             spawnRing(px, yBand, '#f97316', 120);
           }
@@ -248,10 +248,10 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
 
         case 'BLIZZARD': {
           hsAudio.playProceduralVfxSound('FROST');
-          const yBand = ev.targetId === 'PLAYER_HERO' ? window.innerHeight * 0.56 : window.innerHeight * 0.34;
+          const yBand = ev.targetId === 'PLAYER_HERO' ? stageH * 0.56 : stageH * 0.34;
           for (let i = 0; i < 55; i++) {
             particlesRef.current.push({
-              x: window.innerWidth * (0.18 + Math.random() * 0.64),
+              x: stageW * (0.18 + Math.random() * 0.64),
               y: yBand - 120 + Math.random() * 60,
               vx: -3.5 + Math.random() * 1.5,
               vy: 4.5 + Math.random() * 4,
@@ -269,19 +269,19 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
         case 'CONSECRATION': {
           hsAudio.playProceduralVfxSound('HOLY');
           shakeCbRef.current?.('LIGHT');
-          const yBand = ev.targetId === 'PLAYER_HERO' ? window.innerHeight * 0.58 : window.innerHeight * 0.34;
+          const yBand = ev.targetId === 'PLAYER_HERO' ? stageH * 0.58 : stageH * 0.34;
           for (let i = 0; i < 6; i++) {
-            const px = window.innerWidth * (0.24 + i * 0.105);
+            const px = stageW * (0.24 + i * 0.105);
             spawnBurst(px, yBand, 18, ['#fef08a', '#f59e0b', '#ffffff'], 6.5, 9, 'STAR', -0.08);
           }
-          spawnRing(window.innerWidth * 0.5, yBand, '#fbbf24', 360);
+          spawnRing(stageW * 0.5, yBand, '#fbbf24', 360);
           break;
         }
 
         case 'WHIRLWIND':
           hsAudio.playSfx('whoosh', 0.9);
-          spawnRing(window.innerWidth * 0.5, window.innerHeight * 0.45, '#cbd5e1', 340);
-          spawnBurst(window.innerWidth * 0.5, window.innerHeight * 0.45, 32, ['#f8fafc', '#94a3b8'], 12, 6, 'SHARD', 0);
+          spawnRing(stageW * 0.5, stageH * 0.45, '#cbd5e1', 340);
+          spawnBurst(stageW * 0.5, stageH * 0.45, 32, ['#f8fafc', '#94a3b8'], 12, 6, 'SHARD', 0);
           break;
 
         case 'EXPLOSION':
@@ -320,8 +320,8 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
           spawnBurst(targetPos.x, targetPos.y, 28, ['#fbcfe8', '#f472b6', '#fde047'], 7, 8, 'STAR', 0);
           if (ev.label) {
             badgesRef.current.push({
-              x: window.innerWidth * 0.5,
-              y: window.innerHeight * 0.3,
+              x: stageW * 0.5,
+              y: stageH * 0.3,
               vy: -0.6,
               text: `비밀 발동! [${ev.label}]`,
               subKind: 'BANNER',
@@ -427,8 +427,9 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
 
     const syncSize = () => {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      canvas.width = Math.floor(window.innerWidth * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
+      const { width, height } = getStageSize();
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     syncSize();
@@ -436,7 +437,14 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onScreen
 
     let rafId = 0;
     const render = () => {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      const { width, height } = getStageSize();
+      if (
+        Math.abs(canvas.width - Math.floor(width * Math.min(2, window.devicePixelRatio || 1))) > 4 ||
+        Math.abs(canvas.height - Math.floor(height * Math.min(2, window.devicePixelRatio || 1))) > 4
+      ) {
+        syncSize();
+      }
+      ctx.clearRect(0, 0, width, height);
 
       // 1. Update & Draw Projectiles
       const nextProj: Projectile[] = [];

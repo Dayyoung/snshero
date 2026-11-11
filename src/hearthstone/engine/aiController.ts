@@ -6,6 +6,7 @@ import {
   HERO_CLASS_ORDER,
   HeroClass,
   MinionInstance,
+  PlayerSide,
 } from '../types';
 import { CARD_SCRIPTS } from './cardEffects';
 import {
@@ -352,49 +353,53 @@ function scoreMinion(m: MinionInstance): number {
 }
 
 /**
- * Evaluates a BattleMatchState from OPPONENT's (AI's) perspective.
+ * Evaluates a BattleMatchState from `actorSide`'s perspective ('OPPONENT' or 'PLAYER' for Auto-Play).
  */
-export function evaluateStateForAi(s: BattleMatchState): number {
+export function evaluateStateForAi(
+  s: BattleMatchState,
+  actorSide: PlayerSide = 'OPPONENT',
+): number {
+  const enemySide: PlayerSide = actorSide === 'OPPONENT' ? 'PLAYER' : 'OPPONENT';
   if (s.phase === 'GAME_OVER') {
-    if (s.winner === 'OPPONENT') return 100000;
-    if (s.winner === 'PLAYER') return -100000;
+    if (s.winner === actorSide) return 100000;
+    if (s.winner === enemySide) return -100000;
   }
-  const ai = s.opponent;
-  const pl = s.player;
+  const me = actorSide === 'OPPONENT' ? s.opponent : s.player;
+  const foe = actorSide === 'OPPONENT' ? s.player : s.opponent;
 
   let score = 0;
 
   // 1. Hero Health & Armor (non-linear urgency when low!)
-  const aiEhp = ai.health + ai.armor;
-  const plEhp = pl.health + pl.armor;
-  score += aiEhp * 1.85;
-  if (ai.health <= 10) score -= (11 - ai.health) * 4.5;
-  score -= plEhp * 2.35;
-  if (pl.health <= 12) score += (13 - pl.health) * 5.0;
+  const meEhp = me.health + me.armor;
+  const foeEhp = foe.health + foe.armor;
+  score += meEhp * 1.85;
+  if (me.health <= 10) score -= (11 - me.health) * 4.5;
+  score -= foeEhp * 2.35;
+  if (foe.health <= 12) score += (13 - foe.health) * 5.0;
 
   // 2. Board Presence
-  for (const m of ai.board) {
+  for (const m of me.board) {
     score += scoreMinion(m);
   }
-  for (const m of pl.board) {
-    score -= scoreMinion(m) * 1.18; // Slightly prioritize clearing player threats!
+  for (const m of foe.board) {
+    score -= scoreMinion(m) * 1.18;
   }
 
   // 3. Hand & Card Advantage + Weapon + Secrets + Max Mana
-  score += ai.hand.length * 3.1;
-  score -= pl.hand.length * 2.2;
-  score += ai.maxMana * 2.6;
-  score -= ai.pendingOverload * 1.3;
+  score += me.hand.length * 3.1;
+  score -= foe.hand.length * 2.2;
+  score += me.maxMana * 2.6;
+  score -= me.pendingOverload * 1.3;
 
-  if (ai.weapon) {
-    score += ai.weapon.attack * ai.weapon.durability * 1.65;
+  if (me.weapon) {
+    score += me.weapon.attack * me.weapon.durability * 1.65;
   }
-  if (pl.weapon) {
-    score -= pl.weapon.attack * pl.weapon.durability * 1.65;
+  if (foe.weapon) {
+    score -= foe.weapon.attack * foe.weapon.durability * 1.65;
   }
 
-  score += ai.secrets.length * 4.5;
-  score -= pl.secrets.length * 3.5;
+  score += me.secrets.length * 4.5;
+  score -= foe.secrets.length * 3.5;
 
   return score;
 }
@@ -409,20 +414,26 @@ const ADJACENT_MATTERS_CARDS = new Set([
 ]);
 
 /**
- * Computes the single best next action for OPPONENT (`AI`).
- * Called repeatedly with ~650ms animation spacing until it returns `{ kind: 'END_TURN' }`.
+ * Computes the single best next action for `actorSide` ('OPPONENT' AI or 'PLAYER' Auto-Play).
+ * Called repeatedly with animation spacing until it returns `{ kind: 'END_TURN' }`.
  */
 export function computeNextAiAction(
   rawState: BattleMatchState,
   difficulty: 'NORMAL' | 'EXPERT' = 'EXPERT',
+  actorSide: PlayerSide = 'OPPONENT',
 ): AiAction {
-  if (rawState.phase !== 'PLAYING' || rawState.activeSide !== 'OPPONENT') {
+  if (rawState.phase !== 'PLAYING' || rawState.activeSide !== actorSide) {
     return { kind: 'END_TURN' };
   }
 
+  const enemySide: PlayerSide = actorSide === 'OPPONENT' ? 'PLAYER' : 'OPPONENT';
+  const myHeroId = `${actorSide}_HERO`;
+  const enemyHeroId = `${enemySide}_HERO`;
+
   const baseEngine = createEngine(rawState);
-  const ai = rawState.opponent;
-  const baselineScore = evaluateStateForAi(rawState);
+  const ai = actorSide === 'OPPONENT' ? rawState.opponent : rawState.player;
+  const foe = actorSide === 'OPPONENT' ? rawState.player : rawState.opponent;
+  const baselineScore = evaluateStateForAi(rawState, actorSide);
 
   interface ScoredCandidate {
     action: AiAction;
@@ -430,7 +441,6 @@ export function computeNextAiAction(
   }
   const candidates: ScoredCandidate[] = [];
 
-  // Check if holding Coin / Innervate / Preparation: only play mana acceleration if needed for another card or Combo!
   const hasComboInHand = ai.hand.some((h) => {
     const d = cardDb.mustGetCard(h.cardId);
     return d.mechanics.includes('COMBO') || Boolean(CARD_SCRIPTS[d.id]?.comboTargetKind);
@@ -438,22 +448,20 @@ export function computeNextAiAction(
 
   // 1. Evaluate Playing Cards from Hand
   for (const hc of ai.hand) {
-    const check = baseEngine.inspectPlayability('OPPONENT', hc);
+    const check = baseEngine.inspectPlayability(actorSide, hc);
     if (!check.canPlay) continue;
     const def = cardDb.mustGetCard(hc.cardId);
     const spec = CARD_SCRIPTS[def.id];
 
-    // Guard temporary mana rituals (`GAME_005` 동전, `EX1_169` 정신 자극) so AI doesn't waste them with nothing to spend on!
     if (def.id === 'GAME_005' || def.id === 'EX1_169') {
       const gain = def.id === 'GAME_005' ? 1 : 2;
       const futureMana = Math.min(10, ai.mana + gain);
       const unlocksPlay = ai.hand.some((other) => {
         if (other.uid === hc.uid) return false;
-        const c = baseEngine.getEffectiveCardCost('OPPONENT', other);
+        const c = baseEngine.getEffectiveCardCost(actorSide, other);
         return (c > ai.mana && c <= futureMana) || (hasComboInHand && ai.cardsPlayedThisTurn === 0 && c <= futureMana);
       });
       if (!unlocksPlay) continue;
-      // Give slight bonus when it unlocks a big play or combo!
       candidates.push({
         action: { kind: 'PLAY_CARD', handUid: hc.uid, cardId: def.id },
         score: baselineScore + 5.5,
@@ -462,7 +470,6 @@ export function computeNextAiAction(
     }
 
     if (def.id === 'EX1_145') {
-      // 마음가짐 (Preparation): only cast if holding a spell costing >= 2
       const hasWorthwhileSpell = ai.hand.some((other) => {
         if (other.uid === hc.uid) return false;
         const od = cardDb.mustGetCard(other.cardId);
@@ -476,7 +483,6 @@ export function computeNextAiAction(
       continue;
     }
 
-    // Determine board insert indices to test
     const insertPositions =
       def.type === 'MINION' && ADJACENT_MATTERS_CARDS.has(def.id) && ai.board.length >= 2
         ? [Math.floor(ai.board.length / 2), ai.board.length]
@@ -484,22 +490,20 @@ export function computeNextAiAction(
 
     if (check.hasChooseOne && spec?.chooseOne) {
       for (const optIdx of [0, 1] as const) {
-        const sub = spec.chooseOne[optIdx];
         const simPreview = createEngine(rawState);
-        // Trigger prompt to get valid targets for this option
-        simPreview.playCardFromHand('OPPONENT', hc.uid, { insertIndex: insertPositions[0] });
+        simPreview.playCardFromHand(actorSide, hc.uid, { insertIndex: insertPositions[0] });
         const promptOpt = simPreview.state.chooseOnePrompt?.options[optIdx];
         const targets =
           promptOpt && promptOpt.needsTarget ? promptOpt.validTargets : [undefined];
 
         for (const tid of targets) {
           const sim = createEngine(rawState);
-          sim.playCardFromHand('OPPONENT', hc.uid, {
+          sim.playCardFromHand(actorSide, hc.uid, {
             chooseOptionIndex: optIdx,
             targetId: tid,
             insertIndex: insertPositions[0],
           });
-          const sc = evaluateStateForAi(sim.state) + 1.2; // slight tempo preference for spending mana
+          const sc = evaluateStateForAi(sim.state, actorSide) + 1.2;
           candidates.push({
             action: {
               kind: 'PLAY_CARD',
@@ -520,12 +524,11 @@ export function computeNextAiAction(
     for (const pos of insertPositions) {
       for (const tid of targets) {
         const sim = createEngine(rawState);
-        sim.playCardFromHand('OPPONENT', hc.uid, {
+        sim.playCardFromHand(actorSide, hc.uid, {
           targetId: tid,
           insertIndex: pos,
         });
-        let sc = evaluateStateForAi(sim.state);
-        // Encourage developing minions on curve
+        let sc = evaluateStateForAi(sim.state, actorSide);
         if (def.type === 'MINION') sc += 1.6 + def.cost * 0.35;
         if (def.mechanics.includes('SECRET')) sc += 2.2;
         candidates.push({
@@ -543,21 +546,19 @@ export function computeNextAiAction(
   }
 
   // 2. Evaluate Hero Power
-  const hpCheck = baseEngine.inspectHeroPower('OPPONENT');
+  const hpCheck = baseEngine.inspectHeroPower(actorSide);
   if (hpCheck.canUse) {
     const hpTargets = hpCheck.needsTarget ? hpCheck.validTargets : [undefined];
     for (const tid of hpTargets) {
-      // Avoid Warlock Life Tap when low HP or hand >= 9!
       if (ai.heroPowerId === 'HERO_07bp' && (ai.health <= 8 || ai.hand.length >= 9 || ai.deck.length === 0)) {
         continue;
       }
-      // Avoid Rogue Dagger Mastery if already holding a weapon with attack >= 2!
       if (ai.heroPowerId === 'HERO_03bp' && ai.weapon && ai.weapon.attack >= 2) {
         continue;
       }
       const sim = createEngine(rawState);
-      sim.useHeroPower('OPPONENT', tid);
-      const sc = evaluateStateForAi(sim.state) + 0.8;
+      sim.useHeroPower(actorSide, tid);
+      const sc = evaluateStateForAi(sim.state, actorSide) + 0.8;
       candidates.push({
         action: { kind: 'HERO_POWER', targetId: tid },
         score: sc,
@@ -566,49 +567,47 @@ export function computeNextAiAction(
   }
 
   // 3. Evaluate Attacks (Minions & Hero)
-  // Calculate if total available board+hero attack can LETHAL the player right now when no Taunt blocks!
-  const playerHasTaunt = rawState.player.board.some((m) => !m.stealth && hasMinionTaunt(m));
+  const foeHasTaunt = foe.board.some((m) => !m.stealth && hasMinionTaunt(m));
   let totalFaceAttack = 0;
-  if (!playerHasTaunt) {
-    if (baseEngine.canAttackerSwing('OPPONENT', 'OPPONENT_HERO').ok) {
+  if (!foeHasTaunt) {
+    if (baseEngine.canAttackerSwing(actorSide, myHeroId).ok) {
       totalFaceAttack += getHeroAttack(ai, true);
     }
     for (const m of ai.board) {
-      if (baseEngine.canAttackerSwing('OPPONENT', m.uid).ok) {
+      if (baseEngine.canAttackerSwing(actorSide, m.uid).ok) {
         const swings = (m.windfury ? 2 : 1) - m.attacksMadeThisTurn;
         totalFaceAttack += getMinionAttack(m) * Math.max(0, swings);
       }
     }
   }
-  const hasBoardLethal = !playerHasTaunt && totalFaceAttack >= rawState.player.health + rawState.player.armor;
+  const hasBoardLethal = !foeHasTaunt && totalFaceAttack >= foe.health + foe.armor;
 
-  const attackerIds = ['OPPONENT_HERO', ...ai.board.map((m) => m.uid)];
+  const attackerIds = [myHeroId, ...ai.board.map((m) => m.uid)];
   for (const atkId of attackerIds) {
-    const validDefs = baseEngine.getValidAttackTargets('OPPONENT', atkId);
+    const validDefs = baseEngine.getValidAttackTargets(actorSide, atkId);
     for (const defId of validDefs) {
-      if (hasBoardLethal && defId === 'PLAYER_HERO') {
-        return { kind: 'ATTACK', attackerId: atkId, defenderId: 'PLAYER_HERO' };
+      if (hasBoardLethal && defId === enemyHeroId) {
+        return { kind: 'ATTACK', attackerId: atkId, defenderId: enemyHeroId };
       }
-      // Prevent AI Hero from suiciding or taking >= 6 face damage into a giant minion when low HP
-      if (atkId === 'OPPONENT_HERO' && defId !== 'PLAYER_HERO') {
-        const targetM = rawState.player.board.find((pm) => pm.uid === defId);
+      if (atkId === myHeroId && defId !== enemyHeroId) {
+        const targetM = foe.board.find((pm) => pm.uid === defId);
         if (targetM) {
           const mAtk = getMinionAttack(targetM);
           if (ai.health + ai.armor - mAtk <= 4) continue;
         }
       }
       const sim = createEngine(rawState);
-      sim.performAttack('OPPONENT', atkId, defId);
-      let sc = evaluateStateForAi(sim.state) + 0.9;
-      // Bonus for clean value trades (enemy minion dies while AI minion survives!)
-      if (defId !== 'PLAYER_HERO' && atkId !== 'OPPONENT_HERO') {
-        const survived = sim.state.opponent.board.some((m) => m.uid === atkId && getMinionHealth(m) > 0);
-        const killed = !sim.state.player.board.some((m) => m.uid === defId);
+      sim.performAttack(actorSide, atkId, defId);
+      let sc = evaluateStateForAi(sim.state, actorSide) + 0.9;
+      const simMe = actorSide === 'OPPONENT' ? sim.state.opponent : sim.state.player;
+      const simFoe = actorSide === 'OPPONENT' ? sim.state.player : sim.state.opponent;
+      if (defId !== enemyHeroId && atkId !== myHeroId) {
+        const survived = simMe.board.some((m) => m.uid === atkId && getMinionHealth(m) > 0);
+        const killed = !simFoe.board.some((m) => m.uid === defId);
         if (survived && killed) sc += 3.2;
       }
-      // Bonus for popping enemy Divine Shield with a 1-attack minion!
-      if (defId !== 'PLAYER_HERO') {
-        const targetBefore = rawState.player.board.find((pm) => pm.uid === defId);
+      if (defId !== enemyHeroId) {
+        const targetBefore = foe.board.find((pm) => pm.uid === defId);
         const atkMinion = ai.board.find((am) => am.uid === atkId);
         if (targetBefore?.divineShield && atkMinion && getMinionAttack(atkMinion) <= 2) {
           sc += 2.5;
@@ -621,14 +620,12 @@ export function computeNextAiAction(
     }
   }
 
-  // Filter out strictly self-harming moves (e.g., Fireballing own face or Silencing own buffed minion!)
   const positiveMoves = candidates.filter((c) => c.score >= baselineScore - 0.5);
   if (positiveMoves.length === 0) {
-    // Check if there are still unattacked minions that can hit PLAYER_HERO for free damage!
     for (const atkId of attackerIds) {
-      const validDefs = baseEngine.getValidAttackTargets('OPPONENT', atkId);
-      if (validDefs.includes('PLAYER_HERO')) {
-        return { kind: 'ATTACK', attackerId: atkId, defenderId: 'PLAYER_HERO' };
+      const validDefs = baseEngine.getValidAttackTargets(actorSide, atkId);
+      if (validDefs.includes(enemyHeroId)) {
+        return { kind: 'ATTACK', attackerId: atkId, defenderId: enemyHeroId };
       }
     }
     return { kind: 'END_TURN' };
@@ -636,15 +633,13 @@ export function computeNextAiAction(
 
   positiveMoves.sort((a, b) => b.score - a.score);
 
-  if (difficulty === 'NORMAL' && positiveMoves.length >= 2 && Math.random() < 0.25) {
-    // Normal Innkeeper occasionally picks the 2nd-best move for forgiving beginner pacing
+  if (difficulty === 'NORMAL' && actorSide === 'OPPONENT' && positiveMoves.length >= 2 && Math.random() < 0.25) {
     const second = positiveMoves[1];
     if (second.score >= baselineScore) {
       return second.action;
     }
   }
 
-  // Ensure healing Hero Power isn't used on full-HP targets with zero benefit
   const best = positiveMoves[0];
   if (best.action.kind === 'HERO_POWER' && ai.heroPowerId === 'HERO_09bp' && ai.shadowformTier === 0) {
     const hasDamagedFriendly =

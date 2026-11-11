@@ -21190,3 +21190,24 @@
      - 뒷면 상태와 개봉 후 앞면 상태 모두 각기 다른 주기와 위상으로 공중에서 숨 쉬듯 둥둥 떠다니는 부유 애니메이션(`hsPackCardFloat` + 하단 부양 그림자 + 비전 입자 상승) 상시 적용.
      - 단순 조건부 이미지 교체를 제거하고, `perspective: 1150px` + `transform-style: preserve-3d` 기반 양면 카드 로터(`rotateY(0deg → 180deg)`)와 도약 아크(`hsCardFlipLift`), 뒤집히는 순간 퍼져나가는 등급별 마력 충격파 링(`hsFlipBurstRing`) 적용.
 - **검증 결과**: `npx tsc --noEmit` 0 에러, `npm run build` 성공, 로컬 프리뷰(`http://127.0.0.1:4173/game.html`) 브라우저 테스트(팩 2회 연속 개봉, `5장 한 번에 뒤집기` 1클릭 시 `5/5` 전원 `rotateY(180deg)` 개봉, 개별 1장 클릭 후 스페이스바 나머지 4장 개봉, `hsPackCardFloat` 부유 동작, 콘솔 에러 0건) 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+
+### 2026-11-11 16:36 KST | `/game.html` 『카단의 여정』 40화 네컷 웹툰 요약 & 자동전투·3배 각성 법칙·3단계 팝업 보급소·모바일 랜드스케이프 단일 화면 스케일링/레터박스 전면 적용 완료
+- **작업 내역**:
+  1. **잔잔한 어쿠스틱/펠트피아노 BGM 5종 교체 및 기본 볼륨 15% 적용 (`scripts/generate_calm_bgm.py`, `src/hearthstone/audio.ts`, `public/hs-assets/snshero-audio/bgm/*.mp3`)**:
+     - 기존 경쾌한 템포의 BGM을 나일론 어쿠스틱 기타·펠트 피아노·첼레스타·웜 스트링 중심의 잔잔한 멜로디로 신규 합성하고 기본 BGM 볼륨을 `0.15`(`15%`)로 적용.
+  2. **초기 카드팩 `3팩` 조정·홈 허브 3버튼 동일 높이·첫 방문 손가락 가이드 잠금 (`src/hearthstone/storage.ts`, `src/hearthstone/screens/BoxHubScreen.tsx`)**:
+     - 신규 사용자 초기 지급 카드팩을 `15팩` ➔ `3팩`으로 조정.
+     - `대전` / `엘윈마을 수련` / `카단의 여정` 3개 버튼을 완전히 동일한 높이(`h-[52px] sm:h-[60px] w-full`)로 정렬하고, 첫 방문 시 `카단의 여정` 위에 `👈 클릭!` 손가락 가이드 표시 및 다른 모든 버튼 잠금(`disabled`) 처리.
+  3. **『카단의 여정』 40화 네컷 공식 웹툰 요약 + 해당 회차 소설/웹툰 바로가기 링크 (`scripts/generate_kadan_journey_data.py`, `src/hearthstone/kadanJourneyData.ts`, `src/hearthstone/components/KadanJourneyStoryModal.tsx`)**:
+     - 복잡한 장문을 제거하고 1~40화 각각의 공식 16:9 웹툰 4컷(`1컷 발단 · 2컷 전개 · 3컷 위기 · 4컷 결전`)과 한 줄 요약으로 직관화하며, 하단에 해당 회차의 공식 웹툰(`/webtoon?ep=N`) 및 소설(`/book?ep=N`) 바로가기 링크 제공.
+  4. **모드별 자동/수동 기본값·우측 중앙 회전 자동플레이 버튼·전용 `3장 = 3배` 법칙·여분 분해 설명 모달 (`BattleScreen.tsx`, `GameEngine.ts`, `aiController.ts`, `CollectionScreen.tsx`, `PackOpeningScreen.tsx`)**:
+     - `카단의 여정`은 **자동 플레이 기본 ON**(우측 중앙 회전 버튼 클릭 시 수동 전환 가능), `대전`·`엘윈마을 수련`은 **수동 플레이 기본**으로 분리.
+     - `카단의 여정` 덱은 보유한 모든 종족 카드를 균등 편성하며, 오직 `카단의 여정`에서만 동일 카드 3장 이상(전설 2장 이상) 보유 시 공격력·생명력(내구도)이 보유 장수 배율(`3장 = 3배`, `N장 = N배`)로 증폭되고 회차·환생마다 적 난이도가 상승하여 팩 개봉/업그레이드 루프로 이어지도록 구현.
+     - `내 카드첩`의 `여분 분해` 클릭 시 즉시 파괴하지 않고 `카단의 여정` 3배 증폭 법칙과 분해 영향을 먼저 설명하는 확인 모달 표시.
+  5. **전 모드 확정 승리 보상 명세 & 보급소 골드 구매(`100G/450G/850G`) + 3단계 순차 팝업 결제 (`HeroDeckSelectScreen.tsx`, `Modals.tsx`, `paymentGateway.ts`, `HearthstoneApp.tsx`)**:
+     - 모든 모드 진입 전·의뢰 일지·전투 종료 영수증에 확정 승리 보상 공개.
+     - 보급소 골드 팩 구매 및 `① 구매수량 선택 > ② 결제국가 선택 > ③ 결제수단 선택` 순차 팝업 결제(`window.open` + `postMessage`/`localStorage` 자동 복귀) 적용.
+  6. **모바일 랜드스케이프 단일 화면 균등 스케일링 및 다크 골드 레터박스 (`GameAdSenseLayout.tsx`, `hearthstone.css`, `stageCoords.ts`, `BoardVfxCanvas.tsx`)**:
+     - 모바일 가로 모드(`844×390`, `667×375` 등)에서 UI가 잘리지 않고 한 화면에 100% 표시되도록 `ResizeObserver` 기반 균등 축소(`transform: scale`) 및 다크 골드 레터박스/필러박스와 스테이지 좌표 정규화 적용.
+- **검증 결과**: `npx tsc --noEmit` (`src/hearthstone`, `src/stone`) 0 에러, `npm run build` 성공, 로컬 Git 커밋 및 구글 폼 보고 완료.

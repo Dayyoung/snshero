@@ -5,12 +5,13 @@ import {
   CLASS_CREST_URL,
   getHeroArtUrl,
 } from '../cardDb';
+import { HsGoldCoinIcon } from '../components/CardVisual';
 import {
   SNS_LOCATIONS,
   SnsRankMedallion,
   SnsSnowCompassSeal,
 } from '../components/SnsHeroArtKit';
-import { hsStorage } from '../storage';
+import { MODE_REWARD_GUIDES, hsStorage } from '../storage';
 import {
   BoardThemeId,
   CLASSIC_HEROES,
@@ -215,7 +216,7 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
             </>
           ) : (
             <span className="px-3 py-1 text-xs font-extrabold text-emerald-300">
-              카단의 첫걸음 · 입문 튜토리얼
+              카단의 여정 · 소설 스토리 RPG
             </span>
           )}
         </div>
@@ -355,14 +356,25 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
 
           {/* Practice Opponent Picker OR Rank Medallion */}
           {isPractice ? (
-            <div className="relative z-10 my-2.5 rounded-2xl border border-[#c8a158]/40 bg-black/40 p-2.5 sm:my-3 sm:p-3">
-              <div className="mb-1.5 text-xs font-extrabold text-amber-200 sm:mb-2">
-                대전할 상대 종족 대표 선택
+            <div className="relative z-10 my-2 rounded-2xl border border-[#c8a158]/40 bg-black/40 p-2.5 sm:my-2.5 sm:p-3">
+              <div className="mb-1.5 flex items-center justify-between gap-1 text-xs font-extrabold text-amber-200">
+                <span>대전할 상대 종족 대표 선택</span>
+                <span className="text-[10.5px] font-bold text-emerald-300">
+                  최초 제압:{' '}
+                  {mode === 'PRACTICE_EXPERT'
+                    ? profile.practiceExpertCleared.length
+                    : profile.practiceNormalCleared.length}
+                  /9종족
+                </span>
               </div>
               <div className="grid grid-cols-3 gap-1.5">
                 {HERO_CLASS_ORDER.map((hc) => {
                   const ch = CLASSIC_HEROES[hc];
                   const active = practiceOpponentClass === hc;
+                  const alreadyCleared =
+                    mode === 'PRACTICE_EXPERT'
+                      ? profile.practiceExpertCleared.includes(hc)
+                      : profile.practiceNormalCleared.includes(hc);
                   return (
                     <button
                       key={hc}
@@ -371,7 +383,7 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
                         hsAudio.playSfx('ui_click');
                         setPracticeOpponentClass(hc);
                       }}
-                      className={`flex min-h-[36px] items-center justify-center gap-1 rounded-lg border px-1.5 py-1.5 text-[11px] font-extrabold transition sm:gap-1.5 sm:px-2 sm:text-xs ${
+                      className={`relative flex min-h-[36px] items-center justify-center gap-1 rounded-lg border px-1.5 py-1.5 text-[11px] font-extrabold transition sm:gap-1.5 sm:px-2 sm:text-xs ${
                         active
                           ? 'border-yellow-300 bg-gradient-to-b from-amber-600 to-amber-900 text-white shadow'
                           : 'border-stone-700 bg-stone-900/85 text-amber-100/80 hover:border-amber-500'
@@ -383,13 +395,21 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
                         className="h-4 w-4 rounded-full object-cover"
                       />
                       <span>{ch.classNameKo}</span>
+                      {alreadyCleared && (
+                        <span
+                          title="최초 제압 보상 수령 완료"
+                          className="ml-0.5 text-[10px] font-black text-emerald-300"
+                        >
+                          ✓
+                        </span>
+                      )}
                     </button>
                   );
                 })}
               </div>
             </div>
           ) : (
-            <div className="relative z-10 my-2.5 flex items-center justify-between rounded-2xl border border-[#c8a158]/40 bg-black/40 p-2.5 sm:my-3 sm:p-3.5">
+            <div className="relative z-10 my-2 flex items-center justify-between rounded-2xl border border-[#c8a158]/40 bg-black/40 p-2.5 sm:my-2.5 sm:p-3">
               <div>
                 <div className="text-[10.5px] font-bold text-amber-300 sm:text-[11px]">
                   현재 눈히어로 등급
@@ -399,13 +419,32 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
                     ? '전설의 눈히어로 (LEGEND)'
                     : `${profile.rank}등급 · ${CLASSIC_RANK_NAMES[profile.rank]}`}
                 </div>
-                <div className="mt-0.5 text-[10.5px] text-amber-200/75 sm:text-[11px]">
-                  승리 시 별 획득 · 연승 보너스 및 3승당 10골드 지급
+                <div className="mt-0.5 text-[10.5px] text-amber-200/80 sm:text-[11px]">
+                  3승 보너스 진행도: <b className="text-yellow-300">{profile.threeWinCounter}/3승</b>
                 </div>
               </div>
-              <SnsRankMedallion rank={profile.rank} size={54} className="shrink-0 drop-shadow" />
+              <SnsRankMedallion rank={profile.rank} size={50} className="shrink-0 drop-shadow" />
             </div>
           )}
+
+          {/* Crystal-Clear Mode Victory Reward Guarantee Box */}
+          <div className="relative z-10 mb-2 rounded-2xl border border-amber-400/50 bg-gradient-to-r from-[#231509]/95 via-[#1a1007]/95 to-[#120b05]/95 px-3 py-2 text-[11px] shadow-inner sm:mb-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-1">
+              <div className="flex items-center gap-1.5 font-extrabold text-yellow-300">
+                <HsGoldCoinIcon size={15} />
+                <span>[{MODE_REWARD_GUIDES[mode].modeNameKo}] 확정 승리 보상</span>
+              </div>
+              <span className="rounded-md border border-sky-400/40 bg-sky-950/80 px-1.5 py-0.5 text-[10px] font-bold text-sky-200">
+                {MODE_REWARD_GUIDES[mode].playStyleBadge}
+              </span>
+            </div>
+            <div className="mt-1 font-extrabold text-amber-100">
+              • 기본 보상: <span className="text-yellow-200">{MODE_REWARD_GUIDES[mode].baseWinRewardText}</span>
+            </div>
+            <div className="mt-0.5 text-[10.5px] font-semibold text-emerald-200/95">
+              • 추가 특전: {MODE_REWARD_GUIDES[mode].specialBonusText}
+            </div>
+          </div>
 
           {/* Battlefield Theme Selector */}
           <div className="relative z-10 mb-2.5 flex flex-wrap items-center justify-between gap-1.5 rounded-xl border border-[#c8a158]/35 bg-black/35 px-2.5 py-2 text-xs sm:mb-3 sm:px-3">
