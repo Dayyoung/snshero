@@ -2,6 +2,31 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-11 13:22 KST] [/game.html 하스스톤 배경·흔적 100% 제거, 오리지널 눈히어로 전장·배경 6종 생성, 공식 SNS HERO.com 카드 뒷면 3종 적용, 상용 조각형 카드 프레임 리디자인 및 엘윈마을·눈히어로 용어·인트로 소설/웹툰 바로가기 완성]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항 (7대 항목 전수 반영)**:
+    1. 카드 배틀 진행 시 남아 있던 하스스톤 배경 이미지 및 원본 흔적을 모든 화면(`public/hs-assets`, `dist/hs-assets`, 레이아웃 실루엣 포함)에서 100% 제거하고 **눈히어로 오리지널 배경 이미지 6종**을 자체 신규 생성·적용.
+    2. 사용자가 업로드한 **공식 `SNS HERO.com` 카드 뒷면 이미지 3종(골드·실버·브론즈)**을 팩 개봉·상대 손패·덱 더미·보급소 선택기에 적용.
+    3. 카드 디자인을 촌스러운 사각형 배치에서 탈피하여 상용 프로 카드 게임 수준의 **`300×420` 비례 입체 조각형 마스터 SVG 카드 프레임(`CardVisual.tsx`)**으로 전면 리디자인.
+    4. `취선루 문 열기` / `취선루 수련` ➔ **`엘윈마을 입장`** / **`엘윈마을 수련`**으로 변경 (`취선루`/`취천루` 전수 제거).
+    5. 고루한 `성혼`/`성흔` 표현 전수 제거: `성흔의 카드 배틀` ➔ **`눈히어로`**, `성흔 팩 개봉` ➔ **`눈히어로 팩 개봉`**, `성흔 보급소` ➔ **`눈히어로 보급소`**, `성흔 가루` ➔ **`영웅 가루`**, `성흔 은화` ➔ **`엘윈의 은화`**, `영웅 성흔` ➔ **`영웅 능력`**.
+    6. 인트로 화면(`TavernIntroScreen.tsx`)의 **`엘윈마을 입장`** 버튼 바로 아래에 **`소설읽기`** (`/book`) 및 **`웹툰보기`** (`/webtoon`) 버튼 추가.
+  - **2. 세부 구현 내역**:
+    - **오리지널 눈히어로 배경 6종 자체 생성 및 하스스톤 레거시 영구 퍼지**:
+      - `public/hs-assets/bg/`에 16:9 와이드 일러스트 6종(`elwin_intro_bg.webp` 엘윈마을 설원 아치문 인트로, `elwin_hub_bg.webp` 엘윈마을 성소 지휘 홀, `pack_altar_bg.webp` 눈히어로 소환 제단, `arena_elwin_snow.webp` 엘윈마을 설원 결투장, `arena_crimson_forge.webp` 불꽃 성채 결투장, `arena_emerald_wind.webp` 바람의 신전 결투장) 신규 생성·적용.
+      - [`scripts/post-build.js`](file:///Users/dayyoung/project/snshero/scripts/post-build.js)를 강화하여 빌드 시 `dist/hs-assets/` 내 구 레거시 디렉터리(`ui`, `audio`, `cursors`, `fonts`, `rea-manifest.json`, `vo-manifest.json`)를 자동 정리하도록 조치.
+      - 인트로의 서부 살룬 양문 개방 연출과 허브의 나무 경첩 상자 턴테이블을 제거하고 눈히어로 고유의 오로라 설원 인트로([`TavernIntroScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/TavernIntroScreen.tsx)) 및 엘윈마을 3대 포털 성소 허브([`BoxHubScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BoxHubScreen.tsx))로 개편.
+    - **공식 `SNS HERO.com` 카드 뒷면 3종 탑재 (`public/hs-assets/cardbacks/snshero-{gold,silver,bronze}.png`)**:
+      - [`types.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/types.ts), [`storage.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/storage.ts), [`SnsHeroArtKit.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/SnsHeroArtKit.tsx), [`Modals.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/Modals.tsx)에서 `SnsCardBackId = 'gold' | 'silver' | 'bronze'`로 개편하고 기본값을 `gold`로 자동 마이그레이션(`CURRENT_LORE_VERSION = 'snshero_v2'`).
+    - **상용 프로급 조각형 카드 디자인 완성 ([`CardVisual.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/CardVisual.tsx), [`cardDb.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/cardDb.ts))**:
+      - 하얀 스튜디오 배경이 보이던 JPEG 버스트를 완전 배제하고, 종족별 다층 원소 하늘(Painted Atmospheric Faction Sky + Halo Glow) 위에 알파 채널 투명 컷아웃(`/anime-character-sheets/cutouts/*.png`)을 결합.
+      - 하수인(타원형 초상화 베젤)·주문(아치형 창문 베젤)·무기(원형 강철 메달리온 베젤) 3종 차별화 실루엣, 양끝이 입체적으로 접힌 아치형 양피지 리본 배너 + 곡선 `<textPath>` 카드명 타이포그래피, 날개형 등급 보석 장식, 음각 능력 두루마리 박스, 입체 3D 마나 수정·교차 검 공격력·생명력 물방울 배지를 `300×420` 고정 비례 스튜디오 좌표계로 구현.
+    - **전 화면 용어 정비 및 인트로 소설읽기·웹툰보기 연결**:
+      - [`game.html`](file:///Users/dayyoung/project/snshero/game.html), [`classic-cards.json`](file:///Users/dayyoung/project/snshero/public/hs-assets/data/classic-cards.json)(`2.1.0-SNSHERO-ELWIN-koKR`), [`TavernIntroScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/TavernIntroScreen.tsx), [`BoxHubScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BoxHubScreen.tsx), [`HeroDeckSelectScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/HeroDeckSelectScreen.tsx), [`PackOpeningScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/PackOpeningScreen.tsx), [`CollectionScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/CollectionScreen.tsx), [`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx), [`CardZoomModal.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/CardZoomModal.tsx), [`Modals.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/Modals.tsx), [`HearthstoneApp.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/HearthstoneApp.tsx), [`design.md`](file:///Users/dayyoung/project/snshero/src/hearthstone/design.md) 전수 반영 완료.
+  - **3. 검증 및 보고**:
+    - 금지어(`하스스톤`, `취선루`, `취천루`, `성흔`, `성혼`, `스톰윈드`) 정적 스캔 **0건**, `npx tsc --noEmit` `src/hearthstone` 에러 **0건**, `npm run build` 무결점 성공, 데스크톱(`1440×900`) 및 모바일 포트레이트(`390×844`) 브라우저 E2E 5대 체크포인트 + 스크린샷 육안 검수 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-11-11 12:42 KST] [/game.html 하스스톤 에셋 전면 제거 및 눈히어로(카단의 여정 · 11종족 110영웅 · 382종 카드 · 9종 기본덱 · 모바일 확대 모달 · 콘솔 테스트 API) 각색 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

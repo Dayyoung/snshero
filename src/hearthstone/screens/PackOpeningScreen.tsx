@@ -311,7 +311,7 @@ export const PackOpeningScreen: React.FC<{
           }}
           className="hs-brass-btn min-h-[40px] rounded-xl px-3 py-1.5 text-xs font-extrabold text-amber-100 sm:px-4 sm:py-2 sm:text-sm"
         >
-          ← <span className="hidden sm:inline">취선루 </span>상자로
+          ← <span className="hidden sm:inline">엘윈마을 </span>로비로
         </button>
 
         <div className="flex items-center gap-1.5 sm:gap-2.5">
@@ -343,7 +343,7 @@ export const PackOpeningScreen: React.FC<{
             <SnsBoosterPackArt />
           </div>
           <span className="text-xs font-extrabold text-amber-100">
-            미개봉 성흔 영웅 팩
+            미개봉 눈히어로 팩
           </span>
           <span className="hs-num rounded-full border border-[#e0bc72] bg-black/70 px-2.5 py-0.5 text-xs text-yellow-300">
             {profile.packs}개
@@ -370,7 +370,7 @@ export const PackOpeningScreen: React.FC<{
         {/* Left: Unopened Pack Stack Tray (Desktop >= md) */}
         <aside className="hs-wood-panel hidden flex-col items-center justify-center rounded-3xl p-4 sm:p-5 md:col-span-3 md:flex">
           <div className="hs-title mb-2 text-sm font-extrabold text-amber-100">
-            미개봉 성흔 영웅 팩
+            미개봉 눈히어로 팩
           </div>
           <div className="hs-num mb-3 rounded-full border-2 border-[#e0bc72] bg-stone-950/85 px-4 py-1 text-xl text-yellow-300 shadow-inner">
             {profile.packs}개
@@ -403,7 +403,7 @@ export const PackOpeningScreen: React.FC<{
             </div>
           ) : (
             <div className="py-10 text-center text-xs font-semibold text-amber-200/70">
-              보유한 성흔 영웅 팩이 없습니다.
+              보유한 눈히어로 팩이 없습니다.
               <br />
               상단 버튼으로 100골드에 구매하세요.
             </div>
@@ -500,9 +500,9 @@ export const PackOpeningScreen: React.FC<{
               </div>
               <span className="hs-title hs-outline-sm mt-3 text-center text-base font-extrabold text-sky-200 sm:text-lg">
                 {packBursting
-                  ? '성흔 봉인 개방 중!!'
+                  ? '눈히어로 봉인 개방 중!!'
                   : profile.packs > 0
-                    ? '터치하여 성흔 영웅 팩 개봉'
+                    ? '터치하여 눈히어로 팩 개봉'
                     : '개봉할 카드 팩이 없습니다'}
               </span>
             </div>
@@ -697,7 +697,7 @@ export const PackOpeningScreen: React.FC<{
                                 )}
                                 {item.isGolden && (
                                   <span className="hs-outline-sm pointer-events-none absolute -bottom-1 left-1/2 z-40 -translate-x-1/2 whitespace-nowrap rounded border border-yellow-200 bg-gradient-to-b from-yellow-400 to-amber-700 px-1.5 py-0.5 text-[8px] font-extrabold text-white shadow md:rounded-md md:px-2 md:text-[9.5px]">
-                                    황금 성흔
+                                    황금 영웅
                                   </span>
                                 )}
                               </div>
@@ -728,8 +728,8 @@ export const PackOpeningScreen: React.FC<{
             zoomedPackCard.isNew
               ? '신규 영웅 카드 획득!'
               : zoomedPackCard.isGolden
-                ? '황금 성흔 카드 획득!'
-                : '성흔 팩 개봉 획득'
+                ? '황금 영웅 카드 획득!'
+                : '눈히어로 팩 개봉 획득'
           }
           showFlavor
           primaryAction={{

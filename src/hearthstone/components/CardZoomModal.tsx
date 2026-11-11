@@ -34,7 +34,7 @@ const TYPE_LABEL_KO: Record<ClassicCardDef['type'], string> = {
 
 function getClassLabelKo(cardClass: CardClass): string {
   if (cardClass === 'NEUTRAL') return '중립';
-  if (cardClass === 'DREAM') return '성몽';
+  if (cardClass === 'DREAM') return '신록';
   return CLASSIC_HEROES[cardClass as HeroClass]?.classNameKo || cardClass;
 }
 
@@ -157,8 +157,8 @@ export const CardZoomModal: React.FC<CardZoomModalProps> = ({
           </div>
         )}
 
-        {/* Enlarged 512x Official koKR Sculpted Card */}
-        <div className="-my-6 origin-center scale-[0.78] sm:-my-2 sm:scale-[0.94]">
+        {/* Enlarged Sculpted SNSHero Card */}
+        <div className="-my-4 origin-center scale-[0.82] sm:-my-1 sm:scale-[0.96]">
           <HearthstoneCard
             card={card}
             effectiveCost={effectiveCost}

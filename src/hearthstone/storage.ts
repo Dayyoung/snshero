@@ -24,7 +24,7 @@ const KEYS = {
   LORE_VER: 'hero_hs_lore_version',
 };
 
-const CURRENT_LORE_VERSION = 'snshero_v1';
+const CURRENT_LORE_VERSION = 'snshero_v2';
 
 export type CollectionMap = Record<string, number>;
 
@@ -40,6 +40,12 @@ function emitStateChanged() {
   }
 }
 
+function normalizeCardBack(raw: unknown): PlayerProfile['selectedCardBack'] {
+  if (raw === 'silver' || raw === 'frost') return 'silver';
+  if (raw === 'bronze') return 'bronze';
+  return 'gold';
+}
+
 function defaultProfile(): PlayerProfile {
   const classWins = {} as Record<HeroClass, number>;
   for (const c of HERO_CLASS_ORDER) classWins[c] = 0;
@@ -53,7 +59,7 @@ function defaultProfile(): PlayerProfile {
     totalWins: 0,
     totalGames: 0,
     classWins,
-    selectedCardBack: 'classic',
+    selectedCardBack: 'gold',
     masterUnlocked: false,
     threeWinCounter: 0,
   };
@@ -63,7 +69,7 @@ function defaultQuests(): DailyQuest[] {
   return [
     {
       id: 'q_win_3',
-      title: '취선루의 승부사',
+      title: '엘윈마을의 승부사',
       description: '아무 종족으로 대전 또는 수련에서 2승 달성',
       progress: 0,
       goal: 2,
@@ -72,7 +78,7 @@ function defaultQuests(): DailyQuest[] {
     },
     {
       id: 'q_play_minions',
-      title: '성흔 전단 소집',
+      title: '눈히어로 동료 소집',
       description: '영웅 동료(하수인) 15명 소환하기',
       progress: 0,
       goal: 15,
@@ -155,7 +161,14 @@ class HearthstoneStorage {
   getProfile(): PlayerProfile {
     try {
       const raw = localStorage.getItem(KEYS.PROFILE);
-      if (raw) return { ...defaultProfile(), ...JSON.parse(raw) };
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return {
+          ...defaultProfile(),
+          ...parsed,
+          selectedCardBack: normalizeCardBack(parsed?.selectedCardBack),
+        };
+      }
     } catch {
       // ignore
     }
@@ -289,7 +302,7 @@ class HearthstoneStorage {
     const cost = CRAFTING_COST[def.rarity] || 40;
     const p = this.getProfile();
     if (p.arcaneDust < cost) {
-      return { ok: false, reason: `성흔 가루가 부족합니다. (필요: ${cost})` };
+      return { ok: false, reason: `영웅 가루가 부족합니다. (필요: ${cost})` };
     }
     const col = this.getCollection();
     const maxUseful = def.rarity === 'LEGENDARY' ? 1 : 2;

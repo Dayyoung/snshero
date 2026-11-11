@@ -154,7 +154,7 @@ export const CollectionScreen: React.FC<{
     const owned = collection[card.id] || 0;
     if (owned <= 0) {
       setInspectCard(card);
-      showNotice('미보유 카드입니다. 상세 창에서 성흔 가루로 즉시 제작할 수 있습니다.');
+      showNotice('미보유 카드입니다. 상세 창에서 영웅 가루로 즉시 제작할 수 있습니다.');
       return;
     }
     if (editingDeck.cards.length >= 30) {
@@ -351,7 +351,7 @@ export const CollectionScreen: React.FC<{
             }}
             className="hs-brass-btn min-h-[38px] rounded-xl px-2.5 py-1 text-xs font-extrabold text-amber-100 sm:px-3.5 sm:py-1.5 sm:text-sm"
           >
-            ← <span className="hidden sm:inline">취선루 </span>상자로
+            ← <span className="hidden sm:inline">엘윈마을 </span>로비로
           </button>
 
           <div className="flex items-center gap-2">
@@ -374,7 +374,7 @@ export const CollectionScreen: React.FC<{
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           <div className="flex items-center gap-1 rounded-xl border border-sky-400/50 bg-slate-950/85 px-2.5 py-1 text-[11px] font-extrabold text-sky-200 shadow-inner sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">
             <HsArcaneDustVialIcon size={16} />
-            <span className="hidden sm:inline">성흔 가루</span>
+            <span className="hidden sm:inline">영웅 가루</span>
             <span className="hs-num ml-0.5 text-xs text-white sm:text-sm">{profile.arcaneDust}</span>
           </div>
 
@@ -386,15 +386,15 @@ export const CollectionScreen: React.FC<{
                 hsAudio.playSfx('purchase');
                 syncAll();
                 showNotice(
-                  `여분 카드 ${res.count}장을 정제하여 +${res.dustGained} 성흔 가루를 획득했습니다!`,
+                  `여분 카드 ${res.count}장을 분해하여 +${res.dustGained} 영웅 가루를 획득했습니다!`,
                 );
               } else {
-                showNotice('정제할 여분(3장 이상 중복) 카드가 없습니다.');
+                showNotice('분해할 여분(3장 이상 중복) 카드가 없습니다.');
               }
             }}
             className="hs-brass-btn min-h-[36px] rounded-xl px-2.5 py-1 text-[11px] font-extrabold text-sky-200 sm:px-3 sm:py-1.5 sm:text-xs"
           >
-            여분 정제
+            여분 분해
           </button>
         </div>
       </header>
@@ -1068,7 +1068,7 @@ export const CollectionScreen: React.FC<{
               };
             } else if (owned === 0 && inspectCard.rarity !== 'FREE') {
               primaryAction = {
-                label: `성흔 제작 후 보유 (-${CRAFTING_COST[inspectCard.rarity]} 가루)`,
+                label: `영웅 카드 제작 (-${CRAFTING_COST[inspectCard.rarity]} 가루)`,
                 variant: 'arcane',
                 onClick: () => {
                   const res = hsStorage.craftCard(inspectCard.id);
@@ -1077,7 +1077,7 @@ export const CollectionScreen: React.FC<{
                     syncAll();
                     showNotice(`[${inspectCard.name}] 카드를 제작했습니다!`);
                   } else {
-                    showNotice(res.reason || '성흔 가루가 부족합니다.');
+                    showNotice(res.reason || '영웅 가루가 부족합니다.');
                   }
                 },
               };
@@ -1117,7 +1117,7 @@ export const CollectionScreen: React.FC<{
             }
           } else if (inspectCard.rarity !== 'FREE') {
             primaryAction = {
-              label: `성흔 카드 제작 (-${CRAFTING_COST[inspectCard.rarity]} 가루)`,
+              label: `영웅 카드 제작 (-${CRAFTING_COST[inspectCard.rarity]} 가루)`,
               variant: 'arcane',
               onClick: () => {
                 const res = hsStorage.craftCard(inspectCard.id);
@@ -1157,16 +1157,16 @@ export const CollectionScreen: React.FC<{
             }
             if (owned > 0) {
               secondaryActions.push({
-                label: `성흔 정제 (+${DISENCHANT_VALUE[inspectCard.rarity]} 가루)`,
+                label: `카드 분해 (+${DISENCHANT_VALUE[inspectCard.rarity]} 가루)`,
                 variant: 'brass',
                 onClick: () => {
                   const res = hsStorage.disenchantCard(inspectCard.id);
                   if (res.ok) {
                     hsAudio.playSfx('cm_remove_card');
                     syncAll();
-                    showNotice(`[${inspectCard.name}] 성흔 정제 완료!`);
+                    showNotice(`[${inspectCard.name}] 카드 분해 완료!`);
                   } else {
-                    showNotice(res.reason || '정제 실패');
+                    showNotice(res.reason || '분해 실패');
                   }
                 },
               });

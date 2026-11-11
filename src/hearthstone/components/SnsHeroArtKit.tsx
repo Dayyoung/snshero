@@ -1,152 +1,81 @@
 import React from 'react';
-import { HeroClass } from '../types';
+import { HeroClass, SnsCardBackId } from '../types';
 
 export const SNS_LOGO_URL = '/logo-ko.png';
 export const SNS_ICON_URL = '/icon.png';
 
 export const SNS_LOCATIONS = {
-  TAVERN_EXTERIOR: '/anime-character-sheets/locations/art/LOC_002_Drunken_Bell_Tower.jpg',
-  BOX_TABLE: '/anime-character-sheets/locations/art/LOC_016_Jade_Council_Hall.jpg',
-  PACK_ALTAR: '/anime-character-sheets/locations/art/LOC_012_Sky_Altar.jpg',
-  COLLECTION_ARCHIVE: '/anime-character-sheets/locations/art/LOC_019_Black_Citadel_Starlight_Archive.jpg',
-  BOARD_LIGHTHAVEN: '/anime-character-sheets/locations/art/LOC_006_Lighthaven_Inner_Forum.jpg',
-  BOARD_RED_PALACE: '/anime-character-sheets/locations/art/LOC_007_Red_Glass_Palace.jpg',
-  BOARD_WIND_ISLE: '/anime-character-sheets/locations/art/LOC_010_Whispering_Wind_Island.jpg',
+  TAVERN_EXTERIOR: '/hs-assets/bg/elwin_intro_bg.webp',
+  BOX_TABLE: '/hs-assets/bg/elwin_hub_bg.webp',
+  PACK_ALTAR: '/hs-assets/bg/pack_altar_bg.webp',
+  COLLECTION_ARCHIVE: '/hs-assets/bg/elwin_hub_bg.webp',
+  BOARD_LIGHTHAVEN: '/hs-assets/bg/arena_elwin_snow.webp',
+  BOARD_RED_PALACE: '/hs-assets/bg/arena_crimson_forge.webp',
+  BOARD_WIND_ISLE: '/hs-assets/bg/arena_emerald_wind.webp',
 } as const;
 
 export const SNS_CARD_BACK_THEMES: Record<
-  'classic' | 'legend' | 'frost' | 'gold',
+  SnsCardBackId,
   {
     name: string;
     subtitle: string;
-    bgGrad: string;
-    rimGrad: string;
-    coreColor: string;
-    runeColor: string;
+    imageUrl: string;
+    glowColor: string;
   }
 > = {
-  classic: {
-    name: '라이트헤븐 설원 문장',
-    subtitle: '아케 성기사단 기본 인장',
-    bgGrad: 'linear-gradient(160deg, #1d4ed8 0%, #0f172a 55%, #172554 100%)',
-    rimGrad: 'linear-gradient(135deg, #fde68a 0%, #d97706 50%, #78350f 100%)',
-    coreColor: '#38bdf8',
-    runeColor: 'rgba(186,230,253,0.55)',
-  },
-  legend: {
-    name: '성흔의 전설 문장',
-    subtitle: '취선루 최고 등급 달성 기념',
-    bgGrad: 'linear-gradient(160deg, #7c2d12 0%, #3b0764 55%, #1e1b4b 100%)',
-    rimGrad: 'linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #92400e 100%)',
-    coreColor: '#fbbf24',
-    runeColor: 'rgba(253,230,138,0.65)',
-  },
-  frost: {
-    name: '만년설 은빛 단검',
-    subtitle: '엘윈 마을 서약의 유물',
-    bgGrad: 'linear-gradient(160deg, #0284c7 0%, #082f49 55%, #0f172a 100%)',
-    rimGrad: 'linear-gradient(135deg, #e0f2fe 0%, #38bdf8 50%, #0369a1 100%)',
-    coreColor: '#7dd3fc',
-    runeColor: 'rgba(224,242,254,0.68)',
-  },
   gold: {
-    name: '비취 평의회 황금장',
-    subtitle: '대륙 11종족 동맹 문장',
-    bgGrad: 'linear-gradient(160deg, #854d0e 0%, #422006 55%, #1c1917 100%)',
-    rimGrad: 'linear-gradient(135deg, #fef9c3 0%, #eab308 50%, #854d0e 100%)',
-    coreColor: '#facc15',
-    runeColor: 'rgba(254,240,138,0.65)',
+    name: '눈히어로 골드',
+    subtitle: '공식 골드 엠블럼 카드 뒷면',
+    imageUrl: '/hs-assets/cardbacks/snshero-gold.png',
+    glowColor: 'rgba(250, 204, 21, 0.55)',
+  },
+  silver: {
+    name: '눈히어로 실버',
+    subtitle: '공식 실버 플래티넘 카드 뒷면',
+    imageUrl: '/hs-assets/cardbacks/snshero-silver.png',
+    glowColor: 'rgba(226, 232, 240, 0.55)',
+  },
+  bronze: {
+    name: '눈히어로 브론즈',
+    subtitle: '공식 브론즈 클래식 카드 뒷면',
+    imageUrl: '/hs-assets/cardbacks/snshero-bronze.png',
+    glowColor: 'rgba(217, 119, 6, 0.55)',
   },
 };
 
 export const SnsCardBackArt: React.FC<{
-  variant?: 'classic' | 'legend' | 'frost' | 'gold';
+  variant?: SnsCardBackId | string;
   className?: string;
-}> = ({ variant = 'classic', className = 'w-full h-full' }) => {
-  const t = SNS_CARD_BACK_THEMES[variant] || SNS_CARD_BACK_THEMES.classic;
+}> = ({ variant = 'gold', className = 'w-full h-full' }) => {
+  const key: SnsCardBackId =
+    variant === 'silver' || variant === 'frost'
+      ? 'silver'
+      : variant === 'bronze'
+        ? 'bronze'
+        : 'gold';
+  const theme = SNS_CARD_BACK_THEMES[key];
+
   return (
     <div
-      className={`relative overflow-hidden rounded-[12px] select-none ${className}`}
+      className={`relative select-none overflow-hidden rounded-[8%] ${className}`}
       style={{
-        background: t.rimGrad,
-        padding: '6%',
-        boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.65), 0 8px 20px rgba(0,0,0,0.65)',
+        filter: 'drop-shadow(0 6px 14px rgba(0,0,0,0.75))',
       }}
     >
+      <img
+        src={theme.imageUrl}
+        alt={theme.name}
+        draggable={false}
+        className="h-full w-full object-fill select-none"
+      />
+      {/* Subtle glossy foil highlight */}
       <div
-        className="relative w-full h-full rounded-[9px] overflow-hidden flex items-center justify-center border border-amber-100/35"
-        style={{ background: t.bgGrad }}
-      >
-        {/* Corner filigree & arcane geometry */}
-        <svg viewBox="0 0 160 224" className="absolute inset-0 w-full h-full pointer-events-none">
-          <rect
-            x="8"
-            y="8"
-            width="144"
-            height="208"
-            rx="8"
-            fill="none"
-            stroke={t.runeColor}
-            strokeWidth="1.6"
-          />
-          <rect
-            x="14"
-            y="14"
-            width="132"
-            height="196"
-            rx="6"
-            fill="none"
-            stroke={t.runeColor}
-            strokeWidth="0.9"
-            strokeDasharray="4 3"
-          />
-          <circle cx="80" cy="112" r="52" fill="none" stroke={t.runeColor} strokeWidth="1.8" />
-          <circle
-            cx="80"
-            cy="112"
-            r="41"
-            fill="rgba(0,0,0,0.35)"
-            stroke={t.coreColor}
-            strokeWidth="1.5"
-          />
-          {/* 8-point snow crystal star */}
-          <path
-            d="M80 48 L89 96 L136 112 L89 128 L80 176 L71 128 L24 112 L71 96 Z"
-            fill={t.coreColor}
-            fillOpacity="0.24"
-            stroke={t.coreColor}
-            strokeWidth="1.5"
-          />
-          <path
-            d="M46 78 L80 99 L114 78 L93 112 L114 146 L80 125 L46 146 L67 112 Z"
-            fill={t.coreColor}
-            fillOpacity="0.18"
-            stroke={t.runeColor}
-            strokeWidth="1.1"
-          />
-          {/* Corner diamonds */}
-          <polygon points="24,24 32,20 28,28" fill={t.coreColor} />
-          <polygon points="136,24 128,20 132,28" fill={t.coreColor} />
-          <polygon points="24,200 32,204 28,196" fill={t.coreColor} />
-          <polygon points="136,200 128,204 132,196" fill={t.coreColor} />
-        </svg>
-
-        {/* Center Snow-Emblem Core */}
-        <div
-          className="relative z-10 w-[44%] aspect-square rounded-full flex items-center justify-center border-2 border-amber-200/80"
-          style={{
-            background: `radial-gradient(circle, #ffffff 0%, ${t.coreColor} 48%, #0f172a 100%)`,
-            boxShadow: `0 0 18px ${t.coreColor}`,
-          }}
-        >
-          <img
-            src={SNS_ICON_URL}
-            alt="눈히어로 인장"
-            className="w-[78%] h-[78%] object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.75)]"
-            draggable={false}
-          />
-        </div>
-      </div>
+        className="pointer-events-none absolute inset-0 rounded-[8%]"
+        style={{
+          background:
+            'linear-gradient(135deg, rgba(255,255,255,0.22) 0%, transparent 36%, transparent 72%, rgba(0,0,0,0.25) 100%)',
+        }}
+      />
     </div>
   );
 };
@@ -157,73 +86,67 @@ export const SnsBoosterPackArt: React.FC<{
 }> = ({ className = 'w-full h-full', glowing = false }) => {
   return (
     <div
-      className={`relative overflow-hidden rounded-[14px] select-none ${className}`}
+      className={`relative select-none overflow-hidden rounded-[12px] ${className}`}
       style={{
-        background: 'linear-gradient(145deg, #fef08a 0%, #d97706 38%, #78350f 75%, #f59e0b 100%)',
-        padding: '5%',
+        background:
+          'linear-gradient(145deg, #fef08a 0%, #eab308 32%, #92400e 68%, #facc15 100%)',
+        padding: '4.5%',
         boxShadow: glowing
-          ? '0 0 36px rgba(56,189,248,0.85), 0 18px 36px rgba(0,0,0,0.8)'
-          : '0 14px 28px rgba(0,0,0,0.78), inset 0 1px 2px rgba(255,255,255,0.75)',
+          ? '0 0 38px rgba(56,189,248,0.88), 0 18px 36px rgba(0,0,0,0.85)'
+          : '0 14px 28px rgba(0,0,0,0.82), inset 0 1px 2px rgba(255,255,255,0.8)',
       }}
     >
-      {/* Pack metallic crimps top & bottom */}
       <div
-        className="relative w-full h-full rounded-[10px] overflow-hidden flex flex-col items-center justify-between py-[10%] px-[8%] border border-amber-200/45"
+        className="relative flex h-full w-full flex-col items-center justify-between overflow-hidden rounded-[9px] border border-amber-200/50 px-[6%] py-[9%]"
         style={{
           background:
-            'radial-gradient(circle at 50% 42%, #1e40af 0%, #0f172a 62%, #090d16 100%)',
+            'radial-gradient(circle at 50% 45%, #1d4ed8 0%, #0f172a 60%, #060a14 100%)',
         }}
       >
+        {/* Top & bottom metallic booster crimps */}
         <div
-          className="absolute inset-x-0 top-0 h-[8%] opacity-65"
+          className="pointer-events-none absolute inset-x-0 top-0 h-[7%] opacity-75"
           style={{
             background:
-              'repeating-linear-gradient(90deg, rgba(253,224,71,0.45) 0px, rgba(253,224,71,0.45) 3px, rgba(120,53,15,0.65) 3px, rgba(120,53,15,0.65) 6px)',
+              'repeating-linear-gradient(90deg, rgba(254,240,138,0.55) 0px, rgba(254,240,138,0.55) 3px, rgba(120,53,15,0.75) 3px, rgba(120,53,15,0.75) 6px)',
           }}
         />
         <div
-          className="absolute inset-x-0 bottom-0 h-[8%] opacity-65"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[7%] opacity-75"
           style={{
             background:
-              'repeating-linear-gradient(90deg, rgba(253,224,71,0.45) 0px, rgba(253,224,71,0.45) 3px, rgba(120,53,15,0.65) 3px, rgba(120,53,15,0.65) 6px)',
+              'repeating-linear-gradient(90deg, rgba(254,240,138,0.55) 0px, rgba(254,240,138,0.55) 3px, rgba(120,53,15,0.75) 3px, rgba(120,53,15,0.75) 6px)',
           }}
         />
 
-        {/* Official NunHero Logo */}
+        {/* Official 눈히어로 Logo */}
         <img
           src={SNS_LOGO_URL}
           alt="눈히어로"
-          className="relative z-10 w-[88%] max-h-[28%] object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]"
+          className="relative z-10 max-h-[26%] w-[90%] object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.92)]"
           draggable={false}
         />
 
-        {/* Sculpted Glowing Snow-Gem Clasp */}
-        <div className="relative z-10 w-[56%] aspect-square rounded-full flex items-center justify-center my-auto">
+        {/* Center Official SNS HERO Emblem Preview */}
+        <div className="relative z-10 my-auto flex aspect-[5/7] w-[62%] items-center justify-center">
           <div
-            className="absolute inset-0 rounded-full animate-pulse"
+            className="pointer-events-none absolute -inset-2 animate-pulse rounded-full"
             style={{
-              background: 'radial-gradient(circle, rgba(56,189,248,0.65) 0%, transparent 72%)',
+              background: 'radial-gradient(circle, rgba(56,189,248,0.55) 0%, transparent 72%)',
             }}
           />
-          <div
-            className="relative w-[84%] h-[84%] rounded-full border-[3px] border-amber-300 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.85)]"
-            style={{
-              background: 'radial-gradient(circle at 35% 30%, #e0f2fe 0%, #0284c7 55%, #1e3a8a 100%)',
-            }}
-          >
-            <img
-              src={SNS_ICON_URL}
-              alt=""
-              className="w-[74%] h-[74%] object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-              draggable={false}
-            />
-          </div>
+          <img
+            src="/hs-assets/cardbacks/snshero-gold.png"
+            alt=""
+            draggable={false}
+            className="relative h-full w-full object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
+          />
         </div>
 
-        {/* Bottom Ribbon */}
-        <div className="relative z-10 px-2.5 py-0.5 rounded-full bg-gradient-to-b from-amber-200 via-amber-400 to-amber-700 border border-amber-950 shadow">
-          <span className="hs-title text-[9px] sm:text-[10px] font-extrabold text-[#261608] tracking-wider whitespace-nowrap">
-            성흔 영웅 팩
+        {/* Bottom Metallic Ribbon */}
+        <div className="relative z-10 rounded-full border border-amber-950 bg-gradient-to-b from-amber-100 via-amber-400 to-amber-700 px-2.5 py-0.5 shadow">
+          <span className="hs-title whitespace-nowrap text-[8.5px] font-extrabold tracking-wider text-[#261608] sm:text-[10px]">
+            눈히어로 팩
           </span>
         </div>
       </div>
@@ -241,30 +164,47 @@ export const SnsSnowCompassSeal: React.FC<{
     height={size}
     viewBox="0 0 80 80"
     className={`select-none ${spinning ? 'animate-spin' : ''} ${className}`}
-    style={spinning ? { animationDuration: '14s' } : undefined}
+    style={spinning ? { animationDuration: '16s' } : undefined}
   >
     <defs>
       <radialGradient id="snsSealCore" cx="35%" cy="30%" r="70%">
         <stop offset="0%" stopColor="#e0f2fe" />
-        <stop offset="45%" stopColor="#0284c7" />
+        <stop offset="48%" stopColor="#0284c7" />
         <stop offset="100%" stopColor="#0f172a" />
       </radialGradient>
       <linearGradient id="snsSealGold" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#fef3c7" />
+        <stop offset="0%" stopColor="#fef9c3" />
         <stop offset="50%" stopColor="#eab308" />
         <stop offset="100%" stopColor="#78350f" />
       </linearGradient>
     </defs>
-    <circle cx="40" cy="40" r="37" fill="url(#snsSealCore)" stroke="url(#snsSealGold)" strokeWidth="4" />
-    <circle cx="40" cy="40" r="29" fill="none" stroke="rgba(253,224,71,0.55)" strokeWidth="1.4" strokeDasharray="4 3" />
+    <polygon
+      points="40,3 66,14 77,40 66,66 40,77 14,66 3,40 14,14"
+      fill="url(#snsSealCore)"
+      stroke="url(#snsSealGold)"
+      strokeWidth="3.8"
+    />
+    <circle
+      cx="40"
+      cy="40"
+      r="27"
+      fill="none"
+      stroke="rgba(253,224,71,0.55)"
+      strokeWidth="1.4"
+    />
     <path
-      d="M40 8 L46 31 L69 40 L46 49 L40 72 L34 49 L11 40 L34 31 Z"
+      d="M40 10 L46 32 L68 40 L46 48 L40 70 L34 48 L12 40 L34 32 Z"
       fill="url(#snsSealGold)"
       stroke="#451a03"
       strokeWidth="1.4"
     />
-    <circle cx="40" cy="40" r="11" fill="#38bdf8" stroke="#fef9c3" strokeWidth="2" />
-    <path d="M40 32 V48 M32 40 H48" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" />
+    <circle cx="40" cy="40" r="10" fill="#38bdf8" stroke="#fef9c3" strokeWidth="2" />
+    <path
+      d="M40 33 V47 M33 40 H47 M35 35 L45 45 M45 35 L35 45"
+      stroke="#ffffff"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -330,29 +270,65 @@ export const SnsQuestScrollIcon: React.FC<{
 );
 
 export const SnsLegendaryCrestSvg: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <svg viewBox="0 0 220 90" className={`pointer-events-none select-none ${className}`}>
+  <svg viewBox="0 0 260 112" className={`pointer-events-none select-none ${className}`}>
     <defs>
-      <linearGradient id="snsLegGold" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#fff7cc" />
-        <stop offset="45%" stopColor="#facc15" />
-        <stop offset="100%" stopColor="#92400e" />
+      <linearGradient id="snsLegWingGold" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#fffbeb" />
+        <stop offset="30%" stopColor="#fde047" />
+        <stop offset="68%" stopColor="#d97706" />
+        <stop offset="100%" stopColor="#78350f" />
       </linearGradient>
+      <radialGradient id="snsLegGemAmber" cx="40%" cy="35%" r="65%">
+        <stop offset="0%" stopColor="#fef9c3" />
+        <stop offset="45%" stopColor="#f97316" />
+        <stop offset="100%" stopColor="#7c2d12" />
+      </radialGradient>
     </defs>
-    {/* Sculpted Twin Dragon-Valkyrie Wings */}
+    {/* Sweeping Sculpted Dragon Wings Embracing Portrait Oval */}
     <path
-      d="M110 26 C88 8, 42 4, 8 24 C28 26, 44 34, 52 46 C34 42, 20 48, 12 58 C38 54, 64 58, 86 72 L110 54 L134 72 C156 58, 182 54, 208 58 C200 48, 186 42, 168 46 C176 34, 192 26, 212 24 C178 4, 132 8, 110 26 Z"
-      fill="url(#snsLegGold)"
-      stroke="#3b1d06"
-      strokeWidth="3"
+      d="M130 30
+         C104 10, 56 6, 10 34
+         C28 32, 46 39, 54 54
+         C36 50, 20 58, 12 76
+         C34 68, 56 72, 68 92
+         C66 74, 84 54, 114 48
+         L130 56
+         L146 48
+         C176 54, 194 74, 192 92
+         C204 72, 226 68, 248 76
+         C240 58, 224 50, 206 54
+         C214 39, 232 32, 250 34
+         C204 6, 156 10, 130 30 Z"
+      fill="url(#snsLegWingGold)"
+      stroke="#2b1404"
+      strokeWidth="3.2"
       strokeLinejoin="round"
     />
-    {/* Crown Center Sapphire */}
-    <polygon
-      points="110,10 122,28 110,46 98,28"
-      fill="#38bdf8"
-      stroke="#fef9c3"
-      strokeWidth="2.4"
+    {/* Inner Engraved Wing Ribs */}
+    <path
+      d="M108 36 C78 24, 48 26, 26 38 M152 36 C182 24, 212 26, 234 38"
+      fill="none"
+      stroke="#fef3c7"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      opacity="0.85"
     />
+    {/* Horned Dragon Crown Spires */}
+    <path
+      d="M106 28 L94 6 L118 22 L130 4 L142 22 L166 6 L154 28 Z"
+      fill="url(#snsLegWingGold)"
+      stroke="#2b1404"
+      strokeWidth="2.8"
+      strokeLinejoin="round"
+    />
+    {/* Blazing Center Legendary Dragon-Eye Gem */}
+    <polygon
+      points="130,15 142,32 130,49 118,32"
+      fill="url(#snsLegGemAmber)"
+      stroke="#fef9c3"
+      strokeWidth="2.2"
+    />
+    <polygon points="130,18 137,29 130,32 123,29" fill="rgba(255,255,255,0.65)" />
   </svg>
 );
 
@@ -360,7 +336,7 @@ export const SnsTauntShieldSvg: React.FC<{ className?: string }> = ({ className 
   <svg viewBox="0 0 120 144" className={`pointer-events-none select-none ${className}`}>
     <defs>
       <linearGradient id="snsTauntSteel" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#f1f5f9" />
+        <stop offset="0%" stopColor="#f8fafc" />
         <stop offset="45%" stopColor="#94a3b8" />
         <stop offset="100%" stopColor="#334155" />
       </linearGradient>

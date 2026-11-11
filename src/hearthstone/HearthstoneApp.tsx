@@ -83,7 +83,7 @@ export const HearthstoneApp: React.FC = () => {
   if (loadError) {
     return (
       <div className="flex h-[100dvh] w-full flex-col items-center justify-center bg-stone-950 p-6 text-center text-amber-100">
-        <h1 className="text-2xl font-extrabold text-red-400">눈히어로 성흔 데이터를 불러오지 못했습니다</h1>
+        <h1 className="text-2xl font-extrabold text-red-400">눈히어로 데이터를 불러오지 못했습니다</h1>
         <p className="mt-2 text-sm text-amber-200/80">{loadError}</p>
       </div>
     );
@@ -98,7 +98,7 @@ export const HearthstoneApp: React.FC = () => {
           className="w-64 animate-pulse drop-shadow-[0_12px_28px_rgba(56,189,248,0.45)]"
         />
         <div className="mt-4 text-sm font-extrabold tracking-wider text-sky-200">
-          취선루의 성흔 대전석을 준비하고 있습니다...
+          엘윈마을 대결 광장을 준비하고 있습니다...
         </div>
       </div>
     );

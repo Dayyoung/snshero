@@ -10,6 +10,7 @@ import {
   CLASSIC_HEROES,
   HERO_CLASS_ORDER,
   PlayerProfile,
+  SnsCardBackId,
 } from '../types';
 import { HsArcaneDustVialIcon, HsGoldCoinIcon } from './CardVisual';
 import {
@@ -20,7 +21,7 @@ import {
   SnsRankMedallion,
 } from './SnsHeroArtKit';
 
-const CARD_BACK_IDS: PlayerProfile['selectedCardBack'][] = ['classic', 'legend', 'frost', 'gold'];
+const CARD_BACK_IDS: SnsCardBackId[] = ['gold', 'silver', 'bronze'];
 
 export const QuestLogModal: React.FC<{
   onClose: () => void;
@@ -54,10 +55,10 @@ export const QuestLogModal: React.FC<{
             </div>
             <div>
               <h2 className="hs-title text-xl font-extrabold text-amber-100 sm:text-2xl">
-                일곱 추적자 의뢰 일지
+                엘윈마을 의뢰 일지
               </h2>
               <p className="text-xs font-semibold text-amber-300/85">
-                성흔 등급전 전적 · 취선루 일일 의뢰 · 9대 종족 승리 기록
+                눈히어로 등급전 전적 · 엘윈마을 일일 의뢰 · 9대 종족 승리 기록
               </p>
             </div>
           </div>
@@ -117,7 +118,7 @@ export const QuestLogModal: React.FC<{
             <div className="flex flex-col items-center justify-center rounded-xl border border-sky-400/25 bg-stone-950/75 p-2">
               <HsArcaneDustVialIcon size={26} />
               <span className="hs-num mt-1 text-lg text-sky-300">{profile.arcaneDust}</span>
-              <span className="text-[11px] font-bold text-sky-200/80">성흔 가루</span>
+              <span className="text-[11px] font-bold text-sky-200/80">영웅 가루</span>
             </div>
             <div className="flex flex-col items-center justify-center rounded-xl border border-amber-400/25 bg-stone-950/75 p-2">
               <div className="h-8 w-6">
@@ -131,7 +132,7 @@ export const QuestLogModal: React.FC<{
 
         {/* Daily Quests on Parchment Cards */}
         <h3 className="hs-title mb-2 text-sm font-extrabold tracking-wide text-amber-200">
-          오늘의 취선루 의뢰
+          오늘의 엘윈마을 의뢰
         </h3>
         <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-3">
           {quests.map((q) => {
@@ -192,7 +193,7 @@ export const QuestLogModal: React.FC<{
                 />
                 <span
                   style={{ color: h.accentColor }}
-                  className="text-[10px] font-extrabold whitespace-nowrap"
+                  className="whitespace-nowrap text-[10px] font-extrabold"
                 >
                   {h.classNameKo}
                 </span>
@@ -230,7 +231,7 @@ export const TavernShopModal: React.FC<{
   const handleBuy = (count: number) => {
     if (hsStorage.buyPacksWithGold(count)) {
       hsAudio.playSfx('purchase');
-      setToast(`눈히어로 성흔 카드 팩 ${count}개를 구매했습니다!`);
+      setToast(`눈히어로 카드 팩 ${count}개를 구매했습니다!`);
       refresh();
     } else {
       hsAudio.playInnkeeper('collection');
@@ -238,7 +239,7 @@ export const TavernShopModal: React.FC<{
     }
   };
 
-  const handleSelectBack = (id: PlayerProfile['selectedCardBack']) => {
+  const handleSelectBack = (id: SnsCardBackId) => {
     const p = hsStorage.getProfile();
     p.selectedCardBack = id;
     hsStorage.saveProfile(p);
@@ -263,11 +264,11 @@ export const TavernShopModal: React.FC<{
             </div>
             <div>
               <h2 className="hs-title text-xl font-extrabold text-amber-100 sm:text-2xl">
-                취선루 성흔 보급소
+                눈히어로 보급소
               </h2>
               <p className="text-xs font-semibold text-amber-300/85">
                 보유 골드 <b className="text-yellow-300">{profile.gold}</b> · 미개봉 팩{' '}
-                <b className="text-amber-100">{profile.packs}개</b> · 성흔 가루{' '}
+                <b className="text-amber-100">{profile.packs}개</b> · 영웅 가루{' '}
                 <b className="text-sky-300">{profile.arcaneDust}</b>
               </p>
             </div>
@@ -298,7 +299,7 @@ export const TavernShopModal: React.FC<{
             </div>
             <div className="mt-3 text-center">
               <div className="hs-title text-base font-extrabold text-amber-100">
-                눈히어로 성흔 영웅 카드 팩
+                눈히어로 카드 팩
               </div>
               <div className="mt-0.5 text-xs font-semibold text-amber-200/75">
                 11종족 110영웅 카드 5장 포함 · 최소 1장 희귀(Rare) 등급 이상 확정
@@ -331,18 +332,18 @@ export const TavernShopModal: React.FC<{
                 }}
                 className="hs-brass-btn mt-2 w-full rounded-xl py-2 text-xs font-extrabold text-sky-200"
               >
-                하늘 제단에서 팩 개봉하기 ({profile.packs}개 보유) →
+                눈히어로 팩 개봉하러 가기 ({profile.packs}개 보유) →
               </button>
             )}
           </div>
 
-          {/* Card Back Selector */}
+          {/* Official 3 SNS HERO Card Back Selector */}
           <div className="flex flex-col justify-between rounded-2xl border-2 border-[#c8a158]/50 bg-black/40 p-4">
             <div>
               <h3 className="hs-title mb-2.5 text-sm font-extrabold text-amber-100">
-                눈히어로 성흔 카드 뒷면 선택
+                눈히어로 공식 카드 뒷면 선택
               </h3>
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+              <div className="grid grid-cols-3 gap-2.5">
                 {CARD_BACK_IDS.map((cbId) => {
                   const active = profile.selectedCardBack === cbId;
                   const meta = SNS_CARD_BACK_THEMES[cbId];
@@ -351,16 +352,16 @@ export const TavernShopModal: React.FC<{
                       key={cbId}
                       type="button"
                       onClick={() => handleSelectBack(cbId)}
-                      className={`flex flex-col items-center rounded-xl border-2 p-2 transition ${
+                      className={`flex flex-col items-center rounded-xl border-2 p-2.5 transition ${
                         active
-                          ? 'border-yellow-300 bg-amber-900/60 shadow-[0_0_14px_rgba(250,204,21,0.65)]'
+                          ? 'border-yellow-300 bg-amber-900/60 shadow-[0_0_16px_rgba(250,204,21,0.72)]'
                           : 'border-stone-700 bg-stone-900/60 hover:border-amber-500'
                       }`}
                     >
-                      <div className="h-22 w-16">
+                      <div className="h-24 w-[68px]">
                         <SnsCardBackArt variant={cbId} />
                       </div>
-                      <span className="mt-1.5 text-center text-[10.5px] font-extrabold text-amber-100 leading-tight">
+                      <span className="mt-2 text-center text-[11px] font-extrabold leading-tight text-amber-100">
                         {meta.name}
                       </span>
                     </button>
@@ -371,10 +372,10 @@ export const TavernShopModal: React.FC<{
 
             <div className="mt-4 rounded-xl border border-[#c8a158]/35 bg-stone-950/75 p-3.5 text-xs leading-relaxed text-amber-200/85">
               <div className="font-extrabold text-amber-100">
-                『카단의 여정』 성흔 도감 안내
+                『카단의 여정』 눈히어로 도감 안내
               </div>
               <p className="mt-1 text-[11px] font-semibold text-amber-200/75">
-                대전 및 수련 승리 보상으로 골드를 모아 성흔 영웅 팩을 개봉하거나, 별빛 기록실(내 카드첩)에서 성흔 가루로 원하는 종족 영웅 카드를 제작할 수 있습니다.
+                대전 및 엘윈마을 수련 승리 보상으로 골드를 모아 눈히어로 팩을 개봉하거나, 내 카드첩에서 영웅 가루로 원하는 종족 영웅 카드를 제작할 수 있습니다.
               </p>
             </div>
           </div>
@@ -441,7 +442,7 @@ export const GameOptionsModal: React.FC<{
 
           <div>
             <div className="flex justify-between text-xs font-bold text-amber-200">
-              <span>취선루 · 전장 배경음악 (BGM)</span>
+              <span>엘윈마을 · 전장 배경음악 (BGM)</span>
               <span>{Math.round(settings.bgmVolume * 100)}%</span>
             </div>
             <input
@@ -456,7 +457,7 @@ export const GameOptionsModal: React.FC<{
 
           <div>
             <div className="flex justify-between text-xs font-bold text-amber-200">
-              <span>타격 · 비전 효과음 (SFX)</span>
+              <span>타격 · 원소 효과음 (SFX)</span>
               <span>{Math.round(settings.sfxVolume * 100)}%</span>
             </div>
             <input

@@ -1117,7 +1117,7 @@ export const CARD_SCRIPTS: Record<string, CardScriptSpec> = {
       const p = ops.getPlayer(side);
       p.shadowformTier = Math.min(2, p.shadowformTier + 1);
       p.heroPowerId = p.shadowformTier === 1 ? 'EX1_625t' : 'EX1_625t2';
-      p.heroPowerNameKo = p.shadowformTier === 1 ? '성흔의 쐐기' : '성흔 파열';
+      p.heroPowerNameKo = p.shadowformTier === 1 ? '별빛의 쐐기' : '별빛 파열';
       p.heroPowerTextKo = p.shadowformTier === 1 ? '피해를 2 줍니다.' : '피해를 3 줍니다.';
       p.heroPowerNeedsTarget = true;
       p.heroPowerUsedThisTurn = false;

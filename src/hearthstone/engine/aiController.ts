@@ -137,7 +137,7 @@ export const CLASSIC_EXPERT_AI_DECKS: Record<HeroClass, { name: string; cards: s
     ],
   },
   PRIEST: {
-    name: '인간종족의 카단 성흔 수호덱',
+    name: '인간종족의 카단 설원 수호덱',
     cards: [
       'EX1_621', 'EX1_621',
       'CS2_004', 'CS2_004',
@@ -253,7 +253,7 @@ export const LADDER_OPPONENT_NAMES: Record<HeroClass, string[]> = {
   WARRIOR: ['화염성채 백인대장', '적염의 투사 벨페고르', '홍련 선봉장 불칸'],
   HUNTER: ['바람섬 풍궁 명사수', '창공 추적자 제피르', '광풍의 정찰병 시로코'],
   PALADIN: ['거암 성채 파수대장', '황토 평원 수호기사', '대지 결계사 골렘'],
-  PRIEST: ['아케 성기사단 분대장', '라이트헤븐 성흔사제', '붉은 유리 궁정 루시안'],
+  PRIEST: ['아케 성기사단 분대장', '엘윈마을 설원사제', '붉은 유리 궁정 루시안'],
   ROGUE: ['칠흑 성채 암영자객', '망령 회랑 추적자', '심연 그림자 팬텀'],
   SHAMAN: ['고대림 정령 감응사', '은빛 가지 현자 실피', '별빛 숲지기 오베론'],
   WARLOCK: ['딥포지 화로 장인', '강철산맥 룬대장장이', '흑철 용광로 투사'],
@@ -287,7 +287,7 @@ export function buildAiOpponentSetup(
     const preset =
       CLASSIC_PRESET_DECKS.find((d) => d.heroClass === oppClass) || CLASSIC_PRESET_DECKS[0];
     return {
-      opponentName: `취선루 수련 상대 (${CLASSIC_HEROES[oppClass].classNameKo})`,
+      opponentName: `엘윈마을 수련 상대 (${CLASSIC_HEROES[oppClass].classNameKo})`,
       opponentClass: oppClass,
       opponentDeck: [...preset.cards],
     };

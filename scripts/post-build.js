@@ -540,7 +540,19 @@ if (fs.existsSync(publicBattleHtml)) {
   console.log('[post-build] Preserved standalone public/battle.html & dist/battle/index.html');
 }
 
-// 4.3 Ensure standalone Hearthstone Web Reconstruction (dist/game.html & dist/game/index.html)
+// 4.3 Ensure standalone SNSHero Card Battle (dist/game.html & dist/game/index.html) & purge legacy Hearthstone dirs
+for (const legacySub of ['ui', 'audio', 'cursors', 'fonts']) {
+  const legacyDir = path.join(distDir, 'hs-assets', legacySub);
+  if (fs.existsSync(legacyDir)) {
+    fs.rmSync(legacyDir, { recursive: true, force: true });
+  }
+}
+for (const legacyFile of ['rea-manifest.json', 'vo-manifest.json']) {
+  const legacyPath = path.join(distDir, 'hs-assets', 'data', legacyFile);
+  if (fs.existsSync(legacyPath)) {
+    fs.rmSync(legacyPath, { force: true });
+  }
+}
 const distGameHtml = path.join(distDir, 'game.html');
 if (fs.existsSync(distGameHtml)) {
   const gameHtmlRaw = fs.readFileSync(distGameHtml, 'utf8')

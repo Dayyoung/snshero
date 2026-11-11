@@ -304,7 +304,7 @@ export function createEngine(rawState: BattleMatchState) {
             if (m.uid !== src.uid) m.auraAttack += 1;
           }
         } else if (src.cardId === 'CS2_222') {
-          // 스톰윈드 용사
+          // 엘윈마을 수호 대장
           for (const m of p.board) {
             if (m.uid !== src.uid) {
               m.auraAttack += 1;
@@ -796,7 +796,7 @@ export function createEngine(rawState: BattleMatchState) {
     const m = f.minion;
     if (m.divineShield) {
       m.divineShield = false;
-      pushVfx('DIVINE_BREAK', m.uid, sourceId, 0, '성흔 보호막 파괴');
+      pushVfx('DIVINE_BREAK', m.uid, sourceId, 0, '보호막 파괴');
       return { actualDamage: 0, killed: false };
     }
 

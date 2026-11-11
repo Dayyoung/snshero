@@ -85,26 +85,26 @@ export const CLASSIC_HEROES: Record<HeroClass, HeroDef> = {
     voKey: 'priest',
     charId: 41,
     nameKo: '카단',
-    titleKo: '라이트헤븐 설원의 성흔 영웅',
+    titleKo: '엘윈마을 설원의 눈히어로',
     classNameKo: '인간종족',
     factionRealmKo: '라이트헤븐',
     heroPortraitUrl: '/anime-character-sheets/busts/041_bust.jpg',
     heroCutoutUrl: '/anime-character-sheets/cutouts/041_Kadan.png',
     heroPowerId: 'HERO_09bp',
-    heroPowerNameKo: '성흔의 치유',
+    heroPowerNameKo: '설원의 치유',
     heroPowerTextKo: '생명력을 2 회복시킵니다.',
     heroPowerNeedsTarget: true,
     accentColor: '#60a5fa',
     frameGradient: 'linear-gradient(180deg, #2563eb 0%, #1e3a8a 100%)',
     secretColor: '#e2e8f0',
     emotesKo: {
-      greetings: '북방 설원의 이름으로 인사드립니다!',
+      greetings: '엘윈마을의 이름으로 인사드립니다!',
       well_played: '정말 훌륭한 한 수였어요!',
       thanks: '고맙습니다, 동료여.',
       wow: '은빛 단검이 공명할 만큼 놀랍군요!',
       oops: '앗, 성급한 판단이었네요.',
       threaten: '눈꽃 방패에 건 맹세로 당신을 넘어서겠습니다!',
-      start: '라이트헤븐의 성흔이여, 길을 밝혀라!',
+      start: '엘윈마을의 별빛이여, 길을 밝혀라!',
       concede: '완패입니다. 당신의 기개를 인정합니다.',
     },
   },
@@ -581,6 +581,8 @@ export interface DailyQuest {
   completed: boolean;
 }
 
+export type SnsCardBackId = 'gold' | 'silver' | 'bronze';
+
 export interface PlayerProfile {
   gold: number;
   arcaneDust: number;
@@ -591,7 +593,7 @@ export interface PlayerProfile {
   totalWins: number;
   totalGames: number;
   classWins: Record<HeroClass, number>;
-  selectedCardBack: 'classic' | 'legend' | 'frost' | 'gold';
+  selectedCardBack: SnsCardBackId;
   masterUnlocked: boolean;
   threeWinCounter: number;
 }

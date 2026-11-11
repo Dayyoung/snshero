@@ -92,27 +92,27 @@ export function getCardBustUrl(cardOrArtId: ClassicCardDef | string): string {
 }
 
 export function getCardTileUrl(artId: string): string {
-  return getCardBustUrl(artId);
+  return getCardArtUrl(artId);
 }
 
 const HERO_ID_TO_PORTRAIT: Record<string, string> = {
-  HERO_01: CLASSIC_HEROES.WARRIOR.heroPortraitUrl,
-  HERO_02: CLASSIC_HEROES.SHAMAN.heroPortraitUrl,
-  HERO_03: CLASSIC_HEROES.ROGUE.heroPortraitUrl,
-  HERO_04: CLASSIC_HEROES.PALADIN.heroPortraitUrl,
-  HERO_05: CLASSIC_HEROES.HUNTER.heroPortraitUrl,
-  HERO_06: CLASSIC_HEROES.DRUID.heroPortraitUrl,
-  HERO_07: CLASSIC_HEROES.WARLOCK.heroPortraitUrl,
-  HERO_08: CLASSIC_HEROES.MAGE.heroPortraitUrl,
-  HERO_09: CLASSIC_HEROES.PRIEST.heroPortraitUrl,
-  EX1_323h: '/anime-character-sheets/busts/080_bust.jpg',
-  EX1_323: '/anime-character-sheets/busts/080_bust.jpg',
+  HERO_01: CLASSIC_HEROES.WARRIOR.heroCutoutUrl,
+  HERO_02: CLASSIC_HEROES.SHAMAN.heroCutoutUrl,
+  HERO_03: CLASSIC_HEROES.ROGUE.heroCutoutUrl,
+  HERO_04: CLASSIC_HEROES.PALADIN.heroCutoutUrl,
+  HERO_05: CLASSIC_HEROES.HUNTER.heroCutoutUrl,
+  HERO_06: CLASSIC_HEROES.DRUID.heroCutoutUrl,
+  HERO_07: CLASSIC_HEROES.WARLOCK.heroCutoutUrl,
+  HERO_08: CLASSIC_HEROES.MAGE.heroCutoutUrl,
+  HERO_09: CLASSIC_HEROES.PRIEST.heroCutoutUrl,
+  EX1_323h: '/anime-character-sheets/cutouts/080_Ironforge.png',
+  EX1_323: '/anime-character-sheets/cutouts/080_Ironforge.png',
 };
 
 export function getHeroArtUrl(heroId: string): string {
   if (HERO_ID_TO_PORTRAIT[heroId]) return HERO_ID_TO_PORTRAIT[heroId];
   const c = cardDb.getCard(heroId);
-  return c?.bustUrl || '/anime-character-sheets/busts/041_bust.jpg';
+  return c?.artUrl || c?.bustUrl || '/anime-character-sheets/cutouts/041_Kadan.png';
 }
 
 function makeCrestDataUri(bgTop: string, bgBot: string, rim: string, glyphPath: string): string {
@@ -199,14 +199,14 @@ export const CLASS_CREST_URL: Record<CardClass, string> = {
     '#fda4af',
     'M21 16 L26 34 L22 48 L17 33 Z M32 13 L36 33 L32 50 L28 33 Z M43 16 L47 33 L42 48 L38 34 Z',
   ),
-  // 중립 (로봇·용·110종족 성흔 8각 별)
+  // 중립 (로봇·용·110종족 눈히어로 8각 별)
   NEUTRAL: makeCrestDataUri(
     '#94a3b8',
     '#1e293b',
     '#e2e8f0',
     'M32 12 L37 25 L50 25 L40 34 L44 48 L32 39 L20 48 L24 34 L14 25 L27 25 Z',
   ),
-  // 성몽 (신록룡 알렉스트라 비전)
+  // 신록 비전 (신록룡 알렉스트라 비전)
   DREAM: makeCrestDataUri(
     '#34d399',
     '#064e3b',
@@ -557,7 +557,7 @@ export const CLASSIC_RANK_NAMES: Record<number, string> = {
   4: '대지 성채 거신병',
   3: '용의 첨탑 수호룡',
   2: '은빛 단검의 계승자',
-  1: '취선루 대승부사',
+  1: '엘윈마을 대승부사',
   0: '전설의 눈히어로 (LEGEND)',
 };
 

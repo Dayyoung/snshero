@@ -36,15 +36,15 @@ const SNS_SPINNER_TITLES = [
   '가치 있는 맞수',
   '일곱 추적자 전승자',
   '녹옥회 정보원',
-  '붉은 유리 궁정 기사',
+  '불꽃 성채 근위기사',
   '바람섬 풍궁사',
   '딥포지 대장장이',
-  '취선루 단골 승부사',
+  '엘윈마을 단골 승부사',
   '별빛 호흡 수련생',
   '아케 성기사단 분대장',
   '해심 비전 학자',
   '설원 영수 조련사',
-  '성흔 결투장의 지배자',
+  '눈히어로 결투장의 지배자',
 ];
 
 export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
@@ -144,7 +144,7 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
           }}
           className="hs-brass-btn min-h-[40px] rounded-xl px-3 py-1.5 text-xs font-extrabold text-amber-100 sm:px-4 sm:py-2 sm:text-sm"
         >
-          ← <span className="hidden sm:inline">취선루 </span>상자로
+          ← <span className="hidden sm:inline">엘윈마을 </span>로비로
         </button>
 
         {/* Mode Switcher Tabs */}
@@ -277,11 +277,14 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
                     className="absolute right-1.5 top-1.5 z-10 h-5 w-5 rounded-full border border-amber-200/80 object-cover shadow sm:right-2 sm:top-2 sm:h-6 sm:w-6"
                   />
 
-                  <div className="relative h-14 w-14 overflow-hidden rounded-t-[28px] rounded-b-lg border-2 border-[#ebd08e] bg-stone-950 shadow-lg sm:h-20 sm:w-20 sm:rounded-t-[40px] sm:rounded-b-xl">
+                  <div
+                    style={{ background: dh.frameGradient }}
+                    className="relative h-14 w-14 overflow-hidden rounded-t-[28px] rounded-b-lg border-2 border-[#ebd08e] shadow-lg sm:h-20 sm:w-20 sm:rounded-t-[40px] sm:rounded-b-xl"
+                  >
                     <img
                       src={getHeroArtUrl(dh.heroId)}
                       alt={dh.nameKo}
-                      className="h-full w-full scale-110 object-cover object-top transition group-hover:scale-120"
+                      className="absolute left-1/2 top-[3%] h-[155%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top transition group-hover:scale-108"
                     />
                   </div>
 
@@ -314,11 +317,14 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
           />
 
           <div className="relative z-10 flex items-center gap-3 sm:gap-4">
-            <div className="relative h-22 w-19 shrink-0 overflow-hidden rounded-t-[40px] rounded-b-xl border-[3px] border-[#e7c57c] bg-stone-950 shadow-[0_12px_26px_rgba(0,0,0,0.85)] sm:h-28 sm:w-24 sm:rounded-t-[50px] sm:border-[3.5px]">
+            <div
+              style={{ background: hero.frameGradient }}
+              className="relative h-22 w-19 shrink-0 overflow-hidden rounded-t-[40px] rounded-b-xl border-[3px] border-[#e7c57c] shadow-[0_12px_26px_rgba(0,0,0,0.85)] sm:h-28 sm:w-24 sm:rounded-t-[50px] sm:border-[3.5px]"
+            >
               <img
                 src={getHeroArtUrl(hero.heroId)}
                 alt={hero.nameKo}
-                className="h-full w-full scale-110 object-cover object-top"
+                className="absolute left-1/2 top-[3%] h-[155%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top"
               />
               <img
                 src={CLASS_CREST_URL[selectedDeck.heroClass]}
@@ -341,7 +347,7 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
                 출전 덱: {selectedDeck.name}
               </div>
               <div className="mt-1.5 rounded-xl border border-[#c8a158]/40 bg-black/45 px-2.5 py-1 text-[10.5px] leading-snug sm:mt-2 sm:py-1.5 sm:text-[11px]">
-                <b className="text-sky-300">영웅 성흔 [{hero.heroPowerNameKo}]:</b>{' '}
+                <b className="text-sky-300">영웅 능력 [{hero.heroPowerNameKo}]:</b>{' '}
                 {hero.heroPowerTextKo}
               </div>
             </div>
@@ -386,11 +392,11 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
             <div className="relative z-10 my-2.5 flex items-center justify-between rounded-2xl border border-[#c8a158]/40 bg-black/40 p-2.5 sm:my-3 sm:p-3.5">
               <div>
                 <div className="text-[10.5px] font-bold text-amber-300 sm:text-[11px]">
-                  현재 취선루 성흔 등급
+                  현재 눈히어로 등급
                 </div>
                 <div className="hs-title text-base font-extrabold text-white sm:text-lg">
                   {profile.rank === 0
-                    ? '성흔의 전설 (LEGEND)'
+                    ? '전설의 눈히어로 (LEGEND)'
                     : `${profile.rank}등급 · ${CLASSIC_RANK_NAMES[profile.rank]}`}
                 </div>
                 <div className="mt-0.5 text-[10.5px] text-amber-200/75 sm:text-[11px]">
@@ -408,9 +414,9 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
               {(
                 [
                   { id: 'RANDOM', label: '무작위' },
-                  { id: 'STORMWIND', label: '라이트헤븐' },
-                  { id: 'ORGRIMMAR', label: '붉은 유리 궁전' },
-                  { id: 'PANDARIA', label: '바람섬' },
+                  { id: 'STORMWIND', label: '엘윈마을 설원' },
+                  { id: 'ORGRIMMAR', label: '불꽃 성채' },
+                  { id: 'PANDARIA', label: '바람의 신전' },
                 ] as const
               ).map((b) => (
                 <button
@@ -500,7 +506,7 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
             </div>
 
             <p className="mt-2 text-xs font-semibold text-amber-200/80">
-              라이트헤븐 취선루에서 실력이 비슷한 맞수를 탐색하고 있습니다...
+              엘윈마을 대결 광장에서 실력이 비슷한 맞수를 탐색하고 있습니다...
             </p>
 
             {!wheelLocked && (

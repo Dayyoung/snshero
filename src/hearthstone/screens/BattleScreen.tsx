@@ -99,22 +99,22 @@ const BOARD_CORNER_TOYS: Record<
   { pos: 'TL' | 'TR' | 'BL' | 'BR'; icon: string; name: string; reaction: string }[]
 > = {
   STORMWIND: [
-    { pos: 'TL', icon: '🔔', name: '취선루 청동 대종', reaction: '땡~ 땡~! 라이트헤븐 취선루 청동 대종이 맑게 울려 퍼집니다!' },
-    { pos: 'TR', icon: '🔥', name: '아케 성화대', reaction: '화르륵! 푸른 성흔 불꽃이 밝게 타오릅니다!' },
-    { pos: 'BL', icon: '⚒', name: '성기사단 모루', reaction: '깡! 깡! 달궈진 성흔 강철에서 별빛 불꽃이 튱니다!' },
-    { pos: 'BR', icon: '❄️', name: '엘윈 설원 샘물', reaction: '반짝! 만년설 맑은 샘물 속에서 성흔 결정이 빛납니다!' },
+    { pos: 'TL', icon: '🔔', name: '엘윈마을 설원 종탑', reaction: '땡~ 땡~! 엘윈마을 설원 종탑의 종소리가 맑게 울려 퍼집니다!' },
+    { pos: 'TR', icon: '🏮', name: '설원 온기 등불', reaction: '화르륵! 엘윈마을 청동 등불이 따스하게 타오릅니다!' },
+    { pos: 'BL', icon: '🛡', name: '눈꽃 방패 거치대', reaction: '챙! 카단의 눈꽃 방패에서 푸른 서리빛이 반짝입니다!' },
+    { pos: 'BR', icon: '❄️', name: '엘윈 빙결 수정', reaction: '반짝! 만년설 빙결 수정 속에서 오로라 빛이 춤춥니다!' },
   ],
   ORGRIMMAR: [
-    { pos: 'TL', icon: '💎', name: '붉은 유리 수정탑', reaction: '징—! 붉은 유리 궁전의 심홍 수정탑이 공명합니다!' },
-    { pos: 'TR', icon: '🦁', name: '왕실 황금 사자상', reaction: '크르르! 궁정 수호 사자상의 붉은 보석 눈이 번쩍입니다!' },
-    { pos: 'BL', icon: '🔥', name: '홍련 화로', reaction: '활활! 홍련의 화로에서 뜨거운 열기가 솟구칩니다!' },
-    { pos: 'BR', icon: '🥁', name: '결투장 전고', reaction: '둥! 둥! 왕국 결투장의 우렁찬 북소리가 울립니다!' },
+    { pos: 'TL', icon: '🔥', name: '불꽃 성채 화로', reaction: '활활! 불꽃 성채의 용암 화로에서 뜨거운 불길이 솟구칩니다!' },
+    { pos: 'TR', icon: '⚒', name: '황금 제련 모루', reaction: '깡! 깡! 달궈진 강철 모루에서 불꽃 파편이 튱니다!' },
+    { pos: 'BL', icon: '🦁', name: '태양 사자 부조', reaction: '크르르! 성채 수호 사자상의 붉은 보석 눈이 번쩍입니다!' },
+    { pos: 'BR', icon: '🥁', name: '결투장 전고', reaction: '둥! 둥! 불꽃 성채 결투장의 우렁찬 북소리가 울립니다!' },
   ],
   PANDARIA: [
-    { pos: 'TL', icon: '🎐', name: '바람섬 비취 풍경', reaction: '딸랑~! 속삭임 바람섬의 비취 풍경 소리가 은은하게 퍼집니다!' },
+    { pos: 'TL', icon: '🎐', name: '바람 신전 비취 풍경', reaction: '딸랑~! 바람의 신전 비취 풍경 소리가 은은하게 퍼집니다!' },
     { pos: 'TR', icon: '🌊', name: '천공 폭포 수차', reaction: '쏴아아~ 구름 너머 천공 폭포수가 시원하게 쏟아집니다!' },
     { pos: 'BL', icon: '🏹', name: '청풍 활터 과녁', reaction: '핑— 퍽! 바람 화살이 과녁 정중앙을 꿰뚫었습니다!' },
-    { pos: 'BR', icon: '🪁', name: '창공의 바람 연', reaction: '펄럭~ 창공의 연이 상승기류를 타고 구름 위로 솟아오릅니다!' },
+    { pos: 'BR', icon: '🍃', name: '신록의 에메랄드 석등', reaction: '반짝~ 에메랄드 룬 석등에서 청량한 바람 기운이 피어오릅니다!' },
   ],
 };
 
@@ -169,7 +169,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     const opp = buildAiOpponentSetup(mode, preferredOpponentClass);
     return createBattleMatch({
       mode,
-      playerName: '성흔 도전자',
+      playerName: '엘윈마을 모험가',
       playerClass: playerDeck.heroClass,
       playerDeck: playerDeck.cards,
       opponentName: opp.opponentName,
@@ -328,7 +328,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       } else if (action.kind === 'HERO_POWER') {
         hsAudio.playSfx('hero_power', 0.85);
         setAiHighlightText(
-          `${matchState.opponent.heroNameKo}: 영웅 성흔 [${matchState.opponent.heroPowerNameKo}]!`,
+          `${matchState.opponent.heroNameKo}: 영웅 능력 [${matchState.opponent.heroPowerNameKo}]!`,
         );
         setMatchState(sim.useHeroPower('OPPONENT', action.targetId));
       } else if (action.kind === 'ATTACK') {
@@ -678,7 +678,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     const pills: string[] = [];
     if (m.silenced) pills.push('침묵 상태');
     if (hasMinionTaunt(m)) pills.push('도발');
-    if (m.divineShield) pills.push('성흔 보호막');
+    if (m.divineShield) pills.push('빛의 보호막');
     if (m.stealth || m.concealedUntilNextTurn) pills.push('은신');
     if (m.windfury) pills.push('질풍');
     if (m.frozen) pills.push('빙결');
@@ -963,8 +963,8 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             : ''
       }`}
     >
-      {/* Subtle Board Vignette for High Card Contrast */}
-      <div className="pointer-events-none absolute inset-0 bg-radial from-black/25 via-black/48 to-black/82" />
+      {/* Subtle Board Vignette (Light Center so Original Arena Art Shines Clearly!) */}
+      <div className="pointer-events-none absolute inset-0 bg-radial from-transparent via-black/18 to-black/68" />
 
       {/* 60fps Particle & Spell Projectile Canvas */}
       <BoardVfxCanvas events={matchState.vfxQueue} onScreenShake={triggerShake} />
@@ -979,7 +979,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             {selection.kind === 'ATTACKER'
               ? '⚔ 공격할 적 영웅 또는 하수인을 터치하세요'
               : selection.kind === 'HERO_POWER'
-                ? '✦ 영웅 성흔 대상을 터치하세요'
+                ? '✦ 영웅 능력 대상을 터치하세요'
                 : selection.kind === 'CHOOSE_OPTION_TARGET'
                   ? '✦ 선택한 효과의 대상을 터치하세요'
                   : selection.needsTarget
@@ -1725,11 +1725,14 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         <div className="fixed inset-0 z-[92] flex flex-col items-center justify-center bg-black/84 px-3 backdrop-blur-sm">
           <div className="flex items-center gap-3 sm:gap-14">
             <div className="flex flex-col items-center text-center">
-              <div className="relative mb-2.5 h-32 w-24 overflow-hidden rounded-t-[48px] rounded-b-xl border-[3.5px] border-[#e7c57c] bg-stone-950 shadow-[0_14px_30px_rgba(0,0,0,0.95)] sm:mb-3 sm:h-44 sm:w-36 sm:rounded-t-[58px] sm:border-[4px]">
+              <div
+                style={{ background: CLASSIC_HEROES[matchState.player.heroClass].frameGradient }}
+                className="relative mb-2.5 h-32 w-24 overflow-hidden rounded-t-[48px] rounded-b-xl border-[3.5px] border-[#e7c57c] shadow-[0_14px_30px_rgba(0,0,0,0.95)] sm:mb-3 sm:h-44 sm:w-36 sm:rounded-t-[58px] sm:border-[4px]"
+              >
                 <img
                   src={getHeroArtUrl(CLASSIC_HEROES[matchState.player.heroClass].heroId)}
                   alt=""
-                  className="h-full w-full scale-110 object-cover object-top"
+                  className="absolute left-1/2 top-[3%] h-[155%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top"
                 />
                 <img
                   src={CLASS_CREST_URL[matchState.player.heroClass]}
@@ -1753,11 +1756,14 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             </div>
 
             <div className="flex flex-col items-center text-center">
-              <div className="relative mb-2.5 h-32 w-24 overflow-hidden rounded-t-[48px] rounded-b-xl border-[3.5px] border-[#e7c57c] bg-stone-950 shadow-[0_14px_30px_rgba(0,0,0,0.95)] sm:mb-3 sm:h-44 sm:w-36 sm:rounded-t-[58px] sm:border-[4px]">
+              <div
+                style={{ background: CLASSIC_HEROES[matchState.opponent.heroClass].frameGradient }}
+                className="relative mb-2.5 h-32 w-24 overflow-hidden rounded-t-[48px] rounded-b-xl border-[3.5px] border-[#e7c57c] shadow-[0_14px_30px_rgba(0,0,0,0.95)] sm:mb-3 sm:h-44 sm:w-36 sm:rounded-t-[58px] sm:border-[4px]"
+              >
                 <img
                   src={getHeroArtUrl(CLASSIC_HEROES[matchState.opponent.heroClass].heroId)}
                   alt=""
-                  className="h-full w-full scale-110 object-cover object-top"
+                  className="absolute left-1/2 top-[3%] h-[155%] w-[124%] max-w-none -translate-x-1/2 object-cover object-top"
                 />
                 <img
                   src={CLASS_CREST_URL[matchState.opponent.heroClass]}
@@ -1780,7 +1786,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       {!vsIntroActive && matchState.phase === 'MULLIGAN' && (
         <div className="fixed inset-0 z-[88] flex flex-col items-center justify-center overflow-y-auto bg-black/82 p-3 text-center backdrop-blur-sm sm:p-4">
           <h2 className="hs-title hs-outline text-xl font-extrabold text-amber-200 sm:text-3xl">
-            시작 카드 선택 ({matchState.firstPlayer === 'PLAYER' ? '선공 · 3장' : '후공 · 4장 + 성흔 은화'})
+            시작 카드 선택 ({matchState.firstPlayer === 'PLAYER' ? '선공 · 3장' : '후공 · 4장 + 엘윈의 은화'})
           </h2>
           <p className="mt-1 max-w-md text-xs font-bold text-amber-200/90">
             카드를 터치해 크게 확대하고 하단 버튼으로 교체(✕) 여부를 선택한 뒤 [확인]을 누르세요.
@@ -1923,7 +1929,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             </h2>
             <p className="relative z-10 mt-1 text-xs font-bold text-amber-200/90">
               {matchState.winner === 'PLAYER'
-                ? `${matchState.opponent.name}을(를) 제압하고 빛나는 성흔의 승리를 거두었습니다!`
+                ? `${matchState.opponent.name}을(를) 제압하고 빛나는 눈히어로의 승리를 거두었습니다!`
                 : '아군 영웅이 쓰러졌습니다. 종족 덱을 가다듬고 다시 도전해 보세요!'}
             </p>
 
@@ -1940,7 +1946,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                     등급 현황:{' '}
                     <span className="text-sky-300">
                       {outcomeSummary.newRank === 0
-                        ? '성흔의 전설!'
+                        ? '전설의 눈히어로!'
                         : `${outcomeSummary.newRank}등급 (${CLASSIC_RANK_NAMES[outcomeSummary.newRank]}) · ★${outcomeSummary.newStars}`}
                     </span>
                     {outcomeSummary.streakBonus && (
@@ -1962,7 +1968,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               }}
               className="hs-arcane-btn hs-title hs-outline-sm relative z-10 w-full rounded-2xl py-3 text-lg font-extrabold text-white"
             >
-              취선루로 돌아가기
+              엘윈마을로 돌아가기
             </button>
           </div>
         </div>

@@ -42,8 +42,8 @@ export function initSnsHeroConsoleApi(): void {
         '================ [눈히어로: 카단의 여정 — DevTools Console 테스트 명령어] ================',
         '  snshero.unlockAll()         : 382종 전체 카드 해금 + 1,000골드 + 1,600가루 + 10팩 지급',
         '  snshero.addGold(1000)       : 골드 지급 (기본 1,000)',
-        '  snshero.addDust(1600)       : 성흔 가루 지급 (기본 1,600)',
-        '  snshero.addPacks(10)        : 성흔 카드 팩 지급 (기본 10팩)',
+        '  snshero.addDust(1600)       : 영웅 가루 지급 (기본 1,600)',
+        '  snshero.addPacks(10)        : 눈히어로 카드 팩 지급 (기본 10팩)',
         '  snshero.setRank(0, 1)       : 등급 변경 (25~1등급, 0 = 전설의 눈히어로)',
         '  snshero.completeQuests()    : 오늘의 의뢰 전체 완료 및 보상 지급',
         '  snshero.verifyRoster()      : 382종 카드 ↔ 110종족/로봇/용 배정 및 9개 기본 덱 무결성 검증',
@@ -83,7 +83,7 @@ export function initSnsHeroConsoleApi(): void {
       const p = hsStorage.getProfile();
       p.arcaneDust = Math.max(0, p.arcaneDust + Math.floor(amount));
       hsStorage.saveProfile(p);
-      console.info(`%c[눈히어로 콘솔] 성흔 가루 변경 -> ${p.arcaneDust}`, 'color:#67e8f9;font-weight:bold;');
+      console.info(`%c[눈히어로 콘솔] 영웅 가루 변경 -> ${p.arcaneDust}`, 'color:#67e8f9;font-weight:bold;');
       return p.arcaneDust;
     },
 
@@ -101,7 +101,7 @@ export function initSnsHeroConsoleApi(): void {
       p.rank = clampedRank;
       p.stars = Math.max(0, Math.floor(stars));
       hsStorage.saveProfile(p);
-      const rankTitle = CLASSIC_RANK_NAMES[clampedRank] || '취선루 도전자';
+      const rankTitle = CLASSIC_RANK_NAMES[clampedRank] || '엘윈마을 도전자';
       console.info(
         `%c[눈히어로 콘솔] 등급 변경 -> ${clampedRank === 0 ? rankTitle : `${clampedRank}등급 (${rankTitle})`}`,
         'color:#4ade80;font-weight:bold;',
