@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { hsAudio } from '../audio';
 import { CLASSIC_RANK_NAMES, CLASS_CREST_URL } from '../cardDb';
 import { HsArcaneDustVialIcon, HsGoldCoinIcon } from '../components/CardVisual';
+import { QuickRulesModal, hasSeenQuickRules } from '../components/OnboardingGuideModal';
 import {
   SNS_LOCATIONS,
   SNS_LOGO_URL,
@@ -43,6 +44,7 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
   onOpenOptions,
 }) => {
   const [diskSpinning, setDiskSpinning] = useState(false);
+  const [quickRulesOpen, setQuickRulesOpen] = useState(false);
   const [, setPwaTick] = useState(0);
   const isFirstVisitGuide = !profile.journeyGuideDone;
   const currentEp = getJourneyEpisodeDef(profile.journeyEpisode || 1);
@@ -96,6 +98,20 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
         <div className="flex items-center gap-1.5 sm:gap-2.5">
           <button
             type="button"
+            data-testid="hub-rules-btn"
+            onClick={() => {
+              hsAudio.playSfx('ui_click');
+              setQuickRulesOpen(true);
+            }}
+            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+            className="hs-brass-btn flex min-h-[42px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-extrabold text-amber-100 sm:px-3 sm:py-2"
+          >
+            <span className="text-amber-300">?</span>
+            <span>게임 방법</span>
+          </button>
+
+          <button
+            type="button"
             disabled={isFirstVisitGuide}
             onClick={() => {
               if (isFirstVisitGuide) return;
@@ -124,6 +140,20 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-2.5">
+          <button
+            type="button"
+            data-testid="hub-rules-btn"
+            onClick={() => {
+              hsAudio.playSfx('ui_click');
+              setQuickRulesOpen(true);
+            }}
+            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+            className="hs-brass-btn flex min-h-[42px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-extrabold text-amber-100 sm:px-3 sm:py-2"
+          >
+            <span className="text-amber-300">?</span>
+            <span>게임 방법</span>
+          </button>
+
           <button
             type="button"
             disabled={isFirstVisitGuide}
@@ -179,6 +209,20 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
               </span>
             </button>
           )}
+
+          <button
+            type="button"
+            data-testid="hub-rules-btn"
+            onClick={() => {
+              hsAudio.playSfx('ui_click');
+              setQuickRulesOpen(true);
+            }}
+            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
+            className="hs-brass-btn flex min-h-[42px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-extrabold text-amber-100 sm:px-3 sm:py-2"
+          >
+            <span className="text-amber-300">?</span>
+            <span>게임 방법</span>
+          </button>
 
           <button
             type="button"
@@ -473,6 +517,14 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
       <footer className="relative z-20 pt-1 text-center text-[10.5px] font-bold tracking-wide text-amber-200/80 sm:text-[11px]">
         눈히어로 11종족 110영웅 · 수집 카드 382종 완비 · 배경음 기본 15% · 로컬 자동 보존
       </footer>
+
+      {quickRulesOpen && (
+        <QuickRulesModal
+          isFirstTime={!hasSeenQuickRules()}
+          inBattle={false}
+          onClose={() => setQuickRulesOpen(false)}
+        />
+      )}
     </div>
   );
 };

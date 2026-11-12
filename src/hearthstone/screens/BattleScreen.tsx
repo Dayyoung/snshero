@@ -17,6 +17,7 @@ import {
 } from '../components/CardVisual';
 import { CardZoomAction, CardZoomModal } from '../components/CardZoomModal';
 import { KadanJourneyStoryModal } from '../components/KadanJourneyStoryModal';
+import { QuickRulesModal, hasSeenQuickRules } from '../components/OnboardingGuideModal';
 import { useModalDismiss } from '../useModalDismiss';
 import {
   SNS_LOCATIONS,
@@ -279,12 +280,18 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   );
   const [liveProfile, setLiveProfile] = useState(() => hsStorage.getProfile());
 
-  // 스토리모드 = 에피소드 스토리 극장 먼저 오픈 + 자동 플레이 기본 ON
+  // 스토리모드 = 에피소드 스토리 극장 먼저 오픈 + 자동 플레이 기본 ON (단, 1화 초회 플레이는 직접 조작 유도)
   // 랭킹대전 / AI대전 = 매판 시작 시 자동플레이 비활성화(OFF) 시작, 전투 종료 시에도 즉시 비활성화(OFF) 초기화!
   const [storyPhase, setStoryPhase] = useState<'PRE_BATTLE' | 'CLOSED' | 'REVIEW'>(() =>
     mode === 'TUTORIAL' && !skipStoryIntro ? 'PRE_BATTLE' : 'CLOSED',
   );
-  const [autoPlay, setAutoPlay] = useState<boolean>(() => mode === 'TUTORIAL');
+  const [autoPlay, setAutoPlay] = useState<boolean>(() => {
+    if (mode !== 'TUTORIAL') return false;
+    const isFirstEp1 = (matchState.journeyMeta?.episode ?? 1) === 1 && liveProfile.totalGames === 0;
+    return !isFirstEp1;
+  });
+  const [quickRulesOpen, setQuickRulesOpen] = useState(false);
+  const [coachCollapsed, setCoachCollapsed] = useState(false);
 
   useEffect(() => {
     if (mode !== 'TUTORIAL') {
@@ -486,6 +493,14 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         setMatchState(activeMatch);
       }
       setStoryPhase('CLOSED');
+      if (
+        mode === 'TUTORIAL' &&
+        (activeMatch.journeyMeta?.episode ?? 1) === 1 &&
+        curP.totalGames === 0 &&
+        !hasSeenQuickRules()
+      ) {
+        setQuickRulesOpen(true);
+      }
       setVsIntroActive(true);
       hsAudio.playMatchupAnnouncement(
         activeMatch.player.heroClass,
@@ -506,6 +521,96 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     },
     [mode, matchState, buildBattleMatchState],
   );
+
+  // 실시간 초보자 코치 배너 1줄 메시지 계산
+  const coachTip = useMemo(() => {
+    if (matchState.phase === 'MULLIGAN') {
+      return {
+        tone: 'amber' as const,
+        badge: '멀리건',
+        text: '1~3코스트 카드는 남기고, 큰 카드를 눌러 1회 교체한 뒤 [확인]을 누르세요.',
+      };
+    }
+    if (matchState.phase === 'GAME_OVER') {
+      return null;
+    }
+    if (matchState.phase !== 'PLAYER_TURN') {
+      return {
+        tone: 'slate' as const,
+        badge: '상대 턴',
+        text: '상대가 카드를 내고 공격하는 중입니다. 내 턴이 올 때까지 잠시 기다리세요.',
+      };
+    }
+    const playableCount = matchState.player.hand.filter(
+      (hc) => engine.inspectPlayability('PLAYER', hc).canPlay,
+    ).length;
+    const minionAttackers = matchState.player.board.filter(
+      (m) => engine.canAttackerSwing('PLAYER', m.uid).ok,
+    ).length;
+    const heroCanAttack = engine.canAttackerSwing('PLAYER', 'PLAYER_HERO').ok;
+    const totalAttackers = minionAttackers + (heroCanAttack ? 1 : 0);
+
+    if (autoPlay) {
+      if (playableCount > 0) {
+        return {
+          tone: 'sky' as const,
+          badge: '자동플레이',
+          text: `AI가 남은 마나(${matchState.player.mana})로 낼 수 있는 카드를 선택 중입니다. (상단 버튼으로 수동 전환 가능)`,
+        };
+      }
+      if (totalAttackers > 0) {
+        return {
+          tone: 'sky' as const,
+          badge: '자동플레이',
+          text: `AI가 공격 가능한 유닛(${totalAttackers}기)으로 적을 공격하고 있습니다.`,
+        };
+      }
+      return {
+        tone: 'sky' as const,
+        badge: '자동플레이',
+        text: 'AI가 이번 턴 행동을 마치고 턴을 넘깁니다. 직접 조종하려면 [자동 OFF]를 누르세요.',
+      };
+    }
+
+    if (selection?.kind === 'MINION' || selection?.kind === 'HERO') {
+      const hasEnemyTaunt = matchState.opponent.board.some(
+        (m) => !m.stealth && (m.taunt || m.auraTaunt),
+      );
+      return {
+        tone: 'emerald' as const,
+        badge: '공격 조준',
+        text: hasEnemyTaunt
+          ? '🛡️ 도발 하수인이 앞을 막고 있습니다! 도발 방패 하수인을 먼저 공격하세요.'
+          : '상대 하수인이나 위쪽 상대 영웅 초상화를 눌러 공격하세요! (취소: 빈 곳 클릭)',
+      };
+    }
+    if (selection?.kind === 'HAND_CARD') {
+      return {
+        tone: 'emerald' as const,
+        badge: '대상 선택',
+        text: '초록·노란빛으로 강조된 대상(아군 또는 적)을 눌러 카드 효과를 발동하세요!',
+      };
+    }
+    if (playableCount > 0) {
+      return {
+        tone: 'emerald' as const,
+        badge: `마나 ${matchState.player.mana}/${matchState.player.maxMana}`,
+        text: '아래 손패에서 초록빛 테두리 카드를 눌러 전장에 소환하세요!',
+      };
+    }
+    if (totalAttackers > 0) {
+      return {
+        tone: 'emerald' as const,
+        badge: '공격 가능',
+        text: `전장의 초록빛 내 하수인${heroCanAttack ? ' 또는 영웅' : ''}을 누른 뒤 적을 공격하세요!`,
+      };
+    }
+    return {
+      tone: 'amber' as const,
+      badge: '턴 마무리',
+      text: '할 수 있는 행동을 마쳤습니다! 오른쪽 [턴 종료] 버튼을 눌러 턴을 넘기세요.',
+    };
+  }, [matchState, autoPlay, selection, engine]);
 
   // Clear banner / error messages smoothly
   useEffect(() => {
@@ -2309,6 +2414,18 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           </div>
 
           <div className="flex shrink-0 items-center gap-1 sm:justify-self-end">
+            <button
+              type="button"
+              data-testid="battle-rules-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                hsAudio.playSfx('ui_click', 0.75);
+                setQuickRulesOpen(true);
+              }}
+              className="rounded-xl border border-amber-300/65 bg-stone-950/90 px-2 py-1 text-[10px] font-extrabold text-amber-200 shadow hover:bg-stone-900 sm:px-2.5 sm:text-xs"
+            >
+              ? 규칙
+            </button>
             {mode === 'TUTORIAL' && matchState.journeyMeta && (
               <button
                 type="button"
@@ -2391,6 +2508,58 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 <span className="text-emerald-300">
                   내 3장+ 배수 강화 {journeyDeckStats.boostedCount}종 (최대 ×{journeyDeckStats.maxMultiplier}배)
                 </span>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Live Beginner Coach Banner (Collapsible) */}
+        {coachTip && storyPhase === 'CLOSED' && !vsIntroActive && (
+          <div
+            data-testid="battle-coach-banner"
+            className="mx-auto flex max-w-2xl items-center justify-between gap-2 rounded-xl border border-amber-400/45 bg-stone-950/90 px-2.5 py-1 text-[11px] text-amber-50 shadow-md sm:px-3.5 sm:text-xs"
+          >
+            {coachCollapsed ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCoachCollapsed(false);
+                }}
+                className="flex items-center gap-1.5 font-extrabold text-amber-200 hover:text-amber-100"
+              >
+                <span>💡</span>
+                <span>코치 힌트 펼치기</span>
+              </button>
+            ) : (
+              <>
+                <div className="flex min-w-0 items-center gap-1.5">
+                  <span
+                    className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-black ${
+                      coachTip.tone === 'emerald'
+                        ? 'bg-emerald-600 text-white'
+                        : coachTip.tone === 'sky'
+                          ? 'bg-sky-600 text-white'
+                          : coachTip.tone === 'amber'
+                            ? 'bg-amber-600 text-stone-950'
+                            : 'bg-stone-700 text-stone-200'
+                    }`}
+                  >
+                    {coachTip.badge}
+                  </span>
+                  <span className="truncate font-bold sm:whitespace-normal">{coachTip.text}</span>
+                </div>
+                <button
+                  type="button"
+                  title="코치 배너 접기"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCoachCollapsed(true);
+                  }}
+                  className="shrink-0 rounded border border-amber-400/30 px-1.5 py-0.5 text-[10px] font-bold text-amber-200 hover:bg-stone-800"
+                >
+                  —
+                </button>
               </>
             )}
           </div>
@@ -3641,6 +3810,14 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           isMidBattleReview={storyPhase === 'REVIEW'}
           onStartBattle={handleCompletePreBattleStory}
           onCloseReview={() => setStoryPhase('CLOSED')}
+        />
+      )}
+
+      {quickRulesOpen && (
+        <QuickRulesModal
+          isFirstTime={!hasSeenQuickRules()}
+          inBattle={true}
+          onClose={() => setQuickRulesOpen(false)}
         />
       )}
 
