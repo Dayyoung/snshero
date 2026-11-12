@@ -153,31 +153,33 @@
       85% { transform: translate3d(8px, 6px, 0); }
     }
 
-    /* Damage-proportional dynamic screen shake (scaled by --hs-shake-x, --hs-shake-y, --hs-shake-rot, --hs-shake-dur) */
+    /* Damage-proportional dynamic screen shake (pure hardware-accelerated translate3d for 60fps on low-end devices) */
     @keyframes hsDamageShakeA {
-      0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-      14% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -1), var(--hs-shake-y, 4px), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * -1)); }
-      32% { transform: translate3d(var(--hs-shake-x, 6px), calc(var(--hs-shake-y, 4px) * -0.9), 0) rotate(var(--hs-shake-rot, 0.35deg)); }
-      52% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -0.72), calc(var(--hs-shake-y, 4px) * -0.65), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * -0.65)); }
-      72% { transform: translate3d(calc(var(--hs-shake-x, 6px) * 0.48), calc(var(--hs-shake-y, 4px) * 0.45), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * 0.4)); }
-      88% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -0.22), calc(var(--hs-shake-y, 4px) * 0.2), 0) rotate(0deg); }
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      14% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -1), var(--hs-shake-y, 4px), 0); }
+      32% { transform: translate3d(var(--hs-shake-x, 6px), calc(var(--hs-shake-y, 4px) * -0.9), 0); }
+      52% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -0.72), calc(var(--hs-shake-y, 4px) * -0.65), 0); }
+      72% { transform: translate3d(calc(var(--hs-shake-x, 6px) * 0.48), calc(var(--hs-shake-y, 4px) * 0.45), 0); }
+      88% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -0.22), calc(var(--hs-shake-y, 4px) * 0.2), 0); }
     }
 
     @keyframes hsDamageShakeB {
-      0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-      14% { transform: translate3d(var(--hs-shake-x, 6px), calc(var(--hs-shake-y, 4px) * -1), 0) rotate(var(--hs-shake-rot, 0.35deg)); }
-      32% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -1), var(--hs-shake-y, 4px), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * -1)); }
-      52% { transform: translate3d(calc(var(--hs-shake-x, 6px) * 0.72), calc(var(--hs-shake-y, 4px) * 0.65), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * 0.65)); }
-      72% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -0.48), calc(var(--hs-shake-y, 4px) * -0.45), 0) rotate(calc(var(--hs-shake-rot, 0.35deg) * -0.4)); }
-      88% { transform: translate3d(calc(var(--hs-shake-x, 6px) * 0.22), calc(var(--hs-shake-y, 4px) * -0.2), 0) rotate(0deg); }
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      14% { transform: translate3d(var(--hs-shake-x, 6px), calc(var(--hs-shake-y, 4px) * -1), 0); }
+      32% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -1), var(--hs-shake-y, 4px), 0); }
+      52% { transform: translate3d(calc(var(--hs-shake-x, 6px) * 0.72), calc(var(--hs-shake-y, 4px) * 0.65), 0); }
+      72% { transform: translate3d(calc(var(--hs-shake-x, 6px) * -0.48), calc(var(--hs-shake-y, 4px) * -0.45), 0); }
+      88% { transform: translate3d(calc(var(--hs-shake-x, 6px) * 0.22), calc(var(--hs-shake-y, 4px) * -0.2), 0); }
     }
 
     .hs-damage-shake-a {
       animation: hsDamageShakeA var(--hs-shake-dur, 280ms) cubic-bezier(.36,.07,.19,.97) both;
+      will-change: transform;
     }
 
     .hs-damage-shake-b {
       animation: hsDamageShakeB var(--hs-shake-dur, 280ms) cubic-bezier(.36,.07,.19,.97) both;
+      will-change: transform;
     }
 
     @keyframes hsFloat {
@@ -245,8 +247,33 @@
 
     /* Google AdSense containment & rescue button */
     ins.adsbygoogle[data-anchor-status],
-    ins.adsbygoogle[data-ad-status="unfilled"] {
+    ins.adsbygoogle[data-ad-status="unfilled"],
+    body > ins.adsbygoogle,
+    body > .google-auto-placed,
+    body > div[id^="aswift_"],
+    body > iframe[id^="aswift_"],
+    .grippy-host {
       display: none !important;
+      pointer-events: none !important;
+    }
+    #adsense-mobile-top,
+    #adsense-desktop-left,
+    #adsense-desktop-right {
+      position: relative !important;
+      z-index: 1 !important;
+      overflow: hidden !important;
+      contain: layout paint !important;
+      transform: translateZ(0);
+    }
+    #adsense-mobile-top ins.adsbygoogle,
+    #adsense-mobile-top div[id^="aswift_"],
+    #adsense-mobile-top iframe {
+      max-height: 50px !important;
+      position: relative !important;
+    }
+    #hs-game-viewport {
+      position: relative;
+      z-index: 20;
     }
     .snshero-vignette-rescue-btn {
       position: fixed;

@@ -218,6 +218,14 @@ export function cleanupUncontainedAds(): void {
       'iframe[name*="google_ads_bottom_frame"]',
       'ins.adsbygoogle[data-anchor-status]',
       '.adsbygoogle-noab-wrap',
+      '.google-auto-placed',
+      '.grippy-host',
+      'body > ins.adsbygoogle',
+      'body > div[id^="aswift_"]',
+      'body > iframe[id^="aswift_"]',
+      'body > div[id^="google_ads_"]',
+      'div[id*="aswift"][style*="position: fixed"]',
+      'div[id*="aswift"][style*="position:fixed"]',
     ];
 
     document.querySelectorAll(intrusiveSelectors.join(',')).forEach((el) => {
@@ -232,10 +240,32 @@ export function cleanupUncontainedAds(): void {
       }
     });
 
-    // Reset unwanted body padding/margins injected by AdSense
+    // Clamp #adsense-mobile-top inner ad tags/iframes so they cannot expand over top game buttons
+    const mobileTop = document.getElementById('adsense-mobile-top');
+    if (mobileTop) {
+      mobileTop
+        .querySelectorAll<HTMLElement>('ins.adsbygoogle, div[id^="aswift_"], iframe')
+        .forEach((inner) => {
+          if (inner.style.maxHeight !== '50px') {
+            inner.style.setProperty('max-height', '50px', 'important');
+          }
+          if (inner.style.position === 'fixed' || inner.style.position === 'absolute') {
+            inner.style.setProperty('position', 'relative', 'important');
+          }
+        });
+    }
+
+    // Reset unwanted body/html padding/margins injected by AdSense
     if (document.body && (document.body.style.paddingTop || document.body.style.marginTop)) {
       document.body.style.paddingTop = '0px';
       document.body.style.marginTop = '0px';
+    }
+    if (
+      document.documentElement &&
+      (document.documentElement.style.paddingTop || document.documentElement.style.marginTop)
+    ) {
+      document.documentElement.style.paddingTop = '0px';
+      document.documentElement.style.marginTop = '0px';
     }
   } catch {}
 }

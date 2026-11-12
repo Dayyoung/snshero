@@ -180,34 +180,35 @@ export const GameAdSenseLayout: React.FC<GameAdSenseLayoutProps> = ({
         <div
           id="adsense-mobile-top"
           ref={mobileTopRef}
-          style={{ height: 52, minHeight: 52, maxHeight: 52 }}
-          className="adsense-banner-top w-full shrink-0 select-none overflow-hidden border-b border-[#c8a158]/30 bg-[#100a06] px-1 text-center"
+          style={{ height: 52, minHeight: 52, maxHeight: 52, isolation: 'isolate' }}
+          className="adsense-banner-top relative z-0 w-full shrink-0 select-none overflow-hidden border-b border-[#c8a158]/30 bg-[#100a06] px-1 text-center"
           aria-label="Google AdSense Top Banner"
         >
-          <div className="adsense-banner-inner mx-auto flex h-[50px] max-w-[360px] items-center justify-center gap-1.5 overflow-hidden">
+          <div className="adsense-banner-inner relative mx-auto flex h-[50px] max-w-[360px] items-center justify-center gap-1.5 overflow-hidden">
             <span className="shrink-0 rounded border border-amber-500/35 bg-black/70 px-1 py-0.5 text-[8px] font-extrabold tracking-wider text-amber-200/75 uppercase">
               AD
             </span>
-            <div className="adsense-slot-wrapper flex h-[50px] max-h-[50px] min-h-[50px] flex-1 items-center justify-center overflow-hidden" />
+            <div className="adsense-slot-wrapper relative flex h-[50px] max-h-[50px] min-h-[50px] flex-1 items-center justify-center overflow-hidden" />
           </div>
         </div>
       )}
 
       {/* Central Row: PC Left Gutter + Scaled/Letterboxed Game Viewport + PC Right Gutter */}
-      <div className="relative flex min-h-0 w-full flex-1 flex-row justify-center overflow-hidden">
+      <div className="relative z-10 flex min-h-0 w-full flex-1 flex-row justify-center overflow-hidden">
         {!vipAdRemoved && (
           <aside
             id="adsense-desktop-left"
             ref={leftGutterRef}
-            className="adsense-gutter adsense-desktop-left w-[176px] shrink-0 select-none flex-col items-center justify-center border-r border-[#c8a158]/25 bg-[#0c0805] px-2 py-3 text-center"
+            style={{ isolation: 'isolate' }}
+            className="adsense-gutter adsense-desktop-left relative z-0 w-[176px] shrink-0 select-none flex-col items-center justify-center overflow-hidden border-r border-[#c8a158]/25 bg-[#0c0805] px-2 py-3 text-center"
             aria-label="Google AdSense Left Wing"
           >
-            <div className="w-[160px] rounded-xl border border-[#c8a158]/25 bg-black/55 p-1.5">
+            <div className="w-[160px] overflow-hidden rounded-xl border border-[#c8a158]/25 bg-black/55 p-1.5">
               <div className="mb-1 flex items-center justify-between border-b border-amber-500/20 pb-1 text-[9px] font-bold tracking-wider text-amber-200/65 uppercase">
                 <span>AD</span>
                 <span>Google Ads</span>
               </div>
-              <div className="adsense-slot-wrapper flex min-h-[600px] w-full items-center justify-center overflow-hidden" />
+              <div className="adsense-slot-wrapper relative flex min-h-[600px] w-full items-center justify-center overflow-hidden" />
             </div>
           </aside>
         )}
@@ -219,7 +220,7 @@ export const GameAdSenseLayout: React.FC<GameAdSenseLayoutProps> = ({
             background:
               'radial-gradient(ellipse at 50% 50%, #160d07 0%, #090503 65%, #040201 100%)',
           }}
-          className="relative flex h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden"
+          className="relative z-20 flex h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden"
         >
           <div
             id="hs-stage-frame"
@@ -252,15 +253,16 @@ export const GameAdSenseLayout: React.FC<GameAdSenseLayoutProps> = ({
           <aside
             id="adsense-desktop-right"
             ref={rightGutterRef}
-            className="adsense-gutter adsense-desktop-right w-[176px] shrink-0 select-none flex-col items-center justify-center border-l border-[#c8a158]/25 bg-[#0c0805] px-2 py-3 text-center"
+            style={{ isolation: 'isolate' }}
+            className="adsense-gutter adsense-desktop-right relative z-0 w-[176px] shrink-0 select-none flex-col items-center justify-center overflow-hidden border-l border-[#c8a158]/25 bg-[#0c0805] px-2 py-3 text-center"
             aria-label="Google AdSense Right Wing"
           >
-            <div className="w-[160px] rounded-xl border border-[#c8a158]/25 bg-black/55 p-1.5">
+            <div className="w-[160px] overflow-hidden rounded-xl border border-[#c8a158]/25 bg-black/55 p-1.5">
               <div className="mb-1 flex items-center justify-between border-b border-amber-500/20 pb-1 text-[9px] font-bold tracking-wider text-amber-200/65 uppercase">
                 <span>AD</span>
                 <span>Google Ads</span>
               </div>
-              <div className="adsense-slot-wrapper flex min-h-[600px] w-full items-center justify-center overflow-hidden" />
+              <div className="adsense-slot-wrapper relative flex min-h-[600px] w-full items-center justify-center overflow-hidden" />
             </div>
           </aside>
         )}

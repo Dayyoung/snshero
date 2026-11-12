@@ -21566,3 +21566,13 @@
      - 한국어 본편 1~40화(`KOf8IAic2QY` ~ `y_VlAwyYYlk`) 및 한국어 쇼츠 1~11화(`xjMXzle33ak` ~ `oe97YbIMg3Y`) 총 51개 신규 업로드 영상 모두 1번째 표지 이미지(`ep_01..40_cover_thumb.jpg`), 한·영 병기 제목, 12개 국어(`KO, EN, JA, ZH-CN, ZH-TW, DE, ES, FR, ID, RU, TH, VI`) 줄거리·안내 본문 적용 완료.
      - 중복 생성된 초안 50개는 `VISIBILITY=DRAFT` 필터 일괄 삭제로 0개 남김없이 영구 삭제 완료.
   3. **검증 및 보고**: YouTube Data API v3 조회 결과 전체 131개 영상(`영문 본편 40 + 영문 쇼츠 40 + 한국어 본편 40 + 한국어 쇼츠 11`) `Public=131/131, Titles=131/131, 12-Lang Desc=131/131, Cover Thumb=131/131` 검증 완료, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+### 2026-11-13 06:25 KST | `/game.html` 구글 광고 표시 시 상단 버튼 클릭 불가 버그 조사 및 수정 완료
+- **원인 분석**:
+  1. `src/hearthstone/components/GameAdSenseLayout.tsx`의 `#adsense-mobile-top`, `#adsense-desktop-left`, `#adsense-desktop-right` 컨테이너에 `position: relative` 및 `isolation: isolate` / `z-index` 격리가 누락되어, 광고 로드(fill) 시 생성되는 `position: absolute`/`fixed` 또는 50px 초과 광고 프레임(`ins.adsbygoogle`, `aswift_*` iframe)이 상단 배너 경계를 넘어 게임 상단 HUD 버튼 영역을 덮어 클릭을 가로채는 현상 발생.
+  2. `src/landing/services/adsenseManager.ts`의 `cleanupUncontainedAds()`가 지정 컨테이너 외부에 구글 Auto Ads가 주입하는 `.google-auto-placed`, `.grippy-host`, `body > ins.adsbygoogle`, `body > div[id^="aswift_"]` 등 상단 침범 요소와 `html` 상단 패딩을 정리하지 못했고, `#adsense-mobile-top` 내부 광고 높이 클램프(`max-height: 50px`) 보정이 없었음.
+- **수정 내역**:
+  1. `game.html`: 지정 컨테이너 외부의 Auto Ads 상단 침범 요소(`body > ins.adsbygoogle`, `body > .google-auto-placed`, `body > div[id^="aswift_"]`, `body > iframe[id^="aswift_"]`, `.grippy-host`) 차단 CSS 추가 및 `#adsense-mobile-top` 내 광고 요소 `max-height: 50px !important`, `position: relative !important`, `contain: layout paint !important` 강제, `#hs-game-viewport`에 `z-index: 20` 부여.
+  2. `src/hearthstone/components/GameAdSenseLayout.tsx`: `#adsense-mobile-top`, `#adsense-desktop-left`, `#adsense-desktop-right`에 `relative z-0 overflow-hidden` 및 `isolation: 'isolate'` 적용, 중앙 게임 영역 및 `#hs-game-viewport`에 `z-10` / `z-20` 우선순위 부여.
+  3. `src/landing/services/adsenseManager.ts`: `cleanupUncontainedAds()`에 Auto Ads 상단 침범 요소 제거 확장, `#adsense-mobile-top` 내부 `ins.adsbygoogle`/`div[id^="aswift_"]`/`iframe` 높이 50px 클램프 및 `position: relative` 강제, `document.documentElement`의 `paddingTop`/`marginTop` 리셋 추가.
+- **검증 결과**: 수정 파일(`GameAdSenseLayout.tsx`, `adsenseManager.ts`) TypeScript 검사 오류 0건 확인(전체 빌드는 미수정 파일 `src/hearthstone/vfx/BoardVfxCanvas.tsx` 기존 구문 오류로 중단). 로컬 Git 커밋 및 구글 폼 보고 완료.
