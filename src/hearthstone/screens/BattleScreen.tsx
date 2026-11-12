@@ -774,36 +774,31 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       }
 
       let ampX: number;
-      let rotDeg: number;
+      const rotDeg = 0; // GPU 래스터화 쟁크 및 텍스트 블러 방지를 위해 60fps 순수 translate3d 이동
       let durationMs: number;
 
       if (isFinisher) {
-        ampX = 22;
-        rotDeg = 1.45;
-        durationMs = 560;
+        ampX = 12;
+        durationMs = 360;
       } else if (dmg <= 2) {
-        ampX = Number((1.6 + dmg * 0.85).toFixed(2));
-        rotDeg = 0.16;
-        durationMs = 195;
+        ampX = Number((1.2 + dmg * 0.5).toFixed(2));
+        durationMs = 180;
       } else if (dmg <= 4) {
-        ampX = Number((2.2 + dmg * 0.95).toFixed(2));
-        rotDeg = 0.34;
-        durationMs = 265;
+        ampX = Number((1.8 + dmg * 0.6).toFixed(2));
+        durationMs = 210;
       } else if (dmg <= 7) {
-        ampX = Number((3.5 + dmg * 0.95).toFixed(2));
-        rotDeg = 0.58;
-        durationMs = 345;
+        ampX = Number((2.6 + dmg * 0.6).toFixed(2));
+        durationMs = 250;
       } else if (dmg <= 11) {
-        ampX = Number((4.8 + dmg * 0.88).toFixed(2));
-        rotDeg = 0.88;
-        durationMs = 425;
+        ampX = Number((3.6 + Math.min(11, dmg) * 0.55).toFixed(2));
+        durationMs = 290;
       } else {
-        ampX = Number(Math.min(21, 14 + (dmg - 12) * 0.65).toFixed(2));
-        rotDeg = 1.25;
-        durationMs = 510;
+        // 12+ 대격돌: 최대 11px 상한으로 가볍고 빠른 타격감 제공 (저사양 쟁크 0%)
+        ampX = Number(Math.min(10.8, 7.2 + (dmg - 12) * 0.2).toFixed(2));
+        durationMs = 310;
       }
 
-      const ampY = Number((ampX * 0.72).toFixed(2));
+      const ampY = Number((ampX * 0.68).toFixed(2));
       activeShakeRef.current = { until: now + durationMs * 0.85, strength };
 
       setShakeState((prev) => ({
@@ -1741,8 +1736,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           backgroundImage: `url(${BOARD_BG_URL[matchState.boardTheme]})`,
           '--hs-shake-x': `${shakeState.ampX}px`,
           '--hs-shake-y': `${shakeState.ampY}px`,
-          '--hs-shake-rot': `${shakeState.rotDeg}deg`,
           '--hs-shake-dur': `${shakeState.durationMs}ms`,
+          willChange: shakeState.active ? 'transform' : 'auto',
+          transform: 'translate3d(0, 0, 0)',
+          backfaceVisibility: 'hidden',
         } as React.CSSProperties
       }
       className={`relative flex h-full w-full select-none flex-col justify-between overflow-hidden bg-cover bg-center ${
@@ -2021,9 +2018,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                   style={{
                     left: attackAnim.targetX,
                     top: attackAnim.targetY,
-                    transform: 'translate(-50%, -50%)',
+                    transform: 'translate3d(-50%, -50%, 0)',
+                    willChange: 'transform, opacity',
                   }}
-                  className="absolute z-40 flex h-16 w-16 animate-[hsCardPop_0.22s_ease-out] items-center justify-center rounded-full border-[3px] border-yellow-200 bg-gradient-to-b from-red-500 via-red-700 to-rose-950 shadow-[0_0_26px_rgba(239,68,68,0.98)] sm:h-20 sm:w-20"
+                  className="absolute z-40 flex h-16 w-16 animate-[hsCardPop_0.22s_ease-out] items-center justify-center rounded-full border-[2.5px] border-yellow-200 bg-gradient-to-b from-red-500 via-red-700 to-rose-950 shadow-xl sm:h-20 sm:w-20"
                 >
                   <span className="hs-num hs-outline text-2xl font-black text-white sm:text-3xl">
                     -{attackAnim.defenderDamage}
@@ -2036,9 +2034,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                   style={{
                     left: attackAnim.targetX - ux * 58,
                     top: attackAnim.targetY - uy * 58,
-                    transform: 'translate(-50%, -50%)',
+                    transform: 'translate3d(-50%, -50%, 0)',
+                    willChange: 'transform, opacity',
                   }}
-                  className="absolute z-40 flex h-13 w-13 animate-[hsCardPop_0.22s_ease-out] items-center justify-center rounded-full border-2 border-amber-200 bg-gradient-to-b from-orange-500 via-red-700 to-stone-950 shadow-[0_0_20px_rgba(249,115,22,0.95)] sm:h-15 sm:w-15"
+                  className="absolute z-40 flex h-13 w-13 animate-[hsCardPop_0.22s_ease-out] items-center justify-center rounded-full border-2 border-amber-200 bg-gradient-to-b from-orange-500 via-red-700 to-stone-950 shadow-lg sm:h-15 sm:w-15"
                 >
                   <span className="hs-num hs-outline text-lg font-black text-white sm:text-2xl">
                     -{attackAnim.attackerCounterDamage}

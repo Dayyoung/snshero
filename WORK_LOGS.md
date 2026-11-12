@@ -2,6 +2,38 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-13 06:28 KST] [/game.html 다수 카드 표시 및 10+ 데미지 충돌 시 저사양 기기 화면 끊김/프레임 드랍 버그 전면 최적화 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"game.html 카드플레이 시 카드가 많이 표시되고 상대에게 주는 데미지가 10이상 올라가면 저사양기기에서 화면이 끊기는 버그가 있어. 최적화 해볼래."`
+  - **2. 핵심 병목 원인 정밀 분석**:
+    1. **`BoardVfxCanvas` 매 6프레임 전체 DOM 강제 레이아웃 스래싱(Layout Thrashing)**:
+       - 렌더 루프 내부에서 매 6프레임(약 100ms)마다 `document.querySelectorAll('[data-hs-entity]')`를 호출하고 모든 노드의 `elementCenterInStage(node)`(`getBoundingClientRect()`)를 강제 실행함.
+       - 특히 카드가 많이 나와 있고 데미지 10 이상 충돌로 화면 흔들림 CSS 애니메이션이 실행 중일 때 `getBoundingClientRect()`가 호출되면 브라우저 하드웨어 컴포지터가 차단되고 메인 스레드가 강제 동기 레이아웃(Forced Synchronous Layout)을 재계산하며 극심한 쟁크(Jank) 발생.
+    2. **전체 화면 루트 셰이크 회전(`rotate`)에 의한 GPU 래스터화 과부하**:
+       - 데미지가 10 이상일 때 `rotDeg`가 0.88deg~1.25deg로 급증하고 지속시간이 510ms 이상 길어짐.
+       - 전체 화면 루트 컨테이너(`battle-stage-root`)가 회전하면서 하위의 수많은 카드 텍스트, SVG 필터, 섀도우가 서브픽셀 래스터화를 겪어 저사양 GPU 필레이트가 초과됨.
+    3. **비-메모이제이션 컴포넌트(`HearthstoneCard`, `BoardMinionToken`, `HeroPortraitZone`)의 연쇄 리렌더링**:
+       - `shakeState`나 배틀 상태 변경 시 보드 위 14개 하수인과 10개 핸드 카드가 전부 무조건 가상 DOM을 재평가하여 CPU 스파이크 유발.
+    4. **무중단 60fps 캔버스 루프**:
+       - 활성 파티클이 없을 때도 캔버스가 매 프레임 `clearRect`를 돌며 CPU 자원을 지속 소모.
+  - **3. 세부 최적화 구현 내역**:
+    1. **`BoardVfxCanvas.tsx` 레이아웃 스래싱 100% 제거 및 IDLE 수면 모드 적용 ([`BoardVfxCanvas.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/vfx/BoardVfxCanvas.tsx))**:
+       - 렌더 루프 내부의 `document.querySelectorAll('[data-hs-entity]')` 전수 순회를 완전히 제거.
+       - 엔티티 중심점은 이벤트 발생 시점에 1회 캐시(`lastKnownEntityCenters`) 및 필요 시 개별 조회만 수행.
+       - 파티클/투사체/배지가 비어있을 때는 `rafId = 0`으로 렌더 루프를 IDLE 대기 상태로 전환(평상시 CPU/GPU 점유율 0%), 이벤트 발생 시 `ensureLoop()`로 즉시 재개.
+       - 파티클 최대 상한선(`MAX_ACTIVE_PARTICLES = 60`) 도입 및 `DAMAGE` 배지 드로잉을 사전 계산된 8각 스플랫 테이블(`DAMAGE_SPLAT_OCTAGON`)로 최적화.
+    2. **순수 하드웨어 가속 `translate3d` 셰이크 및 지속시간·진폭 안정화 ([`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx), [`game.html`](file:///Users/dayyoung/project/snshero/game.html))**:
+       - `game.html`의 `@keyframes hsDamageShakeA` / `B`에서 회전(`rotate`)을 배제하고 순수 `translate3d` 축 이동으로 전환하여 텍스트 리페인트 원천 차단.
+       - `BattleScreen.tsx`의 `triggerDamageImpact`에서 `rotDeg = 0`, 지속시간 상한을 310ms로 스내피하게 조정하고 진폭 상한을 10.8px로 안전 캡핑.
+       - 루트 컨테이너에 `willChange: shakeState.active ? 'transform' : 'auto'`, `transform: translate3d(0, 0, 0)`, `backfaceVisibility: hidden` 부여.
+       - 충돌 데미지 스플랫의 26px 네온 섀도우를 `shadow-xl` 및 `translate3d`로 경량화.
+    3. **핵심 카드 컴포넌트 `React.memo` 적용 ([`CardVisual.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/CardVisual.tsx))**:
+       - `HearthstoneCard`, `BoardMinionToken`, `HeroPortraitZone`에 `React.memo`를 적용하여 흔들림이나 타격 중 변경되지 않은 다른 카드들의 불필요한 리렌더링을 완전히 차단.
+  - **4. 검증 및 빌드**:
+    - `npm run build` 프로덕션 빌드 성공 (에러 0건 통과), 구글 폼 완료 보고서 제출 및 로컬 Git 커밋 완료 (`git push` 미실행 원칙 준수).
+
 ## [2026-11-12 15:18 KST] [/game.html 화면 포커스 이탈(blur / visibilitychange) 시 에피소드 스토리 TTS 내레이션 100% 즉시 음소거 적용 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

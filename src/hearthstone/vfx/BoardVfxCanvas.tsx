@@ -55,18 +55,32 @@ export function recordEntityStagePosition(entityId: string, pos: { x: number; y:
 function getEntityCenter(entityId?: string): { x: number; y: number } {
   const { width: w, height: h } = getStageSize();
   if (!entityId) return { x: w * 0.5, y: h * 0.46 };
+  const cached = lastKnownEntityCenters.get(entityId);
+  if (cached) return cached;
+
   const el = document.querySelector(`[data-hs-entity="${entityId}"]`);
   if (el) {
     const pos = elementCenterInStage(el);
     lastKnownEntityCenters.set(entityId, pos);
     return pos;
   }
-  const cached = lastKnownEntityCenters.get(entityId);
-  if (cached) return cached;
   if (entityId === 'PLAYER_HERO') return { x: w * 0.5, y: h * 0.77 };
   if (entityId === 'OPPONENT_HERO') return { x: w * 0.5, y: h * 0.17 };
   return { x: w * 0.5, y: h * 0.46 };
 }
+
+const MAX_ACTIVE_PARTICLES = 60;
+// Pre-calculated 8-point blood splat polygon vertices for zero-trig damage pop render
+const DAMAGE_SPLAT_OCTAGON = [
+  { x: 26, y: 0 },
+  { x: 12, y: 12 },
+  { x: 0, y: 26 },
+  { x: -12, y: 12 },
+  { x: -26, y: 0 },
+  { x: -12, y: -12 },
+  { x: 0, y: -26 },
+  { x: 12, y: -12 },
+];
 
 export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamageImpact }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -76,6 +90,9 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
   const badgesRef = useRef<FloatingBadge[]>([]);
   const impactCbRef = useRef(onDamageImpact);
   impactCbRef.current = onDamageImpact;
+
+  const rafIdRef = useRef<number>(0);
+  const ensureLoopRef = useRef<() => void>(() => {});
 
   const spawnBurst = (
     x: number,
@@ -87,10 +104,14 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
     shape: Particle['shape'] = 'CIRCLE',
     gravity = 0.08,
   ) => {
-    for (let i = 0; i < count; i++) {
+    const curLen = particlesRef.current.length;
+    if (curLen >= MAX_ACTIVE_PARTICLES) return;
+    const allowed = Math.min(count, MAX_ACTIVE_PARTICLES - curLen);
+
+    for (let i = 0; i < allowed; i++) {
       const angle = Math.random() * Math.PI * 2;
       const spd = 1.2 + Math.random() * speedMax;
-      const maxLife = 24 + Math.random() * 28;
+      const maxLife = 20 + Math.random() * 20;
       particlesRef.current.push({
         x,
         y,
@@ -105,6 +126,7 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
         shape,
       });
     }
+    ensureLoopRef.current();
   };
 
   const spawnRing = (x: number, y: number, color: string, maxSize = 110) => {
@@ -117,9 +139,10 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
       color,
       alpha: 1,
       life: 0,
-      maxLife: 26,
+      maxLife: 22,
       shape: 'RING',
     });
+    ensureLoopRef.current();
   };
 
   useEffect(() => {
@@ -234,14 +257,14 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
 
         case 'HOLY_NOVA':
           hsAudio.playProceduralVfxSound('HOLY');
-          spawnRing(stageW * 0.5, stageH * 0.45, '#fde047', 420);
+          spawnRing(stageW * 0.5, stageH * 0.45, '#fde047', 360);
           spawnBurst(
             stageW * 0.5,
             stageH * 0.45,
-            45,
+            18,
             ['#fef08a', '#facc15', '#ffffff'],
-            11,
-            9,
+            8.5,
+            8,
             'STAR',
             0,
           );
@@ -256,8 +279,8 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
           const yBand = ev.targetId === 'PLAYER_HERO' ? stageH * 0.56 : stageH * 0.34;
           for (let i = 0; i < 5; i++) {
             const px = stageW * (0.26 + i * 0.12);
-            spawnBurst(px, yBand, 28, ['#fef08a', '#fb923c', '#ef4444'], 9, 12, 'CIRCLE', -0.12);
-            spawnRing(px, yBand, '#f97316', 120);
+            spawnBurst(px, yBand, 8, ['#fef08a', '#fb923c', '#ef4444'], 7.5, 9, 'CIRCLE', -0.08);
+            spawnRing(px, yBand, '#f97316', 80);
           }
           break;
         }
@@ -268,20 +291,22 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
           hsAudio.vibrateByDamage(bzDmg);
           impactCbRef.current?.(bzDmg);
           const yBand = ev.targetId === 'PLAYER_HERO' ? stageH * 0.56 : stageH * 0.34;
-          for (let i = 0; i < 55; i++) {
+          const allowed = Math.min(22, MAX_ACTIVE_PARTICLES - particlesRef.current.length);
+          for (let i = 0; i < allowed; i++) {
             particlesRef.current.push({
               x: stageW * (0.18 + Math.random() * 0.64),
-              y: yBand - 120 + Math.random() * 60,
-              vx: -3.5 + Math.random() * 1.5,
-              vy: 4.5 + Math.random() * 4,
-              size: 5 + Math.random() * 7,
+              y: yBand - 100 + Math.random() * 50,
+              vx: -2.8 + Math.random() * 1.2,
+              vy: 3.5 + Math.random() * 3,
+              size: 4 + Math.random() * 5,
               color: i % 2 === 0 ? '#bae6fd' : '#ffffff',
               alpha: 1,
               life: 0,
-              maxLife: 34,
+              maxLife: 26,
               shape: 'SHARD',
             });
           }
+          ensureLoopRef.current();
           break;
         }
 
@@ -291,11 +316,11 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
           hsAudio.vibrateByDamage(csDmg);
           impactCbRef.current?.(csDmg);
           const yBand = ev.targetId === 'PLAYER_HERO' ? stageH * 0.58 : stageH * 0.34;
-          for (let i = 0; i < 6; i++) {
-            const px = stageW * (0.24 + i * 0.105);
-            spawnBurst(px, yBand, 18, ['#fef08a', '#f59e0b', '#ffffff'], 6.5, 9, 'STAR', -0.08);
+          for (let i = 0; i < 5; i++) {
+            const px = stageW * (0.26 + i * 0.12);
+            spawnBurst(px, yBand, 5, ['#fef08a', '#f59e0b', '#ffffff'], 5.5, 7, 'STAR', -0.06);
           }
-          spawnRing(stageW * 0.5, yBand, '#fbbf24', 360);
+          spawnRing(stageW * 0.5, yBand, '#fbbf24', 300);
           break;
         }
 
@@ -303,8 +328,8 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
           hsAudio.playSfx('whoosh', 0.9);
           hsAudio.vibrateByDamage(Math.max(2, ev.value || 3));
           impactCbRef.current?.(Math.max(2, ev.value || 3));
-          spawnRing(stageW * 0.5, stageH * 0.45, '#cbd5e1', 340);
-          spawnBurst(stageW * 0.5, stageH * 0.45, 32, ['#f8fafc', '#94a3b8'], 12, 6, 'SHARD', 0);
+          spawnRing(stageW * 0.5, stageH * 0.45, '#cbd5e1', 280);
+          spawnBurst(stageW * 0.5, stageH * 0.45, 16, ['#f8fafc', '#94a3b8'], 9, 5, 'SHARD', 0);
           break;
 
         case 'EXPLOSION': {
@@ -312,8 +337,8 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
           hsAudio.playSfx('big_attack', 0.9);
           hsAudio.vibrateByDamage(exDmg);
           impactCbRef.current?.(exDmg);
-          spawnBurst(targetPos.x, targetPos.y, 34, ['#fde047', '#f97316', '#dc2626'], 9.5, 11, 'CIRCLE', 0.08);
-          spawnRing(targetPos.x, targetPos.y, '#ef4444', 135);
+          spawnBurst(targetPos.x, targetPos.y, 16, ['#fde047', '#f97316', '#dc2626'], 7.5, 9, 'CIRCLE', 0.06);
+          spawnRing(targetPos.x, targetPos.y, '#ef4444', 110);
           if (ev.label) {
             badgesRef.current.push({
               x: targetPos.x,
@@ -324,6 +349,7 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
               life: 0,
               maxLife: 62,
             });
+            ensureLoopRef.current();
           }
           break;
         }
@@ -344,8 +370,8 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
 
         case 'SECRET_REVEAL':
           hsAudio.playProceduralVfxSound('SECRET_TRIGGER');
-          spawnRing(targetPos.x, targetPos.y, '#f472b6', 160);
-          spawnBurst(targetPos.x, targetPos.y, 28, ['#fbcfe8', '#f472b6', '#fde047'], 7, 8, 'STAR', 0);
+          spawnRing(targetPos.x, targetPos.y, '#f472b6', 130);
+          spawnBurst(targetPos.x, targetPos.y, 14, ['#fbcfe8', '#f472b6', '#fde047'], 6, 7, 'STAR', 0);
           if (ev.label) {
             badgesRef.current.push({
               x: stageW * 0.5,
@@ -356,6 +382,7 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
               life: 0,
               maxLife: 75,
             });
+            ensureLoopRef.current();
           }
           break;
 
@@ -365,15 +392,15 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
           hsAudio.playProceduralVfxSound('LEGENDARY_FANFARE');
           hsAudio.vibrateByDamage(11);
           impactCbRef.current?.(11);
-          spawnRing(targetPos.x, targetPos.y, '#fbbf24', Math.max(240, Math.min(stageW, stageH) * 0.58));
-          spawnRing(targetPos.x, targetPos.y, '#fef08a', 175);
+          spawnRing(targetPos.x, targetPos.y, '#fbbf24', Math.max(200, Math.min(stageW, stageH) * 0.48));
+          spawnRing(targetPos.x, targetPos.y, '#fef08a', 140);
           spawnBurst(
             targetPos.x,
             targetPos.y,
-            64,
+            24,
             ['#fef08a', '#f59e0b', '#fbbf24', '#fb923c', '#ffffff'],
-            11.5,
-            11,
+            9.5,
+            9,
             'STAR',
             0.04,
           );
@@ -387,6 +414,7 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
               life: 0,
               maxLife: 88,
             });
+            ensureLoopRef.current();
           }
           break;
 
@@ -395,16 +423,16 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
           hsAudio.playSfx('victory', 0.95);
           hsAudio.vibrateByDamage(22, { isFinisher: true });
           impactCbRef.current?.(22, { isFinisher: true });
-          spawnRing(targetPos.x, targetPos.y, '#f97316', 290);
+          spawnRing(targetPos.x, targetPos.y, '#f97316', 240);
           spawnBurst(
             targetPos.x,
             targetPos.y,
-            85,
+            28,
             ['#fef08a', '#f97316', '#ef4444', '#ffffff', '#fbbf24'],
-            13,
-            14,
+            10.5,
+            11,
             'SHARD',
-            0.12,
+            0.1,
           );
           break;
 
@@ -417,31 +445,33 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
           }
           hsAudio.vibrateByDamage(hitDmg);
           impactCbRef.current?.(hitDmg);
-          spawnBurst(targetPos.x, targetPos.y, 12, ['#ef4444', '#fca5a5', '#fde047'], 5.2, 6, 'SHARD', 0.12);
+          spawnBurst(targetPos.x, targetPos.y, 8, ['#ef4444', '#fca5a5', '#fde047'], 4.5, 5, 'SHARD', 0.1);
           badgesRef.current.push({
-            x: targetPos.x + (Math.random() * 14 - 7),
+            x: targetPos.x + (Math.random() * 10 - 5),
             y: targetPos.y - 6,
-            vy: -1.15,
+            vy: -1.05,
             text: ev.label || `-${hitDmg}`,
             subKind: 'DAMAGE',
             life: 0,
-            maxLife: 52,
+            maxLife: 46,
           });
+          ensureLoopRef.current();
           break;
         }
 
         case 'HEAL_POP':
           hsAudio.playProceduralVfxSound('HOLY');
-          spawnBurst(targetPos.x, targetPos.y, 14, ['#86efac', '#4ade80', '#fef08a'], 4.2, 6, 'STAR', -0.06);
+          spawnBurst(targetPos.x, targetPos.y, 8, ['#86efac', '#4ade80', '#fef08a'], 3.8, 5, 'STAR', -0.05);
           badgesRef.current.push({
             x: targetPos.x,
             y: targetPos.y - 10,
-            vy: -1.1,
+            vy: -1.0,
             text: `+${ev.value || 1}`,
             subKind: 'HEAL',
             life: 0,
-            maxLife: 50,
+            maxLife: 45,
           });
+          ensureLoopRef.current();
           break;
 
         case 'ARMOR_POP':
@@ -449,26 +479,28 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
           badgesRef.current.push({
             x: targetPos.x + 22,
             y: targetPos.y - 12,
-            vy: -1.0,
+            vy: -0.9,
             text: `+${ev.value || 1} 방어도`,
             subKind: 'ARMOR',
             life: 0,
-            maxLife: 48,
+            maxLife: 44,
           });
+          ensureLoopRef.current();
           break;
 
         case 'BUFF_POP':
-          spawnBurst(targetPos.x, targetPos.y, 14, ['#fde047', '#fef9c3'], 4.5, 6, 'STAR', -0.05);
+          spawnBurst(targetPos.x, targetPos.y, 8, ['#fde047', '#fef9c3'], 3.8, 5, 'STAR', -0.04);
           if (ev.label) {
             badgesRef.current.push({
               x: targetPos.x,
               y: targetPos.y - 18,
-              vy: -1.1,
+              vy: -1.0,
               text: ev.label,
               subKind: 'BUFF',
               life: 0,
-              maxLife: 46,
+              maxLife: 44,
             });
+            ensureLoopRef.current();
           }
           break;
       }
@@ -491,31 +523,22 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
     syncSize();
     window.addEventListener('resize', syncSize);
 
-    let rafId = 0;
     let frameTick = 0;
     const render = () => {
       frameTick += 1;
-      if (frameTick % 6 === 1) {
-        const nodes = document.querySelectorAll('[data-hs-entity]');
-        nodes.forEach((node) => {
-          const id = node.getAttribute('data-hs-entity');
-          if (id) {
-            lastKnownEntityCenters.set(id, elementCenterInStage(node));
-          }
-        });
-        if (lastKnownEntityCenters.size > 160) {
-          const entries = Array.from(lastKnownEntityCenters.entries()).slice(-80);
-          lastKnownEntityCenters.clear();
-          for (const [k, v] of entries) lastKnownEntityCenters.set(k, v);
-        }
-      }
       const { width, height } = getStageSize();
+
+      // Check if all queues are empty => clear & go to IDLE (0% CPU/GPU)
       if (
-        Math.abs(canvas.width - Math.floor(width * Math.min(2, window.devicePixelRatio || 1))) > 4 ||
-        Math.abs(canvas.height - Math.floor(height * Math.min(2, window.devicePixelRatio || 1))) > 4
+        projectilesRef.current.length === 0 &&
+        particlesRef.current.length === 0 &&
+        badgesRef.current.length === 0
       ) {
-        syncSize();
+        ctx.clearRect(0, 0, width, height);
+        rafIdRef.current = 0;
+        return;
       }
+
       ctx.clearRect(0, 0, width, height);
 
       // 1. Update & Draw Projectiles
@@ -527,28 +550,30 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
         const cx = pr.x0 + (pr.x1 - pr.x0) * pr.t;
         const cy = pr.y0 + (pr.y1 - pr.y0) * pr.t + arc;
 
-        // Spawn trail particle
-        particlesRef.current.push({
-          x: cx + (Math.random() * 8 - 4),
-          y: cy + (Math.random() * 8 - 4),
-          vx: (Math.random() - 0.5) * 1.6,
-          vy: (Math.random() - 0.5) * 1.6,
-          size: pr.radius * 0.65,
-          color: pr.colorGlow,
-          alpha: 0.85,
-          life: 0,
-          maxLife: 14,
-          shape: 'CIRCLE',
-        });
+        // Spawn trail particle (every 2 frames to halve draw-calls)
+        if (frameTick % 2 === 0 && particlesRef.current.length < MAX_ACTIVE_PARTICLES) {
+          particlesRef.current.push({
+            x: cx + (Math.random() * 6 - 3),
+            y: cy + (Math.random() * 6 - 3),
+            vx: (Math.random() - 0.5) * 1.4,
+            vy: (Math.random() - 0.5) * 1.4,
+            size: pr.radius * 0.6,
+            color: pr.colorGlow,
+            alpha: 0.8,
+            life: 0,
+            maxLife: 12,
+            shape: 'CIRCLE',
+          });
+        }
 
         ctx.save();
-        const grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, pr.radius * 2.1);
+        const grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, pr.radius * 1.9);
         grad.addColorStop(0, pr.colorCore);
         grad.addColorStop(0.45, pr.colorGlow);
         grad.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(cx, cy, pr.radius * 2.1, 0, Math.PI * 2);
+        ctx.arc(cx, cy, pr.radius * 1.9, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
 
@@ -556,8 +581,8 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
           const pDmg = pr.kind === 'FIREBALL' ? 6 : pr.kind === 'SHADOW_BOLT' ? 4 : 3;
           hsAudio.vibrateByDamage(pDmg);
           impactCbRef.current?.(pDmg);
-          spawnBurst(pr.x1, pr.y1, 24, [pr.colorCore, pr.colorGlow, '#ffffff'], 7.5, 9, 'SHARD', 0.08);
-          spawnRing(pr.x1, pr.y1, pr.colorGlow, 95);
+          spawnBurst(pr.x1, pr.y1, 16, [pr.colorCore, pr.colorGlow, '#ffffff'], 7, 8, 'SHARD', 0.08);
+          spawnRing(pr.x1, pr.y1, pr.colorGlow, 80);
         } else {
           nextProj.push(pr);
         }
@@ -579,7 +604,7 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
         ctx.globalAlpha = Math.max(0, p.alpha);
         if (p.shape === 'RING') {
           ctx.strokeStyle = p.color;
-          ctx.lineWidth = Math.max(1.5, (1 - prog) * 6);
+          ctx.lineWidth = Math.max(1.5, (1 - prog) * 5);
           ctx.beginPath();
           ctx.arc(p.x, p.y, Math.max(4, p.size * prog), 0, Math.PI * 2);
           ctx.stroke();
@@ -638,19 +663,14 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
         ctx.scale(scale, scale);
 
         if (b.subKind === 'DAMAGE') {
-          // Authentic Hearthstone jagged red blood splat!
+          // Pre-calculated Octagon Starburst (fast, crisp, authentic Hearthstone splat!)
           ctx.fillStyle = '#b91c1c';
           ctx.strokeStyle = '#450a0a';
           ctx.lineWidth = 3;
           ctx.beginPath();
-          const spikes = 10;
-          for (let i = 0; i < spikes * 2; i++) {
-            const r = i % 2 === 0 ? 28 : 17;
-            const a = (i * Math.PI) / spikes;
-            const px = Math.cos(a) * r;
-            const py = Math.sin(a) * r;
-            if (i === 0) ctx.moveTo(px, py);
-            else ctx.lineTo(px, py);
+          ctx.moveTo(DAMAGE_SPLAT_OCTAGON[0].x, DAMAGE_SPLAT_OCTAGON[0].y);
+          for (let i = 1; i < DAMAGE_SPLAT_OCTAGON.length; i++) {
+            ctx.lineTo(DAMAGE_SPLAT_OCTAGON[i].x, DAMAGE_SPLAT_OCTAGON[i].y);
           }
           ctx.closePath();
           ctx.fill();
@@ -698,13 +718,24 @@ export const BoardVfxCanvas: React.FC<BoardVfxCanvasProps> = ({ events, onDamage
       }
       badgesRef.current = nextBadges;
 
-      rafId = requestAnimationFrame(render);
+      rafIdRef.current = requestAnimationFrame(render);
     };
-    rafId = requestAnimationFrame(render);
+
+    const ensureLoop = () => {
+      if (rafIdRef.current === 0) {
+        rafIdRef.current = requestAnimationFrame(render);
+      }
+    };
+    ensureLoopRef.current = ensureLoop;
+    ensureLoop();
 
     return () => {
-      cancelAnimationFrame(rafId);
+      if (rafIdRef.current !== 0) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = 0;
+      }
       window.removeEventListener('resize', syncSize);
+      window.removeEventListener('orientationchange', syncSize);
     };
   }, []);
 
