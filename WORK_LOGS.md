@@ -21622,3 +21622,14 @@
   2. `src/hearthstone/components/GameAdSenseLayout.tsx`: `#adsense-mobile-top`, `#adsense-desktop-left`, `#adsense-desktop-right`에 `relative z-0 overflow-hidden` 및 `isolation: 'isolate'` 적용, 중앙 게임 영역 및 `#hs-game-viewport`에 `z-10` / `z-20` 우선순위 부여.
   3. `src/landing/services/adsenseManager.ts`: `cleanupUncontainedAds()`에 Auto Ads 상단 침범 요소 제거 확장, `#adsense-mobile-top` 내부 `ins.adsbygoogle`/`div[id^="aswift_"]`/`iframe` 높이 50px 클램프 및 `position: relative` 강제, `document.documentElement`의 `paddingTop`/`marginTop` 리셋 추가.
 - **검증 결과**: 수정 파일(`GameAdSenseLayout.tsx`, `adsenseManager.ts`) TypeScript 검사 오류 0건 확인(전체 빌드는 미수정 파일 `src/hearthstone/vfx/BoardVfxCanvas.tsx` 기존 구문 오류로 중단). 로컬 Git 커밋 및 구글 폼 보고 완료.
+
+### 2026-11-13 06:41 KST | `@snshero` 공식 유튜브 플레이리스트 4종(`PLVch67W9z4TA` 포함) 1화~40화 정확한 순차 정렬 완료
+- **작업 내역**:
+  1. **에피소드 순차 정렬 스크립트(`scripts/sort_playlists_exact_order.py`) 구현 및 실행**:
+     - 병렬 발행 시 미세하게 엇갈렸던 플레이리스트 내 에피소드 순서를 유튜브 플레이리스트 `맨 아래로 이동` 순차 재배치 로직으로 `01화 -> 02화 -> ... -> 40화` 순서로 100% 교정.
+  2. **YouTube Data API v3 전수 검증**:
+     - `ko_full` (`PLVch67W9z4TA`): 40개, `1화 -> 40화` 정확 정렬(`exact_1_to_40_order=True`) 확인
+     - `en_full` (`PLFvV2raCoFww`): 40개, `1화 -> 40화` 정확 정렬(`exact_1_to_40_order=True`) 확인
+     - `en_shorts` (`PLR3ZkIX_CTNA`): 40개, `1화 -> 40화` 정확 정렬(`exact_1_to_40_order=True`) 확인
+     - `ko_shorts` (`PLBmhdute5Irg`): 11개, `1화 -> 11화` 정확 정렬(`exact_1_to_11_order=True`) 확인
+  3. **로컬 Git 커밋 및 구글 폼 보고 완료**.
