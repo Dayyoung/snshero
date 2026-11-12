@@ -4,7 +4,6 @@ import { AudioSettings, hsAudio } from '../audio';
 import { useModalDismiss } from '../useModalDismiss';
 import {
   CLASSIC_RANK_NAMES,
-  CLASS_CREST_URL,
   getStarsNeededForRank,
 } from '../cardDb';
 import {
@@ -30,16 +29,15 @@ import {
 import {
   GOLD_PACK_BUNDLES,
   MODE_REWARD_GUIDES,
+  computeOverallStanding,
   hsStorage,
 } from '../storage';
 import {
-  CLASSIC_HEROES,
   GameMode,
-  HERO_CLASS_ORDER,
   PlayerProfile,
   SnsCardBackId,
 } from '../types';
-import { HsArcaneDustVialIcon, HsGoldCoinIcon } from './CardVisual';
+import { HsGoldCoinIcon } from './CardVisual';
 import {
   SNS_CARD_BACK_THEMES,
   SnsBoosterPackArt,
@@ -66,6 +64,7 @@ export const QuestLogModal: React.FC<{
     onClose();
   });
 
+  const [openSection, setOpenSection] = useState<'NONE' | 'REWARDS' | 'QUESTS'>('NONE');
   const [, setTick] = useState(0);
   useEffect(() => {
     const sync = () => setTick((n) => n + 1);
@@ -75,29 +74,32 @@ export const QuestLogModal: React.FC<{
 
   const profile = hsStorage.getProfile();
   const quests = hsStorage.getQuests();
+  const standing = computeOverallStanding(profile);
   const rankTitle = CLASSIC_RANK_NAMES[profile.rank] || '엘윈 마을 수습생';
   const starsNeeded = getStarsNeededForRank(profile.rank);
+  const completedQuestsCount = quests.filter((q) => q.completed).length;
 
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/78 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-4"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="hs-wood-panel relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl p-5 text-amber-100 sm:p-6"
+        className="hs-wood-panel relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl p-4 text-amber-100 sm:p-6"
       >
+        {/* Clean Header */}
         <div className="mb-4 flex items-center justify-between border-b border-amber-600/35 pb-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-[#d4af63] bg-stone-950/80 shadow">
-              <SnsQuestScrollIcon size={34} />
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-[#d4af63] bg-stone-950/85 shadow">
+              <SnsQuestScrollIcon size={30} />
             </div>
             <div>
-              <h2 className="hs-title text-xl font-extrabold text-amber-100 sm:text-2xl">
-                엘윈마을 의뢰 · 보상 일지
+              <h2 className="hs-title text-lg font-extrabold text-amber-100 sm:text-2xl">
+                전적 · 순위 및 의뢰 보상표
               </h2>
-              <p className="text-xs font-semibold text-amber-300/85">
-                모드별 확정 승리 보상 · 스토리모드 진행도 · 오늘의 일일 의뢰
+              <p className="text-[11px] font-semibold text-amber-300/85 sm:text-xs">
+                내 승/패 · 승률 · 전체순위 요약
               </p>
             </div>
           </div>
@@ -107,24 +109,22 @@ export const QuestLogModal: React.FC<{
               hsAudio.playSfx('box_close');
               onClose();
             }}
-            className="hs-brass-btn rounded-xl px-3.5 py-1.5 text-sm font-extrabold text-amber-100"
+            className="hs-brass-btn shrink-0 rounded-xl px-3.5 py-1.5 text-xs font-extrabold text-amber-100 sm:text-sm"
           >
             닫기 ✕
           </button>
         </div>
 
-        {/* Top Row: Rank + Journey Progress + Currencies */}
-        <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex items-center gap-4 rounded-2xl border-2 border-[#c8a158]/50 bg-black/40 p-4">
-            <div className="relative flex h-20 w-20 shrink-0 items-center justify-center">
-              <SnsRankMedallion rank={profile.rank} size={74} />
-            </div>
-            <div className="min-w-0">
-              <div className="hs-title text-lg font-extrabold text-amber-100">
+        {/* Compact Rank & Story Progress Banner */}
+        <div className="mb-3.5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-[#c8a158]/55 bg-black/45 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <SnsRankMedallion rank={profile.rank} size={54} className="shrink-0" />
+            <div>
+              <div className="hs-title text-base font-extrabold text-amber-100 sm:text-lg">
                 {profile.rank === 0 ? rankTitle : `${profile.rank}등급 · ${rankTitle}`}
               </div>
               {profile.rank > 0 ? (
-                <div className="mt-1 flex items-center gap-1 text-base">
+                <div className="mt-0.5 flex items-center gap-1 text-sm">
                   {Array.from({ length: starsNeeded }).map((_, idx) => (
                     <span
                       key={idx}
@@ -133,150 +133,242 @@ export const QuestLogModal: React.FC<{
                       ★
                     </span>
                   ))}
-                  <span className="ml-2 text-xs font-bold text-amber-300/80">
-                    ({profile.stars} / {starsNeeded})
+                  <span className="ml-1.5 text-xs font-bold text-amber-300/85">
+                    ({profile.stars}/{starsNeeded})
                   </span>
                 </div>
               ) : (
-                <div className="mt-1 text-xs font-bold text-yellow-300">
+                <div className="mt-0.5 text-xs font-bold text-yellow-300">
                   최고 명예 전설의 눈히어로 달성!
                 </div>
               )}
-              <div className="mt-1 text-xs font-semibold text-emerald-300">
-                스토리모드: 환생 {profile.journeyReincarnation}회차 · 제{profile.journeyEpisode}화 진행 중
-              </div>
-              <div className="mt-0.5 text-[11px] font-semibold text-amber-200/75">
-                통산 {profile.totalWins}승 / {profile.totalGames}전 · 현재 {profile.winStreak}연승
-              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 rounded-2xl border-2 border-[#c8a158]/50 bg-black/40 p-4 text-center">
-            <div className="flex flex-col items-center justify-center rounded-xl border border-amber-500/25 bg-stone-950/75 p-2">
-              <HsGoldCoinIcon size={26} />
-              <span className="hs-num mt-1 text-lg text-yellow-300">{profile.gold}</span>
-              <span className="text-[11px] font-bold text-amber-200/80">보유 골드</span>
+          <div className="rounded-xl border border-emerald-400/40 bg-emerald-950/55 px-3 py-1.5 text-xs font-extrabold text-emerald-200">
+            스토리모드: 환생 {profile.journeyReincarnation}회차 · 제{profile.journeyEpisode}화
+          </div>
+        </div>
+
+        {/* 3 Eye-Catching Spotlight Cards: 전체순위 / 승·패 / 승률 */}
+        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {/* 1. 전체순위 */}
+          <div
+            data-testid="quest-stat-overall-rank"
+            className="flex flex-col justify-between rounded-2xl border-2 border-amber-400/65 bg-gradient-to-b from-amber-950/75 via-stone-950/90 to-black p-3.5 shadow-[0_8px_20px_rgba(0,0,0,0.65)]"
+          >
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-xs font-extrabold text-amber-200">🏆 전체순위</span>
+              <span className="rounded-full border border-yellow-300/60 bg-amber-900/80 px-2 py-0.5 text-[10.5px] font-black text-yellow-200">
+                상위 {standing.topPercentLabel}
+              </span>
             </div>
-            <div className="flex flex-col items-center justify-center rounded-xl border border-sky-400/25 bg-stone-950/75 p-2">
-              <HsArcaneDustVialIcon size={26} />
-              <span className="hs-num mt-1 text-lg text-sky-300">{profile.arcaneDust}</span>
-              <span className="text-[11px] font-bold text-sky-200/80">영웅 가루</span>
+            <div className="hs-num hs-outline-sm my-2 text-2xl font-black tracking-tight text-yellow-300 sm:text-3xl">
+              #{standing.overallRank.toLocaleString()}
+              <span className="ml-0.5 text-base font-extrabold text-amber-200">위</span>
             </div>
-            <div className="flex flex-col items-center justify-center rounded-xl border border-amber-400/25 bg-stone-950/75 p-2">
-              <div className="h-8 w-6">
-                <SnsBoosterPackArt />
-              </div>
-              <span className="hs-num mt-1 text-lg text-amber-200">{profile.packs}</span>
-              <span className="text-[11px] font-bold text-amber-200/80">미개봉 팩</span>
+            <div className="text-[11px] font-semibold text-amber-200/75">
+              전체 {standing.totalPlayers.toLocaleString()}명 기준
+            </div>
+          </div>
+
+          {/* 2. 승 / 패 */}
+          <div
+            data-testid="quest-stat-win-loss"
+            className="flex flex-col justify-between rounded-2xl border-2 border-emerald-400/60 bg-gradient-to-b from-emerald-950/70 via-stone-950/90 to-black p-3.5 shadow-[0_8px_20px_rgba(0,0,0,0.65)]"
+          >
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-xs font-extrabold text-emerald-200">⚔ 승 / 패</span>
+              <span className="rounded-full border border-emerald-400/50 bg-emerald-950/90 px-2 py-0.5 text-[10.5px] font-extrabold text-emerald-200">
+                {profile.winStreak >= 2
+                  ? `🔥 ${profile.winStreak}연승`
+                  : `총 ${standing.totalGames}전`}
+              </span>
+            </div>
+            <div className="hs-num hs-outline-sm my-2 flex items-baseline gap-1.5 text-2xl font-black sm:text-3xl">
+              <span className="text-emerald-300">{standing.wins}승</span>
+              <span className="text-base text-stone-500">/</span>
+              <span className="text-rose-300">{standing.losses}패</span>
+            </div>
+            <div className="text-[11px] font-semibold text-amber-200/75">
+              통산 {standing.totalGames}경기
+              {profile.winStreak > 0 ? ` · 현재 ${profile.winStreak}연승` : ''}
+            </div>
+          </div>
+
+          {/* 3. 승률 */}
+          <div
+            data-testid="quest-stat-win-rate"
+            className="flex flex-col justify-between rounded-2xl border-2 border-sky-400/60 bg-gradient-to-b from-sky-950/75 via-stone-950/90 to-black p-3.5 shadow-[0_8px_20px_rgba(0,0,0,0.65)]"
+          >
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-xs font-extrabold text-sky-200">📈 승률</span>
+              <span className="rounded-full border border-sky-400/50 bg-sky-950/90 px-2 py-0.5 text-[10.5px] font-extrabold text-sky-200">
+                {standing.totalGames === 0
+                  ? '대결 전'
+                  : standing.winRatePct >= 50
+                    ? '승률 우세'
+                    : '분발 중'}
+              </span>
+            </div>
+            <div className="hs-num hs-outline-sm my-2 text-2xl font-black tracking-tight text-sky-300 sm:text-3xl">
+              {standing.winRateLabel}%
+            </div>
+            <div className="h-2.5 w-full overflow-hidden rounded-full border border-sky-400/30 bg-stone-900">
+              <div
+                style={{ width: `${standing.winRatePct}%` }}
+                className="h-full bg-gradient-to-r from-sky-400 to-emerald-400 transition-all duration-300"
+              />
             </div>
           </div>
         </div>
 
-        {/* Explicit All-Mode Victory Reward Table */}
-        <h3 className="hs-title mb-2 text-sm font-extrabold tracking-wide text-yellow-300">
-          전체 게임 모드별 확정 승리 보상 안내
-        </h3>
-        <div className="mb-5 space-y-2 rounded-2xl border-2 border-[#c8a158]/50 bg-black/45 p-3">
-          {ALL_MODES_ORDER.map((m) => {
-            const g = MODE_REWARD_GUIDES[m];
-            return (
-              <div
-                key={m}
-                className="flex flex-col justify-between gap-1 rounded-xl border border-amber-500/25 bg-stone-950/85 px-3 py-2 text-xs sm:flex-row sm:items-center"
-              >
-                <div>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="font-extrabold text-amber-100">{g.modeNameKo}</span>
-                    <span className="rounded border border-sky-400/35 bg-sky-950/80 px-1.5 py-0.5 text-[10px] font-bold text-sky-200">
-                      {g.playStyleBadge}
-                    </span>
-                  </div>
-                  <div className="mt-0.5 text-[11px] font-semibold text-emerald-200/90">
-                    {g.specialBonusText}
-                  </div>
-                </div>
-                <div className="shrink-0 font-extrabold text-yellow-300 sm:text-right">
-                  {g.baseWinRewardText}
-                </div>
-              </div>
-            );
-          })}
+        {/* Progressive Disclosure: Only 2 Clean Buttons Shown by Default ("보상 안내" / "의뢰") */}
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            data-testid="quest-toggle-rewards"
+            onClick={() => {
+              hsAudio.playSfx('ui_click', 0.85);
+              setOpenSection((prev) => (prev === 'REWARDS' ? 'NONE' : 'REWARDS'));
+            }}
+            className={`flex min-h-[48px] items-center justify-between rounded-2xl border-2 px-4 py-2.5 text-sm font-extrabold shadow-lg transition sm:text-base ${
+              openSection === 'REWARDS'
+                ? 'border-yellow-300 bg-gradient-to-b from-amber-600 to-amber-900 text-white shadow-[0_0_18px_rgba(251,191,36,0.45)]'
+                : 'hs-brass-btn border-[#c8a158] text-amber-100 hover:border-yellow-300'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <span>🏆</span>
+              <span>보상 안내</span>
+            </span>
+            <span className="text-xs font-bold opacity-90">
+              {openSection === 'REWARDS' ? '닫기 ▲' : '보기 ▼'}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            data-testid="quest-toggle-quests"
+            onClick={() => {
+              hsAudio.playSfx('ui_click', 0.85);
+              setOpenSection((prev) => (prev === 'QUESTS' ? 'NONE' : 'QUESTS'));
+            }}
+            className={`flex min-h-[48px] items-center justify-between rounded-2xl border-2 px-4 py-2.5 text-sm font-extrabold shadow-lg transition sm:text-base ${
+              openSection === 'QUESTS'
+                ? 'border-emerald-300 bg-gradient-to-b from-emerald-600 to-emerald-900 text-white shadow-[0_0_18px_rgba(52,211,153,0.45)]'
+                : 'hs-brass-btn border-[#c8a158] text-amber-100 hover:border-emerald-300'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <span>📜</span>
+              <span>의뢰</span>
+              <span className="rounded-full border border-amber-300/50 bg-black/45 px-2 py-0.5 text-[11px] font-black text-yellow-200">
+                {completedQuestsCount}/{quests.length}
+              </span>
+            </span>
+            <span className="text-xs font-bold opacity-90">
+              {openSection === 'QUESTS' ? '닫기 ▲' : '보기 ▼'}
+            </span>
+          </button>
         </div>
 
-        {/* Daily Quests on Parchment Cards */}
-        <h3 className="hs-title mb-2 text-sm font-extrabold tracking-wide text-amber-200">
-          오늘의 엘윈마을 의뢰
-        </h3>
-        <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-3">
-          {quests.map((q) => {
-            const pct = Math.min(100, Math.round((q.progress / q.goal) * 100));
-            return (
-              <div
-                key={q.id}
-                className={`rounded-2xl border-2 p-3.5 shadow ${
-                  q.completed
-                    ? 'border-emerald-400/70 bg-emerald-950/55 text-emerald-100'
-                    : 'border-[#a88246] bg-[#f3e5c3] text-stone-900'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-1">
-                  <span className="hs-title text-sm font-extrabold">{q.title}</span>
-                  <span className="flex items-center gap-1 rounded-full border border-amber-900/40 bg-amber-400/90 px-2 py-0.5 text-xs font-black text-stone-950">
-                    <HsGoldCoinIcon size={14} />
-                    <span>+{q.rewardGold}G</span>
-                  </span>
-                </div>
-                <p
-                  className={`mt-1.5 text-xs font-semibold ${
-                    q.completed ? 'text-emerald-200' : 'text-stone-700'
-                  }`}
+        {/* On-Demand Panel 1: 보상 안내 */}
+        {openSection === 'REWARDS' && (
+          <div
+            data-testid="quest-panel-rewards"
+            className="mt-3.5 space-y-2 rounded-2xl border-2 border-amber-400/55 bg-black/55 p-3.5"
+          >
+            <div className="mb-1 flex items-center justify-between px-1">
+              <h3 className="hs-title text-sm font-extrabold text-yellow-300">
+                모드별 확정 승리 보상 안내
+              </h3>
+              <span className="text-[11px] font-semibold text-amber-200/75">
+                승리 즉시 자동 지급
+              </span>
+            </div>
+            {ALL_MODES_ORDER.map((m) => {
+              const g = MODE_REWARD_GUIDES[m];
+              return (
+                <div
+                  key={m}
+                  className="flex flex-col justify-between gap-1 rounded-xl border border-amber-500/25 bg-stone-950/90 px-3 py-2.5 text-xs sm:flex-row sm:items-center"
                 >
-                  {q.description}
-                </p>
-                <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-stone-800/35">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-extrabold text-amber-100">{g.modeNameKo}</span>
+                      <span className="rounded border border-sky-400/35 bg-sky-950/80 px-1.5 py-0.5 text-[10px] font-bold text-sky-200">
+                        {g.playStyleBadge}
+                      </span>
+                    </div>
+                    <div className="mt-0.5 text-[11px] font-semibold text-emerald-200/90">
+                      {g.specialBonusText}
+                    </div>
+                  </div>
+                  <div className="shrink-0 font-extrabold text-yellow-300 sm:text-right">
+                    {g.baseWinRewardText}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* On-Demand Panel 2: 의뢰 */}
+        {openSection === 'QUESTS' && (
+          <div
+            data-testid="quest-panel-quests"
+            className="mt-3.5 rounded-2xl border-2 border-emerald-400/55 bg-black/55 p-3.5"
+          >
+            <div className="mb-2.5 flex items-center justify-between px-1">
+              <h3 className="hs-title text-sm font-extrabold text-emerald-200">
+                오늘의 엘윈마을 의뢰
+              </h3>
+              <span className="text-[11px] font-semibold text-emerald-200/80">
+                달성 시 골드 즉시 지급
+              </span>
+            </div>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              {quests.map((q) => {
+                const pct = Math.min(100, Math.round((q.progress / q.goal) * 100));
+                return (
                   <div
-                    style={{ width: `${pct}%` }}
-                    className="h-full bg-gradient-to-r from-amber-500 to-emerald-500"
-                  />
-                </div>
-                <div className="mt-1 text-right text-[11px] font-extrabold">
-                  {q.completed ? '보상 지급 완료 ✓' : `${q.progress} / ${q.goal}`}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* 9 SNSHero Faction Heroes Win Counts */}
-        <h3 className="hs-title mb-2 text-sm font-extrabold tracking-wide text-amber-200">
-          9대 종족 대표 영웅 승리 기록
-        </h3>
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-9">
-          {HERO_CLASS_ORDER.map((hc) => {
-            const h = CLASSIC_HEROES[hc];
-            return (
-              <div
-                key={hc}
-                className="flex flex-col items-center rounded-xl border border-[#c8a158]/35 bg-black/40 px-1.5 py-2.5"
-              >
-                <img
-                  src={CLASS_CREST_URL[hc]}
-                  alt={h.classNameKo}
-                  className="mb-1 h-8 w-8 rounded-full border border-amber-200/70 object-cover shadow"
-                />
-                <span
-                  style={{ color: h.accentColor }}
-                  className="whitespace-nowrap text-[10px] font-extrabold"
-                >
-                  {h.classNameKo}
-                </span>
-                <span className="hs-num mt-0.5 text-sm text-white">
-                  {profile.classWins[hc] || 0}승
-                </span>
-              </div>
-            );
-          })}
-        </div>
+                    key={q.id}
+                    className={`rounded-2xl border-2 p-3.5 shadow ${
+                      q.completed
+                        ? 'border-emerald-400/70 bg-emerald-950/60 text-emerald-100'
+                        : 'border-[#a88246] bg-[#f3e5c3] text-stone-900'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="hs-title text-sm font-extrabold">{q.title}</span>
+                      <span className="flex items-center gap-1 rounded-full border border-amber-900/40 bg-amber-400/90 px-2 py-0.5 text-xs font-black text-stone-950">
+                        <HsGoldCoinIcon size={14} />
+                        <span>+{q.rewardGold}G</span>
+                      </span>
+                    </div>
+                    <p
+                      className={`mt-1.5 text-xs font-semibold ${
+                        q.completed ? 'text-emerald-200' : 'text-stone-700'
+                      }`}
+                    >
+                      {q.description}
+                    </p>
+                    <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-stone-800/35">
+                      <div
+                        style={{ width: `${pct}%` }}
+                        className="h-full bg-gradient-to-r from-amber-500 to-emerald-500"
+                      />
+                    </div>
+                    <div className="mt-1 text-right text-[11px] font-extrabold">
+                      {q.completed ? '보상 지급 완료 ✓' : `${q.progress} / ${q.goal}`}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

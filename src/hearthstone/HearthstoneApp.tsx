@@ -418,6 +418,10 @@ export const HearthstoneApp: React.FC = () => {
             hsStorage.setJourneyProgress(ep, hsStorage.getProfile().journeyReincarnation);
             launchJourneyBattle(ep, Boolean(skipStory));
           }}
+          onRematchSameMode={() => {
+            refreshProfile();
+            setBattleSessionKey((k) => k + 1);
+          }}
           onExitBattle={() => {
             setReturnToJourneyActive(false);
             refreshProfile();

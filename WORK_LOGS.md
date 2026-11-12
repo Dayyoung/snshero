@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-12 10:45 KST] [/game.html 의뢰·보상표 전적(승/패·승률·전체순위) 대형 강조 및 보상 안내/의뢰 버튼 토글 단순화 + 랭킹/AI대전 매판 단위 자동플레이(시작·종료 시 OFF) 구현 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"의뢰 보상표에 승/패 승률/전체순위 에 대한 내용이 좀더 눈에뛰게 표시해줘. 근데 팝업이 너무 복잡해 보이니까 보상 안내 / 외뢰 는 버튼으로만 표시하고 눌렀을때 표시해줘."`
+    - `"랭킹 / AI 대전도 자동플레이 버튼을 표시해서 동작하게 해줘. 대신 시작할때는 비활성화. 전투 종료 하면 역시 비활성화. 매판 새로 활성화 해주는 방식"`
+  - **2. 세부 구현 내역**:
+    1. **의뢰 · 보상표(`QuestLogModal`) 전적 스포트라이트 3카드 강조 & Progressive Disclosure 단순화 ([`storage.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/storage.ts), [`Modals.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/Modals.tsx), [`BoxHubScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BoxHubScreen.tsx))**:
+       - `storage.ts`에 `computeOverallStanding(profile)` 함수를 신설하여 등급·별·누적 승수·총 전적·연승·스토리 진척도 기반 결정론적 **전체순위(`#1위`~`#44,820위`, 상위 `X.X%`)**, **승/패(`wins` / `losses`)**, **승률(`winRateLabel%`)** 산출.
+       - `QuestLogModal` 상단에 **① 전체순위(`#N위` + `상위 X.X%`)**, **② 승 / 패(`W승 / L패` + 총 N전·연승)**, **③ 승률(`XX.X%` + 게이지 바)** 3개 대형 고대비 카드를 배치해 열자마자 핵심 전적이 한눈에 들어오도록 개선.
+       - 기존 한꺼번에 펼쳐져 복잡하던 보상표·일일 의뢰·재화·9종족 승수 목록을 정리하여, 기본 상태에서는 **`[🏆 보상 안내]`** / **`[📜 의뢰 (완료/전체)]`** 두 버튼만 깔끔하게 표시(`openSection = 'NONE'`)하고 클릭 시에만 해당 패널이 열리도록 개선.
+    2. **랭킹대전 · AI대전 매판 단위 자동플레이 버튼 표시 및 시작·종료 자동 OFF 초기화 ([`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx), [`HearthstoneApp.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/HearthstoneApp.tsx))**:
+       - **시작 시 비활성화(`OFF`)**: `RANKED`, `CASUAL`, `PRACTICE_NORMAL`, `PRACTICE_EXPERT` 진입 및 새 매치 시작마다 `autoPlay` 상태를 항상 `false`(`자동플레이 OFF`)로 초기화.
+       - **명확한 자동플레이 버튼 표시 & 동작**: 멀리건(`시작 카드 선택`) 오버레이(`autoplay-toggle-mulligan`), 데스크톱 우측 중앙(`autoplay-toggle-desktop`), 모바일 중앙 전술바(`autoplay-toggle-mobile`) 모두에 **`자동플레이 OFF` ↔ `자동플레이 ON`** 버튼을 배치하여 클릭 시 멀리건 교체·카드 소환·영웅 능력·물리 공격·턴 종료가 즉시 자동 동작하도록 연결.
+       - **전투 종료 시 즉시 비활성화(`OFF`) 및 매판 신규 활성화**: 전투 종료(`phase === 'GAME_OVER'`) 즉시 `setAutoPlay(false)`로 비활성화하고 결과 모달에 비활성화 안내 및 **`⚔ 같은 덱으로 다음 판 시작`**(`onRematchSameMode`) 버튼을 제공하여 다음 판 역시 항상 `OFF` 상태에서 새로 켜는 방식으로 완결.
+  - **3. 검증 및 빌드**:
+    - `npm run build` 프로덕션 빌드 에러 0건 통과 및 실브라우저 E2E 검증(의뢰·보상표 전적 3카드·버튼 토글 동작 + AI/랭킹대전 시작 OFF ➔ 클릭 ON 자동전투 ➔ 전투 종료 즉시 OFF ➔ 다음 판 시작 OFF) 완료.
+    - 구글 폼 완료 보고서 제출 및 로컬 Git 커밋 완료 (`git push` 미실행 원칙 준수).
+
 ## [2026-11-12 09:57 KST] [/game.html 카드 플레이 전장 화면 — 아군·적 영웅 초상화 완벽 정중앙 정렬(0.00px 오차) 및 내 현재마나 오리지널 하스스톤 우측하단 배치 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

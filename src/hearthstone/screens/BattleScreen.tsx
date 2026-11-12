@@ -74,6 +74,7 @@ export interface BattleScreenProps {
   onGoOpenPacksFromBattle?: () => void;
   onGoCollectionFromBattle?: () => void;
   onStartJourneyEpisode?: (episode: number, skipStoryIntro?: boolean) => void;
+  onRematchSameMode?: () => void;
 }
 
 type PendingSelection =
@@ -219,6 +220,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   onGoOpenPacksFromBattle,
   onGoCollectionFromBattle,
   onStartJourneyEpisode,
+  onRematchSameMode,
 }) => {
   const buildBattleMatchState = useCallback(
     (targetEpisode?: number): BattleMatchState => {
@@ -277,12 +279,18 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   );
   const [liveProfile, setLiveProfile] = useState(() => hsStorage.getProfile());
 
-  // 카단의 여정 = 에피소드 스토리 극장 먼저 오픈(패배 직후 단일 카드 뽑기 재도전 시에는 즉시 전투!) + 자동 플레이 기본 ON
-  // 나머지 모드(대전/수련) = 스토리 없이 즉시 대결 + 수동 플레이 기본
+  // 스토리모드 = 에피소드 스토리 극장 먼저 오픈 + 자동 플레이 기본 ON
+  // 랭킹대전 / AI대전 = 매판 시작 시 자동플레이 비활성화(OFF) 시작, 전투 종료 시에도 즉시 비활성화(OFF) 초기화!
   const [storyPhase, setStoryPhase] = useState<'PRE_BATTLE' | 'CLOSED' | 'REVIEW'>(() =>
     mode === 'TUTORIAL' && !skipStoryIntro ? 'PRE_BATTLE' : 'CLOSED',
   );
   const [autoPlay, setAutoPlay] = useState<boolean>(() => mode === 'TUTORIAL');
+
+  useEffect(() => {
+    if (mode !== 'TUTORIAL') {
+      setAutoPlay(false);
+    }
+  }, [matchState.matchId, mode]);
 
   const [vsIntroActive, setVsIntroActive] = useState(
     () => mode !== 'TUTORIAL' || skipStoryIntro,
@@ -536,9 +544,19 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   }, []);
 
   // Record match outcome & rewards once when GAME_OVER triggers
+  // (In Ranked / AI modes, immediately deactivate Auto-Play upon battle end so each match requires fresh activation!)
+  useEffect(() => {
+    if (matchState.phase === 'GAME_OVER' && mode !== 'TUTORIAL' && autoPlay) {
+      setAutoPlay(false);
+    }
+  }, [matchState.phase, mode, autoPlay]);
+
   useEffect(() => {
     if (matchState.phase === 'GAME_OVER' && !recordedResultRef.current) {
       recordedResultRef.current = true;
+      if (mode !== 'TUTORIAL') {
+        setAutoPlay(false);
+      }
       setSelection(null);
       setZoomState(null);
       setAiHighlightText(null);
@@ -2157,23 +2175,24 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         <button
           type="button"
           data-testid="autoplay-toggle-desktop"
+          data-autoplay-active={autoPlay ? 'true' : 'false'}
           onClick={(e) => {
             e.stopPropagation();
             hsAudio.playSfx('ui_click', 0.85);
             setAutoPlay((prev) => !prev);
           }}
-          className={`group relative flex w-[114px] flex-col items-center justify-center gap-0.5 rounded-2xl border-[2.5px] px-2 py-2 shadow-xl transition hover:scale-105 ${
+          className={`group relative flex w-[118px] flex-col items-center justify-center gap-0.5 rounded-2xl border-[2.5px] px-2 py-2 shadow-xl transition hover:scale-105 ${
             autoPlay
               ? 'border-emerald-300 bg-gradient-to-b from-emerald-600 via-teal-800 to-emerald-950 text-white shadow-[0_0_22px_rgba(52,211,153,0.85)]'
               : 'border-[#c8a158]/80 bg-gradient-to-b from-stone-800 to-stone-950 text-amber-200 hover:border-amber-300'
           }`}
         >
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             <svg
               viewBox="0 0 24 24"
               fill="none"
               className={`h-4 w-4 shrink-0 ${
-                autoPlay ? 'animate-spin text-yellow-200' : 'text-amber-300'
+                autoPlay ? 'animate-spin text-yellow-200' : 'text-amber-300/75'
               }`}
             >
               <path
@@ -2185,7 +2204,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="2.2" />
             </svg>
             <span className="hs-title hs-outline-sm text-[11px] font-extrabold">
-              {autoPlay ? '자동 플레이' : '수동 플레이'}
+              {autoPlay ? '자동플레이 ON' : '자동플레이 OFF'}
             </span>
           </div>
           <span
@@ -2193,7 +2212,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               autoPlay ? 'text-emerald-100' : 'text-amber-300/75'
             }`}
           >
-            {autoPlay ? '진행 중 · 클릭 시 수동' : '클릭 시 자동 진행'}
+            {autoPlay ? '작동 중 · 클릭 시 OFF' : '비활성 · 클릭 시 작동'}
           </span>
         </button>
 
@@ -2443,6 +2462,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             <button
               type="button"
               data-testid="autoplay-toggle-mobile"
+              data-autoplay-active={autoPlay ? 'true' : 'false'}
               onClick={() => {
                 hsAudio.playSfx('ui_click', 0.85);
                 setAutoPlay((prev) => !prev);
@@ -2457,7 +2477,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 viewBox="0 0 24 24"
                 fill="none"
                 className={`h-3.5 w-3.5 shrink-0 ${
-                  autoPlay ? 'animate-spin text-yellow-200' : 'text-amber-300'
+                  autoPlay ? 'animate-spin text-yellow-200' : 'text-amber-300/75'
                 }`}
               >
                 <path
@@ -2468,7 +2488,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 />
                 <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="2.2" />
               </svg>
-              <span>{autoPlay ? '자동ON' : '수동'}</span>
+              <span>{autoPlay ? '자동 ON' : '자동 OFF'}</span>
             </button>
 
             <button
@@ -2997,13 +3017,48 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             })}
           </div>
 
-          <button
-            type="button"
-            onClick={confirmMulliganNow}
-            className="hs-arcane-btn hs-title hs-outline-sm rounded-2xl px-10 py-2.5 text-lg font-extrabold tracking-wider text-white sm:px-12 sm:py-3 sm:text-xl"
-          >
-            확인 (전투 개시)
-          </button>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={confirmMulliganNow}
+              className="hs-arcane-btn hs-title hs-outline-sm rounded-2xl px-9 py-2.5 text-lg font-extrabold tracking-wider text-white sm:px-11 sm:py-3 sm:text-xl"
+            >
+              확인 (전투 개시)
+            </button>
+            <button
+              type="button"
+              data-testid="autoplay-toggle-mulligan"
+              data-autoplay-active={autoPlay ? 'true' : 'false'}
+              onClick={() => {
+                hsAudio.playSfx('ui_click', 0.85);
+                setAutoPlay((prev) => !prev);
+              }}
+              className={`flex min-h-[46px] items-center gap-2 rounded-2xl border-2 px-5 py-2.5 text-sm font-extrabold shadow-xl transition hover:scale-105 sm:text-base ${
+                autoPlay
+                  ? 'border-emerald-300 bg-gradient-to-b from-emerald-600 via-teal-800 to-emerald-950 text-white shadow-[0_0_18px_rgba(52,211,153,0.75)]'
+                  : 'border-[#c8a158]/80 bg-gradient-to-b from-stone-800 to-stone-950 text-amber-200 hover:border-amber-300'
+              }`}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                className={`h-4 w-4 shrink-0 ${
+                  autoPlay ? 'animate-spin text-yellow-200' : 'text-amber-300/75'
+                }`}
+              >
+                <path
+                  d="M12 2v3m0 14v3M4.93 4.93l2.12 2.12m9.9 9.9 2.12 2.12M2 12h3m14 0h3M4.93 19.07l2.12-2.12m9.9-9.9 2.12-2.12"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                />
+                <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="2.2" />
+              </svg>
+              <span>
+                {autoPlay ? '자동플레이 ON (작동 중)' : '자동플레이 OFF (클릭 시 작동)'}
+              </span>
+            </button>
+          </div>
         </div>
       )}
 
@@ -3450,21 +3505,44 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 </div>
               )
             ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  postGameFiredRef.current = true;
-                  hsAudio.playSfx('menu_select');
-                  hsAudio.playBgm('tavern_hub');
-                  onExitBattle();
-                }}
-                className="hs-arcane-btn hs-title hs-outline-sm relative z-10 w-full rounded-2xl py-3 text-lg font-extrabold text-white"
-              >
-                엘윈마을로 돌아가기
-                {autoPlay && !postGameAutoPaused
-                  ? ` (${Math.max(1, Math.ceil(postGameRemainingMs / 1000))}초)`
-                  : ''}
-              </button>
+              <div className="relative z-10 flex w-full flex-col gap-2">
+                <div
+                  data-testid="gameover-autoplay-reset-note"
+                  className="rounded-xl border border-stone-600/70 bg-black/50 px-3 py-1.5 text-[11px] font-extrabold text-amber-200/85"
+                >
+                  ⚙ 전투 종료와 함께 자동플레이가 비활성화(OFF)되었습니다 · 다음 판에서 새로 활성화할 수 있습니다.
+                </div>
+                {onRematchSameMode && (
+                  <button
+                    type="button"
+                    data-testid="gameover-rematch-btn"
+                    onClick={() => {
+                      postGameFiredRef.current = true;
+                      hsAudio.playSfx('box_press');
+                      onRematchSameMode();
+                    }}
+                    className="hs-arcane-btn hs-title hs-outline-sm w-full rounded-2xl py-3 text-base font-extrabold text-white sm:text-lg"
+                  >
+                    ⚔ 같은 덱으로 다음 판 시작
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    postGameFiredRef.current = true;
+                    hsAudio.playSfx('menu_select');
+                    hsAudio.playBgm('tavern_hub');
+                    onExitBattle();
+                  }}
+                  className={`hs-title hs-outline-sm w-full rounded-2xl py-2.5 text-sm font-extrabold sm:text-base ${
+                    onRematchSameMode
+                      ? 'hs-brass-btn text-amber-100'
+                      : 'hs-arcane-btn py-3 text-lg text-white'
+                  }`}
+                >
+                  엘윈마을로 돌아가기
+                </button>
+              </div>
             )}
           </div>
           )}

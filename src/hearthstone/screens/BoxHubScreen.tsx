@@ -20,7 +20,7 @@ import {
   subscribePwaFullscreen,
   toggleBrowserFullscreen,
 } from '../pwaFullscreen';
-import { hsStorage } from '../storage';
+import { computeOverallStanding, hsStorage } from '../storage';
 import { GameMode, PlayerProfile } from '../types';
 
 export interface BoxHubScreenProps {
@@ -72,6 +72,7 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
   };
 
   const rankTitle = CLASSIC_RANK_NAMES[profile.rank] || '엘윈 마을 수습생';
+  const standing = computeOverallStanding(profile);
   const lockedBtnStyle = isFirstVisitGuide
     ? 'pointer-events-none cursor-not-allowed opacity-40 saturate-[0.35]'
     : '';
@@ -113,7 +114,9 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
                 <SnsRankMedallion rank={profile.rank} size={16} />
                 <span>
                   {profile.rank === 0 ? '전설의 눈히어로' : `${profile.rank}등급`}
-                  <span className="hidden sm:inline">{profile.rank > 0 ? ` · ${rankTitle}` : ''}</span>
+                  <span className="hidden sm:inline">
+                    {profile.rank > 0 ? ` · ${rankTitle}` : ''} · #{standing.overallRank.toLocaleString()}위
+                  </span>
                 </span>
               </div>
             </div>

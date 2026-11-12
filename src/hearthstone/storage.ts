@@ -122,7 +122,7 @@ export const MODE_REWARD_GUIDES: Record<GameMode, ModeRewardGuide> = {
   RANKED: {
     mode: 'RANKED',
     modeNameKo: '랭킹대전 · 등급전',
-    playStyleBadge: '수동 플레이 기본 · 정통 1배 룰',
+    playStyleBadge: '매판 자동플레이 지원(시작·종료 시 OFF) · 정통 1배 룰',
     baseWinRewardText: '1승당 +25 골드 + 등급 별 ★+1 획득',
     specialBonusText: '3승 달성마다 +30G 추가 · 3연승 시 별 ★+2 상승 · 전설 등급 도전',
     summaryOneLine: '승리 시 +25G · 3승마다 +30G 보너스 · 등급 별(★) 승급',
@@ -130,7 +130,7 @@ export const MODE_REWARD_GUIDES: Record<GameMode, ModeRewardGuide> = {
   CASUAL: {
     mode: 'CASUAL',
     modeNameKo: '랭킹대전 · 일반전',
-    playStyleBadge: '수동 플레이 기본 · 정통 1배 룰',
+    playStyleBadge: '매판 자동플레이 지원(시작·종료 시 OFF) · 정통 1배 룰',
     baseWinRewardText: '1승당 +15 골드 (패배 시 등급 하락 없음)',
     specialBonusText: '3승 달성마다 +20G 추가 · 일일 의뢰 안전한 달성',
     summaryOneLine: '승리 시 +15G · 3승마다 +20G 보너스 · 등급 하락 없음',
@@ -138,7 +138,7 @@ export const MODE_REWARD_GUIDES: Record<GameMode, ModeRewardGuide> = {
   PRACTICE_NORMAL: {
     mode: 'PRACTICE_NORMAL',
     modeNameKo: 'AI대전 · 일반 AI',
-    playStyleBadge: '수동 플레이 기본 · 정통 1배 룰',
+    playStyleBadge: '매판 자동플레이 지원(시작·종료 시 OFF) · 정통 1배 룰',
     baseWinRewardText: '1승당 +10 골드',
     specialBonusText: '9개 종족별 최초 제압 시 각 +25G 보너스 (총 +225G)',
     summaryOneLine: '승리 시 +10G · 종족 최초 제압 +25G 보너스',
@@ -146,12 +146,76 @@ export const MODE_REWARD_GUIDES: Record<GameMode, ModeRewardGuide> = {
   PRACTICE_EXPERT: {
     mode: 'PRACTICE_EXPERT',
     modeNameKo: 'AI대전 · 숙련 AI',
-    playStyleBadge: '수동 플레이 기본 · 정통 1배 룰',
+    playStyleBadge: '매판 자동플레이 지원(시작·종료 시 OFF) · 정통 1배 룰',
     baseWinRewardText: '1승당 +20 골드',
     specialBonusText: '종족별 최초 제압 +50G · 9종족 숙련가 올클리어 시 눈히어로 팩 +2개 지급',
     summaryOneLine: '승리 시 +20G · 최초 제압 +50G · 9종족 올클리어 +2팩',
   },
 };
+
+export interface OverallStandingSummary {
+  wins: number;
+  losses: number;
+  totalGames: number;
+  winRatePct: number;
+  winRateLabel: string;
+  overallRank: number;
+  totalPlayers: number;
+  topPercent: number;
+  topPercentLabel: string;
+}
+
+/**
+ * 로컬스토리지 전적(등급·별·통산 승/패·승률·연승·스토리모드 진행도) 기반
+ * 전체 모험가(50,000명) 대비 현재 전체순위 및 상위 백분율 산출
+ */
+export function computeOverallStanding(profile: PlayerProfile): OverallStandingSummary {
+  const TOTAL_PLAYERS = 50000;
+  const totalGames = Math.max(0, profile.totalGames || 0);
+  const wins = Math.max(0, Math.min(totalGames, profile.totalWins || 0));
+  const losses = Math.max(0, totalGames - wins);
+  const winRatePct = totalGames > 0 ? Math.min(100, (wins / totalGames) * 100) : 0;
+  const winRateLabel = winRatePct.toFixed(1);
+
+  let overallRank: number;
+  if (profile.rank <= 0) {
+    const legendScore =
+      wins * 2 + (profile.winStreak || 0) * 3 + (profile.journeyMaxStageCleared || 0);
+    overallRank = Math.max(1, 150 - Math.floor(legendScore / 2));
+  } else {
+    let cumStars = 0;
+    for (let r = 25; r > profile.rank; r -= 1) {
+      cumStars += getStarsNeededForRank(r);
+    }
+    cumStars += Math.max(0, profile.stars || 0);
+
+    const winRate01 = totalGames > 0 ? wins / totalGames : 0;
+    const effectiveProgress =
+      cumStars +
+      Math.min(32, wins * 0.45 + (profile.journeyMaxStageCleared || 0) * 0.35) +
+      (totalGames >= 3 ? winRate01 * 6 : wins * 1.2) -
+      Math.min(4, losses * 0.08);
+    const norm = Math.max(0, Math.min(1, effectiveProgress / 110));
+    const curved = 1 - Math.pow(1 - norm, 2.35);
+    overallRank = Math.max(151, Math.round(44820 - curved * (44820 - 151)));
+  }
+
+  const topPercent = Math.max(0.01, Math.min(99.9, (overallRank / TOTAL_PLAYERS) * 100));
+  const topPercentLabel =
+    topPercent < 1 ? `${topPercent.toFixed(2)}%` : `${topPercent.toFixed(1)}%`;
+
+  return {
+    wins,
+    losses,
+    totalGames,
+    winRatePct,
+    winRateLabel,
+    overallRank,
+    totalPlayers: TOTAL_PLAYERS,
+    topPercent,
+    topPercentLabel,
+  };
+}
 
 export function hasCombatStatsForJourney(card: ClassicCardDef): boolean {
   return card.type === 'MINION' || card.type === 'WEAPON';
