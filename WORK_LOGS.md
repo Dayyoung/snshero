@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-13 06:45 KST] [/update-stone 실행: game.html 최신 엔진·성능·오디오·UI/UX 업데이트 -> stone.html 무료·독립 동기화 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 저사양 60fps 최적화 및 GPU 가속 타격감 동기화**:
+    - [`BoardVfxCanvas.tsx`](file:///Users/dayyoung/project/snshero/src/stone/vfx/BoardVfxCanvas.tsx): `MAX_ACTIVE_PARTICLES=60`, `DAMAGE_SPLAT_OCTAGON` 사전계산 폴리곤, IDLE 시 rAF 0% 절전 루프, `recordEntityStagePosition` 좌표 캐싱 및 `onDamageImpact` 적용.
+    - [`CardVisual.tsx`](file:///Users/dayyoung/project/snshero/src/stone/components/CardVisual.tsx): `HearthstoneCard`, `BoardMinionToken`, `HeroPortraitZone` `React.memo` 적용.
+    - [`stone.html`](file:///Users/dayyoung/project/snshero/stone.html): 모바일 `100dvh`/`overscroll-behavior: none` 및 순수 GPU `translate3d` 기반 `@keyframes hsDamageShakeA/B` 적용.
+  - **2. 오디오·촉각(진동)·포커스 이탈 음소거 및 팩 확률 동기화**:
+    - [`audio.ts`](file:///Users/dayyoung/project/snshero/src/stone/audio.ts): 화면 포커스 이탈 시 BGM/SFX/VO 자동 정지 및 복귀 재개, 피해량 비례 안드로이드 진동(`vibrateByDamage`), `golden_common/rare/epic` 여관주인 VO·전설 팡파르 추가.
+    - [`storage.ts`](file:///Users/dayyoung/project/snshero/src/stone/storage.ts) & [`PackOpeningScreen.tsx`](file:///Users/dayyoung/project/snshero/src/stone/screens/PackOpeningScreen.tsx): 공식 8등급 카드 팩 확률·6대 독립 천장·중복 방지 및 황금 등급별 VO 연동 (`stone_hs_*` 네임스페이스 유지).
+  - **3. 전투 물리 돌진·UI/UX·독립 백업/복원 동기화 (결제 기능 0%)**:
+    - [`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/stone/screens/BattleScreen.tsx): 물리 카드 돌진·충돌·반동(`triggerPhysicalAttack`), 피해량 비례 `translate3d` 화면 흔들림(`triggerDamageImpact`, 12+ 데미지 상한 캡), 자동플레이 토글(매치 종료 시 초기화), 중앙 영웅 초상화 및 우측 하단 마나 트레이 정렬, 사망 하수인 호버 툴팁 자동 정리.
+    - [`useModalDismiss.ts`](file:///Users/dayyoung/project/snshero/src/stone/useModalDismiss.ts), [`Modals.tsx`](file:///Users/dayyoung/project/snshero/src/stone/components/Modals.tsx), [`CardZoomModal.tsx`](file:///Users/dayyoung/project/snshero/src/stone/components/CardZoomModal.tsx), [`CollectionScreen.tsx`](file:///Users/dayyoung/project/snshero/src/stone/screens/CollectionScreen.tsx): ESC/우클릭 모달 닫기, 퀘스트 모달 승/패/승률/등급 하이라이트 + `[보상 안내]`/`[의뢰]` 토글, 환경 설정 진동 토글 및 `stone_hs_*` 독립 JSON 백업/복원/초기화 UI, 카드첩 좌우 화살표·A/D 페이지 이동 추가.
+  - **4. 절대 원칙 검증 (100% 무료·독립성·빌드)**:
+    - `paymentGateway`/PayApp/PayPal/`hero_hs_`/`hs-assets` 코드 0건 확인.
+    - `npm run build` 성공 (`dist/assets/stone-DEGjhqdY-v2.js` 및 `dist/stone.html` 생성 완료).
+
 ## [2026-11-13 06:32 KST] [/update-stone 커스텀 스킬 생성 (game.html 최신 업데이트 -> stone.html 무료·독립 동기화)]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

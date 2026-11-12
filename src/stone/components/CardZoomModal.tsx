@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { hsAudio } from '../audio';
 import { CLASS_CREST_URL, formatCardHtmlText } from '../cardDb';
+import { useModalDismiss } from '../useModalDismiss';
 import {
   CLASSIC_HEROES,
   CardClass,
@@ -81,16 +82,7 @@ export const CardZoomModal: React.FC<CardZoomModalProps> = ({
   secondaryActions = [],
   onCancel,
 }) => {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation();
-        onCancel();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onCancel]);
+  useModalDismiss(true, onCancel);
 
   const shownCost = effectiveCost !== undefined ? effectiveCost : card.cost;
   const costState: 'normal' | 'buffed' | 'nerfed' =

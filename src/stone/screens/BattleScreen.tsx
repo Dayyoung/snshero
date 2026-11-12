@@ -4,6 +4,7 @@ import {
   CLASSIC_RANK_NAMES,
   CLASS_CREST_URL,
   cardDb,
+  getCardArtUrl,
   getCardTileUrl,
   getHeroArtUrl,
 } from '../cardDb';
@@ -36,7 +37,33 @@ import {
   HeroClass,
   MinionInstance,
 } from '../types';
-import { BoardVfxCanvas } from '../vfx/BoardVfxCanvas';
+import { BoardVfxCanvas, recordEntityStagePosition } from '../vfx/BoardVfxCanvas';
+import { CardRarity } from '../types';
+
+interface PhysicalAttackAnimState {
+  id: number;
+  side: 'PLAYER' | 'OPPONENT';
+  attackerId: string;
+  defenderId: string;
+  isHeroAttacker: boolean;
+  artUrl: string;
+  nameKo: string;
+  attackVal: number;
+  healthVal: number;
+  armorVal: number;
+  taunt: boolean;
+  divineShield: boolean;
+  rarity?: CardRarity;
+  frameGradient: string;
+  startX: number;
+  startY: number;
+  targetX: number;
+  targetY: number;
+  defenderDamage: number;
+  attackerCounterDamage: number;
+  attackerWillDie: boolean;
+  phase: 'WINDUP' | 'LUNGE' | 'IMPACT_RETURN';
+}
 
 export interface BattleScreenProps {
   mode: GameMode;
@@ -158,7 +185,25 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   const [playerEmoteText, setPlayerEmoteText] = useState<string | null>(null);
   const [opponentEmoteText, setOpponentEmoteText] = useState<string | null>(null);
   const [toyToast, setToyToast] = useState<string | null>(null);
-  const [screenShake, setScreenShake] = useState<'NONE' | 'LIGHT' | 'HEAVY'>('NONE');
+  const [autoPlay, setAutoPlay] = useState<boolean>(false);
+  const [shakeState, setShakeState] = useState<{
+    active: boolean;
+    seq: number;
+    damage: number;
+    ampX: number;
+    ampY: number;
+    rotDeg: number;
+    durationMs: number;
+  }>({
+    active: false,
+    seq: 0,
+    damage: 0,
+    ampX: 0,
+    ampY: 0,
+    rotDeg: 0,
+    durationMs: 220,
+  });
+  const [attackAnim, setAttackAnim] = useState<PhysicalAttackAnimState | null>(null);
   const [aiHighlightText, setAiHighlightText] = useState<string | null>(null);
   const [outcomeSummary, setOutcomeSummary] = useState<{
     goldEarned: number;
@@ -170,6 +215,41 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
   const friendlyRowRef = useRef<HTMLDivElement | null>(null);
   const recordedResultRef = useRef(false);
+  const matchStateRef = useRef(matchState);
+  matchStateRef.current = matchState;
+  const shakeTimerRef = useRef<number | null>(null);
+  const activeShakeRef = useRef<{ until: number; strength: number }>({ until: 0, strength: 0 });
+  const attackLockRef = useRef(false);
+  const attackSeqRef = useRef(0);
+  const attackTimersRef = useRef<number[]>([]);
+
+  useEffect(() => {
+    return () => {
+      if (shakeTimerRef.current !== null) window.clearTimeout(shakeTimerRef.current);
+      attackTimersRef.current.forEach((t) => window.clearTimeout(t));
+    };
+  }, []);
+
+  const liveHoveredBoardMinion = useMemo(() => {
+    if (!hoveredBoardMinion || matchState.phase !== 'PLAYING') return null;
+    return (
+      matchState.player.board.find((m) => m.uid === hoveredBoardMinion.uid) ||
+      matchState.opponent.board.find((m) => m.uid === hoveredBoardMinion.uid) ||
+      null
+    );
+  }, [hoveredBoardMinion, matchState.phase, matchState.player.board, matchState.opponent.board]);
+
+  useEffect(() => {
+    if (hoveredBoardMinion && !liveHoveredBoardMinion) {
+      setHoveredBoardMinion(null);
+    }
+  }, [hoveredBoardMinion, liveHoveredBoardMinion]);
+
+  useEffect(() => {
+    if (matchState.phase === 'GAME_OVER' && autoPlay) {
+      setAutoPlay(false);
+    }
+  }, [matchState.phase, autoPlay]);
   const profile = useMemo(() => hsStorage.getProfile(), []);
   const backImg = CARD_BACK_MAP[profile.selectedCardBack] || CARD_BACK_MAP.classic;
 
@@ -296,8 +376,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         );
         setMatchState(sim.useHeroPower('OPPONENT', action.targetId));
       } else if (action.kind === 'ATTACK') {
-        hsAudio.playSfx('whoosh', 0.75);
-        setMatchState(sim.performAttack('OPPONENT', action.attackerId, action.defenderId));
+        triggerPhysicalAttack('OPPONENT', action.attackerId, action.defenderId);
       } else {
         hsAudio.playSfx('end_turn', 0.85);
         setAiHighlightText(null);
@@ -306,7 +385,67 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     }, 760);
 
     return () => clearTimeout(timer);
-  }, [matchState, mode]);
+  }, [matchState, mode, triggerPhysicalAttack]);
+
+  // Step-by-Step Player Auto-Play Loop (when autoPlay === true)
+  useEffect(() => {
+    if (!autoPlay || vsIntroActive) return;
+    if (matchState.phase === 'MULLIGAN') {
+      const t = window.setTimeout(() => {
+        const sim = createEngine(matchState);
+        setMatchState(sim.confirmMulligan(new Set()));
+      }, 420);
+      return () => clearTimeout(t);
+    }
+    if (matchState.phase !== 'PLAYING' || matchState.activeSide !== 'PLAYER') return;
+    if (attackLockRef.current) return;
+
+    const timer = window.setTimeout(() => {
+      const simStateForPlayer = {
+        ...matchState,
+        activeSide: 'OPPONENT' as const,
+        player: matchState.opponent,
+        opponent: matchState.player,
+      };
+      const action: AiAction = computeNextAiAction(simStateForPlayer, 'EXPERT');
+      const sim = createEngine(matchState);
+
+      const mapTarget = (tid?: string) => {
+        if (!tid) return undefined;
+        if (tid === 'OPPONENT_HERO') return 'PLAYER_HERO';
+        if (tid === 'PLAYER_HERO') return 'OPPONENT_HERO';
+        return tid;
+      };
+
+      if (action.kind === 'PLAY_CARD') {
+        const def = cardDb.mustGetCard(action.cardId);
+        hsAudio.playSfx('card_place', 0.85);
+        setAiHighlightText(`자동플레이: [${def.name}] 사용!`);
+        setMatchState(
+          sim.playCardFromHand('PLAYER', action.handUid, {
+            targetId: mapTarget(action.targetId),
+            insertIndex: action.insertIndex,
+            chooseOptionIndex: action.chooseOptionIndex,
+          }),
+        );
+      } else if (action.kind === 'HERO_POWER') {
+        hsAudio.playSfx('hero_power', 0.85);
+        setAiHighlightText(`자동플레이: 영웅 능력 [${matchState.player.heroPowerNameKo}]!`);
+        setMatchState(sim.useHeroPower('PLAYER', mapTarget(action.targetId)));
+      } else if (action.kind === 'ATTACK') {
+        const mappedAtk =
+          action.attackerId === 'OPPONENT_HERO' ? 'PLAYER_HERO' : action.attackerId;
+        const mappedDef = mapTarget(action.defenderId) || 'OPPONENT_HERO';
+        triggerPhysicalAttack('PLAYER', mappedAtk, mappedDef);
+      } else {
+        hsAudio.playSfx('end_turn', 0.85);
+        setAiHighlightText(null);
+        setMatchState(sim.endTurn());
+      }
+    }, 640);
+
+    return () => clearTimeout(timer);
+  }, [autoPlay, vsIntroActive, matchState, triggerPhysicalAttack]);
 
   // Pointer Move & Right-Click / Escape Cancel
   useEffect(() => {
@@ -341,10 +480,203 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     };
   }, []);
 
-  const triggerShake = useCallback((intensity: 'LIGHT' | 'HEAVY') => {
-    setScreenShake(intensity);
-    window.setTimeout(() => setScreenShake('NONE'), 380);
-  }, []);
+  const triggerDamageImpact = useCallback(
+    (rawDamage: number, opts?: { isFinisher?: boolean }) => {
+      const dmg = Math.max(1, Math.round(rawDamage || 1));
+      const isFinisher = Boolean(opts?.isFinisher);
+      const strength = isFinisher ? 120 : dmg;
+      const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+      if (now < activeShakeRef.current.until && strength < activeShakeRef.current.strength) {
+        return;
+      }
+
+      let ampX: number;
+      const rotDeg = 0; // GPU 60fps pure translate3d without rasterization blur
+      let durationMs: number;
+
+      if (isFinisher) {
+        ampX = 12;
+        durationMs = 360;
+      } else if (dmg <= 2) {
+        ampX = Number((1.2 + dmg * 0.5).toFixed(2));
+        durationMs = 180;
+      } else if (dmg <= 4) {
+        ampX = Number((1.8 + dmg * 0.6).toFixed(2));
+        durationMs = 210;
+      } else if (dmg <= 7) {
+        ampX = Number((2.6 + dmg * 0.6).toFixed(2));
+        durationMs = 250;
+      } else if (dmg <= 11) {
+        ampX = Number((3.6 + Math.min(11, dmg) * 0.55).toFixed(2));
+        durationMs = 290;
+      } else {
+        ampX = Number(Math.min(10.8, 7.2 + (dmg - 12) * 0.2).toFixed(2));
+        durationMs = 310;
+      }
+
+      const ampY = Number((ampX * 0.68).toFixed(2));
+      activeShakeRef.current = { until: now + durationMs * 0.85, strength };
+
+      setShakeState((prev) => ({
+        active: true,
+        seq: prev.seq + 1,
+        damage: dmg,
+        ampX,
+        ampY,
+        rotDeg,
+        durationMs,
+      }));
+
+      if (shakeTimerRef.current !== null) {
+        window.clearTimeout(shakeTimerRef.current);
+      }
+      shakeTimerRef.current = window.setTimeout(() => {
+        setShakeState((prev) => ({ ...prev, active: false }));
+      }, durationMs + 25);
+    },
+    [],
+  );
+
+  const triggerPhysicalAttack = useCallback(
+    (side: 'PLAYER' | 'OPPONENT', attackerId: string, defenderId: string) => {
+      if (attackLockRef.current) return;
+      const current = matchStateRef.current;
+      if (current.phase !== 'PLAYING') return;
+
+      const atkPlayer = side === 'PLAYER' ? current.player : current.opponent;
+      const enemySide = side === 'PLAYER' ? 'OPPONENT' : 'PLAYER';
+      const defPlayer = enemySide === 'PLAYER' ? current.player : current.opponent;
+
+      const isHeroAttacker = attackerId === 'PLAYER_HERO' || attackerId === 'OPPONENT_HERO';
+      const isHeroDefender = defenderId === 'PLAYER_HERO' || defenderId === 'OPPONENT_HERO';
+
+      const atkMinion = isHeroAttacker
+        ? null
+        : atkPlayer.board.find((m) => m.uid === attackerId) || null;
+      if (!isHeroAttacker && !atkMinion) return;
+
+      const defMinion = isHeroDefender
+        ? null
+        : defPlayer.board.find((m) => m.uid === defenderId) || null;
+      if (!isHeroDefender && !defMinion) return;
+
+      const w = window.innerWidth || 1280;
+      const h = window.innerHeight || 720;
+      const atkEl = document.querySelector(`[data-hs-entity="${attackerId}"]`);
+      const defEl = document.querySelector(`[data-hs-entity="${defenderId}"]`);
+
+      const startPos = atkEl
+        ? (() => {
+            const r = atkEl.getBoundingClientRect();
+            return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+          })()
+        : {
+            x: w * 0.5,
+            y: side === 'PLAYER' ? h * 0.62 : h * 0.34,
+          };
+      const targetPos = defEl
+        ? (() => {
+            const r = defEl.getBoundingClientRect();
+            return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+          })()
+        : {
+            x: w * 0.5,
+            y: enemySide === 'PLAYER' ? h * 0.77 : h * 0.17,
+          };
+
+      recordEntityStagePosition(attackerId, startPos);
+      recordEntityStagePosition(defenderId, targetPos);
+
+      const attackVal = isHeroAttacker
+        ? getHeroAttack(atkPlayer, true)
+        : getMinionAttack(atkMinion!);
+      const healthVal = isHeroAttacker ? atkPlayer.health : getMinionHealth(atkMinion!);
+      const armorVal = isHeroAttacker ? atkPlayer.armor : 0;
+      const counterDmg = isHeroDefender ? 0 : getMinionAttack(defMinion!);
+      const attackerWillDie =
+        !isHeroAttacker && !atkMinion!.divineShield && counterDmg >= healthVal;
+
+      const minionDef = atkMinion ? cardDb.mustGetCard(atkMinion.cardId) : null;
+      const artUrl = isHeroAttacker
+        ? getHeroArtUrl(atkPlayer.isJaraxxus ? 'EX1_323h' : atkPlayer.heroId)
+        : getCardArtUrl(minionDef!.artId);
+      const nameKo = isHeroAttacker ? atkPlayer.heroNameKo : atkMinion!.name;
+      const defNameKo = isHeroDefender ? defPlayer.heroNameKo : defMinion!.name;
+      const frameGradient = CLASSIC_HEROES[atkPlayer.heroClass].frameGradient;
+
+      attackLockRef.current = true;
+      attackSeqRef.current += 1;
+      const animId = attackSeqRef.current;
+
+      hsAudio.playSfx('whoosh', 0.85);
+      setAiHighlightText(
+        `${side === 'PLAYER' ? '⚔ 아군 타격' : '💥 적군 타격'}: [${nameKo}](${attackVal}) ➔ [${defNameKo}]!`,
+      );
+
+      setAttackAnim({
+        id: animId,
+        side,
+        attackerId,
+        defenderId,
+        isHeroAttacker,
+        artUrl,
+        nameKo,
+        attackVal,
+        healthVal,
+        armorVal,
+        taunt: atkMinion ? hasMinionTaunt(atkMinion) : false,
+        divineShield: atkMinion ? atkMinion.divineShield : false,
+        rarity: minionDef?.rarity,
+        frameGradient,
+        startX: startPos.x,
+        startY: startPos.y,
+        targetX: targetPos.x,
+        targetY: targetPos.y,
+        defenderDamage: attackVal,
+        attackerCounterDamage: counterDmg,
+        attackerWillDie,
+        phase: 'WINDUP',
+      });
+
+      const tLunge = window.setTimeout(() => {
+        setAttackAnim((prev) =>
+          prev && prev.id === animId ? { ...prev, phase: 'LUNGE' } : prev,
+        );
+      }, 115);
+
+      const tImpact = window.setTimeout(() => {
+        const exchangedDamage = Math.max(1, attackVal + counterDmg);
+        hsAudio.vibrateByDamage(exchangedDamage);
+        const latest = matchStateRef.current;
+        if (latest.phase === 'PLAYING') {
+          const sim = createEngine(latest);
+          const next = sim.performAttack(side, attackerId, defenderId);
+          setMatchState(next);
+        }
+        hsAudio.playSfx(
+          exchangedDamage >= 7 || attackVal >= 5 ? 'big_attack' : 'attack',
+          Math.min(1, 0.72 + Math.min(12, exchangedDamage) * 0.024),
+        );
+        triggerDamageImpact(exchangedDamage);
+        setAttackAnim((prev) =>
+          prev && prev.id === animId ? { ...prev, phase: 'IMPACT_RETURN' } : prev,
+        );
+      }, 270);
+
+      const tDone = window.setTimeout(() => {
+        setAttackAnim((prev) => (prev && prev.id === animId ? null : prev));
+        attackLockRef.current = false;
+      }, 500);
+
+      attackTimersRef.current = [
+        ...attackTimersRef.current.slice(-12),
+        tLunge,
+        tImpact,
+        tDone,
+      ];
+    },
+    [triggerDamageImpact],
+  );
 
   const handleConcede = useCallback(() => {
     if (matchState.phase === 'GAME_OVER') return;
@@ -459,9 +791,9 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           if (selection.attackerId === 'PLAYER_HERO') {
             hsAudio.playHeroVo(matchState.player.heroClass, 'attack');
           }
-          const eng = createEngine(matchState);
+          const attackerId = selection.attackerId;
           setSelection(null);
-          setMatchState(eng.performAttack('PLAYER', selection.attackerId, entityId));
+          triggerPhysicalAttack('PLAYER', attackerId, entityId);
         } else {
           const enemyHasTaunt = matchState.opponent.board.some(
             (m) => !m.stealth && (m.taunt || m.auraTaunt),
@@ -919,20 +1251,28 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         if (emoteMenuOpen) setEmoteMenuOpen(false);
         if (selection) setSelection(null);
       }}
-      style={{ backgroundImage: `url(${BOARD_BG_URL[matchState.boardTheme]})` }}
+      style={
+        {
+          backgroundImage: `url(${BOARD_BG_URL[matchState.boardTheme]})`,
+          '--hs-sx': `${shakeState.ampX}px`,
+          '--hs-sy': `${shakeState.ampY}px`,
+          '--hs-sr': `${shakeState.rotDeg}deg`,
+          '--hs-sd': `${shakeState.durationMs}ms`,
+        } as React.CSSProperties
+      }
       className={`relative flex h-[100dvh] w-full select-none flex-col justify-between overflow-hidden bg-cover bg-center ${
-        screenShake === 'HEAVY'
-          ? 'animate-[hsShakeHeavy_0.36s_ease-in-out]'
-          : screenShake === 'LIGHT'
-            ? 'animate-[hsShakeLight_0.26s_ease-in-out]'
-            : ''
+        shakeState.active
+          ? shakeState.seq % 2 === 0
+            ? 'hs-damage-shake-a'
+            : 'hs-damage-shake-b'
+          : ''
       }`}
     >
       {/* Subtle Board Vignette */}
       <div className="pointer-events-none absolute inset-0 bg-radial from-transparent via-black/15 to-black/75" />
 
       {/* 60fps Particle & Spell Projectile Canvas */}
-      <BoardVfxCanvas events={matchState.vfxQueue} onScreenShake={triggerShake} />
+      <BoardVfxCanvas events={matchState.vfxQueue} onDamageImpact={triggerDamageImpact} />
 
       {/* Active Targeting / Placement Helper Bar (Cancelable & Inspectable on Mobile!) */}
       {selection && (
@@ -1104,10 +1444,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       )}
 
       {/* Board Minion Hover Full-Card Inspector (Desktop XL) */}
-      {hoveredBoardMinion && !selection && (
+      {liveHoveredBoardMinion && !selection && (
         <div className="pointer-events-none fixed right-24 top-1/2 z-[80] hidden -translate-y-1/2 xl:block">
           <HearthstoneCard
-            card={cardDb.mustGetCard(hoveredBoardMinion.cardId)}
+            card={cardDb.mustGetCard(liveHoveredBoardMinion.cardId)}
             size="MD"
           />
         </div>
@@ -1248,6 +1588,24 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           </div>
 
           <div className="flex shrink-0 items-center gap-1">
+            <button
+              type="button"
+              data-testid="toggle-autoplay"
+              data-autoplay-active={autoPlay ? 'true' : 'false'}
+              onClick={(e) => {
+                e.stopPropagation();
+                hsAudio.playSfx('ui_click', 0.8);
+                setAutoPlay((prev) => !prev);
+              }}
+              className={`rounded-xl border px-2 py-1 text-[10.5px] font-extrabold transition sm:px-2.5 sm:text-xs ${
+                autoPlay
+                  ? 'border-emerald-300 bg-emerald-700 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]'
+                  : 'hs-brass-btn text-amber-100'
+              }`}
+            >
+              {autoPlay ? '⚙ 자동 ON' : '⚙ 자동 OFF'}
+            </button>
+
             {/* Mobile Corner Toy Interaction Button (< md) */}
             <button
               type="button"
@@ -1476,9 +1834,9 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
       {/* ==================== BOTTOM ZONE: PLAYER HERO + MANA TRAY + CURVED HAND ==================== */}
       <footer className="relative z-30 flex flex-col items-center pb-1">
-        {/* Player Hero + Emote Trigger + 10 Sapphire Mana Crystal Tray */}
-        <div className="flex w-full max-w-5xl flex-col items-center justify-center gap-1 px-2 sm:flex-row sm:flex-wrap sm:gap-4 sm:px-4">
-          <div className="relative flex items-center gap-1.5">
+        {/* Centered Player Hero + Bottom-Right Mana Crystal Tray */}
+        <div className="relative flex w-full max-w-5xl flex-col items-center justify-center gap-1 px-2 sm:px-4">
+          <div className="relative flex items-center justify-center gap-1.5">
             {/* Emote Menu Brass Trigger (Always visible & unclipped on mobile!) */}
             <button
               type="button"
@@ -1536,8 +1894,8 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             )}
           </div>
 
-          {/* Authentic 10-Crystal Faceted Sapphire Mana Tray */}
-          <div className="flex items-center gap-1.5 rounded-2xl border-2 border-[#c8a158] bg-stone-950/90 px-2.5 py-1 shadow-[0_10px_24px_rgba(0,0,0,0.88)] sm:gap-2.5 sm:px-3 sm:py-1.5">
+          {/* Authentic 10-Crystal Faceted Sapphire Mana Tray (Bottom-Right on Desktop/Tablet) */}
+          <div className="flex items-center gap-1.5 rounded-2xl border-2 border-[#c8a158] bg-stone-950/90 px-2.5 py-1 shadow-[0_10px_24px_rgba(0,0,0,0.88)] sm:absolute sm:bottom-1 sm:right-4 sm:gap-2 sm:px-3 sm:py-1.5">
             <HsManaGem
               value={`${matchState.player.mana}/${matchState.player.maxMana}`}
               size={isCompactMobile ? 24 : 30}
@@ -1976,6 +2334,128 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           </div>
         </div>
       )}
+
+      {/* Physical Card Lunge -> Impact -> Recoil Overlay */}
+      {attackAnim && (() => {
+        const isPlayerSide = attackAnim.side === 'PLAYER';
+        const dx = attackAnim.targetX - attackAnim.startX;
+        const dy = attackAnim.targetY - attackAnim.startY;
+        const dist = Math.max(1, Math.hypot(dx, dy));
+        const ux = dx / dist;
+        const uy = dy / dist;
+        const lungeX = attackAnim.targetX - ux * 28;
+        const lungeY = attackAnim.targetY - uy * 28;
+        const windupX = attackAnim.startX - ux * 16;
+        const windupY = attackAnim.startY - uy * 16;
+
+        let cx = attackAnim.startX;
+        let cy = attackAnim.startY;
+        let scale = 1.18;
+        let rot = isPlayerSide ? -4 : 4;
+        let opacity = 1;
+        let transitionCss = 'transform 115ms cubic-bezier(0.22, 1, 0.36, 1), opacity 140ms ease';
+
+        if (attackAnim.phase === 'WINDUP') {
+          cx = windupX;
+          cy = windupY;
+          scale = 1.24;
+          rot = isPlayerSide ? -7 : 7;
+        } else if (attackAnim.phase === 'LUNGE') {
+          cx = lungeX;
+          cy = lungeY;
+          scale = 1.32;
+          rot = isPlayerSide ? 6 : -6;
+          transitionCss = 'transform 155ms cubic-bezier(0.15, 0.85, 0.25, 1)';
+        } else if (attackAnim.phase === 'IMPACT_RETURN') {
+          cx = attackAnim.startX;
+          cy = attackAnim.startY;
+          scale = attackAnim.attackerWillDie ? 0.55 : 1.0;
+          rot = 0;
+          opacity = attackAnim.attackerWillDie ? 0 : 1;
+          transitionCss = 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 210ms ease-out';
+        }
+
+        return (
+          <div className="pointer-events-none fixed inset-0 z-[75] overflow-hidden">
+            <svg className="absolute inset-0 h-full w-full">
+              {attackAnim.phase === 'LUNGE' && (
+                <>
+                  <line
+                    x1={attackAnim.startX}
+                    y1={attackAnim.startY}
+                    x2={lungeX}
+                    y2={lungeY}
+                    stroke={isPlayerSide ? 'rgba(56,189,248,0.65)' : 'rgba(248,113,113,0.65)'}
+                    strokeWidth={8}
+                    strokeLinecap="round"
+                  />
+                  <circle
+                    cx={attackAnim.targetX}
+                    cy={attackAnim.targetY}
+                    r={38}
+                    fill="rgba(239,68,68,0.16)"
+                    stroke="#fca5a5"
+                    strokeWidth={3.5}
+                    strokeDasharray="10 6"
+                  />
+                </>
+              )}
+              {attackAnim.phase === 'IMPACT_RETURN' && (
+                <g transform={`translate(${attackAnim.targetX}, ${attackAnim.targetY})`}>
+                  <circle
+                    r={58}
+                    fill="rgba(251,191,36,0.22)"
+                    stroke="#fde047"
+                    strokeWidth={4}
+                  />
+                  <line x1={-46} y1={-36} x2={46} y2={36} stroke="#fef08a" strokeWidth={6} strokeLinecap="round" />
+                  <line x1={46} y1={-36} x2={-46} y2={36} stroke="#f87171" strokeWidth={5} strokeLinecap="round" />
+                </g>
+              )}
+            </svg>
+
+            <div
+              style={{
+                left: 0,
+                top: 0,
+                transform: `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%) scale(${scale}) rotate(${rot}deg)`,
+                opacity,
+                transition: transitionCss,
+                willChange: 'transform, opacity',
+              }}
+              className="absolute"
+            >
+              <div
+                style={{
+                  background: attackAnim.isHeroAttacker
+                    ? attackAnim.frameGradient
+                    : 'radial-gradient(circle at 50% 35%, #475569 0%, #0f172a 100%)',
+                  boxShadow: isPlayerSide
+                    ? '0 24px 36px rgba(0,0,0,0.92), 0 0 24px rgba(56,189,248,0.95)'
+                    : '0 24px 36px rgba(0,0,0,0.92), 0 0 24px rgba(248,113,113,0.95)',
+                }}
+                className={`relative overflow-hidden border-[3.5px] ${
+                  attackAnim.isHeroAttacker
+                    ? 'h-[82px] w-[72px] rounded-t-[40px] rounded-b-xl border-[#f5d98e] sm:h-[116px] sm:w-[100px] sm:rounded-t-[52px]'
+                    : `h-[74px] w-[58px] rounded-[50%] sm:h-[112px] sm:w-[88px] ${
+                        isPlayerSide ? 'border-sky-300' : 'border-red-400'
+                      }`
+                }`}
+              >
+                <img
+                  src={attackAnim.artUrl}
+                  alt={attackAnim.nameKo}
+                  draggable={false}
+                  className="pointer-events-none absolute inset-0 h-full w-full scale-[1.06] object-cover object-center"
+                />
+                {attackAnim.divineShield && (
+                  <div className="pointer-events-none absolute inset-0 rounded-[50%] border-2 border-yellow-200 bg-yellow-300/25" />
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Universal Enlarged Card Inspection & Bottom Action Modal */}
       {renderActiveZoomModal()}

@@ -326,7 +326,7 @@ export interface HearthstoneCardProps {
   className?: string;
 }
 
-export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
+export const HearthstoneCard: React.FC<HearthstoneCardProps> = React.memo(({
   card,
   effectiveCost,
   spellPowerBonus = 0,
@@ -559,7 +559,7 @@ export const HearthstoneCard: React.FC<HearthstoneCardProps> = ({
       )}
     </div>
   );
-};
+});
 
 /* ============================================================================
  * 3. Commercial Battlefield Oval Minion Token
@@ -574,7 +574,7 @@ export interface BoardMinionTokenProps {
   onHoverChange?: (hovering: boolean) => void;
 }
 
-export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
+export const BoardMinionToken: React.FC<BoardMinionTokenProps> = React.memo(({
   minion,
   canAttack,
   isSelectedAttacker,
@@ -762,7 +762,7 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = ({
       </div>
     </div>
   );
-};
+});
 
 /* ============================================================================
  * 4. Commercial Hero Arch Portrait + Weapon Sheathe + Hero Power Coin
@@ -788,7 +788,7 @@ export interface HeroZoneProps {
   onClickHeroPower: () => void;
 }
 
-export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
+export const HeroPortraitZone: React.FC<HeroZoneProps> = React.memo(({
   player,
   isFriendly,
   isActiveTurn,
@@ -1025,4 +1025,4 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
       </div>
     </div>
   );
-};
+});

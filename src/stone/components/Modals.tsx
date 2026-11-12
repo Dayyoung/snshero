@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { AudioSettings, hsAudio } from '../audio';
 import {
   CLASSIC_RANK_NAMES,
@@ -13,6 +13,7 @@ import {
   HERO_CLASS_ORDER,
   PlayerProfile,
 } from '../types';
+import { useModalDismiss } from '../useModalDismiss';
 
 const CARD_BACK_ITEMS: {
   id: PlayerProfile['selectedCardBack'];
@@ -29,12 +30,25 @@ export const QuestLogModal: React.FC<{
   onClose: () => void;
   onProfileChanged: () => void;
 }> = ({ onClose }) => {
+  useModalDismiss(true, () => {
+    hsAudio.playSfx('box_close');
+    onClose();
+  });
+
+  const [openSection, setOpenSection] = useState<'NONE' | 'REWARDS' | 'QUESTS'>('NONE');
   const profile = hsStorage.getProfile();
   const quests = hsStorage.getQuests();
   const rankTitle = CLASSIC_RANK_NAMES[profile.rank] || '여관 손님';
   const starsNeeded = getStarsNeededForRank(profile.rank);
   const rankMedalImg =
     profile.rank === 0 ? '/stone-assets/ui/medal_legend.webp' : '/stone-assets/ui/medal_bronze.webp';
+
+  const wins = Math.max(0, profile.totalWins);
+  const totalGames = Math.max(wins, profile.totalGames);
+  const losses = Math.max(0, totalGames - wins);
+  const winRatePct = totalGames > 0 ? Math.round((wins / totalGames) * 1000) / 10 : 0;
+  const winRateLabel = totalGames > 0 ? winRatePct.toFixed(1) : '0.0';
+  const completedQuestsCount = quests.filter((q) => q.completed).length;
 
   return (
     <div
@@ -140,49 +154,161 @@ export const QuestLogModal: React.FC<{
           </div>
         </div>
 
-        {/* Daily Quests on Parchment Cards */}
-        <h3 className="hs-title mb-2 text-sm font-extrabold tracking-wide text-amber-200">
-          오늘의 여관 퀘스트
-        </h3>
-        <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-3">
-          {quests.map((q) => {
-            const pct = Math.min(100, Math.round((q.progress / q.goal) * 100));
-            return (
+        {/* W / L / WinRate Spotlight Cards */}
+        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="flex flex-col justify-between rounded-2xl border-2 border-emerald-400/60 bg-gradient-to-b from-emerald-950/70 via-stone-950/90 to-black p-3.5 shadow">
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-xs font-extrabold text-emerald-200">⚔ 승 / 패</span>
+              <span className="rounded-full border border-emerald-400/50 bg-emerald-950/90 px-2 py-0.5 text-[10.5px] font-extrabold text-emerald-200">
+                {profile.winStreak >= 2 ? `🔥 ${profile.winStreak}연승` : `총 ${totalGames}전`}
+              </span>
+            </div>
+            <div className="hs-num my-1.5 flex items-baseline gap-1.5 text-2xl font-black">
+              <span className="text-emerald-300">{wins}승</span>
+              <span className="text-base text-stone-500">/</span>
+              <span className="text-rose-300">{losses}패</span>
+            </div>
+            <div className="text-[11px] font-semibold text-amber-200/75">
+              통산 {totalGames}경기{profile.winStreak > 0 ? ` · ${profile.winStreak}연승` : ''}
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-between rounded-2xl border-2 border-sky-400/60 bg-gradient-to-b from-sky-950/75 via-stone-950/90 to-black p-3.5 shadow">
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-xs font-extrabold text-sky-200">📈 승률</span>
+              <span className="rounded-full border border-sky-400/50 bg-sky-950/90 px-2 py-0.5 text-[10.5px] font-extrabold text-sky-200">
+                {totalGames === 0 ? '대결 전' : winRatePct >= 50 ? '승률 우세' : '분발 중'}
+              </span>
+            </div>
+            <div className="hs-num my-1.5 text-2xl font-black text-sky-300">{winRateLabel}%</div>
+            <div className="h-2.5 w-full overflow-hidden rounded-full border border-sky-400/30 bg-stone-900">
               <div
-                key={q.id}
-                className={`rounded-2xl border-2 p-3.5 shadow ${
-                  q.completed
-                    ? 'border-emerald-400/70 bg-emerald-950/55 text-emerald-100'
-                    : 'border-[#a88246] bg-[#f3e5c3] text-stone-900'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-1">
-                  <span className="hs-title text-sm font-extrabold">{q.title}</span>
-                  <span className="flex items-center gap-1 rounded-full border border-amber-900/40 bg-amber-400/90 px-2 py-0.5 text-xs font-black text-stone-950">
-                    <HsGoldCoinIcon size={14} />
-                    <span>{q.rewardGold}</span>
-                  </span>
-                </div>
-                <p
-                  className={`mt-1.5 text-xs font-semibold ${
-                    q.completed ? 'text-emerald-200' : 'text-stone-700'
-                  }`}
-                >
-                  {q.description}
-                </p>
-                <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-stone-800/35">
-                  <div
-                    style={{ width: `${pct}%` }}
-                    className="h-full bg-gradient-to-r from-amber-500 to-emerald-500"
-                  />
-                </div>
-                <div className="mt-1 text-right text-[11px] font-extrabold">
-                  {q.completed ? '완료됨' : `${q.progress} / ${q.goal}`}
-                </div>
-              </div>
-            );
-          })}
+                style={{ width: `${winRatePct}%` }}
+                className="h-full bg-gradient-to-r from-sky-400 to-emerald-400 transition-all duration-300"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-between rounded-2xl border-2 border-amber-400/60 bg-gradient-to-b from-amber-950/75 via-stone-950/90 to-black p-3.5 shadow">
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-xs font-extrabold text-amber-200">🏅 등급전 순위</span>
+              <span className="rounded-full border border-yellow-300/50 bg-amber-900/80 px-2 py-0.5 text-[10.5px] font-black text-yellow-200">
+                {profile.rank === 0 ? 'LEGEND' : `${profile.rank}등급`}
+              </span>
+            </div>
+            <div className="hs-title my-1.5 text-xl font-black text-yellow-300">{rankTitle}</div>
+            <div className="text-[11px] font-semibold text-amber-200/75">
+              {profile.rank === 0 ? '최고 등급 달성' : `별 ${profile.stars}/${starsNeeded}개`}
+            </div>
+          </div>
         </div>
+
+        {/* Progressive Disclosure Buttons: 보상 안내 / 의뢰 */}
+        <div className="mb-3 grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            data-testid="quest-toggle-rewards"
+            onClick={() => {
+              hsAudio.playSfx('ui_click', 0.85);
+              setOpenSection((prev) => (prev === 'REWARDS' ? 'NONE' : 'REWARDS'));
+            }}
+            className={`flex min-h-[44px] items-center justify-between rounded-2xl border-2 px-4 py-2 text-sm font-extrabold shadow transition ${
+              openSection === 'REWARDS'
+                ? 'border-yellow-300 bg-gradient-to-b from-amber-600 to-amber-900 text-white'
+                : 'hs-brass-btn border-[#c8a158] text-amber-100 hover:border-yellow-300'
+            }`}
+          >
+            <span>🏆 보상 안내</span>
+            <span className="text-xs opacity-90">{openSection === 'REWARDS' ? '닫기 ▲' : '보기 ▼'}</span>
+          </button>
+
+          <button
+            type="button"
+            data-testid="quest-toggle-quests"
+            onClick={() => {
+              hsAudio.playSfx('ui_click', 0.85);
+              setOpenSection((prev) => (prev === 'QUESTS' ? 'NONE' : 'QUESTS'));
+            }}
+            className={`flex min-h-[44px] items-center justify-between rounded-2xl border-2 px-4 py-2 text-sm font-extrabold shadow transition ${
+              openSection === 'QUESTS'
+                ? 'border-emerald-300 bg-gradient-to-b from-emerald-600 to-emerald-900 text-white'
+                : 'hs-brass-btn border-[#c8a158] text-amber-100 hover:border-emerald-300'
+            }`}
+          >
+            <span>📜 의뢰 ({completedQuestsCount}/{quests.length})</span>
+            <span className="text-xs opacity-90">{openSection === 'QUESTS' ? '닫기 ▲' : '보기 ▼'}</span>
+          </button>
+        </div>
+
+        {openSection === 'REWARDS' && (
+          <div className="mb-4 space-y-2 rounded-2xl border border-amber-500/40 bg-black/50 p-4 text-xs">
+            <div className="hs-title text-sm font-extrabold text-yellow-300">
+              여관 승리 · 등급전 · 카드 팩 보상 안내
+            </div>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              <div className="rounded-xl border border-amber-500/25 bg-stone-950/80 p-2.5">
+                <div className="font-extrabold text-amber-200">⚔ 매 승리 기본 보상</div>
+                <div className="mt-1 text-amber-100/80">1승마다 +15 골드 (3승마다 +10 골드 보너스)</div>
+              </div>
+              <div className="rounded-xl border border-emerald-500/25 bg-stone-950/80 p-2.5">
+                <div className="font-extrabold text-emerald-200">📜 일일 퀘스트</div>
+                <div className="mt-1 text-amber-100/80">퀘스트 완료 시 40~60 골드 즉시 지급</div>
+              </div>
+              <div className="rounded-xl border border-sky-500/25 bg-stone-950/80 p-2.5">
+                <div className="font-extrabold text-sky-200">✨ 공식 카드 팩</div>
+                <div className="mt-1 text-amber-100/80">희귀 이상 1장 확정 · 첫 10팩 전설 확정</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {openSection === 'QUESTS' && (
+          <>
+            {/* Daily Quests on Parchment Cards */}
+            <h3 className="hs-title mb-2 text-sm font-extrabold tracking-wide text-amber-200">
+              오늘의 여관 퀘스트
+            </h3>
+            <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+              {quests.map((q) => {
+                const pct = Math.min(100, Math.round((q.progress / q.goal) * 100));
+                return (
+                  <div
+                    key={q.id}
+                    className={`rounded-2xl border-2 p-3.5 shadow ${
+                      q.completed
+                        ? 'border-emerald-400/70 bg-emerald-950/55 text-emerald-100'
+                        : 'border-[#a88246] bg-[#f3e5c3] text-stone-900'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="hs-title text-sm font-extrabold">{q.title}</span>
+                      <span className="flex items-center gap-1 rounded-full border border-amber-900/40 bg-amber-400/90 px-2 py-0.5 text-xs font-black text-stone-950">
+                        <HsGoldCoinIcon size={14} />
+                        <span>{q.rewardGold}</span>
+                      </span>
+                    </div>
+                    <p
+                      className={`mt-1.5 text-xs font-semibold ${
+                        q.completed ? 'text-emerald-200' : 'text-stone-700'
+                      }`}
+                    >
+                      {q.description}
+                    </p>
+                    <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-stone-800/35">
+                      <div
+                        style={{ width: `${pct}%` }}
+                        className="h-full bg-gradient-to-r from-amber-500 to-emerald-500"
+                      />
+                    </div>
+                    <div className="mt-1 text-right text-[11px] font-extrabold">
+                      {q.completed ? '완료됨' : `${q.progress} / ${q.goal}`}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
 
         {/* 9 Classic Heroes Win Counts with Official Class Crests */}
         <h3 className="hs-title mb-2 text-sm font-extrabold tracking-wide text-amber-200">
@@ -224,6 +350,10 @@ export const TavernShopModal: React.FC<{
   onProfileChanged: () => void;
   onGoOpenPacks: () => void;
 }> = ({ onClose, onProfileChanged, onGoOpenPacks }) => {
+  useModalDismiss(true, () => {
+    hsAudio.playSfx('box_close');
+    onClose();
+  });
   const [profile, setProfile] = useState<PlayerProfile>(() => hsStorage.getProfile());
   const [toast, setToast] = useState<string | null>(null);
 
@@ -414,12 +544,38 @@ export const GameOptionsModal: React.FC<{
   onProfileChanged?: () => void;
   onClose: () => void;
 }> = ({ inBattle = false, onConcede, onOpenReaModal, onProfileChanged, onClose }) => {
+  useModalDismiss(true, onClose);
+
   const [settings, setSettings] = useState<AudioSettings>(() => hsAudio.getSettings());
   const [unlockedMsg, setUnlockedMsg] = useState(false);
+  const [dataNotice, setDataNotice] = useState<string | null>(null);
+  const [confirmReset, setConfirmReset] = useState(false);
+  const vibSupport = useMemo(() => hsAudio.getVibrationSupportInfo(), []);
 
   const update = (patch: Partial<AudioSettings>) => {
     hsAudio.updateSettings(patch);
     setSettings(hsAudio.getSettings());
+  };
+
+  const handleCopyBackup = async () => {
+    hsAudio.playSfx('ui_click', 0.8);
+    const { jsonString, keyCount } = hsStorage.exportStoneBackupData();
+    try {
+      await navigator.clipboard.writeText(jsonString);
+      setDataNotice(`✓ 하스스톤 백업 코드(${keyCount}개 항목)가 복사되었습니다.`);
+    } catch {
+      hsStorage.downloadStoneBackupFile();
+      setDataNotice('✓ 백업 JSON 파일이 다운로드되었습니다.');
+    }
+  };
+
+  const handlePasteRestore = () => {
+    hsAudio.playSfx('ui_click', 0.8);
+    const raw = window.prompt('복원할 하스스톤(/stone.html) 백업 JSON 코드를 붙여넣어 주세요:');
+    if (!raw || !raw.trim()) return;
+    const res = hsStorage.restoreStoneBackupJson(raw.trim());
+    setDataNotice(res.message);
+    if (res.success) onProfileChanged?.();
   };
 
   return (
@@ -429,7 +585,7 @@ export const GameOptionsModal: React.FC<{
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="hs-wood-panel w-full max-w-md rounded-3xl p-6 text-amber-100"
+        className="hs-wood-panel max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-3xl p-6 text-amber-100"
       >
         <h2 className="hs-title mb-4 text-center text-2xl font-extrabold text-amber-100">
           게임 메뉴
@@ -462,6 +618,34 @@ export const GameOptionsModal: React.FC<{
               }`}
             >
               {settings.muted ? '음소거 켜짐' : '사운드 켜짐'}
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between gap-2 border-t border-amber-500/20 pt-2.5">
+            <div className="min-w-0">
+              <div className="text-sm font-extrabold text-amber-100">공격 타격 진동 (안드로이드)</div>
+              <div className="mt-0.5 text-[11px] font-semibold text-amber-200/75">
+                {vibSupport.supported
+                  ? '입힌 피해량에 비례해 강력한 진동 울림'
+                  : '현재 기기/브라우저는 진동 API를 지원하지 않습니다'}
+              </div>
+            </div>
+            <button
+              type="button"
+              data-testid="toggle-attack-vibration"
+              onClick={() => {
+                const nextEnabled = !settings.vibrateEnabled;
+                hsAudio.playSfx('ui_click', 0.75);
+                update({ vibrateEnabled: nextEnabled });
+                if (nextEnabled) hsAudio.previewVibration();
+              }}
+              className={`min-h-[36px] shrink-0 rounded-lg border px-3 py-1 text-xs font-extrabold transition ${
+                settings.vibrateEnabled
+                  ? 'border-emerald-300/60 bg-emerald-800 text-white'
+                  : 'border-stone-400/50 bg-stone-800 text-stone-200'
+              }`}
+            >
+              {settings.vibrateEnabled ? '진동 켜짐' : '진동 꺼짐'}
             </button>
           </div>
 
@@ -508,6 +692,115 @@ export const GameOptionsModal: React.FC<{
               onChange={(e) => update({ voVolume: Number(e.target.value) / 100 })}
               className="mt-1 w-full accent-amber-400"
             />
+          </div>
+
+          {/* /stone.html 전용 (stone_hs_*) 독립 세이브 백업 · 복원 · 초기화 */}
+          <div className="space-y-2 border-t border-amber-500/25 pt-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold text-yellow-300">
+                데이터 백업 · 복원 (하스스톤 전용)
+              </span>
+              <span className="rounded bg-amber-950/80 px-2 py-0.5 text-[10px] font-bold text-amber-200/80">
+                stone_hs_* 독립 저장소
+              </span>
+            </div>
+
+            {dataNotice && (
+              <div
+                data-testid="stone-data-notice"
+                className="rounded-lg border border-emerald-400/50 bg-emerald-950/80 px-2.5 py-1.5 text-[11px] font-bold text-emerald-200"
+              >
+                {dataNotice}
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-1.5">
+              <button
+                type="button"
+                onClick={() => {
+                  hsAudio.playSfx('ui_click', 0.8);
+                  hsStorage.downloadStoneBackupFile();
+                  setDataNotice('✓ 하스스톤 백업 JSON 파일이 저장되었습니다.');
+                }}
+                className="hs-brass-btn rounded-lg py-2 text-[11px] font-extrabold text-amber-100"
+              >
+                💾 백업 파일 저장
+              </button>
+              <button
+                type="button"
+                onClick={handleCopyBackup}
+                className="hs-brass-btn rounded-lg py-2 text-[11px] font-extrabold text-amber-100"
+              >
+                📋 백업 코드 복사
+              </button>
+              <label className="hs-brass-btn flex cursor-pointer items-center justify-center rounded-lg py-2 text-center text-[11px] font-extrabold text-amber-100">
+                <span>📂 파일로 복원</span>
+                <input
+                  type="file"
+                  accept=".json"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                      const content = String(ev.target?.result || '');
+                      const res = hsStorage.restoreStoneBackupJson(content);
+                      setDataNotice(res.message);
+                      if (res.success) onProfileChanged?.();
+                    };
+                    reader.readAsText(file);
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={handlePasteRestore}
+                className="hs-brass-btn rounded-lg py-2 text-[11px] font-extrabold text-amber-100"
+              >
+                📥 코드 붙여넣기
+              </button>
+            </div>
+
+            {!confirmReset ? (
+              <button
+                type="button"
+                onClick={() => {
+                  hsAudio.playSfx('ui_click', 0.8);
+                  setConfirmReset(true);
+                }}
+                className="mt-1 w-full rounded-lg border border-red-400/50 bg-red-950/60 py-1.5 text-[11px] font-extrabold text-red-200 hover:bg-red-900/70"
+              >
+                🗑 하스스톤 데이터 초기화 (/stone.html 전용)
+              </button>
+            ) : (
+              <div className="mt-1 flex items-center gap-1.5 rounded-lg border border-red-400/70 bg-red-950/90 p-2">
+                <span className="flex-1 text-[11px] font-extrabold text-red-100">
+                  하스스톤(stone_hs_*) 데이터만 초기화할까요?
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    hsAudio.playSfx('ui_click', 0.85);
+                    hsStorage.resetStoneDataOnly();
+                    setConfirmReset(false);
+                    setDataNotice('✓ 하스스톤(stone_hs_*) 데이터가 초기 상태로 리셋되었습니다.');
+                    onProfileChanged?.();
+                  }}
+                  className="rounded bg-red-600 px-2.5 py-1 text-[11px] font-extrabold text-white"
+                >
+                  초기화
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmReset(false)}
+                  className="rounded bg-stone-700 px-2 py-1 text-[11px] font-bold text-stone-200"
+                >
+                  취소
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -560,6 +853,10 @@ export const GameOptionsModal: React.FC<{
 };
 
 export const ReaEvidenceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  useModalDismiss(true, () => {
+    hsAudio.playSfx('box_close');
+    onClose();
+  });
   const manifest = cardDb.getManifest();
   const totalCollectible = cardDb.getAllCollectible().length;
 

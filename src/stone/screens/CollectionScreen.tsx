@@ -134,6 +134,34 @@ export const CollectionScreen: React.FC<{
   const safePage = Math.min(page, totalPages - 1);
   const pageCards = filteredCards.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (inspectCard) return;
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        if (safePage > 0) {
+          hsAudio.playSfx('card_hover', 0.55);
+          setPage((p) => Math.max(0, p - 1));
+        }
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        if (safePage < totalPages - 1) {
+          hsAudio.playSfx('card_hover', 0.55);
+          setPage((p) => Math.min(totalPages - 1, p + 1));
+        }
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [inspectCard, safePage, totalPages]);
+
   const handleAddCardToDeck = (card: ClassicCardDef) => {
     if (!editingDeck) {
       setInspectCard(card);

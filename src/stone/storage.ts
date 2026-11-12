@@ -23,6 +23,36 @@ const KEYS = {
   PITY: 'stone_hs_pack_pity',
 };
 
+export interface PackPityState {
+  totalPacksOpened: number;
+  firstTenLegendaryClaimed: boolean;
+  packsSinceLegendary: number;
+  packsSinceEpic: number;
+  packsSinceGoldenCommon: number;
+  packsSinceGoldenRare: number;
+  packsSinceGoldenEpic: number;
+  packsSinceGoldenLegendary: number;
+  everObtainedMaxCopies: Record<string, number>;
+}
+
+export const PACK_DROP_RATES_SPEC = {
+  cardsPerPack: 5,
+  guaranteedMinRarity: 'RARE' as const,
+  firstLegendaryGuaranteePacks: 10,
+  legendaryPityPacks: 40,
+  epicPityPacks: 10,
+  goldenCommonPityPacks: 25,
+  goldenRarePityPacks: 29,
+  goldenEpicPityPacks: 142,
+  goldenLegendaryPityPacks: 361,
+  packNormalLegendaryPct: 5.0,
+  packNormalEpicPct: 21.0,
+  packGoldenCommonPct: 8.1,
+  packGoldenRarePct: 7.1,
+  packGoldenEpicPct: 1.4,
+  packGoldenLegendaryPct: 0.6,
+};
+
 export type CollectionMap = Record<string, number>;
 
 export interface OpenedPackCard {
@@ -183,6 +213,62 @@ class HearthstoneStorage {
     return true;
   }
 
+  private getPackPityState(): PackPityState {
+    const col = this.getCollection();
+    const fallbackEver: Record<string, number> = {};
+    for (const [cid, cnt] of Object.entries(col)) {
+      if (cnt > 0) fallbackEver[cid] = cnt;
+    }
+    const defaults: PackPityState = {
+      totalPacksOpened: 0,
+      firstTenLegendaryClaimed: false,
+      packsSinceLegendary: 0,
+      packsSinceEpic: 0,
+      packsSinceGoldenCommon: 0,
+      packsSinceGoldenRare: 0,
+      packsSinceGoldenEpic: 0,
+      packsSinceGoldenLegendary: 0,
+      everObtainedMaxCopies: fallbackEver,
+    };
+    try {
+      const raw = localStorage.getItem(KEYS.PITY);
+      if (!raw) return defaults;
+      const trimmed = raw.trim();
+      if (/^\d+$/.test(trimmed)) {
+        const legacyNum = Math.max(0, Number(trimmed) || 0);
+        return {
+          ...defaults,
+          packsSinceLegendary: Math.min(39, legacyNum),
+        };
+      }
+      const parsed = JSON.parse(trimmed) as Partial<PackPityState>;
+      const mergedEver: Record<string, number> = {
+        ...fallbackEver,
+        ...(parsed.everObtainedMaxCopies || {}),
+      };
+      for (const [cid, cnt] of Object.entries(fallbackEver)) {
+        mergedEver[cid] = Math.max(mergedEver[cid] || 0, cnt);
+      }
+      return {
+        totalPacksOpened: Math.max(0, Number(parsed.totalPacksOpened) || 0),
+        firstTenLegendaryClaimed: Boolean(parsed.firstTenLegendaryClaimed),
+        packsSinceLegendary: Math.max(0, Number(parsed.packsSinceLegendary) || 0),
+        packsSinceEpic: Math.max(0, Number(parsed.packsSinceEpic) || 0),
+        packsSinceGoldenCommon: Math.max(0, Number(parsed.packsSinceGoldenCommon) || 0),
+        packsSinceGoldenRare: Math.max(0, Number(parsed.packsSinceGoldenRare) || 0),
+        packsSinceGoldenEpic: Math.max(0, Number(parsed.packsSinceGoldenEpic) || 0),
+        packsSinceGoldenLegendary: Math.max(0, Number(parsed.packsSinceGoldenLegendary) || 0),
+        everObtainedMaxCopies: mergedEver,
+      };
+    } catch {
+      return defaults;
+    }
+  }
+
+  private savePackPityState(state: PackPityState) {
+    localStorage.setItem(KEYS.PITY, JSON.stringify(state));
+  }
+
   openOnePack(): OpenedPackCard[] | null {
     const p = this.getProfile();
     if (p.packs <= 0) return null;
@@ -190,52 +276,190 @@ class HearthstoneStorage {
     this.saveProfile(p);
 
     const col = this.getCollection();
+    const pity = this.getPackPityState();
     const packPool = cardDb.getAllCollectible().filter((c) => c.rarity !== 'FREE');
-    const byRarity: Record<CardRarity, ClassicCardDef[]> = {
-      FREE: [],
+    const byRarity: Record<Exclude<CardRarity, 'FREE'>, ClassicCardDef[]> = {
       COMMON: packPool.filter((c) => c.rarity === 'COMMON'),
       RARE: packPool.filter((c) => c.rarity === 'RARE'),
       EPIC: packPool.filter((c) => c.rarity === 'EPIC'),
       LEGENDARY: packPool.filter((c) => c.rarity === 'LEGENDARY'),
     };
 
-    let pity = Number(localStorage.getItem(KEYS.PITY) || '0') + 1;
-    const rollRarity = (forceRareOrBetter: boolean): CardRarity => {
+    type PackSlotTier =
+      | 'GOLDEN_LEGENDARY'
+      | 'GOLDEN_EPIC'
+      | 'GOLDEN_RARE'
+      | 'GOLDEN_COMMON'
+      | 'NORMAL_LEGENDARY'
+      | 'NORMAL_EPIC'
+      | 'NORMAL_RARE'
+      | 'NORMAL_COMMON';
+
+    const nextNormalLeg = pity.packsSinceLegendary + 1;
+    const nextNormalEpic = pity.packsSinceEpic + 1;
+    const nextGoldLeg = pity.packsSinceGoldenLegendary + 1;
+    const nextGoldEpic = pity.packsSinceGoldenEpic + 1;
+    const nextGoldRare = pity.packsSinceGoldenRare + 1;
+    const nextGoldCommon = pity.packsSinceGoldenCommon + 1;
+
+    const normalLegCap = pity.firstTenLegendaryClaimed
+      ? PACK_DROP_RATES_SPEC.legendaryPityPacks
+      : PACK_DROP_RATES_SPEC.firstLegendaryGuaranteePacks;
+
+    const pGoldLeg = 0.00102;
+    const pGoldEpic = 0.00224;
+    const pGoldRare = 0.01208;
+    const pGoldCommon = 0.01358;
+    const pNormalLeg = !pity.firstTenLegendaryClaimed ? 0.022 : 0.00818;
+    const pNormalEpic = 0.0391;
+    const pNormalRare = 0.214;
+
+    const slotTiers: PackSlotTier[] = Array.from({ length: 5 }, () => {
       const r = Math.random();
-      if (pity >= 15 || r < 0.032) {
-        pity = 0;
-        return 'LEGENDARY';
+      let acc = 0;
+      if (r < (acc += pGoldLeg)) return 'GOLDEN_LEGENDARY';
+      if (r < (acc += pGoldEpic)) return 'GOLDEN_EPIC';
+      if (r < (acc += pGoldRare)) return 'GOLDEN_RARE';
+      if (r < (acc += pGoldCommon)) return 'GOLDEN_COMMON';
+      if (r < (acc += pNormalLeg)) return 'NORMAL_LEGENDARY';
+      if (r < (acc += pNormalEpic)) return 'NORMAL_EPIC';
+      if (r < (acc += pNormalRare)) return 'NORMAL_RARE';
+      return 'NORMAL_COMMON';
+    });
+
+    const injectPityTier = (target: PackSlotTier, protectedTiers: Set<PackSlotTier>) => {
+      const commonIdxs = slotTiers
+        .map((t, i) => (t === 'NORMAL_COMMON' ? i : -1))
+        .filter((i) => i >= 0);
+      if (commonIdxs.length > 0) {
+        slotTiers[commonIdxs[Math.floor(Math.random() * commonIdxs.length)]] = target;
+        return;
       }
-      if (r < 0.11) return 'EPIC';
-      if (forceRareOrBetter || r < 0.34) return 'RARE';
-      return 'COMMON';
+      const availIdxs = slotTiers
+        .map((t, i) => (!protectedTiers.has(t) ? i : -1))
+        .filter((i) => i >= 0);
+      if (availIdxs.length > 0) {
+        slotTiers[availIdxs[0]] = target;
+      }
     };
 
-    const rarities: CardRarity[] = [
-      rollRarity(false),
-      rollRarity(false),
-      rollRarity(false),
-      rollRarity(false),
-      rollRarity(false),
-    ];
-    if (!rarities.some((rar) => rar !== 'COMMON')) {
-      rarities[Math.floor(Math.random() * 5)] = rollRarity(true);
+    if (
+      nextGoldLeg >= PACK_DROP_RATES_SPEC.goldenLegendaryPityPacks &&
+      !slotTiers.includes('GOLDEN_LEGENDARY')
+    ) {
+      injectPityTier('GOLDEN_LEGENDARY', new Set(['GOLDEN_LEGENDARY']));
     }
-    localStorage.setItem(KEYS.PITY, String(pity));
+    if (
+      nextGoldEpic >= PACK_DROP_RATES_SPEC.goldenEpicPityPacks &&
+      !slotTiers.includes('GOLDEN_EPIC')
+    ) {
+      injectPityTier('GOLDEN_EPIC', new Set(['GOLDEN_LEGENDARY', 'GOLDEN_EPIC']));
+    }
+    if (nextNormalLeg >= normalLegCap && !slotTiers.includes('NORMAL_LEGENDARY')) {
+      injectPityTier(
+        'NORMAL_LEGENDARY',
+        new Set(['GOLDEN_LEGENDARY', 'GOLDEN_EPIC', 'NORMAL_LEGENDARY']),
+      );
+    }
+    if (
+      nextNormalEpic >= PACK_DROP_RATES_SPEC.epicPityPacks &&
+      !slotTiers.includes('NORMAL_EPIC')
+    ) {
+      injectPityTier(
+        'NORMAL_EPIC',
+        new Set(['GOLDEN_LEGENDARY', 'GOLDEN_EPIC', 'NORMAL_LEGENDARY', 'NORMAL_EPIC']),
+      );
+    }
+    if (
+      nextGoldRare >= PACK_DROP_RATES_SPEC.goldenRarePityPacks &&
+      !slotTiers.includes('GOLDEN_RARE')
+    ) {
+      injectPityTier(
+        'GOLDEN_RARE',
+        new Set([
+          'GOLDEN_LEGENDARY',
+          'GOLDEN_EPIC',
+          'NORMAL_LEGENDARY',
+          'NORMAL_EPIC',
+          'GOLDEN_RARE',
+        ]),
+      );
+    }
+    if (
+      nextGoldCommon >= PACK_DROP_RATES_SPEC.goldenCommonPityPacks &&
+      !slotTiers.includes('GOLDEN_COMMON')
+    ) {
+      injectPityTier(
+        'GOLDEN_COMMON',
+        new Set([
+          'GOLDEN_LEGENDARY',
+          'GOLDEN_EPIC',
+          'NORMAL_LEGENDARY',
+          'NORMAL_EPIC',
+          'GOLDEN_RARE',
+          'GOLDEN_COMMON',
+        ]),
+      );
+    }
 
-    const results: OpenedPackCard[] = rarities.map((rar) => {
+    const hasRareOrBetter = slotTiers.some(
+      (t) => t !== 'NORMAL_COMMON' && t !== 'GOLDEN_COMMON',
+    );
+    if (!hasRareOrBetter) {
+      const ncIdx = slotTiers.indexOf('NORMAL_COMMON');
+      slotTiers[ncIdx >= 0 ? ncIdx : 0] = 'NORMAL_RARE';
+    }
+
+    pity.totalPacksOpened += 1;
+    if (slotTiers.includes('NORMAL_LEGENDARY') || slotTiers.includes('GOLDEN_LEGENDARY')) {
+      pity.firstTenLegendaryClaimed = true;
+    }
+    pity.packsSinceLegendary = slotTiers.includes('NORMAL_LEGENDARY') ? 0 : nextNormalLeg;
+    pity.packsSinceEpic = slotTiers.includes('NORMAL_EPIC') ? 0 : nextNormalEpic;
+    pity.packsSinceGoldenLegendary = slotTiers.includes('GOLDEN_LEGENDARY') ? 0 : nextGoldLeg;
+    pity.packsSinceGoldenEpic = slotTiers.includes('GOLDEN_EPIC') ? 0 : nextGoldEpic;
+    pity.packsSinceGoldenRare = slotTiers.includes('GOLDEN_RARE') ? 0 : nextGoldRare;
+    pity.packsSinceGoldenCommon = slotTiers.includes('GOLDEN_COMMON') ? 0 : nextGoldCommon;
+
+    const rarities: Exclude<CardRarity, 'FREE'>[] = slotTiers.map((t) => {
+      if (t === 'GOLDEN_LEGENDARY' || t === 'NORMAL_LEGENDARY') return 'LEGENDARY';
+      if (t === 'GOLDEN_EPIC' || t === 'NORMAL_EPIC') return 'EPIC';
+      if (t === 'GOLDEN_RARE' || t === 'NORMAL_RARE') return 'RARE';
+      return 'COMMON';
+    });
+    const goldenFlags: boolean[] = slotTiers.map((t) => t.startsWith('GOLDEN_'));
+
+    const inPackCounts: Record<string, number> = {};
+    const results: OpenedPackCard[] = rarities.map((rar, slotIdx) => {
       const pool = byRarity[rar].length > 0 ? byRarity[rar] : byRarity.COMMON;
-      const picked = pool[Math.floor(Math.random() * pool.length)];
+      const deckCopyCap = rar === 'LEGENDARY' ? 1 : 2;
+      const packLegalPool = pool.filter((c) => (inPackCounts[c.id] || 0) < deckCopyCap);
+      const baseCandidates = packLegalPool.length > 0 ? packLegalPool : pool;
+
+      const uncollectedPool = baseCandidates.filter((c) => {
+        const lifetimeCopies = Math.max(pity.everObtainedMaxCopies[c.id] || 0, col[c.id] || 0);
+        return lifetimeCopies < deckCopyCap;
+      });
+      const activePool = uncollectedPool.length > 0 ? uncollectedPool : baseCandidates;
+
+      const picked = activePool[Math.floor(Math.random() * activePool.length)];
+      inPackCounts[picked.id] = (inPackCounts[picked.id] || 0) + 1;
       const prevCount = col[picked.id] || 0;
-      col[picked.id] = prevCount + 1;
+      const nextCount = prevCount + 1;
+      col[picked.id] = nextCount;
+      pity.everObtainedMaxCopies[picked.id] = Math.max(
+        pity.everObtainedMaxCopies[picked.id] || 0,
+        nextCount,
+      );
       return {
         card: picked,
-        isGolden: Math.random() < 0.08,
+        isGolden: goldenFlags[slotIdx],
         isNew: prevCount === 0,
       };
     });
 
     this.saveCollection(col);
+    this.savePackPityState(pity);
     return results;
   }
 
@@ -408,6 +632,123 @@ class HearthstoneStorage {
       newStars: p.stars,
       streakBonus,
     };
+  }
+
+  /**
+   * /stone.html 전용 (stone_hs_* 네임스페이스) 세이브 데이터 백업 JSON 생성
+   */
+  exportStoneBackupData(): { keyCount: number; jsonString: string } {
+    const payload: Record<string, string> = {};
+    let count = 0;
+    try {
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i);
+        if (!key || !key.startsWith('stone_hs_')) continue;
+        const val = localStorage.getItem(key);
+        if (val !== null && val !== '') {
+          payload[key] = val;
+          count += 1;
+        }
+      }
+    } catch {
+      // ignore storage read error
+    }
+
+    const exportObj = {
+      app: 'Classic Hearthstone (/stone.html)',
+      namespace: 'stone_hs_*',
+      exportTimestamp: Date.now(),
+      exportIsoDate: new Date().toISOString(),
+      keyCount: count,
+      data: payload,
+    };
+
+    return {
+      keyCount: count,
+      jsonString: JSON.stringify(exportObj, null, 2),
+    };
+  }
+
+  downloadStoneBackupFile(): boolean {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return false;
+    const { jsonString } = this.exportStoneBackupData();
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const dateStr = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
+    const fileName = `stone_hs_backup_${dateStr}.json`;
+
+    const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    return true;
+  }
+
+  restoreStoneBackupJson(jsonText: string): {
+    success: boolean;
+    restoredCount: number;
+    message: string;
+  } {
+    try {
+      const parsed = JSON.parse(jsonText);
+      const dataObj = parsed?.data && typeof parsed.data === 'object' ? parsed.data : parsed;
+      if (!dataObj || typeof dataObj !== 'object') {
+        return {
+          success: false,
+          restoredCount: 0,
+          message: '유효한 백업 JSON 형식이 아닙니다.',
+        };
+      }
+
+      let count = 0;
+      for (const [key, val] of Object.entries(dataObj)) {
+        if (typeof key === 'string' && key.startsWith('stone_hs_') && typeof val === 'string') {
+          localStorage.setItem(key, val);
+          count += 1;
+        }
+      }
+
+      if (count === 0) {
+        return {
+          success: false,
+          restoredCount: 0,
+          message: '복원 가능한 하스스톤(stone_hs_*) 데이터가 없습니다.',
+        };
+      }
+
+      return {
+        success: true,
+        restoredCount: count,
+        message: `하스스톤 데이터 ${count}개 항목을 성공적으로 복원했습니다.`,
+      };
+    } catch {
+      return {
+        success: false,
+        restoredCount: 0,
+        message: '백업 코드 또는 JSON 파일 형식이 올바르지 않습니다.',
+      };
+    }
+  }
+
+  resetStoneDataOnly(): void {
+    try {
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('stone_hs_')) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k));
+    } catch {
+      // ignore storage error
+    }
+    this.ensureInitialized();
   }
 }
 

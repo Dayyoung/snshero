@@ -211,12 +211,17 @@ export const PackOpeningScreen: React.FC<{
         setAltarShake(true);
         scheduleTimer(() => setAltarShake(false), 320);
         if (!opts?.suppressVo) {
-          hsAudio.playInnkeeper('epic');
+          hsAudio.playInnkeeper(item.isGolden ? 'golden_epic' : 'epic');
         }
       } else if (item.card.rarity === 'RARE') {
         hsAudio.playSfx('pack_rare');
         if (!opts?.suppressVo) {
-          hsAudio.playInnkeeper('rare');
+          hsAudio.playInnkeeper(item.isGolden ? 'golden_rare' : 'rare');
+        }
+      } else if (item.isGolden) {
+        hsAudio.playSfx('pack_rare', 0.8);
+        if (!opts?.suppressVo) {
+          hsAudio.playInnkeeper('golden_common');
         }
       }
     },
@@ -235,11 +240,11 @@ export const PackOpeningScreen: React.FC<{
     }
     if (unrevealedIndices.length === 0) return;
 
-    // Pick the single highest-rarity unrevealed card to announce via Innkeeper VO cleanly
+    // Pick the single highest-rarity (with Golden tie-breaker) unrevealed card to announce cleanly
     let bestVoIdx = -1;
-    let bestScore = 1; // Only Rare (2), Epic (3), Legendary (4) have Innkeeper callouts
+    let bestScore = 1;
     for (const idx of unrevealedIndices) {
-      const score = RARITY_PRIORITY[cards[idx].card.rarity];
+      const score = RARITY_PRIORITY[cards[idx].card.rarity] * 2 + (cards[idx].isGolden ? 1 : 0);
       if (score > bestScore) {
         bestScore = score;
         bestVoIdx = idx;
