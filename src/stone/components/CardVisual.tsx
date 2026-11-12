@@ -629,14 +629,14 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = React.memo(({
         <img
           src="/stone-assets/ui/taunt_shield.webp"
           alt="도발"
-          className="pointer-events-none absolute -inset-1.5 z-0 h-[calc(100%+12px)] w-[calc(100%+12px)] object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.92)] sm:-inset-3 sm:h-[calc(100%+24px)] sm:w-[calc(100%+24px)]"
+          className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[72px] w-[58px] -translate-x-1/2 -translate-y-[47%] object-fill drop-shadow-[0_6px_12px_rgba(0,0,0,0.92)] sm:h-[138px] sm:w-[110px]"
         />
       )}
 
       {/* Ready-to-Attack / Valid Target Organic Aura */}
       {(canAttack || isValidTarget || isSelectedAttacker) && (
         <div
-          className={`pointer-events-none absolute -inset-0.5 z-0 rounded-[50%] transition-all sm:-inset-1 ${
+          className={`pointer-events-none absolute left-1/2 top-1/2 z-0 h-[62px] w-[47px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] transition-all sm:h-[114px] sm:w-[92px] ${
             isSelectedAttacker
               ? 'shadow-[0_0_0_3px_#fde047,0_0_18px_5px_rgba(250,204,21,0.95)] sm:shadow-[0_0_0_4px_#fde047,0_0_26px_8px_rgba(250,204,21,0.95)]'
               : isValidTarget
@@ -651,7 +651,7 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = React.memo(({
         <img
           src="/stone-assets/ui/legendary_dragon.webp"
           alt="전설"
-          className="pointer-events-none absolute -right-2 -top-3 z-30 h-9 w-13 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] sm:-right-4 sm:-top-5 sm:h-16 sm:w-24"
+          className="pointer-events-none absolute -right-2 -top-2.5 z-30 h-8 w-12 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] sm:-right-3 sm:-top-3.5 sm:h-14 sm:w-[86px]"
         />
       )}
 
@@ -723,7 +723,7 @@ export const BoardMinionToken: React.FC<BoardMinionTokenProps> = React.memo(({
         <img
           src="/stone-assets/ui/divine_shield.webp"
           alt="천상의 보호막"
-          className="pointer-events-none absolute -inset-1 z-20 h-[calc(100%+8px)] w-[calc(100%+8px)] rounded-[50%] object-cover opacity-85 mix-blend-screen drop-shadow-[0_0_14px_rgba(250,204,21,0.9)] sm:-inset-2 sm:h-[calc(100%+16px)] sm:w-[calc(100%+16px)]"
+          className="pointer-events-none absolute left-1/2 top-1/2 z-20 h-[64px] w-[50px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] object-cover opacity-85 mix-blend-screen drop-shadow-[0_0_14px_rgba(250,204,21,0.9)] sm:h-[118px] sm:w-[96px]"
         />
       )}
 

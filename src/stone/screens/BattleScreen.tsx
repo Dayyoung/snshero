@@ -1836,15 +1836,15 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
       <footer className="relative z-30 flex flex-col items-center pb-1">
         {/* Centered Player Hero + Bottom-Right Mana Crystal Tray */}
         <div className="relative flex w-full max-w-5xl flex-col items-center justify-center gap-1 px-2 sm:px-4">
-          <div className="relative flex items-center justify-center gap-1.5">
-            {/* Emote Menu Brass Trigger (Always visible & unclipped on mobile!) */}
+          <div className="relative flex items-center justify-center">
+            {/* Emote Menu Brass Trigger (Positioned outside flex flow so Hero stays dead-center!) */}
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setEmoteMenuOpen((v) => !v);
               }}
-              className="hs-brass-btn rounded-xl px-2 py-1 text-[10px] font-extrabold text-amber-100 sm:px-2.5 sm:text-[11px]"
+              className="hs-brass-btn absolute -left-14 top-1/2 -translate-y-1/2 rounded-xl px-2 py-1 text-[10px] font-extrabold text-amber-100 sm:-left-20 sm:px-2.5 sm:text-[11px]"
             >
               감정표현
             </button>
