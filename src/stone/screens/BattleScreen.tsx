@@ -346,140 +346,6 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     return () => clearInterval(iv);
   }, [matchState.phase, matchState.activeSide, matchState.turnNumber]);
 
-  // Step-by-Step AI Turn Execution Loop
-  useEffect(() => {
-    if (matchState.phase !== 'PLAYING' || matchState.activeSide !== 'OPPONENT') {
-      setAiHighlightText(null);
-      return;
-    }
-
-    const difficulty = mode === 'PRACTICE_NORMAL' || mode === 'TUTORIAL' ? 'NORMAL' : 'EXPERT';
-    const timer = window.setTimeout(() => {
-      const action: AiAction = computeNextAiAction(matchState, difficulty);
-      const sim = createEngine(matchState);
-
-      if (action.kind === 'PLAY_CARD') {
-        const def = cardDb.mustGetCard(action.cardId);
-        hsAudio.playSfx('card_place', 0.85);
-        setAiHighlightText(`${matchState.opponent.heroNameKo}: [${def.name}] 사용!`);
-        setMatchState(
-          sim.playCardFromHand('OPPONENT', action.handUid, {
-            targetId: action.targetId,
-            insertIndex: action.insertIndex,
-            chooseOptionIndex: action.chooseOptionIndex,
-          }),
-        );
-      } else if (action.kind === 'HERO_POWER') {
-        hsAudio.playSfx('hero_power', 0.85);
-        setAiHighlightText(
-          `${matchState.opponent.heroNameKo}: 영웅 능력 [${matchState.opponent.heroPowerNameKo}]!`,
-        );
-        setMatchState(sim.useHeroPower('OPPONENT', action.targetId));
-      } else if (action.kind === 'ATTACK') {
-        triggerPhysicalAttack('OPPONENT', action.attackerId, action.defenderId);
-      } else {
-        hsAudio.playSfx('end_turn', 0.85);
-        setAiHighlightText(null);
-        setMatchState(sim.endTurn());
-      }
-    }, 760);
-
-    return () => clearTimeout(timer);
-  }, [matchState, mode, triggerPhysicalAttack]);
-
-  // Step-by-Step Player Auto-Play Loop (when autoPlay === true)
-  useEffect(() => {
-    if (!autoPlay || vsIntroActive) return;
-    if (matchState.phase === 'MULLIGAN') {
-      const t = window.setTimeout(() => {
-        const sim = createEngine(matchState);
-        setMatchState(sim.confirmMulligan(new Set()));
-      }, 420);
-      return () => clearTimeout(t);
-    }
-    if (matchState.phase !== 'PLAYING' || matchState.activeSide !== 'PLAYER') return;
-    if (attackLockRef.current) return;
-
-    const timer = window.setTimeout(() => {
-      const simStateForPlayer = {
-        ...matchState,
-        activeSide: 'OPPONENT' as const,
-        player: matchState.opponent,
-        opponent: matchState.player,
-      };
-      const action: AiAction = computeNextAiAction(simStateForPlayer, 'EXPERT');
-      const sim = createEngine(matchState);
-
-      const mapTarget = (tid?: string) => {
-        if (!tid) return undefined;
-        if (tid === 'OPPONENT_HERO') return 'PLAYER_HERO';
-        if (tid === 'PLAYER_HERO') return 'OPPONENT_HERO';
-        return tid;
-      };
-
-      if (action.kind === 'PLAY_CARD') {
-        const def = cardDb.mustGetCard(action.cardId);
-        hsAudio.playSfx('card_place', 0.85);
-        setAiHighlightText(`자동플레이: [${def.name}] 사용!`);
-        setMatchState(
-          sim.playCardFromHand('PLAYER', action.handUid, {
-            targetId: mapTarget(action.targetId),
-            insertIndex: action.insertIndex,
-            chooseOptionIndex: action.chooseOptionIndex,
-          }),
-        );
-      } else if (action.kind === 'HERO_POWER') {
-        hsAudio.playSfx('hero_power', 0.85);
-        setAiHighlightText(`자동플레이: 영웅 능력 [${matchState.player.heroPowerNameKo}]!`);
-        setMatchState(sim.useHeroPower('PLAYER', mapTarget(action.targetId)));
-      } else if (action.kind === 'ATTACK') {
-        const mappedAtk =
-          action.attackerId === 'OPPONENT_HERO' ? 'PLAYER_HERO' : action.attackerId;
-        const mappedDef = mapTarget(action.defenderId) || 'OPPONENT_HERO';
-        triggerPhysicalAttack('PLAYER', mappedAtk, mappedDef);
-      } else {
-        hsAudio.playSfx('end_turn', 0.85);
-        setAiHighlightText(null);
-        setMatchState(sim.endTurn());
-      }
-    }, 640);
-
-    return () => clearTimeout(timer);
-  }, [autoPlay, vsIntroActive, matchState, triggerPhysicalAttack]);
-
-  // Pointer Move & Right-Click / Escape Cancel
-  useEffect(() => {
-    const onMove = (e: PointerEvent) => {
-      setPointerPos({ x: e.clientX, y: e.clientY });
-      if (friendlyRowRef.current) {
-        const children = Array.from(
-          friendlyRowRef.current.querySelectorAll('[data-hs-entity]'),
-        ) as HTMLElement[];
-        let idx = children.length;
-        for (let i = 0; i < children.length; i++) {
-          const rect = children[i].getBoundingClientRect();
-          if (e.clientX < rect.left + rect.width / 2) {
-            idx = i;
-            break;
-          }
-        }
-        setInsertPreviewIdx(idx);
-      }
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setSelection(null);
-        setEmoteMenuOpen(false);
-      }
-    };
-    window.addEventListener('pointermove', onMove, { passive: true });
-    window.addEventListener('keydown', onKey);
-    return () => {
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('keydown', onKey);
-    };
-  }, []);
-
   const triggerDamageImpact = useCallback(
     (rawDamage: number, opts?: { isFinisher?: boolean }) => {
       const dmg = Math.max(1, Math.round(rawDamage || 1));
@@ -677,6 +543,140 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     },
     [triggerDamageImpact],
   );
+
+  // Step-by-Step AI Turn Execution Loop
+  useEffect(() => {
+    if (matchState.phase !== 'PLAYING' || matchState.activeSide !== 'OPPONENT') {
+      setAiHighlightText(null);
+      return;
+    }
+
+    const difficulty = mode === 'PRACTICE_NORMAL' || mode === 'TUTORIAL' ? 'NORMAL' : 'EXPERT';
+    const timer = window.setTimeout(() => {
+      const action: AiAction = computeNextAiAction(matchState, difficulty);
+      const sim = createEngine(matchState);
+
+      if (action.kind === 'PLAY_CARD') {
+        const def = cardDb.mustGetCard(action.cardId);
+        hsAudio.playSfx('card_place', 0.85);
+        setAiHighlightText(`${matchState.opponent.heroNameKo}: [${def.name}] 사용!`);
+        setMatchState(
+          sim.playCardFromHand('OPPONENT', action.handUid, {
+            targetId: action.targetId,
+            insertIndex: action.insertIndex,
+            chooseOptionIndex: action.chooseOptionIndex,
+          }),
+        );
+      } else if (action.kind === 'HERO_POWER') {
+        hsAudio.playSfx('hero_power', 0.85);
+        setAiHighlightText(
+          `${matchState.opponent.heroNameKo}: 영웅 능력 [${matchState.opponent.heroPowerNameKo}]!`,
+        );
+        setMatchState(sim.useHeroPower('OPPONENT', action.targetId));
+      } else if (action.kind === 'ATTACK') {
+        triggerPhysicalAttack('OPPONENT', action.attackerId, action.defenderId);
+      } else {
+        hsAudio.playSfx('end_turn', 0.85);
+        setAiHighlightText(null);
+        setMatchState(sim.endTurn());
+      }
+    }, 760);
+
+    return () => clearTimeout(timer);
+  }, [matchState, mode, triggerPhysicalAttack]);
+
+  // Step-by-Step Player Auto-Play Loop (when autoPlay === true)
+  useEffect(() => {
+    if (!autoPlay || vsIntroActive) return;
+    if (matchState.phase === 'MULLIGAN') {
+      const t = window.setTimeout(() => {
+        const sim = createEngine(matchState);
+        setMatchState(sim.confirmMulligan(new Set()));
+      }, 420);
+      return () => clearTimeout(t);
+    }
+    if (matchState.phase !== 'PLAYING' || matchState.activeSide !== 'PLAYER') return;
+    if (attackLockRef.current) return;
+
+    const timer = window.setTimeout(() => {
+      const simStateForPlayer = {
+        ...matchState,
+        activeSide: 'OPPONENT' as const,
+        player: matchState.opponent,
+        opponent: matchState.player,
+      };
+      const action: AiAction = computeNextAiAction(simStateForPlayer, 'EXPERT');
+      const sim = createEngine(matchState);
+
+      const mapTarget = (tid?: string) => {
+        if (!tid) return undefined;
+        if (tid === 'OPPONENT_HERO') return 'PLAYER_HERO';
+        if (tid === 'PLAYER_HERO') return 'OPPONENT_HERO';
+        return tid;
+      };
+
+      if (action.kind === 'PLAY_CARD') {
+        const def = cardDb.mustGetCard(action.cardId);
+        hsAudio.playSfx('card_place', 0.85);
+        setAiHighlightText(`자동플레이: [${def.name}] 사용!`);
+        setMatchState(
+          sim.playCardFromHand('PLAYER', action.handUid, {
+            targetId: mapTarget(action.targetId),
+            insertIndex: action.insertIndex,
+            chooseOptionIndex: action.chooseOptionIndex,
+          }),
+        );
+      } else if (action.kind === 'HERO_POWER') {
+        hsAudio.playSfx('hero_power', 0.85);
+        setAiHighlightText(`자동플레이: 영웅 능력 [${matchState.player.heroPowerNameKo}]!`);
+        setMatchState(sim.useHeroPower('PLAYER', mapTarget(action.targetId)));
+      } else if (action.kind === 'ATTACK') {
+        const mappedAtk =
+          action.attackerId === 'OPPONENT_HERO' ? 'PLAYER_HERO' : action.attackerId;
+        const mappedDef = mapTarget(action.defenderId) || 'OPPONENT_HERO';
+        triggerPhysicalAttack('PLAYER', mappedAtk, mappedDef);
+      } else {
+        hsAudio.playSfx('end_turn', 0.85);
+        setAiHighlightText(null);
+        setMatchState(sim.endTurn());
+      }
+    }, 640);
+
+    return () => clearTimeout(timer);
+  }, [autoPlay, vsIntroActive, matchState, triggerPhysicalAttack]);
+
+  // Pointer Move & Right-Click / Escape Cancel
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      setPointerPos({ x: e.clientX, y: e.clientY });
+      if (friendlyRowRef.current) {
+        const children = Array.from(
+          friendlyRowRef.current.querySelectorAll('[data-hs-entity]'),
+        ) as HTMLElement[];
+        let idx = children.length;
+        for (let i = 0; i < children.length; i++) {
+          const rect = children[i].getBoundingClientRect();
+          if (e.clientX < rect.left + rect.width / 2) {
+            idx = i;
+            break;
+          }
+        }
+        setInsertPreviewIdx(idx);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelection(null);
+        setEmoteMenuOpen(false);
+      }
+    };
+    window.addEventListener('pointermove', onMove, { passive: true });
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('keydown', onKey);
+    };
+  }, []);
 
   const handleConcede = useCallback(() => {
     if (matchState.phase === 'GAME_OVER') return;
