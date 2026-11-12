@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-13 06:32 KST] [/update-stone 커스텀 스킬 생성 (game.html 최신 업데이트 -> stone.html 무료·독립 동기화)]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"/update-stone 스킬을 만들자. 해당 스킬을 쓰면 game.html 에 최신 업데이트들을 stone.html에 추가해서 동기화해줘. 단, stone.html은 원본게임 하스스톤 고유의 게임리소스와 기능을 유지해야해. 나중에 원본게임 stone 단독 업데이트도 할 수 있게. 그리고 카드 결제기능은 넣지말고 무료로 유지해줘. 블리자드에서 라이센스 위반으로 소송할 수 있어."`
+  - **2. 생성 및 반영 내역**:
+    - [`SKILL.md`](file:///Users/dayyoung/project/snshero/.agents/skills/update-stone/SKILL.md) 신설:
+      1. **유료 결제 기능 절대 금지(100% 무료 유지)**: `paymentGateway`, PayApp, PayPal, 현금 카드팩 구매 등 일체의 결제 코드 이식 금지 (블리자드 IP 라이선스 리스크 원천 차단).
+      2. **원본 하스스톤 리소스·기능 유지**: `public/stone-assets/**` 및 원작 영웅·카드·음성·세계관 보존, 눈히어로 독자 IP(`카단의 여정`, `3장=3배`, `hs-assets`) 혼입 금지.
+      3. **코드·데이터 완전 독립성 보장**: `src/stone/**` 내 `src/hearthstone/**` 직접 import 금지 및 `stone_hs_*` 로컬스토리지 네임스페이스 유지로 향후 `stone.html` 단독 업데이트 가능 구조 보장.
+    - [`AGENTS.md`](file:///Users/dayyoung/project/snshero/AGENTS.md) 등록된 커스텀 스킬 목록에 `/update-stone` 추가.
+  - **3. 검증 및 보고**:
+    - 로컬 Git 커밋 및 구글 폼 완료 보고서 제출 완료 (`git push` 미실행 원칙 준수).
+
 ## [2026-11-13 06:28 KST] [/game.html 다수 카드 표시 및 10+ 데미지 충돌 시 저사양 기기 화면 끊김/프레임 드랍 버그 전면 최적화 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
