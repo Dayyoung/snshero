@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-12 15:18 KST] [/game.html 화면 포커스 이탈(blur / visibilitychange) 시 에피소드 스토리 TTS 내레이션 100% 즉시 음소거 적용 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"지금 화면 포커스가 안맞았을때 소리는 다 뮤트되는데 에피소드 TTS만 재생되고 있어."`
+  - **2. 원인 분석 및 세부 구현 내역 ([`audio.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/audio.ts))**:
+    1. **원인 분석**:
+       - 기존 `suspendForFocusLoss()`에서 에피소드 TTS 오디오(`this.currentStoryAudio`)를 제어할 때 `document.hidden &&` 조건이 붙어 있어, 탭을 숨기지 않고 다른 창을 클릭해 브라우저 포커스만 잃었을 때(`window` `blur`, `document.hidden === false`) BGM·효과음·성우 대사는 모두 뮤트되지만 `currentStoryAudio`는 계속 소리가 재생되고 있었음.
+       - 또한 `playStoryNarration()` 시작 시점에 창 포커스 상태(`checkWindowActive()`)를 검사하지 않아, 포커스가 나간 상태에서 다음 컷이나 다음 에피소드 내레이션이 시작될 때 새 `Audio` 인스턴스가 전체 볼륨(`voVolume`)으로 재생되는 문제가 있었음.
+    2. **포커스 이탈 시 에피소드 TTS 즉시 100% 뮤트 및 포커스 복귀 동기화**:
+       - `checkWindowActive()` 헬퍼를 추가하여 `this.isWindowActive`뿐만 아니라 실시간 `document.hidden` 및 `document.hasFocus()` 상태를 동시 검증.
+       - `suspendForFocusLoss()`에서 `document.hidden` 여부와 무관하게 포커스 이탈(`blur`, `pagehide`, `visibilitychange`) 즉시 `this.currentStoryAudio.muted = true; this.currentStoryAudio.volume = 0;`으로 에피소드 TTS를 100% 음소거(및 탭 비표시 시 `pause()`) 처리하고 `cancelTts()`를 호출.
+       - `playStoryNarration()` 진입 시 `!this.checkWindowActive()`이면 소리를 재생하지 않고 무음 폴백 타이머(`onFallbackTimer`)로 전환하며, 재생 중 45ms `emitProgress` 루프에서도 실시간으로 `checkWindowActive()`를 확인해 포커스 이탈 즉시 `audio.muted = true; audio.volume = 0;`을 강제 적용.
+       - `resumeForFocusGain()`에서 창 포커스(`document.hasFocus() && !document.hidden`) 복귀 시에만 `this.currentStoryAudio.muted`와 `volume`을 원래 설정값으로 복원.
+  - **3. 검증 및 빌드**:
+    - `npm run build` 프로덕션 빌드 에러 0건 통과, 구글 폼 완료 보고서 제출 및 로컬 Git 커밋 완료 (`git push` 미실행 원칙 준수).
+
 ## [2026-11-12 14:20 KST] [/#setting 메인 게임(hero_*)과 /game.html 엘윈마을 카드배틀(hero_hs_*) 로컬스토리지 완전 격리 및 독립 백업·복원·초기화 구현 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
