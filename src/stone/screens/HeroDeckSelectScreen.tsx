@@ -499,19 +499,19 @@ export const HeroDeckSelectScreen: React.FC<HeroDeckSelectScreenProps> = ({
 
             {/* Parchment Slot Machine Window */}
             <div className="relative my-3 flex h-36 w-full flex-col items-center justify-center overflow-hidden rounded-2xl border-[4px] border-[#8b6532] bg-gradient-to-b from-[#d8c398] via-[#f7ecd2] to-[#d5be90] px-4 shadow-[inset_0_8px_18px_rgba(40,22,8,0.55)]">
-              <div className="text-xs font-bold text-stone-500 opacity-65">
+              <div className="text-xs font-extrabold text-[#4a2e16] opacity-85">
                 {spinnerTitles[(wheelIndex + spinnerTitles.length - 1) % spinnerTitles.length]}
               </div>
               <div
-                className={`hs-title my-2 w-full rounded-xl border-y-2 border-amber-800/40 px-4 py-2 text-xl font-black tracking-tight transition-all ${
+                className={`my-2 w-full rounded-xl border-y-2 px-4 py-2 text-xl font-black tracking-tight shadow-md transition-all ${
                   wheelLocked
-                    ? 'scale-105 bg-amber-300/70 text-[#2b180a] shadow'
-                    : 'text-[#241509]'
+                    ? 'scale-105 border-yellow-300 bg-[#241207] text-[#fde68a] shadow-[0_0_16px_rgba(250,204,21,0.45)]'
+                    : 'border-amber-600/70 bg-[#2d180a] text-[#fff7dc]'
                 }`}
               >
                 {spinnerTitles[wheelIndex]}
               </div>
-              <div className="text-xs font-bold text-stone-500 opacity-65">
+              <div className="text-xs font-extrabold text-[#4a2e16] opacity-85">
                 {spinnerTitles[(wheelIndex + 1) % spinnerTitles.length]}
               </div>
             </div>
