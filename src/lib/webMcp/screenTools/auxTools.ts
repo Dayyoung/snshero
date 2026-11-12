@@ -109,7 +109,7 @@ export function createAuxWebMcpTools(deps: AuxToolDependencies): WebMcpToolDefin
         const backup: Record<string, string> = {};
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
-          if (key && key.startsWith('hero_')) {
+          if (key && key.startsWith('hero_') && !key.startsWith('hero_hs_')) {
             backup[key] = localStorage.getItem(key) || '';
           }
         }

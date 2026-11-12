@@ -2923,7 +2923,13 @@ function AppContent() {
             ]);
             const removableKeys = Array.from({ length: localStorage.length }, (_, index) => localStorage.key(index))
               .filter((key): key is string => Boolean(key))
-              .filter((key) => key.startsWith('hero_') && !protectedKeys.has(key));
+              .filter(
+                (key) =>
+                  key.startsWith('hero_') &&
+                  !key.startsWith('hero_hs_') &&
+                  !key.startsWith('stone_hs_') &&
+                  !protectedKeys.has(key),
+              );
 
             appendBotMessage({
               userId: 'bot-admin-cache-confirm',
@@ -5424,7 +5430,14 @@ function AppContent() {
     if (typeof window !== 'undefined') {
       const savedLang = localStorage.getItem('hero_language') || language;
       const savedTheme = localStorage.getItem('hero_theme') || theme;
-      localStorage.clear();
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && !k.startsWith('hero_hs_') && !k.startsWith('stone_hs_')) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k));
       try {
         sessionStorage.clear();
       } catch {}

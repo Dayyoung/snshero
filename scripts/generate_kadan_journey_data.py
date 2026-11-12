@@ -1666,29 +1666,29 @@ export function getJourneyDifficultySpec(
     // 초반 입문 구간 (1~6화): 15HP(×0.62) -> 21HP(×0.77), 기본 덱 자동플레이로 4~6화 막힘 없는 쾌속 돌파 보장
     baseHp = Math.round(15 + (ep - 1) * 1.2);
     baseScale = 0.62 + (ep - 1) * 0.03;
-  }} else if (ep <= 12) {{
-    // 제1막 후반~제2막 초입 (7~12화): 23HP(×0.84) -> 34HP(×1.19), 초기 3팩·5화 보상팩 개봉 유도 구간
-    baseHp = Math.round(21 + (ep - 6) * 2.15);
-    baseScale = 0.77 + (ep - 6) * 0.07;
-  }} else if (ep <= 26) {{
-    // 중반 성장 구간 (13~26화): 37HP(×1.27) -> 70HP(×2.32), 다수 카드 ×3배 각성 필수 구간
-    baseHp = Math.round(34 + (ep - 12) * 2.55);
-    baseScale = 1.19 + (ep - 12) * 0.081;
+  }} else if (ep <= 15) {{
+    // 제1~2막 성장 구간 (7~15화): 22HP(×0.81) -> 34HP(×1.12), 초기 지급 팩·골드팩 개봉 시 15화 보스까지 자연스럽게 돌파
+    baseHp = Math.round(21 + (ep - 6) * 1.45);
+    baseScale = 0.77 + (ep - 6) * 0.039;
+  }} else if (ep <= 28) {{
+    // 중반 성장 구간 (16~28화): 36HP(×1.17) -> 58HP(×1.75), 패배 시 골드 카드팩 개봉을 통한 ×3배 각성 누적 구간
+    baseHp = Math.round(34 + (ep - 15) * 1.85);
+    baseScale = 1.12 + (ep - 15) * 0.048;
   }} else {{
-    // 후반~최종 결전 구간 (27~40화): 74HP(×2.41) -> 118HP(×3.45)
-    baseHp = Math.round(70 + (ep - 26) * 3.45);
-    baseScale = 2.32 + (ep - 26) * 0.081;
+    // 후반~최종 결전 구간 (29~40화): 60HP(×1.81) -> 88HP(×2.48)
+    baseHp = Math.round(58 + (ep - 28) * 2.5);
+    baseScale = 1.75 + (ep - 28) * 0.061;
   }}
 
   if (ep % 5 === 0) {{
-    const hpBump = ep <= 5 ? 1.05 : 1.09;
-    const scaleBump = ep <= 5 ? 1.02 : 1.05;
+    const hpBump = ep <= 15 ? 1.05 : 1.08;
+    const scaleBump = ep <= 15 ? 1.02 : 1.04;
     baseHp = Math.round(baseHp * hpBump);
     baseScale = Number((baseScale * scaleBump).toFixed(2));
   }}
 
   const reincHpFactor = 1 + reinc * 0.55;
-  const reincScaleAdd = reinc * 1.25;
+  const reincScaleAdd = reinc * 1.15;
 
   const enemyHeroHealth = Math.round(baseHp * reincHpFactor);
   const enemyStatScale = Number((baseScale + reincScaleAdd).toFixed(2));
@@ -1702,7 +1702,7 @@ export function getJourneyDifficultySpec(
     enemyHeroHealth,
     enemyStatScale,
     recommendedMultiplier,
-    aiDifficulty: ep >= 13 || reinc > 0 ? 'EXPERT' : 'NORMAL',
+    aiDifficulty: ep >= 19 || reinc > 0 ? 'EXPERT' : 'NORMAL',
     boardTheme,
     expectedWinGold,
     isBossMilestone: ep % 5 === 0,
@@ -1728,7 +1728,7 @@ const JOURNEY_SITUATIONAL_SPELLS = new Set([
  * - 보유한 모든 카드(9종족 + 중립)가 골고루 등장하도록 매 전투 셔플 편성
  * - 무기/특정 종족 토큰 없이는 발동 불가한 함정 주문은 자동 제외하고 전투 하수인·무기 위주로 구성
  * - 초반 패 말림 방지를 위해 저코스트(1~3코스트 17장) · 중코스트(4~5코스트 9장) · 고코스트(6+코스트 4장) 황금 템포 비율 유지
- * - 3장 이상 보유해 ×3배 각성된 카드는 우선 슬롯에 반영(보유 각성 카드가 적을 때는 2장까지 편성)하여 업그레이드 체감을 즉시 제공
+ * - 3장 이상 보유해 ×3배 각성된 카드는 최우선 슬롯에 반영(고배율 순 정렬 및 2장 편성)하여 카드팩 개봉 후 즉시 전력 상승 체감을 제공
  */
 export function buildJourneyPlayerDeckAndMultipliers(col: CollectionMap): {{
   deckCards: string[];
@@ -1775,7 +1775,7 @@ export function buildJourneyPlayerDeckAndMultipliers(col: CollectionMap): {{
   for (const c of activePool) {{
     if ((playerCardMultipliers[c.id] || 1) > 1) {{
       boostedPool.push(c.id);
-      if (boostedCardCount <= 12 && c.rarity !== 'LEGENDARY') {{
+      if (boostedCardCount <= 22 && c.rarity !== 'LEGENDARY') {{
         boostedPool.push(c.id);
       }}
     }} else if (hasCombatStatsForJourney(c)) {{
@@ -1785,11 +1785,14 @@ export function buildJourneyPlayerDeckAndMultipliers(col: CollectionMap): {{
     }}
   }}
 
-  const shuffledBoosted = shuffleIds(boostedPool);
+  // 각성 배율이 높은 카드를 우선 배치하되 동일 배율 내에서는 셔플하여 매 판 신선한 손패 유지
+  const shuffledBoosted = shuffleIds(boostedPool).sort(
+    (a, b) => (playerCardMultipliers[b] || 1) - (playerCardMultipliers[a] || 1),
+  );
   // 하수인·무기 비중을 80%+ 유지하면서 전 종족 주문도 적정량 혼합
   const shuffledBase = [
     ...shuffleIds(combatBasePool),
-    ...shuffleIds(spellBasePool).slice(0, 6),
+    ...shuffleIds(spellBasePool).slice(0, 5),
   ];
   const mixedBase = shuffleIds(shuffledBase);
 
@@ -1799,13 +1802,10 @@ export function buildJourneyPlayerDeckAndMultipliers(col: CollectionMap): {{
   ): string[] => {{
     const bMatch = shuffledBoosted.filter((id) => pred(cardDb.getCard(id)?.cost ?? 3));
     const nMatch = mixedBase.filter((id) => pred(cardDb.getCard(id)?.cost ?? 3));
-    const maxBoostedTake = Math.min(bMatch.length, Math.ceil(quota * 0.7));
+    const maxBoostedTake = Math.min(bMatch.length, quota);
     const chosen = bMatch.slice(0, maxBoostedTake);
     for (let i = 0; i < nMatch.length && chosen.length < quota; i += 1) {{
       chosen.push(nMatch[i]);
-    }}
-    for (let i = maxBoostedTake; i < bMatch.length && chosen.length < quota; i += 1) {{
-      chosen.push(bMatch[i]);
     }}
     return chosen;
   }};

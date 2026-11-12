@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { isAdRemoved } from '../../landing/services/adsenseManager';
 import { AudioSettings, hsAudio } from '../audio';
 import { useModalDismiss } from '../useModalDismiss';
 import {
@@ -14,6 +13,7 @@ import {
   GAME_SHOP_PACKAGES,
   GamePaymentReturnResult,
   GameShopPackage,
+  isHsGameAdRemoved,
   openGameCheckoutPopup,
   resolveCryptoDepositDetails,
 } from '../paymentGateway';
@@ -400,7 +400,7 @@ export const TavernShopModal: React.FC<{
   });
 
   const [profile, setProfile] = useState<PlayerProfile>(() => hsStorage.getProfile());
-  const [vipAdRemoved, setVipAdRemoved] = useState<boolean>(() => isAdRemoved());
+  const [vipAdRemoved, setVipAdRemoved] = useState<boolean>(() => isHsGameAdRemoved());
   const [step, setStep] = useState<ShopCheckoutStep>('quantity');
   const [selectedPkg, setSelectedPkg] = useState<GameShopPackage>(GAME_SHOP_PACKAGES[0]);
   const [countryCode, setCountryCode] = useState<string>('ko');
@@ -418,7 +418,7 @@ export const TavernShopModal: React.FC<{
   useEffect(() => {
     const sync = () => {
       setProfile(hsStorage.getProfile());
-      setVipAdRemoved(isAdRemoved());
+      setVipAdRemoved(isHsGameAdRemoved());
     };
     const onMsg = (ev: MessageEvent) => {
       if (ev.data?.type === 'SNSHERO_GAME_PAYMENT_COMPLETE') {
@@ -1331,6 +1331,8 @@ export const GameOptionsModal: React.FC<{
 
   const [settings, setSettings] = useState<AudioSettings>(() => hsAudio.getSettings());
   const [, setPwaTick] = useState(0);
+  const [dataNotice, setDataNotice] = useState<string | null>(null);
+  const [confirmReset, setConfirmReset] = useState<boolean>(false);
   const vibSupport = useMemo(() => hsAudio.getVibrationSupportInfo(), []);
 
   useEffect(() => {
@@ -1347,6 +1349,26 @@ export const GameOptionsModal: React.FC<{
     setSettings(hsAudio.getSettings());
   };
 
+  const handleCopyBackup = async () => {
+    hsAudio.playSfx('ui_click', 0.8);
+    const { jsonString, keyCount } = hsStorage.exportGameBackupData();
+    try {
+      await navigator.clipboard.writeText(jsonString);
+      setDataNotice(`✓ 눈히어로 카드배틀 백업 코드(${keyCount}개 항목)가 복사되었습니다.`);
+    } catch {
+      hsStorage.downloadGameBackupFile();
+      setDataNotice('✓ 백업 JSON 파일이 다운로드되었습니다.');
+    }
+  };
+
+  const handlePasteRestore = () => {
+    hsAudio.playSfx('ui_click', 0.8);
+    const raw = window.prompt('복원할 눈히어로 카드배틀(/game.html) 백업 JSON 코드를 붙여넣어 주세요:');
+    if (!raw || !raw.trim()) return;
+    const res = hsStorage.restoreGameBackupJson(raw.trim());
+    setDataNotice(res.message);
+  };
+
   return (
     <div
       onClick={onClose}
@@ -1354,7 +1376,7 @@ export const GameOptionsModal: React.FC<{
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="hs-wood-panel w-full max-w-md rounded-3xl p-6 text-amber-100"
+        className="hs-wood-panel max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-3xl p-5 sm:p-6 text-amber-100"
       >
         <h2 className="hs-title mb-4 text-center text-2xl font-extrabold text-amber-100">
           환경 설정
@@ -1547,6 +1569,121 @@ export const GameOptionsModal: React.FC<{
               onChange={(e) => update({ voVolume: Number(e.target.value) / 100 })}
               className="mt-1 w-full accent-amber-400"
             />
+          </div>
+
+          {/* /game.html 전용 (hero_hs_*) 독립 세이브 백업 · 복원 · 초기화 */}
+          <div className="space-y-2 border-t border-amber-500/25 pt-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold text-yellow-300">
+                데이터 백업 · 복원 (카드배틀 전용)
+              </span>
+              <span className="rounded bg-amber-950/80 px-2 py-0.5 text-[10px] font-bold text-amber-200/80">
+                hero_hs_* 독립 저장소
+              </span>
+            </div>
+
+            {dataNotice && (
+              <div
+                data-testid="hs-data-notice"
+                className="rounded-lg border border-emerald-400/50 bg-emerald-950/80 px-2.5 py-1.5 text-[11px] font-bold text-emerald-200"
+              >
+                {dataNotice}
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-1.5">
+              <button
+                type="button"
+                data-testid="hs-backup-download-btn"
+                onClick={() => {
+                  hsAudio.playSfx('ui_click', 0.8);
+                  hsStorage.downloadGameBackupFile();
+                  setDataNotice('✓ 눈히어로 카드배틀 백업 JSON 파일이 저장되었습니다.');
+                }}
+                className="hs-brass-btn rounded-lg py-2 text-[11px] font-extrabold text-amber-100"
+              >
+                💾 백업 파일 저장
+              </button>
+              <button
+                type="button"
+                data-testid="hs-backup-copy-btn"
+                onClick={handleCopyBackup}
+                className="hs-brass-btn rounded-lg py-2 text-[11px] font-extrabold text-amber-100"
+              >
+                📋 백업 코드 복사
+              </button>
+              <label
+                data-testid="hs-restore-file-label"
+                className="hs-brass-btn flex cursor-pointer items-center justify-center rounded-lg py-2 text-center text-[11px] font-extrabold text-amber-100"
+              >
+                <span>📂 파일로 복원</span>
+                <input
+                  type="file"
+                  accept=".json"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                      const content = String(ev.target?.result || '');
+                      const res = hsStorage.restoreGameBackupJson(content);
+                      setDataNotice(res.message);
+                    };
+                    reader.readAsText(file);
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+              <button
+                type="button"
+                data-testid="hs-restore-paste-btn"
+                onClick={handlePasteRestore}
+                className="hs-brass-btn rounded-lg py-2 text-[11px] font-extrabold text-amber-100"
+              >
+                📥 코드 붙여넣기
+              </button>
+            </div>
+
+            {!confirmReset ? (
+              <button
+                type="button"
+                data-testid="hs-reset-data-btn"
+                onClick={() => {
+                  hsAudio.playSfx('ui_click', 0.8);
+                  setConfirmReset(true);
+                }}
+                className="mt-1 w-full rounded-lg border border-red-400/50 bg-red-950/60 py-1.5 text-[11px] font-extrabold text-red-200 hover:bg-red-900/70"
+              >
+                🗑 카드배틀 데이터 초기화 (/game.html 전용)
+              </button>
+            ) : (
+              <div className="mt-1 flex items-center gap-1.5 rounded-lg border border-red-400/70 bg-red-950/90 p-2">
+                <span className="flex-1 text-[11px] font-extrabold text-red-100">
+                  카드배틀(hero_hs_*) 데이터만 초기화할까요?
+                </span>
+                <button
+                  type="button"
+                  data-testid="hs-confirm-reset-btn"
+                  onClick={() => {
+                    hsAudio.playSfx('ui_click', 0.85);
+                    hsStorage.resetGameDataOnly();
+                    setConfirmReset(false);
+                    setDataNotice('✓ 카드배틀(hero_hs_*) 데이터가 초기 상태로 리셋되었습니다.');
+                  }}
+                  className="rounded bg-red-600 px-2.5 py-1 text-[11px] font-extrabold text-white"
+                >
+                  초기화
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmReset(false)}
+                  className="rounded bg-stone-700 px-2.5 py-1 text-[11px] font-extrabold text-stone-200"
+                >
+                  취소
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

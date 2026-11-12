@@ -6485,23 +6485,23 @@ export function getJourneyDifficultySpec(
     // 초반 입문 구간 (1~6화): 15HP(×0.62) -> 21HP(×0.77), 기본 덱 자동플레이로 4~6화 막힘 없는 쾌속 돌파 보장
     baseHp = Math.round(15 + (ep - 1) * 1.2);
     baseScale = 0.62 + (ep - 1) * 0.03;
-  } else if (ep <= 12) {
-    // 제1막 후반~제2막 초입 (7~12화): 23HP(×0.84) -> 34HP(×1.19), 초기 3팩·5화 보상팩 개봉 유도 구간
-    baseHp = Math.round(21 + (ep - 6) * 2.15);
-    baseScale = 0.77 + (ep - 6) * 0.07;
-  } else if (ep <= 26) {
-    // 중반 성장 구간 (13~26화): 37HP(×1.27) -> 70HP(×2.32), 다수 카드 ×3배 각성 필수 구간
-    baseHp = Math.round(34 + (ep - 12) * 2.55);
-    baseScale = 1.19 + (ep - 12) * 0.081;
+  } else if (ep <= 15) {
+    // 제1막 후반~제2막 중반 (7~15화): 22HP(×0.81) -> 34HP(×1.12), 패배 시 골드 카드팩 1개 구매·개봉으로 ×3배 각성 즉시 돌파 구간
+    baseHp = Math.round(21 + (ep - 6) * 1.45);
+    baseScale = 0.77 + (ep - 6) * 0.039;
+  } else if (ep <= 28) {
+    // 중후반 성장 구간 (16~28화): 36HP(×1.17) -> 58HP(×1.75), 누적 카드팩 개봉을 통한 다수 카드 ×3배~×4배 각성 구간
+    baseHp = Math.round(34 + (ep - 15) * 1.85);
+    baseScale = 1.12 + (ep - 15) * 0.048;
   } else {
-    // 후반~최종 결전 구간 (27~40화): 74HP(×2.41) -> 118HP(×3.45)
-    baseHp = Math.round(70 + (ep - 26) * 3.45);
-    baseScale = 2.32 + (ep - 26) * 0.081;
+    // 최종 결전 구간 (29~40화): 60HP(×1.81) -> 88HP(×2.48)
+    baseHp = Math.round(58 + (ep - 28) * 2.5);
+    baseScale = 1.75 + (ep - 28) * 0.061;
   }
 
   if (ep % 5 === 0) {
-    const hpBump = ep <= 5 ? 1.05 : 1.09;
-    const scaleBump = ep <= 5 ? 1.02 : 1.05;
+    const hpBump = ep <= 5 ? 1.04 : 1.06;
+    const scaleBump = ep <= 5 ? 1.02 : 1.03;
     baseHp = Math.round(baseHp * hpBump);
     baseScale = Number((baseScale * scaleBump).toFixed(2));
   }
@@ -6521,7 +6521,7 @@ export function getJourneyDifficultySpec(
     enemyHeroHealth,
     enemyStatScale,
     recommendedMultiplier,
-    aiDifficulty: ep >= 13 || reinc > 0 ? 'EXPERT' : 'NORMAL',
+    aiDifficulty: ep >= 19 || reinc > 0 ? 'EXPERT' : 'NORMAL',
     boardTheme,
     expectedWinGold,
     isBossMilestone: ep % 5 === 0,
@@ -6591,20 +6591,27 @@ export function buildJourneyPlayerDeckAndMultipliers(col: CollectionMap): {
   const boostedPool: string[] = [];
   const combatBasePool: string[] = [];
   const spellBasePool: string[] = [];
-  for (const c of activePool) {
-    if ((playerCardMultipliers[c.id] || 1) > 1) {
+  const boostedCardsSorted = [...activePool]
+    .filter((c) => (playerCardMultipliers[c.id] || 1) > 1)
+    .sort((a, b) => (playerCardMultipliers[b.id] || 1) - (playerCardMultipliers[a.id] || 1));
+  for (const c of boostedCardsSorted) {
+    boostedPool.push(c.id);
+    if (boostedCardCount <= 22 && c.rarity !== 'LEGENDARY') {
       boostedPool.push(c.id);
-      if (boostedCardCount <= 12 && c.rarity !== 'LEGENDARY') {
-        boostedPool.push(c.id);
-      }
-    } else if (hasCombatStatsForJourney(c)) {
+    }
+  }
+  for (const c of activePool) {
+    if ((playerCardMultipliers[c.id] || 1) > 1) continue;
+    if (hasCombatStatsForJourney(c)) {
       combatBasePool.push(c.id);
     } else {
       spellBasePool.push(c.id);
     }
   }
 
-  const shuffledBoosted = shuffleIds(boostedPool);
+  const shuffledBoosted = shuffleIds(boostedPool).sort(
+    (a, b) => (playerCardMultipliers[b] || 1) - (playerCardMultipliers[a] || 1),
+  );
   // 하수인·무기 비중을 80%+ 유지하면서 전 종족 주문도 적정량 혼합
   const shuffledBase = [
     ...shuffleIds(combatBasePool),
@@ -6618,13 +6625,10 @@ export function buildJourneyPlayerDeckAndMultipliers(col: CollectionMap): {
   ): string[] => {
     const bMatch = shuffledBoosted.filter((id) => pred(cardDb.getCard(id)?.cost ?? 3));
     const nMatch = mixedBase.filter((id) => pred(cardDb.getCard(id)?.cost ?? 3));
-    const maxBoostedTake = Math.min(bMatch.length, Math.ceil(quota * 0.7));
+    const maxBoostedTake = Math.min(bMatch.length, quota);
     const chosen = bMatch.slice(0, maxBoostedTake);
     for (let i = 0; i < nMatch.length && chosen.length < quota; i += 1) {
       chosen.push(nMatch[i]);
-    }
-    for (let i = maxBoostedTake; i < bMatch.length && chosen.length < quota; i += 1) {
-      chosen.push(bMatch[i]);
     }
     return chosen;
   };

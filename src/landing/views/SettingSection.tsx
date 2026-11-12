@@ -70,6 +70,8 @@ export function exportBackupData(): { keyCount: number; jsonString: string } {
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     if (!key) continue;
+    // /game.html 전용 키(hero_hs_*) 및 /stone.html 전용 키(stone_hs_*)는 별개 게임이므로 제외
+    if (key.startsWith('hero_hs_') || key.startsWith('stone_hs_')) continue;
     if (key.startsWith('hero_') || key === 'firebase_db_mode') {
       if (EXCLUDED_STORAGE_KEYS.has(key)) continue;
       const val = localStorage.getItem(key);
@@ -138,7 +140,13 @@ export function restoreBackupJson(jsonText: string): { success: boolean; restore
 
     let count = 0;
     for (const [key, val] of Object.entries(dataObj)) {
-      if (typeof key === 'string' && key.startsWith('hero_') && typeof val === 'string') {
+      if (
+        typeof key === 'string' &&
+        key.startsWith('hero_') &&
+        !key.startsWith('hero_hs_') &&
+        !key.startsWith('stone_hs_') &&
+        typeof val === 'string'
+      ) {
         localStorage.setItem(key, val);
         count++;
       }
@@ -360,7 +368,15 @@ export function handleSettingAction(action: string, target?: HTMLElement): void 
     );
     if (confirmed) {
       const preserveLang = localStorage.getItem('hero_language') || 'ko';
-      localStorage.clear();
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        // /game.html (hero_hs_*) 및 /stone.html (stone_hs_*) 데이터는 별개 게임이므로 절대 삭제하지 않음
+        if (k && !k.startsWith('hero_hs_') && !k.startsWith('stone_hs_')) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k));
       try {
         sessionStorage.clear();
       } catch {}

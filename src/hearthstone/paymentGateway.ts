@@ -132,6 +132,19 @@ export const CHECKOUT_COUNTRIES: CheckoutCountryOption[] = [
 ];
 
 export const POPUP_PAYMENT_EVENT_KEY = 'hero_hs_last_popup_payment';
+export const HS_AD_REMOVED_KEY = 'hero_hs_ad_removed';
+
+export function isHsGameAdRemoved(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return (
+      localStorage.getItem(HS_AD_REMOVED_KEY) === 'true' ||
+      localStorage.getItem('hero_ad_removed') === 'true'
+    );
+  } catch {
+    return false;
+  }
+}
 
 const PAYAPP_SCRIPT_ID = 'payapp-lite-script';
 const PAYAPP_SCRIPT_URL = 'https://lite.payapp.kr/public/api/v2/payapp-lite.js';
@@ -325,6 +338,7 @@ export function checkAndProcessGamePaymentReturn(): GamePaymentReturnResult {
       label: '눈히어로 카드 5팩 묶음 ($4.00)',
     };
   } else if (successVal === 'ad_removal') {
+    localStorage.setItem(HS_AD_REMOVED_KEY, 'true');
     localStorage.setItem('hero_ad_removed', 'true');
     window.dispatchEvent(new Event('snshero_ad_removed_updated'));
     result = {

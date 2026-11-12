@@ -84,7 +84,12 @@ export const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({ mode, on
  let keyCount = 0;
  for (let i = 0; i < localStorage.length; i++) {
  const key = localStorage.key(i);
- if (key && (key.startsWith('hero_') || key === 'firebase_db_mode')) {
+ if (
+ key &&
+ !key.startsWith('hero_hs_') &&
+ !key.startsWith('stone_hs_') &&
+ (key.startsWith('hero_') || key === 'firebase_db_mode')
+ ) {
  // 대용량 임시 로그 및 캐시 제외 필터링
  if (EXCLUDED_STORAGE_KEYS.has(key)) {
  continue;
@@ -175,7 +180,12 @@ export const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({ mode, on
  let appliedCount = 0;
 
  Object.keys(dataObj).forEach((key) => {
- if (dataObj[key] !== null && typeof dataObj[key] === 'string') {
+ if (
+ !key.startsWith('hero_hs_') &&
+ !key.startsWith('stone_hs_') &&
+ dataObj[key] !== null &&
+ typeof dataObj[key] === 'string'
+ ) {
  localStorage.setItem(key, dataObj[key]);
  appliedCount++;
  }

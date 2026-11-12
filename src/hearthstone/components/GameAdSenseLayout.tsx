@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   initAdSenseContainmentObserver,
-  isAdRemoved,
   protectLinksFromVignette,
   pushAdSenseTags,
   syncAdSenseRatioLayout,
 } from '../../landing/services/adsenseManager';
+import { isHsGameAdRemoved } from '../paymentGateway';
 
 export interface GameAdSenseLayoutProps {
   screenKey: string;
@@ -90,7 +90,7 @@ export const GameAdSenseLayout: React.FC<GameAdSenseLayoutProps> = ({
   screenKey,
   children,
 }) => {
-  const [vipAdRemoved, setVipAdRemoved] = useState<boolean>(() => isAdRemoved());
+  const [vipAdRemoved, setVipAdRemoved] = useState<boolean>(() => isHsGameAdRemoved());
   const mobileTopRef = useRef<HTMLDivElement | null>(null);
   const leftGutterRef = useRef<HTMLElement | null>(null);
   const rightGutterRef = useRef<HTMLElement | null>(null);
@@ -130,7 +130,7 @@ export const GameAdSenseLayout: React.FC<GameAdSenseLayoutProps> = ({
     measureViewport();
 
     const handleAdRemovalChange = () => {
-      setVipAdRemoved(isAdRemoved());
+      setVipAdRemoved(isHsGameAdRemoved());
       syncAdSenseRatioLayout('game');
       window.requestAnimationFrame(measureViewport);
     };

@@ -10,8 +10,9 @@
 - **초기 보급 및 첫 방문 동선**:
   - **신규 사용자 초기 카드 팩**: **`3팩`** (`defaultProfile().packs = 3`)
   - **첫 방문 강제 온보딩 가이드**: 첫 홈 허브 진입 시(`!profile.journeyGuideDone`) **`스토리모드`** 버튼 위에 손가락 가이드(`👈 클릭!`)가 표시되며, 다른 모든 상단/중앙/하단 버튼은 비활성화(`disabled`)되어 플레이어가 자연스럽게 제1화 서사와 자동전투로 입문하도록 설계한다.
-- **전체화면 독립형 PWA 구성 (`game.html` + `public/game-manifest.json` + `pwaFullscreen.ts`)**:
+- **전체화면 독립형 PWA 구성 (`game.html` + `public/game-manifest.json` + `pwaFullscreen.ts`) 및 `hero_hs_*` 로컬스토리지 100% 독립 격리 (`storage.ts` + `Modals.tsx`)**:
   - `/game.html`은 전용 Web App Manifest(`/game-manifest.json`, `start_url: "/game.html"`, `display: "fullscreen"`, `display_override: ["fullscreen", "standalone"]`)와 전용 아이콘(`/hs-assets/pwa-icon-192.png`, `512.png`), 서비스 워커(`/sw.js`), 브라우저 Fullscreen API 전환 버튼(상단 HUD 및 환경 설정 모달)을 갖춘 전체화면 PWA로 동작한다.
+  - 향후 `/#setting`(메인 3×3·RPG 게임)과 `/game.html`의 프로젝트/도메인 분리에 대비하여, `/game.html`의 모든 로컬스토리지 데이터는 오직 **`hero_hs_*`** 접두사(`hero_hs_profile`, `hero_hs_collection`, `hero_hs_golden_collection`, `hero_hs_decks`, `hero_hs_quests`, `hero_hs_pack_pity`, `hero_hs_settings`, `hero_hs_ad_removed`)로만 격리 저장되며, `환경 설정(GameOptionsModal)` 내부에 `/game.html` 전용(`hero_hs_*`) 백업 파일 저장·코드 복사·파일/코드 복원·단독 초기화 기능을 내장한다 (`/#setting`의 백업·복원·초기화와 상호 간섭 0%).
 - **핵심 거점 및 홈 화면 배치 (하스스톤 '더 박스' 레이아웃 1:1 벤치마킹)**:
   - **인트로 화면 (`TavernIntroScreen.tsx`)**:
     - 좌우 양쪽으로 입체 개방되는 **3D 스윙 더블 성소 도어 (`perspective(1600px) rotateY(±96deg)`)**와 문틈 황금빛 성광 심(Seam), 개방 시 모습을 드러내는 엘윈마을 성소 테이블(`elwin_hub_bg.webp`)
@@ -53,9 +54,12 @@
   - **내 현재마나 오리지널 우측하단 배치 (`player-mana-tray`)**: 사파이어 마나 보석(`HsManaGem`) + 선명한 `현재/최대` 수치(`4/10`) + 10칸 육각 사파이어 마나 수정(과부하 포함) 트레이를 오리지널 하스스톤과 동일하게 전장 **우측하단**(`sm:absolute sm:bottom-2.5 sm:right-3`, 모바일 세로 하단 우측 정렬)에 고정 배치하며, 다수 손패 보유 시에도 손패 간격 동적 압축으로 우측하단 마나 트레이와 겹치지 않는다.
 - **오리지널 하스스톤 물리 돌진·충돌·반동 공격 애니메이션 (`BattleScreen.tsx` + `CardVisual.tsx`)**:
   - 아군 수동 공격·자동플레이 공격·적 AI 공격 모두에서 공격하는 하수인/영웅이 슬롯에서 공중 부양(`WINDUP`)한 뒤 대상 좌표로 직접 고속 돌진(`LUNGE`)해 정면 충돌(`IMPACT` — 십자 참격 파열 + 붉은 성형 데미지 스플랫 `-X` + 전장 진동 + 타격음)하고 제자리로 반동 복귀(`RETURN`)한다.
-- **자동플레이 3초 자동 진행 & 패배 시 단일 지원 카드 뽑기 후 즉시 재도전**:
-  - 자동플레이 ON 상태에서 에피소드 브리핑 팝업 및 승리/패배 결과 팝업은 3초 카운트다운 후 자동 진행한다.
-  - 『카단의 여정』 패배 시 보강 카드 1장을 뽑아 컬렉션(3장=3배 각성)을 즉시 강화한 뒤 해당 에피소드를 자동으로 재도전한다.
+- **자동플레이 3초 자동 진행 & 스토리모드 패배 시 골드 카드팩 구매·5장 개봉 전력 강화 후 재도전 (`BattleScreen.tsx`, `storage.ts`, `kadanJourneyData.ts`)**:
+  - 자동플레이 ON 상태에서 에피소드 브리핑 팝업 및 승리 결과 팝업은 3초 카운트다운 후 자동 진행한다.
+  - **『스토리모드』 패배 시 즉시 재대결 금지 · 카드팩 구매 및 개봉 전력 강화 루프**:
+    - 스토리모드(`TUTORIAL`)에서 패배하면 곧바로 같은 스펙으로 재대결하지 않고, **보유 골드(`gold >= 100`)로 카드팩 1개를 구매(`-100G`, `+1팩`)**하거나(골드 부족 시 보유 미개봉 팩 사용 또는 엘윈 성소 지원 팩 1개 무상 보급), **즉시 5장 카드팩을 개봉(`purchaseAndOpenReinforcementPack`)**한다.
+    - 5장 카드팩 개봉 모달(`defeat-pack-reinforcement-modal`)에서 여관주인 등급 호명 대사, 3D 카드 플립 연출, 보유 장수 및 **`⚡ ×3배 각성!`**(또는 `×4배+ 각성!`) 전력 강화 내역을 보여준 뒤, **3.5초 카운트다운 후(또는 `[⚔ 강화된 덱으로 제N화 다시 도전하기]` 클릭 시) 강화된 덱으로 해당 에피소드에 재도전**한다.
+    - 카드팩 개봉 시 이미 2장 이상 보유한 전투 하수인·무기 카드가 중복 획득될 수 있도록 보강 슬롯을 설계하여, 15화 이후 구간에서도 패배 시 카드팩 개봉을 통해 `3장 = ×3배` 각성 카드 수가 즉각 증가하고 막힘 없이 돌파할 수 있도록 밸런싱한다.
 - **모바일 랜드스케이프 & 소형 뷰포트 단일 화면 스케일링 + 레터박스 (`GameAdSenseLayout.tsx` + `stageCoords.ts`)**:
   - 모바일 가로 모드(`844×390`, `667×375`, `932×430` 등)에서 UI가 잘리지 않고 한 화면에 100% 표시되도록 `ResizeObserver` 기반 스테이지 균등 축소(`transform: scale`) 및 다크 골드 레터박스/필러박스를 자동 적용한다.
 - **전투 모드별 자동플레이 정책 & 매판 초기화 규격 (`BattleScreen.tsx`, `HearthstoneApp.tsx`)**:

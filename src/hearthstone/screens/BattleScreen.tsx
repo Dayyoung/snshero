@@ -40,7 +40,7 @@ import {
   getJourneyDifficultySpec,
   getJourneyEpisodeDef,
 } from '../kadanJourneyData';
-import { OpenedPackCard, hsStorage } from '../storage';
+import { DefeatPackReinforcementResult, OpenedPackCard, hsStorage } from '../storage';
 import {
   clientToStagePoint,
   elementCenterInStage,
@@ -341,12 +341,10 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   const [outcomeSummary, setOutcomeSummary] = useState<MatchRewardBreakdown | null>(null);
   const [postGameAutoPaused, setPostGameAutoPaused] = useState<boolean>(false);
   const [postGameRemainingMs, setPostGameRemainingMs] = useState<number>(3000);
-  const [defeatDrawResult, setDefeatDrawResult] = useState<{
-    drawn: OpenedPackCard;
-    goldSpent: number;
-    flipped: boolean;
-  } | null>(null);
-  const [drawRetryRemainingMs, setDrawRetryRemainingMs] = useState<number>(3000);
+  const [defeatPackResult, setDefeatPackResult] = useState<
+    (DefeatPackReinforcementResult & { flipped: boolean }) | null
+  >(null);
+  const [drawRetryRemainingMs, setDrawRetryRemainingMs] = useState<number>(3500);
   const [attackAnim, setAttackAnim] = useState<ActiveAttackAnim | null>(null);
 
   const friendlyRowRef = useRef<HTMLDivElement | null>(null);
@@ -591,27 +589,40 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     mode,
   ]);
 
-  const triggerDefeatSingleCardDraw = useCallback(() => {
-    const res = hsStorage.drawSingleReinforcementCard();
+  const triggerDefeatPackReinforcement = useCallback(() => {
+    const res = hsStorage.purchaseAndOpenReinforcementPack();
     setLiveProfile(hsStorage.getProfile());
-    hsAudio.playSfx('pack_open', 0.9);
-    setDefeatDrawResult({ ...res, flipped: false });
-    setDrawRetryRemainingMs(3000);
+    hsAudio.playSfx('pack_open', 0.92);
+    setDefeatPackResult({ ...res, flipped: false });
+    setDrawRetryRemainingMs(3500);
     drawRetryFiredRef.current = false;
 
     window.setTimeout(() => {
-      setDefeatDrawResult((prev) => (prev ? { ...prev, flipped: true } : null));
-      const rar = res.drawn.card.rarity;
+      setDefeatPackResult((prev) => (prev ? { ...prev, flipped: true } : null));
+      const rarityOrder: Record<string, number> = {
+        LEGENDARY: 4,
+        EPIC: 3,
+        RARE: 2,
+        COMMON: 1,
+        FREE: 0,
+      };
+      const best = [...res.cards].sort(
+        (a, b) =>
+          (rarityOrder[b.card.rarity] || 0) - (rarityOrder[a.card.rarity] || 0) ||
+          (b.isGolden ? 1 : 0) - (a.isGolden ? 1 : 0),
+      )[0];
+      if (!best) return;
+      const rar = best.card.rarity;
       if (rar === 'LEGENDARY') {
         hsAudio.playSfx('pack_legendary', 0.95);
-        hsAudio.playInnkeeper(res.drawn.isGolden ? 'golden_legendary' : 'legendary');
+        hsAudio.playInnkeeper(best.isGolden ? 'golden_legendary' : 'legendary');
       } else if (rar === 'EPIC') {
         hsAudio.playSfx('pack_epic', 0.9);
-        hsAudio.playInnkeeper(res.drawn.isGolden ? 'golden_epic' : 'epic');
+        hsAudio.playInnkeeper(best.isGolden ? 'golden_epic' : 'epic');
       } else if (rar === 'RARE') {
         hsAudio.playSfx('pack_rare', 0.85);
-        hsAudio.playInnkeeper(res.drawn.isGolden ? 'golden_rare' : 'rare');
-      } else if (res.drawn.isGolden) {
+        hsAudio.playInnkeeper(best.isGolden ? 'golden_rare' : 'rare');
+      } else if (best.isGolden) {
         hsAudio.playSfx('pack_rare', 0.78);
         hsAudio.playInnkeeper('golden_common');
       } else {
@@ -621,13 +632,14 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
   }, []);
 
   // Auto-advance Victory / Defeat popup after 3 seconds when Auto-Play is ON
+  // On Story Mode (TUTORIAL) defeat, instead of jumping straight into a rematch, buy 1 pack with Gold (if >= 100G) and open the pack first to strengthen the deck!
   useEffect(() => {
     if (
       matchState.phase !== 'GAME_OVER' ||
       !outcomeSummary ||
       !autoPlay ||
       postGameAutoPaused ||
-      defeatDrawResult !== null
+      defeatPackResult !== null
     ) {
       return;
     }
@@ -653,17 +665,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 onExitBattle();
               }
             } else if (mode === 'TUTORIAL') {
-              if (onStartJourneyEpisode) {
-                hsAudio.playSfx('box_press');
-                onStartJourneyEpisode(
-                  matchState.journeyMeta?.episode || profile.journeyEpisode,
-                  true,
-                );
-              } else {
-                hsAudio.playSfx('menu_select');
-                hsAudio.playBgm('tavern_hub');
-                onExitBattle();
-              }
+              triggerDefeatPackReinforcement();
             } else {
               hsAudio.playSfx('menu_select');
               hsAudio.playBgm('tavern_hub');
@@ -682,17 +684,17 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
     outcomeSummary,
     autoPlay,
     postGameAutoPaused,
-    defeatDrawResult,
+    defeatPackResult,
     mode,
     onStartJourneyEpisode,
     onExitBattle,
-    triggerDefeatSingleCardDraw,
+    triggerDefeatPackReinforcement,
   ]);
 
-  // After drawing 1 reinforcement card on Defeat, auto-retry the SAME episode after 3 seconds!
+  // After buying & opening 1 reinforcement pack (5 cards) on Defeat, auto-retry the SAME episode with the strengthened deck after 3.5 seconds!
   useEffect(() => {
     if (
-      !defeatDrawResult ||
+      !defeatPackResult ||
       !autoPlay ||
       postGameAutoPaused ||
       !onStartJourneyEpisode
@@ -718,7 +720,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
 
     return () => window.clearInterval(id);
   }, [
-    defeatDrawResult,
+    defeatPackResult,
     autoPlay,
     postGameAutoPaused,
     onStartJourneyEpisode,
@@ -3123,25 +3125,35 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         </div>
       )}
 
-      {/* 5. Victory / Defeat Heraldry Banner, 3s Auto-Advance & 1-Card Draw Auto-Retry Loop */}
+      {/* 5. Victory / Defeat Heraldry Banner, 3s Auto-Advance & Defeat Pack Purchase -> 5-Card Open -> Auto-Retry Loop */}
       {matchState.phase === 'GAME_OVER' && (
         <div className="absolute inset-0 z-[94] flex items-center justify-center overflow-y-auto bg-black/84 p-3 backdrop-blur-md sm:p-4">
-          {defeatDrawResult ? (
-            <div className="hs-wood-panel relative flex max-h-[94%] w-full max-w-md flex-col items-center overflow-hidden rounded-3xl p-5 text-center text-amber-100 shadow-2xl sm:p-6">
+          {defeatPackResult ? (
+            <div
+              data-testid="defeat-pack-reinforcement-modal"
+              className="hs-wood-panel relative flex max-h-[95%] w-full max-w-3xl flex-col items-center overflow-y-auto rounded-3xl p-4 text-center text-amber-100 shadow-2xl sm:p-6"
+            >
               {autoPlay && !postGameAutoPaused && (
                 <div className="absolute left-0 right-0 top-0 h-1.5 bg-stone-900">
                   <div
                     style={{
-                      width: `${Math.min(100, ((3000 - drawRetryRemainingMs) / 3000) * 100)}%`,
+                      width: `${Math.min(100, ((3500 - drawRetryRemainingMs) / 3500) * 100)}%`,
                     }}
                     className="h-full bg-gradient-to-r from-emerald-400 via-sky-400 to-amber-300 transition-all duration-100"
                   />
                 </div>
               )}
 
-              <div className="flex w-full items-center justify-between gap-2">
-                <span className="rounded-full border border-emerald-300/70 bg-emerald-950 px-3 py-0.5 text-xs font-extrabold text-emerald-200">
-                  ✨ 패배 구호 · 영웅 카드 1장 소환!
+              <div className="flex w-full flex-wrap items-center justify-between gap-2">
+                <span
+                  data-testid="defeat-pack-source-badge"
+                  className="rounded-full border border-emerald-300/70 bg-emerald-950 px-3 py-0.5 text-xs font-extrabold text-emerald-200"
+                >
+                  {defeatPackResult.boughtWithGold
+                    ? `🪙 골드로 카드팩 1개 구매 (-${defeatPackResult.goldSpent}G) & 즉시 개봉!`
+                    : defeatPackResult.usedExistingPack
+                      ? '🎁 보유 카드팩 1개 즉시 개봉!'
+                      : '🎁 엘윈 성소 구호 지원팩 1개 무상 개봉!'}
                 </span>
                 {autoPlay && (
                   <button
@@ -3154,83 +3166,109 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                     }`}
                   >
                     {!postGameAutoPaused
-                      ? `⏱ ${Math.max(1, Math.ceil(drawRetryRemainingMs / 1000))}초 후 재도전 (정지)`
+                      ? `⏱ ${Math.max(1, Math.ceil(drawRetryRemainingMs / 1000))}초 후 강화된 덱으로 재도전 (정지)`
                       : '▶ 자동 재도전 재개'}
                   </button>
                 )}
               </div>
 
-              <h3 className="hs-title mt-2 text-xl font-extrabold text-yellow-300 sm:text-2xl">
-                {defeatDrawResult.drawn.card.name} 합류!
+              <h3 className="hs-title mt-1.5 text-lg font-extrabold text-yellow-300 sm:text-2xl">
+                눈히어로 카드팩 5장 개봉 & 스토리모드 전력 강화 완료!
               </h3>
-              <p className="mt-0.5 text-xs font-bold text-amber-200/85">
-                {defeatDrawResult.goldSpent > 0
-                  ? `성소 단품 소환 (-${defeatDrawResult.goldSpent}G · 남은 골드 ${profile.gold}G)`
-                  : '엘윈 성소 무상 증원 보급 (0G)'}
+              <p className="mt-0.5 text-[11px] font-bold text-amber-200/85 sm:text-xs">
+                {defeatPackResult.boughtWithGold
+                  ? `100 골드를 사용해 카드팩 1개를 구매하고 개봉했습니다 (남은 골드 ${defeatPackResult.remainingGold}G · 보유 팩 ${defeatPackResult.remainingPacks}팩)`
+                  : `카드팩 1개(5장)를 개봉해 도감에 합산했습니다 (남은 골드 ${defeatPackResult.remainingGold}G · 보유 팩 ${defeatPackResult.remainingPacks}팩)`}
               </p>
 
-              {/* 3D Flip Single Card Reveal */}
-              <div
-                style={{ perspective: '1100px' }}
-                className="my-3.5 flex items-center justify-center"
-              >
-                <div
-                  style={{
-                    transformStyle: 'preserve-3d',
-                    transform: defeatDrawResult.flipped
-                      ? 'rotateY(180deg) scale(1)'
-                      : 'rotateY(0deg) scale(0.92)',
-                    transition: 'transform 0.52s cubic-bezier(0.22, 1, 0.36, 1)',
-                  }}
-                  className="relative"
-                >
+              {/* 5-Card Pack Reveal Showcase */}
+              <div className="my-3 flex flex-wrap items-start justify-center gap-2 sm:my-4 sm:gap-3">
+                {defeatPackResult.cards.map((item, idx) => (
                   <div
-                    style={{ backfaceVisibility: 'hidden' }}
-                    className="h-[252px] w-[180px] overflow-hidden rounded-2xl shadow-2xl"
+                    key={`${item.card.id}_${idx}`}
+                    data-testid={`defeat-pack-card-${idx}`}
+                    className="flex flex-col items-center gap-1"
                   >
-                    <SnsCardBackArt variant={profile.selectedCardBack} />
+                    <div
+                      style={{ perspective: '900px' }}
+                      className="flex items-center justify-center"
+                    >
+                      <div
+                        style={{
+                          transformStyle: 'preserve-3d',
+                          transform: defeatPackResult.flipped
+                            ? 'rotateY(180deg) scale(1)'
+                            : 'rotateY(0deg) scale(0.92)',
+                          transition: `transform ${0.44 + idx * 0.06}s cubic-bezier(0.22, 1, 0.36, 1)`,
+                        }}
+                        className="relative"
+                      >
+                        <div
+                          style={{ backfaceVisibility: 'hidden' }}
+                          className={`overflow-hidden rounded-xl shadow-xl ${
+                            isCompactMobile ? 'h-[126px] w-[90px]' : 'h-[168px] w-[120px]'
+                          }`}
+                        >
+                          <SnsCardBackArt variant={profile.selectedCardBack} />
+                        </div>
+                        <div
+                          style={{
+                            backfaceVisibility: 'hidden',
+                            transform: 'rotateY(180deg)',
+                          }}
+                          className="absolute inset-0 flex items-center justify-center"
+                        >
+                          <HearthstoneCard
+                            card={item.card}
+                            isGolden={item.isGolden}
+                            journeyMultiplier={item.newJourneyMultiplier}
+                            size={isCompactMobile ? 'XS' : 'SM'}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className={`rounded-lg border px-2 py-0.5 text-[10px] font-extrabold ${
+                        item.newJourneyMultiplier > 1
+                          ? 'border-emerald-300/80 bg-emerald-950/90 text-emerald-200'
+                          : 'border-amber-500/40 bg-stone-950/85 text-amber-200'
+                      }`}
+                    >
+                      <span>보유 {item.newOwnedCount}장</span>
+                      {item.newJourneyMultiplier > 1 ? (
+                        <span className="ml-1 text-yellow-300">
+                          · ⚡×{item.newJourneyMultiplier}배 각성!
+                        </span>
+                      ) : item.isNew ? (
+                        <span className="ml-1 text-sky-300">· 신규</span>
+                      ) : null}
+                    </div>
                   </div>
-                  <div
-                    style={{
-                      backfaceVisibility: 'hidden',
-                      transform: 'rotateY(180deg)',
-                    }}
-                    className="absolute inset-0 flex items-center justify-center"
-                  >
-                    <HearthstoneCard
-                      card={defeatDrawResult.drawn.card}
-                      isGolden={defeatDrawResult.drawn.isGolden}
-                      journeyMultiplier={defeatDrawResult.drawn.newJourneyMultiplier}
-                      size="MD"
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
 
-              <div className="mb-3.5 w-full rounded-2xl border border-emerald-400/50 bg-stone-950/80 px-3.5 py-2.5 text-xs font-extrabold">
-                <div className="text-amber-100">
-                  현재 보유 수량:{' '}
-                  <span className="text-yellow-300">
-                    {defeatDrawResult.drawn.newOwnedCount}장
-                  </span>{' '}
-                  {defeatDrawResult.drawn.isNew ? '(신규 영웅 합류!)' : ''}
+              <div
+                data-testid="defeat-pack-power-summary"
+                className="mb-3 w-full rounded-2xl border border-emerald-400/50 bg-stone-950/85 px-3.5 py-2 text-xs font-extrabold"
+              >
+                <div className="text-emerald-300">
+                  ⚡ 이번 카드팩 개봉으로{' '}
+                  <span className="text-yellow-300">{defeatPackResult.awakenedInPackCount}장</span>의
+                  전투 카드가 ×3배 이상 각성/강화되었습니다!
                 </div>
-                {defeatDrawResult.drawn.newJourneyMultiplier > 1 ? (
-                  <div className="mt-1 text-emerald-300">
-                    ⚡ 스토리모드 전용 공격력·생명력 ×
-                    {defeatDrawResult.drawn.newJourneyMultiplier}배 각성 적용!
-                  </div>
-                ) : (
-                  <div className="mt-1 text-amber-200/80">
-                    스토리모드에서 동일 하수인·무기 3장 달성 시 공격력·생명력 ×3배 각성!
-                  </div>
-                )}
+                <div className="mt-0.5 text-[11px] text-amber-100/90">
+                  현재 스토리모드 3장+ 배수 강화 카드 총{' '}
+                  <span className="text-yellow-300">{defeatPackResult.totalBoostedCount}종</span>{' '}
+                  (최대 <span className="text-emerald-300">×{defeatPackResult.maxMultiplier}배</span>)
+                  · 다음 판 덱에 최우선 편성됩니다!
+                </div>
               </div>
 
               <div className="flex w-full flex-col gap-2">
                 {onStartJourneyEpisode && (
                   <button
                     type="button"
+                    data-testid="defeat-pack-retry-btn"
                     onClick={() => {
                       drawRetryFiredRef.current = true;
                       hsAudio.playSfx('box_press');
@@ -3242,25 +3280,41 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                     className="hs-arcane-btn hs-title hs-outline-sm w-full rounded-2xl py-3 text-base font-extrabold text-white sm:text-lg"
                   >
                     ⚔ 강화된 덱으로 제
-                    {matchState.journeyMeta?.episode || profile.journeyEpisode}화 자동플레이
+                    {matchState.journeyMeta?.episode || profile.journeyEpisode}화 다시 도전하기
                     {autoPlay && !postGameAutoPaused
                       ? ` (${Math.max(1, Math.ceil(drawRetryRemainingMs / 1000))}초)`
                       : ' ▶'}
                   </button>
                 )}
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    drawRetryFiredRef.current = true;
-                    hsAudio.playSfx('menu_select');
-                    hsAudio.playBgm('tavern_hub');
-                    onExitBattle();
-                  }}
-                  className="hs-brass-btn w-full rounded-xl py-2 text-xs font-extrabold text-amber-100"
-                >
-                  엘윈마을 로비로 돌아가기
-                </button>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    data-testid="defeat-pack-open-another-btn"
+                    onClick={() => {
+                      triggerDefeatPackReinforcement();
+                    }}
+                    className="hs-gold-btn rounded-xl py-2 text-xs font-extrabold"
+                  >
+                    {profile.gold >= 100
+                      ? `🪙 골드로 1팩 더 구매·개봉 (-100G · 보유 ${profile.gold}G)`
+                      : profile.packs > 0
+                        ? `🎁 보유 카드팩 1개 더 개봉 (보유 ${profile.packs}팩)`
+                        : '🎁 성소 지원팩 1개 더 개봉하여 추가 강화'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      drawRetryFiredRef.current = true;
+                      hsAudio.playSfx('menu_select');
+                      hsAudio.playBgm('tavern_hub');
+                      onExitBattle();
+                    }}
+                    className="hs-brass-btn rounded-xl py-2 text-xs font-extrabold text-amber-100"
+                  >
+                    엘윈마을 로비로 돌아가기
+                  </button>
+                </div>
               </div>
             </div>
           ) : (
@@ -3414,11 +3468,18 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 ) : mode === 'TUTORIAL' ? (
                   <div className="space-y-1.5 text-center leading-relaxed text-amber-100">
                     <div className="font-extrabold text-emerald-300">
-                      ⚡ 『스토리모드』 전용 돌파 비결: 동일 카드 3장 = 능력치 3배!
+                      ⚡ 패배 시 자동 전력 보강: 카드팩 1개 구매 · 개봉 후 재도전!
                     </div>
                     <p className="text-[11.5px] font-semibold text-amber-100/90">
-                      보급소에서 골드(100G) 또는 결제로 <b className="text-yellow-300">눈히어로 팩을 구매·개봉</b>하여 동일 하수인·무기 카드를{' '}
-                      <b className="text-emerald-300">3장 이상 모으면 스토리모드 한정으로 공격력·생명력이 3배(N장=N배)</b>로 강화됩니다!
+                      바로 재대결하지 않고{' '}
+                      <b className="text-yellow-300">
+                        {profile.gold >= 100
+                          ? `보유 골드(${profile.gold}G)로 카드팩 1개를 구매(-100G)`
+                          : profile.packs > 0
+                            ? `보유 카드팩(${profile.packs}팩) 1개를 사용`
+                            : '엘윈 성소 구호 지원팩 1개를 보급'}
+                      </b>
+                      하여 <b className="text-emerald-300">5장을 개봉(동일 카드 3장 = 공격력·생명력 ×3배 각성)</b>한 뒤 강화된 덱으로 다시 도전합니다!
                     </p>
                   </div>
                 ) : (
@@ -3467,41 +3528,59 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                   </button>
                 </div>
               ) : (
-                <div className="relative z-10 flex w-full flex-col gap-2.5">
-                  {onStartJourneyEpisode && (
+                <div className="relative z-10 flex w-full flex-col gap-2">
+                  <button
+                    type="button"
+                    data-testid="defeat-buy-open-pack-btn"
+                    onClick={() => {
+                      postGameFiredRef.current = true;
+                      triggerDefeatPackReinforcement();
+                    }}
+                    className="hs-arcane-btn hs-title hs-outline-sm flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-extrabold text-white shadow-[0_4px_16px_rgba(16,185,129,0.45)] sm:text-base"
+                  >
+                    <span>
+                      {profile.gold >= 100
+                        ? '🪙 골드로 카드팩 1개 구매 · 개봉하여 전력 강화 (-100G)'
+                        : profile.packs > 0
+                          ? `🎁 보유 카드팩 1개 개봉하여 전력 강화 (보유 ${profile.packs}팩)`
+                          : '🎁 성소 구호 카드팩 1개 개봉하여 전력 강화'}
+                      {autoPlay && !postGameAutoPaused
+                        ? ` (${Math.max(1, Math.ceil(postGameRemainingMs / 1000))}초)`
+                        : ' ▶'}
+                    </span>
+                  </button>
+
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {onStartJourneyEpisode && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          postGameFiredRef.current = true;
+                          hsAudio.playSfx('box_press');
+                          onStartJourneyEpisode(
+                            matchState.journeyMeta?.episode || profile.journeyEpisode,
+                            true,
+                          );
+                        }}
+                        className="hs-brass-btn rounded-xl py-2 text-xs font-extrabold text-amber-100"
+                      >
+                        ⚔ 팩 개봉 없이 바로 재도전
+                      </button>
+                    )}
+
                     <button
                       type="button"
                       onClick={() => {
                         postGameFiredRef.current = true;
-                        hsAudio.playSfx('box_press');
-                        onStartJourneyEpisode(
-                          matchState.journeyMeta?.episode || profile.journeyEpisode,
-                          true,
-                        );
+                        hsAudio.playSfx('menu_select');
+                        hsAudio.playBgm('tavern_hub');
+                        onExitBattle();
                       }}
-                      className="hs-arcane-btn hs-title hs-outline-sm flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl py-3 text-base font-extrabold text-white shadow-[0_4px_16px_rgba(220,38,38,0.4)] sm:text-lg"
+                      className="hs-brass-btn rounded-xl py-2 text-xs font-extrabold text-amber-100"
                     >
-                      <span>
-                        ⚔ 제{matchState.journeyMeta?.episode || profile.journeyEpisode}화 다시 도전하기
-                        {autoPlay && !postGameAutoPaused
-                          ? ` (${Math.max(1, Math.ceil(postGameRemainingMs / 1000))}초)`
-                          : ' ▶'}
-                      </span>
+                      엘윈마을 로비로 돌아가기
                     </button>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      postGameFiredRef.current = true;
-                      hsAudio.playSfx('menu_select');
-                      hsAudio.playBgm('tavern_hub');
-                      onExitBattle();
-                    }}
-                    className="hs-brass-btn w-full rounded-xl py-2.5 text-xs font-extrabold text-amber-100 sm:text-sm"
-                  >
-                    엘윈마을 로비로 돌아가기
-                  </button>
+                  </div>
                 </div>
               )
             ) : (

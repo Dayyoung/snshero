@@ -70,6 +70,19 @@ export interface OpenedPackCard {
   newJourneyMultiplier: number;
 }
 
+export interface DefeatPackReinforcementResult {
+  cards: OpenedPackCard[];
+  boughtWithGold: boolean;
+  goldSpent: number;
+  usedExistingPack: boolean;
+  freeSanctuarySupply: boolean;
+  remainingGold: number;
+  remainingPacks: number;
+  awakenedInPackCount: number;
+  totalBoostedCount: number;
+  maxMultiplier: number;
+}
+
 export interface GoldPackBundleDef {
   id: string;
   packs: number;
@@ -563,7 +576,7 @@ class HearthstoneStorage {
    *    - 일반(98종)·희귀(81종)·특급(38종): 해당 등급 전 종을 2장씩 수집할 때까지 2장 미만 카드 우선 등장
    *    - 단일 팩(5장) 내 동일 카드 3장 이상(전설 2장 이상) 동시 등장 원천 차단
    */
-  openOnePack(): OpenedPackCard[] | null {
+  openOnePack(opts?: { journeyReinforcement?: boolean }): OpenedPackCard[] | null {
     const p = this.getProfile();
     if (p.packs <= 0) return null;
     p.packs -= 1;
@@ -732,7 +745,7 @@ class HearthstoneStorage {
     });
     const goldenFlags: boolean[] = slotTiers.map((t) => t.startsWith('GOLDEN_'));
 
-    // Select Specific Cards with Full Duplicate Protection & Per-Pack Copy Cap
+    // Select Specific Cards with Full Duplicate Protection & Story Mode Awakening Support
     const inPackCounts: Record<string, number> = {};
     const results: OpenedPackCard[] = rarities.map((rar, slotIdx) => {
       const pool = byRarity[rar].length > 0 ? byRarity[rar] : byRarity.COMMON;
@@ -748,7 +761,51 @@ class HearthstoneStorage {
         return lifetimeCopies < deckCopyCap;
       });
 
-      const activePool = uncollectedPool.length > 0 ? uncollectedPool : baseCandidates;
+      let activePool = uncollectedPool.length > 0 ? uncollectedPool : baseCandidates;
+
+      // Story Mode Power Reinforcement:
+      // Allow combat cards currently at 2 copies (or >=3 copies) to reach 3+ copies (`3장 = ×3배 각성`)
+      // on reinforcement packs (or 1 common slot in normal packs) so opening packs tangibly boosts Story Mode power!
+      if (rar !== 'LEGENDARY') {
+        const wantAwakeningSlot = opts?.journeyReinforcement
+          ? slotIdx < 4
+          : rar === 'COMMON' && slotIdx === 0 && Math.random() < 0.45;
+        if (wantAwakeningSlot) {
+          const twoCopyCombatSameRarity = baseCandidates.filter(
+            (c) => hasCombatStatsForJourney(c) && (col[c.id] || 0) === 2,
+          );
+          const upgradedCombatSameRarity = baseCandidates.filter(
+            (c) =>
+              hasCombatStatsForJourney(c) &&
+              (col[c.id] || 0) >= 3 &&
+              (col[c.id] || 0) < 10,
+          );
+          const twoCopyCombatAnyExpert = expertPool.filter(
+            (c) =>
+              c.rarity !== 'LEGENDARY' &&
+              hasCombatStatsForJourney(c) &&
+              (inPackCounts[c.id] || 0) < 2 &&
+              (col[c.id] || 0) === 2,
+          );
+          const oneCopyCombatSameRarity = baseCandidates.filter(
+            (c) => hasCombatStatsForJourney(c) && (col[c.id] || 0) === 1,
+          );
+
+          if (
+            twoCopyCombatSameRarity.length > 0 &&
+            (upgradedCombatSameRarity.length === 0 || Math.random() < 0.72)
+          ) {
+            activePool = twoCopyCombatSameRarity;
+          } else if (upgradedCombatSameRarity.length > 0 && Math.random() < 0.65) {
+            activePool = upgradedCombatSameRarity;
+          } else if (opts?.journeyReinforcement && twoCopyCombatAnyExpert.length > 0) {
+            activePool = twoCopyCombatAnyExpert;
+          } else if (opts?.journeyReinforcement && oneCopyCombatSameRarity.length > 0) {
+            activePool = oneCopyCombatSameRarity;
+          }
+        }
+      }
+
       const picked = activePool[Math.floor(Math.random() * activePool.length)];
       const isGolden = goldenFlags[slotIdx];
 
@@ -777,6 +834,63 @@ class HearthstoneStorage {
     this.saveGoldenCollection(gcol);
     this.savePackPityState(pity);
     return results;
+  }
+
+  /**
+   * 『스토리모드(카단의 여정)』 패배 시 즉시 재대결하지 않고,
+   * 1) 보유 골드가 100G 이상이면 카드팩 1개를 구매(-100G, +1팩)하고
+   * 2) (골드가 부족할 경우 보유 팩 1개 또는 성소 구호 지원팩 1개를 사용하여)
+   * 3) 즉시 카드팩 1개(5장)를 개봉해 도감 및 3장=3배 각성 전력을 강화한 뒤 재도전하도록 지원합니다.
+   */
+  purchaseAndOpenReinforcementPack(): DefeatPackReinforcementResult {
+    const p = this.getProfile();
+    let boughtWithGold = false;
+    let goldSpent = 0;
+    let usedExistingPack = false;
+    let freeSanctuarySupply = false;
+
+    if (p.gold >= 100) {
+      this.buyPacksWithGold(1);
+      boughtWithGold = true;
+      goldSpent = 100;
+    } else if (p.packs > 0) {
+      usedExistingPack = true;
+    } else {
+      this.grantPacks(1);
+      freeSanctuarySupply = true;
+    }
+
+    const cards = this.openOnePack({ journeyReinforcement: true }) || [];
+    const updatedProfile = this.getProfile();
+    const col = this.getCollection();
+
+    let totalBoostedCount = 0;
+    let maxMultiplier = 1;
+    for (const c of cardDb.getAllCollectible()) {
+      const cnt = col[c.id] || 0;
+      if (cnt > 0) {
+        const mult = getJourneyCardMultiplier(c, cnt);
+        if (mult > 1) {
+          totalBoostedCount += 1;
+          if (mult > maxMultiplier) maxMultiplier = mult;
+        }
+      }
+    }
+
+    const awakenedInPackCount = cards.filter((item) => item.newJourneyMultiplier > 1).length;
+
+    return {
+      cards,
+      boughtWithGold,
+      goldSpent,
+      usedExistingPack,
+      freeSanctuarySupply,
+      remainingGold: updatedProfile.gold,
+      remainingPacks: updatedProfile.packs,
+      awakenedInPackCount,
+      totalBoostedCount,
+      maxMultiplier,
+    };
   }
 
   /**
@@ -1237,6 +1351,135 @@ class HearthstoneStorage {
       nextReincarnation,
       reincarnatedNow,
     };
+  }
+
+  /**
+   * /game.html 전용 (hero_hs_* 네임스페이스) 세이브 데이터 백업 JSON 생성
+   * - /#setting 메인 게임(hero_*) 및 /stone.html(stone_hs_*) 데이터와 100% 독립
+   */
+  exportGameBackupData(): { keyCount: number; jsonString: string } {
+    const payload: Record<string, string> = {};
+    let count = 0;
+    try {
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i);
+        if (!key || !key.startsWith('hero_hs_')) continue;
+        const val = localStorage.getItem(key);
+        if (val !== null && val !== '') {
+          payload[key] = val;
+          count += 1;
+        }
+      }
+    } catch {
+      // ignore storage read error
+    }
+
+    const exportObj = {
+      app: 'SNSHero Elwin Card Battle (/game.html)',
+      namespace: 'hero_hs_*',
+      version: CURRENT_LORE_VERSION,
+      exportTimestamp: Date.now(),
+      exportIsoDate: new Date().toISOString(),
+      keyCount: count,
+      data: payload,
+    };
+
+    return {
+      keyCount: count,
+      jsonString: JSON.stringify(exportObj, null, 2),
+    };
+  }
+
+  downloadGameBackupFile(): boolean {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return false;
+    const { jsonString } = this.exportGameBackupData();
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const dateStr = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
+    const fileName = `snshero_game_hs_backup_${dateStr}.json`;
+
+    const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    return true;
+  }
+
+  /**
+   * /game.html 전용 (hero_hs_*) 백업 JSON 복원
+   * - 오직 hero_hs_* 접두사 키만 복원하여 다른 게임 데이터와 간섭하지 않음
+   */
+  restoreGameBackupJson(jsonText: string): {
+    success: boolean;
+    restoredCount: number;
+    message: string;
+  } {
+    try {
+      const parsed = JSON.parse(jsonText);
+      const dataObj = parsed?.data && typeof parsed.data === 'object' ? parsed.data : parsed;
+      if (!dataObj || typeof dataObj !== 'object') {
+        return {
+          success: false,
+          restoredCount: 0,
+          message: '유효한 백업 JSON 형식이 아닙니다.',
+        };
+      }
+
+      let count = 0;
+      for (const [key, val] of Object.entries(dataObj)) {
+        if (typeof key === 'string' && key.startsWith('hero_hs_') && typeof val === 'string') {
+          localStorage.setItem(key, val);
+          count += 1;
+        }
+      }
+
+      if (count === 0) {
+        return {
+          success: false,
+          restoredCount: 0,
+          message: '복원 가능한 눈히어로 카드배틀(hero_hs_*) 데이터가 없습니다.',
+        };
+      }
+
+      emitStateChanged();
+      return {
+        success: true,
+        restoredCount: count,
+        message: `눈히어로 카드배틀 데이터 ${count}개 항목을 성공적으로 복원했습니다.`,
+      };
+    } catch {
+      return {
+        success: false,
+        restoredCount: 0,
+        message: '백업 코드 또는 JSON 파일 형식이 올바르지 않습니다.',
+      };
+    }
+  }
+
+  /**
+   * /game.html 전용 데이터만 초기화 (hero_hs_* 키만 제거 후 기본값 재생성)
+   * - /#setting(hero_*) 및 /stone.html(stone_hs_*) 데이터는 100% 보존
+   */
+  resetGameDataOnly(): void {
+    try {
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('hero_hs_')) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k));
+    } catch {
+      // ignore storage error
+    }
+    this.init();
+    emitStateChanged();
   }
 }
 

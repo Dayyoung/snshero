@@ -2,6 +2,48 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-12 14:20 KST] [/#setting 메인 게임(hero_*)과 /game.html 엘윈마을 카드배틀(hero_hs_*) 로컬스토리지 완전 격리 및 독립 백업·복원·초기화 구현 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"/#setting 하고 /game.html 은 전혀 다른 2개 게임이야. 로컬스토리지를 분석해봐."`
+    - `"좋아. 나중에 2개 게임을 서로 분리할 예정이야."`
+  - **2. 세부 구현 내역 (향후 2개 게임 완전 분리에 대비한 로컬스토리지 100% 격리)**:
+    1. **`/#setting` 메인 3×3·RPG 게임 백업/복원/초기화에서 `/game.html`(`hero_hs_*`) 및 `/stone.html`(`stone_hs_*`) 완전 제외 ([`SettingSection.tsx`](file:///Users/dayyoung/project/snshero/src/landing/views/SettingSection.tsx), [`BackupRestoreModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/BackupRestoreModal.tsx), [`App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx), [`auxTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/screenTools/auxTools.ts))**:
+       - `exportBackupData` / `restoreBackupJson` / `BackupRestoreModal`에서 `key.startsWith('hero_hs_')` 및 `key.startsWith('stone_hs_')`를 엄격히 필터링하여, `/#setting`의 백업·복원이 `/game.html` 세이브 데이터를 섞거나 덮어쓰지 않도록 분리.
+       - `setting-factory-reset` 및 `App.tsx`의 데이터 초기화/캐시 초기화에서 `localStorage.clear()` 대신 `!key.startsWith('hero_hs_') && !key.startsWith('stone_hs_')`인 키만 삭제하도록 수정하여, `/#setting` 초기화 시 `/game.html`의 382장 카드첩·골드·스토리모드 진행도가 유실되지 않도록 원천 보호.
+    2. **`/game.html` 전용(`hero_hs_*`) 독립 백업·복원·초기화 및 광고 제거 키 격리 ([`storage.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/storage.ts), [`paymentGateway.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/paymentGateway.ts), [`GameAdSenseLayout.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/GameAdSenseLayout.tsx), [`Modals.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/Modals.tsx))**:
+       - `hsStorage`에 `exportGameBackupData()`, `downloadGameBackupFile()`, `restoreGameBackupJson()`, `resetGameDataOnly()` 메서드를 신설하여 오직 `hero_hs_*` 네임스페이스 키만 독립적으로 백업(`snshero_game_hs_backup_*.json`)·복원·초기화하도록 구현.
+       - `/game.html`의 `GameOptionsModal`(`환경 설정`) 내부에 **`데이터 백업 · 복원 (카드배틀 전용 · hero_hs_* 독립 저장소)`** 섹션(`💾 백업 파일 저장`, `📋 백업 코드 복사`, `📂 파일로 복원`, `📥 코드 붙여넣기`, `🗑 카드배틀 데이터 초기화`)을 추가.
+       - `/game.html` 광고 제거 키 또한 `hero_hs_ad_removed`(`isHsGameAdRemoved`)로 독립 지원.
+  - **3. 검증 및 빌드**:
+    - `npm run build` 프로덕션 빌드 에러 0건 통과, 구글 폼 완료 보고서 제출 및 로컬 Git 커밋 완료 (`git push` 미실행 원칙 준수).
+
+## [2026-11-12 14:05 KST] [/game.html 스토리모드 패배 시 즉시 재대결 대신 골드로 카드팩 1개 구매·5장 개봉하여 전력(3장=3배 각성) 강화 후 재도전 루프 및 15화+ 밸런싱 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"지금 스토리모드 자동플레이 시 , 스토리모드 15화 정도되면 더이상 승리할 수 없어. 패배하면 바로 재대결 하지말고 골드가 있으면 카드팩을 하나 구매해. 그리고 카드팩을 개봉해서 전력을 강화하고 다시 도전할 수 있도록 해줘."`
+  - **2. 원인 분석 및 세부 구현 내역**:
+    1. **원인 분석**:
+       - 기존에는 스토리모드(`mode === 'TUTORIAL'`)에서 패배 시 자동플레이 타이머가 카드팩 구매나 개봉 없이 곧바로 `onStartJourneyEpisode(ep, true)`를 호출해 동일한 덱으로 무한 재대결하고 있었음.
+       - 또한 `storage.ts`의 `openOnePack()`에서 모든 슬롯이 `lifetimeCopies < 2` 미보유 풀을 우선 필터링하여, 고급 카드 253종을 전부 2장씩 모으기 전까지는 3장(`×3배 각성`) 달성이 막혀 있었고, 15화에서 적 체력(`46HP`)·배율(`×1.50배`)·`EXPERT` AI가 동시에 급증하여 승리가 불가능했음.
+    2. **패배 시 골드 카드팩 1개 구매 & 5장 즉시 개봉 전력 강화 엔진 ([`storage.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/storage.ts))**:
+       - `purchaseAndOpenReinforcementPack()` 메서드 신설:
+         - 보유 골드가 `100G` 이상이면 **`buyPacksWithGold(1)` (`-100G`, `+1팩`)**로 카드팩 1개를 구매.
+         - 골드가 100G 미만이고 미개봉 보유 팩이 있으면 보유 팩 1개 사용, 둘 다 없으면 소프트락 방지를 위해 성소 지원 팩 1개를 무상 보급(`grantPacks(1)`).
+         - 즉시 `openOnePack({ journeyReinforcement: true })`를 호출하여 5장 카드를 개봉·컬렉션(`localStorage`)에 영구 반영하고, 여관주인 등급 음성 호명과 함께 이번 팩으로 `×3배+` 각성된 카드 수(`awakenedInPackCount`) 및 전체 각성 전력 현황을 반환.
+       - `openOnePack`에서 6대 공식 하스스톤 천장(Pity Timer)과 전설 1장 중복 방지는 100% 유지하면서, 전력 보강 개봉 시 이미 2장 보유한 전투 하수인·무기 카드를 최우선 타겟팅하여 개봉 즉시 **`3장 = ×3배` (및 `×4배+`) 스토리모드 각성**이 발동하도록 개선.
+    3. **패배 결과창 ➔ 5장 카드팩 개봉 모달 ➔ 강화된 덱으로 재도전 흐름 ([`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx))**:
+       - 스토리모드 패배 시 바로 재대결하지 않고 `triggerDefeatPackReinforcement()`를 실행하여 **5장 카드팩 개봉 모달(`defeat-pack-reinforcement-modal`)**을 표시.
+       - 모달 상단에 **`🪙 골드로 카드팩 1개 구매 (-100G) & 즉시 개봉!`** 뱃지, 중앙에 개봉된 **5장의 카드 그리드(`defeat-pack-card-0`~`4`, 3D 플립 + `보유 N장 · ⚡×N배 각성!` 뱃지)**, 하단에 강화된 전력 요약 및 **`⚔ 강화된 덱으로 제N화 다시 도전하기`** 버튼(자동플레이 시 3.5초 카운트다운 후 자동 재도전)과 추가 팩 개봉(`🪙 골드로 1팩 더 개봉 (-100G)`) 버튼을 제공.
+    4. **스토리모드 15화+ 난이도 곡선 완화 및 각성 카드 덱 최우선 편성 ([`kadanJourneyData.ts`](file:///Users/dayyoung/project/snshero/src/hearthstone/kadanJourneyData.ts), [`generate_kadan_journey_data.py`](file:///Users/dayyoung/project/snshero/scripts/generate_kadan_journey_data.py))**:
+       - `getJourneyDifficultySpec`: 7~15화(`22HP ×0.81` ➔ `36HP ×1.15`), 16~28화(`36HP ×1.17` ➔ `58HP ×1.75`), 29~40화(`60HP ×1.81` ➔ `88HP ×2.48`)로 성장 곡선을 매끄럽게 다듬고 `EXPERT` AI 전환 시점을 19화 이후로 조정.
+       - `buildJourneyPlayerDeckAndMultipliers`: `×3배+` 각성된 카드를 고배율 순으로 정렬하여 마나 커브 버킷(`1~3코 17장`, `4~5코 9장`, `6+코 4장`)에 100% 최우선 편성하도록 강화.
+  - **3. 검증 및 빌드**:
+    - `npm run build` 프로덕션 빌드 에러 0건 통과 및 실브라우저 E2E 검증(스토리모드 15화 패배 ➔ 즉시 재대결 대신 `-100G` 카드팩 구매 및 5장 개봉 모달 노출 ➔ `⚡×3배 각성!` 전력 강화 확인 ➔ 강화된 덱으로 15화 재도전 진입) 완료.
+    - 구글 폼 완료 보고서 제출 및 로컬 Git 커밋 완료 (`git push` 미실행 원칙 준수).
+
 ## [2026-11-12 13:46 KST] [/game.html 전장 배경 이미지 3종(설원·불꽃 성채·바람의 신전) 내 중복 아군/적군 가로 경계선 완전 제거 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:
