@@ -164,9 +164,19 @@ async def update_single_video(
         try:
             url = f"https://studio.youtube.com/video/{video_id}/edit"
             await page.goto(url, wait_until="domcontentloaded", timeout=45000)
+            await asyncio.sleep(2.5)
+            skip_btn = page.locator(
+                'a:has-text("YOUTUBE 스튜디오로 건너뛰기"), '
+                'a:has-text("Skip to YouTube Studio"), '
+                'button:has-text("YOUTUBE 스튜디오로 건너뛰기"), '
+                ':text("YOUTUBE 스튜디오로 건너뛰기")'
+            ).first
+            if await skip_btn.count() > 0 and await skip_btn.is_visible():
+                await skip_btn.click(force=True)
+                await asyncio.sleep(3.5)
             title_box = page.locator("#title-textarea #textbox").first
             await title_box.wait_for(state="visible", timeout=25000)
-            await asyncio.sleep(2.5)
+            await asyncio.sleep(2.0)
 
             # 1. Update Title
             await title_box.click(force=True)
@@ -228,7 +238,7 @@ async def main():
     state = json.loads(STATE_FILE.read_text(encoding="utf-8"))
 
     jobs = []
-    for cat in ("en_full", "en_shorts"):
+    for cat in ("en_full", "en_shorts", "ko_full", "ko_shorts"):
         vid_map = state["videos"].get(cat, {})
         for ep_str in sorted(vid_map.keys(), key=lambda x: int(x)):
             ep = int(ep_str)
@@ -272,6 +282,13 @@ async def main():
             args=[f"--profile-directory={PROFILE_DIR_NAME}", "--disable-blink-features=AutomationControlled"],
             viewport={"width": 1440, "height": 900},
         )
+        init_page = ctx.pages[0] if ctx.pages else await ctx.new_page()
+        await init_page.goto("https://studio.youtube.com/channel/UCA6QmKiPstbiyBUHtnSMxyA", wait_until="domcontentloaded", timeout=45000)
+        await asyncio.sleep(4.0)
+        skip_btn = init_page.locator('a:has-text("YOUTUBE 스튜디오로 건너뛰기"), a:has-text("Skip to YouTube Studio"), :text("YOUTUBE 스튜디오로 건너뛰기")').first
+        if await skip_btn.count() > 0 and await skip_btn.is_visible():
+            await skip_btn.click(force=True)
+            await asyncio.sleep(3.5)
         sem = asyncio.Semaphore(4)
         tasks = [update_single_video(sem, ctx, cat, ep, vid, meta) for cat, ep, vid, meta in jobs]
         results = await asyncio.gather(*tasks)

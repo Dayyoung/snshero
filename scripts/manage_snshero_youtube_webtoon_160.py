@@ -24,6 +24,8 @@ from typing import Dict, Optional
 from playwright.sync_api import sync_playwright
 
 PROJECT_ROOT = Path("/Users/dayyoung/project/snshero")
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 MAPPING_FILE = PROJECT_ROOT / "src/content/movieEpisodeMapping.ts"
 VIDEOS_ROOT = PROJECT_ROOT / "exports/webtoon_videos"
 STATE_FILE = PROJECT_ROOT / "scripts/youtube_webtoon_160_state.json"
@@ -283,11 +285,13 @@ def ensure_all_4_playlists_exist_in_dialog(page, dialog, active_playlist_title: 
     in PLAYLIST_TITLES exist (creating any missing ones), and selects ONLY `active_playlist_title`.
     """
     try:
-        playlist_trigger = dialog.locator("ytcp-video-metadata-playlists").first
+        playlist_trigger = dialog.locator(
+            "ytcp-video-metadata-playlists ytcp-text-dropdown-trigger, ytcp-video-metadata-playlists"
+        ).first
         if playlist_trigger.count() == 0:
             return
         playlist_trigger.scroll_into_view_if_needed()
-        playlist_trigger.click()
+        playlist_trigger.click(force=True)
         time.sleep(2.0)
 
         pl_dialog = page.locator("ytcp-playlist-dialog")
@@ -339,17 +343,18 @@ def ensure_all_4_playlists_exist_in_dialog(page, dialog, active_playlist_title: 
                 is_checked = (aria_chk == "true") or (checked_attr is not None)
             should_check = (target_title == active_playlist_title)
             if is_checked != should_check:
-                lbl.click()
+                lbl.click(force=True)
                 time.sleep(0.5)
 
         pl_done = page.locator(
+            'ytcp-playlist-dialog ytcp-button.done-button, '
             'ytcp-playlist-dialog ytcp-button#done-button, '
             'ytcp-playlist-dialog ytcp-button:has-text("완료"), '
             'ytcp-playlist-dialog ytcp-button:has-text("저장"), '
             'ytcp-button:has-text("완료")'
         ).first
         if pl_done.count() > 0 and pl_done.is_visible():
-            pl_done.click()
+            pl_done.click(force=True)
             time.sleep(0.8)
     except Exception as e:
         log(f"[EP{ep:02d}] Playlist selection warning: {e}")
@@ -432,7 +437,7 @@ def upload_single_video(
 
     title_box = dialog.locator("#title-textarea #textbox").first
     title_box.wait_for(state="visible", timeout=15000)
-    title_box.click()
+    title_box.click(force=True)
     page.keyboard.press("Meta+A")
     page.keyboard.press("Backspace")
     title_box.fill(yt_title)
@@ -440,7 +445,7 @@ def upload_single_video(
 
     desc_box = dialog.locator("#description-textarea #textbox").first
     if desc_box.count() > 0:
-        desc_box.click()
+        desc_box.click(force=True)
         page.keyboard.press("Meta+A")
         page.keyboard.press("Backspace")
         desc_box.fill(yt_desc)
