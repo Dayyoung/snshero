@@ -1669,7 +1669,8 @@ export const GameOptionsModal: React.FC<{
                     hsAudio.playSfx('ui_click', 0.85);
                     hsStorage.resetGameDataOnly();
                     setConfirmReset(false);
-                    setDataNotice('✓ 카드배틀(hero_hs_*) 데이터가 초기 상태로 리셋되었습니다.');
+                    setDataNotice('✓ 카드배틀(hero_hs_*) 데이터가 초기 상태로 리셋되었습니다. 화면을 새로고침합니다...');
+                    window.location.reload();
                   }}
                   className="rounded bg-red-600 px-2.5 py-1 text-[11px] font-extrabold text-white"
                 >
