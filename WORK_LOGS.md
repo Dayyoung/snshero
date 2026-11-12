@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-12 09:57 KST] [/game.html 카드 플레이 전장 화면 — 아군·적 영웅 초상화 완벽 정중앙 정렬(0.00px 오차) 및 내 현재마나 오리지널 하스스톤 우측하단 배치 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"game.html 카드 플레이화면에서 영웅 초상화를 가운데 정렬해서 배치하자. 내 현재마나는 오리지널 게임처럼 우측하단에 위치시켜줘."`
+  - **2. 세부 구현 내역**:
+    1. **아군·적 영웅 초상화 가로 정중앙(`x = 50%`, 0.00px 오차) 완벽 정렬 ([`CardVisual.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/CardVisual.tsx), [`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx))**:
+       - `HeroPortraitZone` 좌측 장착 무기 슬롯(`56px` / `sm:80px`)과 우측 영웅 능력 슬롯(`56px` / `sm:80px`)의 너비를 1:1 픽셀 대칭으로 통일하여 영웅 아치 초상화 중심이 컴포넌트 중심과 정확히 일치하도록 개선.
+       - 상단 `header`를 3열 그리드(`sm:grid-cols-[1fr_auto_1fr]`) 및 `w-full justify-center` 구조로 정렬하여 상대 뒷면 손패와 상대 영웅 초상화(`OPPONENT_HERO`)를 정중앙에 배치.
+       - 하단 `footer`에서 기존 영웅 옆에 나란히 배치되어 영웅 초상화를 좌측으로 밀어내던 마나 트레이를 분리하고, `감정표현` 버튼을 레이아웃 플로우 바깥(`absolute right-[calc(100%+6px)] sm:right-[calc(100%+12px)]`)으로 고정하여 아군 영웅 초상화(`PLAYER_HERO`) 역시 전장 가로 정중앙 축에 100% 일치하도록 배치.
+    2. **내 현재마나 오리지널 하스스톤 우측하단 배치 및 손패 겹침 방지 ([`BattleScreen.tsx`](file:///Users/dayyoung/project/snshero/src/hearthstone/screens/BattleScreen.tsx))**:
+       - `player-mana-tray`를 전장 **우측하단**(`sm:absolute sm:bottom-2.5 sm:right-3 sm:z-40`, 모바일 세로 하단 우측 `justify-end`)에 배치하고, 3D 사파이어 마나 보석(`HsManaGem`) + 가독성 높은 `현재/최대` 수치(`player-mana-fraction`, 예: `2/3`) + 10칸 육각 사파이어 마나 수정(가용·소모·잠김·과부하)으로 구성.
+       - 데스크톱/가로 모드에서 손패 장수(1~10장)에 따라 카드 간격(`desktopOverlapPx`)을 동적으로 조절하여 최대 10장 보유 시에도 우측 끝 손패 카드가 우측하단 마나 트레이와 절대 겹치지 않도록 설계.
+  - **3. 검증 및 빌드**:
+    - `npm run build` 프로덕션 빌드 에러 0건 통과(52.46s).
+    - 실브라우저 E2E 검증(`1280x800` 데스크톱 및 `390x844` 모바일 세로): 상·하 영웅 초상화 중심축 오차 `0.00px` 일치, 우측하단 마나 트레이 배치 및 손패 겹침 `false` 확인 완료.
+    - 구글 폼 완료 보고서 제출 및 로컬 Git 커밋 완료 (`git push` 미실행 원칙 준수).
+
 ## [2026-11-12 08:58 KST] [/game.html 설정창 내 TTS 및 스토리 음성 낭독 ON/OFF 토글 스위치 및 스토리 모달 즉시 전환 기능 구현 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

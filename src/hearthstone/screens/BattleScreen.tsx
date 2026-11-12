@@ -2241,11 +2241,11 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         </div>
       </aside>
 
-      {/* ==================== TOP ZONE: OPPONENT HAND + OPPONENT HERO ==================== */}
-      <header className="relative z-20 flex flex-col items-center pt-1">
-        {/* Top Utility Strip: Opponent Mana + Opponent Hand + Corner Toy + Options */}
-        <div className="flex w-full items-center justify-between gap-1.5 px-2 sm:px-3">
-          <div className="flex min-w-0 items-center gap-1.5 rounded-xl border-2 border-[#b8924d]/75 bg-stone-950/90 px-2 py-1 text-[10.5px] text-amber-100 shadow-lg sm:gap-2 sm:px-3 sm:text-xs">
+      {/* ==================== TOP ZONE: OPPONENT HAND + CENTERED OPPONENT HERO ==================== */}
+      <header className="relative z-20 flex w-full flex-col items-center pt-1">
+        {/* Top Utility Strip: Opponent Mana (Left) + Opponent Hand (Dead-Center on sm+) + Options (Right) */}
+        <div className="flex w-full items-center justify-between gap-1.5 px-2 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:px-3">
+          <div className="flex min-w-0 items-center gap-1.5 rounded-xl border-2 border-[#b8924d]/75 bg-stone-950/90 px-2 py-1 text-[10.5px] text-amber-100 shadow-lg sm:justify-self-start sm:gap-2 sm:px-3 sm:text-xs">
             <img
               src={CLASS_CREST_URL[matchState.opponent.heroClass]}
               alt=""
@@ -2267,7 +2267,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           {/* Opponent Face-Down Curved Hand (Visible on BOTH Mobile Portrait & Desktop!) */}
           <div
             title={`상대 손패: ${matchState.opponent.hand.length}장`}
-            className="flex shrink-0 items-center justify-center -space-x-3 sm:-space-x-3"
+            className="flex shrink-0 items-center justify-center -space-x-3 sm:justify-self-center sm:-space-x-3"
           >
             {matchState.opponent.hand.map((hc, idx) => {
               const rot = (idx - (matchState.opponent.hand.length - 1) / 2) * 3;
@@ -2288,7 +2288,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
             )}
           </div>
 
-          <div className="flex shrink-0 items-center gap-1">
+          <div className="flex shrink-0 items-center gap-1 sm:justify-self-end">
             {mode === 'TUTORIAL' && matchState.journeyMeta && (
               <button
                 type="button"
@@ -2332,8 +2332,8 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
           </div>
         </div>
 
-        {/* Opponent Hero Arch */}
-        <div className="mt-0.5 sm:mt-1">
+        {/* Opponent Hero Arch (100% Horizontally Centered on Stage Axis) */}
+        <div className="mt-0.5 flex w-full items-center justify-center sm:mt-1">
           <HeroPortraitZone
             player={matchState.opponent}
             isFriendly={false}
@@ -2562,19 +2562,19 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
         </div>
       </main>
 
-      {/* ==================== BOTTOM ZONE: PLAYER HERO + MANA TRAY + CURVED HAND ==================== */}
-      <footer className="relative z-30 flex flex-col items-center pb-1">
-        {/* Player Hero + Emote Trigger + 10 Sapphire Mana Crystal Tray */}
-        <div className="flex w-full max-w-5xl flex-col items-center justify-center gap-1 px-2 sm:flex-row sm:flex-wrap sm:gap-4 sm:px-4">
-          <div className="relative flex items-center gap-1.5">
-            {/* Emote Menu Brass Trigger (Always visible & unclipped on mobile!) */}
+      {/* ==================== BOTTOM ZONE: CENTERED PLAYER HERO + CURVED HAND + BOTTOM-RIGHT MANA ==================== */}
+      <footer className="relative z-30 flex w-full flex-col items-center pb-1 sm:pb-1.5">
+        {/* Centered Player Hero Arch + Out-of-Flow Emote Trigger (Zero Center Offset!) */}
+        <div className="relative flex w-full items-center justify-center px-2">
+          <div className="relative flex items-center justify-center">
+            {/* Emote Menu Brass Trigger (Out-of-flow on the left so Hero Portrait stays 100% centered!) */}
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setEmoteMenuOpen((v) => !v);
               }}
-              className="hs-brass-btn rounded-xl px-2 py-1 text-[10px] font-extrabold text-amber-100 sm:px-2.5 sm:text-[11px]"
+              className="hs-brass-btn absolute right-[calc(100%+6px)] top-1/2 z-20 -translate-y-1/2 whitespace-nowrap rounded-xl px-2 py-1 text-[10px] font-extrabold text-amber-100 sm:right-[calc(100%+12px)] sm:px-2.5 sm:text-[11px]"
             >
               감정표현
             </button>
@@ -2627,62 +2627,33 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
               </div>
             )}
           </div>
-
-          {/* 10-Crystal Faceted Sapphire Mana Tray */}
-          <div className="flex items-center gap-1.5 rounded-2xl border-2 border-[#c8a158] bg-stone-950/90 px-2.5 py-1 shadow-[0_10px_24px_rgba(0,0,0,0.88)] sm:gap-2.5 sm:px-3 sm:py-1.5">
-            <HsManaGem
-              value={`${matchState.player.mana}/${matchState.player.maxMana}`}
-              size={isCompactMobile ? 24 : 30}
-              active={matchState.player.mana > 0}
-            />
-            <div className="flex items-center gap-0.5 sm:gap-1">
-              {Array.from({ length: 10 }).map((_, idx) => {
-                const isUnlocked = idx < matchState.player.maxMana;
-                const isFilled = idx < matchState.player.mana;
-                const isOverloadedNow =
-                  isUnlocked &&
-                  idx >= matchState.player.maxMana - matchState.player.overloadedMana;
-                return (
-                  <div
-                    key={idx}
-                    title={isOverloadedNow ? '과부하로 잠긴 마나 수정' : undefined}
-                    style={{
-                      clipPath:
-                        'polygon(50% 4%, 94% 26%, 94% 74%, 50% 96%, 6% 74%, 6% 26%)',
-                    }}
-                    className={`h-3.5 w-3 transition sm:h-5 sm:w-4 ${
-                      isOverloadedNow
-                        ? 'bg-gradient-to-b from-red-400 to-red-800 shadow-[0_0_8px_#ef4444]'
-                        : isFilled
-                          ? 'bg-gradient-to-b from-sky-200 via-blue-500 to-indigo-900 shadow-[0_0_8px_#38bdf8]'
-                          : isUnlocked
-                            ? 'bg-sky-950/85 opacity-70'
-                            : 'bg-stone-800/45 opacity-45'
-                    }`}
-                  />
-                );
-              })}
-            </div>
-            {matchState.player.pendingOverload > 0 && (
-              <span className="ml-0.5 rounded-md border border-red-400/50 bg-red-950 px-1.5 py-0.5 text-[9.5px] font-extrabold text-red-200 sm:text-[10px]">
-                과부하 {matchState.player.pendingOverload}
-              </span>
-            )}
-          </div>
         </div>
 
-        {/* Player Curved Hand Fan (Tap any card -> Select & Enlarge in CardZoomModal!) */}
-        <div className="hs-no-scrollbar mt-0.5 flex min-h-[146px] w-full items-end overflow-x-auto px-3 pb-0.5 pt-2 sm:min-h-[192px] sm:justify-center sm:overflow-x-visible sm:px-4 sm:pb-1">
-          <div className="mx-auto flex w-max items-end -space-x-6 sm:-space-x-5">
+        {/* Player Curved Hand Fan (Centered & Dynamically Spaced so Rightmost Card Never Collides with Bottom-Right Mana!) */}
+        <div className="hs-no-scrollbar mt-0.5 flex min-h-[142px] w-full items-end overflow-x-auto px-3 pb-0.5 pt-1.5 sm:min-h-[192px] sm:justify-center sm:overflow-x-visible sm:px-4 sm:pb-1 sm:pt-2">
+          <div className="mx-auto flex w-max items-end">
             {matchState.player.hand.map((hc, idx) => {
               const def = cardDb.mustGetCard(hc.cardId);
               const check = engine.inspectPlayability('PLAYER', hc);
               const isSelectedCard =
                 (selection?.kind === 'HAND_CARD' && selection.handUid === hc.uid) ||
                 (zoomState?.kind === 'HAND_CARD' && zoomState.handUid === hc.uid);
-              const mid = (matchState.player.hand.length - 1) / 2;
+              const handCount = matchState.player.hand.length;
+              const mid = (handCount - 1) / 2;
               const angle = (idx - mid) * (isCompactMobile ? 1.5 : 2.4);
               const liftY = Math.min(isCompactMobile ? 4 : 8, Math.abs(idx - mid) * 1.2);
+              const desktopOverlapPx =
+                handCount <= 5
+                  ? -22
+                  : handCount === 6
+                    ? -32
+                    : handCount === 7
+                      ? -46
+                      : handCount === 8
+                        ? -58
+                        : handCount === 9
+                          ? -68
+                          : -76;
 
               return (
                 <div
@@ -2693,6 +2664,7 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                     handleHandCardClick(hc.uid);
                   }}
                   style={{
+                    marginLeft: idx > 0 ? (isCompactMobile ? -24 : desktopOverlapPx) : 0,
                     transform: isSelectedCard
                       ? 'translateY(-18px) scale(1.08)'
                       : `translateY(${liftY}px) rotate(${angle}deg)`,
@@ -2722,6 +2694,70 @@ export const BattleScreen: React.FC<BattleScreenProps> = ({
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* Original Hearthstone Bottom-Right Mana Trough (우측하단: 현재/최대 마나 + 10 사파이어 마나 수정) */}
+        <div
+          data-testid="player-mana-tray"
+          className="mt-0.5 flex w-full justify-end px-2.5 sm:absolute sm:bottom-2.5 sm:right-3 sm:z-40 sm:mt-0 sm:w-auto sm:px-0"
+        >
+          <div className="flex items-center gap-1.5 rounded-2xl border-2 border-[#c8a158] bg-gradient-to-b from-[#1e1712]/96 via-[#120d0a]/96 to-[#080503]/98 px-2.5 py-1 shadow-[0_10px_24px_rgba(0,0,0,0.92),inset_0_1px_1px_rgba(255,248,220,0.22)] sm:gap-2 sm:px-3 sm:py-1.5">
+            <HsManaGem
+              value={matchState.player.mana}
+              size={isCompactMobile ? 22 : 28}
+              active={matchState.player.mana > 0}
+            />
+            <span
+              data-testid="player-mana-fraction"
+              className="hs-num hs-outline-sm min-w-[32px] text-center text-xs font-black tracking-tight text-white sm:min-w-[40px] sm:text-sm"
+            >
+              {matchState.player.mana}
+              <span className="text-sky-300">/</span>
+              {matchState.player.maxMana}
+            </span>
+            <div className="h-3.5 w-[1px] bg-amber-400/35 sm:h-4" />
+            <div className="flex items-center gap-0.5 sm:gap-1">
+              {Array.from({ length: 10 }).map((_, idx) => {
+                const isUnlocked = idx < matchState.player.maxMana;
+                const isFilled = idx < matchState.player.mana;
+                const isOverloadedNow =
+                  isUnlocked &&
+                  idx >= matchState.player.maxMana - matchState.player.overloadedMana;
+                return (
+                  <div
+                    key={idx}
+                    title={
+                      isOverloadedNow
+                        ? '과부하로 잠긴 마나 수정'
+                        : isFilled
+                          ? '사용 가능한 마나 수정'
+                          : isUnlocked
+                            ? '이번 턴 소모한 마나 수정'
+                            : '잠긴 마나 슬롯'
+                    }
+                    style={{
+                      clipPath:
+                        'polygon(50% 4%, 94% 26%, 94% 74%, 50% 96%, 6% 74%, 6% 26%)',
+                    }}
+                    className={`h-3.5 w-3 transition sm:h-[18px] sm:w-[14px] ${
+                      isOverloadedNow
+                        ? 'bg-gradient-to-b from-red-400 to-red-800 shadow-[0_0_8px_#ef4444]'
+                        : isFilled
+                          ? 'bg-gradient-to-b from-sky-200 via-blue-500 to-indigo-900 shadow-[0_0_8px_#38bdf8]'
+                          : isUnlocked
+                            ? 'bg-sky-950/88 opacity-75'
+                            : 'bg-stone-800/45 opacity-45'
+                    }`}
+                  />
+                );
+              })}
+            </div>
+            {matchState.player.pendingOverload > 0 && (
+              <span className="ml-0.5 rounded-md border border-red-400/50 bg-red-950 px-1.5 py-0.5 text-[9.5px] font-extrabold text-red-200 sm:text-[10px]">
+                과부하 {matchState.player.pendingOverload}
+              </span>
+            )}
           </div>
         </div>
       </footer>

@@ -1564,8 +1564,8 @@ export const HeroPortraitZone: React.FC<HeroZoneProps> = ({
 
   return (
     <div className="relative flex select-none items-center justify-center gap-2 sm:gap-3.5">
-      {/* Left: Equipped Weapon Medallion */}
-      <div className="relative flex h-[54px] w-[54px] items-center justify-center sm:h-[80px] sm:w-[80px]">
+      {/* Left: Equipped Weapon Medallion (Symmetric 56px/80px width with Right Hero Power so Hero Arch is 100% dead-center!) */}
+      <div className="relative flex h-[56px] w-[56px] items-center justify-center sm:h-[80px] sm:w-[80px]">
         {player.weapon ? (
           <div
             title={`${player.weapon.name} (${player.weapon.attack}/${player.weapon.durability})`}
