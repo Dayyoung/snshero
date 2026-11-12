@@ -98,20 +98,6 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
         <div className="flex items-center gap-1.5 sm:gap-2.5">
           <button
             type="button"
-            data-testid="hub-rules-btn"
-            onClick={() => {
-              hsAudio.playSfx('ui_click');
-              setQuickRulesOpen(true);
-            }}
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
-            className="hs-brass-btn flex min-h-[42px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-extrabold text-amber-100 sm:px-3 sm:py-2"
-          >
-            <span className="text-amber-300">?</span>
-            <span>게임 방법</span>
-          </button>
-
-          <button
-            type="button"
             disabled={isFirstVisitGuide}
             onClick={() => {
               if (isFirstVisitGuide) return;
@@ -140,20 +126,6 @@ export const BoxHubScreen: React.FC<BoxHubScreenProps> = ({
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-2.5">
-          <button
-            type="button"
-            data-testid="hub-rules-btn"
-            onClick={() => {
-              hsAudio.playSfx('ui_click');
-              setQuickRulesOpen(true);
-            }}
-            onMouseEnter={() => hsAudio.playSfx('box_hover', 0.5)}
-            className="hs-brass-btn flex min-h-[42px] items-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-extrabold text-amber-100 sm:px-3 sm:py-2"
-          >
-            <span className="text-amber-300">?</span>
-            <span>게임 방법</span>
-          </button>
-
           <button
             type="button"
             disabled={isFirstVisitGuide}
