@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-11-12 13:46 KST] [/game.html 전장 배경 이미지 3종(설원·불꽃 성채·바람의 신전) 내 중복 아군/적군 가로 경계선 완전 제거 완료]
+- **작업자**: `Antigravity Assistant`
+- **작업 개요**:
+  - **1. 사용자 요구사항**:
+    - `"기존에 이미지에서 표시하는 아군/적군 경계선이 실제 화면에 표시되는 경계선과 달라서 2줄로 표시되고있어. 실제 경계선은 잘 표시되고 있으니 이미지에 경계선들은 모두 제거해줘."`
+  - **2. 세부 구현 내역**:
+    1. **전장 배경 이미지 3종 내 구워져 있던 가로 중앙 경계선 및 측면 브래킷 장식 완전 제거 (`public/hs-assets/bg/arena_*.webp`)**:
+       - [`arena_elwin_snow.webp`](file:///Users/dayyoung/project/snshero/public/hs-assets/bg/arena_elwin_snow.webp) (`STORMWIND` 설원 테마): 중앙 가로 실선 및 다이아몬드 문양(`y=372..396`)을 상하 인접 슬레이트 석재 텍스처의 코사인 페더링 합성으로 이음새 없이 완전 제거.
+       - [`arena_crimson_forge.webp`](file:///Users/dayyoung/project/snshero/public/hs-assets/bg/arena_crimson_forge.webp) (`ORGRIMMAR` 불꽃 성채 테마): 중앙 이중 황금 가로선(`y=372..395`) 및 좌우 테두리 안쪽 돌출 포인터 노치(`x=138..166`, `x=1210..1238`)를 완전 제거.
+       - [`arena_emerald_wind.webp`](file:///Users/dayyoung/project/snshero/public/hs-assets/bg/arena_emerald_wind.webp) (`PANDARIA` 바람의 신전 테마): 중앙 이중 황금 가로선·다이아몬드(`y=368..400`) 및 좌우 끝 곡선 필리그리 브래킷(`x=207..256`, `x=1120..1169`, `y=334..434`)을 비취 대리석 텍스처로 감쪽같이 복원하여 완전 제거.
+    2. **브라우저 캐시 즉시 갱신 (`SnsHeroArtKit.tsx`)**:
+       - [`SNS_LOCATIONS`](file:///Users/dayyoung/project/snshero/src/hearthstone/components/SnsHeroArtKit.tsx#L7-L15)의 `BOARD_LIGHTHAVEN`, `BOARD_RED_PALACE`, `BOARD_WIND_ISLE` 경로에 `?v=2` 쿼리를 부여하여 기존 브라우저/서비스워커 캐시와 무관하게 경계선이 제거된 새 배경 이미지가 즉시 로드되도록 처리.
+  - **3. 검증 및 빌드**:
+    - 3종 전장 이미지 육안 검증 및 `npm run build` 프로덕션 빌드 완료, 구글 폼 보고서 제출 및 로컬 Git 커밋 완료 (`git push` 미실행 원칙 준수).
+
 ## [2026-11-12 10:45 KST] [/game.html 의뢰·보상표 전적(승/패·승률·전체순위) 대형 강조 및 보상 안내/의뢰 버튼 토글 단순화 + 랭킹/AI대전 매판 단위 자동플레이(시작·종료 시 OFF) 구현 완료]
 - **작업자**: `Antigravity Assistant`
 - **작업 개요**:

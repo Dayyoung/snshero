@@ -9,9 +9,9 @@ export const SNS_LOCATIONS = {
   BOX_TABLE: '/hs-assets/bg/elwin_hub_bg.webp',
   PACK_ALTAR: '/hs-assets/bg/pack_altar_bg.webp',
   COLLECTION_ARCHIVE: '/hs-assets/bg/elwin_hub_bg.webp',
-  BOARD_LIGHTHAVEN: '/hs-assets/bg/arena_elwin_snow.webp',
-  BOARD_RED_PALACE: '/hs-assets/bg/arena_crimson_forge.webp',
-  BOARD_WIND_ISLE: '/hs-assets/bg/arena_emerald_wind.webp',
+  BOARD_LIGHTHAVEN: '/hs-assets/bg/arena_elwin_snow.webp?v=2',
+  BOARD_RED_PALACE: '/hs-assets/bg/arena_crimson_forge.webp?v=2',
+  BOARD_WIND_ISLE: '/hs-assets/bg/arena_emerald_wind.webp?v=2',
 } as const;
 
 export const SNS_CARD_BACK_THEMES: Record<
